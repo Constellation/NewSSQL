@@ -555,6 +555,8 @@ public class HTMLFunction extends Function {
     		else	return;
     	}catch(Exception e){ return; }
 		
+    	/* This is sh_test. */
+    	
     	html_env.code.append("<div data-role=\"header\" data-position=\"fixed\" style=\"padding: 11px 0px;\">\n");
     	html_env.code.append("<a href=\"\" data-rel=\"back\" data-role=\"button\" data-icon=\"back\" data-mini=\"true\">Back</a>\n");
     	html_env.code.append("\n");
