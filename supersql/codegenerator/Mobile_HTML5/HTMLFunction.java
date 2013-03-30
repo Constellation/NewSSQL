@@ -560,7 +560,7 @@ public class HTMLFunction extends Function {
     	html_env.code.append("\n");
     	html_env.code.append("<div class=\"ui-btn-right\">\n");
     	html_env.code.append("	<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>\n");
-    	html_env.code.append("		<a href=\"http://www.yahoo.co.jp/\" data-role=\"button\" data-icon=\"home\" data-iconpos=\"notext\" data-mini=\"true\"></a>\n");
+    	html_env.code.append("		<a href=\"index.html\" data-role=\"button\" data-icon=\"home\" data-iconpos=\"notext\" data-mini=\"true\"></a>\n");
     	html_env.code.append("	</td><td>\n");
     	html_env.code.append("		<form style=\"display:inline;\">\n");
     	html_env.code.append("			<input type=\"button\" data-icon=\"forward\" data-iconpos=\"notext\" data-mini=\"true\" onClick=\"history.forward()\" >\n");

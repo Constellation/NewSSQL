@@ -32,6 +32,16 @@
 			<location>/Applications/XAMPP/xamppfiles/htdocs/ssql/demo_6.sql</location>
 		</link>
 		<link>
+			<name>demo_7.html</name>
+			<type>1</type>
+			<location>/Applications/XAMPP/xamppfiles/htdocs/ssql/demo_7.html</location>
+		</link>
+		<link>
+			<name>demo_7.sql</name>
+			<type>1</type>
+			<location>/Applications/XAMPP/xamppfiles/htdocs/ssql/demo_7.sql</location>
+		</link>
+		<link>
 			<name>test1.html</name>
 			<type>1</type>
 			<location>/Applications/XAMPP/xamppfiles/htdocs/ssql/test1.html</location>
