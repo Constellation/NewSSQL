@@ -20,7 +20,23 @@ public class HTMLManager extends Manager{
         this.html_env = henv;
         this.html_env2 = henv2;
     }
-
+    
+    //20130330 tab
+    //replaceCode
+    //replace a to b in html_env.code
+    //(html_env.code内の「a」を「b」へ置換する)
+	public static boolean replaceCode(HTMLEnv html_env,String a,String b){
+		try{
+	    	html_env.code.replace(
+	    			html_env.code.lastIndexOf(a), 
+	    			html_env.code.lastIndexOf(a)+a.length(),
+	    			b);
+		}catch(Exception e){ 
+			/*Log.info("Catch exception.");*/
+			return false;
+		}
+		return true;
+	}
 
     @Override
 	public void generateCode(TFE tfe_info, ExtList data_info) {

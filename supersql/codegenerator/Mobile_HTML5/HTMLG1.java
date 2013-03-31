@@ -66,6 +66,64 @@ public class HTMLG1 extends Grouper {
 //        	html_env.code.append("<div id=\"fisheye\" class=\"fisheye\">\n" +
 //        			"<div class=\"fisheyeContainter\">\n");
         	
+        	//20130330 tab
+        	//tab1
+        	if(decos.containsKey("tab1")){
+//        		//,で結合(水平結合)した際
+//        		//replace: 不要な「<div class=〜」をカット
+//    			String[] s = {"a","b","c","d","e"};
+//    			int j=0;
+//    			while(!HTMLManager.replaceCode(html_env, "<div class=\"ui-block-"+s[j]+" "+HTMLEnv.getClassID(this)+"\">", "")){
+//    				j++;
+//    				if(j>4) break;
+//    			}
+        		
+            	html_env.code.append("<div data-role=\"content\"> <div id=\"tabs\">\n<ul>\n");
+            	html_env.code.append("	<li><a href=\"#tabs-"+HTMLEnv.tabCount+"\">");
+            	if(!decos.getStr("tab1").equals(""))	html_env.code.append(decos.getStr("tab1"));
+            	else          							html_env.code.append("tab1");
+            	html_env.code.append("</a></li>\n");
+            	html_env.code.append("</ul>\n<div id=\"tabs-"+HTMLEnv.tabCount+"\">\n");
+//            	HTMLEnv.tabFlg = true;
+            }
+        	//tab2〜tab15
+//        	else if(HTMLEnv.tabFlg){
+        	else{
+        		int i=2;
+        		while(i<=HTMLEnv.maxTab){		//HTMLEnv.maxTab=15
+        			//Log.info("i="+i+" !!");
+        			if(decos.containsKey("tab"+i)){
+    	        		//replace: </ul>の前に<li>〜</li>を付加
+    	        		String a = "</ul>";
+    	        		String b = "	<li><a href=\"#tabs-"+HTMLEnv.tabCount+"\">";
+    	        		if(!decos.getStr("tab"+i).equals(""))	b += decos.getStr("tab"+i);
+    	            	else				            		b += "tab"+i;
+    	            	b += "</a></li>\n";
+    	            	HTMLManager.replaceCode(html_env, a, b+a);
+    	            	
+    	            	//replace: 最後の</div></div></div>カット
+    	        		HTMLManager.replaceCode(html_env, "</div></div></div>", "");
+    	        		
+    	        		//replace: 不要な「<div class=〜」をカット
+    	        		HTMLManager.replaceCode(html_env, "<div class=\""+HTMLEnv.getClassID(this)+" \">", "");
+//    	        		if(!HTMLManager.replaceCode(html_env, "<div class=\""+HTMLEnv.getClassID(this)+" \">", "")){
+//    	        			//Log.info("Cannot cut. "+HTMLEnv.getClassID(this));
+//    	        			String[] s = {"a","b","c","d","e"};
+//    	        			int j=0;
+//    	        			while(!HTMLManager.replaceCode(html_env, "<div class=\"ui-block-"+s[j]+" "+HTMLEnv.getClassID(this)+"\">", "")){
+//    	        				//,で結合(水平結合)した際に、このwhileに入る（レアケース）
+//    	        				j++;
+//    	        				if(j>4) break;
+//    	        			}
+//    	        		}
+    	            	
+    	            	html_env.code.append("<div id=\"tabs-"+HTMLEnv.tabCount+"\">\n");
+    	            	break;
+    	        	}
+        			i++;
+//        			if(i>HTMLEnv.maxTab)	HTMLEnv.tabFlg =false;
+        		}
+        	}
 
         	//20130312 collapsible
         	if(decos.containsKey("collapse")){
@@ -306,7 +364,7 @@ public class HTMLG1 extends Grouper {
 
         //html_env2.code.append("</tfe>");
         
-        if(!tableFlg)	html_env.code.append("	</DIV>");			//20130309
+        if(!tableFlg)	html_env.code.append("	</DIV>\n");			//20130309
         else{
         	html_env.code.append("</TR></TABLE>\n");	//20130314  table
         	tableFlg = false;
@@ -319,6 +377,25 @@ public class HTMLG1 extends Grouper {
         
         G1Flg=false;
         Log.out("</TR></TABLE>");
+        
+        //20130312 collapsible
+    	if(decos.containsKey("collapse")){
+        	html_env.code.append("</DIv>");
+        }
+        
+    	//20130330 tab
+//    	if(HTMLEnv.tabFlg){
+    		int a=1;
+	    	while(a<=HTMLEnv.maxTab){
+	    		//Log.info("a="+a);
+	    		if(decos.containsKey("tab"+a)){
+		    		html_env.code.append("</div></div></div>\n");
+		    		HTMLEnv.tabCount++;
+		    		break;
+		    	}
+		    	a++;
+	    	}
+//    	}
 
         Log.out("TFEId = " + HTMLEnv.getClassID(this));
         //html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);

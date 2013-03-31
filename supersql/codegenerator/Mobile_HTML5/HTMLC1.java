@@ -82,8 +82,65 @@ public class HTMLC1 extends Connector {
     	}else divFlg = false;
 
         if(!GlobalEnv.isOpt()){
-//        	//changed by goto 20130309  border=0
-//        	html_env.code.append("<TABLE cellSpacing=\"0\" cellPadding=\"0\"");
+
+        	//20130330 tab
+        	//tab1
+        	if(decos.containsKey("tab1")){
+        		//,で結合(水平結合)した際
+        		//replace: 不要な「<div class=〜」をカット
+    			String[] s = {"a","b","c","d","e"};
+    			int j=0;
+    			while(!HTMLManager.replaceCode(html_env, "<div class=\"ui-block-"+s[j]+" "+HTMLEnv.getClassID(this)+"\">", "")){
+    				j++;
+    				if(j>4) break;
+    			}
+        		
+            	html_env.code.append("<div data-role=\"content\"> <div id=\"tabs\">\n<ul>\n");
+            	html_env.code.append("	<li><a href=\"#tabs-"+HTMLEnv.tabCount+"\">");
+            	if(!decos.getStr("tab1").equals(""))	html_env.code.append(decos.getStr("tab1"));
+            	else          							html_env.code.append("tab1");
+            	html_env.code.append("</a></li>\n");
+            	html_env.code.append("</ul>\n<div id=\"tabs-"+HTMLEnv.tabCount+"\">\n");
+//            	HTMLEnv.tabFlg = true;
+            }
+        	//tab2〜tab15
+//        	else if(HTMLEnv.tabFlg){
+        	else{
+        		int i=2;
+        		while(i<=HTMLEnv.maxTab){		//HTMLEnv.maxTab=15
+        			//Log.info("i="+i+" !!");
+        			if(decos.containsKey("tab"+i)){
+    	        		//replace: </ul>の前に<li>〜</li>を付加
+    	        		String a = "</ul>";
+    	        		String b = "	<li><a href=\"#tabs-"+HTMLEnv.tabCount+"\">";
+    	        		if(!decos.getStr("tab"+i).equals(""))	b += decos.getStr("tab"+i);
+    	            	else				            		b += "tab"+i;
+    	            	b += "</a></li>\n";
+    	            	HTMLManager.replaceCode(html_env, a, b+a);
+    	            	
+    	            	//replace: 最後の</div></div></div>カット
+    	        		HTMLManager.replaceCode(html_env, "</div></div></div>", "");
+    	        		
+    	        		//replace: 不要な「<div class=〜」をカット
+    	        		//HTMLManager.replaceCode(html_env, "<div class=\""+HTMLEnv.getClassID(this)+" \">", "");
+    	        		if(!HTMLManager.replaceCode(html_env, "<div class=\""+HTMLEnv.getClassID(this)+" \">", "")){
+    	        			//Log.info("Cannot cut. "+HTMLEnv.getClassID(this));
+    	        			String[] s = {"a","b","c","d","e"};
+    	        			int j=0;
+    	        			while(!HTMLManager.replaceCode(html_env, "<div class=\"ui-block-"+s[j]+" "+HTMLEnv.getClassID(this)+"\">", "")){
+    	        				//,で結合(水平結合)した際に、このwhileに入る（レアケース）
+    	        				j++;
+    	        				if(j>4) break;
+    	        			}
+    	        		}
+    	            	
+    	            	html_env.code.append("<div id=\"tabs-"+HTMLEnv.tabCount+"\">\n");
+    	            	break;
+    	        	}
+        			i++;
+//        			if(i>HTMLEnv.maxTab)	HTMLEnv.tabFlg =false;
+        		}
+        	}
         	
         	//20130312 collapsible
         	if(decos.containsKey("collapse")){
@@ -95,6 +152,7 @@ public class HTMLC1 extends Connector {
             	else
             		html_env.code.append("<h1>Contents</h1>\n");
             }
+        	
         	//20130309
 //        	if(!HTMLG1.G1Flg && !tableFlg)	html_env.code.append("<DIV Class=\"ui-grid-a\"");
         	//if((!HTMLG1.G1Flg && !tableFlg) || divFlg){		//20130326  div
@@ -124,7 +182,7 @@ public class HTMLC1 extends Connector {
         	 */        
         	//classid������Ȥ��ˤ�������
         	if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
-        		html_env.code.append(" class=\"");
+        		html_env.code.append(" class1=\"");
         		html_env.code.append(HTMLEnv.getClassID(this));
         	}
 
@@ -290,10 +348,31 @@ public class HTMLC1 extends Connector {
         //20130309
         if(!HTMLG1.G1Flg && !tableFlg)	html_env.code.append("</DIV>\n");			//20130309
         
+        //20130314  table
+      	if(tableFlg){
+      		html_env.code.append("</TR></TABLE>\n");	//20130309
+      		tableFlg = false;
+      		table0Flg = false;			//20130325 table0
+      	}
+        
         //20130312 collapsible
     	if(decos.containsKey("collapse")){
         	html_env.code.append("</DIv>");
         }
+    	
+    	//20130330 tab
+//    	if(HTMLEnv.tabFlg){
+    		int a=1;
+	    	while(a<=HTMLEnv.maxTab){
+	    		//Log.info("a="+a);
+	    		if(decos.containsKey("tab"+a)){
+		    		html_env.code.append("</div></div></div>\n");
+		    		HTMLEnv.tabCount++;
+		    		break;
+		    	}
+		    	a++;
+	    	}
+//    	}
     	
 //    	//20130313 header
 //    	if(decos.containsKey("head")){
@@ -301,13 +380,6 @@ public class HTMLC1 extends Connector {
 //    	}
         
         jj=0;
-        
-        //20130314  table
-      	if(tableFlg){
-      		html_env.code.append("</TR></TABLE>\n");	//20130309
-      		tableFlg = false;
-      		table0Flg = false;			//20130325 table0
-      	}
       	
       	if(divFlg)	divFlg = false;		//20130326  div
       	

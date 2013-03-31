@@ -62,6 +62,59 @@ public class HTMLG2 extends Grouper {
     	}else divFlg = false;
         
         if(!GlobalEnv.isOpt()){
+        	
+        	//20130330 tab
+        	//tab1
+        	if(decos.containsKey("tab1")){
+            	html_env.code.append("<div data-role=\"content\"> <div id=\"tabs\">\n<ul>\n");
+            	html_env.code.append("	<li><a href=\"#tabs-"+HTMLEnv.tabCount+"\">");
+            	if(!decos.getStr("tab1").equals(""))	html_env.code.append(decos.getStr("tab1"));
+            	else          							html_env.code.append("tab1");
+            	html_env.code.append("</a></li>\n");
+            	html_env.code.append("</ul>\n<div id=\"tabs-"+HTMLEnv.tabCount+"\">\n");
+//            	HTMLEnv.tabFlg = true;
+            }
+        	//tab2〜tab15
+//        	else if(HTMLEnv.tabFlg){
+        	else{
+        		int i=2;
+        		while(i<=HTMLEnv.maxTab){		//HTMLEnv.maxTab=15
+        			//Log.info("i="+i+" !!");
+        			if(decos.containsKey("tab"+i)){
+    	        		//replace: </ul>の前に<li>〜</li>を付加
+    	        		String a = "</ul>";
+    	        		String b = "	<li><a href=\"#tabs-"+HTMLEnv.tabCount+"\">";
+    	        		if(!decos.getStr("tab"+i).equals(""))	b += decos.getStr("tab"+i);
+    	            	else				            		b += "tab"+i;
+    	            	b += "</a></li>\n";
+    	            	HTMLManager.replaceCode(html_env, a, b+a);
+    	            	
+    	            	//replace: 最後の</div></div></div>カット
+    	        		HTMLManager.replaceCode(html_env, "</div></div></div>", "");
+    	        		
+    	        		//replace: 不要な「<div class=〜」をカット
+    	        		HTMLManager.replaceCode(html_env, "<div class=\""+HTMLEnv.getClassID(this)+" \">", "");
+    	        		
+    	            	html_env.code.append("<div id=\"tabs-"+HTMLEnv.tabCount+"\">\n");
+    	            	break;
+    	        	}
+        			i++;
+//        			if(i>HTMLEnv.maxTab)	HTMLEnv.tabFlg =false;
+        		}
+        	}
+        	
+        	//20130312 collapsible
+        	if(decos.containsKey("collapse")){
+            	html_env.code.append("<DIv data-role=\"collapsible\" data-content-theme=\"c\" style=\"padding: 0px 12px;\">\n");
+            	
+            	//header
+            	if(!decos.getStr("collapse").equals(""))
+            		html_env.code.append("	<h1>"+decos.getStr("collapse")+"</h1>\n");
+            	else
+            		html_env.code.append("<h1>Contents</h1>\n");
+            }
+        	
+        	
         	//20130309
         	//20130314  table
         	if(tableFlg){
@@ -110,6 +163,10 @@ public class HTMLG2 extends Grouper {
             		//null
             		//in case "select" repeat : not write "<TR><TD>" between "<option>"s
             }else{
+                //20130312 collapsible
+    	      	if(decos.containsKey("collapse"))
+    	          	html_env.code.append("<p>");
+            	
             	//20130309
             	//gridInt %= 5;
             	//html_env.code.append("\n	<div class=\"ui-block-"+gridString[gridInt]+"\">\n");
@@ -183,7 +240,11 @@ public class HTMLG2 extends Grouper {
                 //added by goto 20130110 end
                 if(!tableFlg)	html_env.code.append("	</div>\n");		//20130309  div
                 else	html_env.code.append("</TD></TR>\n");			//20130314  table
-            	Log.out("</TD></TR>");
+                Log.out("</TD></TR>");
+                
+                //20130312 collapsible
+    	      	if(decos.containsKey("collapse"))
+    	          	html_env.code.append("</p>");
             }
       
             i++;
@@ -213,6 +274,25 @@ public class HTMLG2 extends Grouper {
         	table0Flg = false;		//20130325 table0
         }
         Log.out("</TABLE>");
+        
+        //20130312 collapsible
+      	if(decos.containsKey("collapse")){
+          	html_env.code.append("</DIv>");
+        }
+      	
+    	//20130330 tab
+//    	if(HTMLEnv.tabFlg){
+    		int a=1;
+	    	while(a<=HTMLEnv.maxTab){
+	    		//Log.info("a="+a);
+	    		if(decos.containsKey("tab"+a)){
+		    		html_env.code.append("</div></div></div>\n");
+		    		HTMLEnv.tabCount++;
+		    		break;
+		    	}
+		    	a++;
+	    	}
+//    	}
         
         if(divFlg)	divFlg = false;		//20130326  div
 
