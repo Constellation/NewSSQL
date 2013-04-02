@@ -1,4 +1,4 @@
-.DS_Store
+*.DS_Store
 
 test.html
 
@@ -7,3 +7,9 @@ test.sql
 .ssql
 
 *.class
+
+config.ssql
+demo*.ssql
+demo*.sql
+
+*.db
