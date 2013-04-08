@@ -42,6 +42,11 @@
 			<location>/Applications/XAMPP/xamppfiles/htdocs/ssql/demo_7.sql</location>
 		</link>
 		<link>
+			<name>script.js</name>
+			<type>1</type>
+			<location>/Applications/XAMPP/xamppfiles/htdocs/ssql/js/script.js</location>
+		</link>
+		<link>
 			<name>tab.html</name>
 			<type>1</type>
 			<location>/Applications/XAMPP/xamppfiles/htdocs/ssql/tab.html</location>

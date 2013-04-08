@@ -86,13 +86,15 @@ public class HTMLC1 extends Connector {
         	//20130330 tab
         	//tab1
         	if(decos.containsKey("tab1")){
+        		//TODO: 下記の効率化、最後の</DIV>を出力しない
         		//,で結合(水平結合)した際
         		//replace: 不要な「<div class=〜」をカット
     			String[] s = {"a","b","c","d","e"};
     			int j=0;
-    			while(!HTMLManager.replaceCode(html_env, "<div class=\"ui-block-"+s[j]+" "+HTMLEnv.getClassID(this)+"\">", "")){
+    			while(!HTMLManager.replaceCode(html_env, "<div class=\"ui-block-"+s[j]+" "+HTMLEnv.getClassID(this)+"\">", "")
+    					 || !HTMLManager.replaceCode(html_env, "<DIV Class=\"ui-grid-"+s[j]+" #"+(HTMLEnv.uiGridCount-1)+"\">", "")){
+    				if(j>3) break;
     				j++;
-    				if(j>4) break;
     			}
         		
             	html_env.code.append("<div data-role=\"content\"> <div id=\"tabs\">\n<ul>\n");
@@ -109,12 +111,16 @@ public class HTMLC1 extends Connector {
         		int i=2;
         		while(i<=HTMLEnv.maxTab){		//HTMLEnv.maxTab=15
         			//Log.info("i="+i+" !!");
-        			if(decos.containsKey("tab"+i)){
+        			if(decos.containsKey("tab"+i) || (i==2 && decos.containsKey("tab"))){
     	        		//replace: </ul>の前に<li>〜</li>を付加
     	        		String a = "</ul>";
     	        		String b = "	<li><a href=\"#tabs-"+HTMLEnv.tabCount+"\">";
-    	        		if(!decos.getStr("tab"+i).equals(""))	b += decos.getStr("tab"+i);
-    	            	else				            		b += "tab"+i;
+    	        		if(decos.containsKey("tab"+i))
+	    	        		if(!decos.getStr("tab"+i).equals(""))	b += decos.getStr("tab"+i);
+	    	            	else				            		b += "tab"+i;
+    	        		else
+    	        			if(!decos.getStr("tab").equals(""))		b += decos.getStr("tab");
+	    	            	else				            		b += "tab";
     	            	b += "</a></li>\n";
     	            	HTMLManager.replaceCode(html_env, a, b+a);
     	            	
@@ -124,6 +130,10 @@ public class HTMLC1 extends Connector {
     	        		//replace: 不要な「<div class=〜」をカット
     	        		//HTMLManager.replaceCode(html_env, "<div class=\""+HTMLEnv.getClassID(this)+" \">", "");
     	        		if(!HTMLManager.replaceCode(html_env, "<div class=\""+HTMLEnv.getClassID(this)+" \">", "")){
+    	        		//String cutClass="class=\""+HTMLEnv.getClassID(this)+" \"";
+    	        		//if(!HTMLManager.replaceCode(html_env, "<div "+cutClass+">", "")){
+    	        		//	cutClass="";
+    	        			
     	        			//Log.info("Cannot cut. "+HTMLEnv.getClassID(this));
     	        			String[] s = {"a","b","c","d","e"};
     	        			int j=0;
@@ -134,7 +144,9 @@ public class HTMLC1 extends Connector {
     	        			}
     	        		}
     	            	
-    	            	html_env.code.append("<div id=\"tabs-"+HTMLEnv.tabCount+"\">\n");
+    	        		html_env.code.append("<div id=\"tabs-"+HTMLEnv.tabCount+"\">\n");
+    	        		//上記でカットしたcutClassをappend
+    	        		//html_env.code.append("<div id=\"tabs-"+HTMLEnv.tabCount+"\" "+cutClass+">\n");
     	            	break;
     	        	}
         			i++;
@@ -156,8 +168,12 @@ public class HTMLC1 extends Connector {
         	//20130309
 //        	if(!HTMLG1.G1Flg && !tableFlg)	html_env.code.append("<DIV Class=\"ui-grid-a\"");
         	//if((!HTMLG1.G1Flg && !tableFlg) || divFlg){		//20130326  div
-        	if(!HTMLG1.G1Flg && !tableFlg){
-        		html_env.code.append("<DIV Class=\"ui-grid-a #"+HTMLEnv.uiGridCount+"\"");
+        	if(/* !HTMLG1.G1Flg  && */ !tableFlg){
+        		//html_env.code.append("<DIV Class=\"ui-grid-a #"+HTMLEnv.uiGridCount+"\"");
+        		if(html_env.written_classid.contains(HTMLEnv.getClassID(this)))
+        			html_env.code.append("<DIV Class=\"ui-grid-a #"+HTMLEnv.uiGridCount+" "+HTMLEnv.getClassID(this)+"\"");
+        		else
+        			html_env.code.append("<DIV Class=\"ui-grid-a #"+HTMLEnv.uiGridCount+"\"");
         		HTMLEnv.uiGridCount++;
         		//Log.info("ui-grid-a #"+HTMLEnv.uiGridCount+"	"+"<DIV Class=\"ui-grid-a #"+HTMLEnv.uiGridCount+"\"");
         	}
@@ -179,25 +195,27 @@ public class HTMLC1 extends Connector {
         	html_env.code.append(" noborder ");
         	html_env2.code.append(" noborder ");
         }
-        	 */        
-        	//classid������Ȥ��ˤ�������
-        	if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
-        		html_env.code.append(" class1=\"");
-        		html_env.code.append(HTMLEnv.getClassID(this));
-        	}
-
-        	if(decos.containsKey("class")){
-        		if(!html_env.written_classid.contains(HTMLEnv.getClassID(this))){
-        			html_env.code.append(" class=\"");
-        		}else{
-        			html_env.code.append(" ");
-        		}
-        		html_env.code.append(decos.getStr("class")+"\" ");
-        	}else if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
-        		html_env.code.append("\" ");
+        	 */     
+        	if(tableFlg){
+	        	//classid������Ȥ��ˤ�������
+	        	if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
+	        		html_env.code.append(" class=\"");
+	        		html_env.code.append(HTMLEnv.getClassID(this));
+	        	}
+	
+	        	if(decos.containsKey("class")){
+	        		if(!html_env.written_classid.contains(HTMLEnv.getClassID(this))){
+	        			html_env.code.append(" class=\"");
+	        		}else{
+	        			html_env.code.append(" ");
+	        		}
+	        		html_env.code.append(decos.getStr("class")+"\" ");
+	        	}else if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
+	        		html_env.code.append("\" ");
+	        	}
         	}
         	//if((!HTMLG1.G1Flg && !tableFlg) || divFlg)		html_env.code.append(">");		//20130326  div	//20130309	
-        	if(!HTMLG1.G1Flg && !tableFlg)	html_env.code.append(">");		//20130309
+        	if(/* !HTMLG1.G1Flg  && */ !tableFlg)	html_env.code.append(">");		//20130309
 
         	if(tableFlg)	html_env.code.append("><TR>");		//20130314  table
         }
@@ -271,14 +289,15 @@ public class HTMLC1 extends Connector {
             TFE tfe = (TFE) tfes.get(i);
             
             //20130309
-            Count = ( ((gridInt>=jj)&&(!HTMLG1.G1Flg))? jj:gridInt );
+            //Count = ( ((gridInt>=jj)&&(!HTMLG1.G1Flg))? jj:gridInt );
+            Count = ( (gridInt>=jj)? jj:gridInt );
 //            Log.info("☆C1☆"+gridInt+" "+ii+" "+jj+"  "+Count+"  "+Count%5+"	"+HTMLG1.G1Flg+"	"+
 //            ((!HTMLC3.C3Flg)?"":HTMLC3.C3Flg));
             Count %= 5;
             //gridInt %= 5;
             //html_env.code.append("\n<div class=\"ui-block-"+gridString[gridInt]+"\">\n");	//20130309
            	//if((!HTMLG1.G1Flg && !tableFlg) || divFlg)		//20130326  div
-            if(!HTMLG1.G1Flg && !tableFlg)
+            if(/* !HTMLG1.G1Flg  && */ !tableFlg)
             	html_env.code.append("\n<div class=\"ui-block-"+gridString[Count]+" "+HTMLEnv.getClassID(tfe)+"\">\n");	//20130309
 
             //20130314  table
@@ -296,7 +315,7 @@ public class HTMLC1 extends Connector {
 
             //20130309
         	//if((Count>1 && !HTMLG1.G1Flg && !tableFlg) || (Count>1 && divFlg)){		//20130326  div
-            if(Count>1 && !HTMLG1.G1Flg && !tableFlg){
+            if(Count>1 && /* !HTMLG1.G1Flg  && */ !tableFlg){
 //            	String rep="ui-grid-"+gridString[Count-2];
         		String rep="ui-grid-"+gridString[Count-2]+" #"+(HTMLEnv.uiGridCount-1);
         		
@@ -325,7 +344,7 @@ public class HTMLC1 extends Connector {
 	            }
         	}
             
-            if(!HTMLG1.G1Flg && !tableFlg)	html_env.code.append("</div>\n");	//20130309
+            if(/* !HTMLG1.G1Flg  && */ !tableFlg)	html_env.code.append("</div>\n");	//20130309
 
         	if(tableFlg)	html_env.code.append("</TD>\n");					//20130314  table
             //Log.out("</TD>");
@@ -346,7 +365,7 @@ public class HTMLC1 extends Connector {
         }
         
         //20130309
-        if(!HTMLG1.G1Flg && !tableFlg)	html_env.code.append("</DIV>\n");			//20130309
+        if(/* !HTMLG1.G1Flg  && */ !tableFlg)	html_env.code.append("</DIV>\n");			//20130309
         
         //20130314  table
       	if(tableFlg){
@@ -365,7 +384,7 @@ public class HTMLC1 extends Connector {
     		int a=1;
 	    	while(a<=HTMLEnv.maxTab){
 	    		//Log.info("a="+a);
-	    		if(decos.containsKey("tab"+a)){
+	    		if(decos.containsKey("tab"+a) || (a==1 && decos.containsKey("tab"))){
 		    		html_env.code.append("</div></div></div>\n");
 		    		HTMLEnv.tabCount++;
 		    		break;

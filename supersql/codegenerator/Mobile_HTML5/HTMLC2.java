@@ -91,12 +91,16 @@ public class HTMLC2 extends Connector {
         		int i=2;
         		while(i<=HTMLEnv.maxTab){		//HTMLEnv.maxTab=15
         			//Log.info("i="+i+" !!");
-        			if(decos.containsKey("tab"+i)){
+        			if(decos.containsKey("tab"+i) || (i==2 && decos.containsKey("tab"))){
     	        		//replace: </ul>の前に<li>〜</li>を付加
     	        		String a = "</ul>";
     	        		String b = "	<li><a href=\"#tabs-"+HTMLEnv.tabCount+"\">";
-    	        		if(!decos.getStr("tab"+i).equals(""))	b += decos.getStr("tab"+i);
-    	            	else				            		b += "tab"+i;
+    	        		if(decos.containsKey("tab"+i))
+	    	        		if(!decos.getStr("tab"+i).equals(""))	b += decos.getStr("tab"+i);
+	    	            	else				            		b += "tab"+i;
+    	        		else
+    	        			if(!decos.getStr("tab").equals(""))		b += decos.getStr("tab");
+	    	            	else				            		b += "tab";
     	            	b += "</a></li>\n";
     	            	HTMLManager.replaceCode(html_env, a, b+a);
     	            	
@@ -243,7 +247,7 @@ public class HTMLC2 extends Connector {
             
             //20130312 collapsible
 	      	if(decos.containsKey("collapse"))
-	          	html_env.code.append("<p>");
+	          	html_env.code.append("<p>\n");
 	      	else if(!tableFlg) 
 	            //20130309
 	            //x html_env.code.append("	<DIV Class=\"ui-grid-a\">	<div class=\"ui-block-a\">");		
@@ -281,7 +285,7 @@ public class HTMLC2 extends Connector {
 	      	
             //20130312 collapsible
 	      	if(decos.containsKey("collapse"))
-	          	html_env.code.append("</p>");
+	          	html_env.code.append("</p>\n");
 	      	else if(!tableFlg)
 	        	html_env.code.append("\n</div>");
             
@@ -320,7 +324,7 @@ public class HTMLC2 extends Connector {
     		int a=1;
 	    	while(a<=HTMLEnv.maxTab){
 	    		//Log.info("a="+a);
-	    		if(decos.containsKey("tab"+a)){
+	    		if(decos.containsKey("tab"+a) || (a==1 && decos.containsKey("tab"))){
 		    		html_env.code.append("</div></div></div>\n");
 		    		HTMLEnv.tabCount++;
 		    		break;

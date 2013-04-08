@@ -102,7 +102,8 @@ public class HTMLEnv extends LocalEnv {
 
     String linkurl;
     
-    static int uiGridCount = 0;		//20130314  C1,G1 ui-Grid用
+    static int uiGridCount = 0;		//20130314  C1 ui-Grid用
+    static int uiGridCount2 = 0;	//20130314  G1 ui-Grid用
     //static boolean tableFlg = false;		//20130314  table
     
     static int tabCount = 1;			//20130330  tab用

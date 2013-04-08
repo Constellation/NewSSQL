@@ -80,12 +80,16 @@ public class HTMLG2 extends Grouper {
         		int i=2;
         		while(i<=HTMLEnv.maxTab){		//HTMLEnv.maxTab=15
         			//Log.info("i="+i+" !!");
-        			if(decos.containsKey("tab"+i)){
+        			if(decos.containsKey("tab"+i) || (i==2 && decos.containsKey("tab"))){
     	        		//replace: </ul>の前に<li>〜</li>を付加
     	        		String a = "</ul>";
     	        		String b = "	<li><a href=\"#tabs-"+HTMLEnv.tabCount+"\">";
-    	        		if(!decos.getStr("tab"+i).equals(""))	b += decos.getStr("tab"+i);
-    	            	else				            		b += "tab"+i;
+    	        		if(decos.containsKey("tab"+i))
+	    	        		if(!decos.getStr("tab"+i).equals(""))	b += decos.getStr("tab"+i);
+	    	            	else				            		b += "tab"+i;
+    	        		else
+    	        			if(!decos.getStr("tab").equals(""))		b += decos.getStr("tab");
+	    	            	else				            		b += "tab";
     	            	b += "</a></li>\n";
     	            	HTMLManager.replaceCode(html_env, a, b+a);
     	            	
@@ -118,7 +122,8 @@ public class HTMLG2 extends Grouper {
         	//20130309
         	//20130314  table
         	if(tableFlg){
-		        html_env.code.append("<TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
+        		html_env.code.append("<TABLE width=\"100%\" align=\"center\" cellSpacing=\"0\" cellPadding=\"0\" border=\"");
+		        //html_env.code.append("<TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
 	        	//html_env.code.append( ((!decos.containsKey("table0"))? html_env.tableborder : "0") + "\" ");
 	        	if(table0Flg)	html_env.code.append("0" + "\"");	//20130325 table0
 	        	else			html_env.code.append(html_env.tableborder + "\"");
@@ -165,7 +170,7 @@ public class HTMLG2 extends Grouper {
             }else{
                 //20130312 collapsible
     	      	if(decos.containsKey("collapse"))
-    	          	html_env.code.append("<p>");
+    	          	html_env.code.append("<p>\n");
             	
             	//20130309
             	//gridInt %= 5;
@@ -244,7 +249,7 @@ public class HTMLG2 extends Grouper {
                 
                 //20130312 collapsible
     	      	if(decos.containsKey("collapse"))
-    	          	html_env.code.append("</p>");
+    	          	html_env.code.append("</p>\n");
             }
       
             i++;
@@ -285,7 +290,7 @@ public class HTMLG2 extends Grouper {
     		int a=1;
 	    	while(a<=HTMLEnv.maxTab){
 	    		//Log.info("a="+a);
-	    		if(decos.containsKey("tab"+a)){
+	    		if(decos.containsKey("tab"+a) || (a==1 && decos.containsKey("tab"))){
 		    		html_env.code.append("</div></div></div>\n");
 		    		HTMLEnv.tabCount++;
 		    		break;

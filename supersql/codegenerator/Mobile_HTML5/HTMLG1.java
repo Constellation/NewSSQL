@@ -92,12 +92,16 @@ public class HTMLG1 extends Grouper {
         		int i=2;
         		while(i<=HTMLEnv.maxTab){		//HTMLEnv.maxTab=15
         			//Log.info("i="+i+" !!");
-        			if(decos.containsKey("tab"+i)){
+        			if(decos.containsKey("tab"+i) || (i==2 && decos.containsKey("tab"))){
     	        		//replace: </ul>の前に<li>〜</li>を付加
     	        		String a = "</ul>";
     	        		String b = "	<li><a href=\"#tabs-"+HTMLEnv.tabCount+"\">";
-    	        		if(!decos.getStr("tab"+i).equals(""))	b += decos.getStr("tab"+i);
-    	            	else				            		b += "tab"+i;
+    	        		if(decos.containsKey("tab"+i))
+	    	        		if(!decos.getStr("tab"+i).equals(""))	b += decos.getStr("tab"+i);
+	    	            	else				            		b += "tab"+i;
+    	        		else
+    	        			if(!decos.getStr("tab").equals(""))		b += decos.getStr("tab");
+	    	            	else				            		b += "tab";
     	            	b += "</a></li>\n";
     	            	HTMLManager.replaceCode(html_env, a, b+a);
     	            	
@@ -106,6 +110,8 @@ public class HTMLG1 extends Grouper {
     	        		
     	        		//replace: 不要な「<div class=〜」をカット
     	        		HTMLManager.replaceCode(html_env, "<div class=\""+HTMLEnv.getClassID(this)+" \">", "");
+    	        		//String cutClass="class=\""+HTMLEnv.getClassID(this)+" \"";
+    	        		//if(!HTMLManager.replaceCode(html_env, "<div "+cutClass+">", ""))	cutClass="";
 //    	        		if(!HTMLManager.replaceCode(html_env, "<div class=\""+HTMLEnv.getClassID(this)+" \">", "")){
 //    	        			//Log.info("Cannot cut. "+HTMLEnv.getClassID(this));
 //    	        			String[] s = {"a","b","c","d","e"};
@@ -117,7 +123,9 @@ public class HTMLG1 extends Grouper {
 //    	        			}
 //    	        		}
     	            	
-    	            	html_env.code.append("<div id=\"tabs-"+HTMLEnv.tabCount+"\">\n");
+    	        		html_env.code.append("<div id=\"tabs-"+HTMLEnv.tabCount+"\">\n");
+    	        		////上記でカットしたcutClassをappend
+    	            	//html_env.code.append("<div id=\"tabs-"+HTMLEnv.tabCount+"\" "+cutClass+">\n");
     	            	break;
     	        	}
         			i++;
@@ -138,7 +146,15 @@ public class HTMLG1 extends Grouper {
 //        	else{
             //20130309
 //        	//uncommented
-        	if(!tableFlg) 	html_env.code.append("	<DIV Class=\"ui-grid-a\">");
+        	//if(!tableFlg) 	html_env.code.append("	<DIV Class=\"ui-grid-a\">");
+        	if(!tableFlg){
+        		if(html_env.written_classid.contains(HTMLEnv.getClassID(this)))
+        			html_env.code.append("<DIV Class=\"ui-grid-a ##"+HTMLEnv.uiGridCount2+" "+HTMLEnv.getClassID(this)+"\"");
+        		else
+        			html_env.code.append("<DIV Class=\"ui-grid-a ##"+HTMLEnv.uiGridCount2+"\"");
+        		html_env.code.append(">\n");
+        		HTMLEnv.uiGridCount2++;
+        	}
         	//html_env.code.append("	<DIV Class=\"ui-grid-a #"+HTMLEnv.uiGridCount+"\"");
             		//HTMLEnv.uiGridCount++;
             		//Log.info("ui-grid-"+HTMLEnv.uiGridCount);
@@ -160,7 +176,8 @@ public class HTMLG1 extends Grouper {
             	html_env.code.append("<div style=\"overflow:auto;\">\n");
             	//html_env.code.append("<div style=\"height:60px; width:0px; overflow:auto;\">\n");
             	
-		        html_env.code.append("<TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
+            	html_env.code.append("<TABLE width=\"100%\" align=\"center\" cellSpacing=\"0\" cellPadding=\"0\" border=\"");
+		        //html_env.code.append("<TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
 		        //html_env.code.append(((!decos.containsKey("table0"))? html_env.tableborder : "0") + "\"");
         		if(table0Flg)	html_env.code.append("0" + "\"");	//20130325 table0
 	        	else			html_env.code.append(html_env.tableborder + "\"");
@@ -256,7 +273,13 @@ public class HTMLG1 extends Grouper {
 //        	}else 
         	if(Count > pic_column-1 && Count%pic_column==0 && !tableFlg){
         		//uncommented
-            	html_env.code.append("\n	</DIV>\n	<DIV Class=\"ui-grid-a\">");
+            	//html_env.code.append("\n	</DIV>\n	<DIV Class=\"ui-grid-a\">");
+        		if(html_env.written_classid.contains(HTMLEnv.getClassID(this)))
+        			html_env.code.append("\n	</DIV>\n	<DIV Class=\"ui-grid-a ##"+HTMLEnv.uiGridCount2+" "+HTMLEnv.getClassID(this)+"\"");
+        		else
+        			html_env.code.append("\n	</DIV>\n	<DIV Class=\"ui-grid-a ##"+HTMLEnv.uiGridCount2+"\"");
+        		html_env.code.append(">\n");
+        		HTMLEnv.uiGridCount2++;
         		//html_env.code.append("\n	</DIV>\n	<DIV Class=\"ui-grid-a #"+HTMLEnv.uiGridCount+"\"");
             		//HTMLEnv.uiGridCount++;
             		//Log.info("ui-grid2-"+HTMLEnv.uiGridCount);
@@ -308,19 +331,29 @@ public class HTMLG1 extends Grouper {
 ////            if(Count>1/* && HTMLG1.G1Flg*/){
 //        	}else 
             
-        		
-            //uncommented
+        	
             if(Count>1 && HTMLG1.G1Flg && !tableFlg){
-            	String rep="ui-grid-"+gridString[Count-2];
-            	
+        		String rep="ui-grid-"+gridString[Count-2]+" ##"+(HTMLEnv.uiGridCount2-1);
+        		
             	try{
 	            	html_env.code.replace(
 	            			html_env.code.lastIndexOf(rep), 
-	            			html_env.code.lastIndexOf(rep)+9,
-	            			"ui-grid-"+gridString[Count-1]);
-	            	//Log.info("	G1 !!   rep = "+rep+"  TO  ui-grid-"+gridString[Count-1]+"	"+HTMLEnv.uiGridCount+" TO "+(++HTMLEnv.uiGridCount));
+	            			html_env.code.lastIndexOf(rep)+rep.length(),
+	            			"ui-grid-"+gridString[Count-1]+" ##"+(HTMLEnv.uiGridCount2++));
             	}catch(Exception e){ /*Log.info("G1 Catch exception.");*/ }
             }
+//            //uncommented
+//            if(Count>1 && HTMLG1.G1Flg && !tableFlg){
+//            	String rep="ui-grid-"+gridString[Count-2];
+//            	
+//            	try{
+//	            	html_env.code.replace(
+//	            			html_env.code.lastIndexOf(rep), 
+//	            			html_env.code.lastIndexOf(rep)+9,
+//	            			"ui-grid-"+gridString[Count-1]);
+//	            	//Log.info("	G1 !!   rep = "+rep+"  TO  ui-grid-"+gridString[Count-1]+"	"+HTMLEnv.uiGridCount+" TO "+(++HTMLEnv.uiGridCount));
+//            	}catch(Exception e){ /*Log.info("G1 Catch exception.");*/ }
+//            }
             
 //            //cpommented out 失敗作
 //            if(Count>1 && HTMLG1.G1Flg){
@@ -388,7 +421,7 @@ public class HTMLG1 extends Grouper {
     		int a=1;
 	    	while(a<=HTMLEnv.maxTab){
 	    		//Log.info("a="+a);
-	    		if(decos.containsKey("tab"+a)){
+	    		if(decos.containsKey("tab"+a) || (a==1 && decos.containsKey("tab"))){
 		    		html_env.code.append("</div></div></div>\n");
 		    		HTMLEnv.tabCount++;
 		    		break;
