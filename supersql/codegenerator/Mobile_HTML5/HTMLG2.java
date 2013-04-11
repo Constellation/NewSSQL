@@ -51,15 +51,16 @@ public class HTMLG2 extends Grouper {
         else							table0Flg = false;
     	//20130314  table
         //if(decos.containsKey("table") || !decos.containsKey("div") || table0Flg){
-        if(decos.containsKey("table") || table0Flg){
+//        if(decos.containsKey("table") || table0Flg){
+        if(decos.containsKey("table") || table0Flg || HTMLC1.tableFlg || HTMLC2.tableFlg || HTMLG1.tableFlg){
     		tableFlg = true;
-    	}else	tableFlg = false;
+    	}//else	tableFlg = false;
         
         //20130326  div
-    	if(decos.containsKey("div")){
+   		if(decos.containsKey("div") || HTMLC1.divFlg || HTMLC2.divFlg || HTMLG1.divFlg || HTMLG2.divFlg){
     		divFlg = true;
     		tableFlg = false;
-    	}else divFlg = false;
+    	}//else divFlg = false;
         
         if(!GlobalEnv.isOpt()){
         	
@@ -160,6 +161,13 @@ public class HTMLG2 extends Grouper {
         //html_env2.code.append("<tfe type=\"connect\" dimension=\"2\" >");
         int i = 0;
         while (this.hasMoreItems()) {
+            if(decos.containsKey("table0") || HTMLC1.table0Flg || HTMLC2.table0Flg || HTMLG1.table0Flg)	table0Flg = true;
+            if(decos.containsKey("table") || HTMLC1.tableFlg || HTMLC2.tableFlg || HTMLG1.tableFlg || table0Flg)	tableFlg=true;
+            if(decos.containsKey("div") || HTMLC1.divFlg || HTMLC2.divFlg || HTMLG1.divFlg || HTMLG2.divFlg){
+        		divFlg = true;
+        		tableFlg = false;
+        	}
+        	
             html_env.glevel++;
             Log.out("selectFlg"+HTMLEnv.getSelectFlg());
             Log.out("selectRepeatFlg"+HTMLEnv.getSelectRepeat());
@@ -227,6 +235,12 @@ public class HTMLG2 extends Grouper {
             }
 
             this.worknextItem();
+            if(decos.containsKey("table0") || HTMLC1.table0Flg || HTMLC2.table0Flg || HTMLG1.table0Flg)	table0Flg = true;
+            if(decos.containsKey("table") || HTMLC1.tableFlg || HTMLC2.tableFlg || HTMLG1.tableFlg || table0Flg)	tableFlg=true;
+            if(decos.containsKey("div") || HTMLC1.divFlg || HTMLC2.divFlg || HTMLG1.divFlg || HTMLG2.divFlg){
+        		divFlg = true;
+        		tableFlg = false;
+        	}
             
             if (html_env.not_written_classid.contains(classid) && html_env.code.indexOf(classid) >= 0 ){
             	html_env.code.delete(html_env.code.indexOf(classid),html_env.code.indexOf(classid)+classid.length()+1);

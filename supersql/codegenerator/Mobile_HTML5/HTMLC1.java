@@ -69,20 +69,22 @@ public class HTMLC1 extends Connector {
     	//20130314  table
         //Log.info("	"+HTMLC1.tableFlg+" "+HTMLC2.tableFlg+" "+HTMLG1.tableFlg);
         //if(decos.containsKey("table") || !decos.containsKey("div") || table0Flg || HTMLC2.tableFlg || HTMLG1.tableFlg || HTMLG2.tableFlg){
-    	if(decos.containsKey("table") || table0Flg || HTMLC2.tableFlg || HTMLG1.tableFlg || HTMLG2.tableFlg){
+        if(decos.containsKey("table") || table0Flg || HTMLC1.tableFlg || HTMLC2.tableFlg || HTMLG1.tableFlg || HTMLG2.tableFlg){
+//    	if(decos.containsKey("table") || table0Flg || HTMLC2.tableFlg || HTMLG1.tableFlg || HTMLG2.tableFlg){
 //    		Log.info("C1!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 //    		Log.info("C1 tableFlg = true !!");
     		tableFlg = true;
-    	}else	tableFlg = false;
+    	}//else	tableFlg = false;
     	
     	//20130326  div
-    	if(decos.containsKey("div")){
+//    	if(decos.containsKey("div")){
+    	if(decos.containsKey("div") || HTMLC1.divFlg || HTMLC2.divFlg || HTMLG1.divFlg || HTMLG2.divFlg){
+//    	if(decos.containsKey("div")  || HTMLC2.divFlg || HTMLG1.divFlg || HTMLG2.divFlg){
     		divFlg = true;
     		tableFlg = false;
-    	}else divFlg = false;
+    	}//else divFlg = false;
 
         if(!GlobalEnv.isOpt()){
-
         	//20130330 tab
         	//tab1
         	if(decos.containsKey("tab1")){
@@ -286,6 +288,19 @@ public class HTMLC1 extends Connector {
         
         
         while (this.hasMoreItems()) {
+            //Log.info("C1-1:	"+tableFlg+"	"+decos.containsKey("table")+"	"+decos.containsKey("table0"));
+            if(decos.containsKey("table0") || HTMLC2.table0Flg || HTMLG1.table0Flg || HTMLG2.table0Flg)	table0Flg = true;
+            //else	table0Flg=false;
+//            if(decos.containsKey("table") || HTMLC2.tableFlg || HTMLG1.tableFlg || HTMLG2.tableFlg || table0Flg)	tableFlg=true;
+            if(decos.containsKey("table") || HTMLC1.tableFlg || HTMLC2.tableFlg || HTMLG1.tableFlg || HTMLG2.tableFlg || table0Flg)	tableFlg=true;
+            //if(decos.containsKey("table") || table0Flg)	tableFlg=true;
+//        	if(decos.containsKey("div")){
+            if(decos.containsKey("div") || HTMLC1.divFlg || HTMLC2.divFlg || HTMLG1.divFlg || HTMLG2.divFlg){
+//            if(decos.containsKey("div") || HTMLC2.divFlg || HTMLG1.divFlg || HTMLG2.divFlg){
+        		divFlg = true;
+        		tableFlg = false;
+        	}//else divFlg = false;
+        	
             TFE tfe = (TFE) tfes.get(i);
             
             //20130309
@@ -312,7 +327,19 @@ public class HTMLC1 extends Connector {
 //x            html_env.code.append("	<Table border=1 align=center valign=middle text-align=center><tr><td>\n");
             this.worknextItem();
 //x            html_env.code.append("	</td></tr></Table>\n");
-
+            //Log.info("C1-2:	"+tableFlg+"	"+decos.containsKey("table")+"	"+decos.containsKey("table0"));
+            if(decos.containsKey("table0") || HTMLC2.table0Flg || HTMLG1.table0Flg || HTMLG2.table0Flg)	table0Flg = true;
+            //else	table0Flg=false;
+            if(decos.containsKey("table") || HTMLC1.tableFlg || HTMLC2.tableFlg || HTMLG1.tableFlg || HTMLG2.tableFlg || table0Flg)	tableFlg=true;
+//            if(decos.containsKey("table") || HTMLC2.tableFlg || HTMLG1.tableFlg || HTMLG2.tableFlg || table0Flg)	tableFlg=true;
+            //if(decos.containsKey("table") || table0Flg)	tableFlg=true;
+//        	if(decos.containsKey("div")){
+            if(decos.containsKey("div") || HTMLC1.divFlg || HTMLC2.divFlg || HTMLG1.divFlg || HTMLG2.divFlg){
+//        	if(decos.containsKey("div") || HTMLC2.divFlg || HTMLG1.divFlg || HTMLG2.divFlg){
+        		divFlg = true;
+        		tableFlg = false;
+        	}//else divFlg = false;
+            
             //20130309
         	//if((Count>1 && !HTMLG1.G1Flg && !tableFlg) || (Count>1 && divFlg)){		//20130326  div
             if(Count>1 && /* !HTMLG1.G1Flg  && */ !tableFlg){
@@ -345,7 +372,7 @@ public class HTMLC1 extends Connector {
         	}
             
             if(/* !HTMLG1.G1Flg  && */ !tableFlg)	html_env.code.append("</div>\n");	//20130309
-
+            
         	if(tableFlg)	html_env.code.append("</TD>\n");					//20130314  table
             //Log.out("</TD>");
 
