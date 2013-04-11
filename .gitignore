@@ -13,3 +13,5 @@ demo*.ssql
 demo*.sql
 
 *.db
+.classpath
+.settings/org.eclipse.jdt.core.prefs
