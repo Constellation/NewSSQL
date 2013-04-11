@@ -14,6 +14,7 @@ import java.io.PrintWriter;
 import supersql.codegenerator.*;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
+import supersql.common.Utils;
 import supersql.extendclass.ExtList;
 
 public class HTMLG3 extends Grouper {
@@ -37,14 +38,14 @@ public class HTMLG3 extends Grouper {
     //G3��work�᥽�å�
     @Override
 	public void work(ExtList data_info) {
-        String parentfile = html_env.filename;
-        String parentnextbackfile = html_env.nextbackfile;
+        String parentfile = html_env.fileName;
+        String parentnextbackfile = html_env.nextBackFile;
         StringBuffer parentcode = html_env.code;
         StringBuffer parentcss = html_env.css;
         StringBuffer parentheader = html_env.header;
         StringBuffer parentfooter = html_env.footer;
-        String parentfile2 = html_env2.filename;
-        String parentnextbackfile2 = html_env2.nextbackfile;
+        String parentfile2 = html_env2.fileName;
+        String parentnextbackfile2 = html_env2.nextBackFile;
         StringBuffer parentcode2 = html_env2.code;
         StringBuffer parentcss2 = html_env2.css;
         StringBuffer parentheader2 = html_env2.header;
@@ -60,7 +61,7 @@ public class HTMLG3 extends Grouper {
         html_env2.footer = new StringBuffer();
         this.setDataList(data_info);
         while (this.hasMoreItems()) {
-            html_env.glevel++;
+            html_env.gLevel++;
 
             boolean b = tfe instanceof Attribute;
             html_env.code = new StringBuffer();
@@ -69,42 +70,42 @@ public class HTMLG3 extends Grouper {
             /*
              * ����Foreach func�Ǥʤ��?�����̤�G3
              */
-            if (!html_env.foreach_flag) {
-                backfile = html_env.nextbackfile;
-                html_env.countfile++;
+            if (!html_env.foreachFlag) {
+                backfile = html_env.nextBackFile;
+                html_env.countFile++;
                 countinstance++;
-                html_env.filename = html_env.outfile
-                        + String.valueOf(html_env.countfile) + ".html";
-                html_env.nextbackfile = html_env.linkoutfile
-                        + String.valueOf(html_env.countfile) + ".html";
+                html_env.fileName = html_env.outFile
+                        + String.valueOf(html_env.countFile) + ".html";
+                html_env.nextBackFile = html_env.linkOutFile
+                        + String.valueOf(html_env.countFile) + ".html";
             }
 
             html_env.setOutlineMode();
             this.worknextItem();
 
-            if (!html_env.foreach_flag) {
+            if (!html_env.foreachFlag) {
                 setLinkButton();
             }
             i++;
-            html_env.glevel--;
+            html_env.gLevel--;
             html_env.getHeader();
             html_env.getFooter();
-            html_env2.header.append("<?xml version=\"1.0\" encoding=\""+html_env.getEncode()+"\"?><SSQL>");
+            html_env2.header.append("<?xml version=\"1.0\" encoding=\""+Utils.getEncode()+"\"?><SSQL>");
             html_env2.footer.append("</SSQL>");
 
             try {
         		//changed by goto 20120715_2 start
             	//This is for 'link/foreach'.
 	        	//PrintWriter pw2 = new PrintWriter(new BufferedWriter(new FileWriter(
-	            //        html_env.filename)));
+	            //        html_env.fileName)));
         		PrintWriter pw;
 	            if (html_env.charset != null){
 		        	pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
-		        			new FileOutputStream(html_env.filename),html_env.charset)));
+		        			new FileOutputStream(html_env.fileName),html_env.charset)));
 		        	//Log.info("File encoding: "+html_env.charset);
 	            }else
 	            	pw = new PrintWriter(new BufferedWriter(new FileWriter(
-	        	                    html_env.filename)));
+	        	                    html_env.fileName)));
 	            //Log.info("File encoding: "+((html_env.charset!=null)? html_env.charset : "UTF-8"));
         		//changed by goto 20120715_2 end
                 pw.println(html_env.header);
@@ -112,18 +113,18 @@ public class HTMLG3 extends Grouper {
                 pw.println(html_env.footer);
                 pw.close();
                 if(GlobalEnv.isOpt()){
-	                html_env2.filename = html_env.filename.substring(0,html_env.filename.lastIndexOf(".html"))+".xml";
+	                html_env2.fileName = html_env.fileName.substring(0,html_env.fileName.lastIndexOf(".html"))+".xml";
 	        		//changed by goto 20120715_2 start
 		        	//PrintWriter pw2 = new PrintWriter(new BufferedWriter(new FileWriter(
 		            //        html_env2.filename)));
 	        		PrintWriter pw2;
 		            if (html_env.charset != null){
 			        	pw2 = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
-			        			new FileOutputStream(html_env2.filename),html_env.charset)));
+			        			new FileOutputStream(html_env2.fileName),html_env.charset)));
 			        	//Log.info("File encoding: "+html_env.charset);
 		            }else
 		            	pw2 = new PrintWriter(new BufferedWriter(new FileWriter(
-		        	                    html_env2.filename)));
+		        	                    html_env2.fileName)));
 		            //Log.info("File encoding: "+((html_env.charset!=null)? html_env.charset : "UTF-8"));
 	        		//changed by goto 20120715_2 end
 	                
@@ -132,8 +133,8 @@ public class HTMLG3 extends Grouper {
 	                pw2.println(html_env2.footer);
 	                pw2.close();
 	                HTMLoptimizer xml = new HTMLoptimizer();
-	                String xml_str = xml.generateHtml(html_env2.filename);
-	                pw = new PrintWriter(new BufferedWriter(new FileWriter(html_env.filename)));
+	                String xml_str = xml.generateHtml(html_env2.fileName);
+	                pw = new PrintWriter(new BufferedWriter(new FileWriter(html_env.fileName)));
 					pw.println(html_env.header);
 					pw.println(xml_str);
 					StringBuffer footer = new StringBuffer("</div></body></html>");
@@ -146,9 +147,9 @@ public class HTMLG3 extends Grouper {
                 html_env2.footer = new StringBuffer();
             } catch (FileNotFoundException fe) {
                 System.err.println("Error: specified outdirectory \""
-                        + html_env.outdir + "\" is not found");
+                        + html_env.outDir + "\" is not found");
                 GlobalEnv.addErr("Error: specified outdirectory \""
-                        + html_env.outdir + "\" is not found");
+                        + html_env.outDir + "\" is not found");
                 //comment out by chie
                 //System.exit(-1);
             } catch (IOException e) {
@@ -160,18 +161,18 @@ public class HTMLG3 extends Grouper {
             }
         }
 
-        html_env.filename = parentfile;
+        html_env.fileName = parentfile;
         html_env.code = parentcode;
         html_env.css = parentcss;
         html_env.header = parentheader;
         html_env.footer = parentfooter;
-        html_env.nextbackfile = parentnextbackfile;
-        html_env2.filename = parentfile2;
+        html_env.nextBackFile = parentnextbackfile;
+        html_env2.fileName = parentfile2;
         html_env2.code = parentcode2;
         html_env2.css = parentcss2;
         html_env2.header = parentheader2;
         html_env2.footer = parentfooter2;
-        html_env2.nextbackfile = parentnextbackfile2;
+        html_env2.nextBackFile = parentnextbackfile2;
 
         Log.out("TFEId = " + HTMLEnv.getClassID(this));
         html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
@@ -180,8 +181,8 @@ public class HTMLG3 extends Grouper {
 
     private void setLinkButton() {
         String nextfile = new String();
-        nextfile = html_env.linkoutfile
-                + String.valueOf(html_env.countfile + 1) + ".html";
+        nextfile = html_env.linkOutFile
+                + String.valueOf(html_env.countFile + 1) + ".html";
         html_env.code.append("<DIV class=\"linkbutton "
                 + HTMLEnv.getClassID(tfe) + "\">\n");
         if (countinstance > 1) {

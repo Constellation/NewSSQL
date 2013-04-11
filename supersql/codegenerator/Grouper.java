@@ -175,4 +175,9 @@ public class Grouper implements Operator {
 	}
 	//added by ria 20110913 end
 
+	public void addDeco(String name, String value, String condition) {
+        decos.put(name, value, condition);
+		
+	}
+
 }

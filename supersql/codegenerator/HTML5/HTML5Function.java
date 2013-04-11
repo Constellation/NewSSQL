@@ -148,8 +148,8 @@ public class HTML5Function extends Function {
 
 
         //tk to make hyper link to image//////////////////////////////////////////////////////////////////////////////////
-        if (html5_env.link_flag > 0 || html5_env.sinvoke_flag) {
-            html5_env.code.append("<A href=\"" + html5_env.linkurl + "\" ");
+        if (html5_env.linkFlag > 0 || html5_env.sinvokeFlag) {
+            html5_env.code.append("<A href=\"" + html5_env.linkUrl + "\" ");
 
             if(decos.containsKey("target"))
             	html5_env.code.append(" target=\"" + decos.getStr("target")+"\" ");
@@ -157,7 +157,7 @@ public class HTML5Function extends Function {
             	html5_env.code.append(" class=\"" + decos.getStr("class") + "\" ");
             html5_env.code.append(">\n");
 
-            Log.out("<A href=\"" + html5_env.linkurl + "\">");
+            Log.out("<A href=\"" + html5_env.linkUrl + "\">");
         }
         //tk/////////////////////////////////////////////////////////////////////////////////
 
@@ -200,7 +200,7 @@ public class HTML5Function extends Function {
         	html5_env2.code.append(" ></VALUE>");
         }
         //tk  to make hyper link to image///////////////////////////////////////////////////////////////////////////////////
-        if (html5_env.link_flag > 0 || html5_env.sinvoke_flag) {
+        if (html5_env.linkFlag > 0 || html5_env.sinvokeFlag) {
         	html5_env.code.append("</a>");
         }
         //tk///////////////////////////////////////////////////////////////////////////////////
@@ -472,7 +472,7 @@ public class HTML5Function extends Function {
         }
 
         if(!this.getAtt("cond_name").equals("")){
-        	HTML5Env.cond_name = this.getAtt("cond_name");
+        	HTML5Env.condName = this.getAtt("cond_name");
         }
         if(!this.getAtt("cond").equals("")){
         	HTML5Env.cond = this.getAtt("cond");
@@ -656,7 +656,7 @@ public class HTML5Function extends Function {
                 + "cond=" + this.getAtt("condition");
 		*/
         //change chie
-        html5_env.linkurl = this.getAtt("server_path", GlobalEnv
+        html5_env.linkUrl = this.getAtt("server_path", GlobalEnv
                 .getInvokeServletPath())
                 + "?"
                 + "config="+path+"/config.ssql"
@@ -666,9 +666,9 @@ public class HTML5Function extends Function {
                 + "cond=" + this.getAtt("condition");
         // end tk//////////////////////////////////////////////////
 
-        html5_env.link_flag=1;
+        html5_env.linkFlag=1;
         this.workAtt("default");
-        html5_env.link_flag=0;
+        html5_env.linkFlag=0;
 
         return;
     }
@@ -681,9 +681,9 @@ public class HTML5Function extends Function {
     	}
         //String filename = html5_env.outfile + "_" + this.getAtt("default") + ".html";
     	att = URLEncoder.encode(att, "UTF-8");
-    	String filename = html5_env.outfile + att + ".html";
+    	String filename = html5_env.outFile + att + ".html";
 
-        html5_env.filename = filename;
+        html5_env.fileName = filename;
         //System.out.println(filename);
         return;
     }
@@ -868,7 +868,7 @@ public class HTML5Function extends Function {
     		}
     	}
 
-    	html5_env.embedcount++;
+    	html5_env.embedCount++;
 
     	if(file.contains(".sql"))
     	{
@@ -928,7 +928,7 @@ public class HTML5Function extends Function {
     			}
     			else
     			{
-	    			parser = new SSQLparser(10000*(html5_env.embedcount+1));
+	    			parser = new SSQLparser(10000*(html5_env.embedCount+1));
 	    		}
 
 	    		CodeGenerator codegenerator = parser.getcodegenerator();
@@ -983,10 +983,10 @@ public class HTML5Function extends Function {
 					html5_env.code.append("</div>");
 				// end ajax /////////////////////////////////////////////////////////////////
 
-				if(html5_env.embedcount >= 1)
+				if(html5_env.embedCount >= 1)
 				{
 					html5_env.css.append(codegenerator.generateCode3(parser,dc.getData()));
-					html5_env.cssfile.append(codegenerator.generateCssfile(parser,dc.getData()));
+					html5_env.cssFile.append(codegenerator.generateCssfile(parser,dc.getData()));
 				}
 
 				//restore original config
@@ -1030,10 +1030,10 @@ public class HTML5Function extends Function {
 
 			        	fe.printStackTrace();
 			        	System.err.println("Error: specified embedtmp outdirectory \""
-			                    + GlobalEnv.getEmbedTmp() + "\" is not found to write " + html5_env.filename );
+			                    + GlobalEnv.getEmbedTmp() + "\" is not found to write " + html5_env.fileName );
 
 		                GlobalEnv.addErr("Error: specified embedtmp outdirectory \""
-			                    + GlobalEnv.getEmbedTmp() + "\" is not found to write " + html5_env.filename);
+			                    + GlobalEnv.getEmbedTmp() + "\" is not found to write " + html5_env.fileName);
 	                    //comment out by chie
 			        	//System.exit(-1);
 			        } catch (IOException e) {
@@ -1075,7 +1075,7 @@ public class HTML5Function extends Function {
             			Log.out("embed file (html):"+file);
             			dis = new BufferedReader(new FileReader(new File(file)));
             		}catch(IOException ioe){
-            			String path = html5_env.outfile;
+            			String path = html5_env.outFile;
             			if(path.contains("\\"))
             				path = path.substring(0,path.lastIndexOf("\\")+1);
             			else if(path.contains("/"))
@@ -1156,7 +1156,7 @@ public class HTML5Function extends Function {
     	if(!is_hidden)
     		html5_env.code.append("</td></tr></table>");
 
-    	html5_env.embedcount += 1;
+    	html5_env.embedCount += 1;
     }
     //tk end////////////////////////////////////////////////////////////////////////////
 
@@ -1210,24 +1210,24 @@ public class HTML5Function extends Function {
         }
 
         filename.replace("\\\\","\\");
-        html5_env.linkurl = filename;
-        html5_env.sinvoke_flag = true;
+        html5_env.linkUrl = filename;
+        html5_env.sinvokeFlag = true;
 
 
         //tk to make hyper link to image///////////////////////////////////////////////////
         //tk to ajax
         if(GlobalEnv.isAjax())
         {
-        	html5_env.linkurl =  file+".html";
-        	html5_env.ajaxquery = file+".sql";
+        	html5_env.linkUrl =  file+".html";
+        	html5_env.ajaxQuery = file+".sql";
 //        	html5_env.ajaxatt = this.getAtt("att");
-        	html5_env.ajaxcond = this.getAtt("ajaxcond")+"="+this.getAtt("att");
+        	html5_env.ajaxCond = this.getAtt("ajaxcond")+"="+this.getAtt("att");
 
     		Date d2 = new Date();
     		SimpleDateFormat sdf2 = new SimpleDateFormat("yyyymmddHHmmss");
     		String today2 = sdf2.format(d2);
 
-        	html5_env.dragdivid = html5_env.ajaxquery+"+"+html5_env.ajaxcond+"&"+today2;
+        	html5_env.dragDivId = html5_env.ajaxQuery+"+"+html5_env.ajaxCond+"&"+today2;
 
         	if(decos.containsKey("in"))
         	{
@@ -1271,7 +1271,7 @@ public class HTML5Function extends Function {
             	{
             		html5_env.ajaxtarget = dispdiv;
             	}
-            	html5_env.has_dispdiv = true;
+            	html5_env.hasDispDiv = true;
             	Log.out("html_env.ajaxtarget:"+html5_env.ajaxtarget);
         	}
         	else if(decos.containsKey("dragto"))
@@ -1309,12 +1309,12 @@ public class HTML5Function extends Function {
         		SimpleDateFormat sdf = new SimpleDateFormat("yyyymmddHHmmss");
         		String today = sdf.format(d1);
 
-        		String scriptname = "drop"+today + html5_env.scriptnum;
+        		String scriptname = "drop"+today + html5_env.scriptNum;
         		html5_env.script.append(scriptname+" = new DragDrop(\""+
-        				html5_env.dragdivid+"\", \""+droptarget[0]+"\");\n");
+        				html5_env.dragDivId+"\", \""+droptarget[0]+"\");\n");
 
         		Log.out(scriptname+" = new DragDrop(\""+
-        				html5_env.dragdivid+"\", \""+droptarget[0]+"\");\n");
+        				html5_env.dragDivId+"\", \""+droptarget[0]+"\");\n");
 
         		//for tab
         		html5_env.script.append(scriptname+".addToGroup(\"myTab\");\n");
@@ -1324,7 +1324,7 @@ public class HTML5Function extends Function {
         			html5_env.script.append(scriptname+".addToGroup(\""+droptarget[i]+"\");\n");
         		}
 
-        		html5_env.scriptnum++;
+        		html5_env.scriptNum++;
         	}
         }
         if(this.getArgs().get(0) instanceof FuncArg)
@@ -1337,7 +1337,7 @@ public class HTML5Function extends Function {
             this.workAtt("default");
         //tk//////////////////////////////////////////////////
 
-        html5_env.sinvoke_flag = false;
+        html5_env.sinvokeFlag = false;
         return;
     }
 

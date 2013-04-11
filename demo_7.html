@@ -1,0 +1,514 @@
+<HTML>
+<HEAD>
+<STYLE TYPE="text/css">
+<!--
+.att { padding: 0px; margin : 0px;height : 100%; z-index: 2}
+.linkbutton {text-align:center; margin-top: 5px; padding:5px;}
+.embed { vertical-align : text-top; padding : 0px ; margin : 0px; border: 0px,0px,0px,0px; width: 100%; }
+.noborder { border-width : 0px; margin-top : -1px; padding-top : -1px; margin-bottom : -1px; padding-bottom : -1px; }
+.TFE10050{ width:60; height:60; }
+.TFE10098{ height:50; }
+
+-->
+</STYLE>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css"/>
+<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+<script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
+<link href="http://www.db.ics.keio.ac.jp/ssqlcss/photoswipe/photoswipe.css" type="text/css" rel="stylesheet" />
+<link href="http://www.db.ics.keio.ac.jp/ssqlcss/photoswipe/jquery-mobile.css" type="text/css" rel="stylesheet" />
+<script src="http://www.db.ics.keio.ac.jp/ssqlcss/photoswipe/klass.min.js"></script>
+<script src="http://www.db.ics.keio.ac.jp/ssqlcss/photoswipe/code.photoswipe.jquery-3.0.4.min.js"></script>
+<script src="js/script.js"></script>
+
+<style type="text/css"><!-- .ui-page{ background: transparent url(bg/cat.gif) } --></style>
+<style type="text/css"><!-- div{ text-align:center; float:center; vertical-align:middle; } --><!-- * { white-space: normal; } --></style>
+</HEAD>
+<BODY class="body">
+
+<div class="TFE10000 ">
+<div data-role="header" data-position="fixed" style="padding: 11px 0px;">
+<a href="" data-rel="back" data-role="button" data-icon="back" data-mini="true">Back</a>
+
+<div class="ui-btn-right">
+	<table border="0" cellpadding="0" cellspacing="0"><tr><td>
+		<a href="http://www.yahoo.co.jp/" data-role="button" data-icon="home" data-iconpos="notext" data-mini="true"></a>
+	</td><td>
+		<form style="display:inline;">
+			<input type="button" data-icon="forward" data-iconpos="notext" data-mini="true" onClick="history.forward()" >
+		</form>
+	</td><td>
+		<a href="#popupMenu" data-rel="popup" data-role="button" data-icon="grid" data-iconpos="notext" data-mini="true"></a>
+		<div data-role="popup" id="popupMenu" data-transition="slidedown" style="width:95%;" data-overlay-theme="a">
+			<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+			<ul data-role="listview" data-inset="true" style="min-width:210px;" data-theme="d">
+				<li data-role="divider" data-theme="a">Menu</li>
+				<li><a href="login.html">Log in</a></li>
+				<li><a href="options.html">Options</a></li>
+				<li><a href="https://www.google.com/">Search</a></li>
+			</ul>
+		</div>
+	</td></tr></table>
+</div>
+<div>Header</div></div>
+</div>
+<div class="TFE10002 ">
+
+<hr color="green" size="10">
+
+</div>
+<div class="TFE10014 ">
+<div class="TFE10010 ">
+<DIV Class="ui-grid-c #2">
+<div class="ui-block-a TFE10006">
+	t1
+</div>
+
+<div class="ui-block-b TFE10007">
+	t2
+</div>
+
+<div class="ui-block-c TFE10008">
+	t3
+</div>
+
+<div class="ui-block-d TFE10009">
+	t4
+</div>
+</DIV>
+
+</div>
+<div class="TFE10013 ">
+<DIV Class="ui-grid-a #3">
+<div class="ui-block-a TFE10011">
+	test1
+</div>
+
+<div class="ui-block-b TFE10012">
+	test2
+</div>
+</DIV>
+
+</div>
+
+</div>
+<div class="TFE10023 ">
+<TABLE width="100%" align="center" cellSpacing="0" cellPadding="0" border="1"><TR><TD align="center" valign="middle" class="nest">
+<TABLE width="100%" align="center" cellSpacing="0" cellPadding="0" border="1" frame=void ><TR><TD align="center" valign="middle" class="nest">
+	t1
+</TD>
+<TD align="center" valign="middle" class="nest">
+	t2
+</TD>
+<TD align="center" valign="middle" class="nest">
+	t3
+</TD>
+<TD align="center" valign="middle" class="nest">
+	t4
+</TD>
+</TR></TABLE>
+
+</TD></TR>
+<TR><TD align="center" valign="middle" class="nest">
+<TABLE width="100%" align="center" cellSpacing="0" cellPadding="0" border="1" frame=void ><TR><TD align="center" valign="middle" class="nest">
+	test1
+</TD>
+<TD align="center" valign="middle" class="nest">
+	test2
+</TD>
+</TR></TABLE>
+
+</TD></TR>
+</TABLE>
+
+</div>
+<div class="TFE10032 ">
+<TABLE width="100%" align="center" cellSpacing="0" cellPadding="0" border="0" frame=void ><TR><TD align="center" valign="middle" class="nest">
+<TABLE width="100%" align="center" cellSpacing="0" cellPadding="0" border="0" frame=void ><TR><TD align="center" valign="middle" class="nest">
+	t1
+</TD>
+<TD align="center" valign="middle" class="nest">
+	t2
+</TD>
+<TD align="center" valign="middle" class="nest">
+	t3
+</TD>
+<TD align="center" valign="middle" class="nest">
+	t4
+</TD>
+</TR></TABLE>
+
+</TD></TR>
+<TR><TD align="center" valign="middle" class="nest">
+<TABLE width="100%" align="center" cellSpacing="0" cellPadding="0" border="0" frame=void ><TR><TD align="center" valign="middle" class="nest">
+	test1
+</TD>
+<TD align="center" valign="middle" class="nest">
+	test2
+</TD>
+</TR></TABLE>
+
+</TD></TR>
+</TABLE>
+
+</div>
+<div class="TFE10041 ">
+<div class="TFE10037 ">
+<DIV Class="ui-grid-c #6">
+<div class="ui-block-a TFE10033">
+	t1
+</div>
+
+<div class="ui-block-b TFE10034">
+	t2
+</div>
+
+<div class="ui-block-c TFE10035">
+	t3
+</div>
+
+<div class="ui-block-d TFE10036">
+	t4
+</div>
+</DIV>
+
+</div>
+<div class="TFE10040 ">
+<DIV Class="ui-grid-a #7">
+<div class="ui-block-a TFE10038">
+	test1
+</div>
+
+<div class="ui-block-b TFE10039">
+	test2
+</div>
+</DIV>
+
+</div>
+
+</div>
+<div class="TFE10042 ">
+
+<hr color="purple" size="10">
+
+</div>
+<div class="TFE10046 ">
+<a href="https://www.google.com/">Google</a>
+</div>
+<div class="TFE10060 ">
+<DIV Class="ui-grid-a #8">
+<div class="ui-block-a TFE10050">
+<a href="https://www.google.com/"><img src="bg/neko2.gif" width=60 height=60></a></div>
+
+<div class="ui-block-b TFE10055">
+<a href="https://www.google.com/" data-role="button">Google</a></div>
+</DIV>
+
+</div>
+<div class="TFE10061 ">
+
+<hr color="brown" size="10">
+
+</div>
+<div class="TFE10065 ">
+	<a href="#popup1" data-rel="popup" data-role="button" data-icon="arrow-r" data-inline="true">Click!</a>
+	<div data-role="popup" id="popup1" data-transition="slideup" style="width:95%;" data-overlay-theme="a">
+		<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+		<p>This is Popup!</p>
+	</div>
+
+</div>
+<div class="TFE10069 ">
+	<a href="#popup2" data-rel="popup" data-role="button" data-icon="arrow-r" data-inline="true" class="ui-li-inside">Photo</a>
+	<div data-role="popup" id="popup2" data-transition="pop" style="width:95%;" data-overlay-theme="a">
+		<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+		<img src="http://www.finepix-x100.com/ja/sites/default/files/imagecache/sample_thumb/sample_images/DSCF3165_2.jpg" width="100%">
+		<p style="margin:0px;">Photo</p>
+	</div>
+
+</div>
+<div class="TFE10074 ">
+
+<hr style="border-top: 1px dotted red">
+
+</div>
+<div class="TFE10076 ">
+
+<hr color="gold" size="10">
+
+</div>
+<div class="TFE10087 ">
+<DIv data-role="collapsible" data-content-theme="c" style="padding: 0px 12px;">
+	<h1>Go to detail</h1>
+<DIV Class="ui-grid-d #12">
+<div class="ui-block-a TFE10080">
+	t1
+</div>
+
+<div class="ui-block-b TFE10081">
+	t2
+</div>
+
+<div class="ui-block-c TFE10082">
+	t3
+</div>
+
+<div class="ui-block-d TFE10083">
+	t4
+</div>
+
+<div class="ui-block-e TFE10084">
+	t5
+</div>
+
+<div class="ui-block-a TFE10085">
+	t6
+</div>
+
+<div class="ui-block-b TFE10086">
+	t7
+</div>
+</DIV>
+</DIv>
+</div>
+<div class="TFE10097 ">
+<TABLE width="100%" align="center" cellSpacing="0" cellPadding="0" border="1" frame=void ><TR><TD align="center" valign="middle" class="nest">
+<TABLE width="100%" align="center" cellSpacing="0" cellPadding="0" border="1" frame=void ><TR><TD align="center" valign="middle" class="nest">
+	t1
+</TD>
+<TD align="center" valign="middle" class="nest">
+	t2
+</TD>
+<TD align="center" valign="middle" class="nest">
+	t3
+</TD>
+<TD align="center" valign="middle" class="nest">
+	t4
+</TD>
+</TR></TABLE>
+
+</TD></TR>
+<TR><TD align="center" valign="middle" class="nest">
+<TABLE width="100%" align="center" cellSpacing="0" cellPadding="0" border="1" frame=void ><TR><TD align="center" valign="middle" class="nest">
+	t5
+</TD>
+<TD align="center" valign="middle" class="nest">
+	t6
+</TD>
+<TD align="center" valign="middle" class="nest">
+	t7
+</TD>
+</TR></TABLE>
+
+</TD></TR>
+</TABLE>
+
+</div>
+<div class="TFE10100 ">
+<DIv data-role="collapsible" data-content-theme="c" style="padding: 0px 12px;">
+<h1>Contents</h1>
+	<DIV Class="ui-grid-c">	<div class="ui-block-a TFE10098">
+<img class="TFE10098 " width="100%  " src="./pictures/g01.jpg"/>	</div>	<div class="ui-block-b TFE10098">
+<img class="TFE10098 " width="100%  " src="./pictures/g02.jpg"/>	</div>	<div class="ui-block-c TFE10098">
+<img class="TFE10098 " width="100%  " src="./pictures/y02.jpg"/>	</div>	<div class="ui-block-d TFE10098">
+<img class="TFE10098 " width="100%  " src="./pictures/y01.jpg"/>	</div>
+	</DIV>
+	<DIV Class="ui-grid-c">	<div class="ui-block-a TFE10098">
+<img class="TFE10098 " width="100%  " src="./pictures/o02.jpg"/>	</div>	<div class="ui-block-b TFE10098">
+<img class="TFE10098 " width="100%  " src="./pictures/o01.jpg"/>	</div>	<div class="ui-block-c TFE10098">
+<img class="TFE10098 " width="100%  " src="./pictures/i03.jpg"/>	</div>	<div class="ui-block-d TFE10098">
+<img class="TFE10098 " width="100%  " src="./pictures/i02.jpg"/>	</div>
+	</DIV>
+	<DIV Class="ui-grid-a">	<div class="ui-block-a TFE10098">
+<img class="TFE10098 " width="100%  " src="./pictures/i01.jpg"/>	</div>	<div class="ui-block-b TFE10098">
+<img class="TFE10098 " width="100%  " src="./pictures/h01.jpg"/>	</div>	</DIV>
+</div>
+<div class="TFE10101 ">
+
+<hr color="purple" size="10">
+
+</div>
+<div class="TFE10117 ">
+<div class="TFE10109 ">
+<TABLE width="100%" align="center" cellSpacing="0" cellPadding="0" border="1" frame=void ><TR><TD align="center" valign="middle" class="nest">
+	t1
+</TD>
+<TD align="center" valign="middle" class="nest">
+	t2
+</TD>
+<TD align="center" valign="middle" class="nest">
+	t3
+</TD>
+<TD align="center" valign="middle" class="nest">
+	t4
+</TD>
+</TR></TABLE>
+
+</div>
+<div class="TFE10113 ">
+<DIV Class="ui-grid-b #14">
+<div class="ui-block-a TFE10110">
+	d1
+</div>
+
+<div class="ui-block-b TFE10111">
+	d2
+</div>
+
+<div class="ui-block-c TFE10112">
+	d3
+</div>
+</DIV>
+
+</div>
+<div class="TFE10116 ">
+<TABLE width="100%" align="center" cellSpacing="0" cellPadding="0" border="1" frame=void ><TR><TD align="center" valign="middle" class="nest">
+	test1
+</TD>
+<TD align="center" valign="middle" class="nest">
+	test2
+</TD>
+</TR></TABLE>
+
+</div>
+
+</div>
+<div class="TFE10118 ">
+
+<hr color="red" size="10">
+
+</div>
+<div class="TFE10137 ">
+<div class="TFE10128 ">
+<TABLE width="100%" align="center" cellSpacing="0" cellPadding="0" border="1" frame=void ><TR><TD align="center" valign="middle" class="nest">
+<TABLE width="100%" align="center" cellSpacing="0" cellPadding="0" border="1" frame=void ><TR><TD align="center" valign="middle" class="nest">
+	t1
+</TD>
+<TD align="center" valign="middle" class="nest">
+	t2
+</TD>
+</TR></TABLE>
+
+</TD></TR>
+<TR><TD align="center" valign="middle" class="nest">
+<TABLE width="100%" align="center" cellSpacing="0" cellPadding="0" border="1" frame=void ><TR><TD align="center" valign="middle" class="nest">
+	t3
+</TD>
+<TD align="center" valign="middle" class="nest">
+	t4
+</TD>
+</TR></TABLE>
+
+</TD></TR>
+</TABLE>
+
+</div>
+<div class="TFE10133 ">
+<div class="TFE10131 ">
+<DIV Class="ui-grid-a #15">
+<div class="ui-block-a TFE10129">
+	d1
+</div>
+
+<div class="ui-block-b TFE10130">
+	d2
+</div>
+</DIV>
+
+</div>
+<div class="TFE10132 ">
+	d3
+
+</div>
+
+</div>
+<div class="TFE10136 ">
+<TABLE width="100%" align="center" cellSpacing="0" cellPadding="0" border="1" frame=void ><TR><TD align="center" valign="middle" class="nest">
+	test1
+</TD>
+<TD align="center" valign="middle" class="nest">
+	test2
+</TD>
+</TR></TABLE>
+
+</div>
+
+</div>
+<div class="TFE10138 ">
+
+<hr color="red" size="10">
+
+</div>
+<div class="TFE10157 ">
+<div class="TFE10148 ">
+<TABLE width="100%" align="center" cellSpacing="0" cellPadding="0" border="1" frame=void ><TR><TD align="center" valign="middle" class="nest">
+<DIV Class="ui-grid-a #16">
+<div class="ui-block-a TFE10142">
+	t1
+</div>
+
+<div class="ui-block-b TFE10143">
+	t2
+</div>
+</DIV>
+
+</TD></TR>
+<TR><TD align="center" valign="middle" class="nest">
+<TABLE width="100%" align="center" cellSpacing="0" cellPadding="0" border="1" frame=void ><TR><TD align="center" valign="middle" class="nest">
+	t3
+</TD>
+<TD align="center" valign="middle" class="nest">
+	t4
+</TD>
+</TR></TABLE>
+
+</TD></TR>
+</TABLE>
+
+</div>
+<div class="TFE10153 ">
+<div class="TFE10151 ">
+<DIV Class="ui-grid-a #17">
+<div class="ui-block-a TFE10149">
+	d1
+</div>
+
+<div class="ui-block-b TFE10150">
+	d2
+</div>
+</DIV>
+
+</div>
+<div class="TFE10152 ">
+	d3
+
+</div>
+
+</div>
+<div class="TFE10156 ">
+<TABLE width="100%" align="center" cellSpacing="0" cellPadding="0" border="1" frame=void ><TR><TD align="center" valign="middle" class="nest">
+	test1
+</TD>
+<TD align="center" valign="middle" class="nest">
+	test2
+</TD>
+</TR></TABLE>
+
+</div>
+
+</div>
+<div class="TFE10158 ">
+
+<hr color="purple" size="10">
+
+</div>
+<div class="TFE10162 ">
+<div data-role="footer" data-position="fixed" style="padding: 11px 0px;">
+Footer
+</div>
+
+</div>
+
+<BR><BR></BODY></HTML>
+

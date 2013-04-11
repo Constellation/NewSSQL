@@ -85,4 +85,17 @@ public class TESTHTMLFactory extends Factory {
 		return new TESTHTMLFunction(manager, html_env,html_env2);
 	}
 
+	@Override
+	public Attribute createConditionalAttribute(Manager manager) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IfCondition createIfCondition(Manager manager, Attribute condition,
+			TFE thenTfe, TFE elseTfe) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

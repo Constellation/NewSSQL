@@ -32,11 +32,11 @@ public class HTMLG1 extends Grouper {
 
         if(!GlobalEnv.isOpt()){
 	        html_env.code.append("<TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
-	        html_env.code.append(html_env.tableborder + "\"");
+	        html_env.code.append(html_env.tableBorder + "\"");
 	        
 	        html_env.code.append(" class=\"");
 	
-	        if(html_env.embedflag)
+	        if(html_env.embedFlag)
 	        	html_env.code.append("embed ");
 	
 	        if(decos.containsKey("outborder"))
@@ -63,7 +63,7 @@ public class HTMLG1 extends Grouper {
         //html_env2.code.append("<tfe type=\"connect\" dimension=\"1\" >");
         int i = 0;
         while (this.hasMoreItems()) {
-            html_env.glevel++;
+            html_env.gLevel++;
             
             if(GlobalEnv.isOpt()){
 	            html_env2.code.append("<tfe type=\"repeat\" dimension=\"1\"");
@@ -73,8 +73,8 @@ public class HTMLG1 extends Grouper {
 	            	html_env2.code.append(" class=\"");
 		        	html_env2.code.append(decos.getStr("class") + " ");
 		        }
-	            if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
-		        	//TFE10000‚È‚Ç‚ÌŽw’è‚ª‚ ‚Á‚½‚ç•t‰Á
+	            if(html_env.writtenClassId.contains(HTMLEnv.getClassID(this))){
+		        	//TFE10000ï¿½È‚Ç‚ÌŽwï¿½è‚ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½tï¿½ï¿½
 	            	if(decos.containsKey("class")){
 	            		html_env2.code.append(HTMLEnv.getClassID(this) + "\"");
 	            	}else{
@@ -85,7 +85,7 @@ public class HTMLG1 extends Grouper {
 	            	html_env2.code.append("\"");
 	            }
 	            
-	            html_env2.code.append(" border=\"" + html_env.tableborder + "\"");
+	            html_env2.code.append(" border=\"" + html_env.tableBorder + "\"");
 	
 	            if (decos.containsKey("tablealign") )
 	            	html_env2.code.append(" align=\"" + decos.getStr("tablealign") +"\"");
@@ -115,7 +115,7 @@ public class HTMLG1 extends Grouper {
             
             this.worknextItem();
             
-            if (html_env.not_written_classid.contains(classid)){
+            if (html_env.notWrittenClassId.contains(classid)){
             	html_env.code.delete(html_env.code.indexOf(classid),html_env.code.indexOf(classid)+classid.length()+1);
             }
             
@@ -125,7 +125,7 @@ public class HTMLG1 extends Grouper {
             Log.out("</TD>");
 
             i++;
-            html_env.glevel--;
+            html_env.gLevel--;
         }
         
         if(HTMLEnv.getFormItemFlg()){		

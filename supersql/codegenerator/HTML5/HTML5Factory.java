@@ -85,4 +85,15 @@ public class HTML5Factory extends Factory {
 		return new HTML5Function(manager, html5_env,html5_env2);
 	}
 
+	@Override
+	public Attribute createConditionalAttribute(Manager manager) {
+		return new HTML5Attribute(manager, html5_env, html5_env2, true);
+	}
+
+	@Override
+	public IfCondition createIfCondition(Manager manager, Attribute condition,
+			TFE thenTfe, TFE elseTfe) {
+		return new HTML5IfCondition(manager, html5_env, html5_env2, condition, elseTfe, elseTfe);
+	}
+
 }
