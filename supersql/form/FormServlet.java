@@ -34,11 +34,11 @@ public class FormServlet extends HttpServlet {
 		if(System.getProperty("os.name").indexOf("Windows")>=0){
 			enc =  "Shift_JIS";
 		}
-		// ContentType‚ğİ’è
+		// ContentTypeï¿½ï¿½İ’ï¿½
 		res.setContentType("text/html; charset="+enc);
 		req.setCharacterEncoding(enc);
 
-		// o—Í—pPrintWriter‚ğæ“¾
+		// ï¿½oï¿½Í—pPrintWriterï¿½ï¿½ï¿½æ“¾
 		PrintWriter out = res.getWriter();
 	
 		this.errflg = false;
@@ -572,22 +572,36 @@ public class FormServlet extends HttpServlet {
 						break;
 					}
 					//for comment statement
-					if(line.startsWith("//"))
-						line = in.readLine();
-					if(line.contains("/*"))
-					{
-						int s = line.indexOf("/*");
-
-						Log.out(line);
-						String line1 = line.substring(0,s);
-						tmp += " "+line1;
-						Log.out(line1);
-						while(!line.contains("*/"))
-							line = in.readLine();
-						int t = line.indexOf("*/");
-						line = line.substring(t+2);
-					}
-					tmp += " " + line.trim();
+					//commented out by goto 20130412
+//					if(line.startsWith("//"))
+//						line = in.readLine();
+					//changed by goto 20130412
+					if(line!=null && line.contains("/*"))
+		            {
+		              	int s = line.indexOf("/*");
+		              	String line1 = line.substring(0,s);
+		              	while(!line.contains("*/"))
+		              		line = in.readLine();
+		              	int t = line.indexOf("*/");
+		              	line = line1+line.substring(t+2);
+		            }
+		            //added by goto 20130412
+		            if(line!=null && line.contains("//")){
+		              	boolean dqFlg=false;
+		              	int i=0;
+		              	
+		              	for(i=0; i<line.length(); i++){
+		              		if(line.charAt(i)=='"' && !dqFlg)		dqFlg=true;
+		              		else if(line.charAt(i)=='"' && dqFlg)	dqFlg=false;
+		              		
+		              		if(!dqFlg && i<line.length()-1 && (line.charAt(i)=='/' && line.charAt(i+1)=='/'))
+		              			break;
+		              	}
+		              	line = line.substring(0,i);
+		            }
+					
+		            if(line!=null)
+		            	tmp += " " + line.trim();
 				}
 			}else{
 				in = new BufferedReader(new FileReader(filename));

@@ -24,7 +24,8 @@ public class HTMLEnv extends LocalEnv {
 
     Connector connector;
     
-    String bg = "";	//added by goto 20130311  "background"
+    String title = "";		//added by goto 20130411  "title"
+    String bg = "";			//added by goto 20130311  "background"
 
 
     //Vector not_written_classid;
@@ -62,7 +63,7 @@ public class HTMLEnv extends LocalEnv {
     //tk start///////////////////////////////////////////////////
     StringBuffer meta = new StringBuffer();
     StringBuffer div = new StringBuffer();
-    StringBuffer title = new StringBuffer();
+    //StringBuffer title = new StringBuffer();		//disuse
     StringBuffer titleclass = new StringBuffer();
     StringBuffer cssfile = new StringBuffer();
     String tableborder=new String("1");
@@ -231,6 +232,9 @@ public class HTMLEnv extends LocalEnv {
         }
 
         if(GlobalEnv.getframeworklist() == null){
+            //added by goto 20130411  "title"
+	        if (!title.equals(""))
+	        	header.append("<title>"+title+"</title>\n");
         	
             //added by goto 20121217 start
         	header.append("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no\"/>\n");
@@ -443,7 +447,7 @@ public class HTMLEnv extends LocalEnv {
 //	        header.append(div);
 //	        header.append(titleclass);
 //	        header.append(">");
-	        header.append(title);
+	        //header.append(title);		//disuse
 	        //tk end///////////////////////////////////////////////////////
 	        //chie//
 
@@ -593,8 +597,8 @@ public class HTMLEnv extends LocalEnv {
         if (decos.containsKey("divalign") && div.length() == 0)
         	div.append(" align=" +decos.getStr("divalign"));
 
-        if (decos.containsKey("title") && title.length() == 0)
-        	title.append(decos.getStr("title"));
+        //if (decos.containsKey("title") && title.length() == 0)	//disuse
+        //	title.append(decos.getStr("title"));
         if (decos.containsKey("title_class"))
         	titleclass.append(" class=\""+decos.getStr("title_class")+"\"");
         if (decos.containsKey("tableborder") )//&& tableborder.length() == 0)
@@ -736,6 +740,10 @@ public class HTMLEnv extends LocalEnv {
 //        		charsetFlg=1;
 //      	}
         //added by goto 20120715 end
+        
+        //added by goto 20130411  "title"
+        if (decos.containsKey("title"))
+        	title = decos.getStr("title");
         
         //added by goto 20130311  "background"
         if (decos.containsKey("background"))
