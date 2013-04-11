@@ -66,4 +66,16 @@ public class XMLFactory extends Factory {
 		return new XMLFunction(manager, xml_env, xml_env2);
 	}
 
+	@Override
+	public Attribute createConditionalAttribute(Manager manager) {
+		return null;
+	}
+
+	@Override
+	public IfCondition createIfCondition(Manager manager, Attribute condition,
+			TFE thenTfe, TFE elseTfe) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

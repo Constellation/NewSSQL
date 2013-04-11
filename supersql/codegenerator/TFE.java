@@ -28,4 +28,6 @@ public abstract interface TFE {
 	//added by ria 20110913 start
 	public abstract ExtList makeschImage();
 	//added by ria 20110913 end
+
+	public abstract void addDeco(String name, String value, String condition);
 }

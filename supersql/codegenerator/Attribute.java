@@ -1,5 +1,6 @@
 package supersql.codegenerator;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.StringTokenizer;
 
@@ -16,7 +17,15 @@ public class Attribute implements Operand {
 
 	int AttCounts = 0;
 
-	static String AttName;
+	protected String AttName;
+	protected String AttName1;
+	protected String AttName2;
+	private int AttNo1;
+	protected ArrayList<String> AttNames = new ArrayList<String>();
+
+	private int AttNo2;
+	private String condition;
+
 
 	int AttType;
 	
@@ -35,13 +44,24 @@ public class Attribute implements Operand {
 
 	String ValKey;
 
-	ExtList Items = new ExtList();
+	protected ExtList Items = new ExtList();
+	
+	boolean conditional;
 
 	public Attribute() {
 			//hanki start
 		order_flag = false;
 		aggregate_flag = false;
+		conditional = false;
 	    //hanki end
+	}
+	
+	public Attribute(Boolean b) {
+		//hanki start
+		order_flag = false;
+		aggregate_flag = false;
+		conditional = b;
+		//hanki end
 	}
 
 	public void setId(int i) {
@@ -54,10 +74,16 @@ public class Attribute implements Operand {
 	public int setItem(int no, String nm, String attimg, String key,
 			Hashtable attp) {
 
-		AttNo = no;
-		AttName = nm;
+		if(conditional){
+			AttNames.add(nm);
+		}else
+		{
+			AttNo = no;
+			AttName = nm;
+			AttNames.add(nm);
+		}
 		ValKey = key;
-		
+
 		//tk/////////////////////////////////////////////////////////////////
 		StringTokenizer st0 = new StringTokenizer(attimg, "\"+", true);		
 		//StringTokenizer st0 = new StringTokenizer(attimg, "\\\"+", true);
@@ -96,7 +122,7 @@ public class Attribute implements Operand {
 		Log.out("[set Attribute] Attribute Items : " + Items);
 		Log.out("[set Attribute] Sch: " + this.makesch());
 
-		AttCounts = no - AttNo;
+		AttCounts = no - AttNo - AttNo1;
 		return no;
 
 	}
@@ -181,16 +207,36 @@ public class Attribute implements Operand {
 	}
 
 	public String getStr(ExtList data_info) {
+		
 		String str = "";
-		//	Log.out("data_info : " + data_info);
-		for (int i = 0; i < Items.size(); i++) {
-			//		Log.out("data_info : " +
-			// ((AttributeItem)Items.get(i)).getStr(data_info, AttNo));
-			str += (((AttributeItem) Items.get(i)).getStr(data_info, AttNo));
+		
+		if(conditional){
+			String toCompare = ((ExtList) data_info.get(Items.size()-1-decos.getConditionsSize())).getStr();
+			if(toCompare.equals("t") || toCompare.equals("1")){
+				str = ((ExtList) data_info.get(0)).getStr();
+			}
+			else if(toCompare.equals("f") || toCompare.equals("0")){
+				if(Items.size()-decos.getConditionsSize() == 3)
+					str = ((ExtList) data_info.get(1)).getStr();
+				else
+					str = "";
+			}
+			else throw new IllegalStateException();
+			return str;
 		}
-		//	Log.out("Attribute out : " + str);
-		return str;
+		else{
+			//	Log.out("data_info : " + data_info);
+			for (int i = 0; i < Items.size()-decos.getConditionsSize(); i++) {
+				//		Log.out("data_info : " +
+				// ((AttributeItem)Items.get(i)).getStr(data_info, AttNo));
+				str += (((AttributeItem) Items.get(i)).getStr(data_info, AttNo-decos.getConditionsSize()));
+			}			//	Log.out("Attribute out : " + str);
+			return str;
+		}
+		
+		
 	}
+	
 
 	public int countconnectitem() {
 		int itemcount = 0;
@@ -214,7 +260,11 @@ public class Attribute implements Operand {
 
 	@Override
 	public String toString() {
-		return AttName;
+		if(AttNames.size() > 1)
+			return AttNames.toString();
+		else
+			return AttName;
+			
 	}
 
 	public String getKey() {
@@ -247,5 +297,21 @@ public class Attribute implements Operand {
 		return outsch;
 	}
 	//added by ria 20110913 end
+
+	public String getCondition() {
+		return condition;
+	}
+
+	public void setCondition(String condition) {
+		this.condition = condition;
+	}
+
+	public void addDeco(String key, String val, String condition) {
+		if(key.equals("insert")||key.equals("update")||key.equals("delete")||key.equals("login")){
+			decos.put(key, AttName, condition);
+			return;
+		}
+		decos.put(key, val, condition);
+	}
 	
 }

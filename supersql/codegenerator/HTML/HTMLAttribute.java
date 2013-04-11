@@ -35,8 +35,14 @@ public class HTMLAttribute extends Attribute {
 		this.html_env = henv;
 		this.html_env2 = henv2;
 	}
-
-	//Attribute¤Îwork¥á¥½¥Ã¥É
+	
+	public HTMLAttribute(Manager manager, HTMLEnv henv, HTMLEnv henv2, boolean b) {
+		super(b);
+		this.manager = manager;
+		this.html_env = henv;
+		this.html_env2 = henv2;
+	}
+	//Attributeï¿½ï¿½workï¿½á¥½ï¿½Ã¥ï¿½
 	public void work(ExtList data_info) {
 		/*
         if(GlobalEnv.getSelectFlg())
@@ -53,13 +59,15 @@ public class HTMLAttribute extends Attribute {
 				html_env.code.append("<table" + html_env.getOutlineModeAtt() + " ");
 				html_env.code.append("class=\"att");
 				//tk start/////////////////////////////////////////////////////////
-				if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
-					//class¤ò»ý¤Ã¤Æ¤¤¤ë¤È¤­(ex.TFE10000)¤Î¤ß»ØÄê 
+				if(html_env.writtenClassId.contains(HTMLEnv.getClassID(this))){
+					//classï¿½ï¿½ï¿½Ã¤Æ¤ï¿½ï¿½ï¿½È¤ï¿ex.TFE10000)ï¿½Î¤ß»ï¿½ï¿½ï¿½ 
 					html_env.code.append(" " + HTMLEnv.getClassID(this));
 				}
 				if(decos.containsKey("class")){ 
-					//class»ØÄê(ex.class=menu)¤¬¤¢¤ë¤È¤­
-					html_env.code.append(" " + decos.getStr("class"));    	
+					//classï¿½ï¿½ï¿½ï¿½(ex.class=menu)ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¤ï¿					html_env.code.append(" " + decos.getStr("class"));    	
+				}
+				if(decos.getConditions().size() > 0){
+					html_env.code.append(" "+computeStringForDecoration(data_info));
 				}
 				html_env.code.append("\"");
 				html_env.code.append(">");
@@ -72,13 +80,13 @@ public class HTMLAttribute extends Attribute {
 				Log.out("<table class=\"att\"><tr><td>");
 			}
 
-			if (html_env.link_flag > 0 || html_env.sinvoke_flag) {
+			if (html_env.linkFlag > 0 || html_env.sinvokeFlag) {
 
 				//tk start for draggable div///////////////////////////////////////
 				if(html_env.draggable)
 				{	
-					html_env.code.append("<div id=\""+html_env.dragdivid+"\" class=\"draggable\"");
-					Log.out("<div id=\""+html_env.dragdivid+"\" ");
+					html_env.code.append("<div id=\""+html_env.dragDivId+"\" class=\"draggable\"");
+					Log.out("<div id=\""+html_env.dragDivId+"\" ");
 				}	
 				else{
 					//tk end for draggable div/////////////////////////////////////////
@@ -86,16 +94,19 @@ public class HTMLAttribute extends Attribute {
 						html_env.code.append("<div id=\"container\">");
 
 					//added by goto 20120614 start
-					//[%Ï¢·ë»Ò] ²¼µ­¤Î2¤Ä¤ÎÌäÂê¤¬¤¢¤Ã¤¿¤¿¤á¡¢href¤Î»ØÄê¤òÀäÂÐ¥Ñ¥¹¤«¤é¡ÖÁêÂÐ¥Ñ¥¹·Á¼°¡×¤ØÊÑ¹¹
-					//1.ÀäÂÐ¥Ñ¥¹¤À¤ÈFirefox¤Ç¤Ï¥ê¥ó¥¯Àè¤¬³«¤±¤Ê¤¤
-					//2.ITC¤Î¼Â½¬´Ä¶­¤Ç¤Ï¥ê¥ó¥¯Àè¤¬³«¤±¤Ê¤¤
-					String fileDir = new File(html_env.linkurl).getAbsoluteFile().getParent();
-					if(fileDir.length() < html_env.linkurl.length()
-					&& fileDir.equals(html_env.linkurl.substring(0,fileDir.length()))){
-						String relative_path = html_env.linkurl.substring(fileDir.length()+1);
+					//[%Ï¢ï¿½ï¿½ï¿
+					//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½2ï¿½Ä¤ï¿½ï¿½ï¿½ï¿½ê¤¬ï¿½ï¿½ï¿½Ã¤ï¿½ï¿½ï¿½ï¿½á¡¢hrefï¿½Î»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¥Ñ¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¥Ñ¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×¤ï¿½ï¿½Ñ¹ï¿½
+					//1.ï¿½ï¿½ï¿½Ð¥Ñ¥ï¿½ï¿½ï¿½ï¿½ï¿½Firefoxï¿½Ç¤Ï¥ï¿½ï¿½ï¿½è¤
+					//¿½ï¿½ï¿½ï¿½ï¿½Ê¤ï¿
+					//2.ITCï¿½Î¼Â½ï¿½ï¿½Ä¶ï¿½ï¿½Ç¤Ï¥ï¿½ï¿½ï¿½è¤
+					//¿½ï¿½ï¿½ï¿½ï¿½Ê¤ï¿		
+					String fileDir = new File(html_env.linkUrl).getAbsoluteFile().getParent();
+					if(fileDir.length() < html_env.linkUrl.length()
+					&& fileDir.equals(html_env.linkUrl.substring(0,fileDir.length()))){
+						String relative_path = html_env.linkUrl.substring(fileDir.length()+1);
 						html_env.code.append("<A href=\"" + relative_path + "\" ");
 					}else
-						html_env.code.append("<A href=\"" + html_env.linkurl + "\" ");
+						html_env.code.append("<A href=\"" + html_env.linkUrl + "\" ");
 					
 					//html_env.code.append("<A href=\"" + html_env.linkurl + "\" ");
 					//added by goto 20120614 end
@@ -111,15 +122,15 @@ public class HTMLAttribute extends Attribute {
 
 				if(GlobalEnv.isAjax() && html_env.isPanel)
 				{
-					html_env.code.append(" onClick =\"return panel('Panel','"+html_env.ajaxquery+"'," +
-							"'"+html_env.dragdivid+"','"+html_env.ajaxcond+"')\"");
+					html_env.code.append(" onClick =\"return panel('Panel','"+html_env.ajaxQuery+"'," +
+							"'"+html_env.dragDivId+"','"+html_env.ajaxCond+"')\"");
 				}
 				else if(GlobalEnv.isAjax() && !html_env.draggable)
 				{
 					String target = GlobalEnv.getAjaxTarget();
 					if(target == null)
 					{
-						String query = html_env.ajaxquery;
+						String query = html_env.ajaxQuery;
 						if(query.contains("/"))
 						{
 							target = query.substring(query.lastIndexOf("/")+1,query.indexOf(".sql"));
@@ -127,14 +138,14 @@ public class HTMLAttribute extends Attribute {
 						else
 							target = query.substring(0,query.indexOf(".sql"));
 
-						if(html_env.has_dispdiv)
+						if(html_env.hasDispDiv)
 						{
 							target = html_env.ajaxtarget;
 						}
 						Log.out("a target:"+target);
 					}
-					html_env.code.append(" onClick =\"return loadFile('"+html_env.ajaxquery+"','"+target+
-							"','"+html_env.ajaxcond+"',"+html_env.inEffect+","+html_env.outEffect+")\"");
+					html_env.code.append(" onClick =\"return loadFile('"+html_env.ajaxQuery+"','"+target+
+							"','"+html_env.ajaxCond+"',"+html_env.inEffect+","+html_env.outEffect+")\"");
 
 				}
 
@@ -142,11 +153,10 @@ public class HTMLAttribute extends Attribute {
 				html_env.code.append(">\n");
 				//tk end////////////////////////////////////////////////////////////
 
-				Log.out("<A href=\"" + html_env.linkurl + "\">");
+				Log.out("<A href=\"" + html_env.linkUrl + "\">");
 			}
 
 			//Log.out("data_info: "+this.getStr(data_info));
-
 
 			createForm(data_info);
 			
@@ -159,7 +169,7 @@ public class HTMLAttribute extends Attribute {
 				Log.out(this.getStr(data_info));
 			}
 
-			if (html_env.link_flag > 0 || html_env.sinvoke_flag) {
+			if (html_env.linkFlag > 0 || html_env.sinvokeFlag) {
 				if(html_env.draggable)
 					html_env.code.append("</div>\n");
 				else
@@ -201,21 +211,22 @@ public class HTMLAttribute extends Attribute {
 	public void work_opt(ExtList data_info){
 		StringBuffer string_tmp = new StringBuffer();
 		string_tmp.append("<VALUE");
-		if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
-			//class¤ò»ý¤Ã¤Æ¤¤¤ë¤È¤­(ex.TFE10000)¤Î¤ß»ØÄê 
+		if(html_env.writtenClassId.contains(HTMLEnv.getClassID(this))){
+			//classï¿½ï¿½ï¿½Ã¤Æ¤ï¿½ï¿½ï¿½È¤ï¿
+			//ex.TFE10000)ï¿½Î¤ß»ï¿½ï¿½ï¿½ 
 			string_tmp.append(" class=\"");
 			string_tmp.append(HTMLEnv.getClassID(this));
 		}
 
 		if(decos.containsKey("class")){ 
-			//class»ØÄê(ex.class=menu)¤¬¤¢¤ë¤È¤­
-			if(!html_env.written_classid.contains(HTMLEnv.getClassID(this))){
+			//classï¿½ï¿½ï¿½ï¿½(ex.class=menu)ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¤ï¿
+			if(!html_env.writtenClassId.contains(HTMLEnv.getClassID(this))){
 				string_tmp.append(" class=\"");
 			}else{
 				string_tmp.append(" ");
 			}
 			string_tmp.append(decos.getStr("class") + "\"");
-		}else if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){ 
+		}else if(html_env.writtenClassId.contains(HTMLEnv.getClassID(this))){ 
 			string_tmp.append("\"");
 		}
 
@@ -230,8 +241,8 @@ public class HTMLAttribute extends Attribute {
 		}
 
 		//link and sinvoke
-		if (html_env.link_flag > 0 || html_env.sinvoke_flag) {
-			string_tmp.append(" href=\"" + html_env.linkurl + "\" ");
+		if (html_env.linkFlag > 0 || html_env.sinvokeFlag) {
+			string_tmp.append(" href=\"" + html_env.linkUrl + "\" ");
 			if(decos.containsKey("target")){
 				string_tmp.append(" target=\"" + decos.getStr("target")+"\"");
 			}
@@ -291,243 +302,6 @@ public class HTMLAttribute extends Attribute {
 		
 		
 	}
-
-
-
-	/*
-  //Attribute¤Îwork¥á¥½¥Ã¥É
-    public void work(ExtList data_info) {
-
-        html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
-
-        if(!GlobalEnv.isOpt()){
-        	if(HTMLEnv.getFormItemFlg()){
-
-            }else{
-	        	html_env.code.append("<table" + html_env.getOutlineModeAtt() + " ");
-	        	html_env.code.append("class=\"att");
-	        	//tk start/////////////////////////////////////////////////////////
-	        	if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
-	        		//class¤ò»ý¤Ã¤Æ¤¤¤ë¤È¤­(ex.TFE10000)¤Î¤ß»ØÄê 
-	        		html_env.code.append(" " + HTMLEnv.getClassID(this));
-	        	}
-	        	if(decos.containsKey("class")){ 
-	        		//class»ØÄê(ex.class=menu)¤¬¤¢¤ë¤È¤­
-	        		html_env.code.append(" " + decos.getStr("class"));    	
-	        	}
-	        	html_env.code.append("\"");
-	        	html_env.code.append(">");
-            }
-        }
-
-
-        if(GlobalEnv.isOpt()){
-        	html_env2.code.append("<VALUE");
-        	if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
-        		//class¤ò»ý¤Ã¤Æ¤¤¤ë¤È¤­(ex.TFE10000)¤Î¤ß»ØÄê 
-        		html_env2.code.append(" class=\"");
-        		html_env2.code.append(HTMLEnv.getClassID(this));
-        	}
-
-        	if(decos.containsKey("class")){ 
-        		//class»ØÄê(ex.class=menu)¤¬¤¢¤ë¤È¤­
-        		if(!html_env.written_classid.contains(HTMLEnv.getClassID(this))){
-        			html_env2.code.append(" class=\"");
-        		}else{
-        			html_env2.code.append(" ");
-        		}
-        		html_env2.code.append(decos.getStr("class") + "\"");        	
-        	}else if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){ 
-        		html_env2.code.append("\"");
-        	}
-
-        	if(decos.containsKey("update") || decos.containsKey("insert")||decos.containsKey("delete")||decos.containsKey("login")){
-        		html_env2.code.append(" type=\"form\"");
-        	}
-
-
-        	if(decos.containsKey("tabletype"))
-        		html_env2.code.append(" tabletype=\"" + decos.getStr("tabletype") + "\"");
-
-        }         
-        //tk end////////////////////////////////////////////////////////////
-
-        if(HTMLEnv.getFormItemFlg()){
-
-        }else{
-	        html_env.code.append("<tr><td>\n");
-	        Log.out("<table class=\"att\"><tr><td>");
-        }
-
-        if (html_env.link_flag > 0 || html_env.sinvoke_flag) {
-
-        	//tk start for draggable div///////////////////////////////////////
-        	if(html_env.draggable)
-        	{	
-        		html_env.code.append("<div id=\""+html_env.dragdivid+"\" class=\"draggable\"");
-        		Log.out("<div id=\""+html_env.dragdivid+"\" ");
-        	}	
-        	else{
-        	//tk end for draggable div/////////////////////////////////////////
-        		if(html_env.isPanel)
-        			html_env.code.append("<div id=\"container\">");
-
-        		html_env.code.append("<A href=\"" + html_env.linkurl + "\" ");
-        		html_env2.code.append(" href=\"" + html_env.linkurl + "\" ");
-
-        	}
-            //tk start//////////////////////////////////////////////////////////
-            if(decos.containsKey("target")){
-            	html_env.code.append(" target=\"" + decos.getStr("target")+"\"");
-            	html_env2.code.append(" target=\"" + decos.getStr("target")+"\"");
-            }
-            if(decos.containsKey("class")){
-            	html_env.code.append(" class=\"" + decos.getStr("class") + "\"");
-            	html_env2.code.append(" aclass=\"" + decos.getStr("class") + "\"");
-            }
-
-            if(GlobalEnv.isAjax() && html_env.isPanel)
-            {
-            	html_env.code.append(" onClick =\"return panel('Panel','"+html_env.ajaxquery+"'," +
-            			"'"+html_env.dragdivid+"','"+html_env.ajaxcond+"')\"");
-            }
-            else if(GlobalEnv.isAjax() && !html_env.draggable)
-            {
-            	String target = GlobalEnv.getAjaxTarget();
-            	if(target == null)
-            	{
-            		String query = html_env.ajaxquery;
-            		if(query.contains("/"))
-            		{
-            			target = query.substring(query.lastIndexOf("/")+1,query.indexOf(".sql"));
-            		}
-            		else
-            			target = query.substring(0,query.indexOf(".sql"));
-
-            		if(html_env.has_dispdiv)
-            		{
-            			target = html_env.ajaxtarget;
-            		}
-            		Log.out("a target:"+target);
-            	}
-            	html_env.code.append(" onClick =\"return loadFile('"+html_env.ajaxquery+"','"+target+
-            			"','"+html_env.ajaxcond+"',"+html_env.inEffect+","+html_env.outEffect+")\"");
-
-            }
-
-
-            html_env.code.append(">\n");
-            //tk end////////////////////////////////////////////////////////////
-
-            Log.out("<A href=\"" + html_env.linkurl + "\">");
-        }
-
-        //Log.out("data_info: "+this.getStr(data_info));
-
-        html_env2.code.append(">");
-
-        String form = new String();
-        if(decos.containsKey("update") || decos.containsKey("insert")|| decos.containsKey("login")){
-        	String name = new String();
-        	//Log.out(decos.containsKey("insert"));
-        	//Log.out(decos.getStr("insert"));
-        	//String DataID = HTMLEnv.getDataID(this);
-        	if(decos.containsKey("update")){
-        		name = decos.getStr("update");
-        	}else if(decos.containsKey("insert")){
-        		name = decos.getStr("insert");
-        	}else if(decos.containsKey("login")){
-        		name = decos.getStr("login");
-        		if(decos.containsKey("att")){
-        			html_env.code.append("<input type=\"hidden\" name=\"att\" value=\"" + decos.getStr("att") +"\" />");
-                	html_env2.code.append("<input type=\"hidden\" name=\"att\" value=\"" + decos.getStr("att") +"\" />");
-        		}
-        	}
-
-    		if(decos.containsKey("pwd")){
-    			html_env.code.append("<input type=\"password\" name=\"" + name + "\" value=\"");
-            	html_env2.code.append("<input type=\"password\" name=\"" + name + "\" value=\"");
-    		}else{
-    			html_env.code.append("<input type=\"text\" name=\"" + name + "\" value=\"");
-        		html_env2.code.append("<input type=\"text\" name=\"" + name + "\" value=\"");
-    		}
-        	Log.out("<input type=\"text\" name=\"" + name + "\" value=\"");            	           	
-
-        }else if(decos.containsKey("delete")){
-    		String name = decos.getStr("delete");
-        	html_env.code.append("<input type=\"checkbox\" name=\"" + name + "\" value=\"");
-        	html_env2.code.append("<input type=\"checkbox\" name=\"" + name + "\" value=\"");
-        	Log.out("<input type=\"checkbox\" name=\"" + name + "\" value=\"");
-        }else if(HTMLEnv.getFormItemFlg()){
-    		String name = decos.getStr("select");
-    		form = inputFormItems(data_info,"select",name);
-        	html_env.code.append(form);
-        }
-
-    	Log.out(GlobalEnv.getTuplesNum());
-        //change      chie
-
-        if(decos.containsKey("insert") || decos.containsKey("login") || !form.isEmpty()){
-
-        }else{
-        	//***APPEND DATABASE VALUE***
-        	html_env.code.append(this.getStr(data_info));
-
-
-            String s = this.getStr(data_info);
-            if(s.contains("&"))
-            	s = s.replace("&", "&amp;");
-            if(s.contains("<"))
-            	s = s.replaceAll("<", "&lt;");
-            if(s.contains(">"))
-            	s = s.replaceAll(">", "&gt;");
-            if(s.contains("¢·"))
-            	s = s.replaceAll("¢·", "&#65374;");
-            html_env2.code.append(s);
-
-        	Log.out(this.getStr(data_info));
-        }
-
-        if (html_env.link_flag > 0 || html_env.sinvoke_flag) {
-        	if(html_env.draggable)
-        		html_env.code.append("</div>\n");
-        	else
-        	{
-        		html_env.code.append("</A>\n");
-
-        		if(html_env.isPanel)
-        			html_env.code.append("</div>\n");
-        	}
-            Log.out("</A>");
-        }
-
-
-        if(decos.containsKey("update") || decos.containsKey("insert")|| decos.containsKey("delete") || decos.containsKey("login")){
-            html_env.code.append("\" />\n");
-            html_env2.code.append("\" />");
-            Log.out("\" \\>\n");
-        }
-
-        html_env2.code.append("</VALUE>");
-
-        if(HTMLEnv.getFormItemFlg()){
-            if(tuple_count == GlobalEnv.getTuplesNum()){
-                closeFormItems("select");
-            }
-        }else{
-        	html_env.code.append("</td></tr></table>\n");
-            Log.out("</td></tr></table>");
-        }
-
-
-        Log.out("TFEId = " + HTMLEnv.getClassID(this));
-        //html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
-
-    }
-	 */
-
-
-	//static int tuple_count = 0;
 	
 	private void createForm(ExtList data_info){
 
@@ -715,7 +489,7 @@ public class HTMLAttribute extends Attribute {
 		String formname = HTMLEnv.getFormPartsName();;
 		if(HTMLEnv.getSearch()){
 			ret += cond();
-			formname = "value"+HTMLEnv.form_parts_number;
+			formname = "value"+HTMLEnv.formPartsNumber;
 		}
 		String s = this.getStr(data_info);
 		//tuple_count++;
@@ -829,15 +603,30 @@ public class HTMLAttribute extends Attribute {
 	
 	private String cond(){
 		String ret = "";
-		if(HTMLEnv.form_parts_number != HTMLEnv.searchid){
-			HTMLEnv.searchid = HTMLEnv.form_parts_number;
-			if(!HTMLEnv.cond_name.isEmpty() && !HTMLEnv.cond.isEmpty()){
-				ret += "<input type=\"hidden\" name=\"cond_name"+ HTMLEnv.form_parts_number +"\" value=\""+ HTMLEnv.cond_name +"\" />";
-				ret += "<input type=\"hidden\" name=\"cond"+ HTMLEnv.form_parts_number +"\" value=\""+ HTMLEnv.cond +"\" />";
-				ret += "<input type=\"hidden\" name=\"value_type"+ HTMLEnv.form_parts_number +"\" value=\"String\" />";
+		if(HTMLEnv.formPartsNumber != HTMLEnv.searchId){
+			HTMLEnv.searchId = HTMLEnv.formPartsNumber;
+			if(!HTMLEnv.condName.isEmpty() && !HTMLEnv.cond.isEmpty()){
+				ret += "<input type=\"hidden\" name=\"cond_name"+ HTMLEnv.formPartsNumber +"\" value=\""+ HTMLEnv.condName +"\" />";
+				ret += "<input type=\"hidden\" name=\"cond"+ HTMLEnv.formPartsNumber +"\" value=\""+ HTMLEnv.cond +"\" />";
+				ret += "<input type=\"hidden\" name=\"value_type"+ HTMLEnv.formPartsNumber +"\" value=\"String\" />";
 			}
 		}
 		return ret;
 	}
 
+	private String computeStringForDecoration(ExtList data_info) {
+		String classNames = "";
+		for(int i = 1; i < this.AttNames.size(); i++){
+			if(((ExtList)(data_info.get(i))).getStr().equals("t")){
+				if(decos.getClassesIds().get(AttNames.get(i)) != null)
+					classNames += " C_" + decos.getClassesIds().get(AttNames.get(i));
+			}
+			else{
+				if(decos.getClassesIds().get("!"+AttNames.get(i)) != null)
+					classNames += " C_"+decos.getClassesIds().get("!"+AttNames.get(i));
+			}
+		}
+		return classNames;
+	}
+	
 }

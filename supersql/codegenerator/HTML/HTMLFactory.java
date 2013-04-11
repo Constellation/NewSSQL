@@ -1,6 +1,13 @@
 package supersql.codegenerator.HTML;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.Attribute;
+import supersql.codegenerator.Connector;
+import supersql.codegenerator.Factory;
+import supersql.codegenerator.Function;
+import supersql.codegenerator.Grouper;
+import supersql.codegenerator.IfCondition;
+import supersql.codegenerator.Manager;
+import supersql.codegenerator.TFE;
 
 //Operator, Managerを生成するクラス
 
@@ -83,6 +90,16 @@ public class HTMLFactory extends Factory {
 	@Override
 	public Function createFunction(Manager manager) {
 		return new HTMLFunction(manager, html_env,html_env2);
+	}
+
+	@Override
+	public Attribute createConditionalAttribute(Manager manager) {
+		return new HTMLAttribute(manager, html_env, html_env2, true);
+	}
+
+	@Override
+	public IfCondition createIfCondition(Manager manager, supersql.codegenerator.Attribute condition, TFE thenTfe, TFE elseTfe) {
+		return new HTMLIfCondition(manager, html_env, html_env2, condition, thenTfe, elseTfe);
 	}
 
 }

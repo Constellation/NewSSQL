@@ -6,6 +6,7 @@ import java.util.Vector;
 import supersql.codegenerator.*;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
+import supersql.common.Utils;
 import supersql.dataconstructor.DataConstructor;
 import supersql.extendclass.ExtList;
 
@@ -27,21 +28,21 @@ public class HTMLManager extends Manager{
 
         HTMLEnv.initAllFormFlg();
 
-        html_env.countfile = 0;
+        html_env.countFile = 0;
         html_env.code = new StringBuffer();
         html_env.css = new StringBuffer();
         html_env.header = new StringBuffer();
         html_env.footer = new StringBuffer();
-        html_env.foreach_flag = GlobalEnv.getForeachFlag();
-        html_env.written_classid = new Vector();
-        html_env.not_written_classid = new Vector();
-        html_env2.countfile = 0;
+        html_env.foreachFlag = GlobalEnv.getForeachFlag();
+        html_env.writtenClassId = new Vector();
+        html_env.notWrittenClassId = new Vector();
+        html_env2.countFile = 0;
         html_env2.code = new StringBuffer();
         html_env2.css = new StringBuffer();
         html_env2.header = new StringBuffer();
         html_env2.footer = new StringBuffer();
-        html_env2.foreach_flag = GlobalEnv.getForeachFlag();
-        html_env2.written_classid = new Vector<String>();
+        html_env2.foreachFlag = GlobalEnv.getForeachFlag();
+        html_env2.writtenClassId = new Vector<String>();
         HTMLEnv localenv = new HTMLEnv();
 
         /*** start oka ***/
@@ -58,9 +59,9 @@ public class HTMLManager extends Manager{
             return;
         }
 
-        // ?ÈÖ³°Â¦¤¬G3¤Ç¤Ê¤¤??]
-        html_env.filename = html_env.outfile + ".html";
-        html_env2.filename = html_env.outfile + ".xml";
+        // ?ï¿½Ö³ï¿½Â¦ï¿½ï¿½G3ï¿½Ç¤Ê¤ï¿½??]
+        html_env.fileName = html_env.outFile + ".html";
+        html_env2.fileName = html_env.outFile + ".xml";
 
         html_env.setOutlineMode();
 
@@ -78,7 +79,7 @@ public class HTMLManager extends Manager{
 
         html_env.getHeader();
         html_env.getFooter();
-        html_env2.header.append("<?xml version=\"1.0\" encoding=\""+html_env.getEncode()+"\"?><SSQL>");
+        html_env2.header.append("<?xml version=\"1.0\" encoding=\""+Utils.getEncode()+"\"?><SSQL>");
         html_env2.footer.append("</SSQL>");
         try {
         	if(!GlobalEnv.isOpt()){
@@ -88,14 +89,14 @@ public class HTMLManager extends Manager{
         		PrintWriter pw;
 	            if (html_env.charset != null){
 		        	pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
-		        			new FileOutputStream(html_env.filename),html_env.charset)));
+		        			new FileOutputStream(html_env.fileName),html_env.charset)));
 		        	Log.info("File encoding: "+html_env.charset);
 	            }else
 	            	pw = new PrintWriter(new BufferedWriter(new FileWriter(
-	        	                    html_env.filename)));
+	        	                    html_env.fileName)));
 	            //Log.info("File encoding: "+((html_env.charset!=null)? html_env.charset : "UTF-8"));
         		//changed by goto 20120715 end
-
+	            	
 	        	if(GlobalEnv.cssout()==null)
 	        		pw.println(html_env.header);
 	            pw.println(html_env.code);
@@ -114,18 +115,18 @@ public class HTMLManager extends Manager{
 	            }
 	            */
 
-	            html_env2.filename = html_env.outfile + ".xml";
+	            html_env2.fileName = html_env.outFile + ".xml";
 	            PrintWriter pw2 = new PrintWriter(new BufferedWriter(new FileWriter(
-	                    html_env2.filename)));
+	                    html_env2.fileName)));
 	            if(GlobalEnv.cssout()==null)
 	            	pw2.println(html_env2.header);
 	            pw2.println(html_env2.code);
 	            pw2.println(html_env2.footer);
 	            pw2.close();
 	            HTMLoptimizer xml = new HTMLoptimizer();
-	            String xml_str =  xml.generateHtml(html_env2.filename);
+	            String xml_str =  xml.generateHtml(html_env2.fileName);
 	        	PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(
-	                    html_env.filename)));
+	                    html_env.fileName)));
 				pw.println(html_env.header);
 				pw.println(xml_str);
 				//StringBuffer footer = new StringBuffer("</div></body></html>");
@@ -144,9 +145,9 @@ public class HTMLManager extends Manager{
         } catch (FileNotFoundException fe) {
         	fe.printStackTrace();
         	System.err.println("Error: specified outdirectory \""
-                    + html_env.outdir + "\" is not found to write " + html_env.filename );
+                    + html_env.outDir + "\" is not found to write " + html_env.fileName );
         	GlobalEnv.addErr("Error: specified outdirectory \""
-                    + html_env.outdir + "\" is not found to write " + html_env.filename );
+                    + html_env.outDir + "\" is not found to write " + html_env.fileName );
         	//comment out by chie
         	//System.exit(-1);
         } catch (IOException e) {
@@ -176,17 +177,17 @@ public class HTMLManager extends Manager{
 	public StringBuffer generateCode2(TFE tfe_info, ExtList data_info) {
     	HTMLEnv.initAllFormFlg();
 
-        html_env.countfile = 0;
+        html_env.countFile = 0;
         html_env.code = new StringBuffer();
         html_env.css = new StringBuffer();
         html_env.header = new StringBuffer();
         html_env.footer = new StringBuffer();
-        html_env.foreach_flag = GlobalEnv.getForeachFlag();
-        html_env.written_classid = new Vector();
-        html_env.embedflag = true;
+        html_env.foreachFlag = GlobalEnv.getForeachFlag();
+        html_env.writtenClassId = new Vector();
+        html_env.embedFlag = true;
 
 
-        html_env2.countfile = 0;
+        html_env2.countFile = 0;
         html_env2.code = new StringBuffer();
         html_env2.css = new StringBuffer();
         html_env2.header = new StringBuffer();
@@ -227,7 +228,7 @@ public class HTMLManager extends Manager{
         	xml_str = xml.generateHtml(xml_string);
         	returncode.append(xml_str);
         }
-        html_env.embedflag = false;
+        html_env.embedFlag = false;
 
         if(html_env.script.length() >= 5)
         {
@@ -263,15 +264,15 @@ public class HTMLManager extends Manager{
 	public StringBuffer generateCode3(TFE tfe_info, ExtList data_info) {
     	HTMLEnv.initAllFormFlg();
 
-        html_env.countfile = 0;
+        html_env.countFile = 0;
         html_env.code = new StringBuffer();
         html_env.css = new StringBuffer();
         html_env.header = new StringBuffer();
         html_env.footer = new StringBuffer();
-        html_env.foreach_flag = GlobalEnv.getForeachFlag();
-        html_env.written_classid = new Vector();
-        html_env.embedflag = true;
-        // ½ÐÎÏ¤¹?¥Õ¥¡¥¤?Ì¾¤ÎÀß?
+        html_env.foreachFlag = GlobalEnv.getForeachFlag();
+        html_env.writtenClassId = new Vector();
+        html_env.embedFlag = true;
+        // ï¿½ï¿½ï¿½Ï¤ï¿½?ï¿½Õ¥ï¿½ï¿½ï¿½?Ì¾ï¿½ï¿½ï¿½ï¿½?
         getOutfilename();
 
         Log.out("[HTMLManager:generateCode]");
@@ -287,7 +288,7 @@ public class HTMLManager extends Manager{
         html_env.setOutlineMode();
         tfe_info.work(data_info);
 //        html_env.getCSS();
-        html_env.embedflag = false;
+        html_env.embedFlag = false;
         Log.out("header : "+ html_env.header);
         return html_env.css;
     }
@@ -295,21 +296,21 @@ public class HTMLManager extends Manager{
     @Override
 	public StringBuffer generateCode4(TFE tfe_info, ExtList data_info) {
     	HTMLEnv.initAllFormFlg();
-        html_env.countfile = 0;
+        html_env.countFile = 0;
         html_env.code = new StringBuffer();
         html_env.css = new StringBuffer();
         html_env.header = new StringBuffer();
         html_env.footer = new StringBuffer();
-        html_env.foreach_flag = GlobalEnv.getForeachFlag();
-        html_env.written_classid = new Vector();
+        html_env.foreachFlag = GlobalEnv.getForeachFlag();
+        html_env.writtenClassId = new Vector();
 
-        html_env2.countfile = 0;
+        html_env2.countFile = 0;
         html_env2.code = new StringBuffer();
         html_env2.css = new StringBuffer();
         html_env2.header = new StringBuffer();
         html_env2.footer = new StringBuffer();
-        html_env2.foreach_flag = GlobalEnv.getForeachFlag();
-        html_env2.written_classid = new Vector<String>();
+        html_env2.foreachFlag = GlobalEnv.getForeachFlag();
+        html_env2.writtenClassId = new Vector<String>();
 
         HTMLEnv localenv = new HTMLEnv();
 
@@ -319,16 +320,16 @@ public class HTMLManager extends Manager{
         Log.out("[HTMLManager:generateCode]");
 
 
-        // ?ÈÖ³°Â¦¤¬G3¤Ç¤Ê¤¤??
-        html_env.filename = html_env.outfile + ".html";
-        html_env2.filename = html_env.outfile + ".xml";
+        // ?ï¿½Ö³ï¿½Â¦ï¿½ï¿½G3ï¿½Ç¤Ê¤ï¿½??
+        html_env.fileName = html_env.outFile + ".html";
+        html_env2.fileName = html_env.outFile + ".xml";
 
         html_env.setOutlineMode();
         tfe_info.work(data_info);
 
         html_env.getHeader();
         html_env.getFooter();
-        html_env.embedflag = false;
+        html_env.embedFlag = false;
         Log.out("header : "+ html_env.header);
 
         StringBuffer headfoot = new StringBuffer(html_env.header + " ###split### " + html_env.footer);
@@ -338,32 +339,32 @@ public class HTMLManager extends Manager{
   @Override
 public StringBuffer generateCssfile(TFE tfe_info, ExtList data_info) {
 
-        html_env.countfile = 0;
+        html_env.countFile = 0;
         html_env.code = new StringBuffer();
         html_env.css = new StringBuffer();
         html_env.header = new StringBuffer();
         html_env.footer = new StringBuffer();
-        html_env.foreach_flag = GlobalEnv.getForeachFlag();
-        html_env.written_classid = new Vector();
-        html_env.embedflag = true;
-        // ½ÐÎÏ¤¹?¥Õ¥¡¥¤?Ì¾¤ÎÀß?
+        html_env.foreachFlag = GlobalEnv.getForeachFlag();
+        html_env.writtenClassId = new Vector();
+        html_env.embedFlag = true;
+        // ï¿½ï¿½ï¿½Ï¤ï¿½?ï¿½Õ¥ï¿½ï¿½ï¿½?Ì¾ï¿½ï¿½ï¿½ï¿½?
         getOutfilename();
 
         Log.out("[HTMLManager:generateCode]");
 
         html_env.setOutlineMode();
         tfe_info.work(data_info);
-        html_env.embedflag = false;
+        html_env.embedFlag = false;
         Log.out("header : "+ html_env.header);
-        return html_env.cssfile;
+        return html_env.cssFile;
     }
     //tk end///////////////////////////////////////////////////////////////////////////////
 
-    private void getOutfilename() {
+    protected void getOutfilename() {
         String file = GlobalEnv.getfilename();
         String outdir = GlobalEnv.getoutdirectory();
         String outfile = GlobalEnv.getoutfilename();
-        html_env.outdir = outdir;
+        html_env.outDir = outdir;
 
         /*
          * ½ÐÎÏ¥Õ¥¡¥¤?(outfilename)¤¬»ØÄê¤µ?¤Æ¤¤???
@@ -371,23 +372,23 @@ public StringBuffer generateCssfile(TFE tfe_info, ExtList data_info) {
          * ¤½?°Ê³°¤Î¤È¤­¤Ï¥¯¥¨?¥Õ¥¡¥¤?¤ÎÌ¾Á°(filename)¤Ë¤¹?
          */
         if (GlobalEnv.getQuery()!=null) {
-        	html_env.outfile = "./fromquery";
+        	html_env.outFile = "./fromquery";
 
         }else if (outfile == null) {
         	if (file.toLowerCase().indexOf(".sql")>0) {
-        		html_env.outfile = file.substring(0, file.toLowerCase().indexOf(".sql"));
+        		html_env.outFile = file.substring(0, file.toLowerCase().indexOf(".sql"));
         	} else if (file.toLowerCase().indexOf(".ssql")>0) {
-        		html_env.outfile = file.substring(0, file.toLowerCase().indexOf(".ssql"));
+        		html_env.outFile = file.substring(0, file.toLowerCase().indexOf(".ssql"));
         	}
         } else {
-            html_env.outfile = getOutfile(outfile);
+            html_env.outFile = getOutfile(outfile);
         }
 
-        if (html_env.outfile.indexOf("/") > 0) {
-            html_env.linkoutfile = html_env.outfile.substring(html_env.outfile
+        if (html_env.outFile.indexOf("/") > 0) {
+            html_env.linkOutFile = html_env.outFile.substring(html_env.outFile
                     .lastIndexOf("/") + 1);
         } else {
-            html_env.linkoutfile = html_env.outfile;
+            html_env.linkOutFile = html_env.outFile;
         }
 /*
         //tk start
@@ -422,31 +423,31 @@ public StringBuffer generateCssfile(TFE tfe_info, ExtList data_info) {
 
     private void connectOutdir(String outdir, String outfile) {
     	//added by goto 20120627 start
-		String fileDir = new File(html_env.outfile).getAbsoluteFile().getParent();
-		if(fileDir.length() < html_env.outfile.length()
-		&& fileDir.equals(html_env.outfile.substring(0,fileDir.length())))
-			html_env.outfile = html_env.outfile.substring(fileDir.length()+1);	//ÁêÂÐ¥Ñ¥¹¥Õ¥¡¥¤¥ëÌ¾
+		String fileDir = new File(html_env.outFile).getAbsoluteFile().getParent();
+		if(fileDir.length() < html_env.outFile.length()
+		&& fileDir.equals(html_env.outFile.substring(0,fileDir.length())))
+			html_env.outFile = html_env.outFile.substring(fileDir.length()+1);	//ï¿½ï¿½ï¿½Ð¥Ñ¥ï¿½ï¿½Õ¥ï¿½ï¿½ï¿½ï¿½ï¿½Ì¾
     	//added by goto 20120627 end
     	
         String tmpqueryfile = new String();
-        if (html_env.outfile.indexOf("/") > 0) {
+        if (html_env.outFile.indexOf("/") > 0) {
             if (outfile != null) {
-                if (html_env.outfile.startsWith(".")
-                        || html_env.outfile.startsWith("/")) {
-                    tmpqueryfile = html_env.outfile.substring(html_env.outfile
+                if (html_env.outFile.startsWith(".")
+                        || html_env.outFile.startsWith("/")) {
+                    tmpqueryfile = html_env.outFile.substring(html_env.outFile
                             .indexOf("/") + 1);
                 }
             } else {
-                tmpqueryfile = html_env.outfile.substring(html_env.outfile
+                tmpqueryfile = html_env.outFile.substring(html_env.outFile
                         .lastIndexOf("/") + 1);
             }
         } else {
-            tmpqueryfile = html_env.outfile;
+            tmpqueryfile = html_env.outFile;
         }
         if (!outdir.endsWith("/")) {
             outdir = outdir.concat("/");
         }
-        html_env.outfile = outdir.concat(tmpqueryfile);
+        html_env.outFile = outdir.concat(tmpqueryfile);
     }
 
     @Override

@@ -80,4 +80,16 @@ public class PDFFactory extends Factory {
 		return new PDFFunction(manager, pdf_env);
 	}
 
+	@Override
+	public Attribute createConditionalAttribute(Manager manager) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IfCondition createIfCondition(Manager manager, Attribute condition,
+			TFE thenTfe, TFE elseTfe) {
+		return null;
+	}
+
 }

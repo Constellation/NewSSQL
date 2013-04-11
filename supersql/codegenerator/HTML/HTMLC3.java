@@ -11,6 +11,7 @@ import java.io.PrintWriter;
 import supersql.codegenerator.*;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
+import supersql.common.Utils;
 import supersql.extendclass.ExtList;
 
 public class HTMLC3 extends Connector {
@@ -31,8 +32,8 @@ public class HTMLC3 extends Connector {
     @Override
 	public void work(ExtList data_info) {
         int i = 0;
-        String parentfile = html_env.filename;
-        String parentfile2 = html_env2.filename;
+        String parentfile = html_env.fileName;
+        String parentfile2 = html_env2.fileName;
         StringBuffer parentcode = new StringBuffer();
         StringBuffer parentcss = new StringBuffer();
         StringBuffer parentheader = new StringBuffer();
@@ -56,27 +57,27 @@ public class HTMLC3 extends Connector {
         boolean checknexttfe = tfe[0] instanceof HTMLC1
                 || tfe[0] instanceof HTMLC2 || tfe[0] instanceof HTMLC3;
         Log.out("------- C3 -------");
-        html_env.countfile++;
+        html_env.countFile++;
 
-        html_env.linkurl = html_env.linkoutfile
-                + String.valueOf(html_env.countfile) + ".html";
-        html_env.link_flag++;
-        Log.out("linkflag =" + html_env.link_flag);
+        html_env.linkUrl = html_env.linkOutFile
+                + String.valueOf(html_env.countFile) + ".html";
+        html_env.linkFlag++;
+        Log.out("linkflag =" + html_env.linkFlag);
         this.setDataList(data_info);
 
         this.worknextItem();
-        html_env.link_flag--;
+        html_env.linkFlag--;
 
         for (int k = 1; k < c3items; k++) {
             TFE intfe = (TFE) tfes.get(k);
-            html_env.filename = html_env.outfile
-                    + String.valueOf(html_env.countfile) + ".html";
-            html_env2.filename = html_env.outfile
-            + String.valueOf(html_env.countfile) + ".xml";
+            html_env.fileName = html_env.outFile
+                    + String.valueOf(html_env.countFile) + ".html";
+            html_env2.fileName = html_env.outFile
+            + String.valueOf(html_env.countFile) + ".xml";
             boolean b = intfe instanceof Attribute
                     || intfe instanceof HTMLFunction;
             if (intfe instanceof HTMLG3) {
-                html_env.countfile--;
+                html_env.countFile--;
                 this.worknextItem();
             } else {
                 parentcode = html_env.code;
@@ -96,23 +97,23 @@ public class HTMLC3 extends Connector {
                 html_env2.footer = new StringBuffer();
 
                 if (k < c3items - 1) {
-                    html_env.countfile++;
-                    html_env.linkurl = html_env.linkoutfile
-                            + String.valueOf(html_env.countfile) + ".html";
-                    html_env.link_flag++;
-                    Log.out("linkflag =" + html_env.link_flag);
+                    html_env.countFile++;
+                    html_env.linkUrl = html_env.linkOutFile
+                            + String.valueOf(html_env.countFile) + ".html";
+                    html_env.linkFlag++;
+                    Log.out("linkflag =" + html_env.linkFlag);
                 }
 
                 html_env.setOutlineMode();
                 this.worknextItem();
 
                 if (k < c3items - 1) {
-                    html_env.link_flag--;
+                    html_env.linkFlag--;
                 }
                 html_env.getHeader();
                 html_env.getFooter();
                 //html_env2.header.append("<?xml version=\"1.0\" encoding=\"Shift_JIS\"?><SSQL>");
-                html_env2.header.append("<?xml version=\"1.0\" encoding=\""+html_env.getEncode()+"\"?><SSQL>");
+                html_env2.header.append("<?xml version=\"1.0\" encoding=\""+Utils.getEncode()+"\"?><SSQL>");
                 html_env2.footer.append("</SSQL>");
                 try {
             		//changed by goto 20120715_2 start
@@ -122,11 +123,11 @@ public class HTMLC3 extends Connector {
             		PrintWriter pw;
     	            if (html_env.charset != null){
     		        	pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
-    		        			new FileOutputStream(html_env.filename),html_env.charset)));
+    		        			new FileOutputStream(html_env.fileName),html_env.charset)));
     		        	//Log.info("File encoding: "+html_env.charset);
     	            }else
     	            	pw = new PrintWriter(new BufferedWriter(new FileWriter(
-    	        	                    html_env.filename)));
+    	        	                    html_env.fileName)));
     	            //Log.info("File encoding: "+((html_env.charset!=null)? html_env.charset : "UTF-8"));
             		//changed by goto 20120715_2 end
                     pw.println(html_env.header);
@@ -142,11 +143,11 @@ public class HTMLC3 extends Connector {
 		        		PrintWriter pw2;
 			            if (html_env.charset != null){
 				        	pw2 = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
-				        			new FileOutputStream(html_env2.filename),html_env.charset)));
+				        			new FileOutputStream(html_env2.fileName),html_env.charset)));
 				        	//Log.info("File encoding: "+html_env.charset);
 			            }else
 			            	pw2 = new PrintWriter(new BufferedWriter(new FileWriter(
-			        	                    html_env2.filename)));
+			        	                    html_env2.fileName)));
 			            //Log.info("File encoding: "+((html_env.charset!=null)? html_env.charset : "UTF-8"));
 		        		//changed by goto 20120715_2 end
 			            
@@ -155,8 +156,8 @@ public class HTMLC3 extends Connector {
 	                    pw2.println(html_env2.footer);
 	                    pw2.close();
 	                    HTMLoptimizer xml = new HTMLoptimizer();
-	                    String xml_str = xml.generateHtml(html_env2.filename);
-	                    pw = new PrintWriter(new BufferedWriter(new FileWriter(html_env.filename)));
+	                    String xml_str = xml.generateHtml(html_env2.fileName);
+	                    pw = new PrintWriter(new BufferedWriter(new FileWriter(html_env.fileName)));
 						pw.println(html_env.header);
 						pw.println(xml_str);
 						StringBuffer footer = new StringBuffer("</div></body></html>");
@@ -166,9 +167,9 @@ public class HTMLC3 extends Connector {
                 } catch (FileNotFoundException fe) {
                 	fe.printStackTrace();
                     System.err.println("Error: specified outdirectory \""
-                            + html_env.outdir + "\" is not found");
+                            + html_env.outDir + "\" is not found");
                     GlobalEnv.addErr("Error: specified outdirectory \""
-                            + html_env.outdir + "\" is not found");
+                            + html_env.outDir + "\" is not found");
                     //comment out by chie
                     //System.exit(-1);
                 } catch (IOException e) {
@@ -188,8 +189,8 @@ public class HTMLC3 extends Connector {
                 html_env2.footer = parentfooter2;
             }
         }
-        html_env.filename = parentfile;
-        html_env2.filename = parentfile2;
+        html_env.fileName = parentfile;
+        html_env2.fileName = parentfile2;
 
         Log.out("TFEId = " + HTMLEnv.getClassID(this));
         html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
