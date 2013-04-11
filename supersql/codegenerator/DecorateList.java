@@ -1,5 +1,7 @@
 package supersql.codegenerator;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Enumeration;
 
@@ -11,8 +13,12 @@ public class DecorateList extends Hashtable {
 	 * serialVersionUID
 	 */
 	private static final long serialVersionUID = 1L;
+	private static int classIdPointer = 1;
 	Connector connector;	//add oka
-
+	private Hashtable<String, Object> conditions = new Hashtable<String, Object>();
+	private Hashtable<String, Integer> classesIds = new Hashtable<String, Integer>();
+	
+	
 	public String getStr(String s) {
 		Object o = this.get(s);
 		if (o instanceof String){
@@ -79,6 +85,79 @@ public class DecorateList extends Hashtable {
 			
 			dbgout.prt(count, "</DecorateList>");
 		}
+	}
+
+	public synchronized Object put(Object key, Object value, String condition) {
+		if(getConditions().containsKey(condition)){
+			ArrayList<String> conditionArray = new ArrayList<String>();
+			if(getConditions().get(condition) instanceof String){
+				conditionArray.add((String)(key));
+				conditionArray.add((String) getConditions().get(condition));
+			}else{
+				((ArrayList<String>) getConditions().get(condition)).addAll((Collection<? extends String>) getConditions().get(condition));
+			}
+			getConditions().put(condition, conditionArray);
+		}else{
+			getConditions().put(condition, (String) key);
+		}
+		if(!getClassesIds().containsKey(condition))
+			getClassesIds().put((String) condition, classIdPointer++);
+		
+		if (this.containsKey(key)) {
+			String[] valueArray = new String[2];
+			if(condition.startsWith("!")){
+				valueArray[1] = (String) value;
+				valueArray[0] = (String) this.get(key);
+			}else{
+				valueArray[0] = (String) value;
+				valueArray[1] = (String) this.get(key);
+			}
+			
+			return super.put(key, valueArray);
+		} else {
+			return super.put(key,value);
+		}
+	}
+
+	public Hashtable<String, Object> getConditions() {
+		return conditions;
+	}
+	
+	public int getConditionsSize(){
+		int result=0;
+		for (String val : conditions.keySet()) {
+			if(!val.startsWith("!"))
+				result++;
+		}
+		return result;
+	}
+
+	public void setConditions(Hashtable<String, Object> conditions) {
+		this.conditions = conditions;
+	}
+
+	public Hashtable<String, Integer> getClassesIds() {
+		return classesIds;
+	}
+
+	public void setClassesIds(Hashtable<String, Integer> classesIds) {
+		this.classesIds = classesIds;
+	}
+	
+	public String getDecorationValueFromDecorationKeyAndCondition(String decorationKey, String condition){
+		Object decorationValue = this.get(decorationKey);
+		if(decorationValue instanceof String[]){
+			if(condition.startsWith("!")){
+				this.put(decorationKey, ((String[])(decorationValue))[0]);
+				decorationValue = ((String[])(decorationValue))[1];
+			}else{
+				this.put(decorationKey, ((String[])(decorationValue))[1]);
+				decorationValue = ((String[])(decorationValue))[0];
+			}
+		}else{
+			this.remove(decorationKey);
+		}
+		return (String)decorationValue;
 	}
 
 }

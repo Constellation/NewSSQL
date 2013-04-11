@@ -77,5 +77,17 @@ public class X3DFactory extends Factory {
 		return new X3DFunction(manager, x3d_env);
 	}
 
+	@Override
+	public Attribute createConditionalAttribute(Manager manager) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IfCondition createIfCondition(Manager manager, Attribute condition,
+			TFE thenTfe, TFE elseTfe) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
 

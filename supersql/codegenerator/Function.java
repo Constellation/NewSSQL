@@ -239,5 +239,10 @@ public class Function implements Operand {
 		return outsch;
 	}
 	//added by ria 20110913 end
+
+	public void addDeco(String name, String value, String condition) {
+		decos.put(name, value,condition);
+
+	}
 	
 }

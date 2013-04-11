@@ -34,6 +34,13 @@ public class HTML5Attribute extends Attribute {
 		this.html5_env = henv;
 		this.html5_env2 = henv2;
 	}
+	
+	public HTML5Attribute(Manager manager, HTML5Env henv, HTML5Env henv2, boolean b) {
+		super(b);
+		this.manager = manager;
+		this.html5_env = henv;
+		this.html5_env2 = henv2;
+	}
 
 	//Attribute��work�᥽�å�
 	public void work(ExtList data_info) {
@@ -52,7 +59,7 @@ public class HTML5Attribute extends Attribute {
 				html5_env.code.append("<table" + html5_env.getOutlineModeAtt() + " ");
 				html5_env.code.append("class=\"att");
 				//tk start/////////////////////////////////////////////////////////
-				if(html5_env.written_classid.contains(HTML5Env.getClassID(this))){
+				if(html5_env.writtenClassId.contains(HTML5Env.getClassID(this))){
 					//class���äƤ���Ȥ�(ex.TFE10000)�Τ߻���
 					html5_env.code.append(" " + HTML5Env.getClassID(this));
 				}
@@ -71,20 +78,20 @@ public class HTML5Attribute extends Attribute {
 				Log.out("<table class=\"att\"><tr><td>");
 			}
 
-			if (html5_env.link_flag > 0 || html5_env.sinvoke_flag) {
+			if (html5_env.linkFlag > 0 || html5_env.sinvokeFlag) {
 
 				//tk start for draggable div///////////////////////////////////////
 				if(html5_env.draggable)
 				{
-					html5_env.code.append("<div id=\""+html5_env.dragdivid+"\" class=\"draggable\"");
-					Log.out("<div id=\""+html5_env.dragdivid+"\" ");
+					html5_env.code.append("<div id=\""+html5_env.dragDivId+"\" class=\"draggable\"");
+					Log.out("<div id=\""+html5_env.dragDivId+"\" ");
 				}
 				else{
 					//tk end for draggable div/////////////////////////////////////////
 					if(html5_env.isPanel)
 						html5_env.code.append("<div id=\"container\">");
 
-					html5_env.code.append("<A href=\"" + html5_env.linkurl + "\" ");
+					html5_env.code.append("<A href=\"" + html5_env.linkUrl + "\" ");
 
 				}
 				//tk start//////////////////////////////////////////////////////////
@@ -97,15 +104,15 @@ public class HTML5Attribute extends Attribute {
 
 				if(GlobalEnv.isAjax() && html5_env.isPanel)
 				{
-					html5_env.code.append(" onClick =\"return panel('Panel','"+html5_env.ajaxquery+"'," +
-							"'"+html5_env.dragdivid+"','"+html5_env.ajaxcond+"')\"");
+					html5_env.code.append(" onClick =\"return panel('Panel','"+html5_env.ajaxQuery+"'," +
+							"'"+html5_env.dragDivId+"','"+html5_env.ajaxCond+"')\"");
 				}
 				else if(GlobalEnv.isAjax() && !html5_env.draggable)
 				{
 					String target = GlobalEnv.getAjaxTarget();
 					if(target == null)
 					{
-						String query = html5_env.ajaxquery;
+						String query = html5_env.ajaxQuery;
 						if(query.contains("/"))
 						{
 							target = query.substring(query.lastIndexOf("/")+1,query.indexOf(".sql"));
@@ -113,14 +120,14 @@ public class HTML5Attribute extends Attribute {
 						else
 							target = query.substring(0,query.indexOf(".sql"));
 
-						if(html5_env.has_dispdiv)
+						if(html5_env.hasDispDiv)
 						{
 							target = html5_env.ajaxtarget;
 						}
 						Log.out("a target:"+target);
 					}
-					html5_env.code.append(" onClick =\"return loadFile('"+html5_env.ajaxquery+"','"+target+
-							"','"+html5_env.ajaxcond+"',"+html5_env.inEffect+","+html5_env.outEffect+")\"");
+					html5_env.code.append(" onClick =\"return loadFile('"+html5_env.ajaxQuery+"','"+target+
+							"','"+html5_env.ajaxCond+"',"+html5_env.inEffect+","+html5_env.outEffect+")\"");
 
 				}
 
@@ -128,7 +135,7 @@ public class HTML5Attribute extends Attribute {
 				html5_env.code.append(">\n");
 				//tk end////////////////////////////////////////////////////////////
 
-				Log.out("<A href=\"" + html5_env.linkurl + "\">");
+				Log.out("<A href=\"" + html5_env.linkUrl + "\">");
 			}
 
 			//Log.out("data_info: "+this.getStr(data_info));
@@ -145,7 +152,7 @@ public class HTML5Attribute extends Attribute {
 				Log.out(this.getStr(data_info));
 			}
 
-			if (html5_env.link_flag > 0 || html5_env.sinvoke_flag) {
+			if (html5_env.linkFlag > 0 || html5_env.sinvokeFlag) {
 				if(html5_env.draggable)
 					html5_env.code.append("</div>\n");
 				else
@@ -187,7 +194,7 @@ public class HTML5Attribute extends Attribute {
 	public void work_opt(ExtList data_info){
 		StringBuffer string_tmp = new StringBuffer();
 		string_tmp.append("<VALUE");
-		if(html5_env.written_classid.contains(HTML5Env.getClassID(this))){
+		if(html5_env.writtenClassId.contains(HTML5Env.getClassID(this))){
 			//class���äƤ���Ȥ�(ex.TFE10000)�Τ߻���
 			string_tmp.append(" class=\"");
 			string_tmp.append(HTML5Env.getClassID(this));
@@ -195,13 +202,13 @@ public class HTML5Attribute extends Attribute {
 
 		if(decos.containsKey("class")){
 			//class����(ex.class=menu)������Ȥ�
-			if(!html5_env.written_classid.contains(HTML5Env.getClassID(this))){
+			if(!html5_env.writtenClassId.contains(HTML5Env.getClassID(this))){
 				string_tmp.append(" class=\"");
 			}else{
 				string_tmp.append(" ");
 			}
 			string_tmp.append(decos.getStr("class") + "\"");
-		}else if(html5_env.written_classid.contains(HTML5Env.getClassID(this))){
+		}else if(html5_env.writtenClassId.contains(HTML5Env.getClassID(this))){
 			string_tmp.append("\"");
 		}
 
@@ -216,8 +223,8 @@ public class HTML5Attribute extends Attribute {
 		}
 
 		//link and sinvoke
-		if (html5_env.link_flag > 0 || html5_env.sinvoke_flag) {
-			string_tmp.append(" href=\"" + html5_env.linkurl + "\" ");
+		if (html5_env.linkFlag > 0 || html5_env.sinvokeFlag) {
+			string_tmp.append(" href=\"" + html5_env.linkUrl + "\" ");
 			if(decos.containsKey("target")){
 				string_tmp.append(" target=\"" + decos.getStr("target")+"\"");
 			}
@@ -738,7 +745,7 @@ public class HTML5Attribute extends Attribute {
 		String formname = HTML5Env.getFormPartsName();;
 		if(HTML5Env.getSearch()){
 			ret += cond();
-			formname = "value"+HTML5Env.form_parts_number;
+			formname = "value"+HTML5Env.formPartsNumber;
 		}
 		String s = this.getStr(data_info);
 		//tuple_count++;
@@ -852,12 +859,12 @@ public class HTML5Attribute extends Attribute {
 
 	private String cond(){
 		String ret = "";
-		if(HTML5Env.form_parts_number != HTML5Env.searchid){
-			HTML5Env.searchid = HTML5Env.form_parts_number;
-			if(!HTML5Env.cond_name.isEmpty() && !HTML5Env.cond.isEmpty()){
-				ret += "<input type=\"hidden\" name=\"cond_name"+ HTML5Env.form_parts_number +"\" value=\""+ HTML5Env.cond_name +"\" />";
-				ret += "<input type=\"hidden\" name=\"cond"+ HTML5Env.form_parts_number +"\" value=\""+ HTML5Env.cond +"\" />";
-				ret += "<input type=\"hidden\" name=\"value_type"+ HTML5Env.form_parts_number +"\" value=\"String\" />";
+		if(HTML5Env.formPartsNumber != HTML5Env.searchId){
+			HTML5Env.searchId = HTML5Env.formPartsNumber;
+			if(!HTML5Env.condName.isEmpty() && !HTML5Env.cond.isEmpty()){
+				ret += "<input type=\"hidden\" name=\"cond_name"+ HTML5Env.formPartsNumber +"\" value=\""+ HTML5Env.condName +"\" />";
+				ret += "<input type=\"hidden\" name=\"cond"+ HTML5Env.formPartsNumber +"\" value=\""+ HTML5Env.cond +"\" />";
+				ret += "<input type=\"hidden\" name=\"value_type"+ HTML5Env.formPartsNumber +"\" value=\"String\" />";
 			}
 		}
 		return ret;

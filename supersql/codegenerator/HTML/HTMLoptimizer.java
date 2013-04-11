@@ -18,7 +18,7 @@ public class HTMLoptimizer {
 	}
 	
 	StringBuffer htmlcode = new StringBuffer();
-	Element root;
+	protected Element root;
 	
 	// invoke optimizer input:stringbuf (not create xml file)
 	public String generateHtml( StringBuffer filestring) {	

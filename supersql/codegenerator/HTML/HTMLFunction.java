@@ -41,7 +41,7 @@ public class HTMLFunction extends Function {
 
     boolean embedflag = false;
 
-    static String updateFile;
+    protected static String updateFile;
 
     public HTMLFunction()
     {
@@ -120,7 +120,7 @@ public class HTMLFunction extends Function {
 
     }
 
-    private void Func_imagefile() {
+    protected void Func_imagefile() {
 
         /*
          * ImageFile function : <td> <img src="${imgpath}/"+att /> </td>
@@ -143,19 +143,19 @@ public class HTMLFunction extends Function {
 
 
         //tk to make hyper link to image//////////////////////////////////////////////////////////////////////////////////
-        if (html_env.link_flag > 0 || html_env.sinvoke_flag) {
+        if (html_env.linkFlag > 0 || html_env.sinvokeFlag) {
 			//added by goto 20121222 start
         	//以下は、-fのファイル名指定が絶対パスになっている場合の処理(?)
 			//[%連結子] hrefの指定を絶対パスから「相対パス形式」へ変更
 			//20120622の修正だと、「-f フルパスファイル名」を用いている場合、相対パス形式にならない
-			String fileDir = new File(html_env.linkurl).getAbsoluteFile().getParent();
+			String fileDir = new File(html_env.linkUrl).getAbsoluteFile().getParent();
 			
-			if(fileDir.length() < html_env.linkurl.length()
-			&& fileDir.equals(html_env.linkurl.substring(0,fileDir.length()))){
-				String relative_path = html_env.linkurl.substring(fileDir.length()+1);
+			if(fileDir.length() < html_env.linkUrl.length()
+			&& fileDir.equals(html_env.linkUrl.substring(0,fileDir.length()))){
+				String relative_path = html_env.linkUrl.substring(fileDir.length()+1);
 				html_env.code.append("<A href=\"" + relative_path + "\" ");
 			}else
-				html_env.code.append("<A href=\"" + html_env.linkurl + "\" ");
+				html_env.code.append("<A href=\"" + html_env.linkUrl + "\" ");
 			
             //html_env.code.append("<A href=\"" + html_env.linkurl + "\" ");
 			//added by goto 20121222 end
@@ -166,7 +166,7 @@ public class HTMLFunction extends Function {
             	html_env.code.append(" class=\"" + decos.getStr("class") + "\" ");
             html_env.code.append(">\n");
 
-            Log.out("<A href=\"" + html_env.linkurl + "\">");
+            Log.out("<A href=\"" + html_env.linkUrl + "\">");
         }
         //tk/////////////////////////////////////////////////////////////////////////////////
 
@@ -211,7 +211,7 @@ public class HTMLFunction extends Function {
         	html_env2.code.append(" ></VALUE>");
         }
         //tk  to make hyper link to image///////////////////////////////////////////////////////////////////////////////////
-        if (html_env.link_flag > 0 || html_env.sinvoke_flag) {
+        if (html_env.linkFlag > 0 || html_env.sinvokeFlag) {
         	html_env.code.append("</a>");
         }
         //tk///////////////////////////////////////////////////////////////////////////////////
@@ -238,12 +238,12 @@ public class HTMLFunction extends Function {
 //    	return;
 //    }
 
-    private void Func_null() {
+    protected void Func_null() {
         return;
     }
 
     //added by chie 2009 func form submit
-    private void Func_submit() {
+    protected void Func_submit() {
     	String form = new String();
     	boolean openFormInThis = false;
 
@@ -371,7 +371,7 @@ public class HTMLFunction extends Function {
         }
 
         if(!this.getAtt("cond_name").equals("")){
-        	HTMLEnv.cond_name = this.getAtt("cond_name");
+        	HTMLEnv.condName = this.getAtt("cond_name");
         }
         if(!this.getAtt("cond").equals("")){
         	HTMLEnv.cond = this.getAtt("cond");
@@ -554,7 +554,7 @@ public class HTMLFunction extends Function {
                 + "cond=" + this.getAtt("condition");
 		*/
         //change chie
-        html_env.linkurl = this.getAtt("server_path", GlobalEnv
+        html_env.linkUrl = this.getAtt("server_path", GlobalEnv
                 .getInvokeServletPath())
                 + "?"
                 + "config="+path+"/config.ssql"
@@ -564,9 +564,9 @@ public class HTMLFunction extends Function {
                 + "cond=" + this.getAtt("condition");
         // end tk//////////////////////////////////////////////////
 
-        html_env.link_flag=1;
+        html_env.linkFlag=1;
         this.workAtt("default");
-        html_env.link_flag=0;
+        html_env.linkFlag=0;
 
         return;
     }
@@ -579,9 +579,9 @@ public class HTMLFunction extends Function {
     	}
         //String filename = html_env.outfile + "_" + this.getAtt("default") + ".html";
     	att = URLEncoder.encode(att, "UTF-8");
-    	String filename = html_env.outfile + att + ".html";
+    	String filename = html_env.outFile + att + ".html";
 
-        html_env.filename = filename;
+        html_env.fileName = filename;
         //System.out.println(filename);
         return;
     }
@@ -766,7 +766,7 @@ public class HTMLFunction extends Function {
     		}
     	}
 
-    	html_env.embedcount++;
+    	html_env.embedCount++;
 
     	if(file.contains(".sql"))
     	{
@@ -826,7 +826,7 @@ public class HTMLFunction extends Function {
     			}
     			else
     			{
-	    			parser = new SSQLparser(10000*(html_env.embedcount+1));
+	    			parser = new SSQLparser(10000*(html_env.embedCount+1));
 	    		}
 
 	    		CodeGenerator codegenerator = parser.getcodegenerator();
@@ -881,10 +881,10 @@ public class HTMLFunction extends Function {
 					html_env.code.append("</div>");
 				// end ajax /////////////////////////////////////////////////////////////////
 
-				if(html_env.embedcount >= 1)
+				if(html_env.embedCount >= 1)
 				{
 					html_env.css.append(codegenerator.generateCode3(parser,dc.getData()));
-					html_env.cssfile.append(codegenerator.generateCssfile(parser,dc.getData()));
+					html_env.cssFile.append(codegenerator.generateCssfile(parser,dc.getData()));
 				}
 
 				//restore original config
@@ -928,10 +928,10 @@ public class HTMLFunction extends Function {
 
 			        	fe.printStackTrace();
 			        	System.err.println("Error: specified embedtmp outdirectory \""
-			                    + GlobalEnv.getEmbedTmp() + "\" is not found to write " + html_env.filename );
+			                    + GlobalEnv.getEmbedTmp() + "\" is not found to write " + html_env.fileName );
 
 		                GlobalEnv.addErr("Error: specified embedtmp outdirectory \""
-			                    + GlobalEnv.getEmbedTmp() + "\" is not found to write " + html_env.filename);
+			                    + GlobalEnv.getEmbedTmp() + "\" is not found to write " + html_env.fileName);
 	                    //comment out by chie
 			        	//System.exit(-1);
 			        } catch (IOException e) {
@@ -973,7 +973,7 @@ public class HTMLFunction extends Function {
             			Log.out("embed file (html):"+file);
             			dis = new BufferedReader(new FileReader(new File(file)));
             		}catch(IOException ioe){
-            			String path = html_env.outfile;
+            			String path = html_env.outFile;
             			if(path.contains("\\"))
             				path = path.substring(0,path.lastIndexOf("\\")+1);
             			else if(path.contains("/"))
@@ -1054,7 +1054,7 @@ public class HTMLFunction extends Function {
     	if(!is_hidden)
     		html_env.code.append("</td></tr></table>");
 
-    	html_env.embedcount += 1;
+    	html_env.embedCount += 1;
     }
     //tk end////////////////////////////////////////////////////////////////////////////
 
@@ -1110,8 +1110,8 @@ public class HTMLFunction extends Function {
         }
 
         filename.replace("\\\\","\\");
-        html_env.linkurl = filename;
-        html_env.sinvoke_flag = true;
+        html_env.linkUrl = filename;
+        html_env.sinvokeFlag = true;
 
 		}else{
 			String filename = new String();
@@ -1121,24 +1121,24 @@ public class HTMLFunction extends Function {
 	        	filename = action + att;
 
 	        filename.replace("\\\\","\\");
-	        html_env.linkurl = filename;
-	        html_env.sinvoke_flag = true;
+	        html_env.linkUrl = filename;
+	        html_env.sinvokeFlag = true;
 		}
 
         //tk to make hyper link to image///////////////////////////////////////////////////
         //tk to ajax
         if(GlobalEnv.isAjax())
         {
-        	html_env.linkurl =  file+".html";
-        	html_env.ajaxquery = file+".sql";
+        	html_env.linkUrl =  file+".html";
+        	html_env.ajaxQuery = file+".sql";
 //        	html_env.ajaxatt = this.getAtt("att");
-        	html_env.ajaxcond = this.getAtt("ajaxcond")+"="+this.getAtt("att");
+        	html_env.ajaxCond = this.getAtt("ajaxcond")+"="+this.getAtt("att");
 
     		Date d2 = new Date();
     		SimpleDateFormat sdf2 = new SimpleDateFormat("yyyymmddHHmmss");
     		String today2 = sdf2.format(d2);
 
-        	html_env.dragdivid = html_env.ajaxquery+"+"+html_env.ajaxcond+"&"+today2;
+        	html_env.dragDivId = html_env.ajaxQuery+"+"+html_env.ajaxCond+"&"+today2;
 
         	if(decos.containsKey("in"))
         	{
@@ -1182,7 +1182,7 @@ public class HTMLFunction extends Function {
             	{
             		html_env.ajaxtarget = dispdiv;
             	}
-            	html_env.has_dispdiv = true;
+            	html_env.hasDispDiv = true;
             	Log.out("html_env.ajaxtarget:"+html_env.ajaxtarget);
         	}
         	else if(decos.containsKey("dragto"))
@@ -1220,12 +1220,12 @@ public class HTMLFunction extends Function {
         		SimpleDateFormat sdf = new SimpleDateFormat("yyyymmddHHmmss");
         		String today = sdf.format(d1);
 
-        		String scriptname = "drop"+today + html_env.scriptnum;
+        		String scriptname = "drop"+today + html_env.scriptNum;
         		html_env.script.append(scriptname+" = new DragDrop(\""+
-        				html_env.dragdivid+"\", \""+droptarget[0]+"\");\n");
+        				html_env.dragDivId+"\", \""+droptarget[0]+"\");\n");
 
         		Log.out(scriptname+" = new DragDrop(\""+
-        				html_env.dragdivid+"\", \""+droptarget[0]+"\");\n");
+        				html_env.dragDivId+"\", \""+droptarget[0]+"\");\n");
 
         		//for tab
         		html_env.script.append(scriptname+".addToGroup(\"myTab\");\n");
@@ -1235,7 +1235,7 @@ public class HTMLFunction extends Function {
         			html_env.script.append(scriptname+".addToGroup(\""+droptarget[i]+"\");\n");
         		}
 
-        		html_env.scriptnum++;
+        		html_env.scriptNum++;
         	}
         }
         if(this.getArgs().get(0) instanceof FuncArg)
@@ -1248,7 +1248,7 @@ public class HTMLFunction extends Function {
             this.workAtt("default");
         //tk//////////////////////////////////////////////////
 
-        html_env.sinvoke_flag = false;
+        html_env.sinvokeFlag = false;
         return;
     }
 

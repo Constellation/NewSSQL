@@ -70,4 +70,17 @@ public class CSVFactory extends Factory {
 		return new CSVFunction(manager, csv_env, csv_env2);
 	}
 
+	@Override
+	public Attribute createConditionalAttribute(Manager manager) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IfCondition createIfCondition(Manager manager, Attribute condition,
+			TFE thenTfe, TFE elseTfe) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

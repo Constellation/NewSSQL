@@ -79,4 +79,17 @@ public class SWFFactory extends Factory {
 	public Function createFunction(Manager manager) {
 		return new SWFFunction(manager, swf_env);
 	}
+
+	@Override
+	public Attribute createConditionalAttribute(Manager manager) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IfCondition createIfCondition(Manager manager, Attribute condition,
+			TFE thenTfe, TFE elseTfe) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

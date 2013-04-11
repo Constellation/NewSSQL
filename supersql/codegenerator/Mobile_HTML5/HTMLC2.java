@@ -73,6 +73,51 @@ public class HTMLC2 extends Connector {
     	}else divFlg = false;
         
         if(!GlobalEnv.isOpt()){
+        	
+        	//20130330 tab
+        	//tab1
+        	if(decos.containsKey("tab1")){
+            	html_env.code.append("<div data-role=\"content\"> <div id=\"tabs\">\n<ul>\n");
+            	html_env.code.append("	<li><a href=\"#tabs-"+HTMLEnv.tabCount+"\">");
+            	if(!decos.getStr("tab1").equals(""))	html_env.code.append(decos.getStr("tab1"));
+            	else          							html_env.code.append("tab1");
+            	html_env.code.append("</a></li>\n");
+            	html_env.code.append("</ul>\n<div id=\"tabs-"+HTMLEnv.tabCount+"\">\n");
+//            	HTMLEnv.tabFlg = true;
+            }
+        	//tab2〜tab15
+//        	else if(HTMLEnv.tabFlg){
+        	else{
+        		int i=2;
+        		while(i<=HTMLEnv.maxTab){		//HTMLEnv.maxTab=15
+        			//Log.info("i="+i+" !!");
+        			if(decos.containsKey("tab"+i) || (i==2 && decos.containsKey("tab"))){
+    	        		//replace: </ul>の前に<li>〜</li>を付加
+    	        		String a = "</ul>";
+    	        		String b = "	<li><a href=\"#tabs-"+HTMLEnv.tabCount+"\">";
+    	        		if(decos.containsKey("tab"+i))
+	    	        		if(!decos.getStr("tab"+i).equals(""))	b += decos.getStr("tab"+i);
+	    	            	else				            		b += "tab"+i;
+    	        		else
+    	        			if(!decos.getStr("tab").equals(""))		b += decos.getStr("tab");
+	    	            	else				            		b += "tab";
+    	            	b += "</a></li>\n";
+    	            	HTMLManager.replaceCode(html_env, a, b+a);
+    	            	
+    	            	//replace: 最後の</div></div></div>カット
+    	        		HTMLManager.replaceCode(html_env, "</div></div></div>", "");
+    	        		
+    	        		//replace: 不要な「<div class=〜」をカット
+    	        		HTMLManager.replaceCode(html_env, "<div class=\""+HTMLEnv.getClassID(this)+" \">", "");
+    	        		
+    	            	html_env.code.append("<div id=\"tabs-"+HTMLEnv.tabCount+"\">\n");
+    	            	break;
+    	        	}
+        			i++;
+//        			if(i>HTMLEnv.maxTab)	HTMLEnv.tabFlg =false;
+        		}
+        	}
+        	
         	//20130312 collapsible
         	if(decos.containsKey("collapse")){
             	html_env.code.append("<DIv data-role=\"collapsible\" data-content-theme=\"c\" style=\"padding: 0px 12px;\">\n");
@@ -202,8 +247,8 @@ public class HTMLC2 extends Connector {
             
             //20130312 collapsible
 	      	if(decos.containsKey("collapse"))
-	          	html_env.code.append("<p>");
-	        else if(!tableFlg) 
+	          	html_env.code.append("<p>\n");
+	      	else if(!tableFlg) 
 	            //20130309
 	            //x html_env.code.append("	<DIV Class=\"ui-grid-a\">	<div class=\"ui-block-a\">");		
 	            html_env.code.append("<div class=\""+HTMLEnv.getClassID(tfe)+" \">\n");
@@ -233,17 +278,18 @@ public class HTMLC2 extends Connector {
 	            //x html_env.code.append("	</td></tr></Table>");
 	      	}
           
-            //20130312 collapsible
-	      	if(decos.containsKey("collapse"))
-	          	html_env.code.append("</p>");
-	        else if(!tableFlg)
-	        	html_env.code.append("\n</div>");
-            
-            html_env.code.append("\n");		//20130309
             //20130314  table
 	      	if(tableFlg)
 	      		html_env.code.append("</TD></TR>\n");
 	      	//Log.out("</TD></TR>");
+	      	
+            //20130312 collapsible
+	      	if(decos.containsKey("collapse"))
+	          	html_env.code.append("</p>\n");
+	      	else if(!tableFlg)
+	        	html_env.code.append("\n</div>");
+            
+            html_env.code.append("\n");		//20130309
 
             i++;
 
@@ -261,17 +307,31 @@ public class HTMLC2 extends Connector {
         		HTMLEnv.setSearch(false);
         }
 
-        //20130312 collapsible
-      	if(decos.containsKey("collapse")){
-          	html_env.code.append("</DIv>");
-        }
-      	
       	//20130314  table
       	if(tableFlg){
       		html_env.code.append("</TABLE>\n");		//20130309
       		tableFlg = false;
       		table0Flg = false;		//20130325 table0
       	}
+      	
+        //20130312 collapsible
+      	if(decos.containsKey("collapse")){
+          	html_env.code.append("</DIv>");
+        }
+      	
+    	//20130330 tab
+//    	if(HTMLEnv.tabFlg){
+    		int a=1;
+	    	while(a<=HTMLEnv.maxTab){
+	    		//Log.info("a="+a);
+	    		if(decos.containsKey("tab"+a) || (a==1 && decos.containsKey("tab"))){
+		    		html_env.code.append("</div></div></div>\n");
+		    		HTMLEnv.tabCount++;
+		    		break;
+		    	}
+		    	a++;
+	    	}
+//    	}
       	
       	if(divFlg)	divFlg = false;		//20130326  div
 

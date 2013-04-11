@@ -24,6 +24,8 @@ public class CodeGenerator{
 	public int TFEid;
 
 	public Manager manager;
+	
+	private String media;
 	/**
 	 * コンストラクタ
 	 */
@@ -48,6 +50,7 @@ public class CodeGenerator{
 	 * 指定さ?た媒体によって笹卮を委譲す?ための工?(Factory)? 生成して配置す?
 	 */
 	public void setFactory(String media) {
+		this.media = media;
 		if (media.toLowerCase().equals("pdf")) {
 			factory = new PDFFactory();
 		} else if (media.toLowerCase().equals("html")) {
@@ -135,6 +138,18 @@ public class CodeGenerator{
 	    Attribute attribute = factory.createAttribute(manager);
 		attribute.setId(TFEid++);
 		return attribute;
+	}
+	
+	public Attribute createConditionalAttribute(){
+		Attribute condAttribute = factory.createConditionalAttribute(manager);
+		condAttribute.setId(TFEid++);
+		return condAttribute;
+	}
+	
+	public IfCondition createIfCondition(Attribute condition, TFE thenTfe, TFE elseTfe){
+		IfCondition ifCondition = factory.createIfCondition(manager, condition, thenTfe, elseTfe);
+		ifCondition.setId(TFEid++);
+		return ifCondition;
 	}
 
 	/**
@@ -270,6 +285,22 @@ public class CodeGenerator{
 		else
 			return manager.generateCssfile(tfe_info, data_info);
 
+	}
+
+	public Factory getFactory() {
+		return factory;
+	}
+
+	public String getMedia() {
+		return media;
+	}
+
+	public void setMedia(String media) {
+		this.media = media;
+	}
+
+	public void setFactory(Factory factory) {
+		this.factory = factory;
 	};
 
 	//tk end///////////////////////////////////////////////////////////////////////////////

@@ -13,7 +13,7 @@ public class HTMLC2 extends Connector {
     HTMLEnv html_env;
     HTMLEnv html_env2;
 
-    //¥³¥ó¥¹¥È¥é¥¯¥¿
+    //ï¿½ï¿½ï¿½ó¥¹¥È¥é¥¯ï¿½ï¿½
     public HTMLC2(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
         this.manager = manager;
         this.html_env = henv;
@@ -51,21 +51,21 @@ public class HTMLC2 extends Connector {
         
         if(!GlobalEnv.isOpt()){
         	html_env.code.append("<TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
-        	html_env.code.append(html_env.tableborder+ "\" ");
+        	html_env.code.append(html_env.tableBorder+ "\" ");
         	html_env.code.append(html_env.getOutlineMode());
-        	if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
+        	if(html_env.writtenClassId.contains(HTMLEnv.getClassID(this))){
         		html_env.code.append(" class=\"");
         		html_env.code.append(HTMLEnv.getClassID(this));
         	}
 
         	if(decos.containsKey("class")){
-        		if(!html_env.written_classid.contains(HTMLEnv.getClassID(this))){
+        		if(!html_env.writtenClassId.contains(HTMLEnv.getClassID(this))){
         			html_env.code.append(" class=\"");
         		}else{
         			html_env.code.append(" ");
         		}
         		html_env.code.append(decos.getStr("class") + "\" ");   	
-        	}else if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
+        	}else if(html_env.writtenClassId.contains(HTMLEnv.getClassID(this))){
         		html_env.code.append("\" ");
         	}
         	html_env.code.append(">");
@@ -97,25 +97,25 @@ public class HTMLC2 extends Connector {
         		if(decos.containsKey("border")){
         			html_env2.code.append(" border=\"" + decos.getStr("border").replace("\"", "") + "\"");
         		}else{
-            		html_env2.code.append(" border=\"" + html_env.tableborder.replace("\"", "") +"\"");
+            		html_env2.code.append(" border=\"" + html_env.tableBorder.replace("\"", "") +"\"");
         		}
 	        	if(decos.containsKey("tableborder")){
         			html_env2.code.append(" tableborder=\"" + decos.getStr("tableborder").replace("\"", "") + "\"");
         		}
         	}
-        	if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
+        	if(html_env.writtenClassId.contains(HTMLEnv.getClassID(this))){
         		html_env2.code.append(" class=\"");
         		html_env2.code.append(HTMLEnv.getClassID(this));
         	}
 
         	if(decos.containsKey("class")){
-        		if(!html_env.written_classid.contains(HTMLEnv.getClassID(this))){
+        		if(!html_env.writtenClassId.contains(HTMLEnv.getClassID(this))){
         			html_env2.code.append(" class=\"");
         		}else{
         			html_env2.code.append(" ");
         		}
         		html_env2.code.append(decos.getStr("class"));        	
-        	}else if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
+        	}else if(html_env.writtenClassId.contains(HTMLEnv.getClassID(this))){
         		html_env2.code.append("\" ");
         	}
         	
@@ -159,7 +159,7 @@ public class HTMLC2 extends Connector {
 
             this.worknextItem();
 
-            if (html_env.not_written_classid.contains(classid)){
+            if (html_env.notWrittenClassId.contains(classid)){
             	html_env.code.delete(html_env.code.indexOf(classid),html_env.code.indexOf(classid)+classid.length()+1);
             }
             

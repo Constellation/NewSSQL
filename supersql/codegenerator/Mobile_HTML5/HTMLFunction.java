@@ -411,7 +411,7 @@ public class HTMLFunction extends Function {
     //added by goto 20130308 start  "urlリンク"  url(),anchor(),a()
     /** url関数: url( name/button-name/button-url, url, type(bt/button/img/image) )
      *          @{ width=~, height=~, transition=~ } **/
-    /*    pop("title", "detail/imgURL", int type)    */
+    /*    url("title", "detail/imgURL", int type), anchor(), a()    */
     /*    <type:1> url(リンク元の名前, リンク先URL) <=> url(リンク元の名前, リンク先URL, 1)    */
     /*    <type:2> url(画像URL, リンク先URL, 2)        */
     /*    <type:3> url(ボタンの名前, リンク先URL, 3)        */
@@ -429,12 +429,16 @@ public class HTMLFunction extends Function {
         		fa3 = (FuncArg) this.getArgs().get(2);
         		type = fa3.getStr();
         		
-        		//urlモバイルボタン
-            	if(type.equals("3") || type.equals("mbutton") || type.equals("mbt")){
+        		//type=1 -> 文字
+        		if(type.equals("1") || type.equals("text") || type.equals("")){
+        			statement = "<a href=\""+url+"\""+transition()+prefetch()+">"+name+"</a>";
+        		
+        		//type=2 -> urlモバイルボタン
+        		}else if(type.equals("3") || type.equals("button") || type.equals("bt")){
             		statement = "<a href=\""+url+"\" data-role=\"button\""+transition()+prefetch()+">"+name+"</a>";
 
             	//urlボタン(デスクトップ・モバイル共通)
-            	}else if(type.equals("button") || type.equals("bt")){
+            	}else if(type.equals("dbutton") || type.equals("dbt")){
             		statement = "<input type=\"button\" value=\""+name+"\" onClick=\"location.href='"+url+"'\"";
             		
             		//urlボタン width,height指定時の処理
@@ -446,7 +450,7 @@ public class HTMLFunction extends Function {
                 	}
             		statement += ">";
             	
-            	//url画像
+            	//type=3 -> url画像
             	}else if(type.equals("2") || type.equals("image") || type.equals("img")){
             		statement = "<a href=\""+url+"\""+transition()+prefetch()+"><img src=\""+name+"\"";
     		        
@@ -459,10 +463,11 @@ public class HTMLFunction extends Function {
         			if(decos.containsKey("height"))	statement += " height="+decos.getStr("height").replace("\"", "");	//100; ";
         			statement += "></a>";
             	}
+        		
         	}catch(Exception e){		//引数2つの場合
         		statement = "<a href=\""+url+"\""+transition()+prefetch()+">"+name+"</a>";
         	}
-
+        	
     	}catch(Exception e){	//引数1つの場合
     		url = fa1.getStr();
     		statement = "<a href=\""+url+"\""+transition()+prefetch()+">"+url+"</a>";
@@ -560,7 +565,7 @@ public class HTMLFunction extends Function {
     	html_env.code.append("\n");
     	html_env.code.append("<div class=\"ui-btn-right\">\n");
     	html_env.code.append("	<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>\n");
-    	html_env.code.append("		<a href=\"http://www.yahoo.co.jp/\" data-role=\"button\" data-icon=\"home\" data-iconpos=\"notext\" data-mini=\"true\"></a>\n");
+    	html_env.code.append("		<a href=\"index.html\" data-role=\"button\" data-icon=\"home\" data-iconpos=\"notext\" data-mini=\"true\"></a>\n");
     	html_env.code.append("	</td><td>\n");
     	html_env.code.append("		<form style=\"display:inline;\">\n");
     	html_env.code.append("			<input type=\"button\" data-icon=\"forward\" data-iconpos=\"notext\" data-mini=\"true\" onClick=\"history.forward()\" >\n");
@@ -606,7 +611,7 @@ public class HTMLFunction extends Function {
     
     
     //added by goto 20130313 start  "popup"
-    /*	pop("title","detail/imgURL",int type)	*/
+    /*	pop("title","detail/imgURL",int type), popup()	*/
     /*	<type:1> pop("title","detail") <=> pop("title","detail",1)	*/
     /*	<type:2> pop("title","image URL",2)		*/
     private void Func_pop() {
@@ -625,11 +630,11 @@ public class HTMLFunction extends Function {
         		type = fa3.getStr();
         		
         		//type=1 -> 文字
-        		if(type.equals("1") || type.equals("")){
+        		if(type.equals("1") || type.equals("text") || type.equals("")){
         			type1Flg = 1;
         			
         		//type=2 -> imageFile
-        		}else if(type.equals("2")){
+        		}else if(type.equals("2") || type.equals("image") || type.equals("img")){
         			html_env.code.append("	<a href=\"#popup"+popCount+"\" data-rel=\"popup\" data-role=\"button\" data-icon=\"arrow-r\" data-inline=\"true\" class=\"ui-li-inside\">"+( (!title.equals(""))? title : "Photo" )+"</a>\n");
         	    	//TODO: data-transition  transition()使用可能
         			html_env.code.append("	<div data-role=\"popup\" id=\"popup"+popCount+"\" data-transition=\"pop\" style=\"width:95%;\" data-overlay-theme=\"a\">\n");

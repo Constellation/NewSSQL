@@ -38,10 +38,10 @@ public class HTMLG2 extends Grouper {
         
         if(!GlobalEnv.isOpt()){
 	        html_env.code.append("<TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
-	        html_env.code.append(html_env.tableborder + "\" ");
-	        Log.out("embed flag :" + html_env.embedflag);        
+	        html_env.code.append(html_env.tableBorder + "\" ");
+	        Log.out("embed flag :" + html_env.embedFlag);        
 	        html_env.code.append("class=\"");
-	        if(html_env.embedflag)
+	        if(html_env.embedFlag)
 	        	html_env.code.append(" embed ");
 	        
 	        if(decos.containsKey("outborder"))
@@ -51,8 +51,8 @@ public class HTMLG2 extends Grouper {
 	        	//class=menu‚È‚Ç‚ÌŽw’è‚ª‚ ‚Á‚½‚ç•t‰Á
 	        	html_env.code.append(decos.getStr("class") + " ");
 	        }
-	        if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
-	        	//TFE10000‚È‚Ç‚ÌŽw’è‚ª‚ ‚Á‚½‚ç•t‰Á
+	        if(html_env.writtenClassId.contains(HTMLEnv.getClassID(this))){
+	        	//TFE10000ï¿½È‚Ç‚ÌŽwï¿½è‚ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½tï¿½ï¿½
 	        	html_env.code.append(HTMLEnv.getClassID(this) + " ");
 	        }
 	        html_env.code.append("nest\"");
@@ -68,7 +68,7 @@ public class HTMLG2 extends Grouper {
         //html_env2.code.append("<tfe type=\"connect\" dimension=\"2\" >");
         int i = 0;
         while (this.hasMoreItems()) {
-            html_env.glevel++;
+            html_env.gLevel++;
             Log.out("selectFlg"+HTMLEnv.getSelectFlg());
             Log.out("selectRepeatFlg"+HTMLEnv.getSelectRepeat());
             Log.out("formItemFlg"+HTMLEnv.getFormItemFlg());
@@ -86,7 +86,7 @@ public class HTMLG2 extends Grouper {
             
             if(GlobalEnv.isOpt() && !HTMLEnv.getSelectRepeat()){
 	            html_env2.code.append("<tfe type=\"repeat\" dimension=\"2\"");
-	            html_env2.code.append(" border=\"" + html_env.tableborder + "\"");
+	            html_env2.code.append(" border=\"" + html_env.tableBorder + "\"");
 	
 	            if (decos.containsKey("tablealign") )
 	            	html_env2.code.append(" align=\"" + decos.getStr("tablealign") +"\"");
@@ -99,8 +99,8 @@ public class HTMLG2 extends Grouper {
 	            	html_env2.code.append(" class=\"");
 		        	html_env2.code.append(decos.getStr("class") + " ");
 		        }
-	            if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
-		        	//TFE10000‚È‚Ç‚ÌŽw’è‚ª‚ ‚Á‚½‚ç•t‰Á
+	            if(html_env.writtenClassId.contains(HTMLEnv.getClassID(this))){
+		        	//TFE10000ï¿½È‚Ç‚ÌŽwï¿½è‚ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½tï¿½ï¿½
 	            	if(decos.containsKey("class")){
 	            		html_env2.code.append(HTMLEnv.getClassID(this) + "\"");
 	            	}else{
@@ -125,7 +125,7 @@ public class HTMLG2 extends Grouper {
 
             this.worknextItem();
             
-            if (html_env.not_written_classid.contains(classid) && html_env.code.indexOf(classid) >= 0 ){
+            if (html_env.notWrittenClassId.contains(classid) && html_env.code.indexOf(classid) >= 0 ){
             	html_env.code.delete(html_env.code.indexOf(classid),html_env.code.indexOf(classid)+classid.length()+1);
             }
             
@@ -140,7 +140,7 @@ public class HTMLG2 extends Grouper {
             }
       
             i++;
-            html_env.glevel--;
+            html_env.gLevel--;
 
         }
 

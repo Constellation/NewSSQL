@@ -102,8 +102,14 @@ public class HTMLEnv extends LocalEnv {
 
     String linkurl;
     
-    static int uiGridCount = 0;		//20130314  C1,G1 ui-Grid用
+    static int uiGridCount = 0;		//20130314  C1 ui-Grid用
+    static int uiGridCount2 = 0;	//20130314  G1 ui-Grid用
     //static boolean tableFlg = false;		//20130314  table
+    
+    static int tabCount = 1;			//20130330  tab用
+    //static boolean tabFlg = false;		//20130330  tab用
+    static int maxTab = 15;				//20130330  tab用
+    
 
     // ��?�Ѥ�CSS CLASS����?��?
     private String KeisenMode = "";
@@ -228,11 +234,13 @@ public class HTMLEnv extends LocalEnv {
         	
             //added by goto 20121217 start
         	header.append("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no\"/>\n");
+        	header.append("<link rel=\"stylesheet\" href=\"http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css\"/>\n");
             header.append("<link rel=\"stylesheet\" href=\"http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css\"/>\n");
             //header.append("<link rel=\"stylesheet\" href="css/custom.css\"/>\n");
             //20130206
             //※※　要注意　※※　 jquery.jsより先にjquerymobile.jsをインポートすると、ボタン等の表示がうまくいかなくなる!!
             header.append("<script src=\"http://code.jquery.com/jquery-1.7.1.min.js\"></script>\n");
+            header.append("<script src=\"http://code.jquery.com/ui/1.9.2/jquery-ui.min.js\"></script>\n");
             header.append("<script src=\"http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js\"></script>\n");
             //header.append("<script src=\"js/config.js\"></script>\n");
 
@@ -407,7 +415,14 @@ public class HTMLEnv extends LocalEnv {
               			"	if (typeof photoSwipeInstance != \"undefined\" && photoSwipeInstance != null) {\n" +
               			"		window.Code.PhotoSwipe.detatch(photoSwipeInstance);\n" +
               			"	}\n" +
-              			"});");
+              			"});\n");
+              	
+              	//added by goto 20130330
+              	//tab
+              	pw.println("$(document).ready(function() {\n" +
+              			"	$( \"[id=tabs]\" ).tabs();\n" +
+//              			"	$( \"#tabs\" ).tabs();\n" +
+              			"});\n");
               
               	// 後始末
               	pw.close();
