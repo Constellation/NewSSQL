@@ -192,28 +192,39 @@ public class HTMLG2 extends Grouper {
 	        	if(table0Flg)	html_env.code.append("0" + "\"");	//20130325 table0
 	        	else			html_env.code.append(html_env.tableborder + "\"");
 //		        html_env.code.append(html_env.tableborder + "\" ");
-		        Log.out("embed flag :" + html_env.embedflag);        
-//		        html_env.code.append(" class=\"");
-		        if(html_env.embedflag)
-		        	html_env.code.append(" embed ");
-		        
-		        if(decos.containsKey("outborder"))
-		        	html_env.code.append(" noborder ");
-		        
-		        if(decos.containsKey("class")){
-		        	//class=menu�Ȃǂ̎w�肪��������t��
-		        	html_env.code.append(" class=\"");
-		        	html_env.code.append(decos.getStr("class") + " ");
-		        }
-		        if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
-		        	//TFE10000�Ȃǂ̎w�肪��������t��
-		        	html_env.code.append(" class=\"");
-		        	html_env.code.append(HTMLEnv.getClassID(this) + " ");
-		        }
-	//	        html_env.code.append("nest\"");
-	//	        
-	//	        html_env.code.append(html_env.getOutlineMode());
-		 
+	        	
+	        	//classid������Ȥ��ˤ�������
+	        	if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
+	        		html_env.code.append(" class=\"");
+	        		html_env.code.append(HTMLEnv.getClassID(this));
+	        	}
+	        	if(decos.containsKey("class")){
+	        		if(!html_env.written_classid.contains(HTMLEnv.getClassID(this)))
+	        			html_env.code.append(" class=\"");
+	        		else
+	        			html_env.code.append(" ");
+	        		html_env.code.append(decos.getStr("class")+"\" ");
+	        	}else if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
+	        		html_env.code.append("\" ");
+	        	}
+//		        Log.out("embed flag :" + html_env.embedflag);        
+////		        html_env.code.append(" class=\"");
+//		        if(html_env.embedflag)
+//		        	html_env.code.append(" embed ");
+//		        if(decos.containsKey("outborder"))
+//		        	html_env.code.append(" noborder ");
+//		        if(decos.containsKey("class")){
+//		        	//class=menu�Ȃǂ̎w�肪��������t��
+//		        	html_env.code.append(" class=\"");
+//		        	html_env.code.append(decos.getStr("class") + "\"");
+//		        }
+//		        if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
+//		        	//TFE10000�Ȃǂ̎w�肪��������t��
+//		        	html_env.code.append(" class=\"");
+//		        	html_env.code.append(HTMLEnv.getClassID(this) + "\"");
+//		        }
+//	//	        html_env.code.append("nest\"");
+//	//	        html_env.code.append(html_env.getOutlineMode());
 		        html_env.code.append(">\n");		//added '\n' 20130110
         	}
         }
