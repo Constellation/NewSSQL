@@ -1,5 +1,12 @@
 package supersql.codegenerator.Mobile_HTML5;
 
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.util.Vector;
 
 import supersql.codegenerator.*;
@@ -23,6 +30,31 @@ public class HTMLG2 extends Grouper {
     static boolean tableFlg = false;		//20130314  table
     static boolean table0Flg = false;		//20130325  table0
     static boolean divFlg = false;			//20130326  div
+    
+    //added by goto 20130413  "row Prev/Next"
+    int j = 1;
+    int row = 1;		//1ページごとの行数指定 (Default: 1, range: 1〜)
+    int rowNum = 0;
+//    static int j = 1;
+//    static int row = 1;		//1ページごとの行数指定 (Default: 1, range: 1〜)
+//    static int rowNum = 0;
+    
+    static int rowFileNum = 1;
+    static boolean rowFlg = false;
+    private String backfile = new String();
+    private int countinstance = 0;
+    StringBuffer codeBuf = new StringBuffer();
+    
+//    static int codeCount = 0;	//対策
+//    static StringBuffer[] codeArray = new StringBuffer[100];	//対策
+//    
+//	static String parentfile = null;
+//    static String parentnextbackfile = null;
+//    static StringBuffer parentcode = null;
+//    static StringBuffer parentcss = null;
+//    static StringBuffer parentheader = null;
+//    static StringBuffer parentfooter = null;
+    
 
     //���󥹥ȥ饯��
     public HTMLG2(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
@@ -35,8 +67,40 @@ public class HTMLG2 extends Grouper {
     //G2��work�᥽�å�
     @Override
 	public void work(ExtList data_info) {
+    	
+    	//added by goto 20130413  "row Prev/Next"
+    	//1ページごとの行数指定 (Default: 1, range: 1〜)
+    	String parentfile = null;
+        String parentnextbackfile = null;
+        StringBuffer parentcode = null;
+        StringBuffer parentcss = null;
+        StringBuffer parentheader = null;
+        StringBuffer parentfooter = null;
+        if(decos.containsKey("row")){
+//Log.i("first in!!");
+        	parentfile = html_env.filename;
+            parentnextbackfile = html_env.nextbackfile;
+            parentcode = html_env.code;
+            parentcss = html_env.css;
+            parentheader = html_env.header;
+            parentfooter = html_env.footer;
+	        html_env.css = new StringBuffer();
+	        html_env.header = new StringBuffer();
+	        html_env.footer = new StringBuffer();
+        	//Log.info("row:"+decos.getStr("row").replace("\"", ""));
+        	row = Integer.parseInt(decos.getStr("row").replace("\"", ""));
+        	if(row<1){	//範囲外のとき
+        		Log.info("<<Warning>> row指定の範囲は、1〜です。指定された「row="+row+"」は使用できません。デフォルト値(1)を使用します。");
+        		row = 1;
+        	}
+//            Log.info("1:	"+decos+"	"+codeCount);
+//        	//decos.remove("row");	//対策
+        	rowFlg = true;
+        }
+////        codeCount++;
+//        Log.info("2:	"+decos+"	"+codeCount+"	"+rowFlg);
 
-        Vector vector_local = new Vector();
+//        Vector vector_local = new Vector();
  
         Log.out("------- G2 -------");
         this.setDataList(data_info);
@@ -119,7 +183,6 @@ public class HTMLG2 extends Grouper {
             		html_env.code.append("<h1>Contents</h1>\n");
             }
         	
-        	
         	//20130309
         	//20130314  table
         	if(tableFlg){
@@ -169,6 +232,25 @@ public class HTMLG2 extends Grouper {
         	}
         	
             html_env.glevel++;
+            
+            //added by goto 20130413  "row Prev/Next"
+            if(rowFlg){
+//            	codeArray[codeCount]=html_env.code;
+//対策	        
+//            	if(codeCount==1)	Log.i(html_env.code);
+            	html_env.code = new StringBuffer();
+//            	//if(codeCount>0) html_env.code.append(codeArray[codeCount-1]);
+////if(codeCount==0)
+//	codeCount++;
+
+            	backfile = html_env.nextbackfile;
+                html_env.countfile++;
+                countinstance++;
+                html_env.filename = html_env.outfile + "_row" + rowFileNum + "_" + j + ".html";
+                html_env.nextbackfile = html_env.linkoutfile + "_row" + rowFileNum + "_" + j + ".html";
+                html_env.setOutlineMode();
+            }
+            
             Log.out("selectFlg"+HTMLEnv.getSelectFlg());
             Log.out("selectRepeatFlg"+HTMLEnv.getSelectRepeat());
             Log.out("formItemFlg"+HTMLEnv.getFormItemFlg());
@@ -265,12 +347,68 @@ public class HTMLG2 extends Grouper {
     	      	if(decos.containsKey("collapse"))
     	          	html_env.code.append("</p>\n");
             }
-      
+            
+            
             i++;
             html_env.glevel--;
-
+            
+            //added by goto 20130413  "row Prev/Next"
+            if(rowFlg){
+            	codeBuf.append(html_env.code);
+            	if((rowNum+1)%row==0){
+	                createHTMLfile();
+//Log.i(codeBuf);	
+	                j++;
+	                codeBuf = new StringBuffer();
+                }
+                rowNum++;
+            }
         }
-
+        
+        //added by goto 20130413  "row Prev/Next"
+        if(rowFlg){
+        	if(rowNum%row!=0){	//最後の child HTML を create
+	            //codeBuf.append(html_env.code);
+	            createHTMLfile();
+        	}
+//Log.info("last in!!");
+//Log.info("parentfile: "+parentfile);
+        	//ファイル名・コード等をparent HTMLのものへ戻す
+        	html_env.filename = parentfile;
+        	html_env.code = parentcode;
+            html_env.css = parentcss;
+            html_env.header = parentheader;
+            html_env.footer = parentfooter;
+            html_env.nextbackfile = parentnextbackfile;
+            Log.out("TFEId = " + HTMLEnv.getClassID(this));
+            html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
+//Log.info(row+"	"+rowNum);
+            //parent HTMLへ<iframe>等を埋め込む
+            int first = 1, last = ((rowNum%row!=0)? (rowNum/row+1):(rowNum/row));
+            String divID="rowDiv"+rowFileNum+"-";
+            String iframeName ="rowIframe"+rowFileNum;
+            String HTMLfilename=html_env.filename.substring(0,html_env.filename.indexOf(".html"));
+            if(html_env.linkoutfile.contains("/"))
+            	HTMLfilename = HTMLfilename.substring(HTMLfilename.lastIndexOf("/")+1);
+            HTMLfilename = HTMLfilename+"_row"+rowFileNum+"_";
+            html_env.code.append(
+            		"	<script type=\"text/javascript\">\n" +
+            		"		rowIframePrevNext("+first+", "+last+", '"+divID+"', '"+iframeName+"', '"+HTMLfilename+"', '"+row+"', '"+rowNum+"');\n" +
+            		"	</script>\n" +
+            		"	<hr>\n" +
+            		"	<div id=\""+divID+"1\"></div>\n" +
+            		"	<hr>\n" +
+            		"	<iframe src=\""+HTMLfilename+"1.html\" id=\"rowIframeAutoHeight"+rowFileNum+"\" name=\""+iframeName+"\" style=\"border:0; width:90%; overflow:hidden;\">\n" +
+            		"	</iframe>\n" +
+            		"	<script type=\"text/javascript\">\n" +
+            		"	    $('#rowIframeAutoHeight"+rowFileNum+"').iframeAutoHeight();\n" +
+//            		"	    jQuery('#iframe_autoheight"+rowFileNum+"').iframeAutoHeight();\n" +
+//            		"	    jQuery('[id=iframe_autoheight"+rowFileNum+"]').iframeAutoHeight();\n" +
+            		"	</script>\n" +
+            		"	<hr>\n" +
+            		"	<div id=\""+divID+"2\"></div>\n" +
+            		"	<hr>\n");
+        }
         
         if(HTMLEnv.getSelectRepeat()){		
 	        if(HTMLEnv.getSelectRepeat()){
@@ -315,10 +453,45 @@ public class HTMLG2 extends Grouper {
         
         if(divFlg)	divFlg = false;		//20130326  div
 
+        //added by goto 20130413  "row Prev/Next"
+        if(rowFlg){
+        	rowFileNum++;
+        	rowFlg = false;
+        }
+
         Log.out("TFEId = " + HTMLEnv.getClassID(this));
         //html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
         
-   }
+    }
+    
+    //added by goto 20130413  "row Prev/Next"
+    private void createHTMLfile(){
+    	html_env.getHeader();
+        html_env.getFooter();
+        //Log.info(html_env.filename);
+    	
+        try {
+    		PrintWriter pw;
+            if (html_env.charset != null)
+	        	pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
+	        			new FileOutputStream(html_env.filename),html_env.charset)));
+            else
+            	pw = new PrintWriter(new BufferedWriter(new FileWriter(
+        	                    html_env.filename)));
+            pw.println(html_env.header);
+//            pw.println(html_env.code);
+            pw.println(codeBuf);
+            //delete: 最後の<BR><BR>カット
+            int a = html_env.footer.lastIndexOf("<BR><BR>");
+            int b = a+"<BR><BR>".length();
+            //Log.info(html_env.footer.delete(html_env.footer.indexOf("<BR><BR>"),html_env.footer.lastIndexOf("<BR><BR>")));
+            //Log.info(html_env.footer.delete(a,b));
+            pw.println(html_env.footer.delete(a,b));
+            pw.close();
+            html_env.header = new StringBuffer();
+            html_env.footer = new StringBuffer();
+        } catch (Exception e) { }
+    }
 
     @Override
 	public String getSymbol() {

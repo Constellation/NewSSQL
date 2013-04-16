@@ -136,7 +136,7 @@ public class HTMLC2 extends Connector {
         	//20130314  table
         	if(tableFlg){
         		//added 20130314  table width="95%" align="center"
-        		html_env.code.append("<TABLE 0 width=\"100%\" align=\"center\" cellSpacing=\"0\" cellPadding=\"0\" border=\"");
+        		html_env.code.append("<TABLE width=\"100%\" align=\"center\" cellSpacing=\"0\" cellPadding=\"0\" border=\"");
         		//html_env.code.append("<TABLE width=\"95%\" align=\"center\" cellSpacing=\"0\" cellPadding=\"0\" border=\"");
 //	        	html_env.code.append("<TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
         		//html_env.code.append(((!table0Flg)? html_env.tableborder : "0") + "\"");
@@ -299,9 +299,11 @@ public class HTMLC2 extends Connector {
             //20130306
             //20130314  table
 	      	if(tableFlg){
+	      		try{
 	            if (html_env.not_written_classid.contains(classid)){
 	            	html_env.code.delete(html_env.code.indexOf(classid),html_env.code.indexOf(classid)+classid.length()+1);
 	            }
+	      		}catch(Exception e){}
 	            //x html_env.code.append("	</td></tr></Table>");
 	      	}
           

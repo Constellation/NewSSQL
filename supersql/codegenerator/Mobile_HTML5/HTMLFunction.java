@@ -390,7 +390,7 @@ public class HTMLFunction extends Function {
     	}else if(button_media.equals("twitter")){		//ex. button("twitter")
     		// twitterボタンの処理
 //    		statement = "<a href=\"https://twitter.com/share\" class=\"twitter-share-button\" data-text=\"Twitter\" data-lang=\"ja\" data-size=\"small\">Tweet</a>";
-    		statement = "<table data-inline=\"true\"><tr valign=\"middle\"><td><a href=\"https://twitter.com/share\" class=\"twitter-share-button\" data-text=\"Twitter\" data-lang=\"ja\" data-size=\"small\">Tweet</a></td></tr></table>";
+    		statement = "<table data-inline=\"true\"><tr valign=\"middle\"><td><a href=\"https://twitter.com/share\" class=\"twitter-share-button\" data-text=\"Twitter\" data-lang=\"ja\" data-size=\"small\" target=\"_blank\">Tweet</a></td></tr></table>";
     		//statement = "<a href=\"https://twitter.com/share\" class=\"twitter-share-button\" data-text=\"Twitter\" data-lang=\"ja\" data-size=\"small\">Tweet</a>";
     	}else if(button_media.equals("sns")){		//ex. button("sns")
     		statement += "<DIV class=\"ui-grid-a\">\n<div class=\"ui-block-a\">";
@@ -398,7 +398,7 @@ public class HTMLFunction extends Function {
     		statement += "<table><tr valign=\"middle\"><td><iframe class=\"like-btn\" scrolling=\"no\" frameborder=\"0\" style=\"border:none; overflow:hidden; width:200px; height:21px;\" allowTransparency=\"true\"></iframe></td></tr></table>\n";
     		statement += "</div>\n<div class=\"ui-block-b\">\n";
 //    		statement += "<a href=\"https://twitter.com/share\" class=\"twitter-share-button\" data-text=\"Twitter\" data-lang=\"ja\" data-size=\"small\">Tweet</a></td></tr></table>\n";
-    		statement += "<table><tr valign=\"middle\"><td><a href=\"https://twitter.com/share\" class=\"twitter-share-button\" data-text=\"Twitter\" data-lang=\"ja\" data-size=\"small\">Tweet</a></td></tr></table>\n";
+    		statement += "<table><tr valign=\"middle\"><td><a href=\"https://twitter.com/share\" class=\"twitter-share-button\" data-text=\"Twitter\" data-lang=\"ja\" data-size=\"small\" target=\"_blank\">Tweet</a></td></tr></table>\n";
     		statement += "</div>\n</DIV>\n";
     	}
 		
@@ -431,11 +431,11 @@ public class HTMLFunction extends Function {
         		
         		//type=1 -> 文字
         		if(type.equals("1") || type.equals("text") || type.equals("")){
-        			statement = "<a href=\""+url+"\""+transition()+prefetch()+">"+name+"</a>";
+        			statement = "<a href=\""+url+"\""+transition()+prefetch()+" target=\"_blank\">"+name+"</a>";
         		
         		//type=2 -> urlモバイルボタン
         		}else if(type.equals("3") || type.equals("button") || type.equals("bt")){
-            		statement = "<a href=\""+url+"\" data-role=\"button\""+transition()+prefetch()+">"+name+"</a>";
+            		statement = "<a href=\""+url+"\" data-role=\"button\""+transition()+prefetch()+" target=\"_blank\">"+name+"</a>";
 
             	//urlボタン(デスクトップ・モバイル共通)
             	}else if(type.equals("dbutton") || type.equals("dbt")){
@@ -452,7 +452,7 @@ public class HTMLFunction extends Function {
             	
             	//type=3 -> url画像
             	}else if(type.equals("2") || type.equals("image") || type.equals("img")){
-            		statement = "<a href=\""+url+"\""+transition()+prefetch()+"><img src=\""+name+"\"";
+            		statement = "<a href=\""+url+"\""+transition()+prefetch()+" target=\"_blank\"><img src=\""+name+"\"";
     		        
         			//url画像 width,height指定時の処理
             		if(decos.containsKey("width"))	statement += " width="+decos.getStr("width").replace("\"", "");
@@ -465,12 +465,12 @@ public class HTMLFunction extends Function {
             	}
         		
         	}catch(Exception e){		//引数2つの場合
-        		statement = "<a href=\""+url+"\""+transition()+prefetch()+">"+name+"</a>";
+        		statement = "<a href=\""+url+"\""+transition()+prefetch()+" target=\"_blank\">"+name+"</a>";
         	}
         	
     	}catch(Exception e){	//引数1つの場合
     		url = fa1.getStr();
-    		statement = "<a href=\""+url+"\""+transition()+prefetch()+">"+url+"</a>";
+    		statement = "<a href=\""+url+"\""+transition()+prefetch()+" target=\"_blank\">"+url+"</a>";
     	}
     	
     	// 各引数毎に処理した結果をHTMLに書きこむ
