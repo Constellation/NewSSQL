@@ -59,21 +59,23 @@ public class HTMLC2 extends Connector {
         else							table0Flg = false;
         //20130314  table
         //if(decos.containsKey("table") || !decos.containsKey("div") || table0Flg || HTMLC1.tableFlg || HTMLG1.tableFlg || HTMLG2.tableFlg){
-        if(decos.containsKey("table") || table0Flg || HTMLC1.tableFlg || HTMLG1.tableFlg || HTMLG2.tableFlg){
+//        if(decos.containsKey("table") || table0Flg || HTMLC1.tableFlg || HTMLG1.tableFlg || HTMLG2.tableFlg){
+        if(decos.containsKey("table") || table0Flg || HTMLC1.tableFlg || HTMLC2.tableFlg || HTMLG1.tableFlg || HTMLG2.tableFlg){
     	//if(decos.containsKey("table") || HTMLC1.tableFlg || HTMLG1.tableFlg){
 //    		Log.info("C2!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 //    		Log.info("C2 tableFlg = true !!");
     		tableFlg = true;
-    	}else	tableFlg = false;
+    	}//else	tableFlg = false;
         
         //20130326  div
-    	if(decos.containsKey("div")){
+//        if(decos.containsKey("div")){
+    	if(decos.containsKey("div") || HTMLC1.divFlg || HTMLC2.divFlg || HTMLG1.divFlg || HTMLG2.divFlg){
+//    	if(decos.containsKey("div") || HTMLC1.divFlg || HTMLG1.divFlg || HTMLG2.divFlg){
     		divFlg = true;
     		tableFlg = false;
-    	}else divFlg = false;
+    	}//else divFlg = false;
         
         if(!GlobalEnv.isOpt()){
-        	
         	//20130330 tab
         	//tab1
         	if(decos.containsKey("tab1")){
@@ -134,7 +136,7 @@ public class HTMLC2 extends Connector {
         	//20130314  table
         	if(tableFlg){
         		//added 20130314  table width="95%" align="center"
-        		html_env.code.append("<TABLE width=\"100%\" align=\"center\" cellSpacing=\"0\" cellPadding=\"0\" border=\"");
+        		html_env.code.append("<TABLE 0 width=\"100%\" align=\"center\" cellSpacing=\"0\" cellPadding=\"0\" border=\"");
         		//html_env.code.append("<TABLE width=\"95%\" align=\"center\" cellSpacing=\"0\" cellPadding=\"0\" border=\"");
 //	        	html_env.code.append("<TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
         		//html_env.code.append(((!table0Flg)? html_env.tableborder : "0") + "\"");
@@ -243,6 +245,19 @@ public class HTMLC2 extends Connector {
         }
     	
         while (this.hasMoreItems()) {
+            //Log.info("C2-1:	"+tableFlg+"	"+decos.containsKey("table")+"	"+decos.containsKey("table0"));
+            if(decos.containsKey("table0") || HTMLC1.table0Flg || HTMLG1.table0Flg || HTMLG2.table0Flg)	table0Flg = true;
+            //else	table0Flg=false;
+//            if(decos.containsKey("table") || HTMLC1.tableFlg || HTMLG1.tableFlg || HTMLG2.tableFlg || table0Flg)	tableFlg=true;
+            if(decos.containsKey("table") || HTMLC1.tableFlg || HTMLC2.tableFlg || HTMLG1.tableFlg || HTMLG2.tableFlg || table0Flg)	tableFlg=true;
+            //if(decos.containsKey("table") || table0Flg)	tableFlg=true;
+//        	if(decos.containsKey("div")){
+            if(decos.containsKey("div") || HTMLC1.divFlg || HTMLC2.divFlg || HTMLG1.divFlg || HTMLG2.divFlg){
+//            if(decos.containsKey("div") || HTMLC1.divFlg || HTMLG1.divFlg || HTMLG2.divFlg){
+        		divFlg = true;
+        		tableFlg = false;
+        	}//else divFlg = false;
+            
             TFE tfe = (TFE) tfes.get(i);
             
             //20130312 collapsible
@@ -268,6 +283,18 @@ public class HTMLC2 extends Connector {
         	
         	//Log.info("C2  !!");
             this.worknextItem();
+            //Log.info("C2-2:	"+tableFlg+"	"+decos.containsKey("table")+"	"+decos.containsKey("table0"));
+            if(decos.containsKey("table0") || HTMLC1.table0Flg || HTMLG1.table0Flg || HTMLG2.table0Flg)	table0Flg = true;
+            //else	table0Flg=false;
+//            if(decos.containsKey("table") || HTMLC1.tableFlg || HTMLG1.tableFlg || HTMLG2.tableFlg || table0Flg)	tableFlg=true;
+            if(decos.containsKey("table") || HTMLC1.tableFlg || HTMLC2.tableFlg || HTMLG1.tableFlg || HTMLG2.tableFlg || table0Flg)	tableFlg=true;
+            //if(decos.containsKey("table") || table0Flg)	tableFlg=true;
+//        	if(decos.containsKey("div")){
+            if(decos.containsKey("div") || HTMLC1.divFlg || HTMLC2.divFlg || HTMLG1.divFlg || HTMLG2.divFlg){
+//            if(decos.containsKey("div") || HTMLC1.divFlg || HTMLG1.divFlg || HTMLG2.divFlg){
+        		divFlg = true;
+        		tableFlg = false;
+        	}//else divFlg = false;
 
             //20130306
             //20130314  table

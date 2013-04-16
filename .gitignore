@@ -17,3 +17,4 @@ demo*.sql
 .settings/org.eclipse.jdt.core.prefs
 .project
 bin/
+.project

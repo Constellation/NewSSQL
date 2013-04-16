@@ -35,14 +35,14 @@ public void doPost(HttpServletRequest req,
 	  
 	long start = System.currentTimeMillis();
 		
-    // ContentType‚ğİ’è
+    // ContentTypeï¿½ï¿½İ’ï¿½
     res.setContentType("text/html; charset=UTF-8");
     req.setCharacterEncoding("UTF-8");
     
-    // o—Í—pPrintWriter‚ğæ“¾
+    // ï¿½oï¿½Í—pPrintWriterï¿½ï¿½ï¿½æ“¾
     PrintWriter out = res.getWriter();
 
-    //ssqlƒNƒGƒŠƒtƒ@ƒCƒ‹ƒAƒhƒŒƒXæ“¾
+    //ssqlï¿½Nï¿½Gï¿½ï¿½ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½Aï¿½hï¿½ï¿½ï¿½Xï¿½æ“¾
     String sqlfile = new String();
     try{
     	sqlfile = req.getParameter("sqlfile");
@@ -51,7 +51,7 @@ public void doPost(HttpServletRequest req,
     	System.exit(-1);
     }
     
-    //İ’èƒtƒ@ƒCƒ‹ƒAƒhƒŒƒXæ“¾
+    //ï¿½İ’ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½Aï¿½hï¿½ï¿½ï¿½Xï¿½æ“¾
     String configfile = new String(); 
    	try{
 		configfile = req.getParameter("configfile");
@@ -62,7 +62,7 @@ public void doPost(HttpServletRequest req,
 		
 	}
 	
-	//ƒNƒGƒŠ“Ç‚İ‚İ
+	//ï¿½Nï¿½Gï¿½ï¿½ï¿½Ç‚İï¿½ï¿½ï¿½
 	String tmp_query = getQuery(sqlfile,req,res);
     String Query = new String(tmp_query.toString());
     StringTokenizer st = new StringTokenizer(Query,"\t{}[]!,()@= \"' ",true);
@@ -146,13 +146,13 @@ public void doPost(HttpServletRequest req,
    	else
    	{
 		long end = System.currentTimeMillis();
-		Log.info("ÀsŠÔF" + ( end - start ) + "ƒ~ƒŠ•b‚Å‚·B");
+		Log.info("ï¿½ï¿½ï¿½sï¿½ï¿½ï¿½ÔF" + ( end - start ) + "ï¿½~ï¿½ï¿½ï¿½bï¿½Å‚ï¿½ï¿½B");
    	}
 
   }
   
   
-  //URL‚©‚çƒNƒGƒŠ‚Ì“Ç‚İo‚µ
+  //URLï¿½ï¿½ï¿½ï¿½Nï¿½Gï¿½ï¿½ï¿½Ì“Ç‚İoï¿½ï¿½
   public String getQuery(String sqlfile, HttpServletRequest req, 
           HttpServletResponse res) 
   			throws ServletException, IOException {
@@ -171,22 +171,49 @@ public void doPost(HttpServletRequest req,
 	    	if (line == null || line.equals("-1"))
 	            break;
 
-	        if(line.startsWith("//"))
-	        	line = dis.readLine();
-	        if(line.startsWith("/*"))
+	    	//commented out by goto 20130412
+//	        if(line.startsWith("//"))
+//	        	line = dis.readLine();
+//	        if(line.startsWith("/*"))
+//	        {
+//	        	while(!line.contains("*/"))
+//	        		line = dis.readLine();
+//	        	int t = line.indexOf("*/");
+//	        	line = line.substring(t+2);
+//	        }
+			//changed by goto 20130412
+			if(line!=null && line.contains("/*"))
 	        {
-	        	while(!line.contains("*/"))
-	        		line = dis.readLine();
-	        	int t = line.indexOf("*/");
-	        	line = line.substring(t+2);
-	        	}
-	        tmp_query.append(" " + line);
+	          	int s = line.indexOf("/*");
+	          	String line1 = line.substring(0,s);
+	          	while(!line.contains("*/"))
+	          		line = dis.readLine();
+	          	int t = line.indexOf("*/");
+	          	line = line1+line.substring(t+2);
+	        }
+	        //added by goto 20130412
+	        if(line!=null && line.contains("//")){
+	          	boolean dqFlg=false;
+	          	int i=0;
+	          	
+	          	for(i=0; i<line.length(); i++){
+	          		if(line.charAt(i)=='"' && !dqFlg)		dqFlg=true;
+	          		else if(line.charAt(i)=='"' && dqFlg)	dqFlg=false;
+	          		
+	          		if(!dqFlg && i<line.length()-1 && (line.charAt(i)=='/' && line.charAt(i+1)=='/'))
+	          			break;
+	          	}
+	          	line = line.substring(0,i);
+	        }
+			
+	        if(line!=null)
+	        	tmp_query.append(" " + line);
 	    }
 	  return tmp_query.toString();  
   	}
   
 
-  //QUERY ƒRƒ“ƒo[ƒ^[(nŒê¨•s“™®j
+  //QUERY ï¿½Rï¿½ï¿½ï¿½oï¿½[ï¿½^ï¿½[(ï¿½nï¿½ê¨ï¿½sï¿½ï¿½ï¿½ï¿½ï¿½j
   public String QueryConverter(String where, PrintWriter out)
   {
 	  StringTokenizer st = new StringTokenizer(where,"\t{}[]!,()@= \"' ",true);
@@ -262,7 +289,7 @@ public void doPost(HttpServletRequest req,
   }
   
   
-  //WHERE‹å‰ğÍ
+  //WHEREï¿½ï¿½ï¿½ï¿½
   public String changeQuery(String where, HttpServletRequest req, 
           HttpServletResponse res,PrintWriter out) 
 			throws ServletException, IOException {
@@ -330,7 +357,7 @@ public void doPost(HttpServletRequest req,
 					  wherebuffer.append(")");
 			  }
 			  
-			  // True / False ’uŠ·
+			  // True / False ï¿½uï¿½ï¿½
 			  else
 			  {
 				  if(inner_flag != 0)
@@ -368,7 +395,7 @@ public void doPost(HttpServletRequest req,
 	  return Query;
 	}
   
-  //•Ï”’læ“¾
+  //ï¿½Ïï¿½ï¿½lï¿½æ“¾
   public String getParameter(String where, HttpServletRequest req, 
           HttpServletResponse res, PrintWriter out) 
 	throws ServletException, IOException {
@@ -414,7 +441,7 @@ public void doPost(HttpServletRequest req,
 		  return "undefined";
   }
   
-  //BETWEEN‹å•ÏŠ·
+  //BETWEENï¿½ï¿½ÏŠï¿½
   public String betweenconverter(String tmpwhere, PrintWriter out)
   {
 //	  out.println("BetweenConverter : " + tmpwhere +"<BR>");
@@ -434,7 +461,7 @@ public void doPost(HttpServletRequest req,
 	  return query;
   }
   
-  //IN‹å•ÏŠ· 
+  //INï¿½ï¿½ÏŠï¿½ 
   public String inconverter(String tmpwhere, PrintWriter out,int string)
   {
 //	  out.println("InConverter: " + tmpwhere + " flag : " + string + "<BR>");
