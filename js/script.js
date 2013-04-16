@@ -33,3 +33,8 @@ $(document).on('pageshow', '#p-gallery', function(e){
 		window.Code.PhotoSwipe.detatch(photoSwipeInstance);
 	}
 });
+
+$(document).ready(function() {
+	$( "[id=tabs]" ).tabs();
+});
+

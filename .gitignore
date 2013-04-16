@@ -1,9 +1,9 @@
 .ssql_mobile
 *.DS_Store
 
-test.html
+test*.html
 
-test.sql
+test*.sql
 
 .ssql
 
