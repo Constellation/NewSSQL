@@ -133,7 +133,7 @@ public class HTMLG1 extends Grouper {
 //        			if(i>HTMLEnv.maxTab)	HTMLEnv.tabFlg =false;
         		}
         	}
-
+        	
         	//20130312 collapsible
         	if(decos.containsKey("collapse")){
             	html_env.code.append("<DIv data-role=\"collapsible\" data-content-theme=\"c\" style=\"padding: 0px 12px;\">\n");
@@ -412,7 +412,19 @@ public class HTMLG1 extends Grouper {
 
             i++;
             html_env.glevel--;
-        }
+        }	// /while
+
+//        Log.i("	"+jj+"	"+gridInt);
+    	/* 
+//    		//,で結合(水平結合)した際
+//    		//replace: 不要な「<div class=〜」をカット
+//			String[] s = {"a","b","c","d","e"};
+//			int j=0;
+//			while(!HTMLManager.replaceCode(html_env, "<div class=\"ui-block-"+s[j]+" "+HTMLEnv.getClassID(this)+"\">", "")){
+//				j++;
+//				if(j>4) break;
+//			}
+    	 */
         
         if(HTMLEnv.getFormItemFlg()){		
 	        HTMLEnv.incrementFormPartsNumber();

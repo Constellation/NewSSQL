@@ -1,6 +1,7 @@
 package supersql.codegenerator.Mobile_HTML5;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -399,9 +400,20 @@ public class HTMLG2 extends Grouper {
             String divID="rowDiv"+rowFileNum+"-";
             String iframeName ="rowIframe"+rowFileNum;
             String HTMLfilename=html_env.filename.substring(0,html_env.filename.indexOf(".html"));
-            if(html_env.linkoutfile.contains("/"))
-            	HTMLfilename = HTMLfilename.substring(HTMLfilename.lastIndexOf("/")+1);
+//Log.i("HTMLfilename:	"+HTMLfilename);
+			//            if(html_env.linkoutfile.contains("/"))
+			//            	HTMLfilename = HTMLfilename.substring(HTMLfilename.lastIndexOf("/")+1);
+			//added by goto 20130417 start
+			//HTMLfilenameを絶対パスから「相対パス形式」へ変更
+			String fileDir = new File(HTMLfilename).getAbsoluteFile().getParent();
+//Log.i("fileDir:	"+fileDir);
+			if(fileDir.length() < HTMLfilename.length()
+			&& fileDir.equals(HTMLfilename.substring(0,fileDir.length()))){
+				HTMLfilename = HTMLfilename.substring(fileDir.length()+1);
+			}
+			//added by goto 20130417 end
             HTMLfilename = HTMLfilename+"_row"+rowFileNum+"_";
+//Log.i(HTMLfilename);
             html_env.code.append(
             		"	<script type=\"text/javascript\">\n" +
             		"		rowIframePrevNext("+first+", "+last+", '"+divID+"', '"+iframeName+"', '"+HTMLfilename+"', '"+row+"', '"+rowNum+"');\n" +
