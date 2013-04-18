@@ -22,11 +22,11 @@ public class HTMLIfCondition extends IfCondition {
 	}
 	
 	public void work(ExtList data_info){
-		if((((ExtList) (data_info.get(0))).getStr()).equals("t")){
+		String conditionResult = ((ExtList)(data_info.get(0))).getStr();
+		if(conditionResult.equals("t") || conditionResult.equals("1")){
 			if(thenTfe instanceof Connector || thenTfe instanceof Attribute
 				|| thenTfe instanceof Function || thenTfe instanceof IfCondition)
 				thenTfe.work((ExtList)data_info.ExtsubList(1, thenTfe.countconnectitem()+1));
-			
 			else
 				thenTfe.work((ExtList)data_info.get(1));
 
@@ -37,9 +37,6 @@ public class HTMLIfCondition extends IfCondition {
 				elseTfe.work(data_info.ExtsubList(2, data_info.size()));
 			else
 				elseTfe.work((ExtList)data_info.get(2));
-			}	
-	
-			
+			}		
 	}
-
 }

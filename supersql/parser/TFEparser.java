@@ -2,12 +2,7 @@ package supersql.parser;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.Set;
-import java.util.StringTokenizer;
-
-
 import supersql.codegenerator.*;
-import supersql.codegenerator.HTML.HTMLIfCondition;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
