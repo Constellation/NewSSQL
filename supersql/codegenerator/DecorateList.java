@@ -7,7 +7,7 @@ import java.util.Enumeration;
 
 import supersql.common.Log;
 
-public class DecorateList extends Hashtable {
+public class DecorateList extends Hashtable<String, Object> {
 
 	/**
 	 * serialVersionUID
@@ -43,7 +43,7 @@ public class DecorateList extends Hashtable {
 
 			Debug dbgout = new Debug();
 			dbgout.prt(count, "<DecorateList>");
-			Enumeration e = this.keys();
+			Enumeration<String> e = this.keys();
 			while (e.hasMoreElements()) {
 				String key = (String) (e.nextElement());
 				Object val = this.get(key);
@@ -89,12 +89,13 @@ public class DecorateList extends Hashtable {
 
 	public synchronized Object put(Object key, Object value, String condition) {
 		if(getConditions().containsKey(condition)){
+			Object cond = getConditions().get(condition);
 			ArrayList<String> conditionArray = new ArrayList<String>();
-			if(getConditions().get(condition) instanceof String){
+			if(cond instanceof String){
 				conditionArray.add((String)(key));
-				conditionArray.add((String) getConditions().get(condition));
+				conditionArray.add((String) cond);
 			}else{
-				((ArrayList<String>) getConditions().get(condition)).addAll((Collection<? extends String>) getConditions().get(condition));
+				((ArrayList<String>) cond).addAll((Collection<? extends String>) cond);
 			}
 			getConditions().put(condition, conditionArray);
 		}else{
@@ -113,9 +114,9 @@ public class DecorateList extends Hashtable {
 				valueArray[1] = (String) this.get(key);
 			}
 			
-			return super.put(key, valueArray);
+			return super.put((String) key, valueArray);
 		} else {
-			return super.put(key,value);
+			return super.put((String) key,value);
 		}
 	}
 
