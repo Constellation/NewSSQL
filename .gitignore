@@ -17,4 +17,5 @@ demo*.sql
 .classpath
 .settings/org.eclipse.jdt.core.prefs
 .project
+.checkstyle
 bin/
