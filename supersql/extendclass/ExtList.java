@@ -3,7 +3,7 @@ package supersql.extendclass;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class ExtList extends ArrayList {
+public class ExtList<T> extends ArrayList<T> {
 
 	/**
 	 * serialVersionUID
@@ -12,14 +12,13 @@ public class ExtList extends ArrayList {
 
 	/* ArrayListと同様にStringを扱うことができるように拡張 */
 	boolean isStr = false;
-
 	String str = "";
 
-	public ExtList() {
+	public ExtList () {
 		super();
 	}
 
-	public ExtList(Collection c) {
+	public ExtList(Collection<T> c) {
 		super(c);
 	}
 
@@ -28,10 +27,8 @@ public class ExtList extends ArrayList {
 		str = s;
 	}
 
-	public ExtList ExtsubList(int fromIndex, int toIndex) {
-
-		return new ExtList(this.subList(fromIndex, toIndex));
-
+	public ExtList<T> ExtsubList(int fromIndex, int toIndex) {
+		return new ExtList<T>(this.subList(fromIndex, toIndex));
 	}
 
 	public String getStr() {
@@ -51,18 +48,15 @@ public class ExtList extends ArrayList {
 		return this.unnest().size();
 	}
 
-	public ExtList unnest() {
-		ExtList list = new ExtList();
+	@SuppressWarnings("unchecked")
+	public ExtList<T> unnest() {
+		ExtList<T> list = new ExtList<T>();
 		for (int i = 0; i < this.size(); i++) {
-			Object o = this.get(i);
+			T o = this.get(i);
 			if (o instanceof ExtList) {
-				if (((ExtList) o).isStr) {
-					list.add(this.str);
-				} else {
-					list.addAll(((ExtList) o).unnest());
-				}
+					list.addAll(((ExtList<T>) o).unnest());
 			} else {
-				list.add(o);
+				list.add((T) o);
 			}
 		}
 		return list;
@@ -75,12 +69,12 @@ public class ExtList extends ArrayList {
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof ExtList) {
-			if (((ExtList) o).isStr()) {
-				return this.getStr().equals(((ExtList) o).getStr());
+			if (((ExtList<?>) o).isStr()) {
+				return this.getStr().equals(((ExtList<?>) o).getStr());
 			} else {
 				for (int i = 0; i < this.size(); i++) {
-					if (!(((ExtList) (this.get(i)))
-							.equals(((ExtList) o).get(i)))) {
+					if (!(((ExtList<?>) (this.get(i)))
+							.equals(((ExtList<?>) o).get(i)))) {
 						return false;
 					}
 				}
