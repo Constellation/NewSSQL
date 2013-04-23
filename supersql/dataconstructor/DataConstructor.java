@@ -21,7 +21,7 @@ public class DataConstructor {
 	String key = null;
 	Attribute keyAtt = null;
 	int col = -1;
-	long exectime[] = new long[4];
+	long[] exectime = new long[4];
 	final int ISDIVIS = 0;
 	final int MAKESQL = 1;
 	final int EXECSQL = 2;

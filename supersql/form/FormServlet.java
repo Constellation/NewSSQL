@@ -22,7 +22,7 @@ public class FormServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 8021503235844232672L;
 
-	static String att_sets[][];
+	static String[][] att_sets;
 
 	public void doPost(HttpServletRequest req, 
 			HttpServletResponse res) 
@@ -172,7 +172,7 @@ public class FormServlet extends HttpServlet {
 
 
 		//added by chie update
-		String stmp[] = {"-f",sqlfile,"-o",sqlfile,"-c",configfile,"-debug"};
+		String[] stmp = {"-f",sqlfile,"-o",sqlfile,"-c",configfile,"-debug"};
 		GlobalEnv.setGlobalEnv(stmp);
 		host = GlobalEnv.gethost();
 		db = GlobalEnv.getdbname();

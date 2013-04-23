@@ -1282,7 +1282,7 @@ public class HTML5Function extends Function {
 
         		//drag to
         		String value = decos.getStr("dragto");
-    			String droptarget[] = new String[100];
+    			String[] droptarget = new String[100];
     			int targetnum = 0;
 
         		if(value.contains("+"))

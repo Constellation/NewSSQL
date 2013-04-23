@@ -206,7 +206,7 @@ public class PDFC3 extends Connector {
 
 		System.out.println("***** tate_max = " + tate_max);
 
-		PDFValue array[] = new PDFValue[vector_local.size()];
+		PDFValue[] array = new PDFValue[vector_local.size()];
 		vector_local.copyInto(array);
 
 		//このC3リストのtate_maxをこのリストの要素のtateにする

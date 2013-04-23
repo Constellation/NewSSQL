@@ -57,7 +57,7 @@ public class Session extends HttpServlet {
 			configfile = req.getParameter("configfile");
 		}
 
-		String stmp[] = {"-f",sqlfile,"-o",sqlfile,"-c",configfile,"-debug"};
+		String[] stmp = {"-f",sqlfile,"-o",sqlfile,"-c",configfile,"-debug"};
 		GlobalEnv.setGlobalEnv(stmp);
 		//dbms setting
 		host = GlobalEnv.gethost();

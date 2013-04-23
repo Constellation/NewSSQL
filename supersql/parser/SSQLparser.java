@@ -1158,7 +1158,7 @@ public class SSQLparser {
         // Where
         buf.append(where.getWhereSig(from));
 
-        Object ret[] = { buf.toString(), ordersig };
+        Object[] ret = { buf.toString(), ordersig };
 
         return ret;
 

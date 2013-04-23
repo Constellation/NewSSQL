@@ -45,7 +45,7 @@ public class HTMLC3 extends Connector {
         StringBuffer parentheader2 = new StringBuffer();
         StringBuffer parentfooter2 = new StringBuffer();
         String linkfile = new String();
-        TFE tfe[] = new TFE[tfeitems];
+        TFE[] tfe = new TFE[tfeitems];
         int c3items = tfeitems;
         for (int j = 0; j < tfeitems - 1; j++) {
             tfe[j] = (TFE) tfes.get(j);

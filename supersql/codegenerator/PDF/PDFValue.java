@@ -91,7 +91,7 @@ public class PDFValue {
 
 	Vector text_box = new Vector();
 
-	String text_line[];
+	String[] text_line;
 
 	boolean set_width = false;
 

@@ -16,10 +16,10 @@ public class PDFWriter {
 		
 	float adjust_align = 0;
 	float adjust_valign = 0;
-	float color[];
-	float bordercolor[];
-	float bgcolor[];
-	float fontcolor[];	
+	float[] color;
+	float[] bordercolor;
+	float[] bgcolor;
+	float[] fontcolor;	
 	
 	boolean line = true;
 
