@@ -1,7 +1,13 @@
 //proposed process
 package supersql.dataconstructor;
 
+import java.io.IOException;
 import java.util.ArrayList;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+
+import com.sun.tools.doclets.internal.toolkit.resources.doclets;
 
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
@@ -366,5 +372,24 @@ public class DataConstructor {
 				return false;
 		}
 		return true;
+	}
+	
+	public static ExtList getDataFromDBPedia(String sparqlQuery){
+		try {
+			Document doc = Jsoup.connect("http://dbpedia.org/sparql?")
+					.data("default-graph-uri", "http://dbpedia.org")
+					.data("query", sparqlQuery)
+					.data("format", "text/html")
+					.data("debug", "on")
+					.data("timeout", "0")
+					.get();
+			ExtList data = new ExtList();
+			
+			
+			return data;
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new IllegalStateException();
+		}
 	}
 }

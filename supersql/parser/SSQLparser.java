@@ -80,7 +80,6 @@ public class SSQLparser {
      */
 
     /**
-     * This is Constructor
      */
     //tk start//////////////////////////////////////
     public SSQLparser(int id) {
@@ -154,7 +153,7 @@ public class SSQLparser {
             int state = 0;
             where_info = new WhereInfo();
             //	this.attribute = new Hashtable();
-            Log.out("[Paser:Parser] start parse");
+            Log.out("[Parser:Parser] start parsing");
 
             // FOREACH
             boolean foreach_flag = false;
@@ -193,7 +192,7 @@ public class SSQLparser {
 
             // GENERATE medium
             if (!nt.equalsIgnoreCase("GENERATE")) {
-            	System.err.println("*** Not Start in GENERATE ***");
+            	System.err.println("*** The Query should start by GENERATE ***");
                 throw (new IllegalStateException());
             }
 
@@ -493,7 +492,7 @@ public class SSQLparser {
             //changed by goto 20130122  For "slideshow"
             //System.out.println("[Paeser:tfe] tfe = " + tfe);
             if(!tfe.toString().contains("type=\"slideshow\""))
-            	System.out.println("[Paeser:tfe] tfe = " + tfe);
+            	System.out.println("[Parser:tfe] tfe = " + tfe);
 
 
 
@@ -553,7 +552,7 @@ public class SSQLparser {
             }
 
             from_info = new FromInfo(from_c.toString().trim());
-            Log.out("[Paeser:From] from = " + from_info);
+            Log.out("[Parser:From] from = " + from_info);
             if (!(foreach_from.equals(""))) {
                 Log.out(foreach_from
                         + ": Used in FOREACH clause and added to FROM clause ");
