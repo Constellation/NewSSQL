@@ -23,9 +23,7 @@ public class Attribute implements Operand {
 	private int AttNo1;
 	protected ArrayList<String> AttNames = new ArrayList<String>();
 
-	private int AttNo2;
 	private String condition;
-
 
 	int AttType;
 	
@@ -44,7 +42,7 @@ public class Attribute implements Operand {
 
 	String ValKey;
 
-	protected ExtList Items = new ExtList();
+	protected ExtList<AttributeItem> Items = new ExtList<AttributeItem>();
 	
 	boolean conditional;
 
@@ -72,7 +70,7 @@ public class Attribute implements Operand {
 	}
 
 	public int setItem(int no, String nm, String attimg, String key,
-			Hashtable attp) {
+			Hashtable<Integer, AttributeItem> attp) {
 
 		if(conditional){
 			AttNames.add(nm);
@@ -110,9 +108,6 @@ public class Attribute implements Operand {
 					buf += ch1;
 				}
 			} else {
-				if (ch1.equals("+") || ch1.equals("\\")) {
-					Exception e = new Exception();
-				}
 				item = new AttributeItem(ch1, no);
 				Items.add(item);
 				attp.put(new Integer(no), item);
@@ -132,7 +127,10 @@ public class Attribute implements Operand {
 	}
 
 	public void addDeco(String key, Object val) {
-		if(key.equals("insert")||key.equals("update")||key.equals("delete")||key.equals("login")){
+		if(key.equals("insert")
+				||key.equals("update")
+				||key.equals("delete")
+				||key.equals("login")){
 			decos.put(key, AttName);
 			return;
 		}
