@@ -1,9 +1,13 @@
 package supersql.codegenerator.CSV;
 
-import java.io.*;
-import java.util.Vector;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.Manager;
+import supersql.codegenerator.TFE;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
