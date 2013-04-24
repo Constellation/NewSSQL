@@ -1,35 +1,38 @@
 package supersql.codegenerator.HTML5;
 
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
-import java.util.*;
-import java.io.*;
-import java.text.*;
-
-import supersql.codegenerator.*;
-import supersql.common.GlobalEnv;
-import supersql.common.Log;
-import supersql.extendclass.ExtList;
-//tk start///////////////////////////////////////
-import supersql.codegenerator.CodeGenerator;
-import supersql.dataconstructor.DataConstructor;
-import supersql.parser.SSQLparser;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.FileReader;
 
-//tk end//////////////////////////////////////////
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
 
-//import common.Log;
+import java.text.SimpleDateFormat;
+
+import java.util.Date;
+import java.util.Hashtable;
+
+import supersql.common.GlobalEnv;
+import supersql.common.Log;
+import supersql.extendclass.ExtList;
+import supersql.dataconstructor.DataConstructor;
+import supersql.parser.SSQLparser;
+
+import supersql.codegenerator.CodeGenerator;
+import supersql.codegenerator.DecorateList;
+import supersql.codegenerator.FuncArg;
+import supersql.codegenerator.Function;
+import supersql.codegenerator.Manager;
 
 public class HTML5Function extends Function {
 //ishizaki st meterid
