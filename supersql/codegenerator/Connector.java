@@ -10,22 +10,11 @@ import supersql.codegenerator.Grouper;
 import supersql.codegenerator.XML.XMLAttribute; //ryuryu
 import supersql.codegenerator.XML.XMLC0;//ryuryu
 
-public class Connector implements Operator{
-
-    int id; // SchemaID
-
-	int Dimension;
+public class Connector extends Operator{
 
 	public int tfeitems;
 
-	public ExtList tfes;
-
-	//hanki start
-	boolean order_flag;
-	boolean aggregate_flag;
-	String order;
-    String aggregate;
-    //hanki end
+	public ExtList<TFE> tfes;
 
     //oka start
     public static boolean update_flag;
@@ -37,8 +26,6 @@ public class Connector implements Operator{
     public static boolean login_flag;
     public static boolean logout_flag;
 
-	public DecorateList decos = new DecorateList();
-
 	public Connector() {
 			//hanki start
 		order_flag = false;
@@ -47,7 +34,7 @@ public class Connector implements Operator{
 
 		Dimension = -1;
 		tfeitems = 0;
-		tfes = new ExtList();
+		tfes = new ExtList<TFE>();
 	}
 
 	public Connector(int d) {
@@ -58,7 +45,7 @@ public class Connector implements Operator{
 
 		Dimension = d;
 		tfeitems = 0;
-		tfes = new ExtList();
+		tfes = new ExtList<TFE>();
 	}
 
 	public void setId(int i) {
@@ -68,9 +55,9 @@ public class Connector implements Operator{
 	    return id;
 	}
 
-	public void setTFE(TFE t) {
+	public void setTFE(ITFE t) {
 		tfeitems++;
-		tfes.add(t);
+		tfes.add((TFE) t);
 	}
 
 	public void setDeco(DecorateList d) {
@@ -94,17 +81,17 @@ public class Connector implements Operator{
 		decos.debugout(count + 1);
 
 		for (int i = 0; i < tfeitems; i++) {
-			((TFE) tfes.get(i)).debugout(count + 1);
+			((ITFE) tfes.get(i)).debugout(count + 1);
 		}
 		dbgout.prt(count, "</Connector>");
 	}
 
-	public ExtList makesch() {
+	public ExtList<TFE> makesch() {
 
-		ExtList outsch = new ExtList();
+		ExtList<TFE> outsch = new ExtList<TFE>();
 
 		for (int i = 0; i < tfeitems; i++) {
-			outsch.addAll(((TFE) tfes.get(i)).makesch());
+			outsch.addAll(((ITFE) tfes.get(i)).makesch());
 		}
 
 		//Log.out("Con outsch:"+outsch);
@@ -120,7 +107,7 @@ public class Connector implements Operator{
 		le0.add(this.getSymbol());
 
 		for (int i = 0; i < tfeitems; i++) {
-			le0.add(((TFE) tfes.get(i)).makele0());
+			le0.add(((ITFE) tfes.get(i)).makele0());
 		}
 
 		Log.out("Con le0:" + le0);
@@ -139,12 +126,10 @@ public class Connector implements Operator{
 	public int countconnectitem() {
 		int items = 0;
 		for (int i = 0; i < tfes.size(); i++) {
-			items += ((TFE) tfes.get(i)).countconnectitem();
+			items += ((ITFE) tfes.get(i)).countconnectitem();
 		}
 		return items;
 	}
-
-	private ExtList data;
 
 	private int sindex, dindex;
 
@@ -161,7 +146,7 @@ public class Connector implements Operator{
 	}
 
 	public void worknextItem() {
-		TFE tfe = (TFE) tfes.get(sindex);
+		ITFE tfe = (ITFE) tfes.get(sindex);
 		int ci = tfe.countconnectitem();
 
 		//Log.out("ci : " + ci);
@@ -183,7 +168,7 @@ public class Connector implements Operator{
 	//ryuryu start////////////////////////////////////////////////
 	public void worknextItem_GENERATEXML() {
 
-		TFE tfe = (TFE) tfes.get(sindex);
+		ITFE tfe = (ITFE) tfes.get(sindex);
 		Log.out("tfe : " + tfe);
 
 		int ci = tfe.countconnectitem();
@@ -222,8 +207,8 @@ public class Connector implements Operator{
 	    return (sindex == 0);
 	}
 
-	public TFE gettfe(int i) {
-		return (TFE) tfes.get(i);
+	public ITFE gettfe(int i) {
+		return (ITFE) tfes.get(i);
 	}
 	//hanki start
 	public void setOrderBy(String order) {
@@ -246,7 +231,7 @@ public class Connector implements Operator{
 		ExtList outsch = new ExtList();
 
 		for (int i = 0; i < tfeitems; i++) {
-			outsch.addAll(((TFE) tfes.get(i)).makeschImage());
+			outsch.addAll(((ITFE) tfes.get(i)).makeschImage());
 		}
 		return outsch;
 	}

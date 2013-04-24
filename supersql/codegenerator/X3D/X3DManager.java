@@ -19,7 +19,7 @@ public class X3DManager extends Manager{
     }
 
     @Override
-	public void generateCode(TFE tfe_info, ExtList data_info) {
+	public void generateCode(ITFE tfe_info, ExtList data_info) {
 
         x3d_env.countfile = 0;
         x3d_env.code = new StringBuffer();

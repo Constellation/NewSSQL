@@ -3,7 +3,7 @@ package supersql.codegenerator.XML;
 import java.io.PrintWriter;
 import java.util.Vector;
 import supersql.codegenerator.LocalEnv;
-import supersql.codegenerator.TFE;
+import supersql.codegenerator.ITFE;
 
 
 public class XMLEnv extends LocalEnv {
@@ -73,7 +73,7 @@ public class XMLEnv extends LocalEnv {
 
     }
 
-    public static String getClassID(TFE tfe) {
+    public static String getClassID(ITFE tfe) {
     	String result;
 
         result =  "TFE" + tfe.getId();

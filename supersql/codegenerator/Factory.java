@@ -75,5 +75,5 @@ public abstract class Factory {
 	public abstract Attribute createConditionalAttribute(Manager manager);
 
 	public abstract IfCondition createIfCondition(Manager manager, Attribute condition,
-			TFE thenTfe, TFE elseTfe);
+			ITFE thenTfe, ITFE elseTfe);
 }

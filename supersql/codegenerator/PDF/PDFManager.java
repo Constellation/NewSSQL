@@ -11,7 +11,7 @@ public class PDFManager extends Manager {
 	PDFOptimizer optimizer;
 
 	//追加10.14
-	TFE tfe_info;
+	ITFE tfe_info;
 	ExtList data_info;
 
 	//コンストラクタ
@@ -22,7 +22,7 @@ public class PDFManager extends Manager {
 	}
 
 	@Override
-	public void generateCode(TFE tfe_info, ExtList data_info) {
+	public void generateCode(ITFE tfe_info, ExtList data_info) {
 		System.out.println("[PDFManager:generateCode]tfe_info = "
 				+ tfe_info.makele0());
 		System.out.println("[PDFManager:generateCode]data_info = " + data_info);

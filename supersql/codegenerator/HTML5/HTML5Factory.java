@@ -92,7 +92,7 @@ public class HTML5Factory extends Factory {
 
 	@Override
 	public IfCondition createIfCondition(Manager manager, Attribute condition,
-			TFE thenTfe, TFE elseTfe) {
+			ITFE thenTfe, ITFE elseTfe) {
 		return new HTML5IfCondition(manager, html5_env, html5_env2, condition, elseTfe, elseTfe);
 	}
 

@@ -1,33 +1,83 @@
-/* TFE abstract class */
-
 package supersql.codegenerator;
 
 import supersql.extendclass.ExtList;
 
-public interface TFE {
-	public void debugout(int count);
+public class TFE implements ITFE {
 
-	public ExtList makesch();
+	 int id; // SchemaID
+	    
+	public DecorateList decos = new DecorateList();
 
-	public ExtList makele0();
+	@Override
+	public void debugout(int count) {
+		// TODO Auto-generated method stub
+		
+	}
 
-	public void work(ExtList data_info);
+	@Override
+	public ExtList<TFE> makesch() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-	public int countconnectitem();
+	@Override
+	public ExtList makele0() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-	public void addDeco(String key, Object val);
+	@Override
+	public void work(ExtList data_info) {
+		// TODO Auto-generated method stub
+		
+	}
 
-	public void setId(int id);
-	public int getId();
+	@Override
+	public int countconnectitem() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
-	//hanki start
-	public void setOrderBy(String order);
-	public void setAggregate(String aggregate);
-	//hanki end
+	@Override
+	public void addDeco(String key, Object val) {
+		// TODO Auto-generated method stub
+		
+	}
 
-	//added by ria 20110913 start
-	public ExtList makeschImage();
-	//added by ria 20110913 end
+	@Override
+	public void setId(int id) {
+		// TODO Auto-generated method stub
+		
+	}
 
-	public void addDeco(String name, String value, String condition);
+	@Override
+	public int getId() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void setOrderBy(String order) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setAggregate(String aggregate) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public ExtList makeschImage() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void addDeco(String name, String value, String condition) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

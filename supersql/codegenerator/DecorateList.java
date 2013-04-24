@@ -31,10 +31,10 @@ public class DecorateList extends Hashtable<String, Object> {
 		return null;
 	}
 
-	public TFE getTFE(String s) {
+	public ITFE getTFE(String s) {
 		Object o = this.get(s);
-		if (o instanceof TFE)
-			return (TFE) (this.get(s));
+		if (o instanceof ITFE)
+			return (ITFE) (this.get(s));
 		return null;
 	}
 
@@ -72,9 +72,9 @@ public class DecorateList extends Hashtable<String, Object> {
 					dbgout.prt(count + 1, "<Deco Key=" + key
 								+ " type=value value=" + val + "/>");
 						
-				} else if (val instanceof TFE) {
+				} else if (val instanceof ITFE) {
 					dbgout.prt(count + 1, "<Deco Key=" + key + " type=TFE>");
-					((TFE) val).debugout(count + 2);
+					((ITFE) val).debugout(count + 2);
 					dbgout.prt(count + 1, "</Deco>");
 				} else {
 					dbgout.prt(count + 1, "<Deco Key=" + key + ">");

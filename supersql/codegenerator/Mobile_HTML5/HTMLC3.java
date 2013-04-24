@@ -45,10 +45,10 @@ public class HTMLC3 extends Connector {
         StringBuffer parentheader2 = new StringBuffer();
         StringBuffer parentfooter2 = new StringBuffer();
         String linkfile = new String();
-        TFE[] tfe = new TFE[tfeitems];
+        ITFE[] tfe = new ITFE[tfeitems];
         int c3items = tfeitems;
         for (int j = 0; j < tfeitems - 1; j++) {
-            tfe[j] = (TFE) tfes.get(j);
+            tfe[j] = (ITFE) tfes.get(j);
             if (j < tfeitems - 2 && tfe[j] instanceof HTMLG3) {
                 System.err.println("Error: % after []% is not allowed");
                 GlobalEnv.addErr("Error: % after []% is not allowed");
@@ -78,7 +78,7 @@ public class HTMLC3 extends Connector {
         html_env.link_flag--;
 
         for (int k = 1; k < c3items; k++) {
-            TFE intfe = (TFE) tfes.get(k);
+            ITFE intfe = (ITFE) tfes.get(k);
             html_env.filename = html_env.outfile
                     + String.valueOf(html_env.countfile) + ".html";
             html_env2.filename = html_env.outfile

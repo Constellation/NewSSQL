@@ -7,7 +7,7 @@ import supersql.codegenerator.Function;
 import supersql.codegenerator.Grouper;
 import supersql.codegenerator.IfCondition;
 import supersql.codegenerator.Manager;
-import supersql.codegenerator.TFE;
+import supersql.codegenerator.ITFE;
 
 //Operator, Managerを生成するクラス
 
@@ -98,7 +98,7 @@ public class HTMLFactory extends Factory {
 	}
 
 	@Override
-	public IfCondition createIfCondition(Manager manager, supersql.codegenerator.Attribute condition, TFE thenTfe, TFE elseTfe) {
+	public IfCondition createIfCondition(Manager manager, supersql.codegenerator.Attribute condition, ITFE thenTfe, ITFE elseTfe) {
 		return new HTMLIfCondition(manager, html_env, html_env2, condition, thenTfe, elseTfe);
 	}
 

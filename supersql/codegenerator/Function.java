@@ -5,9 +5,7 @@ import java.util.Hashtable;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
 
-public class Function implements Operand {
-
-    int id; // SchemaID
+public class Function extends TFE implements IOperand {
 
 	String Name; 
 

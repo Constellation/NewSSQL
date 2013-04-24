@@ -148,7 +148,7 @@ public class HTMLC2 extends Connector {
         }
     	
         while (this.hasMoreItems()) {
-            TFE tfe = (TFE) tfes.get(i);
+            ITFE tfe = (ITFE) tfes.get(i);
 
         	   html_env.code.append("<TR><TD class=\""
                    + HTMLEnv.getClassID(tfe) + " nest\">\n");

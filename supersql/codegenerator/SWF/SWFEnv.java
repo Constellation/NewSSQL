@@ -663,7 +663,7 @@ public class SWFEnv extends LocalEnv {
 	}
 
 
-	public static String getClassID(TFE tfe) {
+	public static String getClassID(ITFE tfe) {
 		return "TFE" + tfe.getId();
 	}
 

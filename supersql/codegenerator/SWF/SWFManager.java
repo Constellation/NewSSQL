@@ -12,7 +12,7 @@ public class SWFManager extends Manager {
 
 	SWFEnv swf_env;
 	SWFWriter writer;
-	TFE tfe_info;
+	ITFE tfe_info;
 
 	StringBuffer imgpath = new StringBuffer();
 	StringBuffer name = new StringBuffer();
@@ -87,7 +87,7 @@ public class SWFManager extends Manager {
 		writer = new SWFWriter(swf_env);
 	}
 
-	public void generateCode(TFE tfe_info, ExtList data_info) {
+	public void generateCode(ITFE tfe_info, ExtList data_info) {
 		int dx = 0;
 		int dy = 0;
 

@@ -69,7 +69,7 @@ public class PDFC3 extends Connector {
 
 		///////////////////////////////////////////////////////////////////////
 		for (i = 0; i < tfeitems; i++) {
-			TFE tfe = (TFE) tfes.get(i);
+			ITFE tfe = (ITFE) tfes.get(i);
 
 			////////////対象がリストでないとき
 			if (tfe instanceof Attribute) {

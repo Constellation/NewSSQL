@@ -24,7 +24,7 @@ public class HTMLManager extends Manager{
 
 
     @Override
-	public void generateCode(TFE tfe_info, ExtList data_info) {
+	public void generateCode(ITFE tfe_info, ExtList data_info) {
 
         HTMLEnv.initAllFormFlg();
 
@@ -174,7 +174,7 @@ public class HTMLManager extends Manager{
 
 	//tk start///////////////////////////////////////////////////////////////////////
     @Override
-	public StringBuffer generateCode2(TFE tfe_info, ExtList data_info) {
+	public StringBuffer generateCode2(ITFE tfe_info, ExtList data_info) {
     	HTMLEnv.initAllFormFlg();
 
         html_env.countFile = 0;
@@ -250,7 +250,7 @@ public class HTMLManager extends Manager{
         }
     }
     @Override
-	public StringBuffer generateCodeNotuple(TFE tfe_info) {
+	public StringBuffer generateCodeNotuple(ITFE tfe_info) {
     		Log.out("no data found");
     	html_env.code = new StringBuffer();
     	html_env.code.append("<div class=\"nodata\" >");
@@ -261,7 +261,7 @@ public class HTMLManager extends Manager{
     }
 
     @Override
-	public StringBuffer generateCode3(TFE tfe_info, ExtList data_info) {
+	public StringBuffer generateCode3(ITFE tfe_info, ExtList data_info) {
     	HTMLEnv.initAllFormFlg();
 
         html_env.countFile = 0;
@@ -294,7 +294,7 @@ public class HTMLManager extends Manager{
     }
 
     @Override
-	public StringBuffer generateCode4(TFE tfe_info, ExtList data_info) {
+	public StringBuffer generateCode4(ITFE tfe_info, ExtList data_info) {
     	HTMLEnv.initAllFormFlg();
         html_env.countFile = 0;
         html_env.code = new StringBuffer();
@@ -337,7 +337,7 @@ public class HTMLManager extends Manager{
         return headfoot;
     }
   @Override
-public StringBuffer generateCssfile(TFE tfe_info, ExtList data_info) {
+public StringBuffer generateCssfile(ITFE tfe_info, ExtList data_info) {
 
         html_env.countFile = 0;
         html_env.code = new StringBuffer();

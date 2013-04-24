@@ -93,7 +93,7 @@ public class TESTHTMLFactory extends Factory {
 
 	@Override
 	public IfCondition createIfCondition(Manager manager, Attribute condition,
-			TFE thenTfe, TFE elseTfe) {
+			ITFE thenTfe, ITFE elseTfe) {
 		// TODO Auto-generated method stub
 		return null;
 	}

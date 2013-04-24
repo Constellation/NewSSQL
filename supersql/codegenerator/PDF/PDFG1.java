@@ -37,7 +37,7 @@ public class PDFG1 extends Grouper implements PDFTFE {
 	
 	
 	//¥ì¥¤¥¢¥¦¥ÈÊÑ´¹ÍÑ
-	TFE newLE;
+	ITFE newLE;
 	boolean change = false;
 	
 	
@@ -573,7 +573,7 @@ public class PDFG1 extends Grouper implements PDFTFE {
 		
 		float sumCutWidth = 0;
 	
-		TFE originalTFE = this.tfe;		//ÂàÈò
+		ITFE originalTFE = this.tfe;		//ÂàÈò
 		
 		for (local=box.inList.size()-1; local>-1; local--) {	//µÕ¤«¤éÁöºº
 			PDFValue inBox = (PDFValue)box.inList.get(local);
@@ -672,7 +672,7 @@ public class PDFG1 extends Grouper implements PDFTFE {
 	}
 
 	
-	public TFE getNewChild(){
+	public ITFE getNewChild(){
 		return newLE;
 	}
 	

@@ -19,7 +19,7 @@ public class XMLManager extends Manager{
     }
 
 
-    public void generateCode(TFE tfe_info, ExtList data_info) {
+    public void generateCode(ITFE tfe_info, ExtList data_info) {
 
         xml_env.countfile = 0;
         xml_env.code = new StringBuffer();

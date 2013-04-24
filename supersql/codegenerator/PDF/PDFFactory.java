@@ -88,7 +88,7 @@ public class PDFFactory extends Factory {
 
 	@Override
 	public IfCondition createIfCondition(Manager manager, Attribute condition,
-			TFE thenTfe, TFE elseTfe) {
+			ITFE thenTfe, ITFE elseTfe) {
 		return null;
 	}
 

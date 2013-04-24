@@ -26,33 +26,33 @@ public abstract class Manager {
 	}
 	
 	//インスタンス移行プ?前ラムの生成
-	public void generateCode(TFE tfe_info, ExtList data_info) {
+	public void generateCode(ITFE tfe_info, ExtList data_info) {
 	}
 	//tk start///////////////////////////////////////////////////////////////////////////
 	//return HTML code for embed function
-	public StringBuffer generateCode2(TFE tfe_info, ExtList data_info) {
+	public StringBuffer generateCode2(ITFE tfe_info, ExtList data_info) {
 		StringBuffer code = new StringBuffer();
 		return code;
 	}
 	
 	//return css code for embed function & form
-	public StringBuffer generateCode3(TFE tfe_info, ExtList data_info) {
+	public StringBuffer generateCode3(ITFE tfe_info, ExtList data_info) {
 		StringBuffer css = new StringBuffer();
 		return css;
 	}
 	
 	//return header code for form
-	public StringBuffer generateCode4(TFE tfe_info, ExtList data_info) {
+	public StringBuffer generateCode4(ITFE tfe_info, ExtList data_info) {
 		StringBuffer header = new StringBuffer();
 		return header;
 }
-	public StringBuffer generateCodeNotuple(TFE tfe_info) {
+	public StringBuffer generateCodeNotuple(ITFE tfe_info) {
 		StringBuffer code = new StringBuffer();
 		return code;
 	}
 	
 	//return cssfile for embed function
-	public StringBuffer generateCssfile(TFE tfe_info, ExtList data_info) {
+	public StringBuffer generateCssfile(ITFE tfe_info, ExtList data_info) {
 		StringBuffer cssfile = new StringBuffer();
 		return cssfile;
 	}

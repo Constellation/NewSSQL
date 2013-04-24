@@ -146,7 +146,7 @@ public class CodeGenerator{
 		return condAttribute;
 	}
 	
-	public IfCondition createIfCondition(Attribute condition, TFE thenTfe, TFE elseTfe){
+	public IfCondition createIfCondition(Attribute condition, ITFE thenTfe, ITFE elseTfe){
 		IfCondition ifCondition = factory.createIfCondition(manager, condition, thenTfe, elseTfe);
 		ifCondition.setId(TFEid++);
 		return ifCondition;
@@ -166,7 +166,7 @@ public class CodeGenerator{
 	 */
 
 	public void generateCode(SSQLparser parser, ExtList data_info) {
-		TFE tfe_info = parser.get_TFEschema();
+		ITFE tfe_info = parser.get_TFEschema();
 
 		//	必要ならコメントアウト外し、Managerの中も変更
 		//	manager.preProcess(tab,le,le1,le2,le3);
@@ -194,7 +194,7 @@ public class CodeGenerator{
 
 	//tk start//////////////////////////////////////////////////////////////////////////////
 	public StringBuffer generateCode2(SSQLparser parser, ExtList data_info) {
-		TFE tfe_info = parser.get_TFEschema();
+		ITFE tfe_info = parser.get_TFEschema();
 
 		//	必要ならコメントアウト外し、Managerの中も変更
 		//	manager.preProcess(tab,le,le1,le2,le3);
@@ -218,7 +218,7 @@ public class CodeGenerator{
 
 	};
 	public StringBuffer generateCode3(SSQLparser parser, ExtList data_info) {
-		TFE tfe_info = parser.get_TFEschema();
+		ITFE tfe_info = parser.get_TFEschema();
 
 		//	必要ならコメントアウト外し、Managerの中も変更
 		//	manager.preProcess(tab,le,le1,le2,le3);
@@ -241,7 +241,7 @@ public class CodeGenerator{
 
 	};
 	public StringBuffer generateCode4(SSQLparser parser, ExtList data_info) {
-		TFE tfe_info = parser.get_TFEschema();
+		ITFE tfe_info = parser.get_TFEschema();
 
 		//	必要ならコメントアウト外し、Managerの中も変更
 		//	manager.preProcess(tab,le,le1,le2,le3);
@@ -264,7 +264,7 @@ public class CodeGenerator{
 
 	};
 	public StringBuffer generateCssfile(SSQLparser parser, ExtList data_info) {
-		TFE tfe_info = parser.get_TFEschema();
+		ITFE tfe_info = parser.get_TFEschema();
 
 		//	必要ならコメントアウト外し、Managerの中も変更
 		//	manager.preProcess(tab,le,le1,le2,le3);

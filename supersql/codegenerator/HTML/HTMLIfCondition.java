@@ -4,7 +4,7 @@ import supersql.codegenerator.Connector;
 import supersql.codegenerator.Function;
 import supersql.codegenerator.IfCondition;
 import supersql.codegenerator.Manager;
-import supersql.codegenerator.TFE;
+import supersql.codegenerator.ITFE;
 import supersql.codegenerator.Attribute;
 import supersql.extendclass.ExtList;
 
@@ -14,7 +14,7 @@ public class HTMLIfCondition extends IfCondition {
 	protected HTMLEnv html_env;
 	protected HTMLEnv html_env2;
 	
-	public HTMLIfCondition(Manager manager, HTMLEnv html_env, HTMLEnv html_env2, Attribute condition, TFE thenTfe, TFE elseTfe) {
+	public HTMLIfCondition(Manager manager, HTMLEnv html_env, HTMLEnv html_env2, Attribute condition, ITFE thenTfe, ITFE elseTfe) {
 		super(condition, thenTfe, elseTfe);
 		this.manager = manager;
 		this.html_env = html_env;

@@ -16,7 +16,7 @@ public class PDFC1 extends Connector implements PDFTFE {
 	ExtList maxWidths;
 	float max_width;
 	
-	TFE newLE;
+	ITFE newLE;
 	boolean change = false;
 
 
@@ -71,7 +71,7 @@ public class PDFC1 extends Connector implements PDFTFE {
 		
 		///////////////////////////////////////////////////////////////////////
 		for (i = 0; i < tfeitems; i++) {
-			TFE tfe = (TFE) tfes.get(i);
+			ITFE tfe = (ITFE) tfes.get(i);
 
 			if (tfe instanceof Attribute) {
 				System.out.println("[PDFC1:work]tfe is Attribute");
@@ -218,7 +218,7 @@ public class PDFC1 extends Connector implements PDFTFE {
 
 		
 		for (i = 0; i < tfeitems; i++) {
-			TFE tfe = (TFE) tfes.get(i);
+			ITFE tfe = (ITFE) tfes.get(i);
 
 			
 			pdf_env.labelV = labelV;
@@ -287,7 +287,7 @@ public class PDFC1 extends Connector implements PDFTFE {
 		int local;
 		
 		for(local=0; local<tfeitems; local++){
-			TFE tfe = (TFE)tfes.get(local);
+			ITFE tfe = (ITFE)tfes.get(local);
 			((PDFTFE)tfe).restoreFOLD(check);
 		}
 		
@@ -312,7 +312,7 @@ public class PDFC1 extends Connector implements PDFTFE {
 		
 	//	for(local=0; local<tfeitems; local++) {	//順に走査
 		for(local=tfeitems-1; local>-1; local--) {	//逆から走査
-			TFE tfe = (TFE)tfes.get(local);
+			ITFE tfe = (ITFE)tfes.get(local);
 			PDFValue inBox = (PDFValue)box.inList.get(local);
 			
 			tmpDexcess = (inBox.box_width / box.box_width) * Dexcess;	//ここはインスタンスのoriginalWidthではなく、max
@@ -324,7 +324,7 @@ public class PDFC1 extends Connector implements PDFTFE {
 			if(!flex){
 				for(local2=tfeitems-1; local2>=local; local2--){
 					System.out.println("@@@@@@@@@@@@@@@@");
-					tfe = (TFE)tfes.get(local2);
+					tfe = (ITFE)tfes.get(local2);
 					((PDFTFE)tfe).redoChange();
 				}
 				break;		//子要素で１つでも変換できない要素があったらもうやらない　本当はもっと細かくやりたい
@@ -362,11 +362,11 @@ public class PDFC1 extends Connector implements PDFTFE {
 				int index = DList.lastIndexOf(Float.toString(tempD));
 				System.out.println("index " +index);
 				//index++;					
-				TFE tfe = (TFE)tfes.get(index);
+				ITFE tfe = (ITFE)tfes.get(index);
 				this.tfes.set(index, ((PDFTFE)tfe).getNewChild() );
 				int local4;
 				for(local4=0; local4<tfes.size(); local4++){
-					System.out.println("tfe "+((TFE)tfes.get(local4)).getClass());
+					System.out.println("tfe "+((ITFE)tfes.get(local4)).getClass());
 				}
 				flex = true;
 				pdf_env.cutWidth = tempD;
@@ -393,7 +393,7 @@ if(!flex){
 					for(local3=0; local3<local2; local3++){
 						tempD = Float.parseFloat((String)DList.get(local));
 						int index = DList.lastIndexOf(Float.toString(tempD));
-						TFE tfe = (TFE)tfes.get(index);
+						ITFE tfe = (ITFE)tfes.get(index);
 						this.tfes.set(index, ((PDFTFE)tfe).getNewChild() );
 					}
 					flex = true;
@@ -409,7 +409,7 @@ if(!flex){
 			System.out.println("vvvvvvvvvvvvvvvvvv");
 
 			for (local=tfeitems-1; local>-1; local--) {	//逆から走査
-				TFE tfe = (TFE)tfes.get(local);
+				ITFE tfe = (ITFE)tfes.get(local);
 				if( ((PDFTFE)tfe).changeORnot() )
 					this.tfes.set(local, ((PDFTFE)tfe).getNewChild() );
 			}
@@ -456,7 +456,7 @@ if(!flex){
 	}
 
 	
-	public TFE getNewChild(){
+	public ITFE getNewChild(){
 		return newLE;
 	}
 	

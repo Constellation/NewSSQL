@@ -9,7 +9,7 @@ import java.net.*;
 
 import supersql.codegenerator.AttributeItem;
 import supersql.codegenerator.CodeGenerator;
-import supersql.codegenerator.TFE;
+import supersql.codegenerator.ITFE;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.db.SQLManager;
@@ -1060,7 +1060,7 @@ public class SSQLparser {
         return tfe_info;
     }
 
-    public TFE get_TFEschema() {
+    public ITFE get_TFEschema() {
         return tfe_info.get_TFEschema();
     }
 

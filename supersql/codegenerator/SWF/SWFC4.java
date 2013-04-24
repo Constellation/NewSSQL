@@ -41,7 +41,7 @@ public class SWFC4 extends Connector implements SWFTFE{
 		int dy = 0;
 
 		while (this.hasMoreItems()) {
-			TFE tfe = (TFE) tfes.get(i);
+			ITFE tfe = (ITFE) tfes.get(i);
 
 			//int tmp = 0;
 			def_x = swf_env.def_x;

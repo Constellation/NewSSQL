@@ -23,7 +23,7 @@ public class X3DC3 extends Connector{
 	        value = new X3DValue();
 	        
 	        while (this.hasMoreItems()) {
-	            TFE tfe = (TFE) tfes.get(i);
+	            ITFE tfe = (ITFE) tfes.get(i);
 	            
 	            this.worknextItem();
 

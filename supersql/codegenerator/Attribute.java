@@ -9,9 +9,7 @@ import supersql.extendclass.ExtHashSet;
 import supersql.extendclass.ExtList;
 import supersql.parser.Preprocessor;
 
-public class Attribute implements Operand {
-
-    int id; // SchemaID
+public class Attribute extends TFE implements IOperand {
 
 	int AttNo;
 
@@ -33,8 +31,6 @@ public class Attribute implements Operand {
 	String order;
     String aggregate;
     //hanki end
-	
-	public DecorateList decos = new DecorateList();
 
 	//  String SQLimage;
 	//  ExtList UseAtts;

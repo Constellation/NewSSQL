@@ -33,7 +33,7 @@ public class PDFOptimizer {
 	ExtList resultList = new ExtList();
 	
 	
-	TFE tfe_info;
+	ITFE tfe_info;
 	ExtList flatTFE = new ExtList();
 	
 	
@@ -1608,7 +1608,7 @@ public class PDFOptimizer {
 	}
 	
 	
-	public void set_tfeInfo(TFE tfe_info){
+	public void set_tfeInfo(ITFE tfe_info){
 		this.tfe_info = tfe_info;
 	}
 	

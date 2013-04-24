@@ -57,7 +57,7 @@ public class XMLC0 extends Connector {
 
 	   	 while(this.hasMoreItems()) {
 
-		    TFE tfe = (TFE)tfes.get(i);
+		    ITFE tfe = (ITFE)tfes.get(i);
 
 		    this.worknextItem_GENERATEXML();
 		}

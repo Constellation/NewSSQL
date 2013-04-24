@@ -5,7 +5,7 @@ import java.util.Vector;
 import supersql.codegenerator.Connector;
 import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.LocalEnv;
-import supersql.codegenerator.TFE;
+import supersql.codegenerator.ITFE;
 import supersql.parser.SSQLparser;
 import supersql.common.Log;
 import supersql.common.GlobalEnv;
@@ -517,14 +517,14 @@ public class TESTHTMLEnv extends LocalEnv {
         return "";
     }
 
-    public static String getClassID(TFE tfe) {
+    public static String getClassID(ITFE tfe) {
     	String result;
         if (tfe instanceof TESTHTMLC3) {
-            result = getClassID(((TFE) ((TESTHTMLC3) tfe).tfes.get(0)));
+            result = getClassID(((ITFE) ((TESTHTMLC3) tfe).tfes.get(0)));
             return result;
         }
         if (tfe instanceof TESTHTMLG3) {
-            result = getClassID(((TFE) ((TESTHTMLG3) tfe).tfe));
+            result = getClassID(((ITFE) ((TESTHTMLG3) tfe).tfe));
             	return result;
         }
         result =  "TFE" + tfe.getId();
@@ -532,16 +532,16 @@ public class TESTHTMLEnv extends LocalEnv {
     }
 
     /***start oka***/
-    public static String getDataID(TFE tfe) {
+    public static String getDataID(ITFE tfe) {
     	String ClassID;
     	int DataID = 0;
     	String return_value;
 
         if (tfe instanceof TESTHTMLC3) {
-            return getClassID(((TFE) ((TESTHTMLC3) tfe).tfes.get(0)));
+            return getClassID(((ITFE) ((TESTHTMLC3) tfe).tfes.get(0)));
         }
         if (tfe instanceof TESTHTMLG3) {
-            return getClassID(((TFE) ((TESTHTMLG3) tfe).tfe));
+            return getClassID(((ITFE) ((TESTHTMLG3) tfe).tfe));
         }
         ClassID = String.valueOf(tfe.getId());
         DataID = Integer.valueOf((ClassID.substring(ClassID.length()-3,ClassID.length()))).intValue();

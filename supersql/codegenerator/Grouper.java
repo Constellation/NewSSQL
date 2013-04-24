@@ -3,29 +3,16 @@ package supersql.codegenerator;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
 
-public class Grouper implements Operator {
-
-    int id; // SchemaID
-
-    int Dimension; // 次元
+public class Grouper extends Operator {
 
     public TFE tfe; // 引数TFE
 
-    //hanki start
-	boolean order_flag;
-	boolean aggregate_flag;
-	String order;
-    String aggregate;
-    //hanki end
-    
-    public DecorateList decos = new DecorateList();
-    
     public Grouper() {
     		//hanki start
 		order_flag = false;
 		aggregate_flag = false;
 	    //hanki end
-	    
+
         Dimension = -1;
     }
 
@@ -34,7 +21,7 @@ public class Grouper implements Operator {
 		order_flag = false;
 		aggregate_flag = false;
 	    //hanki end
-	    
+
         Dimension = d;
     }
 
@@ -43,7 +30,7 @@ public class Grouper implements Operator {
 		order_flag = false;
 		aggregate_flag = false;
 	    //hanki end
-	    
+
         Dimension = d;
         tfe = t;
     }
@@ -120,10 +107,6 @@ public class Grouper implements Operator {
         return 1;
     }
 
-    private ExtList data;
-
-    private int dindex;
-
     public void setDataList(ExtList d) {
         data = d;
         dindex = 0;
@@ -157,15 +140,13 @@ public class Grouper implements Operator {
 		this.order = new String();
 		this.order = order;
 	}
-	
+
 	public void setAggregate(String aggregate) {
 		aggregate_flag = true;
-		
 		this.aggregate = new String();
 		this.aggregate = aggregate;
 	}
-	//hanki end
-	
+
 	//added by ria 20110913 start
 	public ExtList makeschImage() {
         ExtList outsch = new ExtList();
@@ -177,7 +158,6 @@ public class Grouper implements Operator {
 
 	public void addDeco(String name, String value, String condition) {
         decos.put(name, value, condition);
-		
 	}
 
 }

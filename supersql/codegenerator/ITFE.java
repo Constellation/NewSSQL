@@ -4,9 +4,23 @@ package supersql.codegenerator;
 
 import supersql.extendclass.ExtList;
 
+/**
+ *
+ *
+ *
+ */
 public interface ITFE {
-	public void debugout(int count);
 
+	/**
+	 *
+	 * @param count
+	 */
+	void debugout(int count);
+
+	/**
+	 *
+	 * @return
+	 */
 	ExtList<TFE> makesch();
 
 	ExtList makele0();

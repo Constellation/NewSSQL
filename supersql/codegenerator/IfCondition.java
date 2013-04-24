@@ -2,16 +2,16 @@ package supersql.codegenerator;
 
 import supersql.extendclass.ExtList;
 
-public class IfCondition implements TFE {
+public class IfCondition implements ITFE {
 
 	protected Attribute condition;
-	protected TFE thenTfe;
-	protected TFE elseTfe;
+	protected ITFE thenTfe;
+	protected ITFE elseTfe;
 	public DecorateList decos = new DecorateList();
     int id; // SchemaID
 
 
-	public IfCondition(Attribute condition, TFE thenTfe, TFE elseTfe) {
+	public IfCondition(Attribute condition, ITFE thenTfe, ITFE elseTfe) {
 		super();
 		this.condition = condition;
 		this.thenTfe = thenTfe;
@@ -103,11 +103,11 @@ public class IfCondition implements TFE {
 		return condition;
 	}
 
-	public TFE getThenTfe() {
+	public ITFE getThenTfe() {
 		return thenTfe;
 	}
 
-	public TFE getElseTfe() {
+	public ITFE getElseTfe() {
 		return elseTfe;
 	}
 

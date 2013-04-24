@@ -28,7 +28,7 @@ public class X3DC2 extends Connector{
         
         int i = 0;
         while (this.hasMoreItems()) {
-            TFE tfe = (TFE) tfes.get(i);
+            ITFE tfe = (ITFE) tfes.get(i);
             
             this.worknextItem();
 

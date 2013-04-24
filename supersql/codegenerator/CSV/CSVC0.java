@@ -51,7 +51,7 @@ public class CSVC0 extends Connector {
 
 	   	 while(this.hasMoreItems()) {
 
-		    TFE tfe = (TFE)tfes.get(i);
+		    ITFE tfe = (ITFE)tfes.get(i);
 
 		    String classid = CSVEnv.getClassID(tfe);
 

@@ -148,7 +148,7 @@ public class TESTHTMLC1 extends Connector {
         
         
         while (this.hasMoreItems()) {
-            TFE tfe = (TFE) tfes.get(i);
+            ITFE tfe = (ITFE) tfes.get(i);
             html_env.code.append("<TD class=\""
                    + TESTHTMLEnv.getClassID(tfe) + " nest\">\n");
             String classid = TESTHTMLEnv.getClassID(tfe);

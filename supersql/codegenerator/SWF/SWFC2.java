@@ -38,7 +38,7 @@ public class SWFC2 extends Connector implements SWFTFE{
 		String opr = "";
 
 		while (this.hasMoreItems()) {
-			TFE tfe = (TFE) tfes.get(i);
+			ITFE tfe = (ITFE) tfes.get(i);
 
 
 			this.worknextItem();

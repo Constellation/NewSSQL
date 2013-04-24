@@ -14,7 +14,7 @@ import supersql.extendclass.ExtList;
 
 public class TFEparser {
 
-	TFE schemaTop;
+	ITFE schemaTop;
 
 	ExtList sch;
 
@@ -76,7 +76,7 @@ public class TFEparser {
 		Level++;
 		Log.out("===Grouper=== Level=" + Level);
 
-		TFE operand1;
+		ITFE operand1;
 
 		/* next is one operand */
 		/*
@@ -121,16 +121,16 @@ public class TFEparser {
 
 	}
 
-	private TFE connector(String closeparen) {
+	private ITFE connector(String closeparen) {
 
-		TFE outTFE;
+		ITFE outTFE;
 
 		Log.out("---connector---");
 		// Log.out(toks.DebugTrace());
 
 		/* read first operand */
 
-		TFE operand = read_attribute();
+		ITFE operand = read_attribute();
 
 		if (!toks.hasMoreTokens()) {
 			Log.out("* not connected *");
@@ -177,7 +177,7 @@ public class TFEparser {
 
 	}
 
-	private Connector connector_main(int dim, TFE operand1, String closeparen) {
+	private Connector connector_main(int dim, ITFE operand1, String closeparen) {
 
 		Log.out("connector_main: dim=" + dim);
 		String token = "";
@@ -272,7 +272,7 @@ public class TFEparser {
 		Connector con = cg.createConnector(dim);
 
 		for (int i = 0; i < tfes.size(); i++) {
-			con.setTFE((TFE) (tfes.get(i)));
+			con.setTFE((ITFE) (tfes.get(i)));
 		}
 
 		if (token.equals("}"))
@@ -289,11 +289,11 @@ public class TFEparser {
 
 	}
 
-	private TFE read_attribute() {
+	private ITFE read_attribute() {
 
 		String token;
 
-		TFE out_tfe = null;
+		ITFE out_tfe = null;
 
 		token = toks.nextToken();
 		Log.out("attribute*token=" + token);
@@ -348,7 +348,7 @@ public class TFEparser {
 
 	}
 
-	private TFE IfCondition() {
+	private ITFE IfCondition() {
 		String token = "";
 		String firstTFE="";
 		String secondTFE="";
@@ -429,8 +429,8 @@ public class TFEparser {
 		ElseCg.setFactory(cg.getFactory());
 		TFEparser elseTFEParser = new TFEparser(secondTFE, ElseCg, attno);
 		
-		TFE thenTfe = thenTfeParser.get_TFEschema();
-		TFE elseTfe = elseTFEParser.get_TFEschema();
+		ITFE thenTfe = thenTfeParser.get_TFEschema();
+		ITFE elseTfe = elseTFEParser.get_TFEschema();
 		
 		IfCondition out_tfe = makeIfCondition(condition, thenTfe, elseTfe );
 
@@ -442,11 +442,11 @@ public class TFEparser {
 		return out_tfe;
 	}
 
-	private IfCondition makeIfCondition(Attribute condition, TFE thenTfe, TFE elseTfe) {
+	private IfCondition makeIfCondition(Attribute condition, ITFE thenTfe, ITFE elseTfe) {
 		return cg.createIfCondition(condition, thenTfe, elseTfe);
 	}
 
-	private TFE read_condition(String token) {
+	private ITFE read_condition(String token) {
 		String condition = "";
 		String if_token;
 		Log.info("[Parser::tfe] If condition detected");
@@ -536,7 +536,7 @@ public class TFEparser {
 
 		Log.out("[func*read start funcname]=" + fn);
 		/* func_read */
-		TFE read_tfe = connector(")");
+		ITFE read_tfe = connector(")");
 
 		Log.out("[func*TFE]=" + read_tfe.makele0());
 
@@ -562,7 +562,7 @@ public class TFEparser {
 
 	}
 
-	private FuncArg makeFuncArg(TFE arg) {
+	private FuncArg makeFuncArg(ITFE arg) {
 		FuncArg out_fa;
 		Log.out("argsaregs: " + arg);
 
@@ -575,7 +575,7 @@ public class TFEparser {
 		return out_fa;
 	}
 
-	private void setDecoration(TFE tfe) {
+	private void setDecoration(ITFE tfe) {
 
 		String token;
 
@@ -662,7 +662,7 @@ public class TFEparser {
 
 	}
 
-	private void read_conditional_decoration(TFE tfe) {
+	private void read_conditional_decoration(ITFE tfe) {
 		String token;
 		String condition = find_sql_condition();
 		token= toks.prevToken();
@@ -715,7 +715,7 @@ public class TFEparser {
 		
 	}
 
-	private void decoration_out(TFE tfe, String name, String value,
+	private void decoration_out(ITFE tfe, String name, String value,
 			String condition) {
 		tfe.addDeco(name, value, condition);
 		Log.out("[decoration name=" + name + " value=" + value + " condition="+condition+"]");
@@ -753,7 +753,7 @@ public class TFEparser {
 	}
 
 	// hanki start
-	private boolean fromPreprocessorOnly(TFE tfe) {
+	private boolean fromPreprocessorOnly(ITFE tfe) {
 
 		String token;
 
@@ -843,7 +843,7 @@ public class TFEparser {
      * this.setDecoration(fnc); return; // return fnc; }
      */
 
-    private void decoration_out(TFE tfe, String name, Object value) {
+    private void decoration_out(ITFE tfe, String name, Object value) {
 
         /* 暫?的にStringしか読めない */
         tfe.addDeco(name, (String) value);
@@ -851,7 +851,7 @@ public class TFEparser {
 
 	}
 
-	public TFE get_TFEschema() {
+	public ITFE get_TFEschema() {
 
 		return schemaTop;
 

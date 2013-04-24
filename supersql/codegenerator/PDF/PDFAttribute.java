@@ -23,7 +23,7 @@ public class PDFAttribute extends Attribute implements PDFTFE {
 
 	
 	//レイアウト変換用 newLEはAttributeでは特に意味はない
-	TFE newLE;
+	ITFE newLE;
 	boolean change = false;
 	boolean fontsizeDECO = false;
 	boolean widthDECO = false;
@@ -322,7 +322,7 @@ public class PDFAttribute extends Attribute implements PDFTFE {
 	
 	
 	//Attributeでは特に意味はない
-	public TFE getNewChild(){
+	public ITFE getNewChild(){
 		return newLE;
 	}
 	

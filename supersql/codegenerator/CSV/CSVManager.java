@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import supersql.codegenerator.Manager;
-import supersql.codegenerator.TFE;
+import supersql.codegenerator.ITFE;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
@@ -25,7 +25,7 @@ public class CSVManager extends Manager{
     }
 
 
-    public void generateCode(TFE tfe_info, ExtList data_info) {
+    public void generateCode(ITFE tfe_info, ExtList data_info) {
 
         csv_env.countfile = 0;
         csv_env.code = new StringBuffer();

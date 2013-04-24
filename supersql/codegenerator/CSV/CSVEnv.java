@@ -5,7 +5,7 @@ import java.util.Vector;
 
 import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.LocalEnv;
-import supersql.codegenerator.TFE;
+import supersql.codegenerator.ITFE;
 import supersql.common.Log;
 import supersql.common.GlobalEnv;
 
@@ -85,7 +85,7 @@ public class CSVEnv extends LocalEnv {
         return "";
     }
 
-    public static String getClassID(TFE tfe) {
+    public static String getClassID(ITFE tfe) {
     	String result;
 
         result =  "TFE" + tfe.getId();

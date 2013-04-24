@@ -14,7 +14,7 @@ public class PDFC2 extends Connector implements PDFTFE {
 	ExtList maxHeights;
 	float max_height;
 	
-	TFE newLE;
+	ITFE newLE;
 	boolean change = false;
 
 	public PDFC2(Manager manager, PDFEnv pdf_env) {
@@ -61,7 +61,7 @@ public class PDFC2 extends Connector implements PDFTFE {
 		setDataList(data_info);
 
 		for (i = 0; i < tfeitems; i++) {
-			TFE tfe = (TFE) tfes.get(i);
+			ITFE tfe = (ITFE) tfes.get(i);
 
 			if (tfe instanceof Attribute) {
 				System.out.println("[PDFC2:work]tfe is Attribute");
@@ -204,7 +204,7 @@ public class PDFC2 extends Connector implements PDFTFE {
 //pdf_env.labelH++;
 
 		for (i = 0; i < tfeitems; i++) {
-			TFE tfe = (TFE) tfes.get(i);
+			ITFE tfe = (ITFE) tfes.get(i);
 
 			pdf_env.labelV = pdf_env.labelmaxV + 1;			
 			if(pdf_env.labelV > pdf_env.labelmaxV ){
@@ -269,7 +269,7 @@ public class PDFC2 extends Connector implements PDFTFE {
 		int local;
 		
 		for(local=0; local<tfeitems; local++){
-			TFE tfe = (TFE)tfes.get(local);
+			ITFE tfe = (ITFE)tfes.get(local);
 			((PDFTFE)tfe).restoreFOLD(check);
 		}
 		
@@ -286,7 +286,7 @@ public class PDFC2 extends Connector implements PDFTFE {
 		float maxCutWidth = 0;
 	
 		for (local=tfeitems-1; local>-1; local--) {
-			TFE tfe = (TFE)tfes.get(local);
+			ITFE tfe = (ITFE)tfes.get(local);
 			PDFValue inBox = (PDFValue)box.inList.get(local);
 			//tmpDexcess = box.box_width - /**/inBox.originalWidth/**/ + Dexcess;
 			tmpDexcess = Dexcess - (box.box_width - /**/inBox.originalWidth/**/);
@@ -304,7 +304,7 @@ public class PDFC2 extends Connector implements PDFTFE {
 		
 		if(flex){
 			for (local=tfeitems-1; local>-1; local--) {
-				TFE tfe = (TFE)tfes.get(local);
+				ITFE tfe = (ITFE)tfes.get(local);
 				if( ((PDFTFE)tfe).changeORnot() )
 					this.tfes.set(local, ((PDFTFE)tfe).getNewChild() );
 			}
@@ -324,7 +324,7 @@ public class PDFC2 extends Connector implements PDFTFE {
 	}
 
 	
-	public TFE getNewChild(){
+	public ITFE getNewChild(){
 		return newLE;
 	}
 	
