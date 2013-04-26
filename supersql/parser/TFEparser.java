@@ -1,5 +1,6 @@
 package supersql.parser;
 
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import supersql.codegenerator.*;
@@ -24,6 +25,8 @@ public class TFEparser {
 	private int attno;
 
 	private CodeGenerator cg;
+	
+	private ArrayList<String> dbpediaVarNames;
 
 	private static String att_tmp;
 	public TFEparser(String str, CodeGenerator cgenerator) {

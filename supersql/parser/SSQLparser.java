@@ -16,6 +16,7 @@ import supersql.db.SQLManager;
 import supersql.extendclass.ExtList;
 
 public class SSQLparser {
+	
 
     String media;
 
@@ -49,6 +50,7 @@ public class SSQLparser {
 
     int table_num = 0;
 
+    private static boolean dbpediaQuery = false;
 
   //ryuryu(start)/////////////////////////////////////////////////////////////////////////
     public static String XpathQuery;
@@ -579,8 +581,10 @@ public class SSQLparser {
                     }
                     where_c.append(nt + " ");
                 }
-
-                where_info.appendWhere(where_c.toString().trim());
+                if(SSQLparser.isDbpediaQuery())
+                	where_info.setSparqlWhereQuery(where_c.toString().trim());
+                else
+                	where_info.appendWhere(where_c.toString().trim());
 
             }
 
@@ -1597,5 +1601,13 @@ public class SSQLparser {
 
         return  query;
     }
+
+	public static boolean isDbpediaQuery() {
+		return dbpediaQuery;
+	}
+
+	public static void setDbpediaQuery(boolean dbpediaQuery) {
+		SSQLparser.dbpediaQuery = dbpediaQuery;
+	}
 
 }
