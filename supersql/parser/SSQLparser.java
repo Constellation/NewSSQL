@@ -16,6 +16,7 @@ import supersql.db.SQLManager;
 import supersql.extendclass.ExtList;
 
 public class SSQLparser {
+	
 
     String media;
 
@@ -49,6 +50,7 @@ public class SSQLparser {
 
     int table_num = 0;
 
+    private static boolean dbpediaQuery = false;
 
   //ryuryu(start)/////////////////////////////////////////////////////////////////////////
     public static String XpathQuery;
@@ -80,7 +82,6 @@ public class SSQLparser {
      */
 
     /**
-     * This is Constructor
      */
     //tk start//////////////////////////////////////
     public SSQLparser(int id) {
@@ -154,7 +155,7 @@ public class SSQLparser {
             int state = 0;
             where_info = new WhereInfo();
             //	this.attribute = new Hashtable();
-            Log.out("[Paser:Parser] start parse");
+            Log.out("[Parser:Parser] start parsing");
 
             // FOREACH
             boolean foreach_flag = false;
@@ -193,7 +194,7 @@ public class SSQLparser {
 
             // GENERATE medium
             if (!nt.equalsIgnoreCase("GENERATE")) {
-            	System.err.println("*** Not Start in GENERATE ***");
+            	System.err.println("*** The Query should start by GENERATE ***");
                 throw (new IllegalStateException());
             }
 
@@ -493,7 +494,7 @@ public class SSQLparser {
             //changed by goto 20130122  For "slideshow"
             //System.out.println("[Paeser:tfe] tfe = " + tfe);
             if(!tfe.toString().contains("type=\"slideshow\""))
-            	System.out.println("[Paeser:tfe] tfe = " + tfe);
+            	System.out.println("[Parser:tfe] tfe = " + tfe);
 
 
 
@@ -553,7 +554,7 @@ public class SSQLparser {
             }
 
             from_info = new FromInfo(from_c.toString().trim());
-            Log.out("[Paeser:From] from = " + from_info);
+            Log.out("[Parser:From] from = " + from_info);
             if (!(foreach_from.equals(""))) {
                 Log.out(foreach_from
                         + ": Used in FOREACH clause and added to FROM clause ");
@@ -580,8 +581,10 @@ public class SSQLparser {
                     }
                     where_c.append(nt + " ");
                 }
-
-                where_info.appendWhere(where_c.toString().trim());
+                if(SSQLparser.isDbpediaQuery())
+                	where_info.setSparqlWhereQuery(where_c.toString().trim());
+                else
+                	where_info.appendWhere(where_c.toString().trim());
 
             }
 
@@ -1648,5 +1651,13 @@ public class SSQLparser {
 
         return  query;
     }
+
+	public static boolean isDbpediaQuery() {
+		return dbpediaQuery;
+	}
+
+	public static void setDbpediaQuery(boolean dbpediaQuery) {
+		SSQLparser.dbpediaQuery = dbpediaQuery;
+	}
 
 }

@@ -1,8 +1,21 @@
 //proposed process
 package supersql.dataconstructor;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import com.sun.tools.doclets.internal.toolkit.resources.doclets;
+
+import supersql.codegenerator.AttributeItem;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.db.GetFromDB;
@@ -41,7 +54,7 @@ public class DataConstructor {
 		System.out.println("Schema: " + sep_sch);
 		
 		//Check Optimization Parameters
-		if ( GlobalEnv.getOptLevel() == 0 || !GlobalEnv.isOptimizable() )
+		if ( GlobalEnv.getOptLevel() == 0 || !GlobalEnv.isOptimizable() || SSQLparser.isDbpediaQuery())
 		{
 			sqlQueries = null;
 		}
@@ -72,7 +85,7 @@ public class DataConstructor {
 		}
 		
 		//Make SQL
-		if ( sqlQueries == null || sqlQueries.size() < 2 )
+		if ( (sqlQueries == null || sqlQueries.size() < 2) && !SSQLparser.isDbpediaQuery())
 		{
 			//if graph was not made successfully or
 			//if graph has only one connected component
@@ -81,7 +94,12 @@ public class DataConstructor {
 		}
 
 		sep_data_info = new ExtList();
-		sep_data_info = schemaToData(parser, msql, sep_sch, sep_data_info);
+		if(SSQLparser.isDbpediaQuery()){
+			sep_data_info = schemaToData(parser, sep_sch, sep_data_info);
+		}
+		else{
+			sep_data_info = schemaToData(parser, msql, sep_sch, sep_data_info);
+		}
 		data_info = sep_data_info;
 
 		//changed by goto 20120620 start
@@ -95,6 +113,21 @@ public class DataConstructor {
 		
 		Log.out("## Result ##");
 		Log.out(data_info);
+	}
+
+	private ExtList schemaToData(SSQLparser parser, ExtList sep_sch,
+			ExtList sep_data_info) {
+		int attno = parser.get_att_info().size();
+		String[] array = new String[attno];
+		int i = 0;
+		for(Object info : parser.get_att_info().values()){
+			String infoText = ((AttributeItem)info).toString();
+			array[i] = infoText;
+			i++;
+		}
+		sep_data_info = getDataFromDBPedia(parser.get_where_info().getSparqlWhereQuery(), array);
+		sep_data_info = makeTree(sep_sch, sep_data_info);
+		return sep_data_info;
 	}
 
 	private ExtList schemaToData(SSQLparser parser, MakeSQL msql, ExtList sep_sch,
@@ -366,5 +399,77 @@ public class DataConstructor {
 				return false;
 		}
 		return true;
+	}
+	
+	public static ExtList getDataFromDBPedia(String sparqlWhereQuery, String[] varNames){
+	    BufferedReader br = null;
+	    String everything = "";
+		try {
+			br = new BufferedReader(new FileReader("dbpedia.config"));
+		} catch (FileNotFoundException e1) {
+			System.err.println("*** DBPedia config file not found ***");
+			e1.printStackTrace();
+			throw new IllegalStateException();
+		}
+	    try {
+	        StringBuilder sb = new StringBuilder();
+	        String line = br.readLine();
+
+	        while (line != null) {
+	            sb.append(line);
+	            sb.append("\n");
+	            line = br.readLine();
+	        }
+	        everything = sb.toString();
+	    } catch (IOException e) {
+			System.err.println("*** Error while reading the Dbpedia config file ***");
+			e.printStackTrace();
+		} finally {
+	        try {
+				br.close();
+			} catch (IOException e) {
+				System.err.println("*** Error while closig the dbpedia config file ***");
+				e.printStackTrace();
+			}
+	    }
+		try {
+			Document doc;
+			ExtList data = new ExtList();
+				String query = everything + "\nSELECT ";
+				for(int i = 0; i< varNames.length; i++){
+					query+= "?" + varNames[i] + " ";
+				}
+				query+=" WHERE "+sparqlWhereQuery+"";
+				doc = Jsoup.connect("http://dbpedia.org/sparql?")
+						.data("default-graph-uri", "http://dbpedia.org")
+						.data("query", query)
+						.data("format", "text/html")
+						.data("debug", "on")
+						.timeout(0)
+						.get();
+			Elements tdInfos = doc.getElementsByTag("td");
+			int columnCount = 0;
+			int rowCount = -1;
+			for(Element info : tdInfos){
+				String infoText = info.html();
+				columnCount %= varNames.length;
+				if(columnCount == 0){
+					ExtList e = new ExtList();
+					e.add(new ExtList(infoText));
+					data.add(e);
+					columnCount+=1;
+					rowCount +=1;
+				}else{
+					((ExtList) data.get(rowCount)).add(new ExtList(infoText));
+					columnCount+=1;
+				}
+				
+				
+			}
+			return data;
+		} catch (IOException e) {
+			System.err.println("*** Error while querying dbpedia, please check your internet connection and your query syntax ***");
+			throw new IllegalStateException();
+		}
 	}
 }
