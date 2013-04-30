@@ -35,7 +35,6 @@ public class XMLAttribute extends Attribute {
         this.xml_env2 = xenv2;
     }
 
-
     public void work(ExtList data_info){
     	Log.out("[ XMLAttribute ]");
 

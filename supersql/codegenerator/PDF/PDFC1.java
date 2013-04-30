@@ -16,7 +16,7 @@ public class PDFC1 extends Connector implements PDFTFE {
 	ExtList maxWidths;
 	float max_width;
 	
-	ITFE newLE;
+	TFE newLE;
 	boolean change = false;
 
 
@@ -455,8 +455,7 @@ if(!flex){
 		return flex;
 	}
 
-	
-	public ITFE getNewChild(){
+	public TFE getNewChild(){
 		return newLE;
 	}
 	

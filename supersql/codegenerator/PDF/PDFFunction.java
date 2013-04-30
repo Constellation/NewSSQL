@@ -18,7 +18,7 @@ public class PDFFunction extends Function implements PDFTFE {
 	float padding_H;
 	float padding_V;
 
-	ITFE newLE;
+	TFE newLE;
 	boolean change = false;
 	boolean widthDECO = false;
 	
@@ -260,7 +260,7 @@ public class PDFFunction extends Function implements PDFTFE {
 	
 	
 	//Imageでは特に意味はない
-	public ITFE getNewChild(){
+	public TFE getNewChild(){
 		return newLE;
 	}
 	

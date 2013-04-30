@@ -164,8 +164,8 @@ public class Connector extends Operator{
 	    return (sindex == 0);
 	}
 
-	public ITFE gettfe(int i) {
-		return (ITFE) tfes.get(i);
+	public TFE gettfe(int i) {
+		return tfes.get(i);
 	}
 
 	//added by ria 20110913 start

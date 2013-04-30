@@ -36,7 +36,7 @@ public class PDFG2 extends Grouper implements PDFTFE {
 	
 	
 	//レイアウト変換用
-	ITFE newLE;
+	TFE newLE;
 	boolean change = false;
 	
 	
@@ -594,7 +594,7 @@ public class PDFG2 extends Grouper implements PDFTFE {
 	}
 	
 	
-	public ITFE getNewChild(){
+	public TFE getNewChild(){
 		return newLE;
 	}
 	

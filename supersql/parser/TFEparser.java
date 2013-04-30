@@ -76,7 +76,7 @@ public class TFEparser {
 		Level++;
 		Log.out("===Grouper=== Level=" + Level);
 
-		ITFE operand1;
+		TFE operand1;
 
 		/* next is one operand */
 		/*
@@ -121,16 +121,16 @@ public class TFEparser {
 
 	}
 
-	private ITFE connector(String closeparen) {
+	private TFE connector(String closeparen) {
 
-		ITFE outTFE;
+		TFE outTFE;
 
 		Log.out("---connector---");
 		// Log.out(toks.DebugTrace());
 
 		/* read first operand */
 
-		ITFE operand = read_attribute();
+		TFE operand = read_attribute();
 
 		if (!toks.hasMoreTokens()) {
 			Log.out("* not connected *");
@@ -289,11 +289,11 @@ public class TFEparser {
 
 	}
 
-	private ITFE read_attribute() {
+	private TFE read_attribute() {
 
 		String token;
 
-		ITFE out_tfe = null;
+		TFE out_tfe = null;
 
 		token = toks.nextToken();
 		Log.out("attribute*token=" + token);
@@ -348,7 +348,7 @@ public class TFEparser {
 
 	}
 
-	private ITFE IfCondition() {
+	private TFE IfCondition() {
 		String token = "";
 		String firstTFE="";
 		String secondTFE="";
@@ -446,7 +446,7 @@ public class TFEparser {
 		return cg.createIfCondition(condition, thenTfe, elseTfe);
 	}
 
-	private ITFE read_condition(String token) {
+	private TFE read_condition(String token) {
 		String condition = "";
 		String if_token;
 		Log.info("[Parser::tfe] If condition detected");
@@ -536,7 +536,7 @@ public class TFEparser {
 
 		Log.out("[func*read start funcname]=" + fn);
 		/* func_read */
-		ITFE read_tfe = connector(")");
+		TFE read_tfe = connector(")");
 
 		Log.out("[func*TFE]=" + read_tfe.makele0());
 
@@ -562,7 +562,7 @@ public class TFEparser {
 
 	}
 
-	private FuncArg makeFuncArg(ITFE arg) {
+	private FuncArg makeFuncArg(TFE arg) {
 		FuncArg out_fa;
 		Log.out("argsaregs: " + arg);
 

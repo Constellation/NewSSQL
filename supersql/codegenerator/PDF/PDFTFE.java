@@ -1,6 +1,7 @@
 package supersql.codegenerator.PDF;
 
 import supersql.codegenerator.ITFE;
+import supersql.codegenerator.TFE;
 
 public abstract interface PDFTFE {
 	
@@ -12,7 +13,7 @@ public abstract interface PDFTFE {
 	
 	public boolean optimizeW(float Dexcess, PDFValue result);
 	public boolean optimizeH(float Dexcess, PDFValue result);
-	public ITFE getNewChild();
+	public TFE getNewChild();
 	public boolean changeORnot();
 	public void redoChange();
 

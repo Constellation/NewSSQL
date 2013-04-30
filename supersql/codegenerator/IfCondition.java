@@ -2,7 +2,7 @@ package supersql.codegenerator;
 
 import supersql.extendclass.ExtList;
 
-public class IfCondition implements ITFE {
+public class IfCondition extends TFE {
 
 	protected Attribute condition;
 	protected ITFE thenTfe;

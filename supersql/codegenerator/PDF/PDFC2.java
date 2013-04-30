@@ -14,7 +14,7 @@ public class PDFC2 extends Connector implements PDFTFE {
 	ExtList maxHeights;
 	float max_height;
 	
-	ITFE newLE;
+	TFE newLE;
 	boolean change = false;
 
 	public PDFC2(Manager manager, PDFEnv pdf_env) {
@@ -324,7 +324,7 @@ public class PDFC2 extends Connector implements PDFTFE {
 	}
 
 	
-	public ITFE getNewChild(){
+	public TFE getNewChild(){
 		return newLE;
 	}
 	
