@@ -14,7 +14,6 @@ public class DecorateList extends Hashtable<String, Object> {
 	 */
 	private static final long serialVersionUID = 1L;
 	private static int classIdPointer = 1;
-	Connector connector;	//add oka
 	private Hashtable<String, Object> conditions = new Hashtable<String, Object>();
 	private Hashtable<String, Integer> classesIds = new Hashtable<String, Integer>();
 	
