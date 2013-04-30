@@ -1,6 +1,7 @@
 package supersql.codegenerator.HTML;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.Grouper;
+import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;

@@ -5,7 +5,7 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.ITFE;
 import supersql.extendclass.ExtList;
 
 //PDFに関する基本的な変数とメソッドを持つクラス

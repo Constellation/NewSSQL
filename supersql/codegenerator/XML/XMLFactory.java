@@ -1,6 +1,13 @@
 package supersql.codegenerator.XML;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.Attribute;
+import supersql.codegenerator.Connector;
+import supersql.codegenerator.Factory;
+import supersql.codegenerator.Function;
+import supersql.codegenerator.Grouper;
+import supersql.codegenerator.IfCondition;
+import supersql.codegenerator.Manager;
+import supersql.codegenerator.TFE;
 
 
 
@@ -73,7 +80,7 @@ public class XMLFactory extends Factory {
 
 	@Override
 	public IfCondition createIfCondition(Manager manager, Attribute condition,
-			ITFE thenTfe, ITFE elseTfe) {
+			TFE thenTfe, TFE elseTfe) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -1,11 +1,17 @@
 package supersql.parser;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
-import java.io.*;
-import java.net.*;
 
 import supersql.codegenerator.AttributeItem;
 import supersql.codegenerator.CodeGenerator;

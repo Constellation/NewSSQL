@@ -1,6 +1,7 @@
 package supersql.codegenerator.PDF;
 
 import java.util.Vector;
+
 import supersql.extendclass.ExtList;
 
 //文字列１つ１つに関する情報に関する値をまとめたクラス

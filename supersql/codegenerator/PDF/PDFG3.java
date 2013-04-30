@@ -2,7 +2,9 @@ package supersql.codegenerator.PDF;
 
 import java.util.Vector;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.Attribute;
+import supersql.codegenerator.Grouper;
+import supersql.codegenerator.Manager;
 import supersql.extendclass.ExtList;
 
 public class PDFG3 extends Grouper {

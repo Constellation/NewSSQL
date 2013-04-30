@@ -6,17 +6,20 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Vector;
 
+import org.jsoup.nodes.Attribute;
+import org.jsoup.nodes.Attributes;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.parser.Tag;
+
 import supersql.codegenerator.Connector;
 import supersql.codegenerator.DecorateList;
-import supersql.codegenerator.LocalEnv;
 import supersql.codegenerator.ITFE;
-import supersql.parser.SSQLparser;
-import supersql.common.Log;
+import supersql.codegenerator.LocalEnv;
 import supersql.common.GlobalEnv;
+import supersql.common.Log;
 import supersql.common.Utils;
-
-import org.jsoup.nodes.*;
-import org.jsoup.parser.Tag;
+import supersql.parser.SSQLparser;
 
 public class HTMLEnv extends LocalEnv {
 	private Document htmlEnv1;

@@ -1,14 +1,11 @@
 package supersql.codegenerator;
 
-import java.util.ArrayList;
-
+import supersql.codegenerator.XML.XMLAttribute;
+import supersql.codegenerator.XML.XMLC0;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
-
-import supersql.codegenerator.Connector;
-import supersql.codegenerator.Grouper;
-import supersql.codegenerator.XML.XMLAttribute; //ryuryu
-import supersql.codegenerator.XML.XMLC0;//ryuryu
+//ryuryu
+//ryuryu
 
 public class Connector extends Operator{
 

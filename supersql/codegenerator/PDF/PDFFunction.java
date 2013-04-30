@@ -1,6 +1,8 @@
 package supersql.codegenerator.PDF;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.Function;
+import supersql.codegenerator.Manager;
+import supersql.codegenerator.TFE;
 import supersql.common.GlobalEnv;
 import supersql.extendclass.ExtList;
 

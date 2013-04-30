@@ -1,9 +1,17 @@
 package supersql.codegenerator.HTML;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.util.Vector;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.ITFE;
+import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.common.Utils;

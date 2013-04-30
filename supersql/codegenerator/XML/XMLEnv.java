@@ -2,8 +2,9 @@ package supersql.codegenerator.XML;
 
 import java.io.PrintWriter;
 import java.util.Vector;
-import supersql.codegenerator.LocalEnv;
+
 import supersql.codegenerator.ITFE;
+import supersql.codegenerator.LocalEnv;
 
 
 public class XMLEnv extends LocalEnv {

@@ -1,6 +1,7 @@
 package supersql.codegenerator.SWF;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.Grouper;
+import supersql.codegenerator.Manager;
 import supersql.extendclass.ExtList;
 
 public class SWFG3 extends Grouper implements SWFTFE{

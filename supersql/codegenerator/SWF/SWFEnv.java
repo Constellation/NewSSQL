@@ -9,12 +9,14 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import com.pdflib.PDFlibException;
-import com.pdflib.pdflib;
-
-import supersql.codegenerator.*;
+import supersql.codegenerator.DecorateList;
+import supersql.codegenerator.ITFE;
+import supersql.codegenerator.LocalEnv;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
+
+import com.pdflib.PDFlibException;
+import com.pdflib.pdflib;
 
 public class SWFEnv extends LocalEnv {
 	pdflib p;

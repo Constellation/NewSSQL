@@ -1,6 +1,7 @@
 package supersql.codegenerator.XML;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.Function;
+import supersql.codegenerator.Manager;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
 import supersql.parser.SSQLparser;

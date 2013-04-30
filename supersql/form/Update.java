@@ -1,20 +1,23 @@
 package supersql.form;
 
-import java.io.*;
-import java.util.Enumeration;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
-//import java.util.Hashtable;
 import java.util.ArrayList;
+import java.util.Enumeration;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
-import java.net.URLEncoder; 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
+//import java.util.Hashtable;
 
 public class Update extends HttpServlet {
 

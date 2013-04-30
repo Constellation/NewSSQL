@@ -1,6 +1,5 @@
 package supersql.codegenerator.PDF;
 
-import supersql.codegenerator.ITFE;
 import supersql.codegenerator.TFE;
 
 public abstract interface PDFTFE {

@@ -1,6 +1,8 @@
 package supersql.codegenerator.X3D;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.Connector;
+import supersql.codegenerator.ITFE;
+import supersql.codegenerator.Manager;
 import supersql.extendclass.ExtList;
 
 

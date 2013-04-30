@@ -2,19 +2,23 @@ package supersql.parser;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.Set;
-import java.util.StringTokenizer;
 
-
-import supersql.codegenerator.*;
-import supersql.codegenerator.HTML.HTMLIfCondition;
+import supersql.codegenerator.Attribute;
+import supersql.codegenerator.CodeGenerator;
+import supersql.codegenerator.Connector;
+import supersql.codegenerator.FuncArg;
+import supersql.codegenerator.Function;
+import supersql.codegenerator.Grouper;
+import supersql.codegenerator.ITFE;
+import supersql.codegenerator.IfCondition;
+import supersql.codegenerator.TFE;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
 
 public class TFEparser {
 
-	ITFE schemaTop;
+	TFE schemaTop;
 
 	ExtList sch;
 
@@ -429,8 +433,8 @@ public class TFEparser {
 		ElseCg.setFactory(cg.getFactory());
 		TFEparser elseTFEParser = new TFEparser(secondTFE, ElseCg, attno);
 		
-		ITFE thenTfe = thenTfeParser.get_TFEschema();
-		ITFE elseTfe = elseTFEParser.get_TFEschema();
+		TFE thenTfe = thenTfeParser.get_TFEschema();
+		TFE elseTfe = elseTFEParser.get_TFEschema();
 		
 		IfCondition out_tfe = makeIfCondition(condition, thenTfe, elseTfe );
 
@@ -442,7 +446,7 @@ public class TFEparser {
 		return out_tfe;
 	}
 
-	private IfCondition makeIfCondition(Attribute condition, ITFE thenTfe, ITFE elseTfe) {
+	private IfCondition makeIfCondition(Attribute condition, TFE thenTfe, TFE elseTfe) {
 		return cg.createIfCondition(condition, thenTfe, elseTfe);
 	}
 
@@ -851,10 +855,8 @@ public class TFEparser {
 
 	}
 
-	public ITFE get_TFEschema() {
-
+	public TFE get_TFEschema() {
 		return schemaTop;
-
 	}
 
 	public void debugout() {

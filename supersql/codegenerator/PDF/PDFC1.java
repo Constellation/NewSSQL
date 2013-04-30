@@ -1,6 +1,10 @@
 package supersql.codegenerator.PDF;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.Attribute;
+import supersql.codegenerator.Connector;
+import supersql.codegenerator.ITFE;
+import supersql.codegenerator.Manager;
+import supersql.codegenerator.TFE;
 import supersql.extendclass.ExtList;
 
 public class PDFC1 extends Connector implements PDFTFE {

@@ -6,18 +6,14 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
-
+import java.security.MessageDigest;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-
-import java.security.MessageDigest;
-
 import java.util.Date;
 import java.util.Enumeration;
 

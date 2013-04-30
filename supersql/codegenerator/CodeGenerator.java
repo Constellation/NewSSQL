@@ -1,12 +1,12 @@
 package supersql.codegenerator;
 
-import supersql.codegenerator.HTML.*;
-import supersql.codegenerator.HTML5.*;
-import supersql.codegenerator.TESTHTML.*;
+import supersql.codegenerator.HTML.HTMLFactory;
+import supersql.codegenerator.HTML5.HTML5Factory;
 import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5Factory;
-import supersql.codegenerator.PDF.*;
+import supersql.codegenerator.PDF.PDFFactory;
 import supersql.codegenerator.SWF.SWFFactory;
-import supersql.codegenerator.X3D.*;
+import supersql.codegenerator.TESTHTML.TESTHTMLFactory;
+import supersql.codegenerator.X3D.X3DFactory;
 import supersql.codegenerator.XML.XMLFactory;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
@@ -146,7 +146,7 @@ public class CodeGenerator{
 		return condAttribute;
 	}
 	
-	public IfCondition createIfCondition(Attribute condition, ITFE thenTfe, ITFE elseTfe){
+	public IfCondition createIfCondition(Attribute condition, TFE thenTfe, TFE elseTfe){
 		IfCondition ifCondition = factory.createIfCondition(manager, condition, thenTfe, elseTfe);
 		ifCondition.setId(TFEid++);
 		return ifCondition;

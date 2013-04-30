@@ -5,11 +5,10 @@ import java.util.ArrayList;
 
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
+import supersql.db.ConnectDB;
 import supersql.db.GetFromDB;
 import supersql.extendclass.ExtList;
 import supersql.parser.SSQLparser;
-
-import supersql.db.ConnectDB;
 
 public class DataConstructor {
 

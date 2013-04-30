@@ -2,9 +2,10 @@ package supersql.codegenerator.X3D;
 
 import java.io.PrintWriter;
 import java.util.Vector;
+
 import supersql.codegenerator.DecorateList;
-import supersql.codegenerator.LocalEnv;
 import supersql.codegenerator.ITFE;
+import supersql.codegenerator.LocalEnv;
 import supersql.common.Log;
 
 public class X3DEnv extends LocalEnv{

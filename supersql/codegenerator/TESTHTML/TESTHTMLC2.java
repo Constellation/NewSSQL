@@ -1,6 +1,8 @@
 package supersql.codegenerator.TESTHTML;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.Connector;
+import supersql.codegenerator.ITFE;
+import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;

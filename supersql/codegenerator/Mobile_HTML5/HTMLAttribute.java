@@ -1,12 +1,14 @@
 package supersql.codegenerator.Mobile_HTML5;
 
+import java.io.File;
+
 import supersql.codegenerator.Attribute;
 import supersql.codegenerator.Connector;
 import supersql.codegenerator.Manager;
+import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
-import supersql.common.GlobalEnv;
-import java.io.File;				//added by goto
+//added by goto
 
 public class HTMLAttribute extends Attribute {
 

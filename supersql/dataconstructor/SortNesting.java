@@ -3,9 +3,8 @@ package supersql.dataconstructor;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-import supersql.extendclass.ExtList;
-
 import supersql.common.Log;
+import supersql.extendclass.ExtList;
 
 /* ŽÆ?ŽÎŽÏŽ¤ŽÏ schŽ¤ŽËŽ¤Ž½Ž¤ŽÃŽ¤Ž¿nestŽ¤Ž¬Ž½ŽªŽ¤?Ž¤ŽÃŽ¤Ž¿tupleŽ¤ŽÇŽ¤Ž¢Ž¤?Ž¤Ž³Ž¤ŽÈ */
 

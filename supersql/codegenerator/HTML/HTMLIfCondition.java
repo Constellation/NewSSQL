@@ -1,11 +1,11 @@
 package supersql.codegenerator.HTML;
 
+import supersql.codegenerator.Attribute;
 import supersql.codegenerator.Connector;
 import supersql.codegenerator.Function;
 import supersql.codegenerator.IfCondition;
 import supersql.codegenerator.Manager;
-import supersql.codegenerator.ITFE;
-import supersql.codegenerator.Attribute;
+import supersql.codegenerator.TFE;
 import supersql.extendclass.ExtList;
 
 public class HTMLIfCondition extends IfCondition {
@@ -14,7 +14,7 @@ public class HTMLIfCondition extends IfCondition {
 	protected HTMLEnv html_env;
 	protected HTMLEnv html_env2;
 	
-	public HTMLIfCondition(Manager manager, HTMLEnv html_env, HTMLEnv html_env2, Attribute condition, ITFE thenTfe, ITFE elseTfe) {
+	public HTMLIfCondition(Manager manager, HTMLEnv html_env, HTMLEnv html_env2, Attribute condition, TFE thenTfe, TFE elseTfe) {
 		super(condition, thenTfe, elseTfe);
 		this.manager = manager;
 		this.html_env = html_env;

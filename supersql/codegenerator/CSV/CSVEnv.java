@@ -3,11 +3,8 @@ package supersql.codegenerator.CSV;
 import java.io.PrintWriter;
 import java.util.Vector;
 
-import supersql.codegenerator.DecorateList;
-import supersql.codegenerator.LocalEnv;
 import supersql.codegenerator.ITFE;
-import supersql.common.Log;
-import supersql.common.GlobalEnv;
+import supersql.codegenerator.LocalEnv;
 
 public class CSVEnv extends LocalEnv {
     String data;

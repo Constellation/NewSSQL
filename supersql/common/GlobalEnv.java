@@ -1,6 +1,7 @@
 package supersql.common;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -8,8 +9,9 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.*;
-import java.io.File;	//added by goto 20120624
+import java.util.ArrayList;
+import java.util.Hashtable;
+//added by goto 20120624
 
 public class GlobalEnv {
 

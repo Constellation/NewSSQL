@@ -1,9 +1,9 @@
 package supersql.parser;
 
-import java.util.StringTokenizer;
 import java.util.Hashtable;
+import java.util.StringTokenizer;
 
-import supersql.common.*;
+import supersql.common.Log;
 
 public class FromInfo {
 

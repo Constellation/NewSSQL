@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.StringTokenizer;
@@ -16,7 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import supersql.codegenerator.CodeGenerator;
 import supersql.common.GlobalEnv;
-import supersql.common.Log;
 import supersql.dataconstructor.DataConstructor;
 import supersql.parser.SSQLparser;
 

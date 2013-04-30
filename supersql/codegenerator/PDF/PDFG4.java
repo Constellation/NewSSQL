@@ -1,6 +1,7 @@
 package supersql.codegenerator.PDF;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.Grouper;
+import supersql.codegenerator.Manager;
 import supersql.extendclass.ExtList;
 
 public class PDFG4 extends Grouper {

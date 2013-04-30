@@ -3,7 +3,6 @@
  */
 package supersql.dataconstructor;
 
-import supersql.codegenerator.Mobile_HTML5.HTMLFunction;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
 
