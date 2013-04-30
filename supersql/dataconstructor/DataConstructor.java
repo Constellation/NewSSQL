@@ -221,8 +221,8 @@ public class DataConstructor {
 		end = System.nanoTime(); 
 		exectime[EXECSQL] = end - start;
 		
-		Log.out("## DB result ##");
-		Log.out(sep_data_info);
+		Log.info("## DB result ##");
+		Log.info(sep_data_info);
 
 		return sep_data_info;
 

@@ -22,10 +22,10 @@ public class HTMLIfCondition extends IfCondition {
 	}
 	
 	public void work(ExtList data_info){
-		if((((ExtList) (data_info.get(0))).getStr()).equals("t")){
+		if((((data_info.get(0))).toString()).equals("t")){
 			if(thenTfe instanceof Connector || thenTfe instanceof Attribute
 				|| thenTfe instanceof Function || thenTfe instanceof IfCondition)
-				thenTfe.work((ExtList)data_info.ExtsubList(1, thenTfe.countconnectitem()+1));
+				thenTfe.work(data_info.ExtsubList(1, thenTfe.countconnectitem()+1));
 			
 			else
 				thenTfe.work((ExtList)data_info.get(1));

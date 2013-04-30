@@ -277,8 +277,8 @@ public class Aggregate {
 		
 		tmp.append(" ");
 		tmp.append(value);
-		
-		target = new ExtList(tmp.toString());
+		target = new ExtList();
+		target.add(tmp.toString());
 		
 		tuple.set(position, target);
 		
@@ -296,8 +296,8 @@ public class Aggregate {
 		ExtList result = new ExtList();
 		
 		tmp.append(way); tmp.append(" "); tmp.append(value);
-				
-		target = new ExtList(tmp.toString());
+		target = new ExtList();		
+		target.add(tmp.toString());
 		
 		tuple.set(position, target);
 		

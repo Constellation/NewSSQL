@@ -73,9 +73,7 @@ public class SQLManager {
     	if(isMulti)
     	{
     		Log.out("thred name:"+cdb.getName());
-
     		Log.out("isAlive?"+cdb.isAlive());
-
     		try{
     			cdb.join();
 	    	}catch(InterruptedException e)
@@ -84,19 +82,15 @@ public class SQLManager {
 	    	conn = cdb.getConn();
     	}
 
-
         Log.out("[SQLManager ExecQuery]");
-        Log.info("");			//added by goto 20120620
-        //changed by goto 20130306 start  "FROMなしクエリ対策"
         if(!query.equals("SELECT DISTINCT  FROM ;")){
 	        Log.info("********** SQL is **********");
 	        Log.info(query);
         }
-        //changed by goto 20130306 end
 
-        header_name = new ExtList();
-        header_type = new ExtList();
-        tuples = new ExtList();
+        header_name = new ExtList<String>();
+        header_type = new ExtList<String>();
+        tuples = new ExtList<String>();
 
         try {
             Statement stat = conn.createStatement();
@@ -104,9 +98,9 @@ public class SQLManager {
             ResultSetMetaData rsmd = rs.getMetaData();
             int columnCount = rsmd.getColumnCount();
             for (int i = 1; i <= columnCount; i++) {
-                header_name.add(new ExtList(rsmd.getColumnName(i)));
-                header_type.add(new ExtList(Integer.toString(rsmd
-                        .getColumnType(i))));
+                header_name.add(rsmd.getColumnName(i));
+                header_type.add(Integer.toString(rsmd
+                        .getColumnType(i)));
             }
 
             ExtList tmplist;
@@ -116,15 +110,13 @@ public class SQLManager {
                 for (int i = 1; i <= columnCount; i++) {
                     val = rs.getString(i);
                     if (val != null) {
-                        tmplist.add(new ExtList(rs.getString(i).toString()
-                                .trim()));
+                        tmplist.add(val.trim());
                     } else {
-                        tmplist.add(new ExtList(""));
+                        tmplist.add("");
                         Log.out("[Warning] null value exist!");
                     }
                 }
                 tuples.add(tmplist);
-
             }
             Log.out("[SQLManager:execQuerySQL] Result tuples count = "
                     + tuples.size());
@@ -136,7 +128,7 @@ public class SQLManager {
             	//200912chie     notexit
                 tmplist = new ExtList();
             	for (int i = 1; i <= columnCount; i++) {
-                    tmplist.add(new ExtList(""));
+                    tmplist.add("");
                     Log.out("[Warning] null value exist!");
                 }
                 tuples.add(tmplist);
@@ -274,8 +266,8 @@ public class SQLManager {
         fromchnum = 0; tochnum=0;
         while(query.indexOf(",",fromchnum) != -1){
         	tochnum = query.indexOf(",",fromchnum);
-        	header_name.add(new ExtList(query.substring(fromchnum,tochnum).trim()));
-        	header_type.add(new ExtList("4"));
+        	header_name.add(query.substring(fromchnum,tochnum).trim());
+        	header_type.add("4");
         	for(int i=0;i<listdb_column_num;i++){
         		if(query.substring(fromchnum,tochnum).trim().equals(listdb.get(0).get(i))){
         			num_from_left.add(i);
@@ -285,8 +277,8 @@ public class SQLManager {
         	fromchnum = tochnum + 1;
         }
         tochnum = query.length();
-        header_name.add(new ExtList(query.substring(fromchnum,tochnum).trim()));
-        header_type.add(new ExtList("4"));
+        header_name.add(query.substring(fromchnum,tochnum).trim());
+        header_type.add("4");
         for(int i=0;i<listdb_column_num;i++){
     		if(query.substring(fromchnum,tochnum).trim().equals(listdb.get(0).get(i))){
     			num_from_left.add(i);
@@ -301,16 +293,16 @@ public class SQLManager {
         }*/
 
         //get record turn
-        ExtList tmplist;
+        ExtList<String> tmplist;
         String val;
         for (int i=1;i<listdb.size();i++) {//from 1 roop
             tmplist = new ExtList();
             for (int j=0;j<num_from_left.size();j++) {
             	val = (String)listdb.get(i).get(num_from_left.get(j));
                 if (val != null) {
-                    tmplist.add(new ExtList(val));
+                    tmplist.add(val);
                 } else {
-                    tmplist.add(new ExtList(""));
+                    tmplist.add("");
                     Log.out("[Warning] null value exist!");
                 }
             }

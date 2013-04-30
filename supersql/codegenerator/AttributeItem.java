@@ -101,7 +101,7 @@ public class AttributeItem {
 		if (IsStr) {
 			return Image;
 		} else {
-			return ((ExtList) data_info.get(AttNo - idx)).getStr();
+			return (data_info.get(AttNo - idx)).toString();
 		}
 	}
 

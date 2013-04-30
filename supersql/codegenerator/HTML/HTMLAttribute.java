@@ -614,10 +614,10 @@ public class HTMLAttribute extends Attribute {
 		return ret;
 	}
 
-	private String computeStringForDecoration(ExtList data_info) {
+	private <T> String computeStringForDecoration(ExtList<T> data_info) {
 		String classNames = "";
 		for(int i = 1; i < this.AttNames.size(); i++){
-			if(((ExtList)(data_info.get(i))).getStr().equals("t")){
+			if(((data_info.get(i))).toString().equals("t")){
 				if(decos.getClassesIds().get(AttNames.get(i)) != null)
 					classNames += " C_" + decos.getClassesIds().get(AttNames.get(i));
 			}

@@ -111,7 +111,7 @@
   </class>  
   <class id="13" language="java" name="supersql.codegenerator.DecorateList" project="ssql2" 
     file="/ssql2/supersql/codegenerator/DecorateList.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="52" width="120" x="1021" y="7"/>    
+    <position height="52" width="120" x="853" y="16"/>    
     <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="true" package="true" protected="true" private="true"/>      
@@ -152,87 +152,71 @@
     <end type="TARGET" refId="9" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <generalization id="23">    
-    <end type="SOURCE" refId="6"/>    
-    <end type="TARGET" refId="10"/>  
-  </generalization>  
-  <association id="24">    
+  <association id="23">    
     <bendpoint x="755" y="459"/>    
     <bendpoint x="1038" y="466"/>    
     <bendpoint x="944" y="114"/>    
     <end type="SOURCE" refId="4" navigable="false">      
-      <attribute id="25" name="tfe">        
+      <attribute id="24" name="tfe">        
         <position height="18" width="24" x="725" y="126"/>      
       </attribute>      
-      <multiplicity id="26" minimum="0" maximum="1">        
+      <multiplicity id="25" minimum="0" maximum="1">        
         <position height="16" width="25" x="724" y="141"/>      
       </multiplicity>    
     </end>    
     <end type="TARGET" refId="9" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <realization id="27">    
+  <realization id="26">    
     <end type="SOURCE" refId="8"/>    
     <end type="TARGET" refId="2"/>  
   </realization>  
-  <generalization id="28">    
+  <generalization id="27">    
     <end type="SOURCE" refId="4"/>    
     <end type="TARGET" refId="8"/>  
   </generalization>  
-  <association id="29">    
+  <association id="28">    
     <bendpoint x="853" y="158"/>    
     <end type="SOURCE" refId="5" navigable="false">      
-      <attribute id="30" name="tfes">        
+      <attribute id="29" name="tfes">        
         <position height="18" width="30" x="762" y="98"/>      
       </attribute>      
-      <multiplicity id="31" minimum="0" maximum="2147483647">        
+      <multiplicity id="30" minimum="0" maximum="2147483647">        
         <position height="16" width="23" x="801" y="104"/>      
       </multiplicity>    
     </end>    
     <end type="TARGET" refId="9" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <generalization id="32">    
+  <generalization id="31">    
     <end type="SOURCE" refId="2"/>    
     <end type="TARGET" refId="1"/>  
   </generalization>  
-  <association id="33">    
-    <end type="SOURCE" refId="13" navigable="false">      
-      <attribute id="34" name="connector">        
-        <position height="18" width="65" x="1050" y="104"/>      
-      </attribute>      
-      <multiplicity id="35" minimum="0" maximum="1">        
-        <position height="16" width="25" x="1065" y="134"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="5" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="36">    
+  <association id="32">    
     <end type="SOURCE" refId="9" navigable="false">      
-      <attribute id="37" name="decos">        
-        <position height="18" width="44" x="941" y="23"/>      
+      <attribute id="33" name="decos">        
+        <position height="18" width="44" x="773" y="32"/>      
       </attribute>      
-      <multiplicity id="38" minimum="0" maximum="1">        
-        <position height="16" width="25" x="975" y="56"/>      
+      <multiplicity id="34" minimum="0" maximum="1">        
+        <position height="16" width="25" x="807" y="65"/>      
       </multiplicity>    
     </end>    
     <end type="TARGET" refId="13" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <realization id="39">    
+  <realization id="35">    
     <end type="SOURCE" refId="9"/>    
     <end type="TARGET" refId="1"/>  
   </realization>  
-  <generalization id="40">    
+  <generalization id="36">    
     <end type="SOURCE" refId="11"/>    
     <end type="TARGET" refId="10"/>  
   </generalization>  
-  <realization id="41">    
+  <realization id="37">    
     <end type="SOURCE" refId="10"/>    
     <end type="TARGET" refId="3"/>  
   </realization>  
-  <generalization id="42">    
+  <generalization id="38">    
     <end type="SOURCE" refId="10"/>    
     <end type="TARGET" refId="9"/>  
   </generalization>  

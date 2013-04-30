@@ -10,10 +10,6 @@ public class ExtList<T> extends ArrayList<T> {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	/* ArrayListと同様にStringを扱うことができるように拡張 */
-	boolean isStr = false;
-	String str = "";
-
 	public ExtList () {
 		super();
 	}
@@ -22,26 +18,8 @@ public class ExtList<T> extends ArrayList<T> {
 		super(c);
 	}
 
-	public ExtList(String s) {
-		isStr = true;
-		str = s;
-	}
-
 	public ExtList<T> ExtsubList(int fromIndex, int toIndex) {
 		return new ExtList<T>(this.subList(fromIndex, toIndex));
-	}
-
-	public String getStr() {
-		if (isStr)
-			return str;
-		return null;
-	}
-
-	@Override
-	public String toString() {
-		if (isStr)
-			return "Ext:" + str;
-		return super.toString();
 	}
 
 	public int contain_itemnum() {
@@ -62,44 +40,14 @@ public class ExtList<T> extends ArrayList<T> {
 		return list;
 	}
 
-	public boolean isStr() {
-		return isStr;
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (o instanceof ExtList) {
-			if (((ExtList<?>) o).isStr()) {
-				return this.getStr().equals(((ExtList<?>) o).getStr());
-			} else {
-				for (int i = 0; i < this.size(); i++) {
-					if (!(((ExtList<?>) (this.get(i)))
-							.equals(((ExtList<?>) o).get(i)))) {
-						return false;
-					}
-				}
-				return true;
-			}
-		}
-
-		return false;
-
-	}
-
 	public String camma_list() {
-		if (isStr) {
-			return str;
-		} else {
-			String buf = "";
-			for (int i = 0; i < this.size(); i++) {
-				if (i > 0) {
-					buf.concat(",");
-				}
-				buf.concat(this.get(i).toString());
+		String buf = "";
+		for (int i = 0; i < this.size(); i++) {
+			if (i > 0) {
+				buf.concat(",");
 			}
-			return buf;
+			buf.concat(this.get(i).toString());
 		}
-
+		return buf;
 	}
-
 }

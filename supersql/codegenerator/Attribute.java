@@ -172,21 +172,21 @@ public class Attribute extends Operand {
 	}
 
 	public void work(ExtList data_info) {
-		Log.out("Attribute : " + data_info.getStr());
+		Log.out("Attribute : " + data_info.toString());
 	}
 
-	public String getStr(ExtList data_info) {
+	public <T> String getStr(ExtList<T> data_info) {
 		
 		String str = "";
 		
 		if(conditional){
-			String toCompare = ((ExtList) data_info.get(Items.size()-1-decos.getConditionsSize())).getStr();
+			String toCompare = (data_info.get(Items.size()-1-decos.getConditionsSize())).toString();
 			if(toCompare.equals("t") || toCompare.equals("1")){
-				str = ((ExtList) data_info.get(0)).getStr();
+				str = (data_info.get(0)).toString();
 			}
 			else if(toCompare.equals("f") || toCompare.equals("0")){
 				if(Items.size()-decos.getConditionsSize() == 3)
-					str = ((ExtList) data_info.get(1)).getStr();
+					str = (data_info.get(1)).toString();
 				else
 					str = "";
 			}
@@ -194,12 +194,9 @@ public class Attribute extends Operand {
 			return str;
 		}
 		else{
-			//	Log.out("data_info : " + data_info);
 			for (int i = 0; i < Items.size()-decos.getConditionsSize(); i++) {
-				//		Log.out("data_info : " +
-				// ((AttributeItem)Items.get(i)).getStr(data_info, AttNo));
 				str += (((AttributeItem) Items.get(i)).getStr(data_info, AttNo-decos.getConditionsSize()));
-			}			//	Log.out("Attribute out : " + str);
+			}
 			return str;
 		}
 		

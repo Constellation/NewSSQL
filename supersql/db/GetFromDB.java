@@ -41,8 +41,6 @@ public class GetFromDB {
 
         ResultData.clear();
 
-        Log.out("[ConstructData:execQuery] : " + query);
-
         if (GlobalEnv.getframeworklist() != null) {
             Log.out("## From framework DB list ##");
             Log.out(GlobalEnv.getframeworklist());
