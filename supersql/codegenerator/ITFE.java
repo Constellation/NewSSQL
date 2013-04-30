@@ -21,7 +21,7 @@ public interface ITFE {
 	 *
 	 * @return
 	 */
-	ExtList<TFE> makesch();
+	ExtList<Integer> makesch();
 
 	ExtList makele0();
 

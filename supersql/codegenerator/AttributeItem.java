@@ -68,13 +68,11 @@ public class AttributeItem {
 		dbgout.prt(count, "</AttributeItem>");
 	}
 
-	public ExtList makesch() {
-		ExtList outsch = new ExtList();
-
+	public ExtList<Integer> makesch() {
+		ExtList<Integer> outsch = new ExtList<Integer>();
 		if (!IsStr) {
 			outsch.add(new Integer(AttNo));
 		}
-
 		return outsch;
 	}
 

@@ -124,7 +124,7 @@ public class Attribute extends Operand {
 		}
 		dbgout.prt(count + 1, "<AttributeItems>");
 		for (int i = 0; i < Items.size(); i++) {
-			((AttributeItem) Items.get(i)).debugout(count + 2);
+			Items.get(i).debugout(count + 2);
 			decos.put("attributeName", Items.get(i).toString());//add by chie
 		}
 		dbgout.prt(count + 1, "</AttributeItems>");
@@ -134,16 +134,13 @@ public class Attribute extends Operand {
 		dbgout.prt(count, "</Attribute>");
 	}
 
-	public ExtList makesch() {
-		ExtList outsch = new ExtList();
+	public ExtList<Integer> makesch() {
+		ExtList<Integer> outsch = new ExtList<Integer>();
 
 		for (int i = 0; i < Items.size(); i++) {
-			outsch.addAll(((AttributeItem) Items.get(i)).makesch());
+			outsch.addAll((Items.get(i)).makesch());
 		}
 
-
-		//  Log.out("Att outsch:"+outsch);
-		//hanki start
 		if (order_flag) {
 			Preprocessor.putOrderByTable(order, outsch);
 			order_flag = false;
@@ -153,7 +150,7 @@ public class Attribute extends Operand {
 			Preprocessor.putAggregateList(outsch, aggregate);
 			aggregate_flag = false;
 		}
-		//hanki end
+
 		return outsch;
 	}
 
@@ -163,7 +160,7 @@ public class Attribute extends Operand {
 		//  attno.add("Att");
 
 		for (int i = 0; i < Items.size(); i++) {
-			attno.addAll(((AttributeItem) Items.get(i)).makele0());
+			attno.addAll(Items.get(i).makele0());
 		}
 
 		Log.out("Att le0:" + attno);
@@ -195,7 +192,7 @@ public class Attribute extends Operand {
 		}
 		else{
 			for (int i = 0; i < Items.size()-decos.getConditionsSize(); i++) {
-				str += (((AttributeItem) Items.get(i)).getStr(data_info, AttNo-decos.getConditionsSize()));
+				str += (Items.get(i).getStr(data_info, AttNo-decos.getConditionsSize()));
 			}
 			return str;
 		}
@@ -207,7 +204,7 @@ public class Attribute extends Operand {
 	public int countconnectitem() {
 		int itemcount = 0;
 		for (int i = 0; i < Items.size(); i++) {
-			itemcount += ((AttributeItem) Items.get(i)).countconnectitem();
+			itemcount += Items.get(i).countconnectitem();
 		}
 		return itemcount;
 	}
@@ -219,7 +216,7 @@ public class Attribute extends Operand {
 	public ExtHashSet getUseTablesAll() {
 		ExtHashSet rs = new ExtHashSet();
 		for (int i = 0; i < Items.size(); i++) {
-			rs.add(((AttributeItem) Items.get(i)).getUseTables());
+			rs.add(Items.get(i).getUseTables());
 		}
 		return rs;
 	}
@@ -242,7 +239,7 @@ public class Attribute extends Operand {
 		ExtList outsch = new ExtList();
 
 		for (int i = 0; i < Items.size(); i++) {
-			outsch.addAll(((AttributeItem) Items.get(i)).makeschImage());
+			outsch.addAll(Items.get(i).makeschImage());
 		}
 		
 		return outsch;

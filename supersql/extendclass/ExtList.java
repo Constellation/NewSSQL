@@ -39,15 +39,4 @@ public class ExtList<T> extends ArrayList<T> {
 		}
 		return list;
 	}
-
-	public String camma_list() {
-		String buf = "";
-		for (int i = 0; i < this.size(); i++) {
-			if (i > 0) {
-				buf.concat(",");
-			}
-			buf.concat(this.get(i).toString());
-		}
-		return buf;
-	}
 }

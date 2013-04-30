@@ -24,7 +24,7 @@ public class TFE implements ITFE {
 	}
 
 	@Override
-	public ExtList<TFE> makesch() {
+	public ExtList<Integer> makesch() {
 		// TODO Auto-generated method stub
 		return null;
 	}

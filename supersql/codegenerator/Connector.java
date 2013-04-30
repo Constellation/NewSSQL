@@ -59,10 +59,10 @@ public class Connector extends Operator{
 		dbgout.prt(count, "</Connector>");
 	}
 
-	public ExtList<TFE> makesch() {
-		ExtList<TFE> outsch = new ExtList<TFE>();
+	public ExtList<Integer> makesch() {
+		ExtList<Integer> outsch = new ExtList<Integer>();
 		for (int i = 0; i < tfeitems; i++) {
-			outsch.addAll(((ITFE) tfes.get(i)).makesch());
+			outsch.addAll(tfes.get(i).makesch());
 		}
 		return outsch;
 	}
