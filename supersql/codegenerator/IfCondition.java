@@ -2,16 +2,13 @@ package supersql.codegenerator;
 
 import supersql.extendclass.ExtList;
 
-public class IfCondition extends TFE {
+public class IfCondition extends Operator {
 
 	protected Attribute condition;
-	protected ITFE thenTfe;
-	protected ITFE elseTfe;
-	public DecorateList decos = new DecorateList();
-    int id; // SchemaID
+	protected TFE thenTfe;
+	protected TFE elseTfe;
 
-
-	public IfCondition(Attribute condition, ITFE thenTfe, ITFE elseTfe) {
+	public IfCondition(Attribute condition, TFE thenTfe, TFE elseTfe) {
 		super();
 		this.condition = condition;
 		this.thenTfe = thenTfe;
@@ -60,31 +57,6 @@ public class IfCondition extends TFE {
 			return 2;
 	}
 
-	public void addDeco(String key, Object val) {
-		// TODO Auto-generated method stub
-		decos.put(key, val);
-	}
-
-	public void setId(int id) {
-		// TODO Auto-generated method stub
-		this.id =id;  
-	}
-
-	public int getId() {
-		// TODO Auto-generated method stub
-		return id;
-	}
-
-	public void setOrderBy(String order) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void setAggregate(String aggregate) {
-		// TODO Auto-generated method stub
-
-	}
-
 	public ExtList makeschImage() {
 		// TODO Auto-generated method stub
 		ExtList outsch = new ExtList();
@@ -92,11 +64,6 @@ public class IfCondition extends TFE {
 		outsch.addAll(thenTfe.makeschImage());
 		outsch.addAll(elseTfe.makeschImage());
 		return outsch;
-	}
-
-	public void addDeco(String name, String value, String condition) {
-		// TODO Auto-generated method stub
-		decos.put(name, value, condition);
 	}
 
 	public Attribute getCondition() {

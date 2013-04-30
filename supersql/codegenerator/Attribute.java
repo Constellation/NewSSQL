@@ -37,11 +37,8 @@ public class Attribute extends Operand {
 	}
 	
 	public Attribute(Boolean b) {
-		//hanki start
-		order_flag = false;
-		aggregate_flag = false;
+		super();
 		conditional = b;
-		//hanki end
 	}
 
 	public int setItem(int no, String nm, String attimg, String key,

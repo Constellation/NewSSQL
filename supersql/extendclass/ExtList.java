@@ -26,7 +26,6 @@ public class ExtList<T> extends ArrayList<T> {
 		return this.unnest().size();
 	}
 
-	@SuppressWarnings("unchecked")
 	public ExtList<T> unnest() {
 		ExtList<T> list = new ExtList<T>();
 		for (int i = 0; i < this.size(); i++) {

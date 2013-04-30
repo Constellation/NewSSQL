@@ -142,7 +142,6 @@ public class AttributeItem {
 
 		//Log.out("[Att sig] : " + sig);
 		return sig.toString();
-
 	}
 	
 	//added by ria 20110913 start
