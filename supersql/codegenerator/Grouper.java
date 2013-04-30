@@ -8,51 +8,23 @@ public class Grouper extends Operator {
     public TFE tfe; // °ú¿ôTFE
 
     public Grouper() {
-    		//hanki start
-		order_flag = false;
-		aggregate_flag = false;
-	    //hanki end
-
+    	super();
         Dimension = -1;
     }
 
     public Grouper(int d) {
-    		//hanki start
-		order_flag = false;
-		aggregate_flag = false;
-	    //hanki end
-
+    	super();
         Dimension = d;
     }
 
     public Grouper(int d, TFE t) {
-    		//hanki start
-		order_flag = false;
-		aggregate_flag = false;
-	    //hanki end
-
+    	super();
         Dimension = d;
         tfe = t;
     }
 
-    public void setId(int i) {
-        id = i;
-    }
-
-    public int getId() {
-        return id;
-    }
-
     public void setTFE(TFE t) {
         tfe = t;
-    }
-
-    public void setDeco(DecorateList d) {
-        decos = d;
-    }
-
-    public void addDeco(String key, Object val) {
-        decos.put(key, val);
     }
 
     public void debugout() {
@@ -73,27 +45,19 @@ public class Grouper extends Operator {
     }
 
     public ExtList makesch() {
-
         ExtList outsch = new ExtList();
         outsch.add(tfe.makesch());
         //  Log.out("Grp outsch:"+outsch);
 
         return outsch;
-
     }
 
     public ExtList makele0() {
-
         ExtList le0 = new ExtList();
-
         le0.add(this.getSymbol());
-
         le0.add(tfe.makele0());
-
         Log.out("Grp le0:" + le0);
-
         return le0;
-
     }
 
     public String getSymbol() {
@@ -133,19 +97,6 @@ public class Grouper extends Operator {
     public boolean isFirstItem() {
         return (dindex == 0);
     }
-	//hanki start
-	public void setOrderBy(String order) {
-		order_flag = true;
-
-		this.order = new String();
-		this.order = order;
-	}
-
-	public void setAggregate(String aggregate) {
-		aggregate_flag = true;
-		this.aggregate = new String();
-		this.aggregate = aggregate;
-	}
 
 	//added by ria 20110913 start
 	public ExtList makeschImage() {

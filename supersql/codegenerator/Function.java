@@ -5,42 +5,18 @@ import java.util.Hashtable;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
 
-public class Function extends TFE implements IOperand {
+public class Function extends Operand {
 
 	String Name; 
-
 	int argitems; 
-
-	ExtList Args; 
-
-    //hanki start
-	boolean order_flag;
-	boolean aggregate_flag;
-	String order;
-    String aggregate;
-    //hanki end
-    
+	ExtList Args;     
 	Hashtable ArgHash = new Hashtable();
 
-	public DecorateList decos = new DecorateList();
-
 	public Function() {
-		//hanki start
-		order_flag = false;
-		aggregate_flag = false;
-	    //hanki end
-	    
+		super();
 		Name = "";
 		argitems = 0;
 		Args = new ExtList();
-
-	}
-
-	public void setId(int i) {
-	    id = i;
-	}
-	public int getId() {
-	    return id;
 	}
 
 	public void setFname(String name) {
@@ -52,14 +28,6 @@ public class Function extends TFE implements IOperand {
 	public void setArg(FuncArg fa) {
 		argitems++;
 		Args.add(fa);
-	}
-
-	public void setDeco(DecorateList d) {
-		decos = d;
-	}
-
-	public void addDeco(String key, Object val) {
-		decos.put(key, val);
 	}
 
 	public void debugout() {
@@ -206,21 +174,6 @@ public class Function extends TFE implements IOperand {
 		return result;
 
 	}
-		//hanki start
-	public void setOrderBy(String order) {
-		order_flag = true;
-
-		this.order = new String();
-		this.order = order;
-	}
-	
-	public void setAggregate(String aggregate) {
-		aggregate_flag = true;
-		
-		this.aggregate = new String();
-		this.aggregate = aggregate;
-	}
-	//hanki end
 	
 	//added by ria 20110913 start
 	public ExtList makeschImage() {
@@ -237,10 +190,5 @@ public class Function extends TFE implements IOperand {
 		return outsch;
 	}
 	//added by ria 20110913 end
-
-	public void addDeco(String name, String value, String condition) {
-		decos.put(name, value,condition);
-
-	}
 	
 }

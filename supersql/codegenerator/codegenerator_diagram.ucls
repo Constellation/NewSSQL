@@ -3,7 +3,7 @@
   realizations="true" associations="true" dependencies="false" nesting-relationships="true">  
   <interface id="1" language="java" name="supersql.codegenerator.ITFE" project="ssql2" 
     file="/ssql2/supersql/codegenerator/ITFE.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="121" width="159" x="136" y="-6"/>    
+    <position height="54" width="159" x="135" y="83"/>    
     <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="true" package="true" protected="true" private="true"/>      
@@ -12,8 +12,8 @@
   </interface>  
   <interface id="2" language="java" name="supersql.codegenerator.IOperator" project="ssql2" 
     file="/ssql2/supersql/codegenerator/IOperator.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="374" y="191"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+    <position height="52" width="122" x="232" y="172"/>    
+    <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="true" package="true" protected="true" private="true"/>      
       <operations public="true" package="true" protected="true" private="true"/>    
@@ -21,8 +21,8 @@
   </interface>  
   <interface id="3" language="java" name="supersql.codegenerator.IOperand" project="ssql2" 
     file="/ssql2/supersql/codegenerator/IOperand.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="160" y="196"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+    <position height="52" width="122" x="77" y="259"/>    
+    <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="true" package="true" protected="true" private="true"/>      
       <operations public="true" package="true" protected="true" private="true"/>    
@@ -30,7 +30,7 @@
   </interface>  
   <class id="4" language="java" name="supersql.codegenerator.Grouper" project="ssql2" 
     file="/ssql2/supersql/codegenerator/Grouper.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="217" width="212" x="773" y="276"/>    
+    <position height="83" width="120" x="666" y="320"/>    
     <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="true" package="true" protected="true" private="true"/>      
@@ -39,7 +39,7 @@
   </class>  
   <class id="5" language="java" name="supersql.codegenerator.Connector" project="ssql2" 
     file="/ssql2/supersql/codegenerator/Connector.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="328" width="230" x="468" y="274"/>    
+    <position height="98" width="120" x="824" y="311"/>    
     <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="true" package="true" protected="true" private="true"/>      
@@ -48,7 +48,7 @@
   </class>  
   <class id="6" language="java" name="supersql.codegenerator.Attribute" project="ssql2" 
     file="/ssql2/supersql/codegenerator/Attribute.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="111" width="140" x="293" y="287"/>    
+    <position height="130" width="121" x="275" y="410"/>    
     <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="true" package="true" protected="true" private="true"/>      
@@ -57,106 +57,185 @@
   </class>  
   <class id="7" language="java" name="supersql.codegenerator.AttributeItem" project="ssql2" 
     file="/ssql2/supersql/codegenerator/AttributeItem.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="78" width="157" x="76" y="425"/>    
+    <position height="78" width="157" x="47" y="559"/>    
     <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="true" package="true" protected="true" private="true"/>      
       <operations public="true" package="true" protected="true" private="true"/>    
     </display>  
   </class>  
-  <class id="8" language="java" name="supersql.codegenerator.TFE" project="ssql2" 
-    file="/ssql2/supersql/codegenerator/TFE.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="90" width="212" x="527" y="21"/>    
-    <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
-      visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true"/>      
-      <operations public="true" package="true" protected="true" private="true"/>    
-    </display>  
-  </class>  
-  <class id="9" language="java" name="supersql.codegenerator.Operator" project="ssql2" 
+  <class id="8" language="java" name="supersql.codegenerator.Operator" project="ssql2" 
     file="/ssql2/supersql/codegenerator/Operator.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="56" width="212" x="558" y="177"/>    
+    <position height="52" width="120" x="683" y="186"/>    
     <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="true" package="true" protected="true" private="true"/>      
       <operations public="true" package="true" protected="true" private="true"/>    
     </display>  
   </class>  
-  <association id="10">    
-    <bendpoint x="883" y="406"/>    
-    <bendpoint x="1007" y="408"/>    
-    <bendpoint x="1005" y="288"/>    
-    <bendpoint x="1007" y="122"/>    
-    <end type="SOURCE" refId="4" navigable="false">      
-      <attribute id="11" name="tfe">        
-        <position height="18" width="24" x="791" y="69"/>      
-      </attribute>      
-      <multiplicity id="12" minimum="0" maximum="1">        
-        <position height="16" width="25" x="787" y="100"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="8" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <generalization id="13">    
-    <end type="SOURCE" refId="2"/>    
+  <class id="9" language="java" name="supersql.codegenerator.TFE" project="ssql2" 
+    file="/ssql2/supersql/codegenerator/TFE.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="54" width="212" x="446" y="89"/>    
+    <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="10" language="java" name="supersql.codegenerator.Operand" project="ssql2" 
+    file="/ssql2/supersql/codegenerator/Operand.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="102" width="155" x="401" y="242"/>    
+    <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="11" language="java" name="supersql.codegenerator.Function" project="ssql2" 
+    file="/ssql2/supersql/codegenerator/Function.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="163" width="153" x="443" y="400"/>    
+    <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="12" language="java" name="supersql.codegenerator.FuncArg" project="ssql2" 
+    file="/ssql2/supersql/codegenerator/FuncArg.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="89" width="156" x="615" y="558"/>    
+    <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class id="13" language="java" name="supersql.codegenerator.DecorateList" project="ssql2" 
+    file="/ssql2/supersql/codegenerator/DecorateList.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="52" width="120" x="1021" y="7"/>    
+    <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <generalization id="14">    
+    <end type="SOURCE" refId="3"/>    
     <end type="TARGET" refId="1"/>  
   </generalization>  
-  <realization id="14">    
-    <end type="SOURCE" refId="9"/>    
-    <end type="TARGET" refId="2"/>  
-  </realization>  
   <generalization id="15">    
-    <end type="SOURCE" refId="4"/>    
+    <end type="SOURCE" refId="8"/>    
     <end type="TARGET" refId="9"/>  
   </generalization>  
-  <association id="16">    
+  <generalization id="16">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="8"/>  
+  </generalization>  
+  <association id="17">    
     <end type="SOURCE" refId="6" navigable="false">      
-      <attribute id="17" name="Items"/>      
-      <multiplicity id="18" minimum="0" maximum="2147483647"/>    
+      <attribute id="18" name="Items"/>      
+      <multiplicity id="19" minimum="0" maximum="2147483647">        
+        <position height="16" width="23" x="206" y="521"/>      
+      </multiplicity>    
     </end>    
     <end type="TARGET" refId="7" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <generalization id="19">    
-    <end type="SOURCE" refId="9"/>    
-    <end type="TARGET" refId="8"/>  
-  </generalization>  
-  <generalization id="20">    
-    <end type="SOURCE" refId="5"/>    
-    <end type="TARGET" refId="9"/>  
-  </generalization>  
-  <association id="21">    
-    <bendpoint x="745" y="464"/>    
-    <bendpoint x="1070" y="470"/>    
-    <bendpoint x="1071" y="61"/>    
-    <end type="SOURCE" refId="5" navigable="false">      
-      <attribute id="22" name="tfes">        
-        <position height="18" width="30" x="837" y="43"/>      
+  <association id="20">    
+    <end type="SOURCE" refId="12" navigable="false">      
+      <attribute id="21" name="tfe">        
+        <position height="18" width="24" x="589" y="176"/>      
       </attribute>      
-      <multiplicity id="23" minimum="0" maximum="2147483647">        
-        <position height="16" width="23" x="859" y="68"/>      
+      <multiplicity id="22" minimum="0" maximum="1">        
+        <position height="16" width="25" x="582" y="159"/>      
       </multiplicity>    
     </end>    
-    <end type="TARGET" refId="8" navigable="true"/>    
+    <end type="TARGET" refId="9" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <generalization id="24">    
-    <end type="SOURCE" refId="3"/>    
-    <end type="TARGET" refId="1"/>  
-  </generalization>  
-  <generalization id="25">    
+  <generalization id="23">    
     <end type="SOURCE" refId="6"/>    
-    <end type="TARGET" refId="8"/>  
+    <end type="TARGET" refId="10"/>  
   </generalization>  
-  <realization id="26">    
-    <end type="SOURCE" refId="6"/>    
-    <end type="TARGET" refId="3"/>  
-  </realization>  
+  <association id="24">    
+    <bendpoint x="755" y="459"/>    
+    <bendpoint x="1038" y="466"/>    
+    <bendpoint x="944" y="114"/>    
+    <end type="SOURCE" refId="4" navigable="false">      
+      <attribute id="25" name="tfe">        
+        <position height="18" width="24" x="725" y="126"/>      
+      </attribute>      
+      <multiplicity id="26" minimum="0" maximum="1">        
+        <position height="16" width="25" x="724" y="141"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="9" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
   <realization id="27">    
     <end type="SOURCE" refId="8"/>    
+    <end type="TARGET" refId="2"/>  
+  </realization>  
+  <generalization id="28">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="8"/>  
+  </generalization>  
+  <association id="29">    
+    <bendpoint x="853" y="158"/>    
+    <end type="SOURCE" refId="5" navigable="false">      
+      <attribute id="30" name="tfes">        
+        <position height="18" width="30" x="762" y="98"/>      
+      </attribute>      
+      <multiplicity id="31" minimum="0" maximum="2147483647">        
+        <position height="16" width="23" x="801" y="104"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="9" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="32">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="1"/>  
+  </generalization>  
+  <association id="33">    
+    <end type="SOURCE" refId="13" navigable="false">      
+      <attribute id="34" name="connector">        
+        <position height="18" width="65" x="1050" y="104"/>      
+      </attribute>      
+      <multiplicity id="35" minimum="0" maximum="1">        
+        <position height="16" width="25" x="1065" y="134"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="5" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="36">    
+    <end type="SOURCE" refId="9" navigable="false">      
+      <attribute id="37" name="decos">        
+        <position height="18" width="44" x="941" y="23"/>      
+      </attribute>      
+      <multiplicity id="38" minimum="0" maximum="1">        
+        <position height="16" width="25" x="975" y="56"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="13" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <realization id="39">    
+    <end type="SOURCE" refId="9"/>    
     <end type="TARGET" refId="1"/>  
   </realization>  
+  <generalization id="40">    
+    <end type="SOURCE" refId="11"/>    
+    <end type="TARGET" refId="10"/>  
+  </generalization>  
+  <realization id="41">    
+    <end type="SOURCE" refId="10"/>    
+    <end type="TARGET" refId="3"/>  
+  </realization>  
+  <generalization id="42">    
+    <end type="SOURCE" refId="10"/>    
+    <end type="TARGET" refId="9"/>  
+  </generalization>  
   <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
     accessors="true" visibility="true">    
     <attributes public="true" package="true" protected="true" private="true"/>    

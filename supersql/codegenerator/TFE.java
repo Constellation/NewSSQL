@@ -4,10 +4,19 @@ import supersql.extendclass.ExtList;
 
 public class TFE implements ITFE {
 
-	 int id; // SchemaID
-	    
-	public DecorateList decos = new DecorateList();
+	int id; // SchemaID
+	boolean order_flag;
+	boolean aggregate_flag;
+	String order;
+	String aggregate;    
+	public DecorateList decos;
 
+	public TFE() {
+		order_flag = false;
+		aggregate_flag = false;
+		decos = new DecorateList();
+	}
+	
 	@Override
 	public void debugout(int count) {
 		// TODO Auto-generated method stub
@@ -39,34 +48,29 @@ public class TFE implements ITFE {
 	}
 
 	@Override
-	public void addDeco(String key, Object val) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void setId(int id) {
-		// TODO Auto-generated method stub
-		
+		this.id = id;
 	}
 
 	@Override
 	public int getId() {
-		// TODO Auto-generated method stub
-		return 0;
+		return id;
 	}
 
 	@Override
 	public void setOrderBy(String order) {
-		// TODO Auto-generated method stub
-		
+		order_flag = true;
+		this.order = new String();
+		this.order = order;
 	}
 
 	@Override
 	public void setAggregate(String aggregate) {
-		// TODO Auto-generated method stub
-		
+		aggregate_flag = true;
+		this.aggregate = new String();
+		this.aggregate = aggregate;
 	}
+
 
 	@Override
 	public ExtList makeschImage() {
@@ -75,9 +79,18 @@ public class TFE implements ITFE {
 	}
 
 	@Override
+	public void addDeco(String key, Object val) {
+		decos.put(key, val);
+	}
+	
+	@Override
 	public void addDeco(String name, String value, String condition) {
-		// TODO Auto-generated method stub
-		
+		decos.put(name, value,condition);
+	}
+
+	@Override
+	public void setDeco(DecorateList d) {
+		decos = d;
 	}
 
 }

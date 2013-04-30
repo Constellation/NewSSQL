@@ -30,7 +30,8 @@ public interface ITFE {
 	int countconnectitem();
 
 	void addDeco(String key, Object val);
-
+	void setDeco(DecorateList d);
+	
 	void setId(int id);
 	int getId();
 

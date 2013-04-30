@@ -9,7 +9,7 @@ import supersql.extendclass.ExtHashSet;
 import supersql.extendclass.ExtList;
 import supersql.parser.Preprocessor;
 
-public class Attribute extends TFE implements IOperand {
+public class Attribute extends Operand {
 
 	int AttNo;
 
@@ -24,17 +24,6 @@ public class Attribute extends TFE implements IOperand {
 	private String condition;
 
 	int AttType;
-	
-    //hanki start
-	boolean order_flag;
-	boolean aggregate_flag;
-	String order;
-    String aggregate;
-    //hanki end
-
-	//  String SQLimage;
-	//  ExtList UseAtts;
-	//  ExtHashSet UseTables;
 
 	String ValKey;
 
@@ -43,11 +32,8 @@ public class Attribute extends TFE implements IOperand {
 	boolean conditional;
 
 	public Attribute() {
-			//hanki start
-		order_flag = false;
-		aggregate_flag = false;
+		super();
 		conditional = false;
-	    //hanki end
 	}
 	
 	public Attribute(Boolean b) {
@@ -56,13 +42,6 @@ public class Attribute extends TFE implements IOperand {
 		aggregate_flag = false;
 		conditional = b;
 		//hanki end
-	}
-
-	public void setId(int i) {
-	    id = i;
-	}
-	public int getId() {
-	    return id;
 	}
 
 	public int setItem(int no, String nm, String attimg, String key,
@@ -116,10 +95,6 @@ public class Attribute extends TFE implements IOperand {
 		AttCounts = no - AttNo - AttNo1;
 		return no;
 
-	}
-
-	public void setDeco(DecorateList d) {
-		decos = d;
 	}
 
 	public void addDeco(String key, Object val) {
@@ -264,21 +239,6 @@ public class Attribute extends TFE implements IOperand {
 	public String getKey() {
 		return this.ValKey;
 	}
-	//hanki start
-	public void setOrderBy(String order) {
-		order_flag = true;
-
-		this.order = new String();
-		this.order = order;
-	}
-	
-	public void setAggregate(String aggregate) {
-		aggregate_flag = true;
-		
-		this.aggregate = new String();
-		this.aggregate = aggregate;
-	}
-	//hanki end
 	
 	//added by ria 20110913 start
 	public ExtList makeschImage() {
