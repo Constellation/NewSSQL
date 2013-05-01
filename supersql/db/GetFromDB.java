@@ -30,12 +30,10 @@ public class GetFromDB {
 
     }
 
-    //tk/////////////////////////////////
     public GetFromDB(ConnectDB cdb) {
         sqlm = new SQLManager(cdb);
 
     }
-    //tk//////////////////////////////////
 
     public void execQuery(String query, ExtList ResultData) {
 
