@@ -8,49 +8,38 @@ import supersql.extendclass.ExtList;
 public class Function extends Operand {
 
 	String Name; 
-	int argitems; 
-	ExtList Args;     
-	Hashtable ArgHash = new Hashtable();
+	ExtList<FuncArg> Args;     
+	Hashtable<String, FuncArg> ArgHash = new Hashtable<String, FuncArg>();
 
 	public Function() {
 		super();
 		Name = "";
-		argitems = 0;
-		Args = new ExtList();
+		Args = new ExtList<FuncArg>();
 	}
 
 	public void setFname(String name) {
-
 		Name = name;
-
 	}
 
 	public void setArg(FuncArg fa) {
-		argitems++;
 		Args.add(fa);
-	}
-
-	public void debugout() {
-		debugout(0);
 	}
 
 	public void debugout(int count) {
 
 		Debug dbgout = new Debug();
-		dbgout.prt(count, "<Function Name=" + Name + " argitems=" + argitems
+		dbgout.prt(count, "<Function Name=" + Name + " argitems=" + Args.size()
 				+ " decoitems=" + decos.size() + " id=" + id + ">");
 
 		for (int i = 0; i < Args.size(); i++) {
-			((FuncArg) Args.get(i)).debugout(count + 1);
+			Args.get(i).debugout(count + 1);
 		}
 
 		decos.debugout(count + 1);
-
 		dbgout.prt(count, "</Function>");
 	}
 
 	public ExtList makesch() {
-
 		ExtList outsch = new ExtList();
 		ExtList outsch1 = new ExtList();
 
@@ -60,11 +49,8 @@ public class Function extends Operand {
 				outsch.addAll(outsch1);
 			}
 		}
-
-		//  Log.out("Fnc outsch:"+outsch);
-
+		
 		return outsch;
-
 	}
 
 	public ExtList makele0() {
@@ -82,10 +68,9 @@ public class Function extends Operand {
 		Log.out("Fnc le0:" + le0);
 
 		return le0;
-
 	}
 
-	public void work(ExtList data_info) {
+	public void work(ExtList<ExtList<String>> data_info) {
 		Log.out("*Function");
 	}
 
@@ -96,27 +81,21 @@ public class Function extends Operand {
 			items += ((FuncArg) Args.get(i)).countconnectitem();
 		}
 
-		//		Log.out("*Function connect item = " + items);
 		return items;
 	}
 
-	public ExtList getArgs() {
+	public ExtList<FuncArg> getArgs() {
 		return Args;
 	}
 
-	public void setDataList(ExtList data) {
-
-		
+	public void setDataList(ExtList<ExtList<String>> data) {
 		int dindex = 0;
 		int ci;
 		FuncArg fa;
-		//Log.out("data = " + data);
 		for (int i = 0; i < Args.size(); i++) {
-			fa = (FuncArg) Args.get(i);
+			fa = Args.get(i);
 			ci = fa.countconnectitem();
-			//		Log.out("ci = "+ci);
 			fa.setData(data.ExtsubList(dindex, dindex + ci));
-			//		Log.out("key = "+fa.getKey());
 			if (Name.equalsIgnoreCase("foreach")){
 				ArgHash.put(Integer.toString(i), fa);
 			} else {
@@ -149,7 +128,7 @@ public class Function extends Operand {
 	}
 
 	public void workAtt(String Key) {
-		FuncArg fa = (FuncArg) ArgHash.get(Key);
+		FuncArg fa = ArgHash.get(Key);
 
 		if (fa != null) {
 			fa.workAtt();
@@ -162,9 +141,8 @@ public class Function extends Operand {
 		FuncArg fa;
 		String result = null;
 
-		//Log.out("data = " + data);
 		for (int i = 0; i < Args.size(); i++) {
-			fa = (FuncArg) Args.get(i);
+			fa = Args.get(i);
 			if (fa.getKey().equalsIgnoreCase("class")) {
 			    result = fa.getStr();
 			}
@@ -175,13 +153,12 @@ public class Function extends Operand {
 
 	}
 	
-	//added by ria 20110913 start
 	public ExtList makeschImage() {
 		ExtList outsch = new ExtList();
 		ExtList outsch1 = new ExtList();
 
 		for (int i = 0; i < Args.size(); i++) {
-			outsch1 = ((FuncArg) Args.get(i)).makeschImage();
+			outsch1 = Args.get(i).makeschImage();
 			if (!outsch1.isEmpty()) {
 				outsch.addAll(outsch1);
 			}
@@ -189,6 +166,5 @@ public class Function extends Operand {
 
 		return outsch;
 	}
-	//added by ria 20110913 end
 	
 }
