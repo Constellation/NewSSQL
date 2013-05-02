@@ -1,10 +1,9 @@
 package supersql.codegenerator.XML;
 
-import supersql.codegenerator.*;
-import supersql.codegenerator.XML.XMLEnv;
+import supersql.codegenerator.Grouper;
+import supersql.codegenerator.Manager;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
-import supersql.codegenerator.XML.XMLFunction;
 
 public class XMLG0 extends Grouper {
 

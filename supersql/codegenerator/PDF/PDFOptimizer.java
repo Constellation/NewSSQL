@@ -5,7 +5,7 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.ITFE;
 import supersql.extendclass.ExtList;
 
 //PDFに関する基本的な変数とメソッドを持つクラス
@@ -33,7 +33,7 @@ public class PDFOptimizer {
 	ExtList resultList = new ExtList();
 	
 	
-	TFE tfe_info;
+	ITFE tfe_info;
 	ExtList flatTFE = new ExtList();
 	
 	
@@ -1608,7 +1608,7 @@ public class PDFOptimizer {
 	}
 	
 	
-	public void set_tfeInfo(TFE tfe_info){
+	public void set_tfeInfo(ITFE tfe_info){
 		this.tfe_info = tfe_info;
 	}
 	

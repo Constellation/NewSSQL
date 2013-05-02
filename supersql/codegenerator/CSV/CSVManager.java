@@ -1,9 +1,13 @@
 package supersql.codegenerator.CSV;
 
-import java.io.*;
-import java.util.Vector;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.ITFE;
+import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
@@ -21,7 +25,7 @@ public class CSVManager extends Manager{
     }
 
 
-    public void generateCode(TFE tfe_info, ExtList data_info) {
+    public void generateCode(ITFE tfe_info, ExtList data_info) {
 
         csv_env.countfile = 0;
         csv_env.code = new StringBuffer();

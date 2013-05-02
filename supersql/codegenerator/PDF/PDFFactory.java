@@ -1,6 +1,13 @@
 package supersql.codegenerator.PDF;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.Attribute;
+import supersql.codegenerator.Connector;
+import supersql.codegenerator.Factory;
+import supersql.codegenerator.Function;
+import supersql.codegenerator.Grouper;
+import supersql.codegenerator.IfCondition;
+import supersql.codegenerator.Manager;
+import supersql.codegenerator.TFE;
 
 //Operator, Managerを生成するクラス
 

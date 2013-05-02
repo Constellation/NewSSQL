@@ -1,7 +1,8 @@
 package supersql.codegenerator.XML;
 
-import supersql.codegenerator.*;
-import supersql.codegenerator.XML.XMLEnv;
+import supersql.codegenerator.Connector;
+import supersql.codegenerator.ITFE;
+import supersql.codegenerator.Manager;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
 import supersql.parser.TFEparser;
@@ -57,7 +58,7 @@ public class XMLC0 extends Connector {
 
 	   	 while(this.hasMoreItems()) {
 
-		    TFE tfe = (TFE)tfes.get(i);
+		    ITFE tfe = (ITFE)tfes.get(i);
 
 		    this.worknextItem_GENERATEXML();
 		}

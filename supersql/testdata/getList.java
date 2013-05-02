@@ -1,6 +1,5 @@
 package supersql.testdata;
 
-import java.lang.String;
 
 public class getList {
 

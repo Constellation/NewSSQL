@@ -1,12 +1,14 @@
 package supersql.codegenerator.Mobile_HTML5;
 
+import java.io.File;
+
 import supersql.codegenerator.Attribute;
 import supersql.codegenerator.Connector;
 import supersql.codegenerator.Manager;
+import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
-import supersql.common.GlobalEnv;
-import java.io.File;				//added by goto
+//added by goto
 
 public class HTMLAttribute extends Attribute {
 
@@ -51,13 +53,17 @@ public class HTMLAttribute extends Attribute {
 
 			}else{
 				//20130309
-				html_env.code.append("	");
+				//html_env.code.append("	");
 				//x html_env.code.append("	<div claSS=\"ui-grid-a\"><div claSS=\"ui-block-a\">");
 				//20130309
 				//20130314 table
 //				Log.info("Before table!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!	decos="+decos
 //						+"	"+HTMLC1.tableFlg+" "+HTMLC2.tableFlg+" "+HTMLG1.tableFlg);
-				if(decos.containsKey("table") || decos.containsKey("table0")){
+				//20130409
+				if((HTMLC1.tableFlg||HTMLC1.table0Flg||HTMLG1.tableFlg||HTMLG1.table0Flg||
+						HTMLC2.tableFlg||HTMLC2.table0Flg||HTMLG2.tableFlg||HTMLG2.table0Flg||
+						decos.containsKey("table") || decos.containsKey("table0"))
+						&& (!HTMLC1.divFlg&&!HTMLC2.divFlg&&!HTMLG1.divFlg&&!HTMLG2.divFlg)){
 					//Log.info("table!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 					html_env.code.append("<table" + html_env.getOutlineModeAtt() + " ");
 					html_env.code.append("class=\"att");
@@ -79,7 +85,13 @@ public class HTMLAttribute extends Attribute {
 
 			}else{
 				//20130309
-				if(decos.containsKey("table") || decos.containsKey("table0"))	html_env.code.append("<tr><td>\n");		//20130314 table
+				//20130409
+				//if(decos.containsKey("table") || decos.containsKey("table0"))	html_env.code.append("<tr><td>\n");		//20130314 table
+				if((HTMLC1.tableFlg||HTMLC1.table0Flg||HTMLG1.tableFlg||HTMLG1.table0Flg||
+						HTMLC2.tableFlg||HTMLC2.table0Flg||HTMLG2.tableFlg||HTMLG2.table0Flg||
+						decos.containsKey("table") || decos.containsKey("table0"))
+						&& (!HTMLC1.divFlg&&!HTMLC2.divFlg&&!HTMLG1.divFlg&&!HTMLG2.divFlg))
+					html_env.code.append("<tr><td>\n");		//20130314 table
 				Log.out("<table class=\"att\"><tr><td>");
 			}
 
@@ -210,7 +222,13 @@ public class HTMLAttribute extends Attribute {
 				html_env.code.append("\n");			//20130309
 				//html_env.code.append("</diV>\n");
 				//20130309
-				if(decos.containsKey("table") || decos.containsKey("table0"))	html_env.code.append("</td></tr></table>\n");	//20130314 table
+				//20130409
+				//if(decos.containsKey("table") || decos.containsKey("table0"))	html_env.code.append("</td></tr></table>\n");	//20130314 table
+				if((HTMLC1.tableFlg||HTMLC1.table0Flg||HTMLG1.tableFlg||HTMLG1.table0Flg||
+						HTMLC2.tableFlg||HTMLC2.table0Flg||HTMLG2.tableFlg||HTMLG2.table0Flg||
+						decos.containsKey("table") || decos.containsKey("table0"))
+						&& (!HTMLC1.divFlg&&!HTMLC2.divFlg&&!HTMLG1.divFlg&&!HTMLG2.divFlg))
+					html_env.code.append("</td></tr></table>\n");	//20130314 table
 				Log.out("</td></tr></table>");
 			}
 

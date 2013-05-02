@@ -12,7 +12,11 @@ import java.util.StringTokenizer;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import supersql.codegenerator.CodeGenerator;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
@@ -24,7 +28,7 @@ import supersql.parser.SSQLparser;
 public class InvokeServlet2 extends HttpServlet {
 
 	/**
-	 * <code>serialVersionUID</code> §Œ•≥•·•Û•»
+	 * <code>serialVersionUID</code> ÔøΩŒ•ÔøΩÔøΩÔøΩÔøΩÔøΩ
 	 */
 	private static final long serialVersionUID = 8021503235844232672L;
 	FormServlet fs;
@@ -42,7 +46,7 @@ public class InvokeServlet2 extends HttpServlet {
 			enc =  "Shift_JIS";
 		}
 		Log.info(enc);
-		// ContentTypeÇê›íË
+		// ContentTypeÔøΩÔøΩ›íÔøΩ
 		res.setContentType("text/html; charset="+enc);
 		req.setCharacterEncoding(enc);
 
@@ -246,22 +250,37 @@ public class InvokeServlet2 extends HttpServlet {
 					break;
 				}
 				//for comment statement
-				if(line.startsWith("//"))
-					line = in.readLine();
-				if(line.contains("/*"))
-				{
-					int s = line.indexOf("/*");
-
-					Log.out(line);
-					String line1 = line.substring(0,s);
-					tmp.append(" "+line1);
-					Log.out(line1);
-					while(!line.contains("*/"))
-						line = in.readLine();
-					int t = line.indexOf("*/");
-					line = line.substring(t+2);
-				}
-				tmp.append(" " + line);
+				//commented out by goto 20130412
+//				if(line.startsWith("//"))
+//					line = in.readLine();
+				//changed by goto 20130412
+				if(line!=null && line.contains("/*"))
+	            {
+	              	int s = line.indexOf("/*");
+	              	String line1 = line.substring(0,s);
+//		          	tmp.append(" "+line1);
+	              	while(!line.contains("*/"))
+	              		line = in.readLine();
+	              	int t = line.indexOf("*/");
+	              	line = line1+line.substring(t+2);
+	            }
+	            //added by goto 20130412
+	            if(line!=null && line.contains("//")){
+	              	boolean dqFlg=false;
+	              	int i=0;
+	              	
+	              	for(i=0; i<line.length(); i++){
+	              		if(line.charAt(i)=='"' && !dqFlg)		dqFlg=true;
+	              		else if(line.charAt(i)=='"' && dqFlg)	dqFlg=false;
+	              		
+	              		if(!dqFlg && i<line.length()-1 && (line.charAt(i)=='/' && line.charAt(i+1)=='/'))
+	              			break;
+	              	}
+	              	line = line.substring(0,i);
+	            }
+				
+	            if(line!=null)
+	            	tmp.append(" " + line);
 			}
 			in.close();
 			String QueryString = tmp.toString();
@@ -430,22 +449,37 @@ public class InvokeServlet2 extends HttpServlet {
 						break;
 					}
 					//for comment statement
-					if(line.startsWith("//"))
-						line = in.readLine();
-					if(line.contains("/*"))
-					{
-						int s = line.indexOf("/*");
-
-						Log.out(line);
-						String line1 = line.substring(0,s);
-						tmp += " "+line1;
-						Log.out(line1);
-						while(!line.contains("*/"))
-							line = in.readLine();
-						int t = line.indexOf("*/");
-						line = line.substring(t+2);
-					}
-					tmp += " " + line.trim();
+					//commented out by goto 20130412
+//					if(line.startsWith("//"))
+//						line = in.readLine();
+					//changed by goto 20130412
+					if(line!=null && line.contains("/*"))
+		            {
+		              	int s = line.indexOf("/*");
+		              	String line1 = line.substring(0,s);
+//			          	tmp.append(" "+line1);
+		              	while(!line.contains("*/"))
+		              		line = in.readLine();
+		              	int t = line.indexOf("*/");
+		              	line = line1+line.substring(t+2);
+		            }
+		            //added by goto 20130412
+		            if(line!=null && line.contains("//")){
+		              	boolean dqFlg=false;
+		              	int i=0;
+		              	
+		              	for(i=0; i<line.length(); i++){
+		              		if(line.charAt(i)=='"' && !dqFlg)		dqFlg=true;
+		              		else if(line.charAt(i)=='"' && dqFlg)	dqFlg=false;
+		              		
+		              		if(!dqFlg && i<line.length()-1 && (line.charAt(i)=='/' && line.charAt(i+1)=='/'))
+		              			break;
+		              	}
+		              	line = line.substring(0,i);
+		            }
+					
+		            if(line!=null)
+		            	tmp += " " + line.trim();
 				}
 			}else{
 				in = new BufferedReader(new FileReader(filename));

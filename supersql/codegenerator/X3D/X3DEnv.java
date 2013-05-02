@@ -2,9 +2,10 @@ package supersql.codegenerator.X3D;
 
 import java.io.PrintWriter;
 import java.util.Vector;
+
 import supersql.codegenerator.DecorateList;
+import supersql.codegenerator.ITFE;
 import supersql.codegenerator.LocalEnv;
-import supersql.codegenerator.TFE;
 import supersql.common.Log;
 
 public class X3DEnv extends LocalEnv{
@@ -364,12 +365,12 @@ public class X3DEnv extends LocalEnv{
     
     
     
-    public static String getClassID(TFE tfe) {
+    public static String getClassID(ITFE tfe) {
         if (tfe instanceof X3DC3) {
-            return getClassID(((TFE) ((X3DC3) tfe).tfes.get(0)));
+            return getClassID(((ITFE) ((X3DC3) tfe).tfes.get(0)));
         }
         if (tfe instanceof X3DG3) {
-            return getClassID(((TFE) ((X3DG3) tfe).tfe));
+            return getClassID(((ITFE) ((X3DG3) tfe).tfe));
         }
         return "TFE" + tfe.getId();
     }

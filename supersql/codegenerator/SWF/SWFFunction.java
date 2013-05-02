@@ -3,7 +3,8 @@
  */
 package supersql.codegenerator.SWF;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.Function;
+import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;

@@ -2,7 +2,10 @@ package supersql.codegenerator.PDF;
 
 import java.util.Vector;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.Attribute;
+import supersql.codegenerator.Connector;
+import supersql.codegenerator.ITFE;
+import supersql.codegenerator.Manager;
 import supersql.extendclass.ExtList;
 
 public class PDFC3 extends Connector {
@@ -69,7 +72,7 @@ public class PDFC3 extends Connector {
 
 		///////////////////////////////////////////////////////////////////////
 		for (i = 0; i < tfeitems; i++) {
-			TFE tfe = (TFE) tfes.get(i);
+			ITFE tfe = (ITFE) tfes.get(i);
 
 			////////////対象がリストでないとき
 			if (tfe instanceof Attribute) {
@@ -206,7 +209,7 @@ public class PDFC3 extends Connector {
 
 		System.out.println("***** tate_max = " + tate_max);
 
-		PDFValue array[] = new PDFValue[vector_local.size()];
+		PDFValue[] array = new PDFValue[vector_local.size()];
 		vector_local.copyInto(array);
 
 		//このC3リストのtate_maxをこのリストの要素のtateにする

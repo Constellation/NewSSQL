@@ -1,12 +1,7 @@
 package supersql.codegenerator.CSV;
 
-import java.io.UnsupportedEncodingException;
-
-import java.net.URLEncoder;
-import java.util.ArrayList;
-
-import supersql.codegenerator.*;
-import supersql.common.GlobalEnv;
+import supersql.codegenerator.Function;
+import supersql.codegenerator.Manager;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
 

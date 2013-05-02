@@ -1,6 +1,7 @@
 package supersql.codegenerator.XML;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.Function;
+import supersql.codegenerator.Manager;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
 import supersql.parser.SSQLparser;
@@ -227,7 +228,7 @@ public class XMLFunction extends Function {
 
     		if(SSQLparser.xmltext_flag == 1){
 
-            	String text_tagvalue[] = xml_value.split(",");
+            	String[] text_tagvalue = xml_value.split(",");
 
         		for(int count=0; count < text_tagvalue.length; count++){
         			xml_env.code.append("<" + SSQLparser.xpath_tag + ">");
@@ -273,7 +274,7 @@ public class XMLFunction extends Function {
 
     		if(SSQLparser.xmltext_flag == 1){
 
-            	String text_tagvalue[] = xml_value.split(",");
+            	String[] text_tagvalue = xml_value.split(",");
 
         		for(int count=0; count < text_tagvalue.length; count++){
         			xml_env.code.append("<" + SSQLparser.xpath_tag + ">");

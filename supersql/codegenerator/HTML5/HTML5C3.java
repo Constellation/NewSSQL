@@ -1,6 +1,6 @@
 package supersql.codegenerator.HTML5;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.Manager;
 import supersql.codegenerator.HTML.HTMLC3;
 import supersql.codegenerator.HTML.HTMLEnv;
 

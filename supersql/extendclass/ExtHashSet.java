@@ -1,7 +1,7 @@
 package supersql.extendclass;
 
-import java.util.HashSet;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 
 public class ExtHashSet extends HashSet {

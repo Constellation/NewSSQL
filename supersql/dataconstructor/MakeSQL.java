@@ -5,11 +5,17 @@ import java.util.Hashtable;
 import java.util.Iterator;
 
 import supersql.codegenerator.AttributeItem;
-import supersql.codegenerator.XML.XMLFunction; //ryuryu
+import supersql.codegenerator.XML.XMLFunction;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
-import supersql.parser.*;
+import supersql.parser.FromInfo;
+import supersql.parser.FromParse;
+import supersql.parser.Preprocessor;
+import supersql.parser.SSQLparser;
+import supersql.parser.WhereInfo;
+import supersql.parser.WhereParse;
+//ryuryu
 
 public class MakeSQL {
 

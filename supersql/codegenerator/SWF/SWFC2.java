@@ -1,6 +1,8 @@
 package supersql.codegenerator.SWF;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.Connector;
+import supersql.codegenerator.ITFE;
+import supersql.codegenerator.Manager;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
 
@@ -38,7 +40,7 @@ public class SWFC2 extends Connector implements SWFTFE{
 		String opr = "";
 
 		while (this.hasMoreItems()) {
-			TFE tfe = (TFE) tfes.get(i);
+			ITFE tfe = (ITFE) tfes.get(i);
 
 
 			this.worknextItem();

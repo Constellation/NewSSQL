@@ -3,7 +3,6 @@
  */
 package supersql.dataconstructor;
 
-import supersql.codegenerator.Mobile_HTML5.HTMLFunction;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
 
@@ -277,8 +276,8 @@ public class Aggregate {
 		
 		tmp.append(" ");
 		tmp.append(value);
-		
-		target = new ExtList(tmp.toString());
+		target = new ExtList();
+		target.add(tmp.toString());
 		
 		tuple.set(position, target);
 		
@@ -296,8 +295,8 @@ public class Aggregate {
 		ExtList result = new ExtList();
 		
 		tmp.append(way); tmp.append(" "); tmp.append(value);
-				
-		target = new ExtList(tmp.toString());
+		target = new ExtList();		
+		target.add(tmp.toString());
 		
 		tuple.set(position, target);
 		

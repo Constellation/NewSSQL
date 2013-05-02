@@ -1,13 +1,14 @@
 package supersql.codegenerator.CSV;
 
 import java.util.Vector;
-import supersql.codegenerator.*;
-import supersql.codegenerator.CSV.CSVEnv;
+
+import supersql.codegenerator.Connector;
+import supersql.codegenerator.ITFE;
+import supersql.codegenerator.Manager;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
-
-//ryuryu
 import supersql.parser.TFEparser;
+//ryuryu
 
 public class CSVC0 extends Connector {
 
@@ -51,7 +52,7 @@ public class CSVC0 extends Connector {
 
 	   	 while(this.hasMoreItems()) {
 
-		    TFE tfe = (TFE)tfes.get(i);
+		    ITFE tfe = (ITFE)tfes.get(i);
 
 		    String classid = CSVEnv.getClassID(tfe);
 

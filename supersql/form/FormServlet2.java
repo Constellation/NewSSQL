@@ -1,12 +1,17 @@
 package supersql.form;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.StringTokenizer;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import supersql.codegenerator.CodeGenerator;
 import supersql.common.GlobalEnv;
@@ -22,11 +27,11 @@ public void doPost(HttpServletRequest req,
                       HttpServletResponse res) 
                           throws ServletException, IOException {
 
-    // ContentType‚ğİ’è
+    // ContentTypeï¿½ï¿½İ’ï¿½
     res.setContentType("text/html; charset=Shift_JIS");
     req.setCharacterEncoding("Shift-JIS");
     
-    // o—Í—pPrintWriter‚ğæ“¾
+    // ï¿½oï¿½Í—pPrintWriterï¿½ï¿½ï¿½æ“¾
     PrintWriter out = res.getWriter();
 
     String sqlfile = new String();
@@ -63,18 +68,44 @@ public void doPost(HttpServletRequest req,
             break;
 
         //tk start/////////////////////////////////////
-        if(line.startsWith("//"))
-        	line = dis.readLine();
-        if(line.startsWith("/*"))
+		//commented out by goto 20130412
+//		if(line.startsWith("//"))
+//			line = dis.readLine();
+//        if(line.startsWith("/*"))
+//        {
+//        	while(!line.contains("*/"))
+//        		line = dis.readLine();
+//        	int t = line.indexOf("*/");
+//        	line = line.substring(t+2);
+////        	line = in.readLine();
+//        }
+		//changed by goto 20130412
+		if(line!=null && line.contains("/*"))
         {
-        	while(!line.contains("*/"))
-        		line = dis.readLine();
-        	int t = line.indexOf("*/");
-        	line = line.substring(t+2);
-//        	line = in.readLine();
+          	int s = line.indexOf("/*");
+          	String line1 = line.substring(0,s);
+          	while(!line.contains("*/"))
+          		line = dis.readLine();
+          	int t = line.indexOf("*/");
+          	line = line1+line.substring(t+2);
         }
-        //tk end///////////////////////////////////////
-        tmp_query.append(" " + line);
+        //added by goto 20130412
+        if(line!=null && line.contains("//")){
+          	boolean dqFlg=false;
+          	int i=0;
+          	
+          	for(i=0; i<line.length(); i++){
+          		if(line.charAt(i)=='"' && !dqFlg)		dqFlg=true;
+          		else if(line.charAt(i)=='"' && dqFlg)	dqFlg=false;
+          		
+          		if(!dqFlg && i<line.length()-1 && (line.charAt(i)=='/' && line.charAt(i+1)=='/'))
+          			break;
+          	}
+          	line = line.substring(0,i);
+        }
+		
+        if(line!=null)
+        	tmp_query.append(" " + line);
     }	
     
     
@@ -137,13 +168,13 @@ public void doPost(HttpServletRequest req,
     			k = position[b];
     			String_flag = 0;
     			
-    			//•Ï”’u‚«Š·‚¦
+    			//ï¿½Ïï¿½ï¿½uï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	    		if(read_where[k].contains("$"))
 	    		{
 	    			
 	    			out.println("read_where2 : " + read_where[k] + "<BR>");  				
 	    			
-	    			//ƒVƒ“ƒOƒ‹ƒNƒIƒe[ƒVƒ‡ƒ“œ‹
+	    			//ï¿½Vï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½Nï¿½Iï¿½eï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	    			if(read_where[k].contains("'"))
 	    			{    				
 	    				read_where[k] = read_where[k].replace('\'',' ');
@@ -157,7 +188,7 @@ public void doPost(HttpServletRequest req,
 	    			part = read_where[k];
 	    			out.println("part : " + part + " " + "<BR>");
 	    			
-	    			//æ“¾’l•ªŠò
+	    			//ï¿½æ“¾ï¿½lï¿½ï¿½ï¿½ï¿½
 	    			if(part == null || part.length() == 0)
 	    				null_variable_num++;
 	    			else if(String_flag == 1)
@@ -170,7 +201,7 @@ public void doPost(HttpServletRequest req,
 	    			out.println("Parameter : " + read_where[k] + "<BR>");
 	    		}
     		}
-    			//“Á’èğŒƒ`ƒFƒbƒNƒtƒ‰ƒO
+    			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½`ï¿½Fï¿½bï¿½Nï¿½tï¿½ï¿½ï¿½O
     			for(int a = 0 ; a < i - 1 ;++a)
     			{
     				if(read_where[a].equalsIgnoreCase("BETWEEN"))
@@ -189,7 +220,7 @@ public void doPost(HttpServletRequest req,
     			out.print("in_flag : " + in_flag + " count : "+ count + " null_variable_Num : " + null_variable_num + 
     					"<BR>");
     			out.print("Between flag : " + Between_flag + "<BR>");
-    			//–{ƒNƒGƒŠ‚Ö‚ÌŒ‹‡
+    			//ï¿½{ï¿½Nï¿½Gï¿½ï¿½ï¿½Ö‚ÌŒï¿½ï¿½ï¿½
     			if(Between_flag == 0)
 	    		{
 	    	    	if(null_variable_num == 0 || ( in_flag == 1 && count > null_variable_num ) )

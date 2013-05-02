@@ -3,7 +3,8 @@
 */
 package supersql.codegenerator.SWF;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.Attribute;
+import supersql.codegenerator.Manager;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
 //import java.lang.Character.UnicodeBlock;

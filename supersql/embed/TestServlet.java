@@ -1,13 +1,16 @@
 package supersql.embed;
 
-import java.io.*;
-
-import javax.servlet.*;
-import javax.servlet.http.*;
-
-import supersql.common.Log;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import supersql.common.Log;
 
 /*
 import supersql.codegenerator.CodeGenerator;

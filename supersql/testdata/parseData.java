@@ -49,7 +49,7 @@ public class parseData {
 				//    Log.out("***end paren***");
 				return result;
 			} else {
-				result.add(new ExtList(tok));
+				result.add(tok);
 			}
 		}
 

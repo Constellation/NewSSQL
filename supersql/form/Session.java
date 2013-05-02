@@ -1,18 +1,21 @@
 package supersql.form;
 
-import java.io.*;
-import java.util.Enumeration;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.security.MessageDigest;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Statement;
+import java.util.Enumeration;
 import java.util.Vector;
 
-
-import javax.servlet.*;
-import javax.servlet.http.*;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
@@ -57,7 +60,7 @@ public class Session extends HttpServlet {
 			configfile = req.getParameter("configfile");
 		}
 
-		String stmp[] = {"-f",sqlfile,"-o",sqlfile,"-c",configfile,"-debug"};
+		String[] stmp = {"-f",sqlfile,"-o",sqlfile,"-c",configfile,"-debug"};
 		GlobalEnv.setGlobalEnv(stmp);
 		//dbms setting
 		host = GlobalEnv.gethost();

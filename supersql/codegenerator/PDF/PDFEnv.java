@@ -1,10 +1,10 @@
 package supersql.codegenerator.PDF;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.LocalEnv;
 import supersql.extendclass.ExtList;
 
-import com.pdflib.pdflib;
 import com.pdflib.PDFlibException;
+import com.pdflib.pdflib;
 
 public class PDFEnv extends LocalEnv {
 

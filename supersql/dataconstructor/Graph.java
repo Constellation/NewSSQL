@@ -2,7 +2,6 @@ package supersql.dataconstructor;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Hashtable;
 import java.util.Stack;
 import java.util.TreeMap;
 

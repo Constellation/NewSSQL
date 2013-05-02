@@ -1,8 +1,6 @@
 package supersql.codegenerator.HTML5;
 
-import java.util.Vector;
-
-import supersql.codegenerator.*;
+import supersql.codegenerator.Manager;
 import supersql.codegenerator.HTML.HTMLC1;
 import supersql.codegenerator.HTML.HTMLEnv;
 

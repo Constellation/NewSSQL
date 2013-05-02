@@ -3,9 +3,9 @@ package supersql.codegenerator.HTML5;
 import supersql.codegenerator.Attribute;
 import supersql.codegenerator.Connector;
 import supersql.codegenerator.Manager;
+import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
-import supersql.common.GlobalEnv;
 
 public class HTML5Attribute extends Attribute {
 

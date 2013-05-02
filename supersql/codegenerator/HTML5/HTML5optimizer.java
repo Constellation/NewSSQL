@@ -1,11 +1,19 @@
 package supersql.codegenerator.HTML5;
 
-import java.io.*;
-import javax.xml.parsers.*;
-import org.w3c.dom.*;
-import javax.xml.transform.*;
+import java.io.StringWriter;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
 import supersql.codegenerator.HTML.HTMLoptimizer;
 
 public class HTML5optimizer extends HTMLoptimizer{

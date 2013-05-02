@@ -1,12 +1,8 @@
 package supersql.codegenerator.CSV;
 
-import java.util.StringTokenizer;
-
 import supersql.codegenerator.Attribute;
 import supersql.codegenerator.Manager;
-import supersql.common.Log;
 import supersql.extendclass.ExtList;
-import supersql.parser.TFEtokenizer;
 
 public class CSVAttribute extends Attribute {
 

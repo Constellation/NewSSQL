@@ -1,9 +1,13 @@
 package supersql.codegenerator.HTML5;
 
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
@@ -11,25 +15,20 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.util.*;
-import java.io.*;
-import java.text.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Hashtable;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.CodeGenerator;
+import supersql.codegenerator.DecorateList;
+import supersql.codegenerator.FuncArg;
+import supersql.codegenerator.Function;
+import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
-import supersql.extendclass.ExtList;
-//tk start///////////////////////////////////////
-import supersql.codegenerator.CodeGenerator;
 import supersql.dataconstructor.DataConstructor;
+import supersql.extendclass.ExtList;
 import supersql.parser.SSQLparser;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.FileReader;
-
-//tk end//////////////////////////////////////////
-
-//import common.Log;
 
 public class HTML5Function extends Function {
 //ishizaki st meterid
@@ -1282,7 +1281,7 @@ public class HTML5Function extends Function {
 
         		//drag to
         		String value = decos.getStr("dragto");
-    			String droptarget[] = new String[100];
+    			String[] droptarget = new String[100];
     			int targetnum = 0;
 
         		if(value.contains("+"))

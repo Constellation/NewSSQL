@@ -2,7 +2,8 @@ package supersql.codegenerator.X3D;
 
 import java.util.Vector;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.Grouper;
+import supersql.codegenerator.Manager;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
 

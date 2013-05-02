@@ -9,9 +9,7 @@ import supersql.extendclass.ExtHashSet;
 import supersql.extendclass.ExtList;
 import supersql.parser.Preprocessor;
 
-public class Attribute implements Operand {
-
-    int id; // SchemaID
+public class Attribute extends Operand {
 
 	int AttNo;
 
@@ -23,56 +21,28 @@ public class Attribute implements Operand {
 	private int AttNo1;
 	protected ArrayList<String> AttNames = new ArrayList<String>();
 
-	private int AttNo2;
 	private String condition;
 
-
 	int AttType;
-	
-    //hanki start
-	boolean order_flag;
-	boolean aggregate_flag;
-	String order;
-    String aggregate;
-    //hanki end
-	
-	public DecorateList decos = new DecorateList();
-
-	//  String SQLimage;
-	//  ExtList UseAtts;
-	//  ExtHashSet UseTables;
 
 	String ValKey;
 
-	protected ExtList Items = new ExtList();
+	protected ExtList<AttributeItem> Items = new ExtList<AttributeItem>();
 	
 	boolean conditional;
 
 	public Attribute() {
-			//hanki start
-		order_flag = false;
-		aggregate_flag = false;
+		super();
 		conditional = false;
-	    //hanki end
 	}
 	
 	public Attribute(Boolean b) {
-		//hanki start
-		order_flag = false;
-		aggregate_flag = false;
+		super();
 		conditional = b;
-		//hanki end
-	}
-
-	public void setId(int i) {
-	    id = i;
-	}
-	public int getId() {
-	    return id;
 	}
 
 	public int setItem(int no, String nm, String attimg, String key,
-			Hashtable attp) {
+			Hashtable<Integer, AttributeItem> attp) {
 
 		if(conditional){
 			AttNames.add(nm);
@@ -110,9 +80,6 @@ public class Attribute implements Operand {
 					buf += ch1;
 				}
 			} else {
-				if (ch1.equals("+") || ch1.equals("\\")) {
-					Exception e = new Exception();
-				}
 				item = new AttributeItem(ch1, no);
 				Items.add(item);
 				attp.put(new Integer(no), item);
@@ -127,12 +94,11 @@ public class Attribute implements Operand {
 
 	}
 
-	public void setDeco(DecorateList d) {
-		decos = d;
-	}
-
 	public void addDeco(String key, Object val) {
-		if(key.equals("insert")||key.equals("update")||key.equals("delete")||key.equals("login")){
+		if(key.equals("insert")
+				||key.equals("update")
+				||key.equals("delete")
+				||key.equals("login")){
 			decos.put(key, AttName);
 			return;
 		}
@@ -155,7 +121,7 @@ public class Attribute implements Operand {
 		}
 		dbgout.prt(count + 1, "<AttributeItems>");
 		for (int i = 0; i < Items.size(); i++) {
-			((AttributeItem) Items.get(i)).debugout(count + 2);
+			Items.get(i).debugout(count + 2);
 			decos.put("attributeName", Items.get(i).toString());//add by chie
 		}
 		dbgout.prt(count + 1, "</AttributeItems>");
@@ -165,16 +131,13 @@ public class Attribute implements Operand {
 		dbgout.prt(count, "</Attribute>");
 	}
 
-	public ExtList makesch() {
-		ExtList outsch = new ExtList();
+	public ExtList<Integer> makesch() {
+		ExtList<Integer> outsch = new ExtList<Integer>();
 
 		for (int i = 0; i < Items.size(); i++) {
-			outsch.addAll(((AttributeItem) Items.get(i)).makesch());
+			outsch.addAll((Items.get(i)).makesch());
 		}
 
-
-		//  Log.out("Att outsch:"+outsch);
-		//hanki start
 		if (order_flag) {
 			Preprocessor.putOrderByTable(order, outsch);
 			order_flag = false;
@@ -184,7 +147,7 @@ public class Attribute implements Operand {
 			Preprocessor.putAggregateList(outsch, aggregate);
 			aggregate_flag = false;
 		}
-		//hanki end
+
 		return outsch;
 	}
 
@@ -194,7 +157,7 @@ public class Attribute implements Operand {
 		//  attno.add("Att");
 
 		for (int i = 0; i < Items.size(); i++) {
-			attno.addAll(((AttributeItem) Items.get(i)).makele0());
+			attno.addAll(Items.get(i).makele0());
 		}
 
 		Log.out("Att le0:" + attno);
@@ -203,21 +166,21 @@ public class Attribute implements Operand {
 	}
 
 	public void work(ExtList data_info) {
-		Log.out("Attribute : " + data_info.getStr());
+		Log.out("Attribute : " + data_info.toString());
 	}
 
-	public String getStr(ExtList data_info) {
+	public <T> String getStr(ExtList<T> data_info) {
 		
 		String str = "";
 		
 		if(conditional){
-			String toCompare = ((ExtList) data_info.get(Items.size()-1-decos.getConditionsSize())).getStr();
+			String toCompare = (data_info.get(Items.size()-1-decos.getConditionsSize())).toString();
 			if(toCompare.equals("t") || toCompare.equals("1")){
-				str = ((ExtList) data_info.get(0)).getStr();
+				str = (data_info.get(0)).toString();
 			}
 			else if(toCompare.equals("f") || toCompare.equals("0")){
 				if(Items.size()-decos.getConditionsSize() == 3)
-					str = ((ExtList) data_info.get(1)).getStr();
+					str = (data_info.get(1)).toString();
 				else
 					str = "";
 			}
@@ -225,12 +188,9 @@ public class Attribute implements Operand {
 			return str;
 		}
 		else{
-			//	Log.out("data_info : " + data_info);
 			for (int i = 0; i < Items.size()-decos.getConditionsSize(); i++) {
-				//		Log.out("data_info : " +
-				// ((AttributeItem)Items.get(i)).getStr(data_info, AttNo));
-				str += (((AttributeItem) Items.get(i)).getStr(data_info, AttNo-decos.getConditionsSize()));
-			}			//	Log.out("Attribute out : " + str);
+				str += (Items.get(i).getStr(data_info, AttNo-decos.getConditionsSize()));
+			}
 			return str;
 		}
 		
@@ -241,7 +201,7 @@ public class Attribute implements Operand {
 	public int countconnectitem() {
 		int itemcount = 0;
 		for (int i = 0; i < Items.size(); i++) {
-			itemcount += ((AttributeItem) Items.get(i)).countconnectitem();
+			itemcount += Items.get(i).countconnectitem();
 		}
 		return itemcount;
 	}
@@ -253,7 +213,7 @@ public class Attribute implements Operand {
 	public ExtHashSet getUseTablesAll() {
 		ExtHashSet rs = new ExtHashSet();
 		for (int i = 0; i < Items.size(); i++) {
-			rs.add(((AttributeItem) Items.get(i)).getUseTables());
+			rs.add(Items.get(i).getUseTables());
 		}
 		return rs;
 	}
@@ -270,28 +230,13 @@ public class Attribute implements Operand {
 	public String getKey() {
 		return this.ValKey;
 	}
-	//hanki start
-	public void setOrderBy(String order) {
-		order_flag = true;
-
-		this.order = new String();
-		this.order = order;
-	}
-	
-	public void setAggregate(String aggregate) {
-		aggregate_flag = true;
-		
-		this.aggregate = new String();
-		this.aggregate = aggregate;
-	}
-	//hanki end
 	
 	//added by ria 20110913 start
 	public ExtList makeschImage() {
 		ExtList outsch = new ExtList();
 
 		for (int i = 0; i < Items.size(); i++) {
-			outsch.addAll(((AttributeItem) Items.get(i)).makeschImage());
+			outsch.addAll(Items.get(i).makeschImage());
 		}
 		
 		return outsch;

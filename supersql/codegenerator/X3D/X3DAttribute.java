@@ -2,7 +2,6 @@ package supersql.codegenerator.X3D;
 
 import supersql.codegenerator.Attribute;
 import supersql.codegenerator.Manager;
-import supersql.codegenerator.X3D.X3DEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
 

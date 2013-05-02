@@ -7,13 +7,14 @@ import java.io.FileWriter;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.Vector;
+
 import supersql.codegenerator.Connector;
 import supersql.codegenerator.DecorateList;
+import supersql.codegenerator.ITFE;
 import supersql.codegenerator.LocalEnv;
-import supersql.codegenerator.TFE;
-import supersql.parser.SSQLparser;
-import supersql.common.Log;
 import supersql.common.GlobalEnv;
+import supersql.common.Log;
+import supersql.parser.SSQLparser;
 
 public class HTMLEnv extends LocalEnv {
     String data;
@@ -24,7 +25,8 @@ public class HTMLEnv extends LocalEnv {
 
     Connector connector;
     
-    String bg = "";	//added by goto 20130311  "background"
+    String title = "";		//added by goto 20130411  "title"
+    String bg = "";			//added by goto 20130311  "background"
 
 
     //Vector not_written_classid;
@@ -62,7 +64,7 @@ public class HTMLEnv extends LocalEnv {
     //tk start///////////////////////////////////////////////////
     StringBuffer meta = new StringBuffer();
     StringBuffer div = new StringBuffer();
-    StringBuffer title = new StringBuffer();
+    //StringBuffer title = new StringBuffer();		//disuse
     StringBuffer titleclass = new StringBuffer();
     StringBuffer cssfile = new StringBuffer();
     String tableborder=new String("1");
@@ -231,6 +233,9 @@ public class HTMLEnv extends LocalEnv {
         }
 
         if(GlobalEnv.getframeworklist() == null){
+            //added by goto 20130411  "title"
+	        if (!title.equals(""))
+	        	header.append("<title>"+title+"</title>\n");
         	
             //added by goto 20121217 start
         	header.append("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no\"/>\n");
@@ -443,7 +448,7 @@ public class HTMLEnv extends LocalEnv {
 //	        header.append(div);
 //	        header.append(titleclass);
 //	        header.append(">");
-	        header.append(title);
+	        //header.append(title);		//disuse
 	        //tk end///////////////////////////////////////////////////////
 	        //chie//
 
@@ -593,8 +598,8 @@ public class HTMLEnv extends LocalEnv {
         if (decos.containsKey("divalign") && div.length() == 0)
         	div.append(" align=" +decos.getStr("divalign"));
 
-        if (decos.containsKey("title") && title.length() == 0)
-        	title.append(decos.getStr("title"));
+        //if (decos.containsKey("title") && title.length() == 0)	//disuse
+        //	title.append(decos.getStr("title"));
         if (decos.containsKey("title_class"))
         	titleclass.append(" class=\""+decos.getStr("title_class")+"\"");
         if (decos.containsKey("tableborder") )//&& tableborder.length() == 0)
@@ -737,6 +742,10 @@ public class HTMLEnv extends LocalEnv {
 //      	}
         //added by goto 20120715 end
         
+        //added by goto 20130411  "title"
+        if (decos.containsKey("title"))
+        	title = decos.getStr("title");
+        
         //added by goto 20130311  "background"
         if (decos.containsKey("background"))
         	bg = decos.getStr("background");
@@ -807,14 +816,14 @@ public class HTMLEnv extends LocalEnv {
         return "";
     }
 
-    public static String getClassID(TFE tfe) {
+    public static String getClassID(ITFE tfe) {
     	String result;
         if (tfe instanceof HTMLC3) {
-            result = getClassID(((TFE) ((HTMLC3) tfe).tfes.get(0)));
+            result = getClassID(((ITFE) ((HTMLC3) tfe).tfes.get(0)));
             return result;
         }
         if (tfe instanceof HTMLG3) {
-            result = getClassID(((TFE) ((HTMLG3) tfe).tfe));
+            result = getClassID(((ITFE) ((HTMLG3) tfe).tfe));
             	return result;
         }
         result =  "TFE" + tfe.getId();
@@ -822,16 +831,16 @@ public class HTMLEnv extends LocalEnv {
     }
 
     /***start oka***/
-    public static String getDataID(TFE tfe) {
+    public static String getDataID(ITFE tfe) {
     	String ClassID;
     	int DataID = 0;
     	String return_value;
 
         if (tfe instanceof HTMLC3) {
-            return getClassID(((TFE) ((HTMLC3) tfe).tfes.get(0)));
+            return getClassID(((ITFE) ((HTMLC3) tfe).tfes.get(0)));
         }
         if (tfe instanceof HTMLG3) {
-            return getClassID(((TFE) ((HTMLG3) tfe).tfe));
+            return getClassID(((ITFE) ((HTMLG3) tfe).tfe));
         }
         ClassID = String.valueOf(tfe.getId());
         DataID = Integer.valueOf((ClassID.substring(ClassID.length()-3,ClassID.length()))).intValue();

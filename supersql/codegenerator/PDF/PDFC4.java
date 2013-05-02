@@ -1,6 +1,7 @@
 package supersql.codegenerator.PDF;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.Connector;
+import supersql.codegenerator.Manager;
 import supersql.extendclass.ExtList;
 
 public class PDFC4 extends Connector {

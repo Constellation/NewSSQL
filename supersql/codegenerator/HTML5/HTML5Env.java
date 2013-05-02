@@ -2,10 +2,10 @@ package supersql.codegenerator.HTML5;
 
 import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.HTML.HTMLEnv;
-import supersql.parser.SSQLparser;
-import supersql.common.Log;
 import supersql.common.GlobalEnv;
+import supersql.common.Log;
 import supersql.common.Utils;
+import supersql.parser.SSQLparser;
 
 public class HTML5Env extends HTMLEnv {
 

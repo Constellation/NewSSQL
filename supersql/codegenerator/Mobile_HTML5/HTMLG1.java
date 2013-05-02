@@ -1,6 +1,7 @@
 package supersql.codegenerator.Mobile_HTML5;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.Grouper;
+import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
@@ -48,18 +49,19 @@ public class HTMLG1 extends Grouper {
         else							table0Flg = false;
     	//20130314  table
         //if(decos.containsKey("table") || !decos.containsKey("div") || table0Flg){
-        if(decos.containsKey("table") || table0Flg){
+//        if(decos.containsKey("table") || table0Flg){
+        if(decos.containsKey("table") || table0Flg || HTMLC1.tableFlg || HTMLC2.tableFlg || HTMLG2.tableFlg){
     	//if(decos.containsKey("table") || HTMLC1.tableFlg || HTMLC2.tableFlg){
 //    		Log.info("C1!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 //    		Log.info("C1 tableFlg = true !!");
     		tableFlg = true;
-    	}else	tableFlg = false;
+    	}//else	tableFlg = false;
 
         //20130326  div
-    	if(decos.containsKey("div")){
+    	if(decos.containsKey("div") || HTMLC1.divFlg || HTMLC2.divFlg || HTMLG1.divFlg || HTMLG2.divFlg){
     		divFlg = true;
     		tableFlg = false;
-    	}else divFlg = false;
+    	}//else divFlg = false;
         
         if(!GlobalEnv.isOpt()){
 //        	//20130205
@@ -215,6 +217,13 @@ public class HTMLG1 extends Grouper {
         //html_env2.code.append("<tfe type=\"connect\" dimension=\"1\" >");
         int i = 0;
         while (this.hasMoreItems()) {
+            if(decos.containsKey("table0") || HTMLC1.table0Flg || HTMLC2.table0Flg || HTMLG2.table0Flg)	table0Flg = true;
+            if(decos.containsKey("table") || HTMLC1.tableFlg || HTMLC2.tableFlg || HTMLG2.tableFlg || table0Flg)	tableFlg=true;
+            if(decos.containsKey("div") || HTMLC1.divFlg || HTMLC2.divFlg || HTMLG1.divFlg || HTMLG2.divFlg){
+        		divFlg = true;
+        		tableFlg = false;
+        	}
+        	
             html_env.glevel++;
             
             if(GlobalEnv.isOpt()){
@@ -312,6 +321,12 @@ public class HTMLG1 extends Grouper {
 
             
             this.worknextItem();
+            if(decos.containsKey("table0") || HTMLC1.table0Flg || HTMLC2.table0Flg || HTMLG2.table0Flg)	table0Flg = true;
+            if(decos.containsKey("table") || HTMLC1.tableFlg || HTMLC2.tableFlg || HTMLG2.tableFlg || table0Flg)	tableFlg=true;
+            if(decos.containsKey("div") || HTMLC1.divFlg || HTMLC2.divFlg || HTMLG1.divFlg || HTMLG2.divFlg){
+        		divFlg = true;
+        		tableFlg = false;
+        	}
             
             //20130309
             //20130314  table

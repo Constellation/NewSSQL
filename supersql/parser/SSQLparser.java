@@ -1,15 +1,21 @@
 package supersql.parser;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
-import java.io.*;
-import java.net.*;
 
 import supersql.codegenerator.AttributeItem;
 import supersql.codegenerator.CodeGenerator;
-import supersql.codegenerator.TFE;
+import supersql.codegenerator.ITFE;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.db.SQLManager;
@@ -847,27 +853,39 @@ public class SSQLparser {
 
                     //tk start/////////////////////////////////////
                     //for comment statement
-                    if(line.startsWith("//")){
-                    	while(line != null && line.startsWith("//")){
-                    		line = in.readLine();//added by chie
-                    	}
-                    }
-                    if( line!=null && line.contains("/*"))// "if !null" added by chie
+            		//commented out by goto 20130412
+//                    if(line.startsWith("//")){
+//                    	while(line != null && line.startsWith("//")){
+//                    		line = in.readLine();//added by chie
+//                    	}
+//                    }
+                    //changed by goto 20130412
+                    if(line!=null && line.contains("/*"))// "if !null" added by chie
                     {
                     	int s = line.indexOf("/*");
-
-                    	Log.out(line);
                     	String line1 = line.substring(0,s);
-                    	tmp.append(" "+line1);
-                    	Log.out(line1);
+//                    	tmp.append(" "+line1);
                     	while(!line.contains("*/"))
                     		line = in.readLine();
                     	int t = line.indexOf("*/");
-                    	line = line.substring(t+2);
-//                    	line = in.readLine();
+                    	line = line1+line.substring(t+2);
                     }
-                    //tk end///////////////////////////////////////
-                    if( line!=null)//"if !null" added by chie
+                    //added by goto 20130412
+                    if(line!=null && line.contains("//")){
+                    	boolean dqFlg=false;
+                    	int i=0;
+                    	
+                    	for(i=0; i<line.length(); i++){
+                    		if(line.charAt(i)=='"' && !dqFlg)		dqFlg=true;
+                    		else if(line.charAt(i)=='"' && dqFlg)	dqFlg=false;
+                    		
+                    		if(!dqFlg && i<line.length()-1 && (line.charAt(i)=='/' && line.charAt(i+1)=='/'))
+                    			break;
+                    	}
+                    	line = line.substring(0,i);
+                    }
+                    
+                    if(line!=null)//"if !null" added by chie
                     	tmp.append(" " + line);
                 }
                 in.close();
@@ -976,22 +994,47 @@ public class SSQLparser {
                             break;
 
                         //tk start/////////////////////////////////////
-                        if(line.startsWith("//")){
-                        	while(line!=null && line.startsWith("//")){
-                        		line = dis.readLine();//added by chie
-                        	}
-                        }
-
-                        if(line!=null && line.startsWith("/*"))
+                    	//commented out by goto 20130412
+//                        if(line.startsWith("//")){
+//                        	while(line!=null && line.startsWith("//")){
+//                        		line = dis.readLine();//added by chie
+//                        	}
+//                        }
+//                        if(line!=null && line.startsWith("/*"))
+//                        {
+//                        	while(!line.contains("*/"))
+//                        		line = dis.readLine();
+//                        	int t = line.indexOf("*/");
+//                        	line = line.substring(t+2);
+////                        	line = in.readLine();
+//                        }
+                        //changed by goto 20130412
+                        if(line!=null && line.contains("/*"))
                         {
+                        	int s = line.indexOf("/*");
+                        	String line1 = line.substring(0,s);
+//                        	tmp.append(" "+line1);
                         	while(!line.contains("*/"))
                         		line = dis.readLine();
                         	int t = line.indexOf("*/");
-                        	line = line.substring(t+2);
-//                        	line = in.readLine();
+                        	line = line1+line.substring(t+2);
                         }
-                        //tk end///////////////////////////////////////
-                        if(line!=null )
+                        //added by goto 20130412
+                        if(line!=null && line.contains("//")){
+                        	boolean dqFlg=false;
+                        	int i=0;
+                        	
+                        	for(i=0; i<line.length(); i++){
+                        		if(line.charAt(i)=='"' && !dqFlg)		dqFlg=true;
+                        		else if(line.charAt(i)=='"' && dqFlg)	dqFlg=false;
+                        		
+                        		if(!dqFlg && i<line.length()-1 && (line.charAt(i)=='/' && line.charAt(i+1)=='/'))
+                        			break;
+                        	}
+                        	line = line.substring(0,i);
+                        }
+
+                        if(line!=null)
                         	tmp.append(" " + line);
                     }
                     /*
@@ -1026,7 +1069,7 @@ public class SSQLparser {
         return tfe_info;
     }
 
-    public TFE get_TFEschema() {
+    public ITFE get_TFEschema() {
         return tfe_info.get_TFEschema();
     }
 
@@ -1124,7 +1167,7 @@ public class SSQLparser {
         // Where
         buf.append(where.getWhereSig(from));
 
-        Object ret[] = { buf.toString(), ordersig };
+        Object[] ret = { buf.toString(), ordersig };
 
         return ret;
 
@@ -1255,24 +1298,37 @@ public class SSQLparser {
 
                 //tk start/////////////////////////////////////
                 //for comment statement
-                if(line.startsWith("//"))
-                	line = in.readLine();
-                if(line.contains("/*"))
+                //commented out by goto 20130412
+//                if(line.startsWith("//"))
+//                	line = in.readLine();
+                //changed by goto 20130412
+                if(line!=null && line.contains("/*"))
                 {
                 	int s = line.indexOf("/*");
-
-                	Log.out(line);
                 	String line1 = line.substring(0,s);
-                	tmp2.append(" "+line1);
-                	Log.out(line1);
+//                	tmp2.append(" "+line1);
                 	while(!line.contains("*/"))
                 		line = in.readLine();
                 	int t = line.indexOf("*/");
-                	line = line.substring(t+2);
-//                	line = in.readLine();
+                	line = line1+line.substring(t+2);
                 }
-                //tk end///////////////////////////////////////
-                tmp2.append(" " + line);
+                //added by goto 20130412
+                if(line!=null && line.contains("//")){
+                	boolean dqFlg=false;
+                	int i=0;
+                	
+                	for(i=0; i<line.length(); i++){
+                		if(line.charAt(i)=='"' && !dqFlg)		dqFlg=true;
+                		else if(line.charAt(i)=='"' && dqFlg)	dqFlg=false;
+                		
+                		if(!dqFlg && i<line.length()-1 && (line.charAt(i)=='/' && line.charAt(i+1)=='/'))
+                			break;
+                	}
+                	line = line.substring(0,i);
+                }
+                
+                if(line!=null)
+                	tmp2.append(" " + line);
             }
             in.close();
         } catch (IOException e2) {

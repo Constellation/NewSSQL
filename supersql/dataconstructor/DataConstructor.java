@@ -18,11 +18,10 @@ import com.sun.tools.doclets.internal.toolkit.resources.doclets;
 import supersql.codegenerator.AttributeItem;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
+import supersql.db.ConnectDB;
 import supersql.db.GetFromDB;
 import supersql.extendclass.ExtList;
 import supersql.parser.SSQLparser;
-
-import supersql.db.ConnectDB;
 
 public class DataConstructor {
 
@@ -34,7 +33,7 @@ public class DataConstructor {
 	String key = null;
 	Attribute keyAtt = null;
 	int col = -1;
-	long exectime[] = new long[4];
+	long[] exectime = new long[4];
 	final int ISDIVIS = 0;
 	final int MAKESQL = 1;
 	final int EXECSQL = 2;
@@ -254,8 +253,8 @@ public class DataConstructor {
 		end = System.nanoTime(); 
 		exectime[EXECSQL] = end - start;
 		
-		Log.out("## DB result ##");
-		Log.out(sep_data_info);
+		Log.info("## DB result ##");
+		Log.info(sep_data_info);
 
 		return sep_data_info;
 
