@@ -436,7 +436,7 @@ public class DataConstructor {
 			Document doc;
 			ExtList data = new ExtList();
 				String query = everything + "\nSELECT ";
-				for(int i = 0; i< varNames.length; i++){
+				for(int i = (varNames.length-1); i >= 0 ; i--){
 					query+= "?" + varNames[i] + " ";
 				}
 				query+=" WHERE "+sparqlWhereQuery+"";
