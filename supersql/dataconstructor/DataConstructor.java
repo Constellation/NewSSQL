@@ -454,12 +454,12 @@ public class DataConstructor {
 				columnCount %= varNames.length;
 				if(columnCount == 0){
 					ExtList e = new ExtList();
-					e.add(new ExtList(infoText));
+					e.add(infoText);
 					data.add(e);
 					columnCount+=1;
 					rowCount +=1;
 				}else{
-					((ExtList) data.get(rowCount)).add(new ExtList(infoText));
+					((ExtList) data.get(rowCount)).add(infoText);
 					columnCount+=1;
 				}
 				
