@@ -64,16 +64,11 @@ public class TFEparser {
 		} catch (IllegalStateException e) {
 			System.err.println("Error[TFEparser]: Syntax Error in TFE");
 			System.err.println(toks.DebugTrace());
-			// tk////////////////////////////////////////////////////
 			GlobalEnv.addErr("Error[TFEparser]: Syntax Error in TFE");
-			// return ;
-			// System.exit(-1);
-			// tk////////////////////////////////////////////////////
 		}
 		sch = schemaTop.makesch();
 
 		Log.out("Schema is " + sch);
-
 		Log.out("le0 is " + schemaTop.makele0());;
 	}
 

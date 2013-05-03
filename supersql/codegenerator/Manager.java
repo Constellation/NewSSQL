@@ -28,8 +28,7 @@ public abstract class Manager {
 	//インスタンス移行プ?前ラムの生成
 	public void generateCode(ITFE tfe_info, ExtList data_info) {
 	}
-	//tk start///////////////////////////////////////////////////////////////////////////
-	//return HTML code for embed function
+	
 	public StringBuffer generateCode2(ITFE tfe_info, ExtList data_info) {
 		StringBuffer code = new StringBuffer();
 		return code;
@@ -56,7 +55,6 @@ public abstract class Manager {
 		StringBuffer cssfile = new StringBuffer();
 		return cssfile;
 	}
-	//tk end//////////////////////////////////////////////////////////////////////////////
 	
 	/*
 	 * 必要ならばコメントアウトを外す = 要?談 =

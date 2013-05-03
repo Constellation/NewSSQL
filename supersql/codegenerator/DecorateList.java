@@ -17,7 +17,6 @@ public class DecorateList extends Hashtable<String, Object> {
 	private Hashtable<String, Object> conditions = new Hashtable<String, Object>();
 	private Hashtable<String, Integer> classesIds = new Hashtable<String, Integer>();
 	
-	
 	public String getStr(String s) {
 		Object o = this.get(s);
 		if (o instanceof String){
