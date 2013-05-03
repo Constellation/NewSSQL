@@ -95,6 +95,12 @@ public class HTMLEnv extends LocalEnv {
 
     StringBuffer footer;
 
+    //20130503  Panel
+    StringBuffer code1;
+    StringBuffer code2;
+    StringBuffer panel = new StringBuffer();
+    int panelCount = 1;
+
     boolean foreach_flag;
 
     boolean sinvoke_flag = false;
@@ -239,13 +245,13 @@ public class HTMLEnv extends LocalEnv {
             //added by goto 20121217 start
         	header.append("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no\"/>\n");
         	header.append("<link rel=\"stylesheet\" href=\"http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css\"/>\n");
-            header.append("<link rel=\"stylesheet\" href=\"http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css\"/>\n");
+            header.append("<link rel=\"stylesheet\" href=\"http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.css\"/>\n");
             //header.append("<link rel=\"stylesheet\" href="css/custom.css\"/>\n");
             //20130206
             //※※　要注意　※※　 jquery.jsより先にjquerymobile.jsをインポートすると、ボタン等の表示がうまくいかなくなる!!
             header.append("<script src=\"http://code.jquery.com/jquery-1.7.1.min.js\"></script>\n");
             header.append("<script src=\"http://code.jquery.com/ui/1.9.2/jquery-ui.min.js\"></script>\n");
-            header.append("<script src=\"http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js\"></script>\n");
+            header.append("<script src=\"http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.js\"></script>\n");
             //header.append("<script src=\"js/config.js\"></script>\n");
 
             //added by goto 20130110 start
@@ -255,14 +261,16 @@ public class HTMLEnv extends LocalEnv {
        		//header.append("<script src=\"js/photoswipe/klass.min.js\"></script>\n");
        		//header.append("<script src=\"js/photoswipe/code.photoswipe.jquery-3.0.4.min.js\"></script>\n");
             header.append("<link href=\"http://www.db.ics.keio.ac.jp/ssqlcss/photoswipe/photoswipe.css\" type=\"text/css\" rel=\"stylesheet\" />\n");
-            header.append("<link href=\"http://www.db.ics.keio.ac.jp/ssqlcss/photoswipe/jquery-mobile.css\" type=\"text/css\" rel=\"stylesheet\" />\n");
-    		header.append("<script src=\"http://www.db.ics.keio.ac.jp/ssqlcss/photoswipe/klass.min.js\"></script>\n");
-    		header.append("<script src=\"http://www.db.ics.keio.ac.jp/ssqlcss/photoswipe/code.photoswipe.jquery-3.0.4.min.js\"></script>\n");
+            header.append("<link href=\"http://www.db.ics.keio.ac.jp/ssqljscss/photoswipe/jquery-mobile.css\" type=\"text/css\" rel=\"stylesheet\" />\n");
+    		header.append("<script src=\"http://www.db.ics.keio.ac.jp/ssqljscss/photoswipe/klass.min.js\"></script>\n");
+    		header.append("<script src=\"http://www.db.ics.keio.ac.jp/ssqljscss/photoswipe/code.photoswipe.jquery-3.0.4.min.js\"></script>\n");
             //added by goto 20130110 end
        		
     		//added by goto 20130413  "row Prev/Next"
-    		header.append("<script src=\"js/jquery.iframe-auto-height.plugin.js\"></script>\n");
-    		header.append("<script src=\"js/script2.js\"></script>\n");
+//    		header.append("<script src=\"js/jquery.iframe-auto-height.plugin.js\"></script>\n");
+//    		header.append("<script src=\"js/script2.js\"></script>\n");
+    		header.append("<script src=\"http://www.db.ics.keio.ac.jp/ssqljscss/jquery.iframe-auto-height.plugin.js\"></script>\n");
+    		header.append("<script src=\"http://www.db.ics.keio.ac.jp/ssqljscss/script2.js\"></script>\n");
 
     		header.append("<script src=\"js/script.js\"></script>\n");
             //added by goto 20121217 end
@@ -444,6 +452,14 @@ public class HTMLEnv extends LocalEnv {
               			"	$( \"[id=tabs]\" ).tabs();\n" +
 //              			"	$( \"#tabs\" ).tabs();\n" +
               			"});\n");
+              	
+//              	//added by goto 20130503
+//              	//panel
+//              	pw.println("$(document).on('click',\"button.open\",function(){\n" +
+//              			"	$(\"[id=ssqlpanel]\").panel(\"open\")\n" +
+//      					"}).on('click',\"button.close\",function(){\n" +
+//						"	$(\"[id=ssqlpanel]\").panel(\"close\")\n" +
+//						"});\n");
               
               	// 後始末
               	pw.close();
@@ -457,7 +473,10 @@ public class HTMLEnv extends LocalEnv {
         	
 	        header.append("</HEAD>\n");
 
-	        header.append("<BODY class=\"body\">\n");
+	        //header.append("<BODY class=\"body\">\n");
+	        header.append("<BODY>\n");
+	        header.append("<div data-role=\"page\">\n");
+	        header.append("<div data-role=\"content\" style=\"padding:0\">\n");
 
 	        //commented out by goto  201203
 //	        header.append("<div");
@@ -549,9 +568,9 @@ public class HTMLEnv extends LocalEnv {
     	}
 
     	if(GlobalEnv.getframeworklist() == null){
-//    		//20130205
-//    		footer.append("</div></div>\n\n");
-    		
+    		footer.append("</div><!-- Close <div data-role=\"content\"> -->\n");		//Close <div data-role="content">
+    		footer.append("\n<!-- Panel start -->\n"+panel+"\n<!-- Panel end -->\n\n");	//Add panel contents.	//20130503  Panel
+    		footer.append("</div><!-- Close <div data-role=\"page\"> -->\n");			//Close <div data-role="page">
 	        footer.append("<BR><BR></BODY></HTML>\n");
 	        Log.out("</body></html>");
     	}
@@ -604,9 +623,9 @@ public class HTMLEnv extends LocalEnv {
             		//commented out by goto 201303
 //            		//itc
 //            		if(GlobalEnv.isOpt())
-//            			cssfile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"http://www.db.ics.keio.ac.jp/ssqlcss/default_opt.css\">\n");
+//            			cssfile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"http://www.db.ics.keio.ac.jp/ssqljscss/default_opt.css\">\n");
 //            		else
-//            			cssfile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"http://www.db.ics.keio.ac.jp/ssqlcss/default.css\">\n");
+//            			cssfile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"http://www.db.ics.keio.ac.jp/ssqljscss/default.css\">\n");
             	}
             }
         }
@@ -757,6 +776,13 @@ public class HTMLEnv extends LocalEnv {
 //        		charsetFlg=1;
 //      	}
         //added by goto 20120715 end
+        
+        //added by goto 20130501  "style"
+        if (decos.containsKey("style")){
+        	String style = decos.getStr("style");
+        	cssbuf.append(" " + style);
+        	if(!style.matches(".*;\\s*$"))	cssbuf.append(";");	//最後に";"が無かった場合
+        }
         
         //added by goto 20130411  "title"
         if (decos.containsKey("title"))

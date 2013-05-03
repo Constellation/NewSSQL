@@ -13,9 +13,10 @@ public class HTMLG1 extends Grouper {
     HTMLEnv html_env2;
     
     //20130309
-    int gridInt = 0;
+    static int gridInt = 0;
     String[] gridString = {"a","b","c","d","e"};
     static int ii =0, jj = 0, Count = 0;
+    //int ii =0, jj = 0, Count = 0;
     static boolean G1Flg=false;
     int pic_column = 3;		//1行ごとのカラム数指定 (Default: 3, range: 2〜5)
     
@@ -23,6 +24,8 @@ public class HTMLG1 extends Grouper {
     static boolean table0Flg = false;		//20130325  table0
     static boolean divFlg = false;			//20130326  div
 
+    static String classid = "" ;
+    
     //���󥹥ȥ饯��
     public HTMLG1(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
         this.manager = manager;
@@ -34,6 +37,8 @@ public class HTMLG1 extends Grouper {
     //G1��work�᥽�å�
     @Override
 	public void work(ExtList data_info) {
+        int panelFlg = 0;	//20130503  Panel
+    	
         Log.out("------- G1 -------");
         this.setDataList(data_info);
         
@@ -42,6 +47,11 @@ public class HTMLG1 extends Grouper {
         
         //20130309
         G1Flg=true;
+        
+        //☆重要★
+        gridInt = 0;
+    	//HTMLG1.jj = 0;
+    	//HTMLG1.gridInt = 0;
         
         //20130325  table0
         if(decos.containsKey("table0"))	table0Flg = true;
@@ -57,12 +67,16 @@ public class HTMLG1 extends Grouper {
     	}//else	tableFlg = false;
 
         //20130326  div
-    	if(decos.containsKey("div") || HTMLC1.divFlg || HTMLC2.divFlg || HTMLG1.divFlg || HTMLG2.divFlg){
+    	//if(decos.containsKey("div") || HTMLC1.divFlg || HTMLC2.divFlg || HTMLG1.divFlg || HTMLG2.divFlg){
+        if(decos.containsKey("div")){
     		divFlg = true;
     		tableFlg = false;
     	}//else divFlg = false;
         
         if(!GlobalEnv.isOpt()){
+        	//20130503  Panel
+    	    panelFlg = HTMLC1.panelProcess1(decos, html_env);
+        	
 //        	//20130205
 //        	html_env.code.append("<div id=\"fisheye\" class=\"fisheye\">\n" +
 //        			"<div class=\"fisheyeContainter\">\n");
@@ -150,9 +164,9 @@ public class HTMLG1 extends Grouper {
         	//if(!tableFlg) 	html_env.code.append("	<DIV Class=\"ui-grid-a\">");
         	if(!tableFlg){
         		if(html_env.written_classid.contains(HTMLEnv.getClassID(this)))
-        			html_env.code.append("<DIV Class=\"ui-grid-a ##"+HTMLEnv.uiGridCount2+" "+HTMLEnv.getClassID(this)+"\"");
+        			html_env.code.append("\n<DIV Class=\"ui-grid-a ##"+HTMLEnv.uiGridCount2+" "+HTMLEnv.getClassID(this)+"\"");
         		else
-        			html_env.code.append("<DIV Class=\"ui-grid-a ##"+HTMLEnv.uiGridCount2+"\"");
+        			html_env.code.append("\n<DIV Class=\"ui-grid-a ##"+HTMLEnv.uiGridCount2+"\"");
         		html_env.code.append(">\n");
         		HTMLEnv.uiGridCount2++;
         	}
@@ -177,7 +191,8 @@ public class HTMLG1 extends Grouper {
             	html_env.code.append("<div style=\"overflow:auto;\">\n");
             	//html_env.code.append("<div style=\"height:60px; width:0px; overflow:auto;\">\n");
             	
-            	html_env.code.append("<TABLE width=\"100%\" align=\"center\" cellSpacing=\"0\" cellPadding=\"0\" border=\"");
+            	html_env.code.append("<TABLE width=\"100%\" cellSpacing=\"0\" cellPadding=\"0\" border=\"");
+            	//html_env.code.append("<TABLE width=\"100%\" align=\"center\" cellSpacing=\"0\" cellPadding=\"0\" border=\"");
 		        //html_env.code.append("<TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
 		        //html_env.code.append(((!decos.containsKey("table0"))? html_env.tableborder : "0") + "\"");
         		if(table0Flg)	html_env.code.append("0" + "\"");	//20130325 table0
@@ -227,57 +242,57 @@ public class HTMLG1 extends Grouper {
         while (this.hasMoreItems()) {
             if(decos.containsKey("table0") || HTMLC1.table0Flg || HTMLC2.table0Flg || HTMLG2.table0Flg)	table0Flg = true;
             if(decos.containsKey("table") || HTMLC1.tableFlg || HTMLC2.tableFlg || HTMLG2.tableFlg || table0Flg)	tableFlg=true;
-            if(decos.containsKey("div") || HTMLC1.divFlg || HTMLC2.divFlg || HTMLG1.divFlg || HTMLG2.divFlg){
+            //if(decos.containsKey("div") || HTMLC1.divFlg || HTMLC2.divFlg || HTMLG1.divFlg || HTMLG2.divFlg){
+            if(decos.containsKey("div")){
         		divFlg = true;
         		tableFlg = false;
         	}
         	
             html_env.glevel++;
             
-            if(GlobalEnv.isOpt()){
-	            html_env2.code.append("<tfe type=\"repeat\" dimension=\"1\"");
-	            
-	            if(decos.containsKey("class")){
-		        	//class=menu�Ȃǂ̎w�肪��������t��
-	            	html_env2.code.append(" class=\"");
-		        	html_env2.code.append(decos.getStr("class") + " ");
-		        }
-	            if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
-		        	//TFE10000�Ȃǂ̎w�肪��������t��
-	            	if(decos.containsKey("class")){
-	            		html_env2.code.append(HTMLEnv.getClassID(this) + "\"");
-	            	}else{
-	            		html_env2.code.append(" class=\""
-	            				+ HTMLEnv.getClassID(this) + "\"");
-	            	}
-	            }else if(decos.containsKey("class")){
-	            	html_env2.code.append("\"");
-	            }
-	            
-	            html_env2.code.append(" border=\"" + html_env.tableborder + "\"");
-	
-	            if (decos.containsKey("tablealign") )
-	            	html_env2.code.append(" align=\"" + decos.getStr("tablealign") +"\"");
-	            if (decos.containsKey("tablevalign") )
-	            	html_env2.code.append(" valign=\"" + decos.getStr("tablevalign") +"\"");
-	            
-	            if(decos.containsKey("tabletype")){
-	            	html_env2.code.append(" tabletype=\"" + decos.getStr("tabletype") + "\"");
-	            	if(decos.containsKey("cellspacing")){
-	                	html_env2.code.append(" cellspacing=\"" + decos.getStr("cellspacing") + "\"");
-	                }
-	            	if(decos.containsKey("cellpadding")){
-	                	html_env2.code.append(" cellpadding=\"" + decos.getStr("cellpadding") + "\"");
-	                }
-	            }
-	            html_env2.code.append(">");
-            }
+//            //おそらくXML
+//            if(GlobalEnv.isOpt()){
+//	            html_env2.code.append("<tfe type=\"repeat\" dimension=\"1\"");
+//	            
+//	            if(decos.containsKey("class")){
+//		        	//class=menu�Ȃǂ̎w�肪��������t��
+//	            	html_env2.code.append(" class=\"");
+//		        	html_env2.code.append(decos.getStr("class") + " ");
+//		        }
+//	            if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
+//		        	//TFE10000�Ȃǂ̎w�肪��������t��
+//	            	if(decos.containsKey("class")){
+//	            		html_env2.code.append(HTMLEnv.getClassID(this) + "\"");
+//	            	}else{
+//	            		html_env2.code.append(" class=\""
+//	            				+ HTMLEnv.getClassID(this) + "\"");
+//	            	}
+//	            }else if(decos.containsKey("class")){
+//	            	html_env2.code.append("\"");
+//	            }
+//	            
+//	            html_env2.code.append(" border=\"" + html_env.tableborder + "\"");
+//	
+//	            if (decos.containsKey("tablealign") )
+//	            	html_env2.code.append(" align=\"" + decos.getStr("tablealign") +"\"");
+//	            if (decos.containsKey("tablevalign") )
+//	            	html_env2.code.append(" valign=\"" + decos.getStr("tablevalign") +"\"");
+//	            
+//	            if(decos.containsKey("tabletype")){
+//	            	html_env2.code.append(" tabletype=\"" + decos.getStr("tabletype") + "\"");
+//	            	if(decos.containsKey("cellspacing")){
+//	                	html_env2.code.append(" cellspacing=\"" + decos.getStr("cellspacing") + "\"");
+//	                }
+//	            	if(decos.containsKey("cellpadding")){
+//	                	html_env2.code.append(" cellpadding=\"" + decos.getStr("cellpadding") + "\"");
+//	                }
+//	            }
+//	            html_env2.code.append(">");
+//            }
             
             //20130309
 //            Count = ( ((gridInt>=jj)&&(!HTMLG1.G1Flg))? jj:gridInt );
             Count = ( ((gridInt>=jj)&&(HTMLG1.G1Flg))? jj:gridInt );
-            //Count =  gridInt ;
-            //Count =  jj ;
             
 //            //20130312 collapsible
 //        	if(decos.containsKey("collapse")){
@@ -287,20 +302,17 @@ public class HTMLG1 extends Grouper {
 //
 //            //20130309
 //            //if(Count > 4 && Count%5==0){
-//        	}else 
-        	if(Count > pic_column-1 && Count%pic_column==0 && !tableFlg){
-        		//uncommented
-            	//html_env.code.append("\n	</DIV>\n	<DIV Class=\"ui-grid-a\">");
-        		if(html_env.written_classid.contains(HTMLEnv.getClassID(this)))
-        			html_env.code.append("\n	</DIV>\n	<DIV Class=\"ui-grid-a ##"+HTMLEnv.uiGridCount2+" "+HTMLEnv.getClassID(this)+"\"");
-        		else
-        			html_env.code.append("\n	</DIV>\n	<DIV Class=\"ui-grid-a ##"+HTMLEnv.uiGridCount2+"\"");
-        		html_env.code.append(">\n");
-        		HTMLEnv.uiGridCount2++;
-        		//html_env.code.append("\n	</DIV>\n	<DIV Class=\"ui-grid-a #"+HTMLEnv.uiGridCount+"\"");
-            		//HTMLEnv.uiGridCount++;
-            		//Log.info("ui-grid2-"+HTMLEnv.uiGridCount);
-            }
+            
+//			//☆G1のみ↓　必要？不要？ 無くても問題ない。あった場合、最終行が個数に合わせて変化
+//        	if(Count > pic_column-1 && Count%pic_column==0 && !tableFlg){
+//        		if(html_env.written_classid.contains(HTMLEnv.getClassID(this)))
+//        			html_env.code.append("\n	</DIV>\n	<DIV Class=\"ui-grid-a ##"+HTMLEnv.uiGridCount2+" "+HTMLEnv.getClassID(this)+"\"");
+//        		else
+//        			html_env.code.append("\n	</DIV>\n	<DIV Class=\"ui-grid-a ##"+HTMLEnv.uiGridCount2+"\"");
+//        		html_env.code.append(">\n");
+//        		HTMLEnv.uiGridCount2++;
+//        	}
+//			//☆G1のみ↑
             
             //Log.info("★G1★"+gridInt+" "+ii+" "+jj+"  "+Count+"  "+Count%5+"	"+HTMLG1.G1Flg);
 //            Count %= 5;
@@ -316,22 +328,23 @@ public class HTMLG1 extends Grouper {
 //    	        html_env.code.append("	<p>\n");
 //        	}else{
         		//20130309
-    	    if(!tableFlg)   html_env.code.append("	<div class=\"ui-block-"+gridString[Count]+" "+HTMLEnv.getClassID(tfe)+"\">\n");
+    	    if(!tableFlg)   html_env.code.append("\n	<div class=\"ui-block-"+gridString[Count]+" "+HTMLEnv.getClassID(tfe)+"\">\n");
     	    //20130314  table
     	    else{
-	            html_env.code.append("<TD class=\""
-	                    + HTMLEnv.getClassID(tfe) + " nest\">\n");       
+	            html_env.code.append("<TD class=\"" + HTMLEnv.getClassID(tfe) + " nest\">\n");       
     	    }
-            String classid = HTMLEnv.getClassID(tfe);
+    	    //String classid = HTMLEnv.getClassID(tfe);
+    	    classid = HTMLEnv.getClassID(tfe);
+            //classid0 = HTMLEnv.getClassID(tfe);
             	
-            Log.out("<TD class=\""
-                    + HTMLEnv.getClassID(tfe) + " nest\">");
+            //Log.out("<TD class=\"" + HTMLEnv.getClassID(tfe) + " nest\">");
 
             
             this.worknextItem();
             if(decos.containsKey("table0") || HTMLC1.table0Flg || HTMLC2.table0Flg || HTMLG2.table0Flg)	table0Flg = true;
             if(decos.containsKey("table") || HTMLC1.tableFlg || HTMLC2.tableFlg || HTMLG2.tableFlg || table0Flg)	tableFlg=true;
-            if(decos.containsKey("div") || HTMLC1.divFlg || HTMLC2.divFlg || HTMLG1.divFlg || HTMLG2.divFlg){
+            //if(decos.containsKey("div") || HTMLC1.divFlg || HTMLC2.divFlg || HTMLG1.divFlg || HTMLG2.divFlg){
+            if(decos.containsKey("div")){
         		divFlg = true;
         		tableFlg = false;
         	}
@@ -344,8 +357,7 @@ public class HTMLG1 extends Grouper {
 	            }
         	}
             
-            html_env2.code.append("</tfe>");
-            
+            //html_env2.code.append("</tfe>");　//おそらくXML
             
 //            //20130312 collapsible
 //        	if(decos.containsKey("collapse")){
@@ -354,10 +366,8 @@ public class HTMLG1 extends Grouper {
 ////            if(Count>1/* && HTMLG1.G1Flg*/){
 //        	}else 
             
-        	
-            if(Count>1 && HTMLG1.G1Flg && !tableFlg){
+            if(Count>1 && HTMLG1.G1Flg && /* !HTMLG2.G2Flg &&*/ !tableFlg){
         		String rep="ui-grid-"+gridString[Count-2]+" ##"+(HTMLEnv.uiGridCount2-1);
-        		
             	try{
 	            	html_env.code.replace(
 	            			html_env.code.lastIndexOf(rep), 
@@ -365,40 +375,11 @@ public class HTMLG1 extends Grouper {
 	            			"ui-grid-"+gridString[Count-1]+" ##"+(HTMLEnv.uiGridCount2++));
             	}catch(Exception e){ /*Log.info("G1 Catch exception.");*/ }
             }
-//            //uncommented
-//            if(Count>1 && HTMLG1.G1Flg && !tableFlg){
-//            	String rep="ui-grid-"+gridString[Count-2];
-//            	
-//            	try{
-//	            	html_env.code.replace(
-//	            			html_env.code.lastIndexOf(rep), 
-//	            			html_env.code.lastIndexOf(rep)+9,
-//	            			"ui-grid-"+gridString[Count-1]);
-//	            	//Log.info("	G1 !!   rep = "+rep+"  TO  ui-grid-"+gridString[Count-1]+"	"+HTMLEnv.uiGridCount+" TO "+(++HTMLEnv.uiGridCount));
-//            	}catch(Exception e){ /*Log.info("G1 Catch exception.");*/ }
-//            }
-            
-//            //cpommented out 失敗作
-//            if(Count>1 && HTMLG1.G1Flg){
-//        		String rep="ui-grid-"+gridString[Count-2]+" #"+(HTMLEnv.uiGridCount-1);
-//        		
-//            	Log.info("!!	rep = "+rep+" TO "+"ui-grid-"+gridString[Count-1]+" #"+(HTMLEnv.uiGridCount));
-//            	try{
-//	            	html_env.code.replace(
-//	            			html_env.code.lastIndexOf(rep), 
-//	            			html_env.code.lastIndexOf(rep)+rep.length(),
-//	            			"ui-grid-"+gridString[Count-1]+" #"+(HTMLEnv.uiGridCount++));
-//	            	Log.info("	G1 !!   replaced !!");
-//            	}catch(Exception e){ Log.info("G1 Catch exception."); }
-//            	
-//            }
-
             ii++;
             jj++;
             gridInt++;
             //HTMLEnv.uiGridCount++;
             
-
 //            //20130312 collapsible
 //        	if(decos.containsKey("collapse")){
 //            	Log.info("★  [],5");
@@ -407,12 +388,27 @@ public class HTMLG1 extends Grouper {
 
             if(!tableFlg)	html_env.code.append("	</div>");	//20130309
         	else	        html_env.code.append("</TD>\n");    //20130314 table
-        	
-            Log.out("</TD>");
+            //Log.out("</TD>");
 
             i++;
+            //Log.info("	html_env.glevel = "+html_env.glevel);
+//            if(html_env.glevel == 0){
+//            	jj = 0;
+//            	gridInt = 0;
+//            	//Count = 0;
+//            }
             html_env.glevel--;
         }	// /while
+        
+        //[重要] For [ [], ]! || [],
+        //[],内が1つの値のみだったとき -> 直近のui-grid-aとui-block-aをカット
+    	if(HTMLG1.gridInt == 1){
+        //if(HTMLG1.jj == 1 && HTMLG1.gridInt == 1 /*&& HTMLG2.G2Flg*/){
+        	//Log.i("			HTMLG1.jj = "+HTMLG1.jj+"	HTMLG1.gridInt = "+HTMLG1.gridInt+"		HTMLG1.classid = "+HTMLG1.classid+"		!!");
+        	//Log.i("			"+HTMLManager.replaceCode(html_env, "ui-grid-a ##"+(HTMLEnv.uiGridCount2-1), "##"+(HTMLEnv.uiGridCount2-1)));
+        	HTMLManager.replaceCode(html_env, "ui-grid-a ##"+(HTMLEnv.uiGridCount2-1), "##"+(HTMLEnv.uiGridCount2-1));
+    		HTMLManager.replaceCode(html_env, "ui-block-a "+HTMLG1.classid, "### "+HTMLG1.classid);
+    	}
 
 //        Log.i("	"+jj+"	"+gridInt);
     	/* 
@@ -464,6 +460,9 @@ public class HTMLG1 extends Grouper {
 		    	a++;
 	    	}
 //    	}
+	    
+    	//20130503  Panel
+    	HTMLC1.panelProcess2(decos, html_env, panelFlg);
 
         Log.out("TFEId = " + HTMLEnv.getClassID(this));
         //html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);

@@ -22,46 +22,6 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>demo_6.html</name>
-			<type>1</type>
-			<location>/Applications/XAMPP/xamppfiles/htdocs/ssql/demo_6.html</location>
-		</link>
-		<link>
-			<name>demo_6.sql</name>
-			<type>1</type>
-			<location>/Applications/XAMPP/xamppfiles/htdocs/ssql/demo_6.sql</location>
-		</link>
-		<link>
-			<name>demo_7.html</name>
-			<type>1</type>
-			<location>/Applications/XAMPP/xamppfiles/htdocs/ssql/demo_7.html</location>
-		</link>
-		<link>
-			<name>demo_7.sql</name>
-			<type>1</type>
-			<location>/Applications/XAMPP/xamppfiles/htdocs/ssql/demo_7.sql</location>
-		</link>
-		<link>
-			<name>demo_7_sql.html</name>
-			<type>1</type>
-			<location>/Applications/XAMPP/xamppfiles/htdocs/ssql/demo_7_sql.html</location>
-		</link>
-		<link>
-			<name>demo_8.html</name>
-			<type>1</type>
-			<location>/Applications/XAMPP/xamppfiles/htdocs/ssql/demo_8.html</location>
-		</link>
-		<link>
-			<name>demo_8.sql</name>
-			<type>1</type>
-			<location>/Applications/XAMPP/xamppfiles/htdocs/ssql/demo_8.sql</location>
-		</link>
-		<link>
-			<name>script.js</name>
-			<type>1</type>
-			<location>/Applications/XAMPP/xamppfiles/htdocs/ssql/js/script.js</location>
-		</link>
-		<link>
 			<name>tab.html</name>
 			<type>1</type>
 			<location>/Applications/XAMPP/xamppfiles/htdocs/ssql/tab.html</location>
@@ -82,7 +42,52 @@
 			<location>/Applications/XAMPP/xamppfiles/htdocs/ssql/test1.sql</location>
 		</link>
 		<link>
-			<name>supersql/codegenerator/Mobile_HTML5/script2.js</name>
+			<name>Querys_and_HTMLs/demo_10.html</name>
+			<type>1</type>
+			<location>/Applications/XAMPP/xamppfiles/htdocs/ssql/demo_10.html</location>
+		</link>
+		<link>
+			<name>Querys_and_HTMLs/demo_10.sql</name>
+			<type>1</type>
+			<location>/Applications/XAMPP/xamppfiles/htdocs/ssql/demo_10.sql</location>
+		</link>
+		<link>
+			<name>Querys_and_HTMLs/demo_6.sql</name>
+			<type>1</type>
+			<location>/Applications/XAMPP/xamppfiles/htdocs/ssql/demo_6.sql</location>
+		</link>
+		<link>
+			<name>Querys_and_HTMLs/demo_7.sql</name>
+			<type>1</type>
+			<location>/Applications/XAMPP/xamppfiles/htdocs/ssql/demo_7.sql</location>
+		</link>
+		<link>
+			<name>Querys_and_HTMLs/demo_8.sql</name>
+			<type>1</type>
+			<location>/Applications/XAMPP/xamppfiles/htdocs/ssql/demo_8.sql</location>
+		</link>
+		<link>
+			<name>Querys_and_HTMLs/demo_9.html</name>
+			<type>1</type>
+			<location>/Applications/XAMPP/xamppfiles/htdocs/ssql/demo_9.html</location>
+		</link>
+		<link>
+			<name>Querys_and_HTMLs/demo_9.sql</name>
+			<type>1</type>
+			<location>/Applications/XAMPP/xamppfiles/htdocs/ssql/demo_9.sql</location>
+		</link>
+		<link>
+			<name>Querys_and_HTMLs/jquery.iframe-auto-height.plugin.js</name>
+			<type>1</type>
+			<location>/Applications/XAMPP/xamppfiles/htdocs/ssql/js/jquery.iframe-auto-height.plugin.js</location>
+		</link>
+		<link>
+			<name>Querys_and_HTMLs/script.js</name>
+			<type>1</type>
+			<location>/Applications/XAMPP/xamppfiles/htdocs/ssql/js/script.js</location>
+		</link>
+		<link>
+			<name>Querys_and_HTMLs/script2.js</name>
 			<type>1</type>
 			<location>/Applications/XAMPP/xamppfiles/htdocs/ssql/js/script2.js</location>
 		</link>

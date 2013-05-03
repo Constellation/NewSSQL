@@ -25,7 +25,7 @@ public class HTMLC1 extends Connector {
     static boolean tableFlg = false;		//20130314  table
     static boolean table0Flg = false;		//20130325  table0
     static boolean divFlg = false;			//20130326  div
-
+    
     //���󥹥ȥ饯��
     public HTMLC1(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
         this.manager = manager;
@@ -35,6 +35,7 @@ public class HTMLC1 extends Connector {
 
     //C1��work�᥽�å�
     public void work(ExtList data_info) {
+        int panelFlg = 0;	//20130503  Panel
 
 //    	Vector vector_local = new Vector();
         Log.out("------- C1 -------");
@@ -43,7 +44,6 @@ public class HTMLC1 extends Connector {
         Log.out("countconnetitem=" + countconnectitem());
         this.setDataList(data_info);
 
-        
         if(decos.containsKey("form")){
         	html_env2.code.append("<form"+HTMLEnv.getFormNumber()+"start />");
         	if(decos.getStr("form").toLowerCase().equals("search"))
@@ -69,22 +69,29 @@ public class HTMLC1 extends Connector {
     	//20130314  table
         //Log.info("	"+HTMLC1.tableFlg+" "+HTMLC2.tableFlg+" "+HTMLG1.tableFlg);
         //if(decos.containsKey("table") || !decos.containsKey("div") || table0Flg || HTMLC2.tableFlg || HTMLG1.tableFlg || HTMLG2.tableFlg){
-        if(decos.containsKey("table") || table0Flg || HTMLC1.tableFlg || HTMLC2.tableFlg || HTMLG1.tableFlg || HTMLG2.tableFlg){
-//    	if(decos.containsKey("table") || table0Flg || HTMLC2.tableFlg || HTMLG1.tableFlg || HTMLG2.tableFlg){
+//        if(decos.containsKey("table") || table0Flg){
+        //if(decos.containsKey("table") || table0Flg || HTMLC1.tableFlg || HTMLC2.tableFlg || HTMLG1.tableFlg || HTMLG2.tableFlg){
+    	if(decos.containsKey("table") || table0Flg || HTMLC2.tableFlg || HTMLG1.tableFlg || HTMLG2.tableFlg){
 //    		Log.info("C1!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 //    		Log.info("C1 tableFlg = true !!");
     		tableFlg = true;
     	}//else	tableFlg = false;
     	
     	//20130326  div
-//    	if(decos.containsKey("div")){
-    	if(decos.containsKey("div") || HTMLC1.divFlg || HTMLC2.divFlg || HTMLG1.divFlg || HTMLG2.divFlg){
-//    	if(decos.containsKey("div")  || HTMLC2.divFlg || HTMLG1.divFlg || HTMLG2.divFlg){
+        if(decos.containsKey("div")){
+//    	if(decos.containsKey("div") && !HTMLC2.tableFlg && !HTMLG1.tableFlg && !HTMLG2.tableFlg){
+        //if((decos.containsKey("div") && !HTMLC1.tableFlg && !HTMLC2.tableFlg && !HTMLG1.tableFlg && !HTMLG2.tableFlg)
+        //		|| HTMLC1.divFlg || HTMLC2.divFlg || HTMLG1.divFlg || HTMLG2.divFlg){
+    	//if(decos.containsKey("div") || HTMLC1.divFlg || HTMLC2.divFlg || HTMLG1.divFlg || HTMLG2.divFlg){
+//    	if(decos.containsKey("div") || HTMLC2.divFlg || HTMLG1.divFlg || HTMLG2.divFlg){
     		divFlg = true;
     		tableFlg = false;
     	}//else divFlg = false;
 
         if(!GlobalEnv.isOpt()){
+        	//20130503  Panel
+    	    panelFlg = panelProcess1(decos, html_env);
+        	
         	//20130330 tab
         	//tab1
         	if(decos.containsKey("tab1")){
@@ -183,7 +190,8 @@ public class HTMLC1 extends Connector {
         	
         	//20130314  table
         	if(tableFlg){
-        		html_env.code.append("<TABLE width=\"100%\" align=\"center\" cellSpacing=\"0\" cellPadding=\"0\" border=\"");
+        		html_env.code.append("<TABLE width=\"100%\" cellSpacing=\"0\" cellPadding=\"0\" border=\"");
+        		//html_env.code.append("<TABLE width=\"100%\" align=\"center\" cellSpacing=\"0\" cellPadding=\"0\" border=\"");
 	        	//html_env.code.append("<TABLE width=\"95%\" align=\"center\" cellSpacing=\"0\" cellPadding=\"0\" border=\"");
         		//html_env.code.append(((!table0Flg)? html_env.tableborder : "0") + "\"");
 	        	if(table0Flg || HTMLC2.table0Flg || HTMLG1.table0Flg || HTMLG2.table0Flg)
@@ -291,11 +299,15 @@ public class HTMLC1 extends Connector {
             //Log.info("C1-1:	"+tableFlg+"	"+decos.containsKey("table")+"	"+decos.containsKey("table0"));
             if(decos.containsKey("table0") || HTMLC2.table0Flg || HTMLG1.table0Flg || HTMLG2.table0Flg)	table0Flg = true;
             //else	table0Flg=false;
-//            if(decos.containsKey("table") || HTMLC2.tableFlg || HTMLG1.tableFlg || HTMLG2.tableFlg || table0Flg)	tableFlg=true;
-            if(decos.containsKey("table") || HTMLC1.tableFlg || HTMLC2.tableFlg || HTMLG1.tableFlg || HTMLG2.tableFlg || table0Flg)	tableFlg=true;
-            //if(decos.containsKey("table") || table0Flg)	tableFlg=true;
-//        	if(decos.containsKey("div")){
-            if(decos.containsKey("div") || HTMLC1.divFlg || HTMLC2.divFlg || HTMLG1.divFlg || HTMLG2.divFlg){
+            if(decos.containsKey("table") || HTMLC2.tableFlg || HTMLG1.tableFlg || HTMLG2.tableFlg || table0Flg)	tableFlg=true;
+//            if(decos.containsKey("table") || HTMLC1.tableFlg || HTMLC2.tableFlg || HTMLG1.tableFlg || HTMLG2.tableFlg || table0Flg)	tableFlg=true;
+//            if(decos.containsKey("table") || table0Flg)	tableFlg=true;
+            Log.i("C1:	decos = "+decos+"		"+HTMLC1.tableFlg+" "+HTMLC2.tableFlg+"	tableFlg = "+tableFlg+"	divFlg = "+decos.containsKey("div"));
+            if(decos.containsKey("div")){
+        	//if(decos.containsKey("div") && !HTMLC2.tableFlg && !HTMLG1.tableFlg && !HTMLG2.tableFlg){
+            //if((decos.containsKey("div") && !HTMLC1.tableFlg && !HTMLC2.tableFlg && !HTMLG1.tableFlg && !HTMLG2.tableFlg)
+            //		|| HTMLC1.divFlg || HTMLC2.divFlg || HTMLG1.divFlg || HTMLG2.divFlg){
+//            if(decos.containsKey("div") || HTMLC1.divFlg || HTMLC2.divFlg || HTMLG1.divFlg || HTMLG2.divFlg){
 //            if(decos.containsKey("div") || HTMLC2.divFlg || HTMLG1.divFlg || HTMLG2.divFlg){
         		divFlg = true;
         		tableFlg = false;
@@ -317,8 +329,8 @@ public class HTMLC1 extends Connector {
 
             //20130314  table
         	if(tableFlg){
-        		html_env.code.append("<TD align=\"center\" valign=\"middle\" class=\""
-        				+ HTMLEnv.getClassID(tfe) + " nest\">\n");
+        		//html_env.code.append("<TD align=\"center\" valign=\"middle\" class=\""
+        		html_env.code.append("<TD valign=\"middle\" class=\"" + HTMLEnv.getClassID(tfe) + " nest\">\n");
         	}
             String classid = HTMLEnv.getClassID(tfe);
             
@@ -328,13 +340,18 @@ public class HTMLC1 extends Connector {
             this.worknextItem();
 //x            html_env.code.append("	</td></tr></Table>\n");
             //Log.info("C1-2:	"+tableFlg+"	"+decos.containsKey("table")+"	"+decos.containsKey("table0"));
+           
             if(decos.containsKey("table0") || HTMLC2.table0Flg || HTMLG1.table0Flg || HTMLG2.table0Flg)	table0Flg = true;
             //else	table0Flg=false;
-            if(decos.containsKey("table") || HTMLC1.tableFlg || HTMLC2.tableFlg || HTMLG1.tableFlg || HTMLG2.tableFlg || table0Flg)	tableFlg=true;
-//            if(decos.containsKey("table") || HTMLC2.tableFlg || HTMLG1.tableFlg || HTMLG2.tableFlg || table0Flg)	tableFlg=true;
-            //if(decos.containsKey("table") || table0Flg)	tableFlg=true;
-//        	if(decos.containsKey("div")){
-            if(decos.containsKey("div") || HTMLC1.divFlg || HTMLC2.divFlg || HTMLG1.divFlg || HTMLG2.divFlg){
+//            if(decos.containsKey("table") || HTMLC1.tableFlg || HTMLC2.tableFlg || HTMLG1.tableFlg || HTMLG2.tableFlg || table0Flg)	tableFlg=true;
+            if(decos.containsKey("table") || HTMLC2.tableFlg || HTMLG1.tableFlg || HTMLG2.tableFlg || table0Flg)	tableFlg=true;
+//            if(decos.containsKey("table") || table0Flg)	tableFlg=true;
+            if(decos.containsKey("div")){
+        	//if(decos.containsKey("div") && !HTMLC2.tableFlg && !HTMLG1.tableFlg && !HTMLG2.tableFlg){
+            //if(decos.containsKey("div") && (HTMLC1.divFlg || HTMLC2.divFlg || HTMLG1.divFlg || HTMLG2.divFlg)){
+            //if((decos.containsKey("div") && !HTMLC1.tableFlg && !HTMLC2.tableFlg && !HTMLG1.tableFlg && !HTMLG2.tableFlg)
+            //		|| HTMLC1.divFlg || HTMLC2.divFlg || HTMLG1.divFlg || HTMLG2.divFlg){
+//            if(decos.containsKey("div") || HTMLC1.divFlg || HTMLC2.divFlg || HTMLG1.divFlg || HTMLG2.divFlg){
 //        	if(decos.containsKey("div") || HTMLC2.divFlg || HTMLG1.divFlg || HTMLG2.divFlg){
         		divFlg = true;
         		tableFlg = false;
@@ -345,7 +362,6 @@ public class HTMLC1 extends Connector {
             if(Count>1 && /* !HTMLG1.G1Flg  && */ !tableFlg){
 //            	String rep="ui-grid-"+gridString[Count-2];
         		String rep="ui-grid-"+gridString[Count-2]+" #"+(HTMLEnv.uiGridCount-1);
-        		
             	//Log.info("rep = "+rep+" TO "+"ui-grid-"+gridString[Count-1]+" #"+(HTMLEnv.uiGridCount));
             	try{
 	            	html_env.code.replace(
@@ -372,7 +388,6 @@ public class HTMLC1 extends Connector {
         	}
             
             if(/* !HTMLG1.G1Flg  && */ !tableFlg)	html_env.code.append("</div>\n");	//20130309
-            
         	if(tableFlg)	html_env.code.append("</TD>\n");					//20130314  table
             //Log.out("</TD>");
 
@@ -397,7 +412,7 @@ public class HTMLC1 extends Connector {
         //20130314  table
       	if(tableFlg){
       		html_env.code.append("</TR></TABLE>\n");	//20130309
-      		tableFlg = false;
+      		tableFlg = false;Log.i("tableFlg = false! 1");
       		table0Flg = false;			//20130325 table0
       	}
         
@@ -419,6 +434,10 @@ public class HTMLC1 extends Connector {
 		    	a++;
 	    	}
 //    	}
+	    
+    	//20130503  Panel
+    	panelProcess2(decos, html_env, panelFlg);
+    	
     	
 //    	//20130313 header
 //    	if(decos.containsKey("head")){
@@ -434,6 +453,60 @@ public class HTMLC1 extends Connector {
         //Log.out("TFEId = " + HTMLEnv.getClassID(this));
         //html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
         //↑必要？不要？？ -> 不要
+    }
+    
+    //20130503  Panel
+    public static int panelProcess1(DecorateList decos, HTMLEnv html_env){
+    	int panelFlg = 0;
+    	if(decos.containsKey("panel"))			panelFlg = 1;	//left panel
+	    else if(decos.containsKey("lpanel"))	panelFlg = 2;	//left panel
+	    else if(decos.containsKey("rpanel"))	panelFlg = 3;	//right panel
+    	if(panelFlg != 0){
+       		html_env.code1 = new StringBuffer();
+       		html_env.code2 = new StringBuffer();
+       		
+       		html_env.code1.append(html_env.code);	//code1 = code
+       	}
+    	return panelFlg;
+    }
+	//20130503  Panel
+	public static boolean panelProcess2(DecorateList decos, HTMLEnv html_env, int panelFlg){
+	    if(panelFlg != 0){
+    		/* code1:1   code:1+2   code2:null
+    		 * code2=code;			//code2:1+2
+    		 * code=code1;			//code:1
+    		 * Panel=code2-code;	//code1:2	*/
+    		html_env.code2 = html_env.code;			//code2 = code
+    		html_env.code = html_env.code1;			//code = code1
+    		
+    		//panel.append
+    		html_env.panel.append("<div data-role=\"panel\" id=\"ssql_panel_"+html_env.panelCount+"\"  " +
+    				"data-position=\""+( (panelFlg!=3)? ("left") : ("right") )+"\" " +
+    				"data-display=\"reveal\" data-swipe-close=\"false\" data-dismissible=\"true\" " +
+    				"data-position-fixed=\"true\" data-animate=\"true\">\n");
+    		html_env.panel.append(html_env.code2.delete(0, html_env.code.length()));	//panel = (code2 - code1)
+    		html_env.panel.append("<br>\n" +
+    				"<a href=\"#content\" data-rel=\"close\" data-role=\"button\" data-icon=\"delete\">Close</a>\n" +
+    				"</div>\n");
+    		
+    		//code.append
+    		html_env.code.append("<a href=\"#ssql_panel_"+html_env.panelCount+"\" " +
+    				"data-role=\"button\" data-icon=\"arrow-");
+        	if(panelFlg == 1 && !decos.getStr("panel").equals(""))			//left panel
+        		html_env.code.append("l\">\n"+decos.getStr("panel")+"\n");
+        	else if(panelFlg == 2 && !decos.getStr("lpanel").equals(""))	//left panel
+        		html_env.code.append("l\">\n"+decos.getStr("lpanel")+"\n");
+        	else if(panelFlg == 3 && !decos.getStr("rpanel").equals(""))	//right panel
+        		html_env.code.append("r\" data-iconpos=\"right\">\n"+decos.getStr("rpanel")+"\n");
+        	else
+        		html_env.code.append(( (panelFlg!=3)? ("l"):("r\" data-iconpos=\"right") )+"\">\n" +
+        				"Open panel "+html_env.panelCount+"\n");
+    		html_env.code.append("</a>");
+    		html_env.panelCount++;
+    		
+    		return true;
+    	}
+    	return false;
     }
 
     public String getSymbol() {

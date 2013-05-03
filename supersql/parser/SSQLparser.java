@@ -492,8 +492,8 @@ public class SSQLparser {
             
             //changed by goto 20130122  For "slideshow"
             //System.out.println("[Paeser:tfe] tfe = " + tfe);
-            if(!tfe.toString().contains("type=\"slideshow\""))
-            	System.out.println("[Paeser:tfe] tfe = " + tfe);
+//            if(!tfe.toString().contains("type=\"slideshow\""))
+//            	System.out.println("[Paeser:tfe] tfe = " + tfe);
 
 
 
@@ -918,6 +918,7 @@ public class SSQLparser {
 	        //0文字以上の任意の文字列：.*
 	        //0個以上の空白：\\s*
 	        //( )で囲った部分は、S1,　$2等として、置換後の文字列に使用可能（置換前の全文字列は、$0)
+        	//☆ 次の}(閉じるカッコ)までの0文字以上の任意の文字列: [^\\}]*
         	
 	        //"slideshow [" -> "[imagefile("
 	        query = query.replaceAll("slideshow\\s*\\[",
@@ -940,8 +941,16 @@ public class SSQLparser {
 	        //Log.info("[Paser:Parser] ssql statement2 = " + query);
         }
         
+        //addde by goto 20130422  For "!number ,number"
+        //☆ 次の}(閉じるカッコ)までの0文字以上の任意の文字列: [^\\}]*
+        //For !number
+        query = query.replaceAll("\\]\\s*!\\s*([0-9]+)\\s*@\\s*\\{([^\\}]*)", "]!@{$2,row=$1");
+    	query = query.replaceAll("\\]\\s*!\\s*([0-9]+)", "]!@{row=$1}");
+        //For ,number
+    	query = query.replaceAll("\\]\\s*\\,\\s*([0-9]+)\\s*@\\s*\\{([^\\}]*)", "],@{$2,column=$1");
+    	query = query.replaceAll("\\]\\s*\\,\\s*([0-9]+)", "],@{column=$1}");
+    	
         return query;
-
     }
 
 
