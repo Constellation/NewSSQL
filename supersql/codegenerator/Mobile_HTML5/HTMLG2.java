@@ -430,7 +430,9 @@ public class HTMLG2 extends Grouper {
 //Log.i(HTMLfilename);
             html_env.code.append(
             		"	<script type=\"text/javascript\">\n" +
-            		"		rowIframePrevNext("+first+", "+last+", '"+divID+"', '"+iframeName+"', '"+HTMLfilename+"', '"+row+"', '"+rowNum+"');\n" +
+            		"		$(document).ready(function(){\n" +
+            		"			rowIframePrevNext("+first+", "+last+", '"+divID+"', '"+iframeName+"', '"+HTMLfilename+"', '"+row+"', '"+rowNum+"');\n" +
+            		"		});\n" +
             		"	</script>\n" +
             		"	<hr>\n" +
             		"	<div id=\""+divID+"1\"></div>\n" +
