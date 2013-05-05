@@ -23,14 +23,12 @@ import org.xml.sax.InputSource;
 import supersql.common.Log;
 
 public class HTMLoptimizer {
-	//created by chie
-	//2007-2009
+	StringBuffer htmlcode = new StringBuffer();
+	protected Element root;
 
 	public HTMLoptimizer() {
 	}
 	
-	StringBuffer htmlcode = new StringBuffer();
-	protected Element root;
 	
 	// invoke optimizer input:stringbuf (not create xml file)
 	public String generateHtml( StringBuffer filestring) {	
@@ -102,7 +100,6 @@ public class HTMLoptimizer {
 			transformer.setOutputProperty(OutputKeys.ENCODING, "Shift_JIS");
 			//transformer.setOutputProperty(OutputKeys.ENCODING, "EUC_JP");
 			Document html = db.newDocument();
-			Element r = (Element)root;
 			Element htmlroot = html.createElement("TABLE");
 			/*
 			if(r.getAttribute("tabletype").equals("none"))
@@ -248,7 +245,7 @@ public class HTMLoptimizer {
 						ch2 != null;ch2 = ch.getFirstChild()){
 							if(brother == null){
 								ch.getParentNode().appendChild(ch2);
-								Element e = (Element) ch.getParentNode();
+								ch.getParentNode();
 							}else{
 								ch.getParentNode().insertBefore(ch2, brother);
 							}
@@ -870,12 +867,12 @@ public class HTMLoptimizer {
 				
 				/***trの作成***/
 				
-				String at_td = nowNode.getAttribute("td");
+				nowNode.getAttribute("td");
 				if(nowNode.hasAttribute("tr")){//trがあるならテーブル<TR>を作成
 					tr = Integer.parseInt(nowNode.getAttribute("tr"));
 					if(!nowNode.hasAttribute("td")){
 						nowNode.setAttribute("td",nowNode.getAttribute("child"));
-						at_td = nowNode.getAttribute("child");
+						nowNode.getAttribute("child");
 					}
 					if(h.getNodeName() == "TR"){//TRをつくったことがある
 						par = h.getParentNode();

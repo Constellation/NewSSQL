@@ -2,7 +2,7 @@ package supersql.codegenerator;
 
 import supersql.extendclass.ExtList;
 
-public class Operator extends TFE implements IOperator {
+public abstract class Operator extends TFE implements IOperator {
 
 	int Dimension;
 	protected ExtList data;
@@ -13,9 +13,6 @@ public class Operator extends TFE implements IOperator {
     }
 
 	@Override
-	public void work(ExtList data_info) {
-		// TODO Auto-generated method stub
-		
-	}
+	public abstract void work(ExtList data_info);
 
 }

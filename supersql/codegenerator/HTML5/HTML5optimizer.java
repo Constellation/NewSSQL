@@ -17,9 +17,6 @@ import org.w3c.dom.Node;
 import supersql.codegenerator.HTML.HTMLoptimizer;
 
 public class HTML5optimizer extends HTMLoptimizer{
-	//created by chie
-	//2007-2009
-
 	public HTML5optimizer() {
 	}
 	
@@ -46,7 +43,6 @@ public class HTML5optimizer extends HTMLoptimizer{
 			transformer.setOutputProperty(OutputKeys.ENCODING, "Shift_JIS");
 			//transformer.setOutputProperty(OutputKeys.ENCODING, "EUC_JP");
 			Document html = db.newDocument();
-			Element r = (Element)root;
 			Element htmlroot = html.createElement("TABLE");
 			/*
 			if(r.getAttribute("tabletype").equals("none"))

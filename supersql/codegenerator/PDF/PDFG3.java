@@ -9,9 +9,9 @@ import supersql.extendclass.ExtList;
 
 public class PDFG3 extends Grouper {
 
-	PDFManager manager;
+	private PDFManager manager;
 
-	PDFEnv pdf_env;
+	private PDFEnv pdf_env;
 
 	//コンストラクタ
 	public PDFG3(Manager manager, PDFEnv pdf_env) {
@@ -21,38 +21,14 @@ public class PDFG3 extends Grouper {
 
 	@Override
 	public void work(ExtList data_info) {
-		System.out.println("");
-		System.out.println("------- G3 -------");
+		System.out.println("\n------- G3 -------");
 		System.out.println("[PDFG3:work]tfe_info = " + makele0());
 		System.out.println("[PDFG3:work]data_info = " + data_info);
-
-		Vector voector_local = new Vector();
 
 		PDFModifier modifier = new PDFModifier();
 
 		int i;
-		int i_tmp;
-		int x_tmp;
-		int y_tmp;
-		/////////////////////
-		//int tate_tmp;
-		//int yoko_tmp;
-		int tate_inside = 0;
-		int yoko_inside = 0;
-
-		//修飾情報について
-		int limit = 0;
-		int lap = 0;
-		//int x_next = 0;//27
-		int tate_fold = 0;//25
-		int yoko_tmp = 0;
 		boolean fold = false;
-		boolean fold_now = false;
-		int width = 0;
-		int height = 0;
-		String align = "";
-		int border_width = 0;
-
 		int alternate = 1;
 
 		//オペレータ側
@@ -109,7 +85,7 @@ public class PDFG3 extends Grouper {
 				pdf_env.yoko = 1;////////////
 				
 				worknextItem();
-				String s1 = pdf_env.data;
+				
 
 				//String s1 = data.toString();
 
@@ -209,10 +185,6 @@ public class PDFG3 extends Grouper {
 	/*
 	 * public void createSchema(List table, List le, List le1, List le2, List
 	 * le3){ }
-	 */
-
-	/*
-	 * public String toString(){ return "G3"; }
 	 */
 
 	@Override

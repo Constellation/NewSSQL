@@ -1,7 +1,5 @@
 package supersql.codegenerator.HTML;
 
-import java.util.Vector;
-
 import supersql.codegenerator.Connector;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.Manager;
@@ -12,22 +10,18 @@ import supersql.extendclass.ExtList;
 
 public class HTMLC1 extends Connector {
 
-    Manager manager;
-
-    HTMLEnv html_env;
-    HTMLEnv html_env2;
+    private HTMLEnv htmlEnv;
+    private HTMLEnv htmlEnv2;
 
     //¥³¥ó¥¹¥È¥é¥¯¥¿
     public HTMLC1(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
-        this.manager = manager;
-        this.html_env = henv;
-        this.html_env2 = henv2;
+        this.htmlEnv = henv;
+        this.htmlEnv2 = henv2;
     }
 
     //C1¤Îwork¥á¥½¥Ã¥É
     public void work(ExtList data_info) {
 
-    	Vector vector_local = new Vector();
         Log.out("------- C1 -------");
         Log.out("tfes.contain_itemnum=" + tfes.contain_itemnum());
         Log.out("tfes.size=" + tfes.size());
@@ -36,7 +30,7 @@ public class HTMLC1 extends Connector {
 
         
         if(decos.containsKey("form")){
-        	html_env2.code.append("<form"+HTMLEnv.getFormNumber()+"start />");
+        	htmlEnv2.code.append("<form"+HTMLEnv.getFormNumber()+"start />");
         	if(decos.getStr("form").toLowerCase().equals("search"))
         		HTMLEnv.setSearch(true);
         }	     
@@ -52,12 +46,12 @@ public class HTMLC1 extends Connector {
         }
         
         //tk start///////////////////////////////////////////////////////////////////////
-        html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
+        htmlEnv.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
 
         if(!GlobalEnv.isOpt()){
-        	html_env.code.append("<TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
-        	html_env.code.append(html_env.tableBorder + "\"");
-        	html_env.code.append(html_env.getOutlineMode());
+        	htmlEnv.code.append("<TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
+        	htmlEnv.code.append(htmlEnv.tableBorder + "\"");
+        	htmlEnv.code.append(htmlEnv.getOutlineMode());
         	/*
         if(decos.containsKey("outborder")){
         	html_env.code.append(" noborder ");
@@ -65,74 +59,74 @@ public class HTMLC1 extends Connector {
         }
         	 */        
         	//classidï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¤ï¿½ï¿½Ë¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿
-        	if(html_env.writtenClassId.contains(HTMLEnv.getClassID(this))){
-        		html_env.code.append(" class=\"");
-        		html_env.code.append(HTMLEnv.getClassID(this));
+        	if(htmlEnv.writtenClassId.contains(HTMLEnv.getClassID(this))){
+        		htmlEnv.code.append(" class=\"");
+        		htmlEnv.code.append(HTMLEnv.getClassID(this));
         	}
 
         	if(decos.containsKey("class")){
-        		if(!html_env.writtenClassId.contains(HTMLEnv.getClassID(this))){
-        			html_env.code.append(" class=\"");
+        		if(!htmlEnv.writtenClassId.contains(HTMLEnv.getClassID(this))){
+        			htmlEnv.code.append(" class=\"");
         		}else{
-        			html_env.code.append(" ");
+        			htmlEnv.code.append(" ");
         		}
-        		html_env.code.append(decos.getStr("class")+"\" ");
-        	}else if(html_env.writtenClassId.contains(HTMLEnv.getClassID(this))){
-        		html_env.code.append("\" ");
+        		htmlEnv.code.append(decos.getStr("class")+"\" ");
+        	}else if(htmlEnv.writtenClassId.contains(HTMLEnv.getClassID(this))){
+        		htmlEnv.code.append("\" ");
         	}
-        	html_env.code.append("><TR>");
+        	htmlEnv.code.append("><TR>");
         }
 
         //xml
         if(GlobalEnv.isOpt()){
-	        html_env2.code.append("<tfe type=\"connect\" dimension =\"1\"");
+	        htmlEnv2.code.append("<tfe type=\"connect\" dimension =\"1\"");
 	        if (decos.containsKey("tablealign") )
-	        	html_env2.code.append(" align=\"" + decos.getStr("tablealign") +"\"");
+	        	htmlEnv2.code.append(" align=\"" + decos.getStr("tablealign") +"\"");
 	        if (decos.containsKey("tablevalign") )
-	        	html_env2.code.append(" valign=\"" + decos.getStr("tablevalign") +"\"");
+	        	htmlEnv2.code.append(" valign=\"" + decos.getStr("tablevalign") +"\"");
 	        if(decos.containsKey("tabletype")){
-	        	html_env2.code.append(" tabletype=\"" + decos.getStr("tabletype") + "\"");
+	        	htmlEnv2.code.append(" tabletype=\"" + decos.getStr("tabletype") + "\"");
 	        	if(decos.containsKey("cellspacing")){
-	            	html_env2.code.append(" cellspacing=\"" + decos.getStr("cellspacing") + "\"");
+	            	htmlEnv2.code.append(" cellspacing=\"" + decos.getStr("cellspacing") + "\"");
 	            }
 	        	if(decos.containsKey("cellpadding")){
-	            	html_env2.code.append(" cellpadding=\"" + decos.getStr("cellpadding") + "\"");
+	            	htmlEnv2.code.append(" cellpadding=\"" + decos.getStr("cellpadding") + "\"");
 	            }
 	        	if(decos.containsKey("border")){
-        			html_env2.code.append(" border=\"" + decos.getStr("border").replace("\"", "") + "\"");
+        			htmlEnv2.code.append(" border=\"" + decos.getStr("border").replace("\"", "") + "\"");
         		}
 	        	if(decos.containsKey("tableborder")){
-        			html_env2.code.append(" tableborder=\"" + decos.getStr("tableborder").replace("\"", "") + "\"");
+        			htmlEnv2.code.append(" tableborder=\"" + decos.getStr("tableborder").replace("\"", "") + "\"");
         		}
         	}else{
         		if(decos.containsKey("border")){
-        			html_env2.code.append(" border=\"" + decos.getStr("border").replace("\"", "") + "\"");
+        			htmlEnv2.code.append(" border=\"" + decos.getStr("border").replace("\"", "") + "\"");
         		}else{
-            		html_env2.code.append(" border=\"" + html_env.tableBorder.replace("\"", "") +"\"");
+            		htmlEnv2.code.append(" border=\"" + htmlEnv.tableBorder.replace("\"", "") +"\"");
         		}
 	        	if(decos.containsKey("tableborder")){
-        			html_env2.code.append(" tableborder=\"" + decos.getStr("tableborder").replace("\"", "") + "\"");
+        			htmlEnv2.code.append(" tableborder=\"" + decos.getStr("tableborder").replace("\"", "") + "\"");
         		}
         	}
-	        if(html_env.writtenClassId.contains(HTMLEnv.getClassID(this))){
-		        html_env2.code.append(" class=\"");
-		        html_env2.code.append(HTMLEnv.getClassID(this));
+	        if(htmlEnv.writtenClassId.contains(HTMLEnv.getClassID(this))){
+		        htmlEnv2.code.append(" class=\"");
+		        htmlEnv2.code.append(HTMLEnv.getClassID(this));
 	        }
 	        if(decos.containsKey("class")){
-	        	if(!html_env.writtenClassId.contains(HTMLEnv.getClassID(this))){
-	    	        html_env2.code.append(" class=\"");
+	        	if(!htmlEnv.writtenClassId.contains(HTMLEnv.getClassID(this))){
+	    	        htmlEnv2.code.append(" class=\"");
 	            }else{
-	    	        html_env2.code.append(" ");
+	    	        htmlEnv2.code.append(" ");
 	            }
-	        	html_env2.code.append(decos.getStr("class")+"\" ");
-	        }else if(html_env.writtenClassId.contains(HTMLEnv.getClassID(this))){
-	        		html_env2.code.append("\" "); 
+	        	htmlEnv2.code.append(decos.getStr("class")+"\" ");
+	        }else if(htmlEnv.writtenClassId.contains(HTMLEnv.getClassID(this))){
+	        		htmlEnv2.code.append("\" "); 
 	        }
 	        
 	        if(decos.containsKey("form")){
-	        	html_env2.code.append(" form=\""+ HTMLEnv.getFormNumber() +"\" ");
+	        	htmlEnv2.code.append(" form=\""+ HTMLEnv.getFormNumber() +"\" ");
 	        }	        
-	    	html_env2.code.append(">"); 
+	    	htmlEnv2.code.append(">"); 
         }
         
         //tk end////////////////////////////////////////////////////////////////////
@@ -143,14 +137,14 @@ public class HTMLC1 extends Connector {
         
 
         if(decos.containsKey("form")){
-        	html_env.code.append(HTMLFunction.createForm(decos));
+        	htmlEnv.code.append(HTMLFunction.createForm(decos));
            	HTMLEnv.setFormItemFlg(true,null);
         }
         
         
         while (this.hasMoreItems()) {
             ITFE tfe = (ITFE) tfes.get(i);
-            html_env.code.append("<TD class=\""
+            htmlEnv.code.append("<TD class=\""
                    + HTMLEnv.getClassID(tfe) + " nest\">\n");
             String classid = HTMLEnv.getClassID(tfe);
             
@@ -158,29 +152,29 @@ public class HTMLC1 extends Connector {
             //        + HTMLEnv.getClassID(tfe) + " nest\"> decos : " + decos);
             this.worknextItem();
             
-            if (html_env.notWrittenClassId.contains(classid)){
-            	html_env.code.delete(html_env.code.indexOf(classid),html_env.code.indexOf(classid)+classid.length()+1);
+            if (htmlEnv.notWrittenClassId.contains(classid)){
+            	htmlEnv.code.delete(htmlEnv.code.indexOf(classid),htmlEnv.code.indexOf(classid)+classid.length()+1);
             }
             
-            html_env.code.append("</TD>\n");
+            htmlEnv.code.append("</TD>\n");
             //Log.out("</TD>");
 
             i++;
         }
 
-        html_env2.code.append("</tfe>");
+        htmlEnv2.code.append("</tfe>");
         if(decos.containsKey("form")){
-        	html_env2.code.append("<form"+ HTMLEnv.getFormNumber() +"end />");
+        	htmlEnv2.code.append("<form"+ HTMLEnv.getFormNumber() +"end />");
         	Log.out("<form"+ HTMLEnv.getFormNumber() +"end />");
-           	html_env.code.append(HTMLEnv.exFormNameCreate());
-           	html_env.code.append("</form>");
+           	htmlEnv.code.append(HTMLEnv.exFormNameCreate());
+           	htmlEnv.code.append("</form>");
            	HTMLEnv.setFormItemFlg(false,null);
            	HTMLEnv.incrementFormNumber();
            	if(decos.getStr("form").toLowerCase().equals("search"))
         		HTMLEnv.setSearch(false);
         }
         
-        html_env.code.append("</TR></TABLE>\n");
+        htmlEnv.code.append("</TR></TABLE>\n");
         //Log.out("</TR></TABLE>");
 
         //Log.out("TFEId = " + HTMLEnv.getClassID(this));

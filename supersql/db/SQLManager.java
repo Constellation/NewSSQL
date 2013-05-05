@@ -16,13 +16,13 @@ import supersql.parser.FromParse;
 
 public class SQLManager {
 
-    Connection conn;
-    ExtList<String> header_name;
-    ExtList<String> header_type;
-    ExtList<ExtList<String>> tuples;
+	private Connection conn;
+	private ExtList<String> header_name;
+	private ExtList<String> header_type;
+	private ExtList<ExtList<String>> tuples;
 
-    ConnectDB cdb;
-    boolean isMulti = false;
+	private ConnectDB cdb;
+	private boolean isMulti = false;
 
     public SQLManager(ConnectDB in_cdb)
     {

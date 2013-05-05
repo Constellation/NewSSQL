@@ -47,11 +47,6 @@ public class PDFFactory extends Factory {
 	}
 
 	@Override
-	public Connector createC4(Manager manager) {
-		return new PDFC4(manager, pdf_env);
-	}
-
-	@Override
 	public Grouper createG0(Manager manager) {
 		//return new PDFG0(manager, pdf_env);
 		return new PDFG1(manager, pdf_env);
@@ -74,7 +69,7 @@ public class PDFFactory extends Factory {
 
 	@Override
 	public Grouper createG4(Manager manager) {
-		return new PDFG4(manager, pdf_env);
+		return null;
 	}
 
 	@Override
@@ -96,6 +91,11 @@ public class PDFFactory extends Factory {
 	@Override
 	public IfCondition createIfCondition(Manager manager, Attribute condition,
 			TFE thenTfe, TFE elseTfe) {
+		return null;
+	}
+
+	@Override
+	public Connector createC4(Manager manager) {
 		return null;
 	}
 

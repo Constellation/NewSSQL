@@ -2,12 +2,12 @@ package supersql.common;
 
 public class Log {
 
-	static int flag = 0;
-	static int infoflag = 1;
+	private static int flag = 0;
+	private static int infoflag = 1;
 	
-	static int dotcount = 0;
+	private static int dotcount = 0;
 
-	static StringBuffer buf = new StringBuffer();
+	private static StringBuffer buf = new StringBuffer();
 
 	public static void setLog(int f) {
 		flag = f;

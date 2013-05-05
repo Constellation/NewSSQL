@@ -9,11 +9,11 @@ import supersql.extendclass.ExtList;
 
 public class WhereParse {
 
-	String line;
+	private String line;
 
-	ExtList useatts;
+	private ExtList useatts;
 
-	ExtHashSet usetables;
+	private ExtHashSet usetables;
 
 	public WhereParse(String line) {
 		this.line = line;

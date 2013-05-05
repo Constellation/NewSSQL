@@ -25,20 +25,19 @@ import supersql.parser.SSQLparser;
 
 public class DataConstructor {
 
-	ExtList data_info;
+	private ExtList data_info;
 
-	ConnectDB cdb;
-	ArrayList<SQLQuery> sqlQueries = null;
-	QueryDivider qd; 
-	String key = null;
-	Attribute keyAtt = null;
-	int col = -1;
-	long[] exectime = new long[4];
-	final int ISDIVIS = 0;
-	final int MAKESQL = 1;
-	final int EXECSQL = 2;
-	final int MKETREE = 3;
-	boolean flag = true;
+	private ArrayList<SQLQuery> sqlQueries = null;
+	private QueryDivider qd; 
+	private String key = null;
+	private Attribute keyAtt = null;
+	private int col = -1;
+	private long[] exectime = new long[4];
+	private final int ISDIVIS = 0;
+	private final int MAKESQL = 1;
+	private final int EXECSQL = 2;
+	private final int MKETREE = 3;
+	private boolean flag = true;
 	public static String SQL_string;	//added by goto 20130306  "FROMなしクエリ対策"
 	
 	public DataConstructor(SSQLparser parser) {

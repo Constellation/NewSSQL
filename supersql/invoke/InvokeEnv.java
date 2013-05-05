@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 public class InvokeEnv {
 
 	// dbhost
-//	public static final String dbHost = "postgres.db.ics.keio.ac.jp";
 	public static final String dbHost = "localhost";
 
 	// dbuser
@@ -16,14 +15,8 @@ public class InvokeEnv {
 
 	// query
 	public static final String queryBaseDir = "/opt/http/htdocs/ssql";
-	//public static final String queryBaseDir = "http://localhost:8080/invoke";
-
-//	public static final String queryBaseDir = "";
-
 	// ImageFile
 	public static final String wwwBaseURI = "http://ssql.db.ics.keio.ac.jp";
-//	public static final String wwwBaseURI = "";
-
 	// Invoke�
 	public static final String InvokeDir = "/tmp/Invoke";
 

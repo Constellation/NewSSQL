@@ -30,7 +30,7 @@ public class FormServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 8021503235844232672L;
 
-	static String[][] att_sets;
+	private static String[][] att_sets;
 
 	public void doPost(HttpServletRequest req, 
 			HttpServletResponse res) 

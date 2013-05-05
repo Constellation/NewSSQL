@@ -4,16 +4,16 @@ import supersql.extendclass.ExtList;
 
 public class TFE implements ITFE {
 
-	int id; // SchemaID
-	boolean order_flag;
-	boolean aggregate_flag;
-	String order;
-	String aggregate;    
+	protected int id; // SchemaID
+	protected boolean orderFlag;
+	protected boolean aggregateFlag;
+	protected String order;
+	protected String aggregate;    
 	public DecorateList decos;
 
 	public TFE() {
-		order_flag = false;
-		aggregate_flag = false;
+		orderFlag = false;
+		aggregateFlag = false;
 		decos = new DecorateList();
 	}
 	
@@ -59,14 +59,14 @@ public class TFE implements ITFE {
 
 	@Override
 	public void setOrderBy(String order) {
-		order_flag = true;
+		orderFlag = true;
 		this.order = new String();
 		this.order = order;
 	}
 
 	@Override
 	public void setAggregate(String aggregate) {
-		aggregate_flag = true;
+		aggregateFlag = true;
 		this.aggregate = new String();
 		this.aggregate = aggregate;
 	}

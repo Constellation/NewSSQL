@@ -13,8 +13,8 @@ import supersql.codegenerator.TFE;
 
 public class CSVFactory extends Factory {
 
-	CSVEnv csv_env;
-	CSVEnv csv_env2;
+	private CSVEnv csv_env;
+	private CSVEnv csv_env2;
 
 	public void createLocalEnv() {
 		csv_env = new CSVEnv();

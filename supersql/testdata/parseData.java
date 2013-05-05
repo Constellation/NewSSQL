@@ -4,13 +4,11 @@ import java.util.StringTokenizer;
 
 import supersql.extendclass.ExtList;
 
-//import common.Log;
-
 public class parseData {
 
-	StringTokenizer st;
+	private StringTokenizer st;
 
-	String input;
+	private String input;
 
 	public parseData(String s) {
 		input = s;

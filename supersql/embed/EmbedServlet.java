@@ -14,13 +14,6 @@ import supersql.common.Log;
 import supersql.dataconstructor.DataConstructor;
 import supersql.parser.SSQLparser;
 
-/*
-import supersql.codegenerator.CodeGenerator;
-import supersql.common.GlobalEnv;
-import supersql.dataconstructor.DataConstructor;
-import supersql.parser.SSQLparser;
-*/
-
 public class EmbedServlet extends HttpServlet {
 	
   private static final long serialVersionUID = 8021503235844232672L;
@@ -32,7 +25,6 @@ public void doGet(HttpServletRequest req,
 	  
 	  //work(req,res);
 	  
-	  	String msg= new String();
 	  	String error = new String();
 	  	String config = new String();
 	  	String query = new String();
@@ -97,11 +89,7 @@ public void doGet(HttpServletRequest req,
 			    		if(GlobalEnv.getErrFlag() == 0)
 			    		{
 			    			String code = codegenerator.generateCode2(parser, dc.getData()).toString();
-//			    			out.println("<br><a href=\"close.html\" class=\"top_close_"+target+"\" onClick=\"return closeDiv('"+target+"')\">close</a><br>");
 			    			out.println(code);
-//			    			out.println("<br><a href=\"close.html\" class=\"bottom_close_"+target+"\" onClick=\"return closeDiv('"+target+"')\">close</a><br>");
-//			    			System.out.println("<br><a href=\"close.html\" class=\"close_"+target+"\" onClick=\"return closeDiv('"+target+"')\">close</a><br>");
-//			    			System.out.println("code:"+code);
 			    		}
 					}
 				}
@@ -117,7 +105,6 @@ public void doGet(HttpServletRequest req,
 		   	}
 		   	else
 		   	{
-				long end = System.currentTimeMillis();
 				Log.info("end");
 		   	}
 	    }  

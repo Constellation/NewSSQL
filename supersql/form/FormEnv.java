@@ -13,8 +13,8 @@ import supersql.common.GlobalEnv;
 
 public class FormEnv {
 
-	static String[] errorMessage = {"LOGIN","NOTNULL","ENGLISH","NUMBER","NUMORENG","UNIQUE"};
-	static String[] errorMessageValues = {"NOT LOGIN","IS NULL","IS NOT ENGLISH","IS NOT NUMBER","IS NOT NUMBER OR ENGLISH","IS USED"};
+	private static String[] errorMessage = {"LOGIN","NOTNULL","ENGLISH","NUMBER","NUMORENG","UNIQUE"};
+	private static String[] errorMessageValues = {"NOT LOGIN","IS NULL","IS NOT ENGLISH","IS NOT NUMBER","IS NOT NUMBER OR ENGLISH","IS USED"};
 
 	public static String getLogin(){
 		return errorMessageValues[0];
@@ -36,10 +36,6 @@ public class FormEnv {
 		return errorMessageValues[5];
 	}
 	
-	public void setFormEnv(){
-
-	}
-
 	//online getConfigValue
 	public static void getFormEnv() {
 		//Errorfile

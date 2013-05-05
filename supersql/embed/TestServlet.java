@@ -11,14 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import supersql.common.Log;
-
-/*
-import supersql.codegenerator.CodeGenerator;
-import supersql.common.GlobalEnv;
-import supersql.dataconstructor.DataConstructor;
-import supersql.parser.SSQLparser;
-*/
-
 public class TestServlet extends HttpServlet {
 	
   private static final long serialVersionUID = 8021503235844232672L;

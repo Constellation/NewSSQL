@@ -6,7 +6,7 @@ import supersql.extendclass.ExtList;
 
 public class GetFromDB {
 
-    SQLManager sqlm;
+	private SQLManager sqlm;
 
     public GetFromDB() {
         Log.out("[GetFromDB]");

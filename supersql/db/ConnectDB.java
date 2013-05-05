@@ -9,7 +9,7 @@ import supersql.common.Log;
 
 public class ConnectDB extends Thread{
 	
-	String url,user,driver,password;
+	private String url,user,driver,password;
 
 	public Connection conn;
     

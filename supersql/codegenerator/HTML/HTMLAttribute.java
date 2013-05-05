@@ -3,7 +3,6 @@ package supersql.codegenerator.HTML;
 import java.io.File;
 
 import supersql.codegenerator.Attribute;
-import supersql.codegenerator.Connector;
 import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
@@ -12,37 +11,24 @@ import supersql.extendclass.ExtList;
 
 public class HTMLAttribute extends Attribute {
 
-	Manager manager;
+	private HTMLEnv htmlEnv;
+	private HTMLEnv htmlEnv2;
 
-	HTMLEnv html_env;
-	HTMLEnv html_env2;
-
-	String[] formSql = {"","delete","update","insert","login","logout"};
-	String[] formHtml = {"","submit","select","checkbox","radio","text","textarea","hidden"};
-	int whichForm;
-
-	Connector connector;	//add oka
-
-	int loop_counter;		//add oka
-
-	static String alias;	//add oka
-
-	int colum_num;			//add oka
-	
+	private String[] formSql = {"","delete","update","insert","login","logout"};
+	private String[] formHtml = {"","submit","select","checkbox","radio","text","textarea","hidden"};
+	private int whichForm;
 
 	//•≥•Û•π•»•È•Ø•ø
 	public HTMLAttribute(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
 		super();
-		this.manager = manager;
-		this.html_env = henv;
-		this.html_env2 = henv2;
+		this.htmlEnv = henv;
+		this.htmlEnv2 = henv2;
 	}
 	
 	public HTMLAttribute(Manager manager, HTMLEnv henv, HTMLEnv henv2, boolean b) {
 		super(b);
-		this.manager = manager;
-		this.html_env = henv;
-		this.html_env2 = henv2;
+		this.htmlEnv = henv;
+		this.htmlEnv2 = henv2;
 	}
 	//AttributeÔøΩÔøΩworkÔøΩ·•ΩÔøΩ√•ÔøΩ
 	public void work(ExtList data_info) {
@@ -50,7 +36,7 @@ public class HTMLAttribute extends Attribute {
         if(GlobalEnv.getSelectFlg())
         	data_info = (ExtList) data_info.get(0);
         	*/
-		html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
+		htmlEnv.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
 
 		if(GlobalEnv.isOpt()){
 			work_opt(data_info);
@@ -58,42 +44,42 @@ public class HTMLAttribute extends Attribute {
 			if(HTMLEnv.getFormItemFlg() && HTMLEnv.getFormItemName().equals(formHtml[2])){
 
 			}else{
-				html_env.code.append("<table" + html_env.getOutlineModeAtt() + " ");
-				html_env.code.append("class=\"att");
+				htmlEnv.code.append("<table" + htmlEnv.getOutlineModeAtt() + " ");
+				htmlEnv.code.append("class=\"att");
 				//tk start/////////////////////////////////////////////////////////
-				if(html_env.writtenClassId.contains(HTMLEnv.getClassID(this))){
+				if(htmlEnv.writtenClassId.contains(HTMLEnv.getClassID(this))){
 					//classÔøΩÔøΩÔøΩ√§∆§ÔøΩÔøΩÔøΩ»§Ôøex.TFE10000)ÔøΩŒ§ﬂªÔøΩÔøΩÔøΩ 
-					html_env.code.append(" " + HTMLEnv.getClassID(this));
+					htmlEnv.code.append(" " + HTMLEnv.getClassID(this));
 				}
 				if(decos.containsKey("class")){ 
 					//classÔøΩÔøΩÔøΩÔøΩ(ex.class=menu)ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ»§Ôø					html_env.code.append(" " + decos.getStr("class"));    	
 				}
 				if(decos.getConditions().size() > 0){
-					html_env.code.append(" "+computeStringForDecoration(data_info));
+					htmlEnv.code.append(" "+computeStringForDecoration(data_info));
 				}
-				html_env.code.append("\"");
-				html_env.code.append(">");
+				htmlEnv.code.append("\"");
+				htmlEnv.code.append(">");
 			}
 
 			if(HTMLEnv.getFormItemFlg()){
 
 			}else{
-				html_env.code.append("<tr><td>\n");
+				htmlEnv.code.append("<tr><td>\n");
 				Log.out("<table class=\"att\"><tr><td>");
 			}
 
-			if (html_env.linkFlag > 0 || html_env.sinvokeFlag) {
+			if (htmlEnv.linkFlag > 0 || htmlEnv.sinvokeFlag) {
 
 				//tk start for draggable div///////////////////////////////////////
-				if(html_env.draggable)
+				if(htmlEnv.draggable)
 				{	
-					html_env.code.append("<div id=\""+html_env.dragDivId+"\" class=\"draggable\"");
-					Log.out("<div id=\""+html_env.dragDivId+"\" ");
+					htmlEnv.code.append("<div id=\""+htmlEnv.dragDivId+"\" class=\"draggable\"");
+					Log.out("<div id=\""+htmlEnv.dragDivId+"\" ");
 				}	
 				else{
 					//tk end for draggable div/////////////////////////////////////////
-					if(html_env.isPanel)
-						html_env.code.append("<div id=\"container\">");
+					if(htmlEnv.isPanel)
+						htmlEnv.code.append("<div id=\"container\">");
 
 					//added by goto 20120614 start
 					//[%œ¢ÔøΩÔøΩÔø
@@ -102,13 +88,13 @@ public class HTMLAttribute extends Attribute {
 					//øΩÔøΩÔøΩÔøΩÔøΩ §Ôø
 					//2.ITCÔøΩŒº¬ΩÔøΩÔøΩƒ∂ÔøΩÔøΩ«§œ•ÔøΩÔøΩÔøΩË§
 					//øΩÔøΩÔøΩÔøΩÔøΩ §Ôø		
-					String fileDir = new File(html_env.linkUrl).getAbsoluteFile().getParent();
-					if(fileDir.length() < html_env.linkUrl.length()
-					&& fileDir.equals(html_env.linkUrl.substring(0,fileDir.length()))){
-						String relative_path = html_env.linkUrl.substring(fileDir.length()+1);
-						html_env.code.append("<A href=\"" + relative_path + "\" ");
+					String fileDir = new File(htmlEnv.linkUrl).getAbsoluteFile().getParent();
+					if(fileDir.length() < htmlEnv.linkUrl.length()
+					&& fileDir.equals(htmlEnv.linkUrl.substring(0,fileDir.length()))){
+						String relative_path = htmlEnv.linkUrl.substring(fileDir.length()+1);
+						htmlEnv.code.append("<A href=\"" + relative_path + "\" ");
 					}else
-						html_env.code.append("<A href=\"" + html_env.linkUrl + "\" ");
+						htmlEnv.code.append("<A href=\"" + htmlEnv.linkUrl + "\" ");
 					
 					//html_env.code.append("<A href=\"" + html_env.linkurl + "\" ");
 					//added by goto 20120614 end
@@ -116,23 +102,23 @@ public class HTMLAttribute extends Attribute {
 				}
 				//tk start//////////////////////////////////////////////////////////
 				if(decos.containsKey("target")){
-					html_env.code.append(" target=\"" + decos.getStr("target")+"\"");
+					htmlEnv.code.append(" target=\"" + decos.getStr("target")+"\"");
 				}
 				if(decos.containsKey("class")){
-					html_env.code.append(" class=\"" + decos.getStr("class") + "\"");
+					htmlEnv.code.append(" class=\"" + decos.getStr("class") + "\"");
 				}
 
-				if(GlobalEnv.isAjax() && html_env.isPanel)
+				if(GlobalEnv.isAjax() && htmlEnv.isPanel)
 				{
-					html_env.code.append(" onClick =\"return panel('Panel','"+html_env.ajaxQuery+"'," +
-							"'"+html_env.dragDivId+"','"+html_env.ajaxCond+"')\"");
+					htmlEnv.code.append(" onClick =\"return panel('Panel','"+htmlEnv.ajaxQuery+"'," +
+							"'"+htmlEnv.dragDivId+"','"+htmlEnv.ajaxCond+"')\"");
 				}
-				else if(GlobalEnv.isAjax() && !html_env.draggable)
+				else if(GlobalEnv.isAjax() && !htmlEnv.draggable)
 				{
 					String target = GlobalEnv.getAjaxTarget();
 					if(target == null)
 					{
-						String query = html_env.ajaxQuery;
+						String query = htmlEnv.ajaxQuery;
 						if(query.contains("/"))
 						{
 							target = query.substring(query.lastIndexOf("/")+1,query.indexOf(".sql"));
@@ -140,22 +126,22 @@ public class HTMLAttribute extends Attribute {
 						else
 							target = query.substring(0,query.indexOf(".sql"));
 
-						if(html_env.hasDispDiv)
+						if(htmlEnv.hasDispDiv)
 						{
-							target = html_env.ajaxtarget;
+							target = htmlEnv.ajaxtarget;
 						}
 						Log.out("a target:"+target);
 					}
-					html_env.code.append(" onClick =\"return loadFile('"+html_env.ajaxQuery+"','"+target+
-							"','"+html_env.ajaxCond+"',"+html_env.inEffect+","+html_env.outEffect+")\"");
+					htmlEnv.code.append(" onClick =\"return loadFile('"+htmlEnv.ajaxQuery+"','"+target+
+							"','"+htmlEnv.ajaxCond+"',"+htmlEnv.inEffect+","+htmlEnv.outEffect+")\"");
 
 				}
 
 
-				html_env.code.append(">\n");
+				htmlEnv.code.append(">\n");
 				//tk end////////////////////////////////////////////////////////////
 
-				Log.out("<A href=\"" + html_env.linkUrl + "\">");
+				Log.out("<A href=\"" + htmlEnv.linkUrl + "\">");
 			}
 
 			//Log.out("data_info: "+this.getStr(data_info));
@@ -166,20 +152,20 @@ public class HTMLAttribute extends Attribute {
 			if(whichForm == 0){ //normal process (not form)
 				//***APPEND DATABASE VALUE***//
 				Log.out(data_info);
-				html_env.code.append(this.getStr(data_info));
+				htmlEnv.code.append(this.getStr(data_info));
 
 				Log.out(this.getStr(data_info));
 			}
 
-			if (html_env.linkFlag > 0 || html_env.sinvokeFlag) {
-				if(html_env.draggable)
-					html_env.code.append("</div>\n");
+			if (htmlEnv.linkFlag > 0 || htmlEnv.sinvokeFlag) {
+				if(htmlEnv.draggable)
+					htmlEnv.code.append("</div>\n");
 				else
 				{
-					html_env.code.append("</A>\n");
+					htmlEnv.code.append("</A>\n");
 
-					if(html_env.isPanel)
-						html_env.code.append("</div>\n");
+					if(htmlEnv.isPanel)
+						htmlEnv.code.append("</div>\n");
 				}
 				Log.out("</A>");
 			}
@@ -198,7 +184,7 @@ public class HTMLAttribute extends Attribute {
 			if(HTMLEnv.getFormItemFlg() && HTMLEnv.getFormItemName().equals(formHtml[2])){
 				
 			}else{
-				html_env.code.append("</td></tr></table>\n");
+				htmlEnv.code.append("</td></tr></table>\n");
 				Log.out("</td></tr></table>");
 			}
 
@@ -213,7 +199,7 @@ public class HTMLAttribute extends Attribute {
 	public void work_opt(ExtList data_info){
 		StringBuffer string_tmp = new StringBuffer();
 		string_tmp.append("<VALUE");
-		if(html_env.writtenClassId.contains(HTMLEnv.getClassID(this))){
+		if(htmlEnv.writtenClassId.contains(HTMLEnv.getClassID(this))){
 			//classÔøΩÔøΩÔøΩ√§∆§ÔøΩÔøΩÔøΩ»§Ôø
 			//ex.TFE10000)ÔøΩŒ§ﬂªÔøΩÔøΩÔøΩ 
 			string_tmp.append(" class=\"");
@@ -222,13 +208,13 @@ public class HTMLAttribute extends Attribute {
 
 		if(decos.containsKey("class")){ 
 			//classÔøΩÔøΩÔøΩÔøΩ(ex.class=menu)ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ»§Ôø
-			if(!html_env.writtenClassId.contains(HTMLEnv.getClassID(this))){
+			if(!htmlEnv.writtenClassId.contains(HTMLEnv.getClassID(this))){
 				string_tmp.append(" class=\"");
 			}else{
 				string_tmp.append(" ");
 			}
 			string_tmp.append(decos.getStr("class") + "\"");
-		}else if(html_env.writtenClassId.contains(HTMLEnv.getClassID(this))){ 
+		}else if(htmlEnv.writtenClassId.contains(HTMLEnv.getClassID(this))){ 
 			string_tmp.append("\"");
 		}
 
@@ -243,8 +229,8 @@ public class HTMLAttribute extends Attribute {
 		}
 
 		//link and sinvoke
-		if (html_env.linkFlag > 0 || html_env.sinvokeFlag) {
-			string_tmp.append(" href=\"" + html_env.linkUrl + "\" ");
+		if (htmlEnv.linkFlag > 0 || htmlEnv.sinvokeFlag) {
+			string_tmp.append(" href=\"" + htmlEnv.linkUrl + "\" ");
 			if(decos.containsKey("target")){
 				string_tmp.append(" target=\"" + decos.getStr("target")+"\"");
 			}
@@ -259,7 +245,7 @@ public class HTMLAttribute extends Attribute {
 		if(HTMLEnv.getFormItemFlg() && HTMLEnv.getFormItemName().equals(formHtml[2]) && HTMLEnv.getSelectRepeat()){
 
 		}else{
-			html_env2.code.append(string_tmp);
+			htmlEnv2.code.append(string_tmp);
 			Log.out(string_tmp); 
 		}
 
@@ -279,7 +265,7 @@ public class HTMLAttribute extends Attribute {
 				s = s.replaceAll("è¢∑", "&#65374;");
 			if(s.isEmpty())
 				s = "°°";
-			html_env2.code.append(s);            
+			htmlEnv2.code.append(s);            
 			Log.out(this.getStr(data_info));
 		}
 
@@ -295,7 +281,7 @@ public class HTMLAttribute extends Attribute {
 		if(HTMLEnv.getFormItemFlg() && HTMLEnv.getFormItemName().equals(formHtml[2])){
 				//select
 		}else{
-		     html_env2.code.append("</VALUE>");
+		     htmlEnv2.code.append("</VALUE>");
 		     Log.out("</VALUE>");
 		     if(HTMLEnv.getFormItemFlg() && HTMLEnv.getFormItemName().equals(formHtml[5])){
 		    	 HTMLEnv.incrementFormPartsNumber();
@@ -307,7 +293,6 @@ public class HTMLAttribute extends Attribute {
 	
 	private void createForm(ExtList data_info){
 
-		String form = new String();
 		String name = new String();		
 		String inputFormString = new String();
 		
@@ -414,13 +399,13 @@ public class HTMLAttribute extends Attribute {
 
 			Log.out("pppppp"+decos.containsKey("pkey"));
 			if(decos.containsKey("pkey") && whichForm == 2){//update
-				if(!html_env.code.toString().contains("<input type=\"hidden\" name=\"pkey\" value=\"" + name + "\" />"))
+				if(!htmlEnv.code.toString().contains("<input type=\"hidden\" name=\"pkey\" value=\"" + name + "\" />"))
 					inputFormString += "<input type=\"hidden\" name=\"pkey\" value=\"" + name + "\" />";
 			}
 		}
 		
-		html_env.code.append(inputFormString);
-		html_env2.code.append(inputFormString);
+		htmlEnv.code.append(inputFormString);
+		htmlEnv2.code.append(inputFormString);
 		Log.out(inputFormString);
 		
 		inputFormString = new String();
@@ -466,8 +451,8 @@ public class HTMLAttribute extends Attribute {
 			}
 		}
 
-		html_env.code.append(inputFormString);
-		html_env2.code.append(inputFormString);
+		htmlEnv.code.append(inputFormString);
+		htmlEnv2.code.append(inputFormString);
 		Log.out(inputFormString);
 		
 		

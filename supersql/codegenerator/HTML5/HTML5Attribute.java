@@ -1,7 +1,6 @@
 package supersql.codegenerator.HTML5;
 
 import supersql.codegenerator.Attribute;
-import supersql.codegenerator.Connector;
 import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
@@ -9,35 +8,22 @@ import supersql.extendclass.ExtList;
 
 public class HTML5Attribute extends Attribute {
 
-	Manager manager;
+	private HTML5Env html5_env;
+	private HTML5Env html5_env2;
 
-	HTML5Env html5_env;
-	HTML5Env html5_env2;
-
-	String[] formSql = {"","delete","update","insert","login","logout"};
-	String[] formHtml = {"","submit","select","checkbox","radio","text","textarea","hidden"};
-	int whichForm;
-
-	Connector connector;	//add oka
-
-	int loop_counter;		//add oka
-
-	static String alias;	//add oka
-
-	int colum_num;			//add oka
-
+	private String[] formSql = {"","delete","update","insert","login","logout"};
+	private String[] formHtml = {"","submit","select","checkbox","radio","text","textarea","hidden"};
+	private int whichForm;
 
 	//���󥹥ȥ饯��
 	public HTML5Attribute(Manager manager, HTML5Env henv, HTML5Env henv2) {
 		super();
-		this.manager = manager;
 		this.html5_env = henv;
 		this.html5_env2 = henv2;
 	}
 	
 	public HTML5Attribute(Manager manager, HTML5Env henv, HTML5Env henv2, boolean b) {
 		super(b);
-		this.manager = manager;
 		this.html5_env = henv;
 		this.html5_env2 = henv2;
 	}
@@ -524,7 +510,7 @@ public class HTML5Attribute extends Attribute {
 
 	private void createForm(ExtList data_info){
 
-		String form = new String();
+		new String();
 		String name = new String();
 		String inputFormString = new String();
 

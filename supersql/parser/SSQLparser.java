@@ -23,57 +23,53 @@ import supersql.extendclass.ExtList;
 
 public class SSQLparser {
 	
-    String media;
-    TFEparser tfe_info;
-    FromInfo from_info;
-    static String from_info_st; 
-    WhereInfo where_info = new WhereInfo();
+    private String media;
+    private TFEparser tfeInfo;
+    private FromInfo fromInfo;
+    private static String fromInfoString; 
+    private WhereInfo whereInfo = new WhereInfo();
     
-    String order_statement;
-    String group_statement;
-    String having_statement;
+    private String orderStatement;
+    private String groupStatement;
+    private String havingStatement;
 
-    CodeGenerator cgenerator;
-    ForeachInfo foreach_info;
-    String QueryImage;
+    private CodeGenerator codeGenerator;
+    private ForeachInfo foreachInfo;
+    private String QueryImage;
 
-    StringBuffer embed_where = new StringBuffer();
-    StringBuffer embed_from = new StringBuffer();
-    StringBuffer embed_group = new StringBuffer();
-    StringBuffer embed_having = new StringBuffer();
+    private StringBuffer embedWhere = new StringBuffer();
+    private StringBuffer embedFrom = new StringBuffer();
+    private StringBuffer embedGroup = new StringBuffer();
+    private StringBuffer embedHaving = new StringBuffer();
 
-    int table_num = 0;
+    private int tableNum = 0;
 
     private static boolean dbpediaQuery = false;
 
     public static String XpathQuery;
     public static String[] xpath_query = {""};
 
-    int flag = 0;
+    public static int xpathExist = 0;
+    public static int xpathStart = 0;
 
-    public static int xpath_exist = 0;
-    public static int xpath_start = 0;
+    public static int numXpath = 0;
 
-    public static int num_xpath = 0;
-
-    public static String tmp_xpath1 = new String();
-    public static String XPATH = new String();
-    public static String tmp_xmlquery1 = new String();
+    public static String tmpXpath1 = new String();
+    public static String Xpath = new String();
+    public static String tmpXmlQuery1 = new String();
     public static String DB2_XQUERY = new String();
-    public static String tmp_xmlquery2 = new String();
+    public static String tmpXmlQuery2 = new String();
 
-    public static int xmltext_flag = 0;
+    public static int xmlTextFlag = 0;
     public static String XMLQuery = new String();
 
-    public static String xpath_tag = new String();
-    public static int xpath_tag_exist = 0;
+    public static String xpathTag = new String();
+    public static int xpathTagExist = 0;
 
-    private boolean foreach_flag = false;
-    private String foreach_from = "";
-    private String foreach_where = "";
+    private boolean foreachFlag = false;
+    private String foreachFrom = "";
+    private String foreachWhere = "";
 
-    /**
-     */
     public SSQLparser(int id) {
         parseSSQL(this.getSSQLQuery(),id);
     }
@@ -93,7 +89,7 @@ public class SSQLparser {
     private void preProcess(StringTokenizer st, String nt) {
         // FOREACH
         if (nt.equalsIgnoreCase("FOREACH")) {
-            foreach_flag = true;
+            foreachFlag = true;
             StringBuffer foreach_c = new StringBuffer();
             while (st.hasMoreTokens()) {
                 nt = st.nextToken().toString();
@@ -104,13 +100,13 @@ public class SSQLparser {
             Log.out("*** This query contains FOREACH clause ***");
             Log.out(" foreach_c :" + foreach_c);
 
-            foreach_info = new ForeachInfo(foreach_c.toString().trim());
-            foreach_from = foreach_info.getForeachFrom();
-            foreach_where = foreach_info.getForeachWhere();
+            foreachInfo = new ForeachInfo(foreach_c.toString().trim());
+            foreachFrom = foreachInfo.getForeachFrom();
+            foreachWhere = foreachInfo.getForeachWhere();
 
-            Log.out("[Parser:Foreach] foreach = " + foreach_info);
+            Log.out("[Parser:Foreach] foreach = " + foreachInfo);
         }
-        GlobalEnv.foreach_flag = foreach_flag;
+        GlobalEnv.foreach_flag = foreachFlag;
 
         //REQUEST SESSION
         if (nt.equalsIgnoreCase("REQUEST")) {
@@ -158,10 +154,10 @@ public class SSQLparser {
             media = st.nextToken().toString();
 
             //for embed css TFE_ID
-            cgenerator = new CodeGenerator(id);
+            codeGenerator = new CodeGenerator(id);
 
-            cgenerator.setFactory(media.toUpperCase());
-            cgenerator.initiate();
+            codeGenerator.setFactory(media.toUpperCase());
+            codeGenerator.initiate();
 
             Log.out("*********** Specified Media is ************");
             Log.out(media);
@@ -169,8 +165,8 @@ public class SSQLparser {
             StringBuffer tfe = new StringBuffer();
 
             // FOREACH
-            if (foreach_flag) {
-                tfe.append("[foreach(" + foreach_info.getForeachAtt() + ")?");
+            if (foreachFlag) {
+                tfe.append("[foreach(" + foreachInfo.getForeachAtt() + ")?");
             }
 
             while (st.hasMoreTokens()) {
@@ -195,7 +191,7 @@ public class SSQLparser {
 
 	                	Log.out("nt : " + nt);
 	                	tfe.append(nt + " ");
-	                	xpath_exist = 1;
+	                	xpathExist = 1;
                 	}
                 }
 
@@ -226,40 +222,40 @@ public class SSQLparser {
                 	if(nt.contains(")")){
 
                 		if(nt.toString().contains("@{")){
-                			tmp_xpath1 = nt.substring(nt.toUpperCase().indexOf("XPATH(") + 6, nt.indexOf("@"));
+                			tmpXpath1 = nt.substring(nt.toUpperCase().indexOf("XPATH(") + 6, nt.indexOf("@"));
                 			if(nt.toString().contains("@{tag=")){
-                				xpath_tag = nt.substring(nt.indexOf("@{tag=") + 6, nt.indexOf("}"));
+                				xpathTag = nt.substring(nt.indexOf("@{tag=") + 6, nt.indexOf("}"));
                 			}
                 			else{ //@{tag}
-                				xpath_tag = tmp_xpath1.substring(tmp_xpath1.indexOf(".") + 1, tmp_xpath1.length());
+                				xpathTag = tmpXpath1.substring(tmpXpath1.indexOf(".") + 1, tmpXpath1.length());
                 			}
-                			xpath_tag_exist = 1;
+                			xpathTagExist = 1;
                 		}
                 		else{
-                			tmp_xpath1 = nt.substring(nt.toUpperCase().indexOf("XPATH(") + 6, nt.indexOf(","));
+                			tmpXpath1 = nt.substring(nt.toUpperCase().indexOf("XPATH(") + 6, nt.indexOf(","));
                 		}
 
                 		tmp_xpath2 = nt.substring(nt.indexOf("path=") + 6, nt.indexOf("\")"));
 
                 		if(tmp_xpath2.contains("text()") ||
                 		   tmp_xpath2.contains("node()")){ //XPath
-                			xmltext_flag = 1;
+                			xmlTextFlag = 1;
                 		}
 
                 		if(nt.contains("),")){
-                			nt = "xpath(\"" + tmp_xpath2 + "\"," + tmp_xpath1 + "),";
+                			nt = "xpath(\"" + tmp_xpath2 + "\"," + tmpXpath1 + "),";
                 		}
 
                 		else{
-                			nt = "xpath(\"" + tmp_xpath2 + "\"," + tmp_xpath1 + ")";
+                			nt = "xpath(\"" + tmp_xpath2 + "\"," + tmpXpath1 + ")";
                 		}
-                		XPATH = nt;
+                		Xpath = nt;
                 		Log.out("xpath after nt (after) : " + nt);
                 	}
 
                 	tfe.append(nt + " ");
                 	Log.out("XPATH tfe : " + tfe);
-	                xpath_exist = 1;
+	                xpathExist = 1;
                 }
 
 
@@ -288,37 +284,37 @@ public class SSQLparser {
                 	if(nt.contains(")")){
 
                 		if(nt.toString().contains("@{")){
-                			tmp_xmlquery1 = nt.substring(nt.toUpperCase().indexOf("XMLQUERY(") + 9, nt.indexOf("@"));
+                			tmpXmlQuery1 = nt.substring(nt.toUpperCase().indexOf("XMLQUERY(") + 9, nt.indexOf("@"));
                 			if(nt.toString().contains("@{tag=")){
-                				xpath_tag = nt.substring(nt.indexOf("@{tag=") + 6, nt.indexOf("}"));
+                				xpathTag = nt.substring(nt.indexOf("@{tag=") + 6, nt.indexOf("}"));
                 			}
                 			else{ //@{tag}
-                				xpath_tag = tmp_xmlquery1.substring(tmp_xmlquery1.indexOf(".") + 1, tmp_xmlquery1.length());
+                				xpathTag = tmpXmlQuery1.substring(tmpXmlQuery1.indexOf(".") + 1, tmpXmlQuery1.length());
                 			}
 
-                			xpath_tag_exist = 1;
+                			xpathTagExist = 1;
                 		}
 
                 		else{
-                			tmp_xmlquery1 = nt.substring(nt.toUpperCase().indexOf("XMLQUERY(") + 9, nt.indexOf(","));
+                			tmpXmlQuery1 = nt.substring(nt.toUpperCase().indexOf("XMLQUERY(") + 9, nt.indexOf(","));
                 		}
 
-                		tmp_xmlquery2 = nt.substring(nt.indexOf("path=") + 6, nt.indexOf("\")"));
+                		tmpXmlQuery2 = nt.substring(nt.indexOf("path=") + 6, nt.indexOf("\")"));
 
-                		if(tmp_xmlquery2.contains("text()")){ //XMLQuery
-                			xmltext_flag = 1;
+                		if(tmpXmlQuery2.contains("text()")){ //XMLQuery
+                			xmlTextFlag = 1;
                 		}
 
-                		else if(tmp_xmlquery2.contains("node()")){ //XMLQuery
-                			xmltext_flag = 1;
+                		else if(tmpXmlQuery2.contains("node()")){ //XMLQuery
+                			xmlTextFlag = 1;
                 		}
 
                 		if(nt.contains("),")){
-                			nt = "xmlquery(\"$a" + tmp_xmlquery2 + "\"" + "," + tmp_xmlquery1 + "),";
+                			nt = "xmlquery(\"$a" + tmpXmlQuery2 + "\"" + "," + tmpXmlQuery1 + "),";
                 		}
 
                 		else if(nt.contains(")")){
-                			nt = "xmlquery(\"$a" + tmp_xmlquery2 + "\"" + "," + tmp_xmlquery1 + ")";
+                			nt = "xmlquery(\"$a" + tmpXmlQuery2 + "\"" + "," + tmpXmlQuery1 + ")";
                 		}
                 		DB2_XQUERY  = nt;
                 		Log.out("xmlquery after nt (after) : " + nt);
@@ -326,7 +322,7 @@ public class SSQLparser {
 
                 	tfe.append(nt + " ");
                 	Log.out("XMLQUERY tfe : " + tfe);
-	                xpath_exist = 1;
+	                xpathExist = 1;
                 }
 
                 else if(nt.contains("sinvoke("))
@@ -399,7 +395,7 @@ public class SSQLparser {
             }
 
             // FOREACH
-            if (foreach_flag) {
+            if (foreachFlag) {
                 tfe.append("]%");
             }
             
@@ -412,8 +408,8 @@ public class SSQLparser {
             tfe = preprocessor.pushOrderBy();
             Log.out("[Parser:tfe] converted_tfe = " + tfe);
 
-            tfe_info = new TFEparser(tfe.toString(), cgenerator);
-            tfe_info.debugout();
+            tfeInfo = new TFEparser(tfe.toString(), codeGenerator);
+            tfeInfo.debugout();
 
             // FROM
             StringBuffer from_c = new StringBuffer();
@@ -440,24 +436,24 @@ public class SSQLparser {
                 from_c.append(nt + " ");
             }
 
-            if(embed_from.length() != 0)
+            if(embedFrom.length() != 0)
             {
             	if(from_c.toString().length() != 0)
             		from_c.append(",");
-            	from_c.append(embed_from + " ");
+            	from_c.append(embedFrom + " ");
             }
 
             Log.out("FROM : "+ from_c);
 
             // FOREACH
-            if (!(foreach_from.equals(""))) {
-                from_c.append("," + foreach_from);
+            if (!(foreachFrom.equals(""))) {
+                from_c.append("," + foreachFrom);
             }
 
-            from_info = new FromInfo(from_c.toString().trim());
-            Log.out("[Parser:From] from = " + from_info);
-            if (!(foreach_from.equals(""))) {
-                Log.out(foreach_from
+            fromInfo = new FromInfo(from_c.toString().trim());
+            Log.out("[Parser:From] from = " + fromInfo);
+            if (!(foreachFrom.equals(""))) {
+                Log.out(foreachFrom
                         + ": Used in FOREACH clause and added to FROM clause ");
             }
 
@@ -481,28 +477,28 @@ public class SSQLparser {
                     where_c.append(nt + " ");
                 }
                 if(SSQLparser.isDbpediaQuery())
-                	where_info.setSparqlWhereQuery(where_c.toString().trim());
+                	whereInfo.setSparqlWhereQuery(where_c.toString().trim());
                 else
-                	where_info.appendWhere(where_c.toString().trim());
+                	whereInfo.appendWhere(where_c.toString().trim());
 
             }
 
-            if(embed_where.length() !=  0)
-            	where_info.appendWhere(embed_where+ " ");
+            if(embedWhere.length() !=  0)
+            	whereInfo.appendWhere(embedWhere+ " ");
 
-            Log.out("WHERE:"+where_info);
+            Log.out("WHERE:"+whereInfo);
             // FOREACH
-            if (!(foreach_where.equals(""))) {
-                where_info.appendWhere(foreach_where);
-                Log.out(foreach_where
+            if (!(foreachWhere.equals(""))) {
+                whereInfo.appendWhere(foreachWhere);
+                Log.out(foreachWhere
                                 + ": Used in FOREACH clause and added to WHERE clause ");
             }
 
             String addCondition = GlobalEnv.getCondition();
             if (addCondition != null) {
-                where_info.appendWhere(addCondition);
+                whereInfo.appendWhere(addCondition);
             }
-            Log.out("[Paeser:Where] where = " + where_info);
+            Log.out("[Paeser:Where] where = " + whereInfo);
 
             // ORDER
             if (state == 2) {
@@ -521,8 +517,8 @@ public class SSQLparser {
                         }
                         order_c.append(nt + " ");
                     }
-                    order_statement = order_c.toString();
-                    Log.out("[Paeser:Order] order = " + order_statement);
+                    orderStatement = order_c.toString();
+                    Log.out("[Paeser:Order] order = " + orderStatement);
                 } else {
                     System.err.println("*** ERROR in ORDER BY clause ***");
                     throw (new IllegalStateException());
@@ -544,8 +540,8 @@ public class SSQLparser {
                         group_c.append(nt + " ");
                     }
                     
-                    group_statement = group_c.toString();
-                    Log.out("[Paeser:Group] group = " + group_statement);
+                    groupStatement = group_c.toString();
+                    Log.out("[Paeser:Group] group = " + groupStatement);
                     
                 } else {
                 	System.err.println("*** ERROR in GROUP BY clause ***");
@@ -553,7 +549,7 @@ public class SSQLparser {
                 }
 
             }
-            group_c.append(embed_group + " ");
+            group_c.append(embedGroup + " ");
 
             // HAVING
             StringBuffer having_c = new StringBuffer();
@@ -563,10 +559,10 @@ public class SSQLparser {
                     nt = st.nextToken().toString();
                     having_c.append(nt + " ");
                 }
-                having_statement = having_c.toString();
-                Log.out("[Paeser:Having] having = " + having_statement);
+                havingStatement = having_c.toString();
+                Log.out("[Paeser:Having] having = " + havingStatement);
             }
-            having_c.append(embed_group + " ");
+            having_c.append(embedGroup + " ");
 
         } catch (IllegalStateException e) {
             System.err
@@ -899,43 +895,43 @@ public class SSQLparser {
     }
 
     public TFEparser gettfe_info() {
-        return tfe_info;
+        return tfeInfo;
     }
 
     public ITFE get_TFEschema() {
-        return tfe_info.get_TFEschema();
+        return tfeInfo.get_TFEschema();
     }
 
     public CodeGenerator getcodegenerator() {
-    	cgenerator.TFEid = 10000;
-        return cgenerator;
+    	codeGenerator.TFEid = 10000;
+        return codeGenerator;
     }
     
     public CodeGenerator getcodegenerator(int id) {
-        cgenerator.TFEid = id;
-    	return cgenerator;
+        codeGenerator.TFEid = id;
+    	return codeGenerator;
     }
     
     public FromInfo get_from_info() {
-        return from_info;
+        return fromInfo;
     }
 
     public static void set_from_info_st(String fi) {
-        from_info_st = fi;
+        fromInfoString = fi;
     }
     public static String get_from_info_st() {
-    	if(from_info_st == null){
+    	if(fromInfoString == null){
     		return "";
     	}
-        return from_info_st;
+        return fromInfoString;
     }
 
     public WhereInfo get_where_info() {
-        return where_info;
+        return whereInfo;
     }
 
     public Hashtable get_att_info() {
-        return this.tfe_info.get_attp();
+        return this.tfeInfo.get_attp();
     }
 
     public String getSSQLsig() {
@@ -1173,7 +1169,7 @@ public class SSQLparser {
 	        		tmp4 = tmp3.substring(0,tmp3.indexOf("."));
 	        		tmp5 = tmp3.substring(tmp3.indexOf("."),tmp3.length());
 	        		
-	        		for(int b = 0; b < table_num ; ++b)
+	        		for(int b = 0; b < tableNum ; ++b)
 	        		{
 	        			if(tmp4.equals(embed_table[b]))
 	        			{
@@ -1185,9 +1181,9 @@ public class SSQLparser {
 
 	        		if(is_replaced == 0)
 	        		{
-	        			embed_table[table_num] = tmp4;
-	        			tmp4 = "embed" + table_num;
-	        			table_num++;
+	        			embed_table[tableNum] = tmp4;
+	        			tmp4 = "embed" + tableNum;
+	        			tableNum++;
 	        		}
 
 	        		QueryBuffer.append(tmp4);
@@ -1198,7 +1194,7 @@ public class SSQLparser {
 	        		QueryBuffer.append(tmp3);
 	    }
 
-    	for(int b = 0; b < table_num ; ++b) {
+    	for(int b = 0; b < tableNum ; ++b) {
     		Log.out( b + " ; " + embed_table[b]);
     	}
 
@@ -1217,7 +1213,7 @@ public class SSQLparser {
         	if(tmp3.equalsIgnoreCase("WHERE"))
         		break;
 
-        	for(int b = 0; b < table_num ; ++b)
+        	for(int b = 0; b < tableNum ; ++b)
         	{
         		if(tmp3.equalsIgnoreCase(embed_table[b]))
         		{
@@ -1233,9 +1229,9 @@ public class SSQLparser {
         }
 
         Log.out("Embed_From:"+Embed_From);
-        if(embed_from.length() != 0)
-        	embed_from.append(",");
-        embed_from.append(Embed_From);
+        if(embedFrom.length() != 0)
+        	embedFrom.append(",");
+        embedFrom.append(Embed_From);
 
         //WHERE
         is_replaced = 0;
@@ -1257,7 +1253,7 @@ public class SSQLparser {
         			tmp4 = tmp3.substring(0,tmp3.indexOf("."));
         			tmp5 = tmp3.substring(tmp3.indexOf("."),tmp3.length());
 
-        			for(int b = 0; b < table_num ; ++b)
+        			for(int b = 0; b < tableNum ; ++b)
         			{
         				if(tmp4.equalsIgnoreCase(embed_table[b]))
         				{
@@ -1273,9 +1269,9 @@ public class SSQLparser {
         	}
         }
 
-        if(embed_where.length() != 0 && Embed_Where.length() != 0)
-        	embed_where .append(" AND ");
-        embed_where.append(Embed_Where);
+        if(embedWhere.length() != 0 && Embed_Where.length() != 0)
+        	embedWhere .append(" AND ");
+        embedWhere.append(Embed_Where);
         position = -1;
         for(int a = 0 ; a < num ; ++a)
         	if(ArgName[a].equalsIgnoreCase("where"))
@@ -1292,7 +1288,7 @@ public class SSQLparser {
         	{
         		tmp11 = tmp10.substring(0,tmp10.indexOf("."));
         		tmp12 = tmp10.substring(tmp10.indexOf(".")+1 , tmp10.length());
-        		for(int a = 0; a < table_num ; ++a)
+        		for(int a = 0; a < tableNum ; ++a)
         		{
         			if(tmp11.equals(embed_table[a]))
         			{
@@ -1302,16 +1298,16 @@ public class SSQLparser {
         		}
         		if(is_replaced == 0)
         		{
-        			tmp11 = "embed" + table_num;
-        			table_num++;
+        			tmp11 = "embed" + tableNum;
+        			tableNum++;
         		}
         	}
         	if(position != 0)
         	{
-        		if(embed_where.length() != 0)
-        			embed_where.append(" AND ");
+        		if(embedWhere.length() != 0)
+        			embedWhere.append(" AND ");
 
-        		embed_where.append(tmp11+ "." + tmp12);
+        		embedWhere.append(tmp11+ "." + tmp12);
         	}
         	position = -1;
         	for(int a = 0 ; a < num ; ++a)
@@ -1319,7 +1315,7 @@ public class SSQLparser {
        				position = a;
 
         	if(position != -1)
-        		embed_where.append(ArgValue[position] + " ");
+        		embedWhere.append(ArgValue[position] + " ");
 
            	position = -1;
         	for(int a = 0 ; a < num ; ++a)
@@ -1327,9 +1323,9 @@ public class SSQLparser {
        				position = a;
 
         	if(position != -1)
-        		embed_where.append("" + ArgValue[position] + " ");
+        		embedWhere.append("" + ArgValue[position] + " ");
 
-        	Log.out("Embed WHERE : " + embed_where);
+        	Log.out("Embed WHERE : " + embedWhere);
         	is_replaced = 0;
         }
         StringBuffer Embed_Group = new StringBuffer();
@@ -1344,7 +1340,7 @@ public class SSQLparser {
         	if(tmp3.equalsIgnoreCase("HAVING"))
         		break;
 
-        	for(int b = 0; b < table_num ; ++b)
+        	for(int b = 0; b < tableNum ; ++b)
         	{
         		if(tmp3.equalsIgnoreCase(embed_table[b]))
         		{
@@ -1357,7 +1353,7 @@ public class SSQLparser {
         		Embed_Group.append(tmp3 + " ");
         }
 
-        embed_group.append(Embed_Group);
+        embedGroup.append(Embed_Group);
         is_replaced = 0;
         StringBuffer Embed_Having = new StringBuffer();
 
@@ -1368,7 +1364,7 @@ public class SSQLparser {
         	if(tmp3.equalsIgnoreCase("HAVING"))
         		break;
 
-        	for(int b = 0; b < table_num ; ++b)
+        	for(int b = 0; b < tableNum ; ++b)
         	{
         		if(tmp3.equalsIgnoreCase(embed_table[b]))
         		{
@@ -1381,7 +1377,7 @@ public class SSQLparser {
         		Embed_Having.append(tmp3 + " ");
         }
 
-        embed_having.append(Embed_Having);
+        embedHaving.append(Embed_Having);
 
         Log.out("Query Buffer : " + QueryBuffer);
         Log.out("Embed FROM : " + Embed_From);

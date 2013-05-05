@@ -7,9 +7,9 @@ import supersql.common.Log;
 
 public class FromInfo {
 
-	String line;
+	private String line;
 
-	Hashtable from_table;
+	private Hashtable from_table;
 
 
 	public FromInfo(String line) {

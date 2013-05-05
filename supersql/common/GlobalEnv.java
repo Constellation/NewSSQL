@@ -18,32 +18,32 @@ public class GlobalEnv {
 	private static Hashtable<String, String> envs;
 
 	//設定ファイルの情報
-	static String host;
+	private static String host;
 
-	static String db;
+	private static String db;
 
-	static String user;
+	private static String user;
 
-	static String home;
+	private static String home;
 
-	static String outdir;
+	private static String outdir;
 
-	static String url;
+	private static String url;
 
-	static String password;
+	private static String password;
 
-	static String encode;
+	private static String encode;
 
 	//chie start
-	static String driver;
+	private static String driver;
 
-	static String optimizer;
+	private static String optimizer;
 
-	static String invokeServletPath; //used by online
+	private static String invokeServletPath; //used by online
 
-	static String fileDirectory; //used by online
+	private static String fileDirectory; //used by online
 
-	static int tupleNum;
+	private static int tupleNum;
 
 	//chie end
 
@@ -55,7 +55,7 @@ public class GlobalEnv {
 	public static boolean foreach_flag;
 
 	//added by ria 20110704 start
-	static boolean optimizable = true;
+	private static boolean optimizable = true;
 	//added by ria 20110704 end
 
 	//tk embed用
@@ -63,8 +63,8 @@ public class GlobalEnv {
 	public static int online_flag = 0;
 	public static int err_flag = 0;
 	public static int EmbedbyQuery = 0;
-	static String embedtmp;
-	static ArrayList<String> EmbedFile = new ArrayList<String>(100);
+	private static String embedtmp;
+	private static ArrayList<String> EmbedFile = new ArrayList<String>(100);
 	//static String driver = "org.postgresql.Driver";
 
 	//for next/prev page

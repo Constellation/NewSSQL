@@ -31,7 +31,7 @@ public class InvokeServlet2 extends HttpServlet {
 	 * <code>serialVersionUID</code> �Υ�����
 	 */
 	private static final long serialVersionUID = 8021503235844232672L;
-	FormServlet fs;
+	private FormServlet fs;
 
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);

@@ -4,12 +4,12 @@ import supersql.common.Log;
 
 public class FunctionData {
 
-	String[] funcname = { "verb", "null", "imagefile", "link" ,"sinvoke" , "submit","select","checkbox","radio","inputtext","textarea","ssql::xpath","xpath","xmldata","ssql::xmlquery","xmlquery"};
+	private String[] funcname = { "verb", "null", "imagefile", "link" ,"sinvoke" , "submit","select","checkbox","radio","inputtext","textarea","ssql::xpath","xpath","xmldata","ssql::xmlquery","xmlquery"};
 
-	int[] functype = { 0, 1, 1, 1 , 1 , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+	private int[] functype = { 0, 1, 1, 1 , 1 , 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
 
 	// == 0 String only, > 0 TFE(n)+String
-	int count = 1;
+	private int count = 1;
 
 	public FunctionData(String fn) {
 
