@@ -134,7 +134,7 @@ public class HTMLG1 extends Grouper {
 //        			if(i>HTMLEnv.maxTab)	HTMLEnv.tabFlg =false;
         		}
         	}
-
+        	
         	//20130312 collapsible
         	if(decos.containsKey("collapse")){
             	html_env.code.append("<DIv data-role=\"collapsible\" data-content-theme=\"c\" style=\"padding: 0px 12px;\">\n");
@@ -185,28 +185,37 @@ public class HTMLG1 extends Grouper {
 	        	else			html_env.code.append(html_env.tableborder + "\"");
 //		        html_env.code.append(html_env.tableborder + "\"");
 		        
-		        html_env.code.append(" class=\"");
-		
-		        if(html_env.embedflag)
-		        	html_env.code.append("embed ");
-		
-		        if(decos.containsKey("outborder"))
-		        	html_env.code.append(" noborder ");
-		        
-		        if(decos.containsKey("class")){
-		        	//class=menu�Ȃǂ̎w�肪��������t��
-		        	html_env.code.append(" class=\"");
-		        	html_env.code.append(decos.getStr("class") + " ");
-		        }
-		        if(html_env.haveClass == 1){
-		        	//class=menu�Ȃǂ̎w�肪��������t��
-		        	html_env.code.append(" class=\"");
-		        	html_env.code.append(HTMLEnv.getClassID(this) + " ");
-		        }
-		        html_env.code.append("nest\"");
-		
-		        html_env.code.append(html_env.getOutlineMode());
-		
+	        	//classid������Ȥ��ˤ�������
+	        	if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
+	        		html_env.code.append(" class=\"");
+	        		html_env.code.append(HTMLEnv.getClassID(this));
+	        	}
+	        	if(decos.containsKey("class")){
+	        		if(!html_env.written_classid.contains(HTMLEnv.getClassID(this)))
+	        			html_env.code.append(" class=\"");
+	        		else
+	        			html_env.code.append(" ");
+	        		html_env.code.append(decos.getStr("class")+"\" ");
+	        	}else if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
+	        		html_env.code.append("\" ");
+	        	}
+//		        html_env.code.append(" class=\"");
+//		        if(html_env.embedflag)
+//		        	html_env.code.append("embed ");
+//		        if(decos.containsKey("outborder"))
+//		        	html_env.code.append(" noborder ");
+//		        if(decos.containsKey("class")){
+//		        	//class=menu�Ȃǂ̎w�肪��������t��
+//		        	html_env.code.append(" class=\"");
+//		        	html_env.code.append(decos.getStr("class") + " ");
+//		        }
+//		        if(html_env.haveClass == 1){
+//		        	//class=menu�Ȃǂ̎w�肪��������t��
+//		        	html_env.code.append(" class=\"");
+//		        	html_env.code.append(HTMLEnv.getClassID(this) + " ");
+//		        }
+//		        html_env.code.append("nest\"");
+//		        html_env.code.append(html_env.getOutlineMode());
 		        html_env.code.append("><TR>");
             }
         }
@@ -404,7 +413,19 @@ public class HTMLG1 extends Grouper {
 
             i++;
             html_env.glevel--;
-        }
+        }	// /while
+
+//        Log.i("	"+jj+"	"+gridInt);
+    	/* 
+//    		//,で結合(水平結合)した際
+//    		//replace: 不要な「<div class=〜」をカット
+//			String[] s = {"a","b","c","d","e"};
+//			int j=0;
+//			while(!HTMLManager.replaceCode(html_env, "<div class=\"ui-block-"+s[j]+" "+HTMLEnv.getClassID(this)+"\">", "")){
+//				j++;
+//				if(j>4) break;
+//			}
+    	 */
         
         if(HTMLEnv.getFormItemFlg()){		
 	        HTMLEnv.incrementFormPartsNumber();

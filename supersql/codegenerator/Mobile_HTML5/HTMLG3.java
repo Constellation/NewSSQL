@@ -182,12 +182,15 @@ public class HTMLG3 extends Grouper {
 
     private void setLinkButton() {
         String nextfile = new String();
-        nextfile = html_env.linkoutfile
-                + String.valueOf(html_env.countfile + 1) + ".html";
+//        nextfile = html_env.linkoutfile
+//                + String.valueOf(html_env.countfile + 1) + ".html";
+        nextfile = html_env.linkoutfile.substring(html_env.linkoutfile.lastIndexOf("/")+1)
+        		+ String.valueOf(html_env.countfile + 1) + ".html";
         html_env.code.append("<DIV class=\"linkbutton "
                 + HTMLEnv.getClassID(tfe) + "\">\n");
         if (countinstance > 1) {
-            html_env.code.append("<A href=\"" + backfile + "\">");
+//            html_env.code.append("<A href=\"" + backfile + "\">");
+            html_env.code.append("<A href=\"" + backfile.substring(html_env.linkoutfile.lastIndexOf("/")+1) + "\">");
             html_env.code.append("[back]");
             html_env.code.append("</A>\n");
         }
@@ -198,7 +201,7 @@ public class HTMLG3 extends Grouper {
         }
         html_env.code.append("</div>\n");
 
-//        html_env.addLinkButtonCSS();
+        //html_env.addLinkButtonCSS();
 
     }
 

@@ -95,14 +95,14 @@ public class Mobile_HTML5Factory extends Factory {
 	@Override
 	public Attribute createConditionalAttribute(Manager manager) {
 		// TODO Auto-generated method stub
-		return null;
+		return new supersql.codegenerator.Mobile_HTML5.HTMLAttribute(manager, html_env, html_env2, true);
 	}
 
 	@Override
 	public IfCondition createIfCondition(Manager manager, Attribute condition,
 			TFE thenTfe, TFE elseTfe) {
 		// TODO Auto-generated method stub
-		return null;
+		return new supersql.codegenerator.Mobile_HTML5.HTMLIfCondition(manager, html_env, html_env2, condition, thenTfe, elseTfe);
 	}
 
 }

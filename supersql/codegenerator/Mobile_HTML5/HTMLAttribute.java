@@ -37,7 +37,12 @@ public class HTMLAttribute extends Attribute {
 		this.html_env = henv;
 		this.html_env2 = henv2;
 	}
-
+	public HTMLAttribute(Manager manager, HTMLEnv henv, HTMLEnv henv2, Boolean b) {
+		super(b);
+		this.manager = manager;
+		this.html_env = henv;
+		this.html_env2 = henv2;
+	}
 	//Attribute��work�᥽�å�
 	public void work(ExtList data_info) {
 		/*

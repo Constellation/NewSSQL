@@ -63,8 +63,8 @@ public class HTMLC3 extends Connector {
                 || tfe[0] instanceof HTMLC2 || tfe[0] instanceof HTMLC3;
         Log.out("------- C3 -------");
         //C3Flg=true; 	//20130309
-        HTMLC1.Count=0;
-        HTMLC1.jj=0;
+     //   HTMLC1.Count=0;
+     //   HTMLC1.jj=0;
         //Log.info("	[C3    start!!!]");		//20130309
 //        Log.info("    HTMLC1.Count="+HTMLC1.Count);
 //        HTMLC1.Count=0;

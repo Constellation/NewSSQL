@@ -86,7 +86,13 @@ public class Log {
 		}
 
 	}
-
-
+	
+	//added by goto 20130415
+	public static void i(Object o) {
+		info(o);
+	}
+	public static void o(Object o) {
+		out(o);
+	}
 	
 }

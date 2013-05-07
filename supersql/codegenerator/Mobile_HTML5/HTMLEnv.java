@@ -261,7 +261,11 @@ public class HTMLEnv extends LocalEnv {
     		header.append("<script src=\"http://www.db.ics.keio.ac.jp/ssqlcss/photoswipe/code.photoswipe.jquery-3.0.4.min.js\"></script>\n");
             //added by goto 20130110 end
        		
-            header.append("<script src=\"js/script.js\"></script>\n");
+    		//added by goto 20130413  "row Prev/Next"
+    		header.append("<script src=\"js/jquery.iframe-auto-height.plugin.js\"></script>\n");
+    		header.append("<script src=\"js/script2.js\"></script>\n");
+
+    		header.append("<script src=\"js/script.js\"></script>\n");
             //added by goto 20121217 end
             
             header.append("\n");
@@ -401,14 +405,27 @@ public class HTMLEnv extends LocalEnv {
               			"});\n\n");
               	//bookmark
               	pw.println("function addBookmark(title,url) {\n" +
-              			"    if (window.sidebar) {\n" +
-              			"        window.sidebar.addPanel(title, url,\"\");\n" +
-              			"    } else if( document.all ) {\n" +
-              			"        window.external.AddFavorite( url, title);\n" +
-              			"    } else if( window.opera && window.print ) {\n" +
-              			"        return true;\n" +
-              			"    }\n" +
-              			"}\n");
+              			"	//IE\n" +
+              			"	if(navigator.userAgent.indexOf(\"MSIE\") > -1){\n" +
+						"		window.external.AddFavorite(url, title);\n" +
+						"	}\n" +
+						"	//Firefox\n" +
+						"	else if(navigator.userAgent.indexOf(\"Firefox\") > -1){\n" +
+						"		window.sidebar.addPanel(title, url, \"\");\n" +
+						"	}\n" +
+						"	//Opera\n" +
+						"	else if(navigator.userAgent.indexOf(\"Opera\") > -1){\n" +
+						"		document.write('<div style=\"text-align:center\"><a href=\"'+url+'\" rel=\"sidebar\" title=\"'+title+'\">ブックマークに追加</a></div><br>');\n" +
+						"	}\n" +
+						"	//Netscape\n" +
+						"	else if(navigator.userAgent.indexOf(\"Netscape\") > -1){\n" +
+						"		document.write('<div style=\"text-align:center\"><input type=\"button\" value=\"ブックマークに追加\"');\n" +
+						"		document.write(' onclick=\"window.sidebar.addPanel(\\''+title+'\\',\\''+url+'\\',\\'\\');\"></div><br>');\n" +
+						"	}\n" +
+						"	else{\n" +
+						"    	alert(\"このブラウザへのお気に入り追加ボタンは、Chrome/Safari等には対応しておりません。\\nChrome/Safariの場合、CtrlキーとDキーを同時に押してください。\\nその他の場合はご自身のブラウザからお気に入りへ追加下さい。\");\n" +
+						"  	}\n" +
+						"}\n");
               	//added by goto 20130110
               	//slideshow
               	pw.println("$(document).on('pageshow', '#p-gallery', function(e){\n" +
