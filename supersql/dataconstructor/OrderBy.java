@@ -1,7 +1,3 @@
-/*
- * Created on 2005/02/25 by hanki
- * Modified on 2005/06/24 by hanki
- */
 package supersql.dataconstructor;
 
 import supersql.common.Log;
@@ -10,9 +6,9 @@ import supersql.parser.Preprocessor;
 
 public class OrderBy {
 	
-	ExtList set = new ExtList();
+	private ExtList set = new ExtList();
 
-	public ExtList sort(String info, ExtList sch, ExtList data_info) {
+	public ExtList sort(String info, ExtList sch, ExtList<ExtList<String>> data_info) {
 		
 		int a, key;
 		
@@ -20,10 +16,9 @@ public class OrderBy {
 		String way;
 		
 		ExtList buffer;
-		ExtList x;
-		ExtList y;
+		String x;
+		String y;
 		
-
 		a = info.toString().indexOf(" ");
 		target = info.toString().substring(0, a);
 		way = info.toString().substring(a+1);
@@ -36,26 +31,26 @@ public class OrderBy {
 		/* bubble sort */
 		for (int i = 0; i < data_info.size(); i++) {
 			
-				x = (ExtList)((ExtList)(data_info.get(i))).get(key);	
+				x = data_info.get(i).get(key);	
 			
 			for (int j = i + 1; j < data_info.size(); j++) {
 			
-				y = (ExtList)((ExtList)(data_info.get(j))).get(key);
+				y = data_info.get(j).get(key);
 				
 				/* ascending order */
 				if (way.equalsIgnoreCase("asc")) {
 					/* attribute whose value is null */
-					if (x.toString().substring(4).length() == 0 || y.toString().substring(4).length() == 0) {
-						if (x.toString().substring(4).length() == 0 && y.toString().substring(4).length() != 0) {
+					if (x.length() == 0 || y.length() == 0) {
+						if (x.toString().length() == 0 && y.toString().length() != 0) {
 							if (needToSort(sch, set, 
-									(ExtList)(data_info.get(i)), 
-									(ExtList)(data_info.get(j)))) {
+									data_info.get(i), 
+									data_info.get(j))) {
 	
 								buffer = (ExtList)(data_info.get(i));
 								data_info.set(i, (data_info.get(j)));
 								data_info.set(j, buffer);
 		
-								x = (ExtList)((ExtList)(data_info.get(i))).get(key);
+								x = data_info.get(i).get(key);
 							}
 						}
 					
@@ -70,12 +65,12 @@ public class OrderBy {
 								data_info.set(i, (data_info.get(j)));
 								data_info.set(j, buffer);
 				
-								x = (ExtList)((ExtList)(data_info.get(i))).get(key);
+								x = data_info.get(i).get(key);
 							}
 						}
 					
 					/* normal attribute which is numeric */
-					} else if (isNumeric(x.toString().substring(4)) && isNumeric(y.toString().substring(4))) {
+					} else if (isNumeric(x) && isNumeric(y)) {
 						if (Float.parseFloat(x.toString().substring(4)) > Float.parseFloat(y.toString().substring(4))) {
 							if (needToSort(sch, set, 
 											(ExtList)(data_info.get(i)), 
@@ -84,7 +79,7 @@ public class OrderBy {
 								data_info.set(i, (data_info.get(j)));
 								data_info.set(j, buffer);
 				
-								x = (ExtList)((ExtList)(data_info.get(i))).get(key);
+								x = data_info.get(i).get(key);
 							}
 						}
 						
@@ -98,7 +93,7 @@ public class OrderBy {
 							data_info.set(i, (data_info.get(j)));
 							data_info.set(j, buffer);
 						
-							x = (ExtList)((ExtList)(data_info.get(i))).get(key);
+							x = data_info.get(i).get(key);
 						
 						}
 					}
@@ -117,7 +112,7 @@ public class OrderBy {
 								data_info.set(i, (data_info.get(j)));
 								data_info.set(j, buffer);
 		
-								x = (ExtList)((ExtList)(data_info.get(i))).get(key);
+								x = data_info.get(i).get(key);
 							}
 						}
 						
@@ -132,7 +127,7 @@ public class OrderBy {
 								data_info.set(i, (data_info.get(j)));
 								data_info.set(j, buffer);
 				
-								x = (ExtList)((ExtList)(data_info.get(i))).get(key);
+								x = data_info.get(i).get(key);
 							}
 						}
 	
@@ -146,7 +141,7 @@ public class OrderBy {
 								data_info.set(i, (data_info.get(j)));
 								data_info.set(j, buffer);
 				
-								x = (ExtList)((ExtList)(data_info.get(i))).get(key);
+								x = data_info.get(i).get(key);
 							}
 						}
 						
@@ -160,7 +155,7 @@ public class OrderBy {
 							data_info.set(i, (data_info.get(j)));
 							data_info.set(j, buffer);
 						
-							x = (ExtList)((ExtList)(data_info.get(i))).get(key);
+							x = data_info.get(i).get(key);
 						
 						}
 					}
@@ -170,11 +165,8 @@ public class OrderBy {
 			}
 				
 		}
-		
 		set.add(target);
-			
 		return data_info;
-	
 	}
 
 	/* find the key upon which to sort */
@@ -188,9 +180,7 @@ public class OrderBy {
 				break;
 			}
 		}
-		
 		return key;
-
 	}
 	
 	/* check out whether to sort it or not */
@@ -237,7 +227,6 @@ public class OrderBy {
 					if (Integer.parseInt(table.get(i).toString().substring(4, index_of_bracket)) == j) {
 						info.add(table.get(i).toString().substring(index_of_bracket+1, table.get(i).toString().length()-1) + " desc");
 						done = true;
-						//if (table.size() == 0) break;
 					}
 				}
 				if (done) {
@@ -259,11 +248,9 @@ public class OrderBy {
 				return true;
 			}
 		}
-		
 		return false;
-	
 	}
-	
+
 	private boolean isNumeric(String target) {
 		
 		for (int i = 0; i < target.length(); i++) {
@@ -271,7 +258,6 @@ public class OrderBy {
 				return false;
 			}
 		}
-		
 		return true;
 	}
 	

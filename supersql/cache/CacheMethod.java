@@ -5,28 +5,21 @@ import java.util.Hashtable;
 
 public class CacheMethod {
 
-	Hashtable CacheTable = new Hashtable();
+	Hashtable<String, CacheMetaInfo> CacheTable = new Hashtable<String, CacheMetaInfo>();
 
 	public boolean isCached(String sig) {
-
 		return CacheTable.containsKey(sig);
-
 	}
 
 	public String getCache(String sig) {
-
 		CacheMetaInfo metainfo = (CacheMetaInfo) CacheTable.get(sig);
-
 		if (metainfo == null) {
 			return null;
 		}
-
 		return metainfo.getCacheFile();
-
 	}
 
 	public void putCache(String sig, String resultfile) {
-
 		if (CacheTable.containsKey(sig)) {
 			((CacheMetaInfo) CacheTable.get(sig)).changeInfo(sig, resultfile);
 		} else {
@@ -47,7 +40,7 @@ public class CacheMethod {
 	public void removeCacheAll() {
 
 		String sig;
-		Enumeration keys = CacheTable.keys();
+		Enumeration<String> keys = CacheTable.keys();
 		while (keys.hasMoreElements()) {
 			sig = (String) keys.nextElement();
 			((CacheMetaInfo) CacheTable.get(sig)).deleteFile();
@@ -57,7 +50,7 @@ public class CacheMethod {
 	}
 
 	public String cacheString() {
-		Enumeration e = CacheTable.keys();
+		Enumeration<String> e = CacheTable.keys();
 		String k;
 		StringBuffer buf = new StringBuffer();
 		while (e.hasMoreElements()) {

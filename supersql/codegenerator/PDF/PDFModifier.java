@@ -1,73 +1,18 @@
 package supersql.codegenerator.PDF;
 
-import java.util.List;
 
 public class PDFModifier {
+	private int width;
 
-	Object le2_tmp;
+	private int height;
 
-	List le2_set;
+	private String align;
 
-	int limit, page_limit;
+	private String valign;
 
-	boolean separate;
-
-	String page_align, page_valign;
-
-	int linewidth = 1;
-
-	String linecolor;
-
-	//String background;
-
-	int width;
-
-	int height;
-
-	String align;
-
-	String valign;
-
-	String imagepath;
-
-	//int image_width;
-	//int image_height;
-	float image_width;
-
-	float image_height;
-
-	float scale_width;
-
-	float scale_height;
-
-	int fontsize, char_all;
-
-	String bgcolor;
-
-	String fontcolor;
+	private int fontsize, char_all;
 
 	public void clean1() {
-		limit = 0;
-		page_limit = 0;
-		separate = false;
-		page_align = "null";
-		page_valign = "null";
-		//writer.page_align = "center";
-		//writer.page_valign = "top";
-		//linewidth = 1;
-		//writer.linewidth = 1;
-		//writer.line = true;
-		linecolor = "null";
-		//writer.line_rgb = false;
-	}
-
-	public void page_clean(PDFEnv pdf_env) {
-		//pdf_env.page_align = "left";
-		//pdf_env.page_valign = "top";
-		//pdf_env.linewidth = 1;
-		//pdf_env.line = true;
-		//pdf_env.line_rgb = false;
-		//backgrond = "null";
 	}
 
 	//変数を初期化する
@@ -76,14 +21,7 @@ public class PDFModifier {
 		height = 0;
 		align = "left";
 		valign = "center";
-		imagepath = "null";
-		image_width = 0;
-		image_height = 0;
-		scale_width = 0;
-		scale_height = 0;
 		fontsize = 8;
-		bgcolor = "null";
-		fontcolor = "null";
 	}
 
 	/*
@@ -177,10 +115,7 @@ public class PDFModifier {
 		}
 		else {
 			value.set_width = true;//多分,単に増える分２等分してするのではなく,widthを指定したものは大きさを変えないようにする試みの痕跡
-//			value.width = width;
-			int tmp_width = width;
-
-			/*
+/*
 			 * テキストボックス処理
 			 */
 			if (width < s_width) {

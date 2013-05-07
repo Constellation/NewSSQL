@@ -1,24 +1,30 @@
 package supersql.parser;
 
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.Set;
-import java.util.StringTokenizer;
 
+import supersql.codegenerator.Attribute;
+import supersql.codegenerator.CodeGenerator;
+import supersql.codegenerator.Connector;
+import supersql.codegenerator.FuncArg;
+import supersql.codegenerator.Function;
+import supersql.codegenerator.Grouper;
+import supersql.codegenerator.ITFE;
+import supersql.codegenerator.IfCondition;
+import supersql.codegenerator.TFE;
 
-import supersql.codegenerator.*;
-import supersql.codegenerator.HTML.HTMLIfCondition;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
 
 public class TFEparser {
 
-	TFE schemaTop;
+	private TFE schemaTop;
 
-	ExtList sch;
+	private ExtList sch;
 
-	Hashtable attp;
+	private Hashtable attp;
 
 	private TFEtokenizer toks;
 
@@ -29,7 +35,7 @@ public class TFEparser {
 	private int attno;
 
 	private CodeGenerator cg;
-
+	
 	private static String att_tmp;
 	public TFEparser(String str, CodeGenerator cgenerator) {
 		attno = 0;
@@ -56,16 +62,11 @@ public class TFEparser {
 		} catch (IllegalStateException e) {
 			System.err.println("Error[TFEparser]: Syntax Error in TFE");
 			System.err.println(toks.DebugTrace());
-			// tk////////////////////////////////////////////////////
 			GlobalEnv.addErr("Error[TFEparser]: Syntax Error in TFE");
-			// return ;
-			// System.exit(-1);
-			// tk////////////////////////////////////////////////////
 		}
 		sch = schemaTop.makesch();
 
 		Log.out("Schema is " + sch);
-
 		Log.out("le0 is " + schemaTop.makele0());;
 	}
 
@@ -177,7 +178,7 @@ public class TFEparser {
 
 	}
 
-	private Connector connector_main(int dim, TFE operand1, String closeparen) {
+	private Connector connector_main(int dim, ITFE operand1, String closeparen) {
 
 		Log.out("connector_main: dim=" + dim);
 		String token = "";
@@ -271,7 +272,7 @@ public class TFEparser {
 		Connector con = cg.createConnector(dim);
 
 		for (int i = 0; i < tfes.size(); i++) {
-			con.setTFE((TFE) (tfes.get(i)));
+			con.setTFE((ITFE) (tfes.get(i)));
 		}
 
 		if (token.equals("}"))
@@ -541,7 +542,7 @@ public class TFEparser {
 
 		if (read_tfe instanceof Connector) {
 			// many Attribute
-			for (int i = 0; i < ((Connector) read_tfe).tfeitems; i++) {
+			for (int i = 0; i < ((Connector) read_tfe).tfeItems; i++) {
 				fnc.setArg(makeFuncArg(((Connector) read_tfe).gettfe(i)));
 				if (fn.equals("select") && i == 0) {
 					fnc.addDeco("select", att_tmp);
@@ -574,7 +575,7 @@ public class TFEparser {
 		return out_fa;
 	}
 
-	private void setDecoration(TFE tfe) {
+	private void setDecoration(ITFE tfe) {
 
 		String token;
 
@@ -661,7 +662,7 @@ public class TFEparser {
 
 	}
 
-	private void read_conditional_decoration(TFE tfe) {
+	private void read_conditional_decoration(ITFE tfe) {
 		String token;
 		String condition = find_sql_condition();
 		token= toks.prevToken();
@@ -714,7 +715,7 @@ public class TFEparser {
 		
 	}
 
-	private void decoration_out(TFE tfe, String name, String value,
+	private void decoration_out(ITFE tfe, String name, String value,
 			String condition) {
 		tfe.addDeco(name, value, condition);
 		Log.out("[decoration name=" + name + " value=" + value + " condition="+condition+"]");
@@ -752,7 +753,7 @@ public class TFEparser {
 	}
 
 	// hanki start
-	private boolean fromPreprocessorOnly(TFE tfe) {
+	private boolean fromPreprocessorOnly(ITFE tfe) {
 
 		String token;
 
@@ -842,7 +843,7 @@ public class TFEparser {
      * this.setDecoration(fnc); return; // return fnc; }
      */
 
-    private void decoration_out(TFE tfe, String name, Object value) {
+    private void decoration_out(ITFE tfe, String name, Object value) {
 
         /* 暫?的にStringしか読めない */
         tfe.addDeco(name, (String) value);
@@ -851,9 +852,7 @@ public class TFEparser {
 	}
 
 	public TFE get_TFEschema() {
-
 		return schemaTop;
-
 	}
 
 	public void debugout() {

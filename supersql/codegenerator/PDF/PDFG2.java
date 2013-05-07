@@ -1,36 +1,34 @@
 package supersql.codegenerator.PDF;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.Attribute;
+import supersql.codegenerator.Grouper;
+import supersql.codegenerator.Manager;
+import supersql.codegenerator.TFE;
 import supersql.extendclass.ExtList;
 
 public class PDFG2 extends Grouper implements PDFTFE {
 
-	PDFManager manager;
-
-	PDFEnv pdf_env;
+	private PDFEnv pdf_env;
 	
 	//追加10.17
-	PDFValue value;
+	private PDFValue value;
 	
-	ExtList columns;		//各インスタンスの各列の要素数  注：クラス変数では無理
+	private ExtList columns;		//各インスタンスの各列の要素数  注：クラス変数では無理
 	
 	//移動10.28  元々はworkメソッド内
-	float tmp_width;
-	float tmp_height;
-	float box_widthSUM;		//折り畳みの変数　幅の合計
-	float box_heightMAX;	//折り畳みの変数　高さの最大値
-	float fold;				//折り畳みの変数　何cm、何個で折り畳むかを格納			
-	int topID;				//widthをre_setする時inListの何番目からか
+	private float tmp_width;
+	private float tmp_height;
+	private float box_widthSUM;		//折り畳みの変数　幅の合計
+	private float box_heightMAX;	//折り畳みの変数　高さの最大値
+	private float fold;				//折り畳みの変数　何cm、何個で折り畳むかを格納			
+	private int topID;				//widthをre_setする時inListの何番目からか
 
 	
-	ExtList maxWidths;			//このG2の各列最大幅
+	private ExtList maxWidths;			//このG2の各列最大幅
 	
-	int columnNum;				//各インスタンスの折り畳んだ回数
-	ExtList columnWidths;		//各インスタンスの各列最大幅
+	private int columnNum;				//各インスタンスの折り畳んだ回数
+	private ExtList columnWidths;		//各インスタンスの各列最大幅
 
-//	float columnMaxWidth;		//メソッド内に移動
-
-	
 	//----- setLevelメソッドで幅調節のSuffix用 -----//
 	int repeatNum = 0;
 	
@@ -42,7 +40,6 @@ public class PDFG2 extends Grouper implements PDFTFE {
 	
 	//コンストラクタ
 	public PDFG2(Manager manager, PDFEnv pdf_env) {
-		this.manager = (PDFManager) manager;
 		this.pdf_env = pdf_env;
 		//追加10.30  折り畳み用
 		maxWidths = new ExtList();
@@ -78,17 +75,6 @@ public class PDFG2 extends Grouper implements PDFTFE {
 		columnWidths = new ExtList();
 
 		int i;
-
-		//修飾情報について
-		int limit = 0;
-		int page_limit = 0;
-		int lap = 0;
-		int page_lap = 0;
-		boolean separate = false;
-		String align = "";
-		int border_width = 0;
-		int alternate = 1;
-
 
 		setDataList(data_info);
 		setDecoration();
@@ -152,9 +138,7 @@ public class PDFG2 extends Grouper implements PDFTFE {
 				value.inList.add(((PDFTFE)tfe).getInstance());
 				
 				//移動
-				
 
-				alternate++;
 			}
 
 			
@@ -218,8 +202,6 @@ public class PDFG2 extends Grouper implements PDFTFE {
 				
 				//移動
 
-				
-				alternate++;
 			}
 
 			

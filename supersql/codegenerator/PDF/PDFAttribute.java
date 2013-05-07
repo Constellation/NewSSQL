@@ -1,46 +1,42 @@
 package supersql.codegenerator.PDF;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.Attribute;
+import supersql.codegenerator.Manager;
+import supersql.codegenerator.TFE;
 import supersql.extendclass.ExtList;
 
 public class PDFAttribute extends Attribute implements PDFTFE {
 
-	Manager manager;
-
-	PDFEnv pdf_env;
-	PDFValue value;
-	PDFModifier modifier;////////応急処置10/04
-	
-	String data;
-	float data_width;
-	float data_height;
-	float box_width;
-	float box_height;
-	float padding_H;
-	float padding_V;
-	float fontsize;
-	String fontstyle;
+	private PDFEnv pdf_env;
+	private PDFValue value;
+	private String data;
+	private float data_width;
+	private float data_height;
+	private float box_width;
+	private float box_height;
+	private float padding_H;
+	private float padding_V;
+	private float fontsize;
+	private String fontstyle;
 
 	
 	//レイアウト変換用 newLEはAttributeでは特に意味はない
-	TFE newLE;
-	boolean change = false;
-	boolean fontsizeDECO = false;
-	boolean widthDECO = false;
-	boolean heightDECO = false;
-	float tuneWidth = 0;
-	float tmpTuneWidth;
-	float tuneFontsize = 0;
-	float tmpTuneFontsize;
+	private TFE newLE;
+	private boolean change = false;
+	private boolean fontsizeDECO = false;
+	private boolean widthDECO = false;
+	private float tuneWidth = 0;
+	private float tmpTuneWidth;
+	private float tuneFontsize = 0;
+	private float tmpTuneFontsize;
 	
 	
 	//コンストラクタ
 	public PDFAttribute(Manager manager, PDFEnv penv) {
 		super();
-		this.manager = manager;
 		this.pdf_env = penv;
 		
-		modifier = new PDFModifier();//////応急処置10/04
+		new PDFModifier();
 	}
 
 	//Attributeのworkメソッド
@@ -172,7 +168,6 @@ public class PDFAttribute extends Attribute implements PDFTFE {
 		//テキストボックス処理 text_flowで解決
 		if(decos.containsKey("height"))
 			box_height = Float.parseFloat(decos.get("height").toString());
-			heightDECO = true;
 	}
 	
 	public void setDecoration3(){

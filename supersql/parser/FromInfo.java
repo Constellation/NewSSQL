@@ -1,15 +1,15 @@
 package supersql.parser;
 
-import java.util.StringTokenizer;
 import java.util.Hashtable;
+import java.util.StringTokenizer;
 
-import supersql.common.*;
+import supersql.common.Log;
 
 public class FromInfo {
 
-	String line;
+	private String line;
 
-	Hashtable from_table;
+	private Hashtable from_table;
 
 
 	public FromInfo(String line) {
@@ -22,22 +22,26 @@ public class FromInfo {
 
 	public void makeInfo(String line) {
 		SSQLparser.set_from_info_st(line);
-		StringBuffer buf = new StringBuffer();
-		StringTokenizer st = new StringTokenizer(line, ",");
-		while (st.hasMoreTokens()) {
-			String ch = st.nextToken().trim();
-			Log.out("ch : " + ch);
-			String decos = new String();
-			if(ch.contains("@")){
-				decos = addDeco(ch.substring(ch.indexOf("@")+1));
-				ch = ch.substring(0,ch.indexOf("@"));
-			}
-			
-			FromParse fp = new FromParse(ch);
-			from_table.put(fp.alias, fp);
+		if(line.equalsIgnoreCase("dbpedia")){
+			SSQLparser.setDbpediaQuery(true);
+		}else{
+			StringBuffer buf = new StringBuffer();
+			StringTokenizer st = new StringTokenizer(line, ",");
+			while (st.hasMoreTokens()) {
+				String ch = st.nextToken().trim();
+				Log.out("ch : " + ch);
+				String decos = new String();
+				if(ch.contains("@")){
+					decos = addDeco(ch.substring(ch.indexOf("@")+1));
+					ch = ch.substring(0,ch.indexOf("@"));
+				}
 
-			if(decos!= "" && decos.equalsIgnoreCase("update")){
-				SSQLparser.set_from_info_st(ch);
+				FromParse fp = new FromParse(ch);
+				from_table.put(fp.alias, fp);
+
+				if(decos!= "" && decos.equalsIgnoreCase("update")){
+					SSQLparser.set_from_info_st(ch);
+				}
 			}
 		}
 	}

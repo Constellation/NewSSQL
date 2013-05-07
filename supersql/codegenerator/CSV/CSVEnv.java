@@ -1,48 +1,30 @@
 package supersql.codegenerator.CSV;
 
-import java.io.PrintWriter;
-import java.util.Vector;
-
-import supersql.codegenerator.DecorateList;
+import supersql.codegenerator.ITFE;
 import supersql.codegenerator.LocalEnv;
-import supersql.codegenerator.TFE;
-import supersql.common.Log;
-import supersql.common.GlobalEnv;
 
 public class CSVEnv extends LocalEnv {
-    String data;
+	protected int glevel = 0;
 
-    String pre_operator;
+	protected String filename;
 
-    Vector written_classid;
+	protected String outfile;
 
-    Vector not_written_classid;
+	protected String linkoutfile;
 
-    int total_element = 0;
+	protected String outdir;
 
-    int glevel = 0;
+	protected int countfile;
 
-    String filename;
+	protected StringBuffer code;
 
-    String outfile;
+	protected StringBuffer header;
 
-    String linkoutfile;
+	protected StringBuffer footer;
 
-    String nextbackfile = new String();
+	boolean OutlineMode = false;
 
-    String outdir;
-
-    int countfile;
-
-    PrintWriter writer;
-
-    StringBuffer code;
-
-    StringBuffer header;
-
-    StringBuffer footer;
-
-    public CSVEnv() {
+	public CSVEnv() {
     }
 
     public String getEncode(){
@@ -53,16 +35,6 @@ public class CSVEnv extends LocalEnv {
     		return "EUC_JP";
     	}
     }
-    public void getHeader() {
-   		int index = 0;
-    }
-
-    public void getFooter() {
-
-    }
-
-    // outlineを�?力するかど�?��のフラグ設�?
-    boolean OutlineMode = false;
 
     public void setOutlineMode() {
         OutlineMode = true;
@@ -85,7 +57,7 @@ public class CSVEnv extends LocalEnv {
         return "";
     }
 
-    public static String getClassID(TFE tfe) {
+    public static String getClassID(ITFE tfe) {
     	String result;
 
         result =  "TFE" + tfe.getId();

@@ -5,36 +5,36 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.ITFE;
 import supersql.extendclass.ExtList;
 
 //PDFに関する基本的な変数とメソッドを持つクラス
 public class PDFOptimizer {
 	
-	int i, j;
+	private int i, j;
 	
-	PDFEnv pdf_env;
+	private PDFEnv pdf_env;
 	
-	ExtList flatList = new ExtList();
-	Hashtable maxWidth = new Hashtable();
-	Hashtable maxHeight = new Hashtable();
+	private ExtList flatList = new ExtList();
+	private Hashtable maxWidth = new Hashtable();
+	private Hashtable maxHeight = new Hashtable();
 	
 	//------------------------
-	Hashtable maxOriginalWidth = new Hashtable();
-	Hashtable maxOriginalHeight = new Hashtable();
+	private Hashtable maxOriginalWidth = new Hashtable();
+	private Hashtable maxOriginalHeight = new Hashtable();
 	
 	
 	
 	//縦反復の高さ、横反復の幅を調節する時に使用
-	ExtList matchListH = new ExtList();
-	ExtList matchListV = new ExtList();
+	private ExtList matchListH = new ExtList();
+	private ExtList matchListV = new ExtList();
 
 	
-	ExtList resultList = new ExtList();
+	private ExtList resultList = new ExtList();
 	
 	
-	TFE tfe_info;
-	ExtList flatTFE = new ExtList();
+	private ITFE tfe_info;
+	private ExtList flatTFE = new ExtList();
 	
 	
 	//コンストラクタ
@@ -1608,7 +1608,7 @@ public class PDFOptimizer {
 	}
 	
 	
-	public void set_tfeInfo(TFE tfe_info){
+	public void set_tfeInfo(ITFE tfe_info){
 		this.tfe_info = tfe_info;
 	}
 	

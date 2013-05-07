@@ -1,9 +1,13 @@
 package supersql.codegenerator.HTML5;
 
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
@@ -11,38 +15,27 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.util.*;
-import java.io.*;
-import java.text.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Hashtable;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.CodeGenerator;
+import supersql.codegenerator.DecorateList;
+import supersql.codegenerator.FuncArg;
+import supersql.codegenerator.Function;
+import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
-import supersql.extendclass.ExtList;
-//tk start///////////////////////////////////////
-import supersql.codegenerator.CodeGenerator;
 import supersql.dataconstructor.DataConstructor;
+import supersql.extendclass.ExtList;
 import supersql.parser.SSQLparser;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.FileReader;
-
-//tk end//////////////////////////////////////////
-
-//import common.Log;
 
 public class HTML5Function extends Function {
-//ishizaki st meterid
-	static int meter_id=0; //ishizaki meter id
-//ishizaki end
-    Manager manager;
+	private static int meter_id=0;
+	private HTML5Env html5_env;
+	private HTML5Env html5_env2;
 
-    HTML5Env html5_env;
-    HTML5Env html5_env2;
-
-    boolean embedflag = false;
-
-    static String updateFile;
+	private static String updateFile;
 
     public HTML5Function()
     {
@@ -51,7 +44,6 @@ public class HTML5Function extends Function {
     //���󥹥ȥ饯��
     public HTML5Function(Manager manager, HTML5Env henv, HTML5Env henv2) {
         super();
-        this.manager = manager;
         this.html5_env = henv;
         this.html5_env2 = henv2;
     }
@@ -360,12 +352,6 @@ public class HTML5Function extends Function {
 
 		HTML5Env.setFormItemFlg(true,"submit");
 
-    	String value = new String();
-    	if(!this.getAtt("value").equals(null)){
-        	value = "value=\"" + this.getAtt("value") + "\"";
-        }
-
-
     	String option = new String();
     	if(!this.getAtt("default").equals(null)){
         	option += "value=\"" + this.getAtt("default") + "\"";
@@ -562,7 +548,7 @@ public class HTML5Function extends Function {
     }
 
     public static String createForm(DecorateList decos) {
-    	String option = new String();
+    	new String();
     	String path = new String();
     	String form = new String();
     	//System.out.println(this.getAtt("label"));
@@ -579,7 +565,7 @@ public class HTML5Function extends Function {
 		GlobalEnv.getFileDirectory() + "/config.ssql\" />";
 
         if(decos.containsKey("link")){
-        	String tmp = opt(decos.getStr("link"));
+        	opt(decos.getStr("link"));
         	form += "<input type=\"hidden\" name=\"sqlfile\" value=\"" + path + "/" + decos.getStr("link").replaceAll("\"", "") + "\" />";
         }
 
@@ -594,7 +580,7 @@ public class HTML5Function extends Function {
         	form += updateFile;
         }
         if(decos.containsKey("linkfile")){
-        	String tmp = opt(decos.getStr("linkfile"));
+        	opt(decos.getStr("linkfile"));
         	form += "<input type=\"hidden\" name=\"linkfile\" value=\"" + path + "/" +decos.getStr("linkfile").replaceAll("\"", "")+"\" />";
         }
         if(decos.containsKey("cond")){
@@ -675,7 +661,6 @@ public class HTML5Function extends Function {
 
     private void Func_foreach(ExtList data_info) throws UnsupportedEncodingException {
     	String att = new String();
-    	String attkey;
     	for (int i = 0; i < this.countconnectitem(); i++) {
     		att = att + "_" + this.getAtt(Integer.toString(i));
     	}
@@ -693,10 +678,10 @@ public class HTML5Function extends Function {
     	String file = this.getAtt("file");
     	String where = this.getAtt("where");
     	String att = this.getAtt("att");
-    	String border = this.getAtt("border");
+    	this.getAtt("border");
     	String att2 = this.getAtt("attString");
     	String condition = new String();
-    	String defcond = this.getAtt("defcond");
+    	this.getAtt("defcond");
 
 
     	Log.out("function embed");
@@ -967,9 +952,6 @@ public class HTML5Function extends Function {
 //	    			html5_env.code.append("<br><a href=\"close.html\" class=\"bottom_close_"+divname+"\" onClick=\"return closeDiv('"+divname+"')\">close</a><br>");
 					Log.out("<div id="+divname+">");
 				}
-
-				// ajax depends on decos status //////////////////////////////////////////
-				boolean status_flag = false;
 
 				//xml�����
 				if(!is_hidden){
@@ -1282,7 +1264,7 @@ public class HTML5Function extends Function {
 
         		//drag to
         		String value = decos.getStr("dragto");
-    			String droptarget[] = new String[100];
+    			String[] droptarget = new String[100];
     			int targetnum = 0;
 
         		if(value.contains("+"))

@@ -4,6 +4,7 @@ import supersql.codegenerator.CodeGenerator;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.dataconstructor.DataConstructor;
+import supersql.extendclass.ExtList;
 import supersql.parser.SSQLparser;
 
 public class FrontEnd {
@@ -13,9 +14,7 @@ public class FrontEnd {
 	}
 
 	public FrontEnd(String[] args) {
-
 		execSuperSQL(args);
-
 	}
 
 	public void execSuperSQL(String[] args) {
@@ -49,29 +48,13 @@ public class FrontEnd {
 
 		long end = System.currentTimeMillis();
 		Log.info("ExecTime: " + (end - start) + "msec");
-		/*
-		Log.info("パーザ時間：" + (afterparser - start) + "ミリ秒です。");
-		Log.info("DC時間：" + (afterdc - afterparser) + "ミリ秒です。");
-		Log.info("CG時間：" + (aftercg - afterdc) + "ミリ秒です。");
-		*/
+
 		if (GlobalEnv.getErrFlag() == 0)
 			Log.info("// completed normally //");
-
-		/*
-		 * if(GlobalEnv.isNewEmbed() == 1) { Log.out("[delete tmp file]");
-		 * ArrayList filelist = GlobalEnv.getEmbedFile(); //
-		 * Log.out("filelistsize:"+filelist.size()); File file;
-		 * if(filelist.size() != 0) { for(int i = 0; i < filelist.size() ; ++i) {
-		 * file = new File(GlobalEnv.getEmbedTmp(), filelist.get(i).toString()); //
-		 * Log.out("file name:"+filelist.get(i).toString()+" i:"+i);
-		 * if(file.delete()) Log.out("file delete:"+filelist.get(i).toString()); } } }
-		 */
 
 		if (GlobalEnv.getErrFlag() != 0 && GlobalEnv.getOnlineFlag() == 0)
 			System.exit(-1);
 		else
 			return;
-
 	}
-
 }

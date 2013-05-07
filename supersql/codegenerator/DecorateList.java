@@ -2,22 +2,20 @@ package supersql.codegenerator;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Hashtable;
 import java.util.Enumeration;
+import java.util.Hashtable;
 
 import supersql.common.Log;
 
-public class DecorateList extends Hashtable {
+public class DecorateList extends Hashtable<String, Object> {
 
 	/**
 	 * serialVersionUID
 	 */
 	private static final long serialVersionUID = 1L;
 	private static int classIdPointer = 1;
-	Connector connector;	//add oka
 	private Hashtable<String, Object> conditions = new Hashtable<String, Object>();
 	private Hashtable<String, Integer> classesIds = new Hashtable<String, Integer>();
-	
 	
 	public String getStr(String s) {
 		Object o = this.get(s);
@@ -31,10 +29,10 @@ public class DecorateList extends Hashtable {
 		return null;
 	}
 
-	public TFE getTFE(String s) {
+	public ITFE getTFE(String s) {
 		Object o = this.get(s);
-		if (o instanceof TFE)
-			return (TFE) (this.get(s));
+		if (o instanceof ITFE)
+			return (ITFE) (this.get(s));
 		return null;
 	}
 
@@ -43,7 +41,7 @@ public class DecorateList extends Hashtable {
 
 			Debug dbgout = new Debug();
 			dbgout.prt(count, "<DecorateList>");
-			Enumeration e = this.keys();
+			Enumeration<String> e = this.keys();
 			while (e.hasMoreElements()) {
 				String key = (String) (e.nextElement());
 				Object val = this.get(key);
@@ -53,28 +51,28 @@ public class DecorateList extends Hashtable {
 					//start oka
 					if(key.equals("update")){
 						Log.out("@ update found @");
-						Connector.update_flag = true;
+						Connector.updateFlag = true;
 					}else if(key.equals("insert")){
 						Log.out("@ insert found @");
-						Connector.insert_flag = true;
+						Connector.insertFlag = true;
 					}else if(key.equals("delete")){
 						Log.out("@ delete found @");
-						Connector.delete_flag = true;
+						Connector.deleteFlag = true;
 					}else if(key.equals("login")){
 						Log.out("@ login found @");
-						Connector.login_flag = true;
+						Connector.loginFlag = true;
 					}else if(key.equals("logout")){
 						Log.out("@ logout found @");
-						Connector.logout_flag = true;
+						Connector.logoutFlag = true;
 					}
 					//end oka
 					
 					dbgout.prt(count + 1, "<Deco Key=" + key
 								+ " type=value value=" + val + "/>");
 						
-				} else if (val instanceof TFE) {
+				} else if (val instanceof ITFE) {
 					dbgout.prt(count + 1, "<Deco Key=" + key + " type=TFE>");
-					((TFE) val).debugout(count + 2);
+					((ITFE) val).debugout(count + 2);
 					dbgout.prt(count + 1, "</Deco>");
 				} else {
 					dbgout.prt(count + 1, "<Deco Key=" + key + ">");
@@ -89,12 +87,13 @@ public class DecorateList extends Hashtable {
 
 	public synchronized Object put(Object key, Object value, String condition) {
 		if(getConditions().containsKey(condition)){
+			Object cond = getConditions().get(condition);
 			ArrayList<String> conditionArray = new ArrayList<String>();
-			if(getConditions().get(condition) instanceof String){
+			if(cond instanceof String){
 				conditionArray.add((String)(key));
-				conditionArray.add((String) getConditions().get(condition));
+				conditionArray.add((String) cond);
 			}else{
-				((ArrayList<String>) getConditions().get(condition)).addAll((Collection<? extends String>) getConditions().get(condition));
+				((ArrayList<String>) cond).addAll((Collection<? extends String>) cond);
 			}
 			getConditions().put(condition, conditionArray);
 		}else{
@@ -113,9 +112,9 @@ public class DecorateList extends Hashtable {
 				valueArray[1] = (String) this.get(key);
 			}
 			
-			return super.put(key, valueArray);
+			return super.put((String) key, valueArray);
 		} else {
-			return super.put(key,value);
+			return super.put((String) key,value);
 		}
 	}
 

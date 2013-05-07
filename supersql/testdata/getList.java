@@ -1,18 +1,13 @@
 package supersql.testdata;
 
-import java.lang.String;
 
 public class getList {
 
-	String in = new String();
+	private String in = new String();
 
-	int listIndex;
+	private int listIndex;
 
-	String sampleData;
-
-	/*
-	 * sample.txtの必要な部分だけを取り出す
-	 */
+	private String sampleData;
 
 	public String get_List(String strs) {
 

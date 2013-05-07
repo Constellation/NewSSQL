@@ -1,7 +1,5 @@
 package supersql.dataconstructor;
 
-import java.util.ArrayList;
-
 import supersql.extendclass.ExtList;
 
 public class Attribute {

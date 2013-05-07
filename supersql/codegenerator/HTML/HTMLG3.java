@@ -11,7 +11,9 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.Attribute;
+import supersql.codegenerator.Grouper;
+import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.common.Utils;
@@ -19,10 +21,8 @@ import supersql.extendclass.ExtList;
 
 public class HTMLG3 extends Grouper {
 
-    Manager manager;
-
-    HTMLEnv html_env;
-    HTMLEnv html_env2;
+	private HTMLEnv html_env;
+	private HTMLEnv html_env2;
 
     private String backfile = new String();
 
@@ -30,7 +30,6 @@ public class HTMLG3 extends Grouper {
 
     //���󥹥ȥ饯��
     public HTMLG3(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
-        this.manager = manager;
         this.html_env = henv;
         this.html_env2 = henv2;
     }
@@ -50,7 +49,6 @@ public class HTMLG3 extends Grouper {
         StringBuffer parentcss2 = html_env2.css;
         StringBuffer parentheader2 = html_env2.header;
         StringBuffer parentfooter2 = html_env2.footer;
-        int i = 0;
         Log.out("------- G3 -------");
 
         html_env.css = new StringBuffer();
@@ -63,7 +61,6 @@ public class HTMLG3 extends Grouper {
         while (this.hasMoreItems()) {
             html_env.gLevel++;
 
-            boolean b = tfe instanceof Attribute;
             html_env.code = new StringBuffer();
             html_env2.code = new StringBuffer();
 
@@ -86,7 +83,6 @@ public class HTMLG3 extends Grouper {
             if (!html_env.foreachFlag) {
                 setLinkButton();
             }
-            i++;
             html_env.gLevel--;
             html_env.getHeader();
             html_env.getFooter();

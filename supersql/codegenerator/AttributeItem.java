@@ -9,13 +9,13 @@ import supersql.parser.FromInfo;
 
 public class AttributeItem {
 
-	int AttNo;
+	private int AttNo;
 
-	String Image;
+	private String Image;
 
-	ExtList UseAtts;
+	private ExtList UseAtts;
 
-	ExtHashSet UseTables;
+	private ExtHashSet UseTables;
 
 	boolean IsStr;
 
@@ -68,13 +68,11 @@ public class AttributeItem {
 		dbgout.prt(count, "</AttributeItem>");
 	}
 
-	public ExtList makesch() {
-		ExtList outsch = new ExtList();
-
+	public ExtList<Integer> makesch() {
+		ExtList<Integer> outsch = new ExtList<Integer>();
 		if (!IsStr) {
 			outsch.add(new Integer(AttNo));
 		}
-
 		return outsch;
 	}
 
@@ -101,7 +99,7 @@ public class AttributeItem {
 		if (IsStr) {
 			return Image;
 		} else {
-			return ((ExtList) data_info.get(AttNo - idx)).getStr();
+			return (data_info.get(AttNo - idx)).toString();
 		}
 	}
 
@@ -144,7 +142,6 @@ public class AttributeItem {
 
 		//Log.out("[Att sig] : " + sig);
 		return sig.toString();
-
 	}
 	
 	//added by ria 20110913 start

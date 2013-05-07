@@ -1,24 +1,25 @@
 package supersql.codegenerator.PDF;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.Attribute;
+import supersql.codegenerator.Connector;
+import supersql.codegenerator.ITFE;
+import supersql.codegenerator.Manager;
+import supersql.codegenerator.TFE;
 import supersql.extendclass.ExtList;
 
 public class PDFC2 extends Connector implements PDFTFE {
 
-	Manager manager;
-
-	PDFEnv pdf_env;
+	private PDFEnv pdf_env;
 	
-	PDFValue value;
+	private PDFValue value;
 	
-	ExtList maxHeights;
-	float max_height;
+	private ExtList maxHeights;
+	private float max_height;
 	
-	TFE newLE;
-	boolean change = false;
+	private TFE newLE;
+	private boolean change = false;
 
 	public PDFC2(Manager manager, PDFEnv pdf_env) {
-		this.manager = manager;
 		this.pdf_env = pdf_env;
 		maxHeights = new ExtList();
 	}
@@ -27,9 +28,6 @@ public class PDFC2 extends Connector implements PDFTFE {
 	public void work(ExtList data_info) {
 		float box_width = 0;
 		float box_height = 0;
-		float tmp_height = 0;
-//		int level = pdf_env.level;
-		
 		float tmp_width = 0;
 		
 		System.out.println("");
@@ -43,15 +41,10 @@ public class PDFC2 extends Connector implements PDFTFE {
 		
 		PDFModifier modifier = new PDFModifier();
 
-		int i,j;
-		int x_default, x_max; //x_tmp
+		int i;
+		int x_default; //x_tmp
 		//int lap = 0;
 		
-
-		boolean ope_modi = false;
-		int alternate = pdf_env.alternate;
-
-		boolean flag = false;
 
 		x_default = pdf_env.x_back;
 		//y_max = y_default;
@@ -60,8 +53,8 @@ public class PDFC2 extends Connector implements PDFTFE {
 
 		setDataList(data_info);
 
-		for (i = 0; i < tfeitems; i++) {
-			TFE tfe = (TFE) tfes.get(i);
+		for (i = 0; i < tfeItems; i++) {
+			ITFE tfe = (ITFE) tfes.get(i);
 
 			if (tfe instanceof Attribute) {
 				System.out.println("[PDFC2:work]tfe is Attribute");
@@ -203,8 +196,8 @@ public class PDFC2 extends Connector implements PDFTFE {
 
 //pdf_env.labelH++;
 
-		for (i = 0; i < tfeitems; i++) {
-			TFE tfe = (TFE) tfes.get(i);
+		for (i = 0; i < tfeItems; i++) {
+			ITFE tfe = (ITFE) tfes.get(i);
 
 			pdf_env.labelV = pdf_env.labelmaxV + 1;			
 			if(pdf_env.labelV > pdf_env.labelmaxV ){
@@ -268,8 +261,8 @@ public class PDFC2 extends Connector implements PDFTFE {
 	public void restoreFOLD(PDFValue check){
 		int local;
 		
-		for(local=0; local<tfeitems; local++){
-			TFE tfe = (TFE)tfes.get(local);
+		for(local=0; local<tfeItems; local++){
+			ITFE tfe = (ITFE)tfes.get(local);
 			((PDFTFE)tfe).restoreFOLD(check);
 		}
 		
@@ -285,8 +278,8 @@ public class PDFC2 extends Connector implements PDFTFE {
 		
 		float maxCutWidth = 0;
 	
-		for (local=tfeitems-1; local>-1; local--) {
-			TFE tfe = (TFE)tfes.get(local);
+		for (local=tfeItems-1; local>-1; local--) {
+			ITFE tfe = (ITFE)tfes.get(local);
 			PDFValue inBox = (PDFValue)box.inList.get(local);
 			//tmpDexcess = box.box_width - /**/inBox.originalWidth/**/ + Dexcess;
 			tmpDexcess = Dexcess - (box.box_width - /**/inBox.originalWidth/**/);
@@ -303,8 +296,8 @@ public class PDFC2 extends Connector implements PDFTFE {
 		}
 		
 		if(flex){
-			for (local=tfeitems-1; local>-1; local--) {
-				TFE tfe = (TFE)tfes.get(local);
+			for (local=tfeItems-1; local>-1; local--) {
+				ITFE tfe = (ITFE)tfes.get(local);
 				if( ((PDFTFE)tfe).changeORnot() )
 					this.tfes.set(local, ((PDFTFE)tfe).getNewChild() );
 			}

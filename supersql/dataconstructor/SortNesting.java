@@ -3,9 +3,8 @@ package supersql.dataconstructor;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-import supersql.extendclass.ExtList;
-
 import supersql.common.Log;
+import supersql.extendclass.ExtList;
 
 /* ŽÆ?ŽÎŽÏŽ¤ŽÏ schŽ¤ŽËŽ¤Ž½Ž¤ŽÃŽ¤Ž¿nestŽ¤Ž¬Ž½ŽªŽ¤?Ž¤ŽÃŽ¤Ž¿tupleŽ¤ŽÇŽ¤Ž¢Ž¤?Ž¤Ž³Ž¤ŽÈ */
 
@@ -40,11 +39,10 @@ public class SortNesting {
 			ExtList buffer = new ExtList();
 			ExtList o;
 			for (int i = 0; i < t.size(); i++) {
-				o = (ExtList) t.get(i);
-				if (o.isStr()) {
-					buffer.add(o);
+				if (t.get(i) instanceof String) {
+					buffer.add(t.get(i));
 				} else {
-					SortNesting s = new SortNesting(o);
+					SortNesting s = new SortNesting((ExtList) t.get(i));
 					buffer.add(s);
 				}
 			}
@@ -74,9 +72,8 @@ public class SortNesting {
 		ExtList result = new ExtList();
 
 		for (int i = 0; i < t.size(); i++) {
-			o = (ExtList) t.get(i);
-			if (o.isStr()) {
-				result.add(o);
+			if (t.get(i) instanceof String) {
+				result.add(t.get(i));
 			}
 		}
 		return result;

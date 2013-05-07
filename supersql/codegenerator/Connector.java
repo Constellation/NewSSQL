@@ -1,84 +1,42 @@
 package supersql.codegenerator;
 
-import java.util.ArrayList;
-
+import supersql.codegenerator.XML.XMLAttribute;
+import supersql.codegenerator.XML.XMLC0;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
+//ryuryu
+//ryuryu
 
-import supersql.codegenerator.Connector;
-import supersql.codegenerator.Grouper;
-import supersql.codegenerator.XML.XMLAttribute; //ryuryu
-import supersql.codegenerator.XML.XMLC0;//ryuryu
+public class Connector extends Operator{
 
-public class Connector implements Operator{
-
-    int id; // SchemaID
-
-	int Dimension;
-
-	public int tfeitems;
-
-	public ExtList tfes;
-
-	//hanki start
-	boolean order_flag;
-	boolean aggregate_flag;
-	String order;
-    String aggregate;
-    //hanki end
+	public int tfeItems;
+	public ExtList<TFE> tfes;
 
     //oka start
-    public static boolean update_flag;
-
-    public static boolean insert_flag;
-
-    public static boolean delete_flag;
+    public static boolean updateFlag;
+    public static boolean insertFlag;
+    public static boolean deleteFlag;
     //oka end
-    public static boolean login_flag;
-    public static boolean logout_flag;
-
-	public DecorateList decos = new DecorateList();
+    public static boolean loginFlag;
+    public static boolean logoutFlag;
 
 	public Connector() {
-			//hanki start
-		order_flag = false;
-		aggregate_flag = false;
-	    //hanki end
-
+		super();
 		Dimension = -1;
-		tfeitems = 0;
-		tfes = new ExtList();
+		tfeItems = 0;
+		tfes = new ExtList<TFE>();
 	}
 
 	public Connector(int d) {
-			//hanki start
-		order_flag = false;
-		aggregate_flag = false;
-	    //hanki end
-
+		super();
 		Dimension = d;
-		tfeitems = 0;
-		tfes = new ExtList();
+		tfeItems = 0;
+		tfes = new ExtList<TFE>();
 	}
 
-	public void setId(int i) {
-	    id = i;
-	}
-	public int getId() {
-	    return id;
-	}
-
-	public void setTFE(TFE t) {
-		tfeitems++;
-		tfes.add(t);
-	}
-
-	public void setDeco(DecorateList d) {
-		decos = d;
-	}
-
-	public void addDeco(String key, Object val) {
-		decos.put(key, val);
+	public void setTFE(ITFE t) {
+		tfeItems++;
+		tfes.add((TFE) t);
 	}
 
 	public void debugout() {
@@ -86,65 +44,48 @@ public class Connector implements Operator{
 	}
 
 	public void debugout(int count) {
-
 		Debug dbgout = new Debug();
 		dbgout.prt(count, "<Connector type=" + getSymbol() + " tfeitems="
-				+ tfeitems + " decoitems=" + decos.size() + " id=" + id + ">");
+				+ tfeItems + " decoitems=" + decos.size() + " id=" + id + ">");
 
 		decos.debugout(count + 1);
 
-		for (int i = 0; i < tfeitems; i++) {
-			((TFE) tfes.get(i)).debugout(count + 1);
+		for (int i = 0; i < tfeItems; i++) {
+			((ITFE) tfes.get(i)).debugout(count + 1);
 		}
 		dbgout.prt(count, "</Connector>");
 	}
 
-	public ExtList makesch() {
-
-		ExtList outsch = new ExtList();
-
-		for (int i = 0; i < tfeitems; i++) {
-			outsch.addAll(((TFE) tfes.get(i)).makesch());
+	public ExtList<Integer> makesch() {
+		ExtList<Integer> outsch = new ExtList<Integer>();
+		for (int i = 0; i < tfeItems; i++) {
+			outsch.addAll(tfes.get(i).makesch());
 		}
-
-		//Log.out("Con outsch:"+outsch);
-
 		return outsch;
-
 	}
 
 	public ExtList makele0() {
-
 		ExtList le0 = new ExtList();
-
 		le0.add(this.getSymbol());
-
-		for (int i = 0; i < tfeitems; i++) {
-			le0.add(((TFE) tfes.get(i)).makele0());
+		for (int i = 0; i < tfeItems; i++) {
+			le0.add(((ITFE) tfes.get(i)).makele0());
 		}
 
 		Log.out("Con le0:" + le0);
-
 		return le0;
-
 	}
 
 	public String getSymbol() {
 		return "C?";
 	}
 
-	public void work(ExtList data_info) {
-	}
-
 	public int countconnectitem() {
 		int items = 0;
 		for (int i = 0; i < tfes.size(); i++) {
-			items += ((TFE) tfes.get(i)).countconnectitem();
+			items += ((ITFE) tfes.get(i)).countconnectitem();
 		}
 		return items;
 	}
-
-	private ExtList data;
 
 	private int sindex, dindex;
 
@@ -152,8 +93,6 @@ public class Connector implements Operator{
 		data = d;
 		sindex = 0;
 		dindex = 0;
-		//Log.out("tfes : " + tfes);
-		//Log.out("data : " + d);
 	}
 
 	public boolean hasMoreItems() {
@@ -161,7 +100,7 @@ public class Connector implements Operator{
 	}
 
 	public void worknextItem() {
-		TFE tfe = (TFE) tfes.get(sindex);
+		ITFE tfe = (ITFE) tfes.get(sindex);
 		int ci = tfe.countconnectitem();
 
 		//Log.out("ci : " + ci);
@@ -183,7 +122,7 @@ public class Connector implements Operator{
 	//ryuryu start////////////////////////////////////////////////
 	public void worknextItem_GENERATEXML() {
 
-		TFE tfe = (TFE) tfes.get(sindex);
+		ITFE tfe = (ITFE) tfes.get(sindex);
 		Log.out("tfe : " + tfe);
 
 		int ci = tfe.countconnectitem();
@@ -223,30 +162,14 @@ public class Connector implements Operator{
 	}
 
 	public TFE gettfe(int i) {
-		return (TFE) tfes.get(i);
+		return tfes.get(i);
 	}
-	//hanki start
-	public void setOrderBy(String order) {
-		order_flag = true;
-
-		this.order = new String();
-		this.order = order;
-	}
-
-	public void setAggregate(String aggregate) {
-		aggregate_flag = true;
-
-		this.aggregate = new String();
-		this.aggregate = aggregate;
-	}
-	//hanki end
 
 	//added by ria 20110913 start
 	public ExtList makeschImage() {
 		ExtList outsch = new ExtList();
-
-		for (int i = 0; i < tfeitems; i++) {
-			outsch.addAll(((TFE) tfes.get(i)).makeschImage());
+		for (int i = 0; i < tfeItems; i++) {
+			outsch.addAll(((ITFE) tfes.get(i)).makeschImage());
 		}
 		return outsch;
 	}
@@ -256,4 +179,7 @@ public class Connector implements Operator{
 		decos.put(key, val, condition);
 		
 	}
+
+	@Override
+	public void work(ExtList data_info) {}
 }

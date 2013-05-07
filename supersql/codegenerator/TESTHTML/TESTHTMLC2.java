@@ -1,6 +1,8 @@
 package supersql.codegenerator.TESTHTML;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.Connector;
+import supersql.codegenerator.ITFE;
+import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
@@ -148,7 +150,7 @@ public class TESTHTMLC2 extends Connector {
         }
     	
         while (this.hasMoreItems()) {
-            TFE tfe = (TFE) tfes.get(i);
+            ITFE tfe = (ITFE) tfes.get(i);
 
         	   html_env.code.append("<TR><TD class=\""
                    + TESTHTMLEnv.getClassID(tfe) + " nest\">\n");

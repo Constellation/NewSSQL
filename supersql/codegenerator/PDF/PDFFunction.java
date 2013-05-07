@@ -1,31 +1,30 @@
 package supersql.codegenerator.PDF;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.Function;
+import supersql.codegenerator.Manager;
+import supersql.codegenerator.TFE;
 import supersql.common.GlobalEnv;
 import supersql.extendclass.ExtList;
 
 public class PDFFunction extends Function implements PDFTFE {
 
-	Manager manager;
-
-	PDFEnv pdf_env;
-	PDFValue value;
+	private PDFEnv pdf_env;
+	private PDFValue value;
 	
-	float data_width;
-	float data_height;
-	float box_width;
-	float box_height;
-	float padding_H;
-	float padding_V;
+	private float data_width;
+	private float data_height;
+	private float box_width;
+	private float box_height;
+	private float padding_H;
+	private float padding_V;
 
-	TFE newLE;
-	boolean change = false;
-	boolean widthDECO = false;
+	private TFE newLE;
+	private boolean change = false;
+	private boolean widthDECO = false;
 	
 	//コンストラクタ
 	public PDFFunction(Manager manager, PDFEnv penv) {
 		super();
-		this.manager = manager;
 		this.pdf_env = penv;
 	}
 

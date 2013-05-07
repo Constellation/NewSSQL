@@ -1,9 +1,14 @@
 package supersql.codegenerator.TESTHTML;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Vector;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.ITFE;
+import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
@@ -22,7 +27,7 @@ public class TESTHTMLManager extends Manager{
 
 
     @Override
-	public void generateCode(TFE tfe_info, ExtList data_info) {
+	public void generateCode(ITFE tfe_info, ExtList data_info) {
 
         TESTHTMLEnv.initAllFormFlg();
 
@@ -136,7 +141,7 @@ public class TESTHTMLManager extends Manager{
 
     //tk start///////////////////////////////////////////////////////////////////////
     @Override
-	public StringBuffer generateCode2(TFE tfe_info, ExtList data_info) {
+	public StringBuffer generateCode2(ITFE tfe_info, ExtList data_info) {
     	TESTHTMLEnv.initAllFormFlg();
     	
         html_env.countfile = 0;
@@ -212,7 +217,7 @@ public class TESTHTMLManager extends Manager{
         }
     }
     @Override
-	public StringBuffer generateCodeNotuple(TFE tfe_info) {
+	public StringBuffer generateCodeNotuple(ITFE tfe_info) {
     		Log.out("no data found");
     	html_env.code = new StringBuffer();
     	html_env.code.append("<div class=\"nodata\" >");
@@ -223,7 +228,7 @@ public class TESTHTMLManager extends Manager{
     }
     
     @Override
-	public StringBuffer generateCode3(TFE tfe_info, ExtList data_info) {
+	public StringBuffer generateCode3(ITFE tfe_info, ExtList data_info) {
     	TESTHTMLEnv.initAllFormFlg();
     	
         html_env.countfile = 0;
@@ -256,7 +261,7 @@ public class TESTHTMLManager extends Manager{
     }
     
     @Override
-	public StringBuffer generateCode4(TFE tfe_info, ExtList data_info) {
+	public StringBuffer generateCode4(ITFE tfe_info, ExtList data_info) {
     	TESTHTMLEnv.initAllFormFlg();
         html_env.countfile = 0;
         html_env.code = new StringBuffer();
@@ -299,7 +304,7 @@ public class TESTHTMLManager extends Manager{
         return headfoot;
     }  
   @Override
-public StringBuffer generateCssfile(TFE tfe_info, ExtList data_info) {
+public StringBuffer generateCssfile(ITFE tfe_info, ExtList data_info) {
     	
         html_env.countfile = 0;
         html_env.code = new StringBuffer();

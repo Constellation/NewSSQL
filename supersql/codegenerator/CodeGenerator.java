@@ -1,25 +1,23 @@
 package supersql.codegenerator;
 
-import supersql.codegenerator.HTML.*;
-import supersql.codegenerator.HTML5.*;
-import supersql.codegenerator.TESTHTML.*;
+import supersql.codegenerator.HTML.HTMLFactory;
+import supersql.codegenerator.HTML5.HTML5Factory;
 import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5Factory;
-import supersql.codegenerator.PDF.*;
+import supersql.codegenerator.PDF.PDFFactory;
 import supersql.codegenerator.SWF.SWFFactory;
-import supersql.codegenerator.X3D.*;
+import supersql.codegenerator.TESTHTML.TESTHTMLFactory;
+import supersql.codegenerator.X3D.X3DFactory;
 import supersql.codegenerator.XML.XMLFactory;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
 import supersql.parser.SSQLparser;
 
-//import codegenerator.XML.*;
-
 /**
  * コードジェネ?ータマネージャクラス 指定さ?た媒体によってコードジェネ?ータの構成部品を生成す? 工?(Factory)を生成す?
  */
 public class CodeGenerator{
-	Factory factory;
+	private Factory factory;
 
 	public int TFEid;
 
@@ -166,7 +164,7 @@ public class CodeGenerator{
 	 */
 
 	public void generateCode(SSQLparser parser, ExtList data_info) {
-		TFE tfe_info = parser.get_TFEschema();
+		ITFE tfe_info = parser.get_TFEschema();
 
 		//	必要ならコメントアウト外し、Managerの中も変更
 		//	manager.preProcess(tab,le,le1,le2,le3);
@@ -194,7 +192,7 @@ public class CodeGenerator{
 
 	//tk start//////////////////////////////////////////////////////////////////////////////
 	public StringBuffer generateCode2(SSQLparser parser, ExtList data_info) {
-		TFE tfe_info = parser.get_TFEschema();
+		ITFE tfe_info = parser.get_TFEschema();
 
 		//	必要ならコメントアウト外し、Managerの中も変更
 		//	manager.preProcess(tab,le,le1,le2,le3);
@@ -218,7 +216,7 @@ public class CodeGenerator{
 
 	};
 	public StringBuffer generateCode3(SSQLparser parser, ExtList data_info) {
-		TFE tfe_info = parser.get_TFEschema();
+		ITFE tfe_info = parser.get_TFEschema();
 
 		//	必要ならコメントアウト外し、Managerの中も変更
 		//	manager.preProcess(tab,le,le1,le2,le3);
@@ -241,7 +239,7 @@ public class CodeGenerator{
 
 	};
 	public StringBuffer generateCode4(SSQLparser parser, ExtList data_info) {
-		TFE tfe_info = parser.get_TFEschema();
+		ITFE tfe_info = parser.get_TFEschema();
 
 		//	必要ならコメントアウト外し、Managerの中も変更
 		//	manager.preProcess(tab,le,le1,le2,le3);
@@ -264,7 +262,7 @@ public class CodeGenerator{
 
 	};
 	public StringBuffer generateCssfile(SSQLparser parser, ExtList data_info) {
-		TFE tfe_info = parser.get_TFEschema();
+		ITFE tfe_info = parser.get_TFEschema();
 
 		//	必要ならコメントアウト外し、Managerの中も変更
 		//	manager.preProcess(tab,le,le1,le2,le3);

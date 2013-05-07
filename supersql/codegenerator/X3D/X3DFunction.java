@@ -1,7 +1,7 @@
 package supersql.codegenerator.X3D;
 
-import supersql.codegenerator.*;
-import supersql.codegenerator.X3D.X3DEnv;
+import supersql.codegenerator.Function;
+import supersql.codegenerator.Manager;
 import supersql.extendclass.ExtList;
 
 public class X3DFunction extends Function{

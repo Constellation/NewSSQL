@@ -1,13 +1,12 @@
 package supersql.codegenerator.Mobile_HTML5;
 
-import java.util.Vector;
-
-import supersql.codegenerator.*;
+import supersql.codegenerator.Connector;
+import supersql.codegenerator.ITFE;
+import supersql.codegenerator.Manager;
+import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
-
 //tk
-import supersql.common.GlobalEnv;
 
 public class HTMLC1 extends Connector {
 
@@ -313,7 +312,7 @@ public class HTMLC1 extends Connector {
         		tableFlg = false;
         	}//else divFlg = false;
         	
-            TFE tfe = (TFE) tfes.get(i);
+            ITFE tfe = (ITFE) tfes.get(i);
             
             //20130309
             //Count = ( ((gridInt>=jj)&&(!HTMLG1.G1Flg))? jj:gridInt );

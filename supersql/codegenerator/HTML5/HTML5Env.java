@@ -1,11 +1,12 @@
 package supersql.codegenerator.HTML5;
 
+import supersql.codegenerator.Connector;
 import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.HTML.HTMLEnv;
-import supersql.parser.SSQLparser;
-import supersql.common.Log;
 import supersql.common.GlobalEnv;
+import supersql.common.Log;
 import supersql.common.Utils;
+import supersql.parser.SSQLparser;
 
 public class HTML5Env extends HTMLEnv {
 
@@ -18,19 +19,15 @@ public class HTML5Env extends HTMLEnv {
    		int index = 0;
         header.insert(index,"<HEAD>\n");
         header.insert(index,"<HTML>\n");
-//ishizaki st//
         header.insert(index,"<!docutype html>\n");
         Log.out("<!docutype html>");
-//ishizaki end//
         Log.out("<HTML>");
         Log.out("<head>");
-//ishizaki st//(ssql-meter.js使用のための呼び出しなど)
     	header.append("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />");
     	header.append("<meta http-equiv=\"Content-Language\" content=\"ja\" />");
     	header.append("<meta http-equiv=\"Content-Style-Type\" content=\"text/css\" />");
     	header.append("<meta http-equiv=\"Content-Script-Type\" content=\"text/javascript\" />");
     	header.append("<script type=\"text/javascript\" src=\"http://primera.db.ics.keio.ac.jp/ishizaki/ssql_meter.js\"></script>");
-//ishizaki end//
 
         Log.out("<style type=text/css><!--");
 
@@ -125,14 +122,14 @@ public class HTML5Env extends HTMLEnv {
         Log.out("--></style></head>");
         Log.out("<body>");
 //ishizaki start(ここから/servlet/super...を/superに訂正)(225,231,238)
-        if(connector.login_flag ){
+        if(Connector.loginFlag ){
         	//header.append("<form action = \""+ GlobalEnv.getFileDirectory() + "/servlet/supersql.form.Session\" method = \"post\" name=\"theForm\">\n");
         	header.append("<form action = \""+ GlobalEnv.getFileDirectory() + "/supersql.form.Session\" method = \"post\" name=\"theForm\">\n");
         	header.append("<input type=\"hidden\" name=\"tableinfo\" value=\"" + SSQLparser.get_from_info_st() + "\" >");
         	header.append("<input type=\"hidden\" name=\"configfile\" value=\"" + GlobalEnv.getconfigfile() + "\" >");
         }
 
-        if(connector.logout_flag ){
+        if(Connector.logoutFlag ){
         	//header.append("<form action = \""+ GlobalEnv.getFileDirectory() + "/servlet/supersql.form.Session\" method = \"post\" name=\"theForm\">\n");
         	header.append("<form action = \""+ GlobalEnv.getFileDirectory() + "/supersql.form.Session\" method = \"post\" name=\"theForm\">\n");
         	//header.append("<input type=\"hidden\" name=\"tableinfo\" value=\"" + SSQLparser.get_from_info_st() + "\" >");
@@ -140,17 +137,17 @@ public class HTML5Env extends HTMLEnv {
         }
 
 
-        if(connector.insert_flag || connector.delete_flag || connector.update_flag){
+        if(Connector.insertFlag || Connector.deleteFlag || Connector.updateFlag){
         	//???header.append("<form action = \""+ GlobalEnv.getFileDirectory() + "/servlet/supersql.form.Update\" method = \"post\" name=\"theForm\">\n");
         	header.append("<form action = \""+ GlobalEnv.getFileDirectory() + "/supersql.form.Update\" method = \"post\" name=\"theForm\">\n");
         	header.append("<input type=\"hidden\" name=\"tableinfo\" value=\"" + SSQLparser.get_from_info_st() + "\" >");
         	header.append("<input type=\"hidden\" name=\"configfile\" value=\"" + GlobalEnv.getconfigfile() + "\" >");
 
-        	if(connector.insert_flag)
+        	if(Connector.insertFlag)
         		header.append("<input type=\"hidden\" name=\"sql_param\" value=\"insert\" >");
-        	if(connector.delete_flag)
+        	if(Connector.deleteFlag)
         		header.append("<input type=\"hidden\" name=\"sql_param\" value=\"delete\" >");
-        	if(connector.update_flag)
+        	if(Connector.updateFlag)
             	header.append("<input type=\"hidden\" name=\"sql_param\" value=\"update\" >");
 
 /*/ishizaki st (XForms)
@@ -169,7 +166,7 @@ public class HTML5Env extends HTMLEnv {
     }
 //ishizaki st
     public void getFooter() {
-    	if(connector.update_flag || connector.insert_flag|| connector.delete_flag || connector.login_flag ){
+    	if(Connector.updateFlag || Connector.insertFlag|| Connector.deleteFlag || Connector.loginFlag ){
 
 	    	footer.append("<input type=\"submit\" name=\"login\" value=\"Let's go!\">");
 	    	footer.append("</form>\n");
@@ -177,17 +174,17 @@ public class HTML5Env extends HTMLEnv {
     		//footer.append("<submit submission=\"theForm\"><label>Let's go</label></submit>");
 
 	    	Log.out("</form>");
-        	connector.update_flag = false;
-        	connector.insert_flag = false;
-        	connector.delete_flag = false;
-        	connector.login_flag = false;
+        	Connector.updateFlag = false;
+        	Connector.insertFlag = false;
+        	Connector.deleteFlag = false;
+        	Connector.loginFlag = false;
     	}
 //ishizaki end
 
-    	if(connector.logout_flag ){
+    	if(Connector.logoutFlag ){
 	    	footer.append("</form>\n");
 	    	Log.out("</form>");
-        	connector.logout_flag = false;
+        	Connector.logoutFlag = false;
     	}
 
         footer.append("<BR><BR></BODY></HTML>\n");

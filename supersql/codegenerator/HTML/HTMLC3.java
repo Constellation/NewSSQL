@@ -8,7 +8,10 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.Attribute;
+import supersql.codegenerator.Connector;
+import supersql.codegenerator.ITFE;
+import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.common.Utils;
@@ -16,24 +19,20 @@ import supersql.extendclass.ExtList;
 
 public class HTMLC3 extends Connector {
 
-    Manager manager;
-
-    HTMLEnv html_env;
-    HTMLEnv html_env2;
+	private HTMLEnv htmlEnv;
+	private HTMLEnv htmlEnv2;
 
     //･ｳ･�ｹ･ﾈ･鬣ｯ･ｿ
     public HTMLC3(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
-        this.manager = manager;
-        this.html_env = henv;
-        this.html_env2 = henv2;
+        this.htmlEnv = henv;
+        this.htmlEnv2 = henv2;
     }
 
     //C3､ﾎwork･皈ｽ･ﾃ･ﾉ
     @Override
 	public void work(ExtList data_info) {
-        int i = 0;
-        String parentfile = html_env.fileName;
-        String parentfile2 = html_env2.fileName;
+        String parentfile = htmlEnv.fileName;
+        String parentfile2 = htmlEnv2.fileName;
         StringBuffer parentcode = new StringBuffer();
         StringBuffer parentcss = new StringBuffer();
         StringBuffer parentheader = new StringBuffer();
@@ -42,97 +41,93 @@ public class HTMLC3 extends Connector {
         StringBuffer parentcss2 = new StringBuffer();
         StringBuffer parentheader2 = new StringBuffer();
         StringBuffer parentfooter2 = new StringBuffer();
-        String linkfile = new String();
-        TFE tfe[] = new TFE[tfeitems];
-        int c3items = tfeitems;
-        for (int j = 0; j < tfeitems - 1; j++) {
-            tfe[j] = (TFE) tfes.get(j);
-            if (j < tfeitems - 2 && tfe[j] instanceof HTMLG3) {
+        new String();
+        ITFE[] tfe = new ITFE[tfeItems];
+        int c3items = tfeItems;
+        for (int j = 0; j < tfeItems - 1; j++) {
+            tfe[j] = (ITFE) tfes.get(j);
+            if (j < tfeItems - 2 && tfe[j] instanceof HTMLG3) {
                 System.err.println("Error: % after []% is not allowed");
                 GlobalEnv.addErr("Error: % after []% is not allowed");
                 //comment out by chie
                 //System.exit(-1);
             }
         }
-        boolean checknexttfe = tfe[0] instanceof HTMLC1
-                || tfe[0] instanceof HTMLC2 || tfe[0] instanceof HTMLC3;
         Log.out("------- C3 -------");
-        html_env.countFile++;
+        htmlEnv.countFile++;
 
-        html_env.linkUrl = html_env.linkOutFile
-                + String.valueOf(html_env.countFile) + ".html";
-        html_env.linkFlag++;
-        Log.out("linkflag =" + html_env.linkFlag);
+        htmlEnv.linkUrl = htmlEnv.linkOutFile
+                + String.valueOf(htmlEnv.countFile) + ".html";
+        htmlEnv.linkFlag++;
+        Log.out("linkflag =" + htmlEnv.linkFlag);
         this.setDataList(data_info);
 
         this.worknextItem();
-        html_env.linkFlag--;
+        htmlEnv.linkFlag--;
 
         for (int k = 1; k < c3items; k++) {
-            TFE intfe = (TFE) tfes.get(k);
-            html_env.fileName = html_env.outFile
-                    + String.valueOf(html_env.countFile) + ".html";
-            html_env2.fileName = html_env.outFile
-            + String.valueOf(html_env.countFile) + ".xml";
-            boolean b = intfe instanceof Attribute
-                    || intfe instanceof HTMLFunction;
+            ITFE intfe = (ITFE) tfes.get(k);
+            htmlEnv.fileName = htmlEnv.outFile
+                    + String.valueOf(htmlEnv.countFile) + ".html";
+            htmlEnv2.fileName = htmlEnv.outFile
+            + String.valueOf(htmlEnv.countFile) + ".xml";
             if (intfe instanceof HTMLG3) {
-                html_env.countFile--;
+                htmlEnv.countFile--;
                 this.worknextItem();
             } else {
-                parentcode = html_env.code;
-                parentcss = html_env.css;
-                parentheader = html_env.header;
-                parentfooter = html_env.footer;
-                html_env.code = new StringBuffer();
-                html_env.header = new StringBuffer();
-                html_env.footer = new StringBuffer();
+                parentcode = htmlEnv.code;
+                parentcss = htmlEnv.css;
+                parentheader = htmlEnv.header;
+                parentfooter = htmlEnv.footer;
+                htmlEnv.code = new StringBuffer();
+                htmlEnv.header = new StringBuffer();
+                htmlEnv.footer = new StringBuffer();
 
-                parentcode2 = html_env2.code;
-                parentcss2 = html_env2.css;
-                parentheader2 = html_env2.header;
-                parentfooter2 = html_env2.footer;
-                html_env2.code = new StringBuffer();
-                html_env2.header = new StringBuffer();
-                html_env2.footer = new StringBuffer();
+                parentcode2 = htmlEnv2.code;
+                parentcss2 = htmlEnv2.css;
+                parentheader2 = htmlEnv2.header;
+                parentfooter2 = htmlEnv2.footer;
+                htmlEnv2.code = new StringBuffer();
+                htmlEnv2.header = new StringBuffer();
+                htmlEnv2.footer = new StringBuffer();
 
                 if (k < c3items - 1) {
-                    html_env.countFile++;
-                    html_env.linkUrl = html_env.linkOutFile
-                            + String.valueOf(html_env.countFile) + ".html";
-                    html_env.linkFlag++;
-                    Log.out("linkflag =" + html_env.linkFlag);
+                    htmlEnv.countFile++;
+                    htmlEnv.linkUrl = htmlEnv.linkOutFile
+                            + String.valueOf(htmlEnv.countFile) + ".html";
+                    htmlEnv.linkFlag++;
+                    Log.out("linkflag =" + htmlEnv.linkFlag);
                 }
 
-                html_env.setOutlineMode();
+                htmlEnv.setOutlineMode();
                 this.worknextItem();
 
                 if (k < c3items - 1) {
-                    html_env.linkFlag--;
+                    htmlEnv.linkFlag--;
                 }
-                html_env.getHeader();
-                html_env.getFooter();
+                htmlEnv.getHeader();
+                htmlEnv.getFooter();
                 //html_env2.header.append("<?xml version=\"1.0\" encoding=\"Shift_JIS\"?><SSQL>");
-                html_env2.header.append("<?xml version=\"1.0\" encoding=\""+Utils.getEncode()+"\"?><SSQL>");
-                html_env2.footer.append("</SSQL>");
+                htmlEnv2.header.append("<?xml version=\"1.0\" encoding=\""+Utils.getEncode()+"\"?><SSQL>");
+                htmlEnv2.footer.append("</SSQL>");
                 try {
             		//changed by goto 20120715_2 start
                 	//This is for '%'.
     	        	//PrintWriter pw2 = new PrintWriter(new BufferedWriter(new FileWriter(
     	            //        html_env.filename)));
             		PrintWriter pw;
-    	            if (html_env.charset != null){
+    	            if (htmlEnv.charset != null){
     		        	pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
-    		        			new FileOutputStream(html_env.fileName),html_env.charset)));
+    		        			new FileOutputStream(htmlEnv.fileName),htmlEnv.charset)));
     		        	//Log.info("File encoding: "+html_env.charset);
     	            }else
     	            	pw = new PrintWriter(new BufferedWriter(new FileWriter(
-    	        	                    html_env.fileName)));
+    	        	                    htmlEnv.fileName)));
     	            //Log.info("File encoding: "+((html_env.charset!=null)? html_env.charset : "UTF-8"));
             		//changed by goto 20120715_2 end
-                    pw.println(html_env.header);
-                    pw.println(html_env.code);
-                    pw.println(html_env.footer);
+                    pw.println(htmlEnv.header);
+                    pw.println(htmlEnv.code);
+                    pw.println(htmlEnv.footer);
                     pw.close();
                     //html_env.header = new StringBuffer();
                     //html_env.footer = new StringBuffer();
@@ -141,24 +136,24 @@ public class HTMLC3 extends Connector {
 			        	//PrintWriter pw2 = new PrintWriter(new BufferedWriter(new FileWriter(
 			            //        html_env2.filename)));
 		        		PrintWriter pw2;
-			            if (html_env.charset != null){
+			            if (htmlEnv.charset != null){
 				        	pw2 = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
-				        			new FileOutputStream(html_env2.fileName),html_env.charset)));
+				        			new FileOutputStream(htmlEnv2.fileName),htmlEnv.charset)));
 				        	//Log.info("File encoding: "+html_env.charset);
 			            }else
 			            	pw2 = new PrintWriter(new BufferedWriter(new FileWriter(
-			        	                    html_env2.fileName)));
+			        	                    htmlEnv2.fileName)));
 			            //Log.info("File encoding: "+((html_env.charset!=null)? html_env.charset : "UTF-8"));
 		        		//changed by goto 20120715_2 end
 			            
-	                    pw2.println(html_env2.header);
-	                    pw2.println(html_env2.code);
-	                    pw2.println(html_env2.footer);
+	                    pw2.println(htmlEnv2.header);
+	                    pw2.println(htmlEnv2.code);
+	                    pw2.println(htmlEnv2.footer);
 	                    pw2.close();
 	                    HTMLoptimizer xml = new HTMLoptimizer();
-	                    String xml_str = xml.generateHtml(html_env2.fileName);
-	                    pw = new PrintWriter(new BufferedWriter(new FileWriter(html_env.fileName)));
-						pw.println(html_env.header);
+	                    String xml_str = xml.generateHtml(htmlEnv2.fileName);
+	                    pw = new PrintWriter(new BufferedWriter(new FileWriter(htmlEnv.fileName)));
+						pw.println(htmlEnv.header);
 						pw.println(xml_str);
 						StringBuffer footer = new StringBuffer("</div></body></html>");
 						pw.println(footer);
@@ -167,9 +162,9 @@ public class HTMLC3 extends Connector {
                 } catch (FileNotFoundException fe) {
                 	fe.printStackTrace();
                     System.err.println("Error: specified outdirectory \""
-                            + html_env.outDir + "\" is not found");
+                            + htmlEnv.outDir + "\" is not found");
                     GlobalEnv.addErr("Error: specified outdirectory \""
-                            + html_env.outDir + "\" is not found");
+                            + htmlEnv.outDir + "\" is not found");
                     //comment out by chie
                     //System.exit(-1);
                 } catch (IOException e) {
@@ -179,21 +174,21 @@ public class HTMLC3 extends Connector {
                     //comment out by chie
                     //System.exit(-1);
                 }
-                html_env.code = parentcode;
-                html_env.css = parentcss;
-                html_env.header = parentheader;
-                html_env.footer = parentfooter;
-                html_env2.code = parentcode2;
-                html_env2.css = parentcss2;
-                html_env2.header = parentheader2;
-                html_env2.footer = parentfooter2;
+                htmlEnv.code = parentcode;
+                htmlEnv.css = parentcss;
+                htmlEnv.header = parentheader;
+                htmlEnv.footer = parentfooter;
+                htmlEnv2.code = parentcode2;
+                htmlEnv2.css = parentcss2;
+                htmlEnv2.header = parentheader2;
+                htmlEnv2.footer = parentfooter2;
             }
         }
-        html_env.fileName = parentfile;
-        html_env2.fileName = parentfile2;
+        htmlEnv.fileName = parentfile;
+        htmlEnv2.fileName = parentfile2;
 
         Log.out("TFEId = " + HTMLEnv.getClassID(this));
-        html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
+        htmlEnv.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
 
     }
 

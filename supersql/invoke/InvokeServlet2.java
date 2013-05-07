@@ -12,7 +12,11 @@ import java.util.StringTokenizer;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import supersql.codegenerator.CodeGenerator;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
@@ -27,7 +31,7 @@ public class InvokeServlet2 extends HttpServlet {
 	 * <code>serialVersionUID</code> �Υ�����
 	 */
 	private static final long serialVersionUID = 8021503235844232672L;
-	FormServlet fs;
+	private FormServlet fs;
 
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);

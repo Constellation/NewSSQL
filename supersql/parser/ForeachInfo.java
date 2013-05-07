@@ -8,15 +8,15 @@ import java.util.StringTokenizer;
 
 public class ForeachInfo {
 
-	String line;
+	private String line;
 
-	String foreach_att;
+	private String foreach_att;
 
-	StringBuffer foreach_from;
+	private StringBuffer foreach_from;
 
-	StringBuffer foreach_where;
+	private StringBuffer foreach_where;
 
-	Hashtable foreach_table;
+	private Hashtable foreach_table;
 
 	public ForeachInfo(String line) {
 		this.line = line;

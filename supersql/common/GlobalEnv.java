@@ -1,6 +1,7 @@
 package supersql.common;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -8,41 +9,41 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.*;
-import java.io.File;	//added by goto 20120624
+import java.util.ArrayList;
+import java.util.Hashtable;
+//added by goto 20120624
 
 public class GlobalEnv {
 
-
-	static Hashtable envs;
+	private static Hashtable<String, String> envs;
 
 	//設定ファイルの情報
-	static String host;
+	private static String host;
 
-	static String db;
+	private static String db;
 
-	static String user;
+	private static String user;
 
-	static String home;
+	private static String home;
 
-	static String outdir;
+	private static String outdir;
 
-	static String url;
+	private static String url;
 
-	static String password;
+	private static String password;
 
-	static String encode;
+	private static String encode;
 
 	//chie start
-	static String driver;
+	private static String driver;
 
-	static String optimizer;
+	private static String optimizer;
 
-	static String invokeServletPath; //used by online
+	private static String invokeServletPath; //used by online
 
-	static String fileDirectory; //used by online
+	private static String fileDirectory; //used by online
 
-	static int tupleNum;
+	private static int tupleNum;
 
 	//chie end
 
@@ -54,7 +55,7 @@ public class GlobalEnv {
 	public static boolean foreach_flag;
 
 	//added by ria 20110704 start
-	static boolean optimizable = true;
+	private static boolean optimizable = true;
 	//added by ria 20110704 end
 
 	//tk embed用
@@ -62,8 +63,8 @@ public class GlobalEnv {
 	public static int online_flag = 0;
 	public static int err_flag = 0;
 	public static int EmbedbyQuery = 0;
-	static String embedtmp;
-	static ArrayList EmbedFile = new ArrayList(100);
+	private static String embedtmp;
+	private static ArrayList<String> EmbedFile = new ArrayList<String>(100);
 	//static String driver = "org.postgresql.Driver";
 
 	//for next/prev page
@@ -73,7 +74,7 @@ public class GlobalEnv {
 	public static void setGlobalEnv(String[] args) {
 		err_flag = 0;
 		err = new StringBuffer();
-		envs = new Hashtable();
+		envs = new Hashtable<String, String>();
 		String key = null;
 
 		for (int i = 0; i < args.length; i++) {
@@ -109,7 +110,7 @@ public class GlobalEnv {
 	//tk
 	public static void setGlobalEnvEmbed(String[] args) {
 
-		envs = new Hashtable();
+		envs = new Hashtable<String, String>();
 		String key = null;
 
 		for (int i = 0; i < args.length; i++) {
@@ -227,7 +228,7 @@ public class GlobalEnv {
 	}
 
 	public static String seek(String key) {
-		return (String) envs.get(key);
+		return envs.get(key);
 	}
 
 	public static String getconfigfile() {
@@ -462,6 +463,7 @@ public class GlobalEnv {
 	}
 
 	//online getConfigValue
+	@SuppressWarnings("resource")
 	protected static String[] getConfigValue2(String config) {
 		//chie change 5->9
 		String[] c_value = new String[11];
@@ -472,17 +474,15 @@ public class GlobalEnv {
 
 		try{
             if(config.startsWith("http:"))
-        	{
-            URL fileurl = new URL(config);
-
-            URLConnection fileurlConnection = fileurl.openConnection();
-
-            dis = new BufferedReader(new InputStreamReader(fileurlConnection.getInputStream()));
-        	}
-        	else
-        	{
-                dis = new BufferedReader(new FileReader(config));
-                line = null;
+            {
+            	URL fileurl = new URL(config);
+            	URLConnection fileurlConnection = fileurl.openConnection();
+            	dis = new BufferedReader(new InputStreamReader(fileurlConnection.getInputStream()));
+            }
+            else
+            {
+            	dis = new BufferedReader(new FileReader(config));
+            	line = null;
         	}
      			while (true) {
                 try {
@@ -657,7 +657,7 @@ public class GlobalEnv {
 		return embedtmp;
 	}
 
-	public static ArrayList getEmbedFile(){
+	public static ArrayList<String> getEmbedFile(){
 		return EmbedFile;
 	}
 
@@ -697,10 +697,10 @@ public class GlobalEnv {
 		return ret;
 	}
 
-	public static Hashtable getEnv(){
+	public static Hashtable<String, String> getEnv(){
 		return envs;
 	}
-	public static void setEnv(Hashtable env){
+	public static void setEnv(Hashtable<String, String> env){
 		envs = env;
 	}
 
@@ -736,8 +736,4 @@ public class GlobalEnv {
 	{
 		return optimizable;
 	}
-	//added by ria 20110628 end
-
-
-
 }

@@ -1,26 +1,29 @@
 package supersql.codegenerator.PDF;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.Attribute;
+import supersql.codegenerator.Grouper;
+import supersql.codegenerator.Manager;
+import supersql.codegenerator.TFE;
 import supersql.extendclass.ExtList;
 
 public class PDFG1 extends Grouper implements PDFTFE {
 
-	PDFManager manager;
+	private PDFManager manager;
 
-	PDFEnv pdf_env;
+	private PDFEnv pdf_env;
 	
 	//追加10.17
-	PDFValue value;
+	private PDFValue value;
 	
-	ExtList rows;		//各インスタンスの各列の要素数  注：クラス変数では無理
+	private ExtList rows;		//各インスタンスの各列の要素数  注：クラス変数では無理
 	
 	//移動10.28  元々はworkメソッド内
-	float tmp_width;
-	float tmp_height;
-	float box_widthMAX;		//折り畳みの変数　幅の最大値
-	float box_heightSUM;	//折り畳みの変数　高さの合計
-	float fold;				//折り畳みの変数　何cm、何個で折り畳むかを格納			
-	int topID;				//widthをre_setする時inListの何番目からか
+	private float tmp_width;
+	private float tmp_height;
+	private float box_widthMAX;		//折り畳みの変数　幅の最大値
+	private float box_heightSUM;	//折り畳みの変数　高さの合計
+	private float fold;				//折り畳みの変数　何cm、何個で折り畳むかを格納			
+	private int topID;				//widthをre_setする時inListの何番目からか
 
 //	boolean fold_or_not = false;
 	
@@ -82,23 +85,8 @@ public class PDFG1 extends Grouper implements PDFTFE {
 
 		int i;
 
-		//修飾情報について
-		int limit = 0;
-		int page_limit = 0;
-		int lap = 0;
-		int page_lap = 0;
-		boolean separate = false;
-		String align = "";
-		int border_width = 0;
-		int alternate = 1;
-
-
 		setDataList(data_info);
 		setDecoration();
-
-		///////////////////////////////
-		//////////////////(G1 1)のとき
-		///////////////////////////////
 
 		if (tfe instanceof Attribute) {
 			System.out.println("[PDFG1:work]tfe is Attribute");
@@ -151,9 +139,7 @@ public class PDFG1 extends Grouper implements PDFTFE {
 				value.inList.add(((PDFTFE)tfe).getInstance());
 				
 				//移動
-				
 
-				alternate++;
 			}
 
 			
@@ -217,8 +203,6 @@ public class PDFG1 extends Grouper implements PDFTFE {
 				
 				//移動
 
-				
-				alternate++;
 			}
 
 			

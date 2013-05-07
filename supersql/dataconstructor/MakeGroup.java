@@ -1,9 +1,9 @@
 package supersql.dataconstructor;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Hashtable;
 import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Iterator;
 
 import supersql.codegenerator.AttributeItem;
 import supersql.common.Log;
@@ -14,7 +14,7 @@ import supersql.parser.WhereParse;
 
 public class MakeGroup {
 
-	ExtList tbl_group;
+	private ExtList tbl_group;
 
 	public MakeGroup(Hashtable att, WhereInfo where) {
 		makeGroup_main(att, where);

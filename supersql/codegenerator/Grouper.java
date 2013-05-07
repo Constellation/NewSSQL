@@ -3,69 +3,28 @@ package supersql.codegenerator;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
 
-public class Grouper implements Operator {
-
-    int id; // SchemaID
-
-    int Dimension; // 次元
+public class Grouper extends Operator {
 
     public TFE tfe; // 引数TFE
 
-    //hanki start
-	boolean order_flag;
-	boolean aggregate_flag;
-	String order;
-    String aggregate;
-    //hanki end
-    
-    public DecorateList decos = new DecorateList();
-    
     public Grouper() {
-    		//hanki start
-		order_flag = false;
-		aggregate_flag = false;
-	    //hanki end
-	    
+    	super();
         Dimension = -1;
     }
 
     public Grouper(int d) {
-    		//hanki start
-		order_flag = false;
-		aggregate_flag = false;
-	    //hanki end
-	    
+    	super();
         Dimension = d;
     }
 
     public Grouper(int d, TFE t) {
-    		//hanki start
-		order_flag = false;
-		aggregate_flag = false;
-	    //hanki end
-	    
+    	super();
         Dimension = d;
         tfe = t;
     }
 
-    public void setId(int i) {
-        id = i;
-    }
-
-    public int getId() {
-        return id;
-    }
-
     public void setTFE(TFE t) {
         tfe = t;
-    }
-
-    public void setDeco(DecorateList d) {
-        decos = d;
-    }
-
-    public void addDeco(String key, Object val) {
-        decos.put(key, val);
     }
 
     public void debugout() {
@@ -86,27 +45,19 @@ public class Grouper implements Operator {
     }
 
     public ExtList makesch() {
-
         ExtList outsch = new ExtList();
         outsch.add(tfe.makesch());
         //  Log.out("Grp outsch:"+outsch);
 
         return outsch;
-
     }
 
     public ExtList makele0() {
-
         ExtList le0 = new ExtList();
-
         le0.add(this.getSymbol());
-
         le0.add(tfe.makele0());
-
         Log.out("Grp le0:" + le0);
-
         return le0;
-
     }
 
     public String getSymbol() {
@@ -119,10 +70,6 @@ public class Grouper implements Operator {
     public int countconnectitem() {
         return 1;
     }
-
-    private ExtList data;
-
-    private int dindex;
 
     public void setDataList(ExtList d) {
         data = d;
@@ -137,7 +84,7 @@ public class Grouper implements Operator {
 
         ExtList subdata = (ExtList) (data.get(dindex));
         if (tfe instanceof Connector || tfe instanceof Attribute
-                || tfe instanceof Function ) {
+                || tfe instanceof Function || tfe instanceof IfCondition) {
             tfe.work(subdata);
         } else {
             tfe.work((ExtList) subdata.get(0));
@@ -150,22 +97,7 @@ public class Grouper implements Operator {
     public boolean isFirstItem() {
         return (dindex == 0);
     }
-	//hanki start
-	public void setOrderBy(String order) {
-		order_flag = true;
 
-		this.order = new String();
-		this.order = order;
-	}
-	
-	public void setAggregate(String aggregate) {
-		aggregate_flag = true;
-		
-		this.aggregate = new String();
-		this.aggregate = aggregate;
-	}
-	//hanki end
-	
 	//added by ria 20110913 start
 	public ExtList makeschImage() {
         ExtList outsch = new ExtList();
@@ -177,7 +109,6 @@ public class Grouper implements Operator {
 
 	public void addDeco(String name, String value, String condition) {
         decos.put(name, value, condition);
-		
 	}
 
 }

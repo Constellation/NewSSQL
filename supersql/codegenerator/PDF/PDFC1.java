@@ -1,23 +1,27 @@
 package supersql.codegenerator.PDF;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.Attribute;
+import supersql.codegenerator.Connector;
+import supersql.codegenerator.ITFE;
+import supersql.codegenerator.Manager;
+import supersql.codegenerator.TFE;
 import supersql.extendclass.ExtList;
 
 public class PDFC1 extends Connector implements PDFTFE {
 
-	Manager manager;
+	private Manager manager;
 
-	PDFEnv pdf_env;
+	private PDFEnv pdf_env;
 	
 	//追加10.17
-	PDFValue value;
+	private PDFValue value;
 	
 	//追加10.30
-	ExtList maxWidths;
-	float max_width;
+	private ExtList maxWidths;
+	private float max_width;
 	
-	TFE newLE;
-	boolean change = false;
+	private TFE newLE;
+	private boolean change = false;
 
 
 	//コンストラクタ
@@ -37,47 +41,21 @@ public class PDFC1 extends Connector implements PDFTFE {
 		float tmp_height = 0;
 //		int level = pdf_env.level;
 		
-		float tmp_width = 0;
-		
-		System.out.println("");
-		System.out.println("------- C1 -------");
-//		System.out.println("[PDFC1:work]tfe_info = " + makele0());
+		System.out.println("\n------- C1 -------");
 		System.out.println("[PDFC1:work]data_info = " + data_info);
 
-		System.out.println("++++ C1でvalueをnewします");
 		//追加10.17
 		value = new PDFValue("C1");
 		
-		PDFModifier modifier = new PDFModifier();
-
-		int i,j;
-		int y_default, y_max; //y_tmp
-		//int lap = 0;
-		
-
-		boolean ope_modi = false;
-		int alternate = pdf_env.alternate;
-
-		boolean flag = false;
-
-		y_default = pdf_env.y_back;
-		//y_max = y_default;
-
-//del
-
+		int i;
+		int y_default = pdf_env.y_back;
 		setDataList(data_info);
 
-
-		
-		///////////////////////////////////////////////////////////////////////
-		for (i = 0; i < tfeitems; i++) {
-			TFE tfe = (TFE) tfes.get(i);
+		for (i = 0; i < tfeItems; i++) {
+			ITFE tfe = (ITFE) tfes.get(i);
 
 			if (tfe instanceof Attribute) {
 				System.out.println("[PDFC1:work]tfe is Attribute");
-
-
-
 				worknextItem();
 				
 				System.out.println("++++ C1でAttをsetします");
@@ -91,11 +69,6 @@ public class PDFC1 extends Connector implements PDFTFE {
 				if (tmp_height > box_height) {
 					box_height = tmp_height;
 				}
-//del
-
-//////			vector_local.addElement(value);		////////////
-
-
 				/////////////////////////////////
 				//C1なのでx座標をプラス,ただし最後の要素では++しない
 				//if( i+1 < data_info.size() ) //??
@@ -217,8 +190,8 @@ public class PDFC1 extends Connector implements PDFTFE {
 //pdf_env.labelV++;
 
 		
-		for (i = 0; i < tfeitems; i++) {
-			TFE tfe = (TFE) tfes.get(i);
+		for (i = 0; i < tfeItems; i++) {
+			ITFE tfe = (ITFE) tfes.get(i);
 
 			
 			pdf_env.labelV = labelV;
@@ -286,8 +259,8 @@ public class PDFC1 extends Connector implements PDFTFE {
 	public void restoreFOLD(PDFValue check){
 		int local;
 		
-		for(local=0; local<tfeitems; local++){
-			TFE tfe = (TFE)tfes.get(local);
+		for(local=0; local<tfeItems; local++){
+			ITFE tfe = (ITFE)tfes.get(local);
 			((PDFTFE)tfe).restoreFOLD(check);
 		}
 		
@@ -301,7 +274,6 @@ public class PDFC1 extends Connector implements PDFTFE {
 		
 		float tmpDexcess;
 		float tmpWidth = 0;
-		float tmpHeight = 0;
 		PDFValue keyBox = box;		
 		
 		ExtList originalTFE = this.tfes;	
@@ -311,8 +283,8 @@ public class PDFC1 extends Connector implements PDFTFE {
 	//	System.out.println("AAAAAAAAAAAA "+Dexcess);
 		
 	//	for(local=0; local<tfeitems; local++) {	//順に走査
-		for(local=tfeitems-1; local>-1; local--) {	//逆から走査
-			TFE tfe = (TFE)tfes.get(local);
+		for(local=tfeItems-1; local>-1; local--) {	//逆から走査
+			ITFE tfe = (ITFE)tfes.get(local);
 			PDFValue inBox = (PDFValue)box.inList.get(local);
 			
 			tmpDexcess = (inBox.box_width / box.box_width) * Dexcess;	//ここはインスタンスのoriginalWidthではなく、max
@@ -322,9 +294,9 @@ public class PDFC1 extends Connector implements PDFTFE {
 			 	
 			
 			if(!flex){
-				for(local2=tfeitems-1; local2>=local; local2--){
+				for(local2=tfeItems-1; local2>=local; local2--){
 					System.out.println("@@@@@@@@@@@@@@@@");
-					tfe = (TFE)tfes.get(local2);
+					tfe = (ITFE)tfes.get(local2);
 					((PDFTFE)tfe).redoChange();
 				}
 				break;		//子要素で１つでも変換できない要素があったらもうやらない　本当はもっと細かくやりたい
@@ -362,11 +334,11 @@ public class PDFC1 extends Connector implements PDFTFE {
 				int index = DList.lastIndexOf(Float.toString(tempD));
 				System.out.println("index " +index);
 				//index++;					
-				TFE tfe = (TFE)tfes.get(index);
+				ITFE tfe = (ITFE)tfes.get(index);
 				this.tfes.set(index, ((PDFTFE)tfe).getNewChild() );
 				int local4;
 				for(local4=0; local4<tfes.size(); local4++){
-					System.out.println("tfe "+((TFE)tfes.get(local4)).getClass());
+					System.out.println("tfe "+((ITFE)tfes.get(local4)).getClass());
 				}
 				flex = true;
 				pdf_env.cutWidth = tempD;
@@ -393,7 +365,7 @@ if(!flex){
 					for(local3=0; local3<local2; local3++){
 						tempD = Float.parseFloat((String)DList.get(local));
 						int index = DList.lastIndexOf(Float.toString(tempD));
-						TFE tfe = (TFE)tfes.get(index);
+						ITFE tfe = (ITFE)tfes.get(index);
 						this.tfes.set(index, ((PDFTFE)tfe).getNewChild() );
 					}
 					flex = true;
@@ -408,8 +380,8 @@ if(!flex){
 		if(flex){
 			System.out.println("vvvvvvvvvvvvvvvvvv");
 
-			for (local=tfeitems-1; local>-1; local--) {	//逆から走査
-				TFE tfe = (TFE)tfes.get(local);
+			for (local=tfeItems-1; local>-1; local--) {	//逆から走査
+				ITFE tfe = (ITFE)tfes.get(local);
 				if( ((PDFTFE)tfe).changeORnot() )
 					this.tfes.set(local, ((PDFTFE)tfe).getNewChild() );
 			}
@@ -424,14 +396,13 @@ if(!flex){
 					keyBox = inBox;
 					tmpWidth = inBox.box_width;
 				}
-				tmpHeight += inBox.box_height;
 			}
 			//---------------------------------------------------------//
 			if(box.box_width - keyBox.box_width >= Dexcess){		//ここはkeyBoxのoriginalWidthではないと思う
 				//固さのチェック
 //				if( !(pdf_env.flexTH < (tmpHeight - box.box_height) / Dexcess) ){
 					newLE = new PDFC2(manager, pdf_env);
-					((PDFC2)newLE).tfeitems = this.tfeitems;
+					((PDFC2)newLE).tfeItems = this.tfeItems;
 					((PDFC2)newLE).tfes = originalTFE;//this.tfes;
 					((PDFC2)newLE).decos = this.decos;
 					//maxWidthの変更 <-- しないか
@@ -455,7 +426,6 @@ if(!flex){
 		return flex;
 	}
 
-	
 	public TFE getNewChild(){
 		return newLE;
 	}

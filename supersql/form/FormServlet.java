@@ -1,19 +1,27 @@
 package supersql.form;
 
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.security.MessageDigest;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.security.MessageDigest; 
+import java.util.Date;
+import java.util.Enumeration;
 
-
-import javax.servlet.*;
-import javax.servlet.http.*;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
@@ -22,7 +30,7 @@ public class FormServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 8021503235844232672L;
 
-	static String att_sets[][];
+	private static String[][] att_sets;
 
 	public void doPost(HttpServletRequest req, 
 			HttpServletResponse res) 
@@ -172,7 +180,7 @@ public class FormServlet extends HttpServlet {
 
 
 		//added by chie update
-		String stmp[] = {"-f",sqlfile,"-o",sqlfile,"-c",configfile,"-debug"};
+		String[] stmp = {"-f",sqlfile,"-o",sqlfile,"-c",configfile,"-debug"};
 		GlobalEnv.setGlobalEnv(stmp);
 		host = GlobalEnv.gethost();
 		db = GlobalEnv.getdbname();

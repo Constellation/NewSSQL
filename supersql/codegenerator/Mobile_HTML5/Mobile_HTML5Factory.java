@@ -1,6 +1,13 @@
 package supersql.codegenerator.Mobile_HTML5;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.Attribute;
+import supersql.codegenerator.Connector;
+import supersql.codegenerator.Factory;
+import supersql.codegenerator.Function;
+import supersql.codegenerator.Grouper;
+import supersql.codegenerator.IfCondition;
+import supersql.codegenerator.Manager;
+import supersql.codegenerator.TFE;
 
 //Operator, Manager���������륯�饹
 

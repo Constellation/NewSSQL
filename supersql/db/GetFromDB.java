@@ -6,7 +6,7 @@ import supersql.extendclass.ExtList;
 
 public class GetFromDB {
 
-    SQLManager sqlm;
+	private SQLManager sqlm;
 
     public GetFromDB() {
         Log.out("[GetFromDB]");
@@ -30,18 +30,14 @@ public class GetFromDB {
 
     }
 
-    //tk/////////////////////////////////
     public GetFromDB(ConnectDB cdb) {
         sqlm = new SQLManager(cdb);
 
     }
-    //tk//////////////////////////////////
 
     public void execQuery(String query, ExtList ResultData) {
 
         ResultData.clear();
-
-        Log.out("[ConstructData:execQuery] : " + query);
 
         if (GlobalEnv.getframeworklist() != null) {
             Log.out("## From framework DB list ##");

@@ -1,18 +1,20 @@
  package supersql.form;
 
-import java.io.*;
-import java.util.Enumeration;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
-import javax.servlet.*;
-import javax.servlet.http.*;
+import java.util.Enumeration;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import supersql.common.Log;
 
 public class Delete extends HttpServlet {
-	
-  
 
   @Override
 public void doPost(HttpServletRequest req, 
@@ -23,9 +25,6 @@ public void doPost(HttpServletRequest req,
     res.setContentType("text/html; charset=Shift_JIS");
     req.setCharacterEncoding("Shift-JIS");
     
-    // èoóÕópPrintWriterÇéÊìæ
-    PrintWriter out = res.getWriter();
-
     String sqlfile = new String();
     sqlfile = req.getHeader("referer");
 
@@ -46,31 +45,8 @@ public void doPost(HttpServletRequest req,
     }
     */
 
-    int i = 1;
-    int flag = 0;
-    
-    String cond_name = new String(); 
-    String cond = new String();
-    String value = new String();
-    String value_type = new String();
-    String where = new String();
-
-    String configfile = new String(); 
-    String updatefile = new String(); 
     while(true)
 	{   
-    	/*
-    	try{
-    		configfile = req.getParameter("configfile");
-    	}catch(NullPointerException e)
-    	{
-    		out.println("no config file defined /n");
-    		System.exit(-1);
-    		
-    	}
-    	*/
-    	configfile = "http://localhost:8080/invoke/config.ssql";
-    	
     	Enumeration<String> names = req.getParameterNames();
     	String sql = new String();
     	String tabname = new String();
@@ -114,7 +90,7 @@ public void doPost(HttpServletRequest req,
     
 //    String[] args = {"-f",sqlfile,"-cond",where,"-debug","-h",host,"-u",user,"-db",dbname};
     
-    String[] args = {"-f",sqlfile,"-cond",where,"-c",configfile};
+    
 
 // String[] args = {"-f",sqlfile,"-cond",where,"-debug","-c",configfile};
     

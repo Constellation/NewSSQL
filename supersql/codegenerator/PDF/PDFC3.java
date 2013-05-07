@@ -2,14 +2,17 @@ package supersql.codegenerator.PDF;
 
 import java.util.Vector;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.Attribute;
+import supersql.codegenerator.Connector;
+import supersql.codegenerator.ITFE;
+import supersql.codegenerator.Manager;
 import supersql.extendclass.ExtList;
 
 public class PDFC3 extends Connector {
 
-	PDFManager manager;
+	private PDFManager manager;
 
-	PDFEnv pdf_env;
+	private PDFEnv pdf_env;
 
 	//コンストラクタ
 	public PDFC3(Manager manager, PDFEnv pdf_env) {
@@ -29,17 +32,11 @@ public class PDFC3 extends Connector {
 		PDFModifier modifier = new PDFModifier();
 
 		int i;
-		int j;
-		int y_default, y_max; //y_tmp
+		int y_default; //y_tmp
 		int tate_tmp;
 		int tate_max = 1;
 		int yoko_inside = 0;
 		int lap = 0;
-
-		boolean ope_modi = false;
-		int alternate = pdf_env.alternate;
-
-		boolean flag = false;
 
 		//このC3WORKのデフォルトのy座標を退避
 		y_default = pdf_env.y_back;
@@ -68,8 +65,8 @@ public class PDFC3 extends Connector {
 		setDataList(data_info);
 
 		///////////////////////////////////////////////////////////////////////
-		for (i = 0; i < tfeitems; i++) {
-			TFE tfe = (TFE) tfes.get(i);
+		for (i = 0; i < tfeItems; i++) {
+			ITFE tfe = (ITFE) tfes.get(i);
 
 			////////////対象がリストでないとき
 			if (tfe instanceof Attribute) {
@@ -98,7 +95,7 @@ public class PDFC3 extends Connector {
 				//Object data = ((ExtList)data_List).get(0);
 
 				worknextItem();
-				String s = pdf_env.data;
+				
 
 				//String s = data.toString();
 
@@ -120,7 +117,6 @@ public class PDFC3 extends Connector {
 				//最後の要素ではしない
 				if (hasMoreItems()) {
 //					manager.pagePrint();
-					modifier.page_clean(pdf_env);
 					manager.pageReady();
 				}
 			}
@@ -194,7 +190,6 @@ public class PDFC3 extends Connector {
 				//ただし最後の要素ではしない
 				if (hasMoreItems()) {
 //					manager.pagePrint();
-					modifier.page_clean(pdf_env);
 					manager.pageReady();
 				}
 			}
@@ -206,7 +201,7 @@ public class PDFC3 extends Connector {
 
 		System.out.println("***** tate_max = " + tate_max);
 
-		PDFValue array[] = new PDFValue[vector_local.size()];
+		PDFValue[] array = new PDFValue[vector_local.size()];
 		vector_local.copyInto(array);
 
 		//このC3リストのtate_maxをこのリストの要素のtateにする

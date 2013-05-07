@@ -1,11 +1,13 @@
-/* TFE abstract class */
-
 package supersql.codegenerator;
 
 import supersql.extendclass.ExtList;
 
-public abstract interface Operand extends TFE {
+public abstract class Operand extends TFE implements IOperand {
 
-	public void work(ExtList data_info);
+	public Operand() {
+		super();
+	}
 
+	@Override
+	public abstract void work(ExtList<ExtList<String>> data_info);
 }

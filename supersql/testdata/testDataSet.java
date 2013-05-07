@@ -4,16 +4,16 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
 
 public class testDataSet {
 
-	static String input = new String();
+	private static String input = new String();
 
-	//static String input = "((a a1 ((b)(c)))(d d1 ((e))))";
-	ExtList data_info;
+	private ExtList data_info;
 
 	public testDataSet() {
 

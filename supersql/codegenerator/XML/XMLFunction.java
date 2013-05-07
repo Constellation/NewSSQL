@@ -1,6 +1,7 @@
 package supersql.codegenerator.XML;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.Function;
+import supersql.codegenerator.Manager;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
 import supersql.parser.SSQLparser;
@@ -215,7 +216,7 @@ public class XMLFunction extends Function {
     	xml_value = xml_value.toString().replace("{", "");
     	xml_value = xml_value.toString().replace("}", "");
 
-    	if(SSQLparser.xmltext_flag == 1){
+    	if(SSQLparser.xmlTextFlag == 1){
 
     	}
     	else{
@@ -223,23 +224,23 @@ public class XMLFunction extends Function {
     	}
 
 
-    	if(SSQLparser.xpath_tag_exist == 1){
+    	if(SSQLparser.xpathTagExist == 1){
 
-    		if(SSQLparser.xmltext_flag == 1){
+    		if(SSQLparser.xmlTextFlag == 1){
 
-            	String text_tagvalue[] = xml_value.split(",");
+            	String[] text_tagvalue = xml_value.split(",");
 
         		for(int count=0; count < text_tagvalue.length; count++){
-        			xml_env.code.append("<" + SSQLparser.xpath_tag + ">");
+        			xml_env.code.append("<" + SSQLparser.xpathTag + ">");
         			xml_env.code.append(text_tagvalue[count]);
-        			xml_env.code.append("</" + SSQLparser.xpath_tag + ">");
+        			xml_env.code.append("</" + SSQLparser.xpathTag + ">");
         		}
     		}
 
     		else{
-		    	xml_env.code.append("<" + SSQLparser.xpath_tag + ">");
+		    	xml_env.code.append("<" + SSQLparser.xpathTag + ">");
 		        xml_env.code.append(xml_value);
-		    	xml_env.code.append("</" + SSQLparser.xpath_tag + ">");
+		    	xml_env.code.append("</" + SSQLparser.xpathTag + ">");
     		}
 
     	}
@@ -261,7 +262,7 @@ public class XMLFunction extends Function {
     	xml_value = xml_value.toString().replace("{", "");
     	xml_value = xml_value.toString().replace("}", "");
 
-    	if(SSQLparser.xmltext_flag == 1){
+    	if(SSQLparser.xmlTextFlag == 1){
 
     	}
     	else{
@@ -269,23 +270,23 @@ public class XMLFunction extends Function {
     	}
 
 
-    	if(SSQLparser.xpath_tag_exist == 1){
+    	if(SSQLparser.xpathTagExist == 1){
 
-    		if(SSQLparser.xmltext_flag == 1){
+    		if(SSQLparser.xmlTextFlag == 1){
 
-            	String text_tagvalue[] = xml_value.split(",");
+            	String[] text_tagvalue = xml_value.split(",");
 
         		for(int count=0; count < text_tagvalue.length; count++){
-        			xml_env.code.append("<" + SSQLparser.xpath_tag + ">");
+        			xml_env.code.append("<" + SSQLparser.xpathTag + ">");
         			xml_env.code.append(text_tagvalue[count]);
-        			xml_env.code.append("</" + SSQLparser.xpath_tag + ">");
+        			xml_env.code.append("</" + SSQLparser.xpathTag + ">");
         		}
     		}
 
     		else{
-		    	xml_env.code.append("<" + SSQLparser.xpath_tag + ">");
+		    	xml_env.code.append("<" + SSQLparser.xpathTag + ">");
 		        xml_env.code.append(xml_value);
-		    	xml_env.code.append("</" + SSQLparser.xpath_tag + ">");
+		    	xml_env.code.append("</" + SSQLparser.xpathTag + ">");
     		}
     	}
 

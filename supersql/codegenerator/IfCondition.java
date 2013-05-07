@@ -2,14 +2,11 @@ package supersql.codegenerator;
 
 import supersql.extendclass.ExtList;
 
-public class IfCondition implements TFE {
+public class IfCondition extends Operator {
 
 	protected Attribute condition;
 	protected TFE thenTfe;
 	protected TFE elseTfe;
-	public DecorateList decos = new DecorateList();
-    int id; // SchemaID
-
 
 	public IfCondition(Attribute condition, TFE thenTfe, TFE elseTfe) {
 		super();
@@ -60,31 +57,6 @@ public class IfCondition implements TFE {
 			return 2;
 	}
 
-	public void addDeco(String key, Object val) {
-		// TODO Auto-generated method stub
-		decos.put(key, val);
-	}
-
-	public void setId(int id) {
-		// TODO Auto-generated method stub
-		this.id =id;  
-	}
-
-	public int getId() {
-		// TODO Auto-generated method stub
-		return id;
-	}
-
-	public void setOrderBy(String order) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void setAggregate(String aggregate) {
-		// TODO Auto-generated method stub
-
-	}
-
 	public ExtList makeschImage() {
 		// TODO Auto-generated method stub
 		ExtList outsch = new ExtList();
@@ -94,20 +66,15 @@ public class IfCondition implements TFE {
 		return outsch;
 	}
 
-	public void addDeco(String name, String value, String condition) {
-		// TODO Auto-generated method stub
-		decos.put(name, value, condition);
-	}
-
 	public Attribute getCondition() {
 		return condition;
 	}
 
-	public TFE getThenTfe() {
+	public ITFE getThenTfe() {
 		return thenTfe;
 	}
 
-	public TFE getElseTfe() {
+	public ITFE getElseTfe() {
 		return elseTfe;
 	}
 

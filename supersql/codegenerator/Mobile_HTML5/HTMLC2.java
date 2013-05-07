@@ -1,6 +1,8 @@
 package supersql.codegenerator.Mobile_HTML5;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.Connector;
+import supersql.codegenerator.ITFE;
+import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
@@ -272,7 +274,7 @@ public class HTMLC2 extends Connector {
         		tableFlg = false;
         	}//else divFlg = false;
             
-            TFE tfe = (TFE) tfes.get(i);
+            ITFE tfe = (ITFE) tfes.get(i);
             
             //20130312 collapsible
 	      	if(decos.containsKey("collapse"))

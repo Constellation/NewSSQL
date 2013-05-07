@@ -1,18 +1,19 @@
 package supersql.codegenerator.PDF;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.ITFE;
+import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
 import supersql.extendclass.ExtList;
 
 public class PDFManager extends Manager {
 	
-	PDFEnv pdf_env;
-	PDFWriter writer;
-	PDFOptimizer optimizer;
+	private PDFEnv pdf_env;
+	private PDFWriter writer;
+	private PDFOptimizer optimizer;
 
 	//追加10.14
-	TFE tfe_info;
-	ExtList data_info;
+	private ITFE tfe_info;
+	private ExtList data_info;
 
 	//コンストラクタ
 	public PDFManager(PDFEnv pdf_env) {
@@ -22,7 +23,7 @@ public class PDFManager extends Manager {
 	}
 
 	@Override
-	public void generateCode(TFE tfe_info, ExtList data_info) {
+	public void generateCode(ITFE tfe_info, ExtList data_info) {
 		System.out.println("[PDFManager:generateCode]tfe_info = "
 				+ tfe_info.makele0());
 		System.out.println("[PDFManager:generateCode]data_info = " + data_info);

@@ -7,15 +7,24 @@ import supersql.extendclass.ExtList;
 
 public class WhereInfo {
 
-	ExtList where_clause;
+	private ExtList where_clause;
+	private String sparqlWhereQuery;
 
 	public WhereInfo() {
-		this.where_clause = new ExtList();
+		if(SSQLparser.isDbpediaQuery())
+			setSparqlWhereQuery("");
+		else{
+			this.where_clause = new ExtList();
+		}	
 	}
 
 	public WhereInfo(String line) {
-		this.where_clause = new ExtList();
-		this.makeClause(line);
+		if(SSQLparser.isDbpediaQuery())
+			setSparqlWhereQuery(line);
+		else{
+			this.where_clause = new ExtList();
+			this.makeClause(line);
+		}
 	}
 
 	public void appendWhere(String line) {
@@ -78,6 +87,14 @@ public class WhereInfo {
 
 		return sig.toString();
 		
+	}
+
+	public String getSparqlWhereQuery() {
+		return sparqlWhereQuery;
+	}
+
+	public void setSparqlWhereQuery(String sparqlWhereQuery) {
+		this.sparqlWhereQuery = sparqlWhereQuery;
 	}
 
 	

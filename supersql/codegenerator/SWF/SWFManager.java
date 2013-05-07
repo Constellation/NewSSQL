@@ -3,8 +3,15 @@
  */
 package supersql.codegenerator.SWF;
 
-import java.io.*;
-import supersql.codegenerator.*;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+
+import supersql.codegenerator.ITFE;
+import supersql.codegenerator.Manager;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
 
@@ -12,7 +19,7 @@ public class SWFManager extends Manager {
 
 	SWFEnv swf_env;
 	SWFWriter writer;
-	TFE tfe_info;
+	ITFE tfe_info;
 
 	StringBuffer imgpath = new StringBuffer();
 	StringBuffer name = new StringBuffer();
@@ -87,7 +94,7 @@ public class SWFManager extends Manager {
 		writer = new SWFWriter(swf_env);
 	}
 
-	public void generateCode(TFE tfe_info, ExtList data_info) {
+	public void generateCode(ITFE tfe_info, ExtList data_info) {
 		int dx = 0;
 		int dy = 0;
 

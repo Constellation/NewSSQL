@@ -1,30 +1,30 @@
 package supersql.codegenerator.HTML;
 
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Vector;
 
+import org.jsoup.nodes.Attribute;
+import org.jsoup.nodes.Attributes;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.parser.Tag;
+
 import supersql.codegenerator.Connector;
 import supersql.codegenerator.DecorateList;
+import supersql.codegenerator.ITFE;
 import supersql.codegenerator.LocalEnv;
-import supersql.codegenerator.TFE;
-import supersql.parser.SSQLparser;
-import supersql.common.Log;
 import supersql.common.GlobalEnv;
+import supersql.common.Log;
 import supersql.common.Utils;
-
-import org.jsoup.nodes.*;
-import org.jsoup.parser.Tag;
+import supersql.parser.SSQLparser;
 
 public class HTMLEnv extends LocalEnv {
 	private Document htmlEnv1;
-	private Document htmlEnv2;
 	public Vector<String> writtenClassId;
 	protected Connector connector;
 	public Vector<String> notWrittenClassId = new Vector<String>();
-	private int totalElement = 0;
 	public int gLevel = 0;
 	public String fileName;
 	public String outFile;
@@ -32,7 +32,6 @@ public class HTMLEnv extends LocalEnv {
 	public String nextBackFile = new String();
 	public String outDir;
 	public int countFile;
-	private PrintWriter writer;
 	public StringBuffer code;
 	public StringBuffer css;
 	protected static int IDCounter = 0; // add oka
@@ -52,7 +51,6 @@ public class HTMLEnv extends LocalEnv {
 	// for ajax
 	public String ajaxQuery = new String();
 	public String ajaxCond = new String();
-	private String ajaxAtt = new String();
 	public String ajaxtarget = new String();
 	public int inEffect = 0;
 	public int outEffect = 0;
@@ -88,20 +86,20 @@ public class HTMLEnv extends LocalEnv {
 	static String formPartsName = null;
 
 	// global form number : 1,2,3...
-	static int formNumber = 1;
-	static String[] formDetail = new String[256];
-	static String IDUst = new String();
-	static String selected = "";
+	private static int formNumber = 1;
+	private static String[] formDetail = new String[256];
+	private static String IDUst = new String();
+	private static String selected = "";
 	public static String nameId = "";
-	static String checked = "";
-	static boolean search = false;
+	private static String checked = "";
+	private static boolean search = false;
 	public static int searchId = 0;
 	public static String condName = "";
 	public static String cond = "";
 	
 	public HTMLEnv() {
 		this.htmlEnv1 = new Document("");
-		this.htmlEnv2 = new Document("");
+		new Document("");
 	}
 
 	
@@ -189,18 +187,18 @@ public class HTMLEnv extends LocalEnv {
 	}
 
 	public void createSSQLForm() {
-		if (Connector.login_flag) {
+		if (Connector.loginFlag) {
 			htmlEnv1.body().appendChild(createLoginForm());
-		} else if (Connector.logout_flag) {
+		} else if (Connector.logoutFlag) {
 			htmlEnv1.body().appendChild(createLogoutForm());
-		} else if (Connector.insert_flag || Connector.delete_flag
-				|| Connector.update_flag) {
+		} else if (Connector.insertFlag || Connector.deleteFlag
+				|| Connector.updateFlag) {
 			Element form = createInsertDeleteUpdateForm();
-			if (Connector.insert_flag)
+			if (Connector.insertFlag)
 				form.appendChild(createInput("hidden", "sql_param", "insert"));
-			if (Connector.delete_flag)
+			if (Connector.deleteFlag)
 				form.appendChild(createInput("hidden", "sql_param", "delete"));
-			if (Connector.update_flag)
+			if (Connector.updateFlag)
 				form.appendChild(createInput("hidden", "sql_param", "update"));
 
 			form.appendChild(createInput("submit", "login", "Let's go!"));
@@ -210,8 +208,6 @@ public class HTMLEnv extends LocalEnv {
 
 	public void includeDecorationProperties(String classId, DecorateList decos) {
 		haveClass = 0;
-		String cssFile;
-
 		// TODO refactor this part
 		if (writtenClassId.contains(classId)) {
 			haveClass = 1;
@@ -226,27 +222,6 @@ public class HTMLEnv extends LocalEnv {
 		if (decos.containsKey("class")) {
 			cssclass.put(classId, decos.getStr("class"));
 			Log.out("class =" + classId + decos.getStr("class"));
-		}
-		if (decos.containsKey("cssfile")) {
-			if (GlobalEnv.isServlet()) {
-				cssFile = GlobalEnv.getFileDirectory()
-						+ decos.getStr("cssfile");
-			} else {
-				cssFile = decos.getStr("cssfile");
-			}
-		} else {
-			if (GlobalEnv.isServlet()) {
-				cssFile = GlobalEnv.getFileDirectory() + "/default.css";
-			} else {
-				if (Utils.getOs().contains("Windows")) {
-					cssFile = "default.css";
-				} else {
-					if (GlobalEnv.isOpt())
-						cssFile = "http://www.db.ics.keio.ac.jp/ssqlcss/default_opt.css";
-					else
-						cssFile = "http://www.db.ics.keio.ac.jp/ssqlcss/default.css";
-				}
-			}
 		}
 
 		if (decos.containsKey("divalign"))
@@ -671,7 +646,7 @@ public class HTMLEnv extends LocalEnv {
 			Log.out("<body>");
 		}
 
-		if (Connector.login_flag) {
+		if (Connector.loginFlag) {
 			header.append("<form action = \""
 					+ GlobalEnv.getFileDirectory()
 					+ "/servlet/supersql.form.Session\" method = \"post\" name=\"theForm\">\n");
@@ -683,7 +658,7 @@ public class HTMLEnv extends LocalEnv {
 					+ GlobalEnv.getconfigfile() + "\" >");
 		}
 
-		if (Connector.logout_flag) {
+		if (Connector.logoutFlag) {
 			header.append("<form action = \""
 					+ GlobalEnv.getFileDirectory()
 					+ "/servlet/supersql.form.Session\" method = \"post\" name=\"theForm\">\n");
@@ -695,8 +670,8 @@ public class HTMLEnv extends LocalEnv {
 					+ GlobalEnv.getconfigfile() + "\" >");
 		}
 
-		if (Connector.insert_flag || Connector.delete_flag
-				|| Connector.update_flag) {
+		if (Connector.insertFlag || Connector.deleteFlag
+				|| Connector.updateFlag) {
 			header.append("<form action = \""
 					+ GlobalEnv.getFileDirectory()
 					+ "/servlet/supersql.form.Update\" method = \"post\" name=\"theForm\">\n");
@@ -706,11 +681,11 @@ public class HTMLEnv extends LocalEnv {
 					+ SSQLparser.get_from_info_st() + "\" >");
 			header.append("<input type=\"hidden\" name=\"configfile\" value=\""
 					+ GlobalEnv.getconfigfile() + "\" >");
-			if (Connector.insert_flag)
+			if (Connector.insertFlag)
 				header.append("<input type=\"hidden\" name=\"sql_param\" value=\"insert\" >");
-			if (Connector.delete_flag)
+			if (Connector.deleteFlag)
 				header.append("<input type=\"hidden\" name=\"sql_param\" value=\"delete\" >");
-			if (Connector.update_flag)
+			if (Connector.updateFlag)
 				header.append("<input type=\"hidden\" name=\"sql_param\" value=\"update\" >");
 		}
 	}
@@ -744,21 +719,21 @@ public class HTMLEnv extends LocalEnv {
 	}
 
 	public void getFooter() {
-		if (Connector.update_flag || Connector.insert_flag
-				|| Connector.delete_flag || Connector.login_flag) {
+		if (Connector.updateFlag || Connector.insertFlag
+				|| Connector.deleteFlag || Connector.loginFlag) {
 			footer.append("<input type=\"submit\" name=\"login\" value=\"Let's go!\">");
 			footer.append("</form>\n");
 			Log.out("</form>");
-			Connector.update_flag = false;
-			Connector.insert_flag = false;
-			Connector.delete_flag = false;
-			Connector.login_flag = false;
+			Connector.updateFlag = false;
+			Connector.insertFlag = false;
+			Connector.deleteFlag = false;
+			Connector.loginFlag = false;
 		}
 
-		if (Connector.logout_flag) {
+		if (Connector.logoutFlag) {
 			footer.append("</form>\n");
 			Log.out("</form>");
-			Connector.logout_flag = false;
+			Connector.logoutFlag = false;
 		}
 
 		if (GlobalEnv.getframeworklist() == null) {
@@ -789,14 +764,14 @@ public class HTMLEnv extends LocalEnv {
 		return "";
 	}
 
-	public static String getClassID(TFE tfe) {
+	public static String getClassID(ITFE tfe) {
 		String result;
 		if (tfe instanceof HTMLC3) {
-			result = getClassID(((TFE) ((HTMLC3) tfe).tfes.get(0)));
+			result = getClassID(((ITFE) ((HTMLC3) tfe).tfes.get(0)));
 			return result;
 		}
 		if (tfe instanceof HTMLG3) {
-			result = getClassID(((TFE) ((HTMLG3) tfe).tfe));
+			result = getClassID(((ITFE) ((HTMLG3) tfe).tfe));
 			return result;
 		}
 		result = "TFE" + tfe.getId();
@@ -804,16 +779,16 @@ public class HTMLEnv extends LocalEnv {
 	}
 
 	/*** start oka ***/
-	public static String getDataID(TFE tfe) {
+	public static String getDataID(ITFE tfe) {
 		String ClassID;
 		int DataID = 0;
 		String return_value;
 
 		if (tfe instanceof HTMLC3) {
-			return getClassID(((TFE) ((HTMLC3) tfe).tfes.get(0)));
+			return getClassID(((ITFE) ((HTMLC3) tfe).tfes.get(0)));
 		}
 		if (tfe instanceof HTMLG3) {
-			return getClassID(((TFE) ((HTMLG3) tfe).tfe));
+			return getClassID(((ITFE) ((HTMLG3) tfe).tfe));
 		}
 		ClassID = String.valueOf(tfe.getId());
 		DataID = Integer.valueOf(
@@ -1033,7 +1008,7 @@ public class HTMLEnv extends LocalEnv {
 								decorationKey, condition);
 				css.append(decorationKey + " : " + decorationValue + ";");
 			} else {
-				Iterator decorationKeysIterator = ((ArrayList<String>) (decorationKeys))
+				Iterator<String> decorationKeysIterator = ((ArrayList<String>) (decorationKeys))
 						.iterator();
 				while (decorationKeysIterator.hasNext()) {
 					decorationKey = (String) decorationKeysIterator.next();

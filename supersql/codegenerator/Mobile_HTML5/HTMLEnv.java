@@ -7,13 +7,14 @@ import java.io.FileWriter;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.Vector;
+
 import supersql.codegenerator.Connector;
 import supersql.codegenerator.DecorateList;
+import supersql.codegenerator.ITFE;
 import supersql.codegenerator.LocalEnv;
-import supersql.codegenerator.TFE;
-import supersql.parser.SSQLparser;
-import supersql.common.Log;
 import supersql.common.GlobalEnv;
+import supersql.common.Log;
+import supersql.parser.SSQLparser;
 
 public class HTMLEnv extends LocalEnv {
     String data;
@@ -491,14 +492,14 @@ public class HTMLEnv extends LocalEnv {
 	        Log.out("<body>");
         }
 
-        if(connector.login_flag ){
+        if(Connector.loginFlag ){
         	header.append("<form action = \""+ GlobalEnv.getFileDirectory() + "/servlet/supersql.form.Session\" method = \"post\" name=\"theForm\">\n");
         	//header.append("<form action = \""+ GlobalEnv.getFileDirectory() + "/supersql.form.Session\" method = \"post\" name=\"theForm\">\n");
         	header.append("<input type=\"hidden\" name=\"tableinfo\" value=\"" + SSQLparser.get_from_info_st() + "\" >");
         	header.append("<input type=\"hidden\" name=\"configfile\" value=\"" + GlobalEnv.getconfigfile() + "\" >");
         }
 
-        if(connector.logout_flag ){
+        if(Connector.logoutFlag ){
         	header.append("<form action = \""+ GlobalEnv.getFileDirectory() + "/servlet/supersql.form.Session\" method = \"post\" name=\"theForm\">\n");
         	//header.append("<form action = \""+ GlobalEnv.getFileDirectory() + "/supersql.form.Session\" method = \"post\" name=\"theForm\">\n");
         	//header.append("<input type=\"hidden\" name=\"tableinfo\" value=\"" + SSQLparser.get_from_info_st() + "\" >");
@@ -506,16 +507,16 @@ public class HTMLEnv extends LocalEnv {
         }
 
 
-        if(connector.insert_flag || connector.delete_flag || connector.update_flag){
+        if(Connector.insertFlag || Connector.deleteFlag || Connector.updateFlag){
         	header.append("<form action = \""+ GlobalEnv.getFileDirectory() + "/servlet/supersql.form.Update\" method = \"post\" name=\"theForm\">\n");
         	//header.append("<form action = \""+ GlobalEnv.getFileDirectory() + "/supersql.form.Update\" method = \"post\" name=\"theForm\">\n");
         	header.append("<input type=\"hidden\" name=\"tableinfo\" value=\"" + SSQLparser.get_from_info_st() + "\" >");
         	header.append("<input type=\"hidden\" name=\"configfile\" value=\"" + GlobalEnv.getconfigfile() + "\" >");
-        	if(connector.insert_flag)
+        	if(Connector.insertFlag)
         		header.append("<input type=\"hidden\" name=\"sql_param\" value=\"insert\" >");
-        	if(connector.delete_flag)
+        	if(Connector.deleteFlag)
         		header.append("<input type=\"hidden\" name=\"sql_param\" value=\"delete\" >");
-        	if(connector.update_flag)
+        	if(Connector.updateFlag)
             	header.append("<input type=\"hidden\" name=\"sql_param\" value=\"update\" >");
         }
 
@@ -551,20 +552,20 @@ public class HTMLEnv extends LocalEnv {
     }
 
     public void getFooter() {
-    	if(connector.update_flag || connector.insert_flag|| connector.delete_flag || connector.login_flag ){
+    	if(Connector.updateFlag || Connector.insertFlag|| Connector.deleteFlag || Connector.loginFlag ){
 	    	footer.append("<input type=\"submit\" name=\"login\" value=\"Let's go!\">");
 	    	footer.append("</form>\n");
 	    	Log.out("</form>");
-        	connector.update_flag = false;
-        	connector.insert_flag = false;
-        	connector.delete_flag = false;
-        	connector.login_flag = false;
+        	Connector.updateFlag = false;
+        	Connector.insertFlag = false;
+        	Connector.deleteFlag = false;
+        	Connector.loginFlag = false;
     	}
 
-    	if(connector.logout_flag ){
+    	if(Connector.logoutFlag ){
 	    	footer.append("</form>\n");
 	    	Log.out("</form>");
-        	connector.logout_flag = false;
+        	Connector.logoutFlag = false;
     	}
 
     	if(GlobalEnv.getframeworklist() == null){
@@ -858,14 +859,14 @@ public class HTMLEnv extends LocalEnv {
         return "";
     }
 
-    public static String getClassID(TFE tfe) {
+    public static String getClassID(ITFE tfe) {
     	String result;
         if (tfe instanceof HTMLC3) {
-            result = getClassID(((TFE) ((HTMLC3) tfe).tfes.get(0)));
+            result = getClassID(((ITFE) ((HTMLC3) tfe).tfes.get(0)));
             return result;
         }
         if (tfe instanceof HTMLG3) {
-            result = getClassID(((TFE) ((HTMLG3) tfe).tfe));
+            result = getClassID(((ITFE) ((HTMLG3) tfe).tfe));
             	return result;
         }
         result =  "TFE" + tfe.getId();
@@ -873,16 +874,16 @@ public class HTMLEnv extends LocalEnv {
     }
 
     /***start oka***/
-    public static String getDataID(TFE tfe) {
+    public static String getDataID(ITFE tfe) {
     	String ClassID;
     	int DataID = 0;
     	String return_value;
 
         if (tfe instanceof HTMLC3) {
-            return getClassID(((TFE) ((HTMLC3) tfe).tfes.get(0)));
+            return getClassID(((ITFE) ((HTMLC3) tfe).tfes.get(0)));
         }
         if (tfe instanceof HTMLG3) {
-            return getClassID(((TFE) ((HTMLG3) tfe).tfe));
+            return getClassID(((ITFE) ((HTMLG3) tfe).tfe));
         }
         ClassID = String.valueOf(tfe.getId());
         DataID = Integer.valueOf((ClassID.substring(ClassID.length()-3,ClassID.length()))).intValue();

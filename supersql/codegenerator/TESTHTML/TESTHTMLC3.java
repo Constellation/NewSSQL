@@ -6,7 +6,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.Attribute;
+import supersql.codegenerator.Connector;
+import supersql.codegenerator.ITFE;
+import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
@@ -40,11 +43,11 @@ public class TESTHTMLC3 extends Connector {
         StringBuffer parentheader2 = new StringBuffer();
         StringBuffer parentfooter2 = new StringBuffer();
         String linkfile = new String();
-        TFE tfe[] = new TFE[tfeitems];
-        int c3items = tfeitems;
-        for (int j = 0; j < tfeitems - 1; j++) {
-            tfe[j] = (TFE) tfes.get(j);
-            if (j < tfeitems - 2 && tfe[j] instanceof TESTHTMLG3) {
+        ITFE[] tfe = new ITFE[tfeItems];
+        int c3items = tfeItems;
+        for (int j = 0; j < tfeItems - 1; j++) {
+            tfe[j] = (ITFE) tfes.get(j);
+            if (j < tfeItems - 2 && tfe[j] instanceof TESTHTMLG3) {
                 System.err.println("Error: % after []% is not allowed");
                 GlobalEnv.addErr("Error: % after []% is not allowed");
                 //comment out by chie
@@ -66,7 +69,7 @@ public class TESTHTMLC3 extends Connector {
         html_env.link_flag--;
 
         for (int k = 1; k < c3items; k++) {
-            TFE intfe = (TFE) tfes.get(k);
+            ITFE intfe = (ITFE) tfes.get(k);
             html_env.filename = html_env.outfile
                     + String.valueOf(html_env.countfile) + ".html";
             html_env2.filename = html_env.outfile

@@ -1,6 +1,8 @@
 package supersql.codegenerator.X3D;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.Connector;
+import supersql.codegenerator.ITFE;
+import supersql.codegenerator.Manager;
 import supersql.extendclass.ExtList;
 
 
@@ -23,7 +25,7 @@ public class X3DC3 extends Connector{
 	        value = new X3DValue();
 	        
 	        while (this.hasMoreItems()) {
-	            TFE tfe = (TFE) tfes.get(i);
+	            ITFE tfe = (ITFE) tfes.get(i);
 	            
 	            this.worknextItem();
 

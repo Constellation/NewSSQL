@@ -2,12 +2,13 @@ package supersql.codegenerator.TESTHTML;
 
 import java.util.Vector;
 
-import supersql.codegenerator.*;
+import supersql.codegenerator.Connector;
+import supersql.codegenerator.ITFE;
+import supersql.codegenerator.Manager;
+import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
-
 //tk
-import supersql.common.GlobalEnv;
 
 public class TESTHTMLC1 extends Connector {
 
@@ -148,7 +149,7 @@ public class TESTHTMLC1 extends Connector {
         
         
         while (this.hasMoreItems()) {
-            TFE tfe = (TFE) tfes.get(i);
+            ITFE tfe = (ITFE) tfes.get(i);
             html_env.code.append("<TD class=\""
                    + TESTHTMLEnv.getClassID(tfe) + " nest\">\n");
             String classid = TESTHTMLEnv.getClassID(tfe);

@@ -5,86 +5,41 @@ import java.util.Hashtable;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
 
-public class Function implements Operand {
-
-    int id; // SchemaID
+public class Function extends Operand {
 
 	String Name; 
-
-	int argitems; 
-
-	ExtList Args; 
-
-    //hanki start
-	boolean order_flag;
-	boolean aggregate_flag;
-	String order;
-    String aggregate;
-    //hanki end
-    
-	Hashtable ArgHash = new Hashtable();
-
-	public DecorateList decos = new DecorateList();
+	ExtList<FuncArg> Args;     
+	Hashtable<String, FuncArg> ArgHash = new Hashtable<String, FuncArg>();
 
 	public Function() {
-		//hanki start
-		order_flag = false;
-		aggregate_flag = false;
-	    //hanki end
-	    
+		super();
 		Name = "";
-		argitems = 0;
-		Args = new ExtList();
-
-	}
-
-	public void setId(int i) {
-	    id = i;
-	}
-	public int getId() {
-	    return id;
+		Args = new ExtList<FuncArg>();
 	}
 
 	public void setFname(String name) {
-
 		Name = name;
-
 	}
 
 	public void setArg(FuncArg fa) {
-		argitems++;
 		Args.add(fa);
-	}
-
-	public void setDeco(DecorateList d) {
-		decos = d;
-	}
-
-	public void addDeco(String key, Object val) {
-		decos.put(key, val);
-	}
-
-	public void debugout() {
-		debugout(0);
 	}
 
 	public void debugout(int count) {
 
 		Debug dbgout = new Debug();
-		dbgout.prt(count, "<Function Name=" + Name + " argitems=" + argitems
+		dbgout.prt(count, "<Function Name=" + Name + " argitems=" + Args.size()
 				+ " decoitems=" + decos.size() + " id=" + id + ">");
 
 		for (int i = 0; i < Args.size(); i++) {
-			((FuncArg) Args.get(i)).debugout(count + 1);
+			Args.get(i).debugout(count + 1);
 		}
 
 		decos.debugout(count + 1);
-
 		dbgout.prt(count, "</Function>");
 	}
 
 	public ExtList makesch() {
-
 		ExtList outsch = new ExtList();
 		ExtList outsch1 = new ExtList();
 
@@ -94,11 +49,8 @@ public class Function implements Operand {
 				outsch.addAll(outsch1);
 			}
 		}
-
-		//  Log.out("Fnc outsch:"+outsch);
-
+		
 		return outsch;
-
 	}
 
 	public ExtList makele0() {
@@ -116,10 +68,9 @@ public class Function implements Operand {
 		Log.out("Fnc le0:" + le0);
 
 		return le0;
-
 	}
 
-	public void work(ExtList data_info) {
+	public void work(ExtList<ExtList<String>> data_info) {
 		Log.out("*Function");
 	}
 
@@ -130,27 +81,21 @@ public class Function implements Operand {
 			items += ((FuncArg) Args.get(i)).countconnectitem();
 		}
 
-		//		Log.out("*Function connect item = " + items);
 		return items;
 	}
 
-	public ExtList getArgs() {
+	public ExtList<FuncArg> getArgs() {
 		return Args;
 	}
 
-	public void setDataList(ExtList data) {
-
-		
+	public void setDataList(ExtList<ExtList<String>> data) {
 		int dindex = 0;
 		int ci;
 		FuncArg fa;
-		//Log.out("data = " + data);
 		for (int i = 0; i < Args.size(); i++) {
-			fa = (FuncArg) Args.get(i);
+			fa = Args.get(i);
 			ci = fa.countconnectitem();
-			//		Log.out("ci = "+ci);
 			fa.setData(data.ExtsubList(dindex, dindex + ci));
-			//		Log.out("key = "+fa.getKey());
 			if (Name.equalsIgnoreCase("foreach")){
 				ArgHash.put(Integer.toString(i), fa);
 			} else {
@@ -183,7 +128,7 @@ public class Function implements Operand {
 	}
 
 	public void workAtt(String Key) {
-		FuncArg fa = (FuncArg) ArgHash.get(Key);
+		FuncArg fa = ArgHash.get(Key);
 
 		if (fa != null) {
 			fa.workAtt();
@@ -196,9 +141,8 @@ public class Function implements Operand {
 		FuncArg fa;
 		String result = null;
 
-		//Log.out("data = " + data);
 		for (int i = 0; i < Args.size(); i++) {
-			fa = (FuncArg) Args.get(i);
+			fa = Args.get(i);
 			if (fa.getKey().equalsIgnoreCase("class")) {
 			    result = fa.getStr();
 			}
@@ -208,41 +152,19 @@ public class Function implements Operand {
 		return result;
 
 	}
-		//hanki start
-	public void setOrderBy(String order) {
-		order_flag = true;
-
-		this.order = new String();
-		this.order = order;
-	}
 	
-	public void setAggregate(String aggregate) {
-		aggregate_flag = true;
-		
-		this.aggregate = new String();
-		this.aggregate = aggregate;
-	}
-	//hanki end
-	
-	//added by ria 20110913 start
 	public ExtList makeschImage() {
 		ExtList outsch = new ExtList();
 		ExtList outsch1 = new ExtList();
 
 		for (int i = 0; i < Args.size(); i++) {
-			outsch1 = ((FuncArg) Args.get(i)).makeschImage();
+			outsch1 = Args.get(i).makeschImage();
 			if (!outsch1.isEmpty()) {
 				outsch.addAll(outsch1);
 			}
 		}
 
 		return outsch;
-	}
-	//added by ria 20110913 end
-
-	public void addDeco(String name, String value, String condition) {
-		decos.put(name, value,condition);
-
 	}
 	
 }

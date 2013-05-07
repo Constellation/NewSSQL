@@ -7,16 +7,13 @@ import supersql.extendclass.ExtList;
 //import common.Log;
 
 public class HTMLC0 extends Connector {
-	Manager manager;
-
-	HTMLEnv html_env;
-	HTMLEnv html_env2;
+	private HTMLEnv htmlEnv;
+	private HTMLEnv htmlEnv2;
 
 	//コンストラクタ
 	public HTMLC0(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
-		this.manager = manager;
-		this.html_env = henv;
-		this.html_env2 = henv2;
+		this.htmlEnv = henv;
+		this.htmlEnv2 = henv2;
 	}
 
 	//C2のworkメソッド
@@ -29,9 +26,9 @@ public class HTMLC0 extends Connector {
 		
 
 		 if(decos.containsKey("form")){
-	           	html_env.code.append(HTMLFunction.createForm(decos));
+	           	htmlEnv.code.append(HTMLFunction.createForm(decos));
 	           	HTMLEnv.setFormItemFlg(true,null);
-	        	html_env2.code.append("<form"+HTMLEnv.getFormNumber()+"start />");
+	        	htmlEnv2.code.append("<form"+HTMLEnv.getFormNumber()+"start />");
 	        	if(decos.getStr("form").toLowerCase().equals("search"))
 	        		HTMLEnv.setSearch(true);
 		 }	 
@@ -42,9 +39,9 @@ public class HTMLC0 extends Connector {
 		
 
         if(decos.containsKey("form")){
-        	html_env2.code.append("<form"+ HTMLEnv.getFormNumber() +"end />");
-        	html_env.code.append(HTMLEnv.exFormNameCreate());
-           	html_env.code.append("</form>");
+        	htmlEnv2.code.append("<form"+ HTMLEnv.getFormNumber() +"end />");
+        	htmlEnv.code.append(HTMLEnv.exFormNameCreate());
+           	htmlEnv.code.append("</form>");
            	HTMLEnv.setFormItemFlg(false,null);
            	HTMLEnv.incrementFormNumber();
            	if(decos.getStr("form").toLowerCase().equals("search"))
