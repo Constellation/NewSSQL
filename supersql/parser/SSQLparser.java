@@ -544,84 +544,75 @@ public class SSQLparser {
 			//
 			//			} else {
 			tfe.append(nt + " ");
-			//			}
 
 		}
 	}
 
-	private void processWHERE(StringTokenizer st){
+	private void processKeywords(StringTokenizer st){
+		StringBuffer buffer = new StringBuffer();
+		buffer = from_c;
 		while (st.hasMoreTokens()) {
 			String nt = st.nextToken().toString();
+			buffer.append(nt + " ");
+			if (nt.equalsIgnoreCase("WHERE")) {
+				buffer = where_c;
+			}
 			if (nt.equalsIgnoreCase("ORDER")) {
-				processORDER(st);
+				buffer = order_c;
 			}
 			if (nt.equalsIgnoreCase("GROUP")) {
-				processGROUP(st);
+				buffer = group_c;
 			}
 			if (nt.equalsIgnoreCase("HAVING")) {
-				processHAVING(st);
+				buffer = having_c;
 			}
-			where_c.append(nt + " ");
 		}
+	}
+
+	private void postProcess() {
+		// FOREACH
+		if (!(foreachFrom.equals(""))) {
+			from_c.append("," + foreachFrom);
+		}
+
+		groupStatement = group_c.toString();
+		Log.out("[Paeser:Group] group = " + groupStatement);
+		group_c.append(embedGroup + " ");
+		
+		havingStatement = having_c.toString();
+		Log.out("[Paeser:Having] having = " + havingStatement);
+		having_c.append(embedGroup + " ");
+		
+		fromInfo = new FromInfo(from_c.toString().trim());
+		Log.out("[Parser:From] from = " + fromInfo);
+		if (!(foreachFrom.equals(""))) {
+			Log.out(foreachFrom
+					+ ": Used in FOREACH clause and added to FROM clause ");
+		}
+
 		if (SSQLparser.isDbpediaQuery())
 			whereInfo.setSparqlWhereQuery(where_c.toString().trim());
 		else
 			whereInfo.appendWhere(where_c.toString().trim());
-	}
 
-	private void processORDER(StringTokenizer st) {
-		if (st.hasMoreTokens()
-				&& st.nextToken().toString().equalsIgnoreCase("BY")) {
-			while (st.hasMoreTokens()) {
-				String nt = st.nextToken().toString();
-				if (nt.equalsIgnoreCase("GROUP")) {
-					processGROUP(st);
-				}
-				if (nt.equalsIgnoreCase("HAVING")) {
-					processHAVING(st);
-				}
-				order_c.append(nt + " ");
-			}
-			orderStatement = order_c.toString();
-			Log.out("[Paeser:Order] order = " + orderStatement);
-		} else {
-			System.err.println("*** ERROR in ORDER BY clause ***");
-			throw (new IllegalStateException());
+		if (embedWhere.length() != 0)
+			whereInfo.appendWhere(embedWhere + " ");
+
+		Log.out("WHERE:" + whereInfo);
+		// FOREACH
+		if (!(foreachWhere.equals(""))) {
+			whereInfo.appendWhere(foreachWhere);
+			Log.out(foreachWhere
+					+ ": Used in FOREACH clause and added to WHERE clause ");
 		}
-	}
 
-	private void processGROUP(StringTokenizer st) {
-		if (st.hasMoreTokens()
-				&& st.nextToken().toString().equalsIgnoreCase("BY")) {
-
-			while (st.hasMoreTokens()) {
-				String nt = st.nextToken().toString();
-				if (nt.equalsIgnoreCase("HAVING")) {
-					processHAVING(st);
-				}
-				group_c.append(nt + " ");
-			}
-
-			groupStatement = group_c.toString();
-			Log.out("[Paeser:Group] group = " + groupStatement);
-
-		} else {
-			System.err.println("*** ERROR in GROUP BY clause ***");
-			throw (new IllegalStateException());
+		String addCondition = GlobalEnv.getCondition();
+		if (addCondition != null) {
+			whereInfo.appendWhere(addCondition);
 		}
-		group_c.append(embedGroup + " ");
+		Log.out("[Paeser:Where] where = " + whereInfo);
 	}
-
-	private void processHAVING(StringTokenizer st) {
-		while (st.hasMoreTokens()) {
-			String nt = st.nextToken().toString();
-			having_c.append(nt + " ");
-		}
-		havingStatement = having_c.toString();
-		Log.out("[Paeser:Having] having = " + havingStatement);
-		having_c.append(embedGroup + " ");
-	}
-
+	
 	private void parseSSQL(String QueryString, int id) {
 		// replace '*' to attributes added by chie
 		if (QueryString.contains("*")) {
@@ -676,58 +667,9 @@ public class SSQLparser {
 			tfeInfo = new TFEparser(tfe.toString(), codeGenerator);
 			tfeInfo.debugout();
 
-			while (st.hasMoreTokens()) {
-				nt = st.nextToken().toString();
-				if (nt.equalsIgnoreCase("WHERE")) {
-					processWHERE(st);
-				}
-				if (nt.equalsIgnoreCase("ORDER")) {
-					processORDER(st);
-				}
-				if (nt.equalsIgnoreCase("GROUP")) {
-					processGROUP(st);
-				}
-				if (nt.equalsIgnoreCase("HAVING")) {
-					processHAVING(st);
-				}
-				from_c.append(nt + " ");
-			}
-
-			//			if (embedFrom.length() != 0) {
-			//				if (from_c.toString().length() != 0)
-			//					from_c.append(",");
-			//				from_c.append(embedFrom + " ");
-			//			}
-
-			// FOREACH
-			if (!(foreachFrom.equals(""))) {
-				from_c.append("," + foreachFrom);
-			}
-
-			fromInfo = new FromInfo(from_c.toString().trim());
-			Log.out("[Parser:From] from = " + fromInfo);
-			if (!(foreachFrom.equals(""))) {
-				Log.out(foreachFrom
-						+ ": Used in FOREACH clause and added to FROM clause ");
-			}
-
-			if (embedWhere.length() != 0)
-				whereInfo.appendWhere(embedWhere + " ");
-
-			Log.out("WHERE:" + whereInfo);
-			// FOREACH
-			if (!(foreachWhere.equals(""))) {
-				whereInfo.appendWhere(foreachWhere);
-				Log.out(foreachWhere
-						+ ": Used in FOREACH clause and added to WHERE clause ");
-			}
-
-			String addCondition = GlobalEnv.getCondition();
-			if (addCondition != null) {
-				whereInfo.appendWhere(addCondition);
-			}
-			Log.out("[Paeser:Where] where = " + whereInfo);
-
+			processKeywords(st);
+			postProcess();
+			
 		} catch (IllegalStateException e) {
 			System.err
 			.println("Error[SSQLparser]: Syntax Error in SSQL statement : "
@@ -738,6 +680,7 @@ public class SSQLparser {
 			return;
 		}
 	}
+	
 
 	private void preProcess(StringTokenizer st, String nt) {
 		// FOREACH
