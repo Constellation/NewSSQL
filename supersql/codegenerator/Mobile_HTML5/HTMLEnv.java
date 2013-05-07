@@ -473,14 +473,14 @@ public class HTMLEnv extends LocalEnv {
 	        Log.out("<body>");
         }
 
-        if(connector.login_flag ){
+        if(Connector.loginFlag ){
         	header.append("<form action = \""+ GlobalEnv.getFileDirectory() + "/servlet/supersql.form.Session\" method = \"post\" name=\"theForm\">\n");
         	//header.append("<form action = \""+ GlobalEnv.getFileDirectory() + "/supersql.form.Session\" method = \"post\" name=\"theForm\">\n");
         	header.append("<input type=\"hidden\" name=\"tableinfo\" value=\"" + SSQLparser.get_from_info_st() + "\" >");
         	header.append("<input type=\"hidden\" name=\"configfile\" value=\"" + GlobalEnv.getconfigfile() + "\" >");
         }
 
-        if(connector.logout_flag ){
+        if(Connector.logoutFlag ){
         	header.append("<form action = \""+ GlobalEnv.getFileDirectory() + "/servlet/supersql.form.Session\" method = \"post\" name=\"theForm\">\n");
         	//header.append("<form action = \""+ GlobalEnv.getFileDirectory() + "/supersql.form.Session\" method = \"post\" name=\"theForm\">\n");
         	//header.append("<input type=\"hidden\" name=\"tableinfo\" value=\"" + SSQLparser.get_from_info_st() + "\" >");
@@ -488,16 +488,16 @@ public class HTMLEnv extends LocalEnv {
         }
 
 
-        if(connector.insert_flag || connector.delete_flag || connector.update_flag){
+        if(Connector.insertFlag || Connector.deleteFlag || Connector.updateFlag){
         	header.append("<form action = \""+ GlobalEnv.getFileDirectory() + "/servlet/supersql.form.Update\" method = \"post\" name=\"theForm\">\n");
         	//header.append("<form action = \""+ GlobalEnv.getFileDirectory() + "/supersql.form.Update\" method = \"post\" name=\"theForm\">\n");
         	header.append("<input type=\"hidden\" name=\"tableinfo\" value=\"" + SSQLparser.get_from_info_st() + "\" >");
         	header.append("<input type=\"hidden\" name=\"configfile\" value=\"" + GlobalEnv.getconfigfile() + "\" >");
-        	if(connector.insert_flag)
+        	if(Connector.insertFlag)
         		header.append("<input type=\"hidden\" name=\"sql_param\" value=\"insert\" >");
-        	if(connector.delete_flag)
+        	if(Connector.deleteFlag)
         		header.append("<input type=\"hidden\" name=\"sql_param\" value=\"delete\" >");
-        	if(connector.update_flag)
+        	if(Connector.updateFlag)
             	header.append("<input type=\"hidden\" name=\"sql_param\" value=\"update\" >");
         }
 
@@ -533,20 +533,20 @@ public class HTMLEnv extends LocalEnv {
     }
 
     public void getFooter() {
-    	if(connector.update_flag || connector.insert_flag|| connector.delete_flag || connector.login_flag ){
+    	if(Connector.updateFlag || Connector.insertFlag|| Connector.deleteFlag || Connector.loginFlag ){
 	    	footer.append("<input type=\"submit\" name=\"login\" value=\"Let's go!\">");
 	    	footer.append("</form>\n");
 	    	Log.out("</form>");
-        	connector.update_flag = false;
-        	connector.insert_flag = false;
-        	connector.delete_flag = false;
-        	connector.login_flag = false;
+        	Connector.updateFlag = false;
+        	Connector.insertFlag = false;
+        	Connector.deleteFlag = false;
+        	Connector.loginFlag = false;
     	}
 
-    	if(connector.logout_flag ){
+    	if(Connector.logoutFlag ){
 	    	footer.append("</form>\n");
 	    	Log.out("</form>");
-        	connector.logout_flag = false;
+        	Connector.logoutFlag = false;
     	}
 
     	if(GlobalEnv.getframeworklist() == null){

@@ -7,7 +7,7 @@ import supersql.extendclass.ExtList;
 
 public class WhereInfo {
 
-	ExtList where_clause;
+	private ExtList where_clause;
 	private String sparqlWhereQuery;
 
 	public WhereInfo() {

@@ -48,11 +48,11 @@ public class HTMLC3 extends Connector {
         StringBuffer parentheader2 = new StringBuffer();
         StringBuffer parentfooter2 = new StringBuffer();
         String linkfile = new String();
-        ITFE[] tfe = new ITFE[tfeitems];
-        int c3items = tfeitems;
-        for (int j = 0; j < tfeitems - 1; j++) {
+        ITFE[] tfe = new ITFE[tfeItems];
+        int c3items = tfeItems;
+        for (int j = 0; j < tfeItems - 1; j++) {
             tfe[j] = (ITFE) tfes.get(j);
-            if (j < tfeitems - 2 && tfe[j] instanceof HTMLG3) {
+            if (j < tfeItems - 2 && tfe[j] instanceof HTMLG3) {
                 System.err.println("Error: % after []% is not allowed");
                 GlobalEnv.addErr("Error: % after []% is not allowed");
                 //comment out by chie

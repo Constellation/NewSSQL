@@ -9,13 +9,13 @@ import supersql.extendclass.ExtList;
 
 public class Preprocessor {
 
-	static boolean is_order_by;
-	static boolean is_aggregate;
+	private static boolean is_order_by;
+	private static boolean is_aggregate;
 
-	StringBuffer tmp;
+	private StringBuffer tmp;
 
-	static ExtList order_by_list;
-	static ExtList aggregate_list;
+	private static ExtList order_by_list;
+	private static ExtList aggregate_list;
 
 	/* constructor */
 	public Preprocessor(String tfe) {

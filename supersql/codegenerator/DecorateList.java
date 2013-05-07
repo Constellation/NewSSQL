@@ -51,19 +51,19 @@ public class DecorateList extends Hashtable<String, Object> {
 					//start oka
 					if(key.equals("update")){
 						Log.out("@ update found @");
-						Connector.update_flag = true;
+						Connector.updateFlag = true;
 					}else if(key.equals("insert")){
 						Log.out("@ insert found @");
-						Connector.insert_flag = true;
+						Connector.insertFlag = true;
 					}else if(key.equals("delete")){
 						Log.out("@ delete found @");
-						Connector.delete_flag = true;
+						Connector.deleteFlag = true;
 					}else if(key.equals("login")){
 						Log.out("@ login found @");
-						Connector.login_flag = true;
+						Connector.loginFlag = true;
 					}else if(key.equals("logout")){
 						Log.out("@ logout found @");
-						Connector.logout_flag = true;
+						Connector.logoutFlag = true;
 					}
 					//end oka
 					

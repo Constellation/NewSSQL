@@ -1,14 +1,12 @@
 package supersql.dataconstructor;
 
-import java.util.ArrayList;
-
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
 import supersql.parser.Preprocessor;
 
 public class OrderBy {
 	
-	ExtList set = new ExtList();
+	private ExtList set = new ExtList();
 
 	public ExtList sort(String info, ExtList sch, ExtList<ExtList<String>> data_info) {
 		

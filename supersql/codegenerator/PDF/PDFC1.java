@@ -9,19 +9,19 @@ import supersql.extendclass.ExtList;
 
 public class PDFC1 extends Connector implements PDFTFE {
 
-	Manager manager;
+	private Manager manager;
 
-	PDFEnv pdf_env;
+	private PDFEnv pdf_env;
 	
 	//追加10.17
-	PDFValue value;
+	private PDFValue value;
 	
 	//追加10.30
-	ExtList maxWidths;
-	float max_width;
+	private ExtList maxWidths;
+	private float max_width;
 	
-	TFE newLE;
-	boolean change = false;
+	private TFE newLE;
+	private boolean change = false;
 
 
 	//コンストラクタ
@@ -41,47 +41,21 @@ public class PDFC1 extends Connector implements PDFTFE {
 		float tmp_height = 0;
 //		int level = pdf_env.level;
 		
-		float tmp_width = 0;
-		
-		System.out.println("");
-		System.out.println("------- C1 -------");
-//		System.out.println("[PDFC1:work]tfe_info = " + makele0());
+		System.out.println("\n------- C1 -------");
 		System.out.println("[PDFC1:work]data_info = " + data_info);
 
-		System.out.println("++++ C1でvalueをnewします");
 		//追加10.17
 		value = new PDFValue("C1");
 		
-		PDFModifier modifier = new PDFModifier();
-
-		int i,j;
-		int y_default, y_max; //y_tmp
-		//int lap = 0;
-		
-
-		boolean ope_modi = false;
-		int alternate = pdf_env.alternate;
-
-		boolean flag = false;
-
-		y_default = pdf_env.y_back;
-		//y_max = y_default;
-
-//del
-
+		int i;
+		int y_default = pdf_env.y_back;
 		setDataList(data_info);
 
-
-		
-		///////////////////////////////////////////////////////////////////////
-		for (i = 0; i < tfeitems; i++) {
+		for (i = 0; i < tfeItems; i++) {
 			ITFE tfe = (ITFE) tfes.get(i);
 
 			if (tfe instanceof Attribute) {
 				System.out.println("[PDFC1:work]tfe is Attribute");
-
-
-
 				worknextItem();
 				
 				System.out.println("++++ C1でAttをsetします");
@@ -95,11 +69,6 @@ public class PDFC1 extends Connector implements PDFTFE {
 				if (tmp_height > box_height) {
 					box_height = tmp_height;
 				}
-//del
-
-//////			vector_local.addElement(value);		////////////
-
-
 				/////////////////////////////////
 				//C1なのでx座標をプラス,ただし最後の要素では++しない
 				//if( i+1 < data_info.size() ) //??
@@ -221,7 +190,7 @@ public class PDFC1 extends Connector implements PDFTFE {
 //pdf_env.labelV++;
 
 		
-		for (i = 0; i < tfeitems; i++) {
+		for (i = 0; i < tfeItems; i++) {
 			ITFE tfe = (ITFE) tfes.get(i);
 
 			
@@ -290,7 +259,7 @@ public class PDFC1 extends Connector implements PDFTFE {
 	public void restoreFOLD(PDFValue check){
 		int local;
 		
-		for(local=0; local<tfeitems; local++){
+		for(local=0; local<tfeItems; local++){
 			ITFE tfe = (ITFE)tfes.get(local);
 			((PDFTFE)tfe).restoreFOLD(check);
 		}
@@ -305,7 +274,6 @@ public class PDFC1 extends Connector implements PDFTFE {
 		
 		float tmpDexcess;
 		float tmpWidth = 0;
-		float tmpHeight = 0;
 		PDFValue keyBox = box;		
 		
 		ExtList originalTFE = this.tfes;	
@@ -315,7 +283,7 @@ public class PDFC1 extends Connector implements PDFTFE {
 	//	System.out.println("AAAAAAAAAAAA "+Dexcess);
 		
 	//	for(local=0; local<tfeitems; local++) {	//順に走査
-		for(local=tfeitems-1; local>-1; local--) {	//逆から走査
+		for(local=tfeItems-1; local>-1; local--) {	//逆から走査
 			ITFE tfe = (ITFE)tfes.get(local);
 			PDFValue inBox = (PDFValue)box.inList.get(local);
 			
@@ -326,7 +294,7 @@ public class PDFC1 extends Connector implements PDFTFE {
 			 	
 			
 			if(!flex){
-				for(local2=tfeitems-1; local2>=local; local2--){
+				for(local2=tfeItems-1; local2>=local; local2--){
 					System.out.println("@@@@@@@@@@@@@@@@");
 					tfe = (ITFE)tfes.get(local2);
 					((PDFTFE)tfe).redoChange();
@@ -412,7 +380,7 @@ if(!flex){
 		if(flex){
 			System.out.println("vvvvvvvvvvvvvvvvvv");
 
-			for (local=tfeitems-1; local>-1; local--) {	//逆から走査
+			for (local=tfeItems-1; local>-1; local--) {	//逆から走査
 				ITFE tfe = (ITFE)tfes.get(local);
 				if( ((PDFTFE)tfe).changeORnot() )
 					this.tfes.set(local, ((PDFTFE)tfe).getNewChild() );
@@ -428,14 +396,13 @@ if(!flex){
 					keyBox = inBox;
 					tmpWidth = inBox.box_width;
 				}
-				tmpHeight += inBox.box_height;
 			}
 			//---------------------------------------------------------//
 			if(box.box_width - keyBox.box_width >= Dexcess){		//ここはkeyBoxのoriginalWidthではないと思う
 				//固さのチェック
 //				if( !(pdf_env.flexTH < (tmpHeight - box.box_height) / Dexcess) ){
 					newLE = new PDFC2(manager, pdf_env);
-					((PDFC2)newLE).tfeitems = this.tfeitems;
+					((PDFC2)newLE).tfeItems = this.tfeItems;
 					((PDFC2)newLE).tfes = originalTFE;//this.tfes;
 					((PDFC2)newLE).decos = this.decos;
 					//maxWidthの変更 <-- しないか

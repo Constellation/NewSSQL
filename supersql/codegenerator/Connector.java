@@ -9,33 +9,33 @@ import supersql.extendclass.ExtList;
 
 public class Connector extends Operator{
 
-	public int tfeitems;
+	public int tfeItems;
 	public ExtList<TFE> tfes;
 
     //oka start
-    public static boolean update_flag;
-    public static boolean insert_flag;
-    public static boolean delete_flag;
+    public static boolean updateFlag;
+    public static boolean insertFlag;
+    public static boolean deleteFlag;
     //oka end
-    public static boolean login_flag;
-    public static boolean logout_flag;
+    public static boolean loginFlag;
+    public static boolean logoutFlag;
 
 	public Connector() {
 		super();
 		Dimension = -1;
-		tfeitems = 0;
+		tfeItems = 0;
 		tfes = new ExtList<TFE>();
 	}
 
 	public Connector(int d) {
 		super();
 		Dimension = d;
-		tfeitems = 0;
+		tfeItems = 0;
 		tfes = new ExtList<TFE>();
 	}
 
 	public void setTFE(ITFE t) {
-		tfeitems++;
+		tfeItems++;
 		tfes.add((TFE) t);
 	}
 
@@ -46,11 +46,11 @@ public class Connector extends Operator{
 	public void debugout(int count) {
 		Debug dbgout = new Debug();
 		dbgout.prt(count, "<Connector type=" + getSymbol() + " tfeitems="
-				+ tfeitems + " decoitems=" + decos.size() + " id=" + id + ">");
+				+ tfeItems + " decoitems=" + decos.size() + " id=" + id + ">");
 
 		decos.debugout(count + 1);
 
-		for (int i = 0; i < tfeitems; i++) {
+		for (int i = 0; i < tfeItems; i++) {
 			((ITFE) tfes.get(i)).debugout(count + 1);
 		}
 		dbgout.prt(count, "</Connector>");
@@ -58,7 +58,7 @@ public class Connector extends Operator{
 
 	public ExtList<Integer> makesch() {
 		ExtList<Integer> outsch = new ExtList<Integer>();
-		for (int i = 0; i < tfeitems; i++) {
+		for (int i = 0; i < tfeItems; i++) {
 			outsch.addAll(tfes.get(i).makesch());
 		}
 		return outsch;
@@ -67,7 +67,7 @@ public class Connector extends Operator{
 	public ExtList makele0() {
 		ExtList le0 = new ExtList();
 		le0.add(this.getSymbol());
-		for (int i = 0; i < tfeitems; i++) {
+		for (int i = 0; i < tfeItems; i++) {
 			le0.add(((ITFE) tfes.get(i)).makele0());
 		}
 
@@ -168,7 +168,7 @@ public class Connector extends Operator{
 	//added by ria 20110913 start
 	public ExtList makeschImage() {
 		ExtList outsch = new ExtList();
-		for (int i = 0; i < tfeitems; i++) {
+		for (int i = 0; i < tfeItems; i++) {
 			outsch.addAll(((ITFE) tfes.get(i)).makeschImage());
 		}
 		return outsch;
@@ -179,4 +179,7 @@ public class Connector extends Operator{
 		decos.put(key, val, condition);
 		
 	}
+
+	@Override
+	public void work(ExtList data_info) {}
 }

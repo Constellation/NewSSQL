@@ -5,23 +5,23 @@ import supersql.extendclass.ExtList;
 //PDFに関する基本的な変数とメソッドを持つクラス
 public class PDFWriter {
 
-	PDFEnv pdf_env;
+	private PDFEnv pdf_env;
 
-	int i;
+	private int i;
 	
 	
-	float default_posH;
-	float default_posV;
+	private float default_posH;
+	private float default_posV;
 	
 		
-	float adjust_align = 0;
-	float adjust_valign = 0;
-	float[] color;
-	float[] bordercolor;
-	float[] bgcolor;
-	float[] fontcolor;	
+	private float adjust_align = 0;
+	private float adjust_valign = 0;
+	private float[] color;
+	private float[] bordercolor;
+	private float[] bgcolor;
+	private float[] fontcolor;	
 	
-	boolean line = true;
+	private boolean line = true;
 
 	
 	

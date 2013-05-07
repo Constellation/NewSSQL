@@ -138,14 +138,14 @@ public class Attribute extends Operand {
 			outsch.addAll((Items.get(i)).makesch());
 		}
 
-		if (order_flag) {
+		if (orderFlag) {
 			Preprocessor.putOrderByTable(order, outsch);
-			order_flag = false;
+			orderFlag = false;
 		} 
 		
-		if (aggregate_flag) {
+		if (aggregateFlag) {
 			Preprocessor.putAggregateList(outsch, aggregate);
-			aggregate_flag = false;
+			aggregateFlag = false;
 		}
 
 		return outsch;

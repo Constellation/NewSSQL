@@ -20,11 +20,11 @@ import supersql.extendclass.ExtList;
 
 public class TFEparser {
 
-	TFE schemaTop;
+	private TFE schemaTop;
 
-	ExtList sch;
+	private ExtList sch;
 
-	Hashtable attp;
+	private Hashtable attp;
 
 	private TFEtokenizer toks;
 
@@ -36,8 +36,6 @@ public class TFEparser {
 
 	private CodeGenerator cg;
 	
-	private ArrayList<String> dbpediaVarNames;
-
 	private static String att_tmp;
 	public TFEparser(String str, CodeGenerator cgenerator) {
 		attno = 0;
@@ -545,7 +543,7 @@ public class TFEparser {
 
 		if (read_tfe instanceof Connector) {
 			// many Attribute
-			for (int i = 0; i < ((Connector) read_tfe).tfeitems; i++) {
+			for (int i = 0; i < ((Connector) read_tfe).tfeItems; i++) {
 				fnc.setArg(makeFuncArg(((Connector) read_tfe).gettfe(i)));
 				if (fn.equals("select") && i == 0) {
 					fnc.addDeco("select", att_tmp);

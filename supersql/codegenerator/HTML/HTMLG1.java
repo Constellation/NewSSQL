@@ -8,14 +8,11 @@ import supersql.extendclass.ExtList;
 
 public class HTMLG1 extends Grouper {
 
-    Manager manager;
-
-    HTMLEnv html_env;
-    HTMLEnv html_env2;
+	private HTMLEnv html_env;
+	private HTMLEnv html_env2;
 
     //コンストラクタ
     public HTMLG1(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
-        this.manager = manager;
         this.html_env = henv;
         this.html_env2 = henv2;
   
@@ -61,8 +58,6 @@ public class HTMLG1 extends Grouper {
         
         Log.out("<TABLE class=\""+HTMLEnv.getClassID(this) + "\"><TR>");
 
-        //html_env2.code.append("<tfe type=\"connect\" dimension=\"1\" >");
-        int i = 0;
         while (this.hasMoreItems()) {
             html_env.gLevel++;
             
@@ -125,7 +120,6 @@ public class HTMLG1 extends Grouper {
             html_env.code.append("</TD>\n");
             Log.out("</TD>");
 
-            i++;
             html_env.gLevel--;
         }
         

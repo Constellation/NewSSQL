@@ -9,13 +9,13 @@ import supersql.parser.FromInfo;
 
 public class AttributeItem {
 
-	int AttNo;
+	private int AttNo;
 
-	String Image;
+	private String Image;
 
-	ExtList UseAtts;
+	private ExtList UseAtts;
 
-	ExtHashSet UseTables;
+	private ExtHashSet UseTables;
 
 	boolean IsStr;
 

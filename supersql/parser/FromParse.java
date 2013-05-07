@@ -4,11 +4,11 @@ import supersql.common.Log;
 
 public class FromParse {
 
-	String line;
+	private String line;
 
-	String real_name;
+	private String real_name;
 
-	String alias;
+	protected String alias;
 	
 
 	public FromParse(String line) {

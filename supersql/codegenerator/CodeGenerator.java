@@ -13,13 +13,11 @@ import supersql.common.Log;
 import supersql.extendclass.ExtList;
 import supersql.parser.SSQLparser;
 
-//import codegenerator.XML.*;
-
 /**
  * コードジェネ?ータマネージャクラス 指定さ?た媒体によってコードジェネ?ータの構成部品を生成す? 工?(Factory)を生成す?
  */
 public class CodeGenerator{
-	Factory factory;
+	private Factory factory;
 
 	public int TFEid;
 

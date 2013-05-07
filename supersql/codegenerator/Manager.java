@@ -66,8 +66,7 @@ public abstract class Manager {
 	 */
 
 	//¸å½è?
-	public void finish() {
-	}
+	public abstract void finish();
 
 }
 

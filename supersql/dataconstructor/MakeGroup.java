@@ -14,7 +14,7 @@ import supersql.parser.WhereParse;
 
 public class MakeGroup {
 
-	ExtList tbl_group;
+	private ExtList tbl_group;
 
 	public MakeGroup(Hashtable att, WhereInfo where) {
 		makeGroup_main(att, where);

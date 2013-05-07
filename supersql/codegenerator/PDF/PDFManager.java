@@ -7,13 +7,13 @@ import supersql.extendclass.ExtList;
 
 public class PDFManager extends Manager {
 	
-	PDFEnv pdf_env;
-	PDFWriter writer;
-	PDFOptimizer optimizer;
+	private PDFEnv pdf_env;
+	private PDFWriter writer;
+	private PDFOptimizer optimizer;
 
 	//追加10.14
-	ITFE tfe_info;
-	ExtList data_info;
+	private ITFE tfe_info;
+	private ExtList data_info;
 
 	//コンストラクタ
 	public PDFManager(PDFEnv pdf_env) {

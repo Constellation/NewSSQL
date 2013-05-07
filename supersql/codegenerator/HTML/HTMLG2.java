@@ -10,14 +10,11 @@ import supersql.extendclass.ExtList;
 
 public class HTMLG2 extends Grouper {
 
-    Manager manager;
-
-    HTMLEnv html_env;
-    HTMLEnv html_env2;
+	private HTMLEnv html_env;
+	private HTMLEnv html_env2;
 
     //コンストラクタ
     public HTMLG2(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
-        this.manager = manager;
         this.html_env = henv;
         this.html_env2 = henv2;
 
@@ -27,8 +24,6 @@ public class HTMLG2 extends Grouper {
     @Override
 	public void work(ExtList data_info) {
 
-        Vector vector_local = new Vector();
- 
         Log.out("------- G2 -------");
         this.setDataList(data_info);
         if(HTMLEnv.getSelectFlg())
@@ -66,8 +61,6 @@ public class HTMLG2 extends Grouper {
         
         Log.out("<TABLE class=\""+HTMLEnv.getClassID(this) + "\">");
 
-        //html_env2.code.append("<tfe type=\"connect\" dimension=\"2\" >");
-        int i = 0;
         while (this.hasMoreItems()) {
             html_env.gLevel++;
             Log.out("selectFlg"+HTMLEnv.getSelectFlg());
@@ -140,7 +133,6 @@ public class HTMLG2 extends Grouper {
             	Log.out("</TD></TR>");
             }
       
-            i++;
             html_env.gLevel--;
 
         }

@@ -8,8 +8,6 @@ public class SQLQuery extends ArrayList {
 
 	private ExtList result;
 	private long execTime;
-	ExtList filterList;
-		
 	public SQLQuery()
 	{
         result = null;
@@ -17,7 +15,7 @@ public class SQLQuery extends ArrayList {
 	
 	public String getString()
 	{
-		filterList = new ExtList();
+		new ExtList();
 		int column = 0;
 		long start, end;
 
@@ -66,7 +64,6 @@ public class SQLQuery extends ArrayList {
 		tbls = tbls.substring(2).trim();
 		//by goto
 		
-		int index;
 		if ( where.trim().length() != 0 )
 		{
 			where = where.substring(5).trim();

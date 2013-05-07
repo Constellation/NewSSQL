@@ -10,20 +10,13 @@ import supersql.extendclass.ExtList;
 
 public class HTMLIfCondition extends IfCondition {
 
-	protected Manager manager;
-	protected HTMLEnv html_env;
-	protected HTMLEnv html_env2;
-	
 	public HTMLIfCondition(Manager manager, HTMLEnv html_env, HTMLEnv html_env2, Attribute condition, TFE thenTfe, TFE elseTfe) {
 		super(condition, thenTfe, elseTfe);
-		this.manager = manager;
-		this.html_env = html_env;
-		this.html_env2 = html_env;
 	}
 	
 	public void work(ExtList data_info) {
 
-		String conditionResult = ((ExtList)(data_info.get(0))).toString();
+		String conditionResult = (String) data_info.get(0);
 		if(conditionResult.equals("t") || conditionResult.equals("1")) {
 			if(thenTfe instanceof Connector || thenTfe instanceof Attribute
 				|| thenTfe instanceof Function || thenTfe instanceof IfCondition)

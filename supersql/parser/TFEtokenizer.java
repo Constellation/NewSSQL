@@ -7,17 +7,14 @@ import supersql.extendclass.ExtList;
 
 public class TFEtokenizer {
 
-    String input_str;
+	private StringTokenizer st;
 
-    StringTokenizer st;
+	private ExtList st_list;
 
-    ExtList st_list;
-
-    int ind;
+	private int ind;
 
     public TFEtokenizer(String strs) {
 
-        input_str = strs;
         st = new StringTokenizer(strs, "\t[]{}()?,!%#@'\\\"", true);
 
         st_list = new ExtList();

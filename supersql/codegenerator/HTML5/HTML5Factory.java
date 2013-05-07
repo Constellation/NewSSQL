@@ -13,8 +13,8 @@ import supersql.codegenerator.TFE;
 
 public class HTML5Factory extends Factory {
 
-	HTML5Env html5_env;
-	HTML5Env html5_env2;
+	private HTML5Env html5_env;
+	private HTML5Env html5_env2;
 
 	@Override
 	public void createLocalEnv() {
