@@ -14,13 +14,26 @@ $(document).on('pageshow', '[data-role=page]', function(e) {
 
 
 function addBookmark(title,url) {
-    if (window.sidebar) {
-        window.sidebar.addPanel(title, url,"");
-    } else if( document.all ) {
-        window.external.AddFavorite( url, title);
-    } else if( window.opera && window.print ) {
-        return true;
-    }
+	//IE
+	if(navigator.userAgent.indexOf("MSIE") > -1){
+		window.external.AddFavorite(url, title);
+	}
+	//Firefox
+	else if(navigator.userAgent.indexOf("Firefox") > -1){
+		window.sidebar.addPanel(title, url, "");
+	}
+	//Opera
+	else if(navigator.userAgent.indexOf("Opera") > -1){
+		document.write('<div style="text-align:center"><a href="'+url+'" rel="sidebar" title="'+title+'">„Éñ„ÉÉ„ÇØ„Éû„Éº„ÇØ„Å´ËøΩÂä†</a></div><br>');
+	}
+	//Netscape
+	else if(navigator.userAgent.indexOf("Netscape") > -1){
+		document.write('<div style="text-align:center"><input type="button" value="„Éñ„ÉÉ„ÇØ„Éû„Éº„ÇØ„Å´ËøΩÂä†"');
+		document.write(' onclick="window.sidebar.addPanel(\''+title+'\',\''+url+'\',\'\');"></div><br>');
+	}
+	else{
+    	alert("„Åì„ÅÆ„Éñ„É©„Ç¶„Ç∂„Å∏„ÅÆ„ÅäÊ∞ó„Å´ÂÖ•„ÇäËøΩÂä†„Éú„Çø„É≥„ÅØ„ÄÅChrome/SafariÁ≠â„Å´„ÅØÂØæÂøú„Åó„Å¶„Åä„Çä„Åæ„Åõ„Çì„ÄÇ\nChrome/Safari„ÅÆÂ†¥Âêà„ÄÅCtrl„Ç≠„Éº„Å®D„Ç≠„Éº„ÇíÂêåÊôÇ„Å´Êäº„Åó„Å¶„Åè„Å†„Åï„ÅÑ„ÄÇ\n„Åù„ÅÆ‰ªñ„ÅÆÂ†¥Âêà„ÅØ„ÅîËá™Ë∫´„ÅÆ„Éñ„É©„Ç¶„Ç∂„Åã„Çâ„ÅäÊ∞ó„Å´ÂÖ•„Çä„Å∏ËøΩÂä†‰∏ã„Åï„ÅÑ„ÄÇ");
+  	}
 }
 
 $(document).on('pageshow', '#p-gallery', function(e){

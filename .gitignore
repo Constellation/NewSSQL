@@ -20,3 +20,4 @@ demo*.sql
 bin/
 .checkstyle
 bin/
+js/script.js
