@@ -69,6 +69,10 @@ public class SSQLparser {
     private boolean foreachFlag = false;
     private String foreachFrom = "";
     private String foreachWhere = "";
+    
+    //added by goto 20130508  "Login&Logout"
+	public static boolean sessionFlag = false;
+	public static String sessionString = "";
 
     public SSQLparser(int id) {
         parseSSQL(this.getSSQLQuery(),id);
@@ -112,9 +116,21 @@ public class SSQLparser {
         if (nt.equalsIgnoreCase("REQUEST")) {
             while (st.hasMoreTokens()) {
                 nt = st.nextToken().toString();
+                Log.i(nt);
                 if (nt.equalsIgnoreCase("GENERATE"))
                     break;
             }
+        }
+        
+        //SESSION  //added by goto 20130508  "Login&Logout"
+        if (nt.matches("SESSION.*")) {
+            while (st.hasMoreTokens()) {
+            	sessionString += nt;
+                nt = st.nextToken().toString();
+                if (nt.equalsIgnoreCase("GENERATE"))
+                    break;
+            }
+            sessionFlag = true;
         }
 
         // GENERATE medium
@@ -437,6 +453,7 @@ public class SSQLparser {
                     break;
                 }
                 from_c.append(nt + " ");
+                //if(sessionFlag)	sessionString += nt+" ";	//added by goto 20130508  "Login&Logout"
             }
 
             if(embedFrom.length() != 0)

@@ -13,7 +13,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import com.sun.tools.doclets.internal.toolkit.resources.doclets;
 
 import supersql.codegenerator.AttributeItem;
 import supersql.common.GlobalEnv;

@@ -478,6 +478,207 @@ public class HTMLEnv extends LocalEnv {
 	        header.append("<BODY>\n");
 	        header.append("<div data-role=\"page\">\n");
 	        header.append("<div data-role=\"content\" style=\"padding:0\">\n");
+	        
+	        //added by goto 20130508  "Login&Logout" start
+	        //ログイン・ログアウト・新規登録
+	        if(SSQLparser.sessionFlag){
+	        	String s = SSQLparser.sessionString;
+	        	//Log.i("s:" + s);
+	        	String DB = GlobalEnv.getdbname();							//DB
+	        	String c1 = s.substring(s.indexOf("(")+1,s.indexOf(","));	//ID column
+	        	//String c2 = s.substring(s.indexOf(",")+1,s.indexOf(")"));	//PW column
+	        	//String from = s.substring(s.indexOf(")")+1);				//FROM
+	        	String c2 = s.substring(s.indexOf(",")+1,s.lastIndexOf(","));//PW column
+	        	String from = s.substring(s.lastIndexOf(",")+1,s.indexOf(")"));				//FROM
+	        	String DBMS = GlobalEnv.getdbms();							//DBMS
+	        	//Log.i("c1:"+c1+"   c2:"+c2+"   from:"+from+"   DB:"+DB+"	DBMS:"+DBMS);
+	        	
+	        	//sqlite3 php
+	        	if(DBMS.equals("sqlite3")){
+	        		header.append("\n" +
+	        				"<!-- \"Login & Logout\" start -->\n" +
+	        				"<?php\n" +
+	        				"//最初にログイン中かどうか判定\n" +
+	        				"if($_SESSION[id] != \"\"){\n" +
+	        				"?>\n" +
+	        				"	<script type=\"text/javascript\">\n" +
+	        				"	$(document).ready(function(){\n" +
+	        				"		$('#login1').attr('checked', 'checked');	//load時\n" +
+	        				"		$('#LOGINpanel1').hide();\n" +
+	        				"	});\n" +
+	        				"	</script>\n" +
+	        				"<?php\n" +
+	        				"	display_html();								//display_html\n" +
+	        				"}else{\n" +
+	        				"?>\n" +
+	        				"	<script type=\"text/javascript\">\n" +
+	        				"	$(document).ready(function(){\n" +
+	        				"   	$('#LOGOUTpanel1').hide();\n" +
+	        				"	});\n" +
+	        				"	</script>\n" +
+	        				"<?php\n" +
+	        				"}\n" +
+	        				"?>\n" +
+	        				"\n" +
+	        				"<!-- Login & Registration start -->\n" +
+	        				"<!-- Login Panel start -->\n" +
+	        				"<div id=\"LOGINpanel1\" style=\"background-color:black; width:100%;\" data-role=\"none\">\n" +
+	        				"<br>\n" +
+	        				"<form method=\"post\" action=\"\" target=\"login_ifr1\">\n" +
+	        				"<div>\n" +
+	        				"	<div style=\"color:lightgray; font-size:20;\">ID:&nbsp;&nbsp;</div>\n" +
+	        				"	<input type=\"text\" name=\"id\" style=\"width:100%;\" data-mini=\"true\">\n" +
+	        				"	<fieldset data-role=\"controlgroup\" data-type=\"horizontal\" data-mini=\"true\">\n" +
+	        				"		<input type=\"radio\" name=\"choose\" id=\"login1\" value=\"login1\" checked=\"checked\">\n" +
+	        				"	    <label for=\"login1\">I have an account</label>\n" +
+	        				"		<input type=\"radio\" name=\"choose\" id=\"signup1\">\n" +
+	        				"		<label for=\"signup1\"> I am new!</label>\n" +
+	        				"	</fieldset>\n" +
+	        				"</div>\n" +
+	        				"<div id=\"login_block\">\n" +
+	        				"	<div style=\"color:lightgray; font-size:20;\">Password:&nbsp;&nbsp;&nbsp;</div>\n" +
+	        				"	<input type=\"password\" name=\"password\" id=\"password\" style=\"width:100%;\" data-mini=\"true\">\n" +
+	        				"	<input type=\"submit\" value=\" Login \" name=\"sqlite3_login1\" id=\"sqlite3_login1\" data-mini=\"false\" data-inline=\"false\">\n" +
+	        				"</div>\n" +
+	        				"<div id=\"signup_block\" style=\"display:none\" data-role=\"none\">\n" +
+	        				"	<div style=\"color:lightgray; font-size:20;\">Choose password:&nbsp;&nbsp;</div>\n" +
+	        				"	<input type=\"password\" name=\"newpassword\" id=\"newpassword\" style=\"width:100%;\" data-mini=\"true\">\n" +
+	        				"	<input type=\"submit\" value=\" Signup \" name=\"sqlite3_login1\" id=\"sqlite3_login1\" data-mini=\"false\" data-inline=\"false\">\n" +
+	        				"</div>\n" +
+	        				"</form>\n" +
+	        				"\n" +
+	        				"<iframe name=\"login_ifr1\" style=\"display:none;\"></iframe>\n" +
+	        				"<p id=\"Login_text1\"  data-role=\"none\"><!-- ここに表示 --></p>\n" +
+	        				"<br>\n" +
+	        				"</div>\n" +
+	        				"<!-- Login Panel end -->\n" +
+	        				"\n" +
+	        				"<?php\n" +
+	        				"//Login or Registration\n" +
+	        				"if($_POST['sqlite3_login1']){\n" +
+	        				"	//ユーザ定義\n" +
+	        				"	$sqlite3_DB = '"+DB+"';\n" +
+	        				"	$sqlite3_id = '"+c1+"';\n" +
+	        				"	$sqlite3_pw = '"+c2+"';\n" +
+	        				"	$sqlite3_table = '"+from+"';\n" +
+	        				"\n" +
+	        				"	$id = $_POST['id'];\n" +
+	        				"	$pw = $_POST['password'];\n" +
+	        				"	$newpw = $_POST['newpassword'];\n" +
+	        				"\n" +
+	        				"	if($pw && $id){\n" +
+	        				"		//Login\n" +
+	        				"   		$db = new SQLite3($sqlite3_DB);\n" +
+	        				"		$sql = \"SELECT \".$sqlite3_id.\",\".$sqlite3_pw.\" FROM \".$sqlite3_table.\" where \".$sqlite3_id.\"='\".$id.\"' and \".$sqlite3_pw.\"='\".$pw.\"'\";\n" +
+	        				"	    $result = $db->query($sql);\n" +
+	        				"	    $i = 0;\n" +
+	        				"	    while($res = $result->fetchArray(SQLITE3_ASSOC)){\n" +
+	        				"	          $i++;\n" +
+	        				"	          if($i==1)	break;\n" +
+	        				"	    }\n" +
+	        				"	    if($i == 0)	p('<font color=#ff0000>Login failed.</font>');	//Login failed.\n" +
+	        				"	    else{\n" +
+	        				"	    	//Login success.\n" +
+	        				"	    	$_SESSION[id] = $id;\n" +
+	        				"			echo '<script type=\"text/javascript\">window.parent.$(\\'#Login_text1\\').text(\"\");</script>';\n" +
+	        				"			echo '<script type=\"text/javascript\">window.parent.history.go(0);</script>';	//reload\n" +
+	        				"	    }\n" +
+	        				"	}else if($newpw && $id){\n" +
+	        				"		//check & registration\n" +
+	        				"		$db = new SQLite3($sqlite3_DB);\n" +
+	        				"		\n" +
+	        				"		//check\n" +
+	        				"		$sql1 = \"SELECT \".$sqlite3_id.\" FROM \".$sqlite3_table.\" where \".$sqlite3_id.\"='\".$id.\"'\";\n" +
+	        				"	    $result1 = $db->query($sql1);\n" +
+	        				"	    $i=0;\n" +
+	        				"	    while($res = $result1->fetchArray(SQLITE3_ASSOC)){\n" +
+	        				"	          $i++;\n" +
+	        				"	          if($i==1)	break;\n" +
+	        				"	    }\n" +
+	        				"	    if($i > 0)	p('<font color=#ff0000>It has been already registered.</font>');	//already registered.\n" +
+	        				"		else{\n" +
+	        				"			//registration\n" +
+	        				"			$sql2 = \"INSERT INTO \".$sqlite3_table.\" (\".$sqlite3_id.\", \".$sqlite3_pw.\") VALUES ('\".$id.\"','\".$newpw.\"')\";\n" +
+	        				"			try{\n" +
+	        				"				$result2 = $db->exec($sql2);\n" +
+	        				"				p('<font color=gold>Registration Success!!</font>');\n" +
+	        				"			}catch(Exception $e){\n" +
+	        				"				p('<font color=#ff0000>Registration failed.</font>'.$e->getMessage());\n" +
+	        				"			}\n" +
+	        				"		}\n" +
+	        				"	}else{\n" +
+	        				"		p('<font color=#ff0000>Please input form.</font>');\n" +
+	        				"	}\n" +
+	        				"	unset($db);\n" +
+	        				"	\n" +
+	        				"	if($_SESSION[id]!=\"\")	p('<a href=\"#\" onclick=\"<?php sdes(); ?> return false;\" data-role=\"button\">Log out</a>');\n" +
+	        				"}\n" +
+	        				"function p($str){\n" +
+	        				"	//親ウインドウのJavaScript関数（テキストエリアへ書き込み）を呼び出す\n" +
+	        				"	echo '<script type=\"text/javascript\">window.parent.Login_echo1(\"'.$str.'\");</script>';\n" +
+	        				"}\n" +
+	        				"?>\n" +
+	        				"\n" +
+	        				"<script type=\"text/javascript\">\n" +
+	        				"$(document).ready(function(){\n" +
+	        				"	//アカウントあり or 新規登録 クリック時の処理\n" +
+	        				"	$('#signup1').click(function(){\n" +
+	        				"		$('#password').val('');\n" +
+	        				"		$('#login_block').hide();\n" +
+	        				"		$('#signup_block').show();\n" +
+	        				"	});\n" +
+	        				"	$('#login1').click(function(){\n" +
+	        				"		$('#newpassword').val('');\n" +
+	        				"		$('#signup_block').hide();\n" +
+	        				"		$('#login_block').show();\n" +
+	        				"	});\n" +
+	        				"});\n" +
+	        				"\n" +
+	        				"//テキストエリアへ書き込み\n" +
+	        				"function Login_echo1(str){\n" +
+	        				"  var textArea = document.getElementById(\"Login_text1\");\n" +
+	        				"  textArea.innerHTML = \"<h2>\" + str + \"</h2>\";\n" +
+	        				"}\n" +
+	        				"</script>\n" +
+	        				"<!-- Login & Registration end -->\n" +
+	        				"\n" +
+	        				"\n" +
+	        				"<!-- Logout start -->\n" +
+	        				"<form method=\"post\" action=\"\" target=\"logout_ifr1\" id=\"LOGOUTpanel1\">\n" +
+	        				"<input type=\"submit\" value=\" Logout \" name=\"sqlite3_logout1\" data-mini=\"false\" data-inline=\"false\">\n" +
+	        				"</form>\n" +
+	        				"<iframe name=\"logout_ifr1\" style=\"display:none;\"></iframe>\n" +
+	        				"\n" +
+	        				"<?php\n" +
+	        				"if($_POST['sqlite3_logout1']){\n" +
+	        				"	//ログアウト処理\n" +
+	        				"	//セッション変数を全て解除\n" +
+	        				"	$_SESSION = array();\n" +
+	        				"	//セッションを切断するにはセッションクッキーも削除\n" +
+	        				"	//Note: セッション情報だけでなくセッションを破壊\n" +
+	        				"	if (isset($_COOKIE[session_name()])) {\n" +
+	        				"    	setcookie(session_name(), '', time()-42000, '/');\n" +
+	        				"	}\n" +
+	        				"	session_destroy();\n" +
+	        				"	echo '<script type=\"text/javascript\">window.parent.history.go(0);</script>';	//reload\n" +
+	        				"}\n" +
+	        				"?>\n" +
+	        				"<!-- Logout end -->\n" +
+	        				"<!-- \"Login & Logout\" end -->\n" +
+	        				"\n" +
+	        				"\n" +
+	        				"<?php\n" +
+	        				"//<!-- display_html start -->\n" +
+	        				"function display_html(){\n" +
+	        				"	if($_SESSION[id] != \"\"){\n" +
+	        				"		echo <<<EOF\n" +
+	        				"		\n");
+	        	}
+	        	//else if(DBMS.equals("postgresql")){
+	        	//	;
+	        	//}
+	        }
+	        //added by goto 20130508  "Login&Logout" end
 
 	        //commented out by goto  201203
 //	        header.append("<div");
@@ -569,10 +770,20 @@ public class HTMLEnv extends LocalEnv {
     	}
 
     	if(GlobalEnv.getframeworklist() == null){
+    		//added by goto 20130508  "Login&Logout"
+    		if(SSQLparser.sessionFlag){
+    			footer.append("\n" +
+    					"EOF;\n" +
+    					"	}//end if\n" +
+    					"}//end function\n" +
+    					"//<!-- display_html end -->\n" +
+    					"?>\n");
+    		}
     		footer.append("</div><!-- Close <div data-role=\"content\"> -->\n");		//Close <div data-role="content">
     		footer.append("\n<!-- Panel start -->\n"+panel+"\n<!-- Panel end -->\n\n");	//Add panel contents.	//20130503  Panel
     		footer.append("</div><!-- Close <div data-role=\"page\"> -->\n");			//Close <div data-role="page">
-	        footer.append("<BR><BR></BODY></HTML>\n");
+    		
+    		footer.append("<BR><BR></BODY></HTML>\n");
 	        Log.out("</body></html>");
     	}
     }

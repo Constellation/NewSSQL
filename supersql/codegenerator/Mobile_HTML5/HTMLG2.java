@@ -15,6 +15,7 @@ import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
+import supersql.parser.SSQLparser;
 
 public class HTMLG2 extends Grouper {
 
@@ -521,9 +522,14 @@ public class HTMLG2 extends Grouper {
             else
             	pw = new PrintWriter(new BufferedWriter(new FileWriter(
         	                    html_env.filename)));
-            pw.println(html_env.header);
-//            pw.println(html_env.code);
-            pw.println(codeBuf);
+            //added by goto 20130508  "Login&Logout"
+            //Logputボタンをカット
+            if(SSQLparser.sessionFlag){
+            	int x = html_env.header.indexOf("<!-- Logout start -->");
+            	int y = html_env.header.lastIndexOf("<!-- Logout end -->");
+            	pw.println(html_env.header.delete(x,y));
+            }else	pw.println(html_env.header);
+        	pw.println(codeBuf);
             //delete: 最後の<BR><BR>カット
             int a = html_env.footer.lastIndexOf("<BR><BR>");
             int b = a+"<BR><BR>".length();

@@ -349,7 +349,7 @@ public class GlobalEnv {
 			}else if (driver.equals("db2")) {
 				ret = "jdbc:db2:" + db;	
 			//added by goto 20120518 start
-			}else if (driver.equals("sqlite")) {
+			}else if (driver.equals("sqlite") || driver.equals("sqlite3")) {
 				ret = "jdbc:sqlite:" + db;
 			}
 			//added by goto 20120518 end
@@ -690,7 +690,7 @@ public class GlobalEnv {
 		} else if(ret.equals("db2")){
 			ret = "com.ibm.db2.jcc.DB2Driver";
 		//added by goto 20120518 start
-		} else if (ret.equals("sqlite")) {
+		} else if (ret.equals("sqlite") || ret.equals("sqlite3")) {
 			ret = "org.sqlite.JDBC";
 		}
 		//added by goto 20120518 end
