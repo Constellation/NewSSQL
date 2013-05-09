@@ -1,5 +1,11 @@
 package supersql.codegenerator;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
+import supersql.codegenerator.HTML.HTMLEnv;
+import supersql.common.Log;
+
 /**
  * Operator, Manager を生成するクラス
  */
@@ -7,9 +13,50 @@ public class Factory implements IFactory {
 
 	private LocalEnv env;
 	private LocalEnv env2;
+	private String classPrefix;
+	private Class[] args = new Class[2];
+	
+	private void initializeArgs() {
+		Class argsClass;
+		try {
+			argsClass = Class.forName(getClassPrefix() + "Env");
+			args[0] = argsClass;
+			args[1] = argsClass;
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private Constructor getConstructor(String postfix) {
+		initializeArgs();
+		try {
+			return Class.forName(getClassPrefix() + postfix).getConstructor(args);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 	
 	@Override
 	public Manager createManager() {
+		try {
+			Constructor managerConstructor = getConstructor("Manager");
+			return (Manager) managerConstructor.newInstance(getEnv(), getEnv2());
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 
@@ -88,6 +135,9 @@ public class Factory implements IFactory {
 		return null;
 	}
 
+/*********************
+* Getters and Setters
+*********************/
 	public LocalEnv getEnv() {
 		return env;
 	}
@@ -103,4 +153,13 @@ public class Factory implements IFactory {
 	public void setEnv2(LocalEnv env2) {
 		this.env2 = env2;
 	}
+
+	public String getClassPrefix() {
+		return classPrefix;
+	}
+
+	public void setClassPrefix(String classPrefix) {
+		this.classPrefix = classPrefix;
+	}
+
 }

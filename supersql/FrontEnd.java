@@ -4,7 +4,6 @@ import supersql.codegenerator.CodeGenerator;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.dataconstructor.DataConstructor;
-import supersql.extendclass.ExtList;
 import supersql.parser.SSQLparser;
 
 public class FrontEnd {

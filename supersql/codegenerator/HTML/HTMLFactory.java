@@ -17,11 +17,7 @@ public class HTMLFactory extends Factory {
 	public void createLocalEnv() {
 		setEnv(new HTMLEnv());
 		setEnv2(new HTMLEnv());
-	}
-
-	@Override
-	public Manager createManager() {
-		return new HTMLManager((HTMLEnv) getEnv(),(HTMLEnv) getEnv2());
+		setClassPrefix("supersql.codegenerator.HTML.HTML");
 	}
 
 	@Override
