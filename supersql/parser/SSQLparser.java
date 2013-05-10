@@ -553,7 +553,8 @@ public class SSQLparser {
 	/**
 	 * Fills the buffers from_c, where_c, order_c, group_c and having_c.
 	 * Whenever we encounter a keyword the local variable buffer changes
-	 * and points to the next buffer.
+	 * and points to the next buffer. Keywords are not appended in the 
+	 * buffers.
 	 * @param st
 	 */
 	private void processKeywords(StringTokenizer st){
