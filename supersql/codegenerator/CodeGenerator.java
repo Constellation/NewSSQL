@@ -17,7 +17,7 @@ import supersql.parser.SSQLparser;
  * コードジェネ?ータマネージャクラス 指定さ?た媒体によってコードジェネ?ータの構成部品を生成す? 工?(Factory)を生成す?
  */
 public class CodeGenerator{
-	private IFactory factory;
+	private Factory factory;
 
 	public int TFEid;
 
@@ -285,7 +285,7 @@ public class CodeGenerator{
 
 	}
 
-	public IFactory getFactory() {
+	public Factory getFactory() {
 		return factory;
 	}
 
@@ -297,7 +297,7 @@ public class CodeGenerator{
 		this.media = media;
 	}
 
-	public void setFactory(IFactory factory) {
+	public void setFactory(Factory factory) {
 		this.factory = factory;
 	};
 
