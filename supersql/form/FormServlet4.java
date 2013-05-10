@@ -192,7 +192,7 @@ public class FormServlet4 extends HttpServlet {
 				line = line1+line.substring(t+2);
 			}
 			//added by goto 20130412
-			if(line!=null && line.contains("//")){
+			if(line!=null && line.contains("--")){
 				boolean dqFlg=false;
 				int i=0;
 

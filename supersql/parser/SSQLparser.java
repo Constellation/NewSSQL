@@ -22,105 +22,706 @@ import supersql.db.SQLManager;
 import supersql.extendclass.ExtList;
 
 public class SSQLparser {
-	
-    private String media;
-    private TFEparser tfeInfo;
-    private FromInfo fromInfo;
-    private static String fromInfoString; 
-    private WhereInfo whereInfo = new WhereInfo();
-    
-    private String orderStatement;
-    private String groupStatement;
-    private String havingStatement;
-
-    private CodeGenerator codeGenerator;
-    private ForeachInfo foreachInfo;
-    private String QueryImage;
-
-    private StringBuffer embedWhere = new StringBuffer();
-    private StringBuffer embedFrom = new StringBuffer();
-    private StringBuffer embedGroup = new StringBuffer();
-    private StringBuffer embedHaving = new StringBuffer();
-
-    private int tableNum = 0;
-
-    private static boolean dbpediaQuery = false;
-
-    public static String XpathQuery;
-    public static String[] xpath_query = {""};
-
-    public static int xpathExist = 0;
-    public static int xpathStart = 0;
-
-    public static int numXpath = 0;
-
-    public static String tmpXpath1 = new String();
-    public static String Xpath = new String();
-    public static String tmpXmlQuery1 = new String();
-    public static String DB2_XQUERY = new String();
-    public static String tmpXmlQuery2 = new String();
-
-    public static int xmlTextFlag = 0;
-    public static String XMLQuery = new String();
-
-    public static String xpathTag = new String();
-    public static int xpathTagExist = 0;
-
-    private boolean foreachFlag = false;
-    private String foreachFrom = "";
-    private String foreachWhere = "";
     
     //added by goto 20130508  "Login&Logout"
 	public static boolean sessionFlag = false;
 	public static String sessionString = "";
 
-    public SSQLparser(int id) {
-        parseSSQL(this.getSSQLQuery(),id);
-    }
+	private static boolean dbpediaQuery = false;
+	private static String fromInfoString;
+	public static String DB2_XQUERY = new String();
+	public static int numXpath = 0;
+	public static String tmpXmlQuery1 = new String();
 
-    public SSQLparser(String a) {
-    	parseSSQL(this.getSSQLQuery2(),10000);
-    }
+	public static String tmpXmlQuery2 = new String();
+	public static String tmpXpath1 = new String();
+	public static String XMLQuery = new String();
 
-    public SSQLparser() {
-    	parseSSQL(this.getSSQLQuery(),10000);
-    }
-    
-    public SSQLparser(StringBuffer querybuffer) {
-        parseSSQL(querybuffer.toString(),10000);
-    }
-    
-    private void preProcess(StringTokenizer st, String nt) {
-        // FOREACH
-        if (nt.equalsIgnoreCase("FOREACH")) {
-            foreachFlag = true;
-            StringBuffer foreach_c = new StringBuffer();
-            while (st.hasMoreTokens()) {
-                nt = st.nextToken().toString();
-                if (nt.equalsIgnoreCase("GENERATE"))
-                    break;
-                foreach_c.append(nt + " ");
-            }
-            Log.out("*** This query contains FOREACH clause ***");
-            Log.out(" foreach_c :" + foreach_c);
+	public static int xmlTextFlag = 0;
+	public static String Xpath = new String();
+	public static String[] xpath_query = { "" };
 
-            foreachInfo = new ForeachInfo(foreach_c.toString().trim());
-            foreachFrom = foreachInfo.getForeachFrom();
-            foreachWhere = foreachInfo.getForeachWhere();
+	public static int xpathExist = 0;
+	public static String XpathQuery;
+	public static int xpathStart = 0;
+	public static String xpathTag = new String();
 
-            Log.out("[Parser:Foreach] foreach = " + foreachInfo);
-        }
-        GlobalEnv.foreach_flag = foreachFlag;
+	public static int xpathTagExist = 0;
 
-        //REQUEST SESSION
-        if (nt.equalsIgnoreCase("REQUEST")) {
-            while (st.hasMoreTokens()) {
-                nt = st.nextToken().toString();
-                Log.i(nt);
-                if (nt.equalsIgnoreCase("GENERATE"))
-                    break;
-            }
-        }
+	private CodeGenerator codeGenerator;
+
+	private StringBuffer embedFrom = new StringBuffer();
+	private StringBuffer embedGroup = new StringBuffer();
+	private StringBuffer embedHaving = new StringBuffer();
+	private StringBuffer embedWhere = new StringBuffer();
+	private boolean foreachFlag = false;
+	private String foreachFrom = "";
+
+	private ForeachInfo foreachInfo;
+	private String foreachWhere = "";
+
+	private FromInfo fromInfo;
+	private String groupStatement;
+	private String havingStatement;
+	private String media;
+	private String orderStatement;
+
+	private String QueryImage;
+
+	private int tableNum = 0;
+
+	private TFEparser tfeInfo;
+	private WhereInfo whereInfo = new WhereInfo();
+
+	private static StringBuffer from_c = new StringBuffer();
+	private static StringBuffer where_c = new StringBuffer();
+	private static StringBuffer order_c = new StringBuffer();
+	private static StringBuffer group_c = new StringBuffer();
+	private static StringBuffer having_c = new StringBuffer();
+
+	public static String get_from_info_st() {
+		if (fromInfoString == null) {
+			return "";
+		}
+		return fromInfoString;
+	}
+
+	public static boolean isDbpediaQuery() {
+		return dbpediaQuery;
+	}
+
+	public static void set_from_info_st(String fi) {
+		fromInfoString = fi;
+	}
+
+	public static void setDbpediaQuery(boolean dbpediaQuery) {
+		SSQLparser.dbpediaQuery = dbpediaQuery;
+	}
+
+	public SSQLparser() {
+		parseSSQL(this.getSSQLQuery(), 10000);
+	}
+
+	public SSQLparser(int id) {
+		parseSSQL(this.getSSQLQuery(), id);
+	}
+
+	public SSQLparser(String a) {
+		parseSSQL(this.getSSQLQuery2(), 10000);
+	}
+
+	public SSQLparser(StringBuffer querybuffer) {
+		parseSSQL(querybuffer.toString(), 10000);
+	}
+
+	private String getSSQLQuery() {
+
+		String query = GlobalEnv.getQuery();
+		if (query != null) {
+			query = query.trim();
+		}
+
+		String filename = GlobalEnv.getfilename();
+		if (filename == null || filename.isEmpty()) {
+			System.err.println("Error[SQLparser]: File Is Not Specified.");
+			GlobalEnv.addErr("Error[SQLparser]: File Is Not Specified.");
+			return "";
+		}
+
+		Log.info("[Paser:Parser] filename = " + filename);
+		BufferedReader in;
+		StringBuffer tmp = new StringBuffer();
+		try 
+		{
+			in = new BufferedReader(new FileReader(filename));
+			String line = null;
+			while (true) 
+			{
+				line = in.readLine();
+				if (line == null)
+					break;
+
+				if (line.contains("/*"))
+				{
+					int s = line.indexOf("/*");
+					String line1 = line.substring(0, s);
+					// tmp.append(" "+line1);
+					while (!line.contains("*/"))
+						line = in.readLine();
+					int t = line.indexOf("*/");
+					line = line1 + line.substring(t + 2);
+				}
+				if (line.contains("//")) 
+				{
+					boolean dqFlg = false;
+					int i = 0;
+
+					for (i = 0; i < line.length(); i++) 
+					{
+						if (line.charAt(i) == '"' && !dqFlg)
+							dqFlg = true;
+						else if (line.charAt(i) == '"' && dqFlg)
+							dqFlg = false;
+
+						if (!dqFlg
+								&& i < line.length() - 1
+								&& (line.charAt(i) == '/' && line
+								.charAt(i + 1) == '/'))
+							break;
+					}
+					line = line.substring(0, i);
+				}
+				tmp.append(" " + line);
+			}
+			in.close();
+			query = tmp.toString().trim();
+		} catch (FileNotFoundException e) {
+			System.err.println("Error[SQLparser]: File(" + filename
+					+ ") Is Not Found.");
+			GlobalEnv.addErr("Error[SQLparser]: File(" + filename
+					+ ") Is Not Found." + e);
+			return "";
+		} catch (IOException e) {
+			GlobalEnv.addErr("Error[SQLparser]:" + e);
+		}	
+
+		if (query.endsWith(";")) {
+			query = query.substring(0, query.length() - 1).trim();
+		}
+
+		Log.info("[Paser:Parser] ssql statement = " + query);
+
+		// addde by goto 20130122 For "slideshow"
+		if (query.contains("slideshow")) 
+		{
+			// TODO: 1."sslideshow"等のミスタイプ時のエラー表示、2.正しい正規表現かどうかの判定
+
+			// 置換: replaceAll
+			// <正規表現>
+			// 0文字以上の任意の文字列：.*
+			// 0個以上の空白：\\s*
+			// ( )で囲った部分は、S1,　$2等として、置換後の文字列に使用可能（置換前の全文字列は、$0)
+
+			// "slideshow [" -> "[imagefile("
+			query = query.replaceAll("slideshow\\s*\\[", "\\[imagefile(");
+			// "[imagefile(*,path="*"*]" ->
+			// "[imagefile(*,path="*"*, type="slideshow")"
+			query = query.replaceAll("(\\[imagefile\\(.*,\\spath=\".*\".*)\\]",
+					"$1, type=\"slideshow\")");
+
+			if (query.matches(".*\\[imagefile\\(.*\\)\\s*\\@\\s*\\{.*\\}.*")) {
+				// @あり
+				// "[imagefile(*) @ {*}" -> "[imagefile(*) @ {*} ]! "
+				query = query
+						.replaceAll(
+								"\\[imagefile\\(.*\\)\\s*\\@\\s*\\{[a-zA-Z0-9=\\s,]*\\}",
+								"$0]! ");
+			} else {
+				// @無し
+				// "[imagefile(*) " -> "[imagefile(*)]! "
+				query = query.replaceAll("\\[imagefile\\(.*\\)", // "(\\[imagefile\\(.*\\)[\\s*|\\s*^\\@])",
+						"$0]! ");
+			}
+		}
+
+		return query;
+	}
+
+	// to get SSQL file from Internet
+	private String getSSQLQuery2() {
+
+		String query = GlobalEnv.getQuery();
+		if (query != null) {
+			query = query.trim();
+		}
+
+		String filename = GlobalEnv.getfilename();
+		if (filename != null) {
+			Log.info("[Paser:Parser] filename = " + filename);
+			StringBuffer tmp = new StringBuffer();
+			String line = new String();
+			BufferedReader dis;
+			try {
+
+				if (filename.startsWith("http:")) {
+					URL fileurl = new URL(filename);
+
+					URLConnection fileurlConnection = fileurl.openConnection();
+					/*
+					 * DataInputStream dis = new
+					 * DataInputStream(fileurlConnection.getInputStream());
+					 */
+					dis = new BufferedReader(new InputStreamReader(
+							fileurlConnection.getInputStream(), "EUC-JP"));
+				}
+
+				else {
+					dis = new BufferedReader(new FileReader(filename));
+					line = null;
+				}
+				while (true) {
+					line = dis.readLine();
+
+					if (line == null || line.equals("-1"))
+						break;
+
+					if (line != null && line.contains("/*")) {
+						int s = line.indexOf("/*");
+						String line1 = line.substring(0, s);
+						// tmp.append(" "+line1);
+						while (!line.contains("*/"))
+							line = dis.readLine();
+						int t = line.indexOf("*/");
+						line = line1 + line.substring(t + 2);
+					}
+					// added by goto 20130412
+					if (line != null && line.contains("//")) {
+						boolean dqFlg = false;
+						int i = 0;
+
+						for (i = 0; i < line.length(); i++) {
+							if (line.charAt(i) == '"' && !dqFlg)
+								dqFlg = true;
+							else if (line.charAt(i) == '"' && dqFlg)
+								dqFlg = false;
+
+							if (!dqFlg
+									&& i < line.length() - 1
+									&& (line.charAt(i) == '/' && line
+									.charAt(i + 1) == '/'))
+								break;
+						}
+						line = line.substring(0, i);
+					}
+
+					if (line != null)
+						tmp.append(" " + line);
+				}
+				dis.close();
+
+			} catch (MalformedURLException me) {
+				System.out.println("MalformedURLException: " + me);
+			} catch (IOException ioe) {
+				System.out.println("IOException: " + ioe);
+				GlobalEnv.addErr("Error[SQLparser]:" + ioe);
+			}
+
+			query = tmp.toString().trim();
+		}
+
+		if (query.endsWith(";")) {
+			query = query.substring(0, query.length() - 1).trim();
+		}
+
+		Log.info("[Paser:Parser] ssql statement = " + query);
+		return query;
+	}
+
+	private void processFROM(StringBuffer tfe, StringTokenizer st) {
+
+		while (st.hasMoreTokens()) {
+			String nt = st.nextToken().toString();
+			if (nt.equalsIgnoreCase("FROM"))
+				break;
+
+			//			if (nt.toUpperCase().contains("XMLDATA(")) {
+			//				if (nt.contains(")")) {
+			//					String temp_nt = new String();
+			//
+			//					temp_nt = (nt.toUpperCase().replace("XMLDATA(", ""))
+			//							.toLowerCase();
+			//
+			//					if (temp_nt.contains("))")) {
+			//						nt = temp_nt.replace("))", ")");
+			//					} else {
+			//						nt = temp_nt.replace(")", "");
+			//					}
+			//
+			//					Log.out("nt : " + nt);
+			//					tfe.append(nt + " ");
+			//					xpathExist = 1;
+			//				}
+			//			}
+			//
+			//			else if ((nt.toUpperCase().contains("SSQL::XPATH("))
+			//					|| (nt.toUpperCase().contains("XPATH("))) {
+			//				if (nt.toUpperCase().contains("SSQL::XPATH(")) {
+			//					if (nt.toUpperCase().contains("XPATH(")) {
+			//						XpathQuery = nt.toUpperCase().replace(
+			//								"SSQL::XPATH(", "");
+			//					} else if (nt.toUpperCase().contains("SSQL::XPATH(")) {
+			//						XpathQuery = nt.toUpperCase().replace(
+			//								"SSQL::XPATH(", "");
+			//					}
+			//				}
+			//
+			//				else if (nt.toUpperCase().contains("XPATH(")) {
+			//					if (nt.toUpperCase().contains("XPATH(")) {
+			//						XpathQuery = nt.toUpperCase().replace("XPATH(", "");
+			//					} else if (nt.contains("XPATH(")) {
+			//						XpathQuery = nt.toString().replace("XPATH(", "");
+			//					}
+			//				}
+			//
+			//				String tmp_xpath2 = new String();
+			//
+			//				Log.out("xpath after nt (before) : " + nt);
+			//
+			//				if (nt.contains(")")) {
+			//
+			//					if (nt.toString().contains("@{")) {
+			//						tmpXpath1 = nt.substring(
+			//								nt.toUpperCase().indexOf("XPATH(") + 6,
+			//								nt.indexOf("@"));
+			//						if (nt.toString().contains("@{tag=")) {
+			//							xpathTag = nt.substring(
+			//									nt.indexOf("@{tag=") + 6,
+			//									nt.indexOf("}"));
+			//						} else { // @{tag}
+			//							xpathTag = tmpXpath1.substring(
+			//									tmpXpath1.indexOf(".") + 1,
+			//									tmpXpath1.length());
+			//						}
+			//						xpathTagExist = 1;
+			//					} else {
+			//						tmpXpath1 = nt.substring(
+			//								nt.toUpperCase().indexOf("XPATH(") + 6,
+			//								nt.indexOf(","));
+			//					}
+			//
+			//					tmp_xpath2 = nt.substring(nt.indexOf("path=") + 6,
+			//							nt.indexOf("\")"));
+			//
+			//					if (tmp_xpath2.contains("text()")
+			//							|| tmp_xpath2.contains("node()")) { // XPath
+			//						xmlTextFlag = 1;
+			//					}
+			//
+			//					if (nt.contains("),")) {
+			//						nt = "xpath(\"" + tmp_xpath2 + "\"," + tmpXpath1
+			//								+ "),";
+			//					}
+			//
+			//					else {
+			//						nt = "xpath(\"" + tmp_xpath2 + "\"," + tmpXpath1
+			//								+ ")";
+			//					}
+			//					Xpath = nt;
+			//					Log.out("xpath after nt (after) : " + nt);
+			//				}
+			//
+			//				tfe.append(nt + " ");
+			//				Log.out("XPATH tfe : " + tfe);
+			//				xpathExist = 1;
+			//			}
+			//
+			//			else if ((nt.toUpperCase().contains("SSQL::XMLQUERY("))
+			//					|| (nt.toUpperCase().contains("XMLQUERY("))) {
+			//				if (nt.toUpperCase().contains("SSQL::XMLQUERY(")) {
+			//					if (nt.toUpperCase().contains("XMLQUERY(")) {
+			//						XpathQuery = nt.toUpperCase().replace(
+			//								"SSQL::XMLQUERY(", "");
+			//					} else if (nt.toUpperCase().contains("SSQL::XMLQUERY(")) {
+			//						XpathQuery = nt.toUpperCase().replace(
+			//								"SSQL::XMLQUERY(", "");
+			//					}
+			//				}
+			//
+			//				else if (nt.toUpperCase().contains("XMLQUERY(")) {
+			//					if (nt.toUpperCase().contains("XMLQUERY(")) {
+			//						XpathQuery = nt.toUpperCase().replace("XMLQUERY(",
+			//								"");
+			//					} else if (nt.contains("XMLQUERY(")) {
+			//						XpathQuery = nt.toString().replace("XMLQUERY(", "");
+			//					}
+			//				}
+			//
+			//				Log.out("xmlquery after nt (before) : " + nt);
+			//
+			//				if (nt.contains(")")) {
+			//
+			//					if (nt.toString().contains("@{")) {
+			//						tmpXmlQuery1 = nt.substring(nt.toUpperCase()
+			//								.indexOf("XMLQUERY(") + 9, nt.indexOf("@"));
+			//						if (nt.toString().contains("@{tag=")) {
+			//							xpathTag = nt.substring(
+			//									nt.indexOf("@{tag=") + 6,
+			//									nt.indexOf("}"));
+			//						} else { // @{tag}
+			//							xpathTag = tmpXmlQuery1.substring(
+			//									tmpXmlQuery1.indexOf(".") + 1,
+			//									tmpXmlQuery1.length());
+			//						}
+			//
+			//						xpathTagExist = 1;
+			//					}
+			//
+			//					else {
+			//						tmpXmlQuery1 = nt.substring(nt.toUpperCase()
+			//								.indexOf("XMLQUERY(") + 9, nt.indexOf(","));
+			//					}
+			//
+			//					tmpXmlQuery2 = nt.substring(nt.indexOf("path=") + 6,
+			//							nt.indexOf("\")"));
+			//
+			//					if (tmpXmlQuery2.contains("text()")) { // XMLQuery
+			//						xmlTextFlag = 1;
+			//					}
+			//
+			//					else if (tmpXmlQuery2.contains("node()")) { // XMLQuery
+			//						xmlTextFlag = 1;
+			//					}
+			//
+			//					if (nt.contains("),")) {
+			//						nt = "xmlquery(\"$a" + tmpXmlQuery2 + "\"" + ","
+			//								+ tmpXmlQuery1 + "),";
+			//					}
+			//
+			//					else if (nt.contains(")")) {
+			//						nt = "xmlquery(\"$a" + tmpXmlQuery2 + "\"" + ","
+			//								+ tmpXmlQuery1 + ")";
+			//					}
+			//					DB2_XQUERY = nt;
+			//					Log.out("xmlquery after nt (after) : " + nt);
+			//				}
+			//
+			//				tfe.append(nt + " ");
+			//				Log.out("XMLQUERY tfe : " + tfe);
+			//				xpathExist = 1;
+			//			}
+			//
+			//			else if (nt.contains("sinvoke(")) {
+			//				String tmp = new String();
+			//				String orig = new String();
+			//				String orig2 = new String();
+			//				Log.out("sinvoke nt:" + nt);
+			//				if (nt.contains(")")) {
+			//					orig = nt.substring(0, nt.indexOf(")"));
+			//					Log.out("hogehoge" + orig);
+			//					orig2 = nt.substring(nt.indexOf(")"), nt.length());
+			//					Log.out("hoge" + orig2);
+			//					tmp = nt.substring(nt.indexOf("att=") + 4,
+			//							nt.indexOf(")"));
+			//
+			//					Log.out("sinvoke parser tmp:" + tmp);
+			//					Log.out("sinvoke parser orig:" + orig);
+			//					Log.out("sinvoke parser orig2:" + orig2);
+			//
+			//					String cond = new String();
+			//					cond = "ajaxcond=\"" + tmp + "\"";
+			//					if (GlobalEnv.isAjax())
+			//						nt = orig + " ," + cond + " " + orig2;
+			//					else
+			//						nt = orig + orig2;
+			//
+			//					Log.out("sinvoke after nt:" + nt);
+			//				}
+			//				tfe.append(nt + " ");
+			//				Log.out("sinvoke tfe:" + tfe);
+			//			} else if (nt.contains("embed(")) {
+			//				StringBuffer tmp = new StringBuffer();
+			//				String deco = new String();
+			//
+			//				if (nt.contains(")")) {
+			//					deco = nt.substring(nt.indexOf(")") + 1, nt.length());
+			//					nt = nt.substring(0, nt.indexOf(")") + 1);
+			//				}
+			//
+			//				tmp.append(nt + " ");
+			//
+			//				Log.out("tmp:" + tmp);
+			//				while (!nt.contains(")")) {
+			//					nt = st.nextToken().toString();
+			//
+			//					Log.out("embed parser : " + nt);
+			//
+			//					if (nt.contains("@")) {
+			//						deco = nt.substring(nt.indexOf("@"), nt.length());
+			//						nt = nt.substring(0, nt.indexOf("@"));
+			//						Log.out("deco:" + deco);
+			//					}
+			//					tmp.append(nt + " ");
+			//				}
+			//
+			//				tfe.append("{ " + embed(tmp.toString()));
+			//				tfe.append("}" + deco);
+			//				Log.out("append embed tfe : " + tfe);
+			//
+			//			} else {
+			tfe.append(nt + " ");
+
+		}
+	}
+
+	private void processKeywords(StringTokenizer st){
+		StringBuffer buffer = new StringBuffer();
+		buffer = from_c;
+		while (st.hasMoreTokens()) {
+			String nt = st.nextToken().toString();
+			buffer.append(nt + " ");
+			if (nt.equalsIgnoreCase("WHERE")) {
+				buffer = where_c;
+			}
+			if (nt.equalsIgnoreCase("ORDER")) {
+				buffer = order_c;
+			}
+			if (nt.equalsIgnoreCase("GROUP")) {
+				buffer = group_c;
+			}
+			if (nt.equalsIgnoreCase("HAVING")) {
+				buffer = having_c;
+			}
+		}
+	}
+
+	private void postProcess() {
+		// FOREACH
+		if (!(foreachFrom.equals(""))) {
+			from_c.append("," + foreachFrom);
+		}
+
+		groupStatement = group_c.toString();
+		Log.out("[Paeser:Group] group = " + groupStatement);
+		group_c.append(embedGroup + " ");
+		
+		havingStatement = having_c.toString();
+		Log.out("[Paeser:Having] having = " + havingStatement);
+		having_c.append(embedGroup + " ");
+		
+		fromInfo = new FromInfo(from_c.toString().trim());
+		Log.out("[Parser:From] from = " + fromInfo);
+		if (!(foreachFrom.equals(""))) {
+			Log.out(foreachFrom
+					+ ": Used in FOREACH clause and added to FROM clause ");
+		}
+
+		if (SSQLparser.isDbpediaQuery())
+			whereInfo.setSparqlWhereQuery(where_c.toString().trim());
+		else
+			whereInfo.appendWhere(where_c.toString().trim());
+
+		if (embedWhere.length() != 0)
+			whereInfo.appendWhere(embedWhere + " ");
+
+		Log.out("WHERE:" + whereInfo);
+		// FOREACH
+		if (!(foreachWhere.equals(""))) {
+			whereInfo.appendWhere(foreachWhere);
+			Log.out(foreachWhere
+					+ ": Used in FOREACH clause and added to WHERE clause ");
+		}
+
+		String addCondition = GlobalEnv.getCondition();
+		if (addCondition != null) {
+			whereInfo.appendWhere(addCondition);
+		}
+		Log.out("[Paeser:Where] where = " + whereInfo);
+	}
+	
+	private void parseSSQL(String QueryString, int id) {
+		// replace '*' to attributes added by chie
+		if (QueryString.contains("*")) {
+			QueryString = replaceQuery(QueryString);
+		}
+
+		QueryImage = QueryString;
+
+		StringTokenizer st = new StringTokenizer(QueryString);
+
+		try {
+			if (!st.hasMoreTokens()) {
+				System.err.println("*** No Query Specified ***");
+				throw (new IllegalStateException());
+			}
+
+			String nt = st.nextToken().toString();
+			Log.out("[Parser:Parser] start parsing");
+
+			preProcess(st, nt);
+
+			media = st.nextToken().toString();
+
+			// for embed css TFE_ID
+			codeGenerator = new CodeGenerator(id);
+			codeGenerator.setFactory(media.toUpperCase());
+			codeGenerator.initiate();
+
+			StringBuffer tfe = new StringBuffer();
+
+			// FOREACH
+			if (foreachFlag) {
+				tfe.append("[foreach(" + foreachInfo.getForeachAtt() + ")?");
+			}
+
+			processFROM(tfe, st);
+
+			// FOREACH
+			if (foreachFlag) {
+				tfe.append("]%");
+			}
+
+			// changed by goto 20130122 For "slideshow"
+			if (!tfe.toString().contains("type=\"slideshow\""))
+				System.out.println("[Parser:tfe] tfe = " + tfe);
+
+			Preprocessor preprocessor = new Preprocessor(tfe.toString());
+			tfe = preprocessor.pushAggregate();
+			tfe = preprocessor.pushOrderBy();
+			Log.out("[Parser:tfe] converted_tfe = " + tfe);
+
+			tfeInfo = new TFEparser(tfe.toString(), codeGenerator);
+			tfeInfo.debugout();
+
+			processKeywords(st);
+			postProcess();
+			
+		} catch (IllegalStateException e) {
+			System.err
+			.println("Error[SSQLparser]: Syntax Error in SSQL statement : "
+					+ QueryImage);
+			GlobalEnv
+			.addErr("Error[SSQLparser]: Syntax Error in SSQL statement : "
+					+ QueryImage);
+			return;
+		}
+	}
+	
+	private void preProcess(StringTokenizer st, String nt) {
+		// FOREACH
+		if (nt.equalsIgnoreCase("FOREACH")) {
+			foreachFlag = true;
+			StringBuffer foreach_c = new StringBuffer();
+			while (st.hasMoreTokens()) {
+				nt = st.nextToken().toString();
+				if (nt.equalsIgnoreCase("GENERATE"))
+					break;
+				foreach_c.append(nt + " ");
+			}
+			Log.out("*** This query contains FOREACH clause ***");
+			Log.out(" foreach_c :" + foreach_c);
+
+			foreachInfo = new ForeachInfo(foreach_c.toString().trim());
+			foreachFrom = foreachInfo.getForeachFrom();
+			foreachWhere = foreachInfo.getForeachWhere();
+
+			Log.out("[Parser:Foreach] foreach = " + foreachInfo);
+		}
+		GlobalEnv.foreach_flag = foreachFlag;
+
+		// REQUEST SESSION
+		if (nt.equalsIgnoreCase("REQUEST")) {
+			while (st.hasMoreTokens()) {
+				nt = st.nextToken().toString();
+				if (nt.equalsIgnoreCase("GENERATE"))
+					break;
+			}
+		}
+
+		// GENERATE medium
+		if (!nt.equalsIgnoreCase("GENERATE")) {
+			System.err.println("*** The Query should start by GENERATE ***");
+			throw (new IllegalStateException());
+		}
         
         //SESSION  //added by goto 20130508  "Login&Logout"
         if (nt.matches("SESSION.*")) {
@@ -132,513 +733,57 @@ public class SSQLparser {
             }
             sessionFlag = true;
         }
-
-        // GENERATE medium
-        if (!nt.equalsIgnoreCase("GENERATE")) {
-        	System.err.println("*** The Query should start by GENERATE ***");
-            throw (new IllegalStateException());
-        }
-
-        if (!st.hasMoreTokens()) {
-            System.err.println("*** No medium/tfe Specified ***");
-            throw (new IllegalStateException());
-        }
-    }
-
-    private void parseSSQL(String QueryString,int id) {
-
-        //  replace '*' to attributes   added by chie
-        if(QueryString.contains("*")){
-        	QueryString = replaceQuery(QueryString);
-        }
-
-        QueryImage = QueryString;
-
-        StringTokenizer st = new StringTokenizer(QueryString);
-
-        try {
-            if (!st.hasMoreTokens()) {
-                System.err.println("*** No Query Specified ***");
-                throw (new IllegalStateException());
-            }
-
-            String nt = st.nextToken().toString();
-            Log.out("[Parser:Parser] start parsing");
-
-            this.preProcess(st, nt);
-            
-            media = st.nextToken().toString();
-
-            //for embed css TFE_ID
-            codeGenerator = new CodeGenerator(id);
-
-            codeGenerator.setFactory(media.toUpperCase());
-            codeGenerator.initiate();
-
-            Log.out("*********** Specified Media is ************");
-            Log.out(media);
-
-            StringBuffer tfe = new StringBuffer();
-
-            // FOREACH
-            if (foreachFlag) {
-                tfe.append("[foreach(" + foreachInfo.getForeachAtt() + ")?");
-            }
-
-            while (st.hasMoreTokens()) {
-                nt = st.nextToken().toString();
-                if (nt.equalsIgnoreCase("FROM"))
-                    break;
-
-                Log.out("nt : " + nt );
-
-                if(nt.toUpperCase().contains("XMLDATA(")){
-                	if(nt.contains(")")){
-                		String temp_nt = new String();
-
-                		temp_nt = (nt.toUpperCase().replace("XMLDATA(", "")).toLowerCase();
-
-                		if(temp_nt.contains("))")){
-                			nt = temp_nt.replace("))", ")");
-                		}
-                		else{
-                			nt = temp_nt.replace(")", "");
-                		}
-
-	                	Log.out("nt : " + nt);
-	                	tfe.append(nt + " ");
-	                	xpathExist = 1;
-                	}
-                }
-
-                else if((nt.toUpperCase().contains("SSQL::XPATH(")) || (nt.toUpperCase().contains("XPATH(")))
-                {
-                	if(nt.toUpperCase().contains("SSQL::XPATH(")){
-                		if(nt.toUpperCase().contains("XPATH(")){
-                			XpathQuery = nt.toUpperCase().replace("SSQL::XPATH(", "");
-                		}
-                		else if(nt.toUpperCase().contains("SSQL::XPATH(")){
-                			XpathQuery = nt.toUpperCase().replace("SSQL::XPATH(", "");
-                		}
-                	}
-
-                	else if(nt.toUpperCase().contains("XPATH(")){
-                		if(nt.toUpperCase().contains("XPATH(")){
-                			XpathQuery = nt.toUpperCase().replace("XPATH(", "");
-                		}
-                		else if(nt.contains("XPATH(")){
-                			XpathQuery = nt.toString().replace("XPATH(", "");
-                		}
-                	}
-
-                	String tmp_xpath2 = new String();
-
-                	Log.out("xpath after nt (before) : " + nt);
-
-                	if(nt.contains(")")){
-
-                		if(nt.toString().contains("@{")){
-                			tmpXpath1 = nt.substring(nt.toUpperCase().indexOf("XPATH(") + 6, nt.indexOf("@"));
-                			if(nt.toString().contains("@{tag=")){
-                				xpathTag = nt.substring(nt.indexOf("@{tag=") + 6, nt.indexOf("}"));
-                			}
-                			else{ //@{tag}
-                				xpathTag = tmpXpath1.substring(tmpXpath1.indexOf(".") + 1, tmpXpath1.length());
-                			}
-                			xpathTagExist = 1;
-                		}
-                		else{
-                			tmpXpath1 = nt.substring(nt.toUpperCase().indexOf("XPATH(") + 6, nt.indexOf(","));
-                		}
-
-                		tmp_xpath2 = nt.substring(nt.indexOf("path=") + 6, nt.indexOf("\")"));
-
-                		if(tmp_xpath2.contains("text()") ||
-                		   tmp_xpath2.contains("node()")){ //XPath
-                			xmlTextFlag = 1;
-                		}
-
-                		if(nt.contains("),")){
-                			nt = "xpath(\"" + tmp_xpath2 + "\"," + tmpXpath1 + "),";
-                		}
-
-                		else{
-                			nt = "xpath(\"" + tmp_xpath2 + "\"," + tmpXpath1 + ")";
-                		}
-                		Xpath = nt;
-                		Log.out("xpath after nt (after) : " + nt);
-                	}
-
-                	tfe.append(nt + " ");
-                	Log.out("XPATH tfe : " + tfe);
-	                xpathExist = 1;
-                }
-
-
-                else if((nt.toUpperCase().contains("SSQL::XMLQUERY(")) || (nt.toUpperCase().contains("XMLQUERY(")))
-                {
-                	if(nt.toUpperCase().contains("SSQL::XMLQUERY(")){
-                		if(nt.toUpperCase().contains("XMLQUERY(")){
-                			XpathQuery = nt.toUpperCase().replace("SSQL::XMLQUERY(", "");
-                		}
-                		else if(nt.toUpperCase().contains("SSQL::XMLQUERY(")){
-                			XpathQuery = nt.toUpperCase().replace("SSQL::XMLQUERY(", "");
-                		}
-                	}
-
-                	else if(nt.toUpperCase().contains("XMLQUERY(")){
-                		if(nt.toUpperCase().contains("XMLQUERY(")){
-                			XpathQuery = nt.toUpperCase().replace("XMLQUERY(", "");
-                		}
-                		else if(nt.contains("XMLQUERY(")){
-                			XpathQuery = nt.toString().replace("XMLQUERY(", "");
-                		}
-                	}
-
-                	Log.out("xmlquery after nt (before) : " + nt);
-
-                	if(nt.contains(")")){
-
-                		if(nt.toString().contains("@{")){
-                			tmpXmlQuery1 = nt.substring(nt.toUpperCase().indexOf("XMLQUERY(") + 9, nt.indexOf("@"));
-                			if(nt.toString().contains("@{tag=")){
-                				xpathTag = nt.substring(nt.indexOf("@{tag=") + 6, nt.indexOf("}"));
-                			}
-                			else{ //@{tag}
-                				xpathTag = tmpXmlQuery1.substring(tmpXmlQuery1.indexOf(".") + 1, tmpXmlQuery1.length());
-                			}
-
-                			xpathTagExist = 1;
-                		}
-
-                		else{
-                			tmpXmlQuery1 = nt.substring(nt.toUpperCase().indexOf("XMLQUERY(") + 9, nt.indexOf(","));
-                		}
-
-                		tmpXmlQuery2 = nt.substring(nt.indexOf("path=") + 6, nt.indexOf("\")"));
-
-                		if(tmpXmlQuery2.contains("text()")){ //XMLQuery
-                			xmlTextFlag = 1;
-                		}
-
-                		else if(tmpXmlQuery2.contains("node()")){ //XMLQuery
-                			xmlTextFlag = 1;
-                		}
-
-                		if(nt.contains("),")){
-                			nt = "xmlquery(\"$a" + tmpXmlQuery2 + "\"" + "," + tmpXmlQuery1 + "),";
-                		}
-
-                		else if(nt.contains(")")){
-                			nt = "xmlquery(\"$a" + tmpXmlQuery2 + "\"" + "," + tmpXmlQuery1 + ")";
-                		}
-                		DB2_XQUERY  = nt;
-                		Log.out("xmlquery after nt (after) : " + nt);
-                	}
-
-                	tfe.append(nt + " ");
-                	Log.out("XMLQUERY tfe : " + tfe);
-	                xpathExist = 1;
-                }
-
-                else if(nt.contains("sinvoke("))
-                {
-                	String tmp = new String();
-                	String orig = new String();
-                	String orig2 = new String();
-                	Log.out("sinvoke nt:"+nt);
-                	if(nt.contains(")"))
-                	{
-                		orig= nt.substring(0,nt.indexOf(")"));
-                		Log.out("hogehoge"+orig);
-                		orig2 = nt.substring(nt.indexOf(")"),nt.length());
-                		Log.out("hoge"+orig2);
-                		tmp = nt.substring(nt.indexOf("att=")+4,nt.indexOf(")"));
-
-                		Log.out("sinvoke parser tmp:"+tmp);
-                		Log.out("sinvoke parser orig:"+orig);
-                		Log.out("sinvoke parser orig2:"+orig2);
-
-                		String cond = new String();
-                		cond = "ajaxcond=\""+tmp+"\"";
-                		if(GlobalEnv.isAjax())
-                			nt = orig+" ," + cond + " " + orig2;
-                		else
-                			nt = orig+orig2;
-
-                		Log.out("sinvoke after nt:"+nt);
-                	}
-                	tfe.append(nt+" ");
-                	Log.out("sinvoke tfe:"+tfe);
-                }
-                else if(nt.contains("embed("))
-                {
-                	StringBuffer tmp = new StringBuffer();
-                	String deco = new String();
-
-                	if(nt.contains(")"))
-                	{
-                		deco = nt.substring(nt.indexOf(")")+1, nt.length());
-                		nt = nt.substring(0,nt.indexOf(")")+1);
-                	}
-
-                    tmp.append(nt + " ");
-
-                    Log.out("tmp:"+tmp);
-                    while(!nt.contains(")"))
-                	{
-                		nt = st.nextToken().toString();
-
-                		Log.out("embed parser : " + nt);
-
-                		if(nt.contains("@"))
-                		{
-                			deco = nt.substring(nt.indexOf("@"),nt.length());
-                			nt = nt.substring(0,nt.indexOf("@"));
-                			Log.out("deco:"+deco);
-                		}
-                		tmp.append(nt + " ");
-                	}
-
-                	tfe.append("{ " +  embed( tmp.toString() ) );
-                	tfe.append("}" + deco);
-                	Log.out("append embed tfe : " + tfe);
-
-                } else {
-                	tfe.append(nt + " ");
-                }
-
-            }
-
-            // FOREACH
-            if (foreachFlag) {
-                tfe.append("]%");
-            }
-            
-            //changed by goto 20130122  For "slideshow"
-            //System.out.println("[Paeser:tfe] tfe = " + tfe);
-//            if(!tfe.toString().contains("type=\"slideshow\""))
-//            	System.out.println("[Paeser:tfe] tfe = " + tfe);
-            if(!tfe.toString().contains("type=\"slideshow\""))
-            	System.out.println("[Parser:tfe] tfe = " + tfe);
-
-            Preprocessor preprocessor = new Preprocessor(tfe.toString());
-            tfe = preprocessor.pushAggregate();
-            tfe = preprocessor.pushOrderBy();
-            Log.out("[Parser:tfe] converted_tfe = " + tfe);
-
-            tfeInfo = new TFEparser(tfe.toString(), codeGenerator);
-            tfeInfo.debugout();
-
-            // FROM
-            StringBuffer from_c = new StringBuffer();
-
-            int state = 0;
-            while (st.hasMoreTokens()) {
-                nt = st.nextToken().toString();
-                if (nt.equalsIgnoreCase("WHERE")) {
-                    state = 1;
-                    break;
-                }
-                if (nt.equalsIgnoreCase("ORDER")) {
-                    state = 2;
-                    break;
-                }
-                if (nt.equalsIgnoreCase("GROUP")) {
-                    state = 3;
-                    break;
-                }
-                if (nt.equalsIgnoreCase("HAVING")) {
-                    state = 4;
-                    break;
-                }
-                from_c.append(nt + " ");
-                //if(sessionFlag)	sessionString += nt+" ";	//added by goto 20130508  "Login&Logout"
-            }
-
-            if(embedFrom.length() != 0)
-            {
-            	if(from_c.toString().length() != 0)
-            		from_c.append(",");
-            	from_c.append(embedFrom + " ");
-            }
-
-            Log.out("FROM : "+ from_c);
-
-            // FOREACH
-            if (!(foreachFrom.equals(""))) {
-                from_c.append("," + foreachFrom);
-            }
-
-            fromInfo = new FromInfo(from_c.toString().trim());
-            Log.out("[Parser:From] from = " + fromInfo);
-            if (!(foreachFrom.equals(""))) {
-                Log.out(foreachFrom
-                        + ": Used in FOREACH clause and added to FROM clause ");
-            }
-
-            // WHERE
-            if (state == 1) {
-                StringBuffer where_c = new StringBuffer();
-                while (st.hasMoreTokens()) {
-                    nt = st.nextToken().toString();
-                    if (nt.equalsIgnoreCase("ORDER")) {
-                        state = 2;
-                        break;
-                    }
-                    if (nt.equalsIgnoreCase("GROUP")) {
-                        state = 3;
-                        break;
-                    }
-                    if (nt.equalsIgnoreCase("HAVING")) {
-                        state = 4;
-                        break;
-                    }
-                    where_c.append(nt + " ");
-                }
-                if(SSQLparser.isDbpediaQuery())
-                	whereInfo.setSparqlWhereQuery(where_c.toString().trim());
-                else
-                	whereInfo.appendWhere(where_c.toString().trim());
-
-            }
-
-            if(embedWhere.length() !=  0)
-            	whereInfo.appendWhere(embedWhere+ " ");
-
-            Log.out("WHERE:"+whereInfo);
-            // FOREACH
-            if (!(foreachWhere.equals(""))) {
-                whereInfo.appendWhere(foreachWhere);
-                Log.out(foreachWhere
-                                + ": Used in FOREACH clause and added to WHERE clause ");
-            }
-
-            String addCondition = GlobalEnv.getCondition();
-            if (addCondition != null) {
-                whereInfo.appendWhere(addCondition);
-            }
-            Log.out("[Paeser:Where] where = " + whereInfo);
-
-            // ORDER
-            if (state == 2) {
-                if (st.hasMoreTokens()
-                        && st.nextToken().toString().equalsIgnoreCase("BY")) {
-                    StringBuffer order_c = new StringBuffer();
-                    while (st.hasMoreTokens()) {
-                        nt = st.nextToken().toString();
-                        if (nt.equalsIgnoreCase("GROUP")) {
-                            state = 3;
-                            break;
-                        }
-                        if (nt.equalsIgnoreCase("HAVING")) {
-                            state = 4;
-                            break;
-                        }
-                        order_c.append(nt + " ");
-                    }
-                    orderStatement = order_c.toString();
-                    Log.out("[Paeser:Order] order = " + orderStatement);
-                } else {
-                    System.err.println("*** ERROR in ORDER BY clause ***");
-                    throw (new IllegalStateException());
-                }
-            }
-
-            // GROUP
-            StringBuffer group_c = new StringBuffer();
-            if (state == 3) {
-                if (st.hasMoreTokens() &&
-                    st.nextToken().toString().equalsIgnoreCase("BY")) {
-
-                    while (st.hasMoreTokens()) {
-                        nt = st.nextToken().toString();
-                        if (nt.equalsIgnoreCase("HAVING")) {
-                            state = 4;
-                            break;
-                        }
-                        group_c.append(nt + " ");
-                    }
-                    
-                    groupStatement = group_c.toString();
-                    Log.out("[Paeser:Group] group = " + groupStatement);
-                    
-                } else {
-                	System.err.println("*** ERROR in GROUP BY clause ***");
-                	throw (new IllegalStateException());
-                }
-
-            }
-            group_c.append(embedGroup + " ");
-
-            // HAVING
-            StringBuffer having_c = new StringBuffer();
-
-            if (state == 4) {
-                while (st.hasMoreTokens()) {
-                    nt = st.nextToken().toString();
-                    having_c.append(nt + " ");
-                }
-                havingStatement = having_c.toString();
-                Log.out("[Paeser:Having] having = " + havingStatement);
-            }
-            having_c.append(embedGroup + " ");
-
-        } catch (IllegalStateException e) {
-            System.err
-                    .println("Error[SSQLparser]: Syntax Error in SSQL statement : "
-                            + QueryImage);
-            GlobalEnv.addErr("Error[SSQLparser]: Syntax Error in SSQL statement : "
-                            + QueryImage);
-            return ;
-        	}
-    }
-
-    //added by chie   replace '*'
-    private String replaceQuery(String query){
-    	Log.out("START QUERY REPLACE");
-    	StringTokenizer fst = new StringTokenizer(query);
-
-    	//tfe from where
-        String tfe = new String();
-    	String from_string = new String();
-    	String where_string = new String();
-        String queryResult = new String();
-
-        //separate tfe from where
-        while(fst.hasMoreTokens()){
-        	String fnt = fst.nextToken();
-        	queryResult += fnt + " ";
-        	if(fnt.equalsIgnoreCase("GENERATE")){
-        		fnt = fst.nextToken();//media
-        		queryResult += fnt +" ";
-        		break;
-        	}
-        }
-        while(fst.hasMoreTokens()){
-        	String fnt = fst.nextToken();
-        	if(fnt.equalsIgnoreCase("FROM")){
-        			break;
-        	}
-        	tfe += fnt;
-        }
-        while(fst.hasMoreTokens()){
-        	String fnt = fst.nextToken();
-        	if(fnt.equalsIgnoreCase("WHERE")){
-        		where_string += fnt;
-        		break;
-        	}
-        	else
-        		from_string += " " + fnt;
-        }
-        while(fst.hasMoreTokens()){
-        	String fnt = fst.nextToken();
-        	where_string += " " + fnt;
-        }
-
-        // remove from_string decoration
-        StringTokenizer st = new StringTokenizer(from_string, ",");
-        String subfrom_string = new String();
+        
+		if (!st.hasMoreTokens()) {
+			System.err.println("*** No medium/tfe Specified ***");
+			throw (new IllegalStateException());
+		}
+	}
+
+	// added by chie replace '*'
+	private String replaceQuery(String query) {
+		Log.out("START QUERY REPLACE");
+		StringTokenizer fst = new StringTokenizer(query);
+
+		// tfe from where
+		String tfe = new String();
+		String from_string = new String();
+		String where_string = new String();
+		String queryResult = new String();
+
+		// separate tfe from where
+		while (fst.hasMoreTokens()) {
+			String fnt = fst.nextToken();
+			queryResult += fnt + " ";
+			if (fnt.equalsIgnoreCase("GENERATE")) {
+				fnt = fst.nextToken();// media
+				queryResult += fnt + " ";
+				break;
+			}
+		}
+		while (fst.hasMoreTokens()) {
+			String fnt = fst.nextToken();
+			if (fnt.equalsIgnoreCase("FROM")) {
+				break;
+			}
+			tfe += fnt;
+		}
+		while (fst.hasMoreTokens()) {
+			String fnt = fst.nextToken();
+			if (fnt.equalsIgnoreCase("WHERE")) {
+				where_string += fnt;
+				break;
+			} else
+				from_string += " " + fnt;
+		}
+		while (fst.hasMoreTokens()) {
+			String fnt = fst.nextToken();
+			where_string += " " + fnt;
+		}
+
+		// remove from_string decoration
+		StringTokenizer st = new StringTokenizer(from_string, ",");
+		String subfrom_string = new String();
 		while (st.hasMoreTokens()) {
 			String ch = st.nextToken().trim();
 			if(ch.contains("@")){
@@ -716,214 +861,6 @@ public class SSQLparser {
     	return queryResult;
     }
 
-    private String getSSQLQuery() {
-
-        String query = GlobalEnv.getQuery();
-        if (query != null) {
-            query = query.trim();
-        }
-
-        String filename = GlobalEnv.getfilename();
-        if (filename != null) {
-
-            Log.info("[Paser:Parser] filename = " + filename);
-            BufferedReader in;
-            StringBuffer tmp = new StringBuffer();
-            try {
-                in = new BufferedReader(new FileReader(filename));
-                String line = null;
-                while (true) {
-                    line = in.readLine();
-                    if (line == null)
-                        break;
-
-                    if(line!=null && line.contains("/*"))// "if !null" added by chie
-                    {
-                    	int s = line.indexOf("/*");
-                    	String line1 = line.substring(0,s);
-//                    	tmp.append(" "+line1);
-                    	while(!line.contains("*/"))
-                    		line = in.readLine();
-                    	int t = line.indexOf("*/");
-                    	line = line1+line.substring(t+2);
-                    }
-                    //added by goto 20130412
-                    if(line!=null && line.contains("//")){
-                    	boolean dqFlg=false;
-                    	int i=0;
-                    	
-                    	for(i=0; i<line.length(); i++){
-                    		if(line.charAt(i)=='"' && !dqFlg)		dqFlg=true;
-                    		else if(line.charAt(i)=='"' && dqFlg)	dqFlg=false;
-                    		
-                    		if(!dqFlg && i<line.length()-1 && (line.charAt(i)=='/' && line.charAt(i+1)=='/'))
-                    			break;
-                    	}
-                    	line = line.substring(0,i);
-                    }
-                    
-                    if(line!=null)
-                    	tmp.append(" " + line);
-                }
-                in.close();
-            } catch (FileNotFoundException e) {
-            	System.err.println("Error[SQLparser]: File("+filename+") Is Not Found.");
-                GlobalEnv.addErr("Error[SQLparser]: File("+filename+") Is Not Found."+e);
-                return "";
-            }catch (IOException e) {
-                GlobalEnv.addErr("Error[SQLparser]:"+ e);
-            }
-            query = tmp.toString().trim();
-        }else{
-        	if(GlobalEnv.getQuery()==""){
-	        	try{
-	        		if(filename == null || filename.isEmpty()){
-	        			throw(new NullPointerException());
-	        		}
-	        	}
-	        	catch (NullPointerException e) {
-	        		System.err.println("Error[SQLparser]: File Is Not Specified.");
-	        		GlobalEnv.addErr("Error[SQLparser]: File Is Not Specified."+e);
-	        		return "";
-	        	}
-        	}
-        }
-
-        if (query.endsWith(";")) {
-            query = query.substring(0, query.length() - 1).trim();
-        }
-        
-        Log.info("[Paser:Parser] ssql statement = " + query);
-        
-        //addde by goto 20130122  For "slideshow"
-        if(query.contains("slideshow")){
-        	//TODO: 1."sslideshow"等のミスタイプ時のエラー表示、2.正しい正規表現かどうかの判定
-        	
-	        //置換: replaceAll
-	        //<正規表現>
-	        //0文字以上の任意の文字列：.*
-	        //0個以上の空白：\\s*
-	        //( )で囲った部分は、S1,　$2等として、置換後の文字列に使用可能（置換前の全文字列は、$0)
-        	//☆ 次の}(閉じるカッコ)までの0文字以上の任意の文字列: [^\\}]*
-        	
-	        //"slideshow [" -> "[imagefile("
-	        query = query.replaceAll("slideshow\\s*\\[",
-	        		                 "\\[imagefile(");
-	        //"[imagefile(*,path="*"*]" -> "[imagefile(*,path="*"*, type="slideshow")"
-	        query = query.replaceAll("(\\[imagefile\\(.*,\\spath=\".*\".*)\\]", 
-	        		                 "$1, type=\"slideshow\")");
-
-	        if(query.matches(".*\\[imagefile\\(.*\\)\\s*\\@\\s*\\{.*\\}.*")){
-		        //@あり
-		        //"[imagefile(*) @ {*}" -> "[imagefile(*) @ {*} ]! "
-		        query = query.replaceAll("\\[imagefile\\(.*\\)\\s*\\@\\s*\\{[a-zA-Z0-9=\\s,]*\\}",
-		        		                 "$0]! ");
-	        }else{
-		        //@無し
-		        //"[imagefile(*) " -> "[imagefile(*)]! "
-		        query = query.replaceAll("\\[imagefile\\(.*\\)",		//"(\\[imagefile\\(.*\\)[\\s*|\\s*^\\@])",
-		        		                 "$0]! ");
-	        }
-	        //Log.info("[Paser:Parser] ssql statement2 = " + query);
-        }
-        //addde by goto 20130422  For "!number ,number"
-        //☆ 次の}(閉じるカッコ)までの0文字以上の任意の文字列: [^\\}]*
-        //For !number
-        query = query.replaceAll("\\]\\s*!\\s*([0-9]+)\\s*@\\s*\\{([^\\}]*)", "]!@{$2,row=$1");
-    	query = query.replaceAll("\\]\\s*!\\s*([0-9]+)", "]!@{row=$1}");
-        //For ,number
-    	query = query.replaceAll("\\]\\s*\\,\\s*([0-9]+)\\s*@\\s*\\{([^\\}]*)", "],@{$2,column=$1");
-    	query = query.replaceAll("\\]\\s*\\,\\s*([0-9]+)", "],@{column=$1}");
-    	
-        return query;
-    }
-
-    //to get SSQL file from Internet
-    private String getSSQLQuery2() {
-
-        String query = GlobalEnv.getQuery();
-        if (query != null) {
-            query = query.trim();
-        }
-
-        String filename = GlobalEnv.getfilename();
-        if (filename != null) {
-            Log.info("[Paser:Parser] filename = " + filename);
-            StringBuffer tmp = new StringBuffer();
-            String line = new String();
-            BufferedReader dis;
-                try {
-
-                	if(filename.startsWith("http:"))
-                	{
-                    URL fileurl = new URL(filename);
-
-                    URLConnection fileurlConnection = fileurl.openConnection();
-                    /*DataInputStream dis = new
-                    DataInputStream(fileurlConnection.getInputStream());
-                    */
-                    dis = new BufferedReader(new InputStreamReader(fileurlConnection.getInputStream(),"EUC-JP"));
-                	}
-
-                	else
-                	{
-                        dis = new BufferedReader(new FileReader(filename));
-                        line = null;
-                	}
-                    while (true) {
-                        line = dis.readLine();
-
-                    	if (line == null || line.equals("-1"))
-                            break;
-
-                        if(line!=null && line.contains("/*"))
-                        {
-                        	int s = line.indexOf("/*");
-                        	String line1 = line.substring(0,s);
-//                        	tmp.append(" "+line1);
-                        	while(!line.contains("*/"))
-                        		line = dis.readLine();
-                        	int t = line.indexOf("*/");
-                        	line = line1+line.substring(t+2);
-                        }
-                        //added by goto 20130412
-                        if(line!=null && line.contains("//")){
-                        	boolean dqFlg=false;
-                        	int i=0;
-                        	
-                        	for(i=0; i<line.length(); i++){
-                        		if(line.charAt(i)=='"' && !dqFlg)		dqFlg=true;
-                        		else if(line.charAt(i)=='"' && dqFlg)	dqFlg=false;
-                        		
-                        		if(!dqFlg && i<line.length()-1 && (line.charAt(i)=='/' && line.charAt(i+1)=='/'))
-                        			break;
-                        	}
-                        	line = line.substring(0,i);
-                        }
-
-                        if(line!=null)
-                        	tmp.append(" " + line);
-                    }
-                    dis.close();
-
-                } catch (MalformedURLException me) {
-                    System.out.println("MalformedURLException: " + me);
-                } catch (IOException ioe) {
-                    System.out.println("IOException: " + ioe);
-                    GlobalEnv.addErr("Error[SQLparser]:"+ ioe);
-                }
-
-            query = tmp.toString().trim();
-        }
-
-        if (query.endsWith(";")) {
-            query = query.substring(0, query.length() - 1).trim();
-        }
-
-        Log.info("[Paser:Parser] ssql statement = " + query);
-        return query;
-    }
-
     public TFEparser gettfe_info() {
         return tfeInfo;
     }
@@ -944,16 +881,6 @@ public class SSQLparser {
     
     public FromInfo get_from_info() {
         return fromInfo;
-    }
-
-    public static void set_from_info_st(String fi) {
-        fromInfoString = fi;
-    }
-    public static String get_from_info_st() {
-    	if(fromInfoString == null){
-    		return "";
-    	}
-        return fromInfoString;
     }
 
     public WhereInfo get_where_info() {
@@ -1135,7 +1062,7 @@ public class SSQLparser {
                 	int t = line.indexOf("*/");
                 	line = line1+line.substring(t+2);
                 }
-                if(line!=null && line.contains("//")){
+                if(line!=null && line.contains("--")){
                 	boolean dqFlg=false;
                 	int i=0;
                 	
@@ -1415,13 +1342,5 @@ public class SSQLparser {
         query = QueryBuffer;
         return  query;
     }
-
-	public static boolean isDbpediaQuery() {
-		return dbpediaQuery;
-	}
-
-	public static void setDbpediaQuery(boolean dbpediaQuery) {
-		SSQLparser.dbpediaQuery = dbpediaQuery;
-	}
 
 }
