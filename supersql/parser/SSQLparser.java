@@ -558,18 +558,20 @@ public class SSQLparser {
 		buffer = from_c;
 		while (st.hasMoreTokens()) {
 			String nt = st.nextToken().toString();
-			buffer.append(nt + " ");
 			if (nt.equalsIgnoreCase("WHERE")) {
 				buffer = where_c;
 			}
-			if (nt.equalsIgnoreCase("ORDER")) {
+			else if (nt.equalsIgnoreCase("ORDER")) {
 				buffer = order_c;
 			}
-			if (nt.equalsIgnoreCase("GROUP")) {
+			else if (nt.equalsIgnoreCase("GROUP")) {
 				buffer = group_c;
 			}
-			if (nt.equalsIgnoreCase("HAVING")) {
+			else if (nt.equalsIgnoreCase("HAVING")) {
 				buffer = having_c;
+			}
+			else {
+				buffer.append(nt + " ");
 			}
 		}
 	}
