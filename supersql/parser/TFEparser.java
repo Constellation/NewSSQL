@@ -233,7 +233,6 @@ public class TFEparser {
 				break;
 
 			} else if (dimch.indexOf(token) == -1) {
-
 				/* error for operand */
 				System.err.println("*** Found Illegal Token after Operand ***");
 				throw (new IllegalStateException());
@@ -289,7 +288,7 @@ public class TFEparser {
 		return con;
 
 	}
-
+	
 	private TFE read_attribute() {
 
 		String token;

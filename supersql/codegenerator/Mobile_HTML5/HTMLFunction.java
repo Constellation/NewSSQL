@@ -107,6 +107,10 @@ public class HTMLFunction extends Function {
         else if(FuncName.equalsIgnoreCase("dline")){
         	Func_dline();
         }
+        //added by goto 20130502  "vline"
+        else if(FuncName.equalsIgnoreCase("vline")){
+        	Func_vline();
+        }
         //added by goto 20130313  "header"
         else if(FuncName.equalsIgnoreCase("header")){
         	Func_header();
@@ -387,22 +391,41 @@ public class HTMLFunction extends Function {
     		statement = "<input type=\"button\" value=\"お気に入りに登録\" data-icon=\"star\" onClick=\"addBookmark(document.title, location.href);\">";
     	}else if(button_media.equals("facebook")){		//ex. button("facebook")
     		// facebookのいいね！ボタンの処理
-//    		statement = "<iframe class=\"like-btn\" scrolling=\"no\" frameborder=\"0\" style=\"border:none; overflow:hidden; width:200px; height:21px;\" allowTransparency=\"true\"></iframe>";
-//    		statement = "<table height=36><tr valign=\"middle\"><td><iframe class=\"like-btn\" scrolling=\"no\" frameborder=\"0\" style=\"border:none; overflow:hidden; width:200px; height:21px;\" allowTransparency=\"true\"></iframe></td></tr></table>";
-    		statement = "<table data-inline=\"true\"><tr valign=\"middle\"><td><iframe class=\"like-btn\" scrolling=\"no\" frameborder=\"0\" style=\"border:none; overflow:hidden; width:200px; height:21px;\" allowTransparency=\"true\"></iframe></td></tr></table>";
-    		//statement = "<iframe class=\"like-btn\" scrolling=\"no\" frameborder=\"0\" style=\"border:none; overflow:hidden; width:200px; height:21px;\" allowTransparency=\"true\"></iframe>";
+    		statement = "<table data-inline=\"true\"><tr><td><iframe class=\"like-btn\" scrolling=\"no\" frameborder=\"0\" style=\"border:none; overflow:hidden; width:200px; height:21px;\" allowTransparency=\"true\"></iframe></td></tr></table>";
     	}else if(button_media.equals("twitter")){		//ex. button("twitter")
     		// twitterボタンの処理
-//    		statement = "<a href=\"https://twitter.com/share\" class=\"twitter-share-button\" data-text=\"Twitter\" data-lang=\"ja\" data-size=\"small\">Tweet</a>";
-    		statement = "<table data-inline=\"true\"><tr valign=\"middle\"><td><a href=\"https://twitter.com/share\" class=\"twitter-share-button\" data-text=\"Twitter\" data-lang=\"ja\" data-size=\"small\" target=\"_blank\">Tweet</a></td></tr></table>";
-    		//statement = "<a href=\"https://twitter.com/share\" class=\"twitter-share-button\" data-text=\"Twitter\" data-lang=\"ja\" data-size=\"small\">Tweet</a>";
-    	}else if(button_media.equals("sns")){		//ex. button("sns")
-    		statement += "<DIV class=\"ui-grid-a\">\n<div class=\"ui-block-a\">";
-//    		statement += "<iframe class=\"like-btn\" scrolling=\"no\" frameborder=\"0\" style=\"border:none; overflow:hidden; width:200px; height:21px;\" allowTransparency=\"true\"></iframe>\n";
-    		statement += "<table><tr valign=\"middle\"><td><iframe class=\"like-btn\" scrolling=\"no\" frameborder=\"0\" style=\"border:none; overflow:hidden; width:200px; height:21px;\" allowTransparency=\"true\"></iframe></td></tr></table>\n";
+    		statement = "<table data-inline=\"true\"><tr><td><a href=\"https://twitter.com/share\" class=\"twitter-share-button\" data-text=\"Twitter\" data-lang=\"ja\" data-size=\"small\" target=\"_blank\">Tweet</a></td></tr></table>";
+    	}else if(button_media.equals("google+1")){		//ex. button("google+1")
+    		// google+1(プラスワン)ボタンの処理
+    		statement = "<table><tr><td>" +
+    				"<script type=\"text/javascript\" src=\"https://apis.google.com/js/plusone.js\">" +
+    				"  {lang: 'ja'}" +
+    				"</script>" +
+    				"<g:plusone size=\"medium\"></g:plusone>" +
+    				"</td></tr></table>\n";
+    	}else if(button_media.equals("line")){			//ex. button("line")
+    		// LINEで送るボタンの処理
+    		statement = "<span>" +
+    				"<script type=\"text/javascript\" src=\"http://media.line.naver.jp/js/line-button.js?v=20130417\" ></script>" +
+    				"<script type=\"text/javascript\">" +
+    				"new jp.naver.line.media.LineButton({\"pc\":true,\"lang\":\"ja\",\"type\":\"b\"});" +
+    				//"new jp.naver.line.media.LineButton({\"pc\":true,\"lang\":\"ja\",\"type\":\"b\",\"withUrl\":true});" +	//ページタイトルとURLを使う場合、withUrlは無くてもOK(?)
+    				"</script>" +
+    				"</span>\n";
+    	}else if(button_media.equals("sns")){			//ex. button("sns")
+    		statement += "<DIV class=\"ui-grid-b\">\n<div class=\"ui-block-a\">\n";
+    		statement += "<table><tr><td><iframe class=\"like-btn\" scrolling=\"no\" frameborder=\"0\" style=\"border:none; overflow:hidden; width:200px; height:21px;\" allowTransparency=\"true\"></iframe></td></tr></table>\n";
+    		
     		statement += "</div>\n<div class=\"ui-block-b\">\n";
-//    		statement += "<a href=\"https://twitter.com/share\" class=\"twitter-share-button\" data-text=\"Twitter\" data-lang=\"ja\" data-size=\"small\">Tweet</a></td></tr></table>\n";
-    		statement += "<table><tr valign=\"middle\"><td><a href=\"https://twitter.com/share\" class=\"twitter-share-button\" data-text=\"Twitter\" data-lang=\"ja\" data-size=\"small\" target=\"_blank\">Tweet</a></td></tr></table>\n";
+    		statement += "<table><tr><td><a href=\"https://twitter.com/share\" class=\"twitter-share-button\" data-text=\"Twitter\" data-lang=\"ja\" data-size=\"small\" target=\"_blank\">Tweet</a></td></tr></table>\n";
+
+    		statement += "</div>\n<div class=\"ui-block-c\">\n";
+    		statement += "<table><tr><td>" +
+    				"<script type=\"text/javascript\" src=\"https://apis.google.com/js/plusone.js\">" +
+    				"  {lang: 'ja'}" +
+    				"</script>" +
+    				"<g:plusone size=\"medium\"></g:plusone>" +
+    				"</td></tr></table>\n";
     		statement += "</div>\n</DIV>\n";
     	}
 		
@@ -436,11 +459,11 @@ public class HTMLFunction extends Function {
         		
         		//type=1 -> 文字
         		if(type.equals("1") || type.equals("text") || type.equals("")){
-        			statement = "<a href=\""+url+"\""+transition()+prefetch()+" target=\"_blank\">"+name+"</a>";
+        			statement = "<a href=\""+url+"\""+transition()+prefetch()+target(url)+">"+name+"</a>";
         		
         		//type=2 -> urlモバイルボタン
         		}else if(type.equals("3") || type.equals("button") || type.equals("bt")){
-            		statement = "<a href=\""+url+"\" data-role=\"button\""+transition()+prefetch()+" target=\"_blank\">"+name+"</a>";
+            		statement = "<a href=\""+url+"\" data-role=\"button\""+transition()+prefetch()+target(url)+">"+name+"</a>";
 
             	//urlボタン(デスクトップ・モバイル共通)
             	}else if(type.equals("dbutton") || type.equals("dbt")){
@@ -457,7 +480,7 @@ public class HTMLFunction extends Function {
             	
             	//type=3 -> url画像
             	}else if(type.equals("2") || type.equals("image") || type.equals("img")){
-            		statement = "<a href=\""+url+"\""+transition()+prefetch()+" target=\"_blank\"><img src=\""+name+"\"";
+            		statement = "<a href=\""+url+"\""+transition()+prefetch()+target(url)+"><img src=\""+name+"\"";
     		        
         			//url画像 width,height指定時の処理
             		if(decos.containsKey("width"))	statement += " width="+decos.getStr("width").replace("\"", "");
@@ -470,12 +493,12 @@ public class HTMLFunction extends Function {
             	}
         		
         	}catch(Exception e){		//引数2つの場合
-        		statement = "<a href=\""+url+"\""+transition()+prefetch()+" target=\"_blank\">"+name+"</a>";
+        		statement = "<a href=\""+url+"\""+transition()+prefetch()+target(url)+">"+name+"</a>";
         	}
         	
     	}catch(Exception e){	//引数1つの場合
     		url = fa1.getStr();
-    		statement = "<a href=\""+((mailFncFlg)?("mailto:"):("")) + url+"\""+transition()+prefetch()+" target=\"_blank\">"+url+"</a>";
+    		statement = "<a href=\""+((mailFncFlg)?("mailto:"):("")) + url+"\""+transition()+prefetch()+target(url)+">"+url+"</a>";
     	}
     	
     	// 各引数毎に処理した結果をHTMLに書きこむ
@@ -499,6 +522,14 @@ public class HTMLFunction extends Function {
     	if (decos.containsKey("prefetch") || decos.containsKey("pref"))
     		return " data-prefetch";
 		return "";
+    }
+    
+    private String target(String url) {
+    	//新規ウィンドウで表示する場合(target="_blank")の処理
+    	//「外部ページに飛ぶ場合( http(s)://で始まる場合)」のみ新規ウィンドウ表示
+    	if (url.matches("\\s*(http|https)://.*"))
+    		return " target=\"_blank\"";
+		return " target=\"_self\"";
     }
     //added by goto 20130308 end
     
@@ -549,6 +580,31 @@ public class HTMLFunction extends Function {
     	return;
     }
     //added by goto 20130325 end
+    
+    //added by goto 20130502 start  "vline"
+    /*  vline(color, size)  */
+    //&thinsp;<span style="border-left:1px solid red; line-height:1.0em;"></span>&thinsp;
+    private void Func_vline() {
+    	String statement = "<span style=\"border:";
+    	String color = "";
+    	try{
+    		//color
+    		FuncArg fa1 = (FuncArg) this.getArgs().get(0);
+    		if(!fa1.getStr().equals(""))	color = fa1.getStr();
+    		else							color = "black";
+    		//size
+    		FuncArg fa2 = (FuncArg) this.getArgs().get(1);
+    		statement += fa2.getStr();
+    	}catch(Exception e){
+    		statement += "1";
+    	}
+    	statement += "px solid "+color+"; line-height:1.0em;\"></span>";
+		
+    	// 各引数毎に処理した結果をHTMLに書きこむ
+    	html_env.code.append(statement);
+    	return;
+    }
+    //added by goto 20130502 end
     
     //added by goto 20130313 start  "header"
     /*	header("title")	*/

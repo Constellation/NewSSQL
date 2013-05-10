@@ -22,6 +22,11 @@ import supersql.db.SQLManager;
 import supersql.extendclass.ExtList;
 
 public class SSQLparser {
+    
+    //added by goto 20130508  "Login&Logout"
+	public static boolean sessionFlag = false;
+	public static String sessionString = "";
+
 	private static boolean dbpediaQuery = false;
 	private static String fromInfoString;
 	public static String DB2_XQUERY = new String();
@@ -556,18 +561,20 @@ public class SSQLparser {
 		buffer = from_c;
 		while (st.hasMoreTokens()) {
 			String nt = st.nextToken().toString();
-			buffer.append(nt + " ");
 			if (nt.equalsIgnoreCase("WHERE")) {
 				buffer = where_c;
 			}
-			if (nt.equalsIgnoreCase("ORDER")) {
+			else if (nt.equalsIgnoreCase("ORDER")) {
 				buffer = order_c;
 			}
-			if (nt.equalsIgnoreCase("GROUP")) {
+			else if (nt.equalsIgnoreCase("GROUP")) {
 				buffer = group_c;
 			}
-			if (nt.equalsIgnoreCase("HAVING")) {
+			else if (nt.equalsIgnoreCase("HAVING")) {
 				buffer = having_c;
+			}
+			else {
+				buffer.append(nt + " ");
 			}
 		}
 	}
@@ -719,7 +726,18 @@ public class SSQLparser {
 			System.err.println("*** The Query should start by GENERATE ***");
 			throw (new IllegalStateException());
 		}
-
+        
+        //SESSION  //added by goto 20130508  "Login&Logout"
+        if (nt.matches("SESSION.*")) {
+            while (st.hasMoreTokens()) {
+            	sessionString += nt;
+                nt = st.nextToken().toString();
+                if (nt.equalsIgnoreCase("GENERATE"))
+                    break;
+            }
+            sessionFlag = true;
+        }
+        
 		if (!st.hasMoreTokens()) {
 			System.err.println("*** No medium/tfe Specified ***");
 			throw (new IllegalStateException());

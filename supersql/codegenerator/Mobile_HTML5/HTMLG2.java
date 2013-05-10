@@ -15,6 +15,7 @@ import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
+import supersql.parser.SSQLparser;
 
 public class HTMLG2 extends Grouper {
 
@@ -40,6 +41,7 @@ public class HTMLG2 extends Grouper {
 //    static int j = 1;
 //    static int row = 1;		//1ページごとの行数指定 (Default: 1, range: 1〜)
 //    static int rowNum = 0;
+    //static boolean G2Flg = false;
     
     static int rowFileNum = 1;
     static boolean rowFlg = false;
@@ -69,6 +71,8 @@ public class HTMLG2 extends Grouper {
     //G2��work�᥽�å�
     @Override
 	public void work(ExtList data_info) {
+        //G2Flg = true;
+        int panelFlg = 0;	//20130503  Panel
     	
     	//added by goto 20130413  "row Prev/Next"
     	//1ページごとの行数指定 (Default: 1, range: 1〜)
@@ -78,6 +82,7 @@ public class HTMLG2 extends Grouper {
         StringBuffer parentcss = null;
         StringBuffer parentheader = null;
         StringBuffer parentfooter = null;
+        
         if(decos.containsKey("row")){
 //Log.i("first in!!");
         	parentfile = html_env.filename;
@@ -123,12 +128,15 @@ public class HTMLG2 extends Grouper {
     	}//else	tableFlg = false;
         
         //20130326  div
-   		if(decos.containsKey("div") || HTMLC1.divFlg || HTMLC2.divFlg || HTMLG1.divFlg || HTMLG2.divFlg){
+   		//if(decos.containsKey("div") || HTMLC1.divFlg || HTMLC2.divFlg || HTMLG1.divFlg || HTMLG2.divFlg){
+        if(decos.containsKey("div")){
     		divFlg = true;
     		tableFlg = false;
     	}//else divFlg = false;
         
         if(!GlobalEnv.isOpt()){
+        	//20130503  Panel
+    	    panelFlg = HTMLC1.panelProcess1(decos, html_env);
         	
         	//20130330 tab
         	//tab1
@@ -188,7 +196,8 @@ public class HTMLG2 extends Grouper {
         	//20130309
         	//20130314  table
         	if(tableFlg){
-        		html_env.code.append("<TABLE width=\"100%\" align=\"center\" cellSpacing=\"0\" cellPadding=\"0\" border=\"");
+        		html_env.code.append("<TABLE width=\"100%\" cellSpacing=\"0\" cellPadding=\"0\" border=\"");
+        		//html_env.code.append("<TABLE width=\"100%\" align=\"center\" cellSpacing=\"0\" cellPadding=\"0\" border=\"");
 		        //html_env.code.append("<TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
 	        	//html_env.code.append( ((!decos.containsKey("table0"))? html_env.tableborder : "0") + "\" ");
 	        	if(table0Flg)	html_env.code.append("0" + "\"");	//20130325 table0
@@ -237,9 +246,14 @@ public class HTMLG2 extends Grouper {
         //html_env2.code.append("<tfe type=\"connect\" dimension=\"2\" >");
         int i = 0;
         while (this.hasMoreItems()) {
+        	//[重要] For [ [], ]!        	
+        	HTMLG1.jj = 0;
+        	HTMLG1.gridInt = 0;
+        	
             if(decos.containsKey("table0") || HTMLC1.table0Flg || HTMLC2.table0Flg || HTMLG1.table0Flg)	table0Flg = true;
             if(decos.containsKey("table") || HTMLC1.tableFlg || HTMLC2.tableFlg || HTMLG1.tableFlg || table0Flg)	tableFlg=true;
-            if(decos.containsKey("div") || HTMLC1.divFlg || HTMLC2.divFlg || HTMLG1.divFlg || HTMLG2.divFlg){
+            //if(decos.containsKey("div") || HTMLC1.divFlg || HTMLC2.divFlg || HTMLG1.divFlg || HTMLG2.divFlg){
+        	if(decos.containsKey("div")){
         		divFlg = true;
         		tableFlg = false;
         	}
@@ -332,7 +346,8 @@ public class HTMLG2 extends Grouper {
             this.worknextItem();
             if(decos.containsKey("table0") || HTMLC1.table0Flg || HTMLC2.table0Flg || HTMLG1.table0Flg)	table0Flg = true;
             if(decos.containsKey("table") || HTMLC1.tableFlg || HTMLC2.tableFlg || HTMLG1.tableFlg || table0Flg)	tableFlg=true;
-            if(decos.containsKey("div") || HTMLC1.divFlg || HTMLC2.divFlg || HTMLG1.divFlg || HTMLG2.divFlg){
+            //if(decos.containsKey("div") || HTMLC1.divFlg || HTMLC2.divFlg || HTMLG1.divFlg || HTMLG2.divFlg){
+        	if(decos.containsKey("div")){
         		divFlg = true;
         		tableFlg = false;
         	}
@@ -417,7 +432,9 @@ public class HTMLG2 extends Grouper {
 //Log.i(HTMLfilename);
             html_env.code.append(
             		"	<script type=\"text/javascript\">\n" +
-            		"		rowIframePrevNext("+first+", "+last+", '"+divID+"', '"+iframeName+"', '"+HTMLfilename+"', '"+row+"', '"+rowNum+"');\n" +
+            		"		$(document).ready(function(){\n" +
+            		"			rowIframePrevNext("+first+", "+last+", '"+divID+"', '"+iframeName+"', '"+HTMLfilename+"', '"+row+"', '"+rowNum+"');\n" +
+            		"		});\n" +
             		"	</script>\n" +
             		"	<hr>\n" +
             		"	<div id=\""+divID+"1\"></div>\n" +
@@ -474,6 +491,9 @@ public class HTMLG2 extends Grouper {
 		    	a++;
 	    	}
 //    	}
+	    	
+    	//20130503  Panel
+    	HTMLC1.panelProcess2(decos, html_env, panelFlg);
         
         if(divFlg)	divFlg = false;		//20130326  div
 
@@ -485,7 +505,7 @@ public class HTMLG2 extends Grouper {
 
         Log.out("TFEId = " + HTMLEnv.getClassID(this));
         //html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
-        
+        //G2Flg = false;
     }
     
     //added by goto 20130413  "row Prev/Next"
@@ -502,9 +522,14 @@ public class HTMLG2 extends Grouper {
             else
             	pw = new PrintWriter(new BufferedWriter(new FileWriter(
         	                    html_env.filename)));
-            pw.println(html_env.header);
-//            pw.println(html_env.code);
-            pw.println(codeBuf);
+            //added by goto 20130508  "Login&Logout"
+            //Logputボタンをカット
+            if(SSQLparser.sessionFlag){
+            	int x = html_env.header.indexOf("<!-- Logout start -->");
+            	int y = html_env.header.lastIndexOf("<!-- Logout end -->");
+            	pw.println(html_env.header.delete(x,y));
+            }else	pw.println(html_env.header);
+        	pw.println(codeBuf);
             //delete: 最後の<BR><BR>カット
             int a = html_env.footer.lastIndexOf("<BR><BR>");
             int b = a+"<BR><BR>".length();

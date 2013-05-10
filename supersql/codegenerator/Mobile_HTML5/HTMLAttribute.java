@@ -70,7 +70,7 @@ public class HTMLAttribute extends Attribute {
 						decos.containsKey("table") || decos.containsKey("table0"))
 						&& (!HTMLC1.divFlg&&!HTMLC2.divFlg&&!HTMLG1.divFlg&&!HTMLG2.divFlg)){
 					//Log.info("table!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-					html_env.code.append("<table" + html_env.getOutlineModeAtt() + " ");
+					html_env.code.append("<table width=\"100%\"" + html_env.getOutlineModeAtt() + " ");
 					html_env.code.append("class=\"att");
 					//tk start/////////////////////////////////////////////////////////
 					if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
@@ -95,8 +95,9 @@ public class HTMLAttribute extends Attribute {
 				if((HTMLC1.tableFlg||HTMLC1.table0Flg||HTMLG1.tableFlg||HTMLG1.table0Flg||
 						HTMLC2.tableFlg||HTMLC2.table0Flg||HTMLG2.tableFlg||HTMLG2.table0Flg||
 						decos.containsKey("table") || decos.containsKey("table0"))
-						&& (!HTMLC1.divFlg&&!HTMLC2.divFlg&&!HTMLG1.divFlg&&!HTMLG2.divFlg))
+						&& (!HTMLC1.divFlg&&!HTMLC2.divFlg&&!HTMLG1.divFlg&&!HTMLG2.divFlg)){
 					html_env.code.append("<tr><td>\n");		//20130314 table
+				}
 				Log.out("<table class=\"att\"><tr><td>");
 			}
 
