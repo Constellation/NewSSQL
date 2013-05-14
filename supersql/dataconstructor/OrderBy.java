@@ -56,7 +56,7 @@ public class OrderBy {
 					
 					/* "aggregate functions" attribute */		
 					} else if (isAggregate(target)) {
-						if (Float.parseFloat(x.toString().substring(8)) > Float.parseFloat(y.toString().substring(8))) {
+						if (Float.parseFloat(x.toString()) > Float.parseFloat(y.toString())) {
 							if (needToSort(sch, set, 
 											(ExtList)(data_info.get(i)), 
 											(ExtList)(data_info.get(j)))) {
@@ -71,7 +71,7 @@ public class OrderBy {
 					
 					/* normal attribute which is numeric */
 					} else if (isNumeric(x) && isNumeric(y)) {
-						if (Float.parseFloat(x.toString().substring(4)) > Float.parseFloat(y.toString().substring(4))) {
+						if (Float.parseFloat(x.toString()) > Float.parseFloat(y.toString())) {
 							if (needToSort(sch, set, 
 											(ExtList)(data_info.get(i)), 
 											(ExtList)(data_info.get(j)))) {
@@ -102,8 +102,8 @@ public class OrderBy {
 				} else if (way.equalsIgnoreCase("desc")) {
 				
 					/* attribute whose value is null */
-					if (x.toString().substring(4).length() == 0 || y.toString().substring(4).length() == 0) {
-						if (x.toString().substring(4).length() != 0 && y.toString().substring(4).length() == 0) {
+					if (x.toString().length() == 0 || y.toString().length() == 0) {
+						if (x.toString().length() != 0 && y.toString().length() == 0) {
 							if (needToSort(sch, set, 
 									(ExtList)(data_info.get(i)), 
 									(ExtList)(data_info.get(j)))) {
@@ -118,7 +118,7 @@ public class OrderBy {
 						
 					/* "aggregate functions" attribute */		
 					} else if (isAggregate(target)) {
-						if (Float.parseFloat(x.toString().substring(8)) < Float.parseFloat(y.toString().substring(8))) {
+						if (Float.parseFloat(x.toString()) < Float.parseFloat(y.toString())) {
 							if (needToSort(sch, set, 
 											(ExtList)(data_info.get(i)), 
 											(ExtList)(data_info.get(j)))) {
@@ -132,8 +132,8 @@ public class OrderBy {
 						}
 	
 					/* normal attribute which is numeric */
-					} else if (isNumeric(x.toString().substring(4)) && isNumeric(y.toString().substring(4))) {
-						if (Float.parseFloat(x.toString().substring(4)) < Float.parseFloat(y.toString().substring(4))) {
+					} else if (isNumeric(x.toString()) && isNumeric(y.toString())) {
+						if (Float.parseFloat(x.toString()) < Float.parseFloat(y.toString())) {
 							if (needToSort(sch, set, 
 											(ExtList)(data_info.get(i)), 
 											(ExtList)(data_info.get(j)))) {
