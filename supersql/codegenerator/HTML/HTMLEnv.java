@@ -697,6 +697,7 @@ public class HTMLEnv extends LocalEnv {
 			header.insert(index, "<HTML>\n");
 			Log.out("<HTML>");
 			Log.out("<head>");
+	        header.append("<meta name=\"Generator\" content=\" SuperSQL (Generate HTML) \">\n");	//Generator
 			header.append(cssFile);
 			header.append("<STYLE TYPE=\"text/css\">\n");
 			header.append("<!--\n");

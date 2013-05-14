@@ -27,6 +27,7 @@ public class HTMLEnv extends LocalEnv {
     
     String title = "";		//added by goto 20130411  "title"
     String bg = "";			//added by goto 20130311  "background"
+    int maxWidth = 350;		//added by goto 20130512  "max-width"	Default:350
 
 
     //Vector not_written_classid;
@@ -138,7 +139,7 @@ public class HTMLEnv extends LocalEnv {
     	return osname;
     }
 
-    public void getHeader() {
+    public void getHeader(int headerFlag) {		//[headerFlag] 1:通常、2:Prev/Next
    		int index = 0;
    		if(GlobalEnv.getframeworklist() == null){
 	        header.insert(index,"<HEAD>\n");
@@ -146,24 +147,17 @@ public class HTMLEnv extends LocalEnv {
 	        Log.out("<HTML>");
 	        Log.out("<head>");
 	        
+	        //added by goto 20130508  "Login&Logout"
+	        if(SSQLparser.sessionFlag)	header.insert(index,"<?php\n	session_start();\n?>\n");
+	        
+	        //Generator
+	        header.append("<meta name=\"Generator\" content=\" SuperSQL (Generate Mobile_HTML5) \">\n");
+	        
 	        //added by goto 20120629
 	        //header.append("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n");
 	        
 	        //changed by goto 20120622 start
 	        //Log.out("<style type=text/css><!--");
-
-	        header.append(cssfile);
-	        //style��head�˽񤭹���
-	        //header.append("<STYLE TYPE=text/css><!--\n");
-	        
-	        header.append("<STYLE TYPE=\"text/css\">\n");
-	        header.append("<!--\n");
-	        
-	        commonCSS();
-	        header.append(css);
-	        Log.out(css.toString());
-	        
-	        header.append("\n-->\n</STYLE>\n");
    		}
         /*commonCSS();
         header.append(css);
@@ -242,10 +236,19 @@ public class HTMLEnv extends LocalEnv {
             //added by goto 20130411  "title"
 	        if (!title.equals(""))
 	        	header.append("<title>"+title+"</title>\n");
-        	
+	        
             //added by goto 20121217 start
         	header.append("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no\"/>\n");
-        	header.append("<link rel=\"stylesheet\" href=\"http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css\"/>\n");
+        	
+        	header.append(cssfile);
+	        header.append("<STYLE TYPE=\"text/css\">\n");
+	        header.append("<!--\n");
+	        commonCSS();
+	        header.append(css);
+	        Log.out(css.toString());
+	        header.append("\n-->\n</STYLE>\n");
+
+	        header.append("<link rel=\"stylesheet\" href=\"http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css\"/>\n");
             header.append("<link rel=\"stylesheet\" href=\"http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.css\"/>\n");
             //header.append("<link rel=\"stylesheet\" href="css/custom.css\"/>\n");
             //20130206
@@ -273,7 +276,11 @@ public class HTMLEnv extends LocalEnv {
     		header.append("<script src=\"http://www.db.ics.keio.ac.jp/ssqljscss/jquery.iframe-auto-height.plugin.js\"></script>\n");
     		header.append("<script src=\"http://www.db.ics.keio.ac.jp/ssqljscss/script2.js\"></script>\n");
 
-    		header.append("<script src=\"js/script.js\"></script>\n");
+    		
+    		//added by goto 20130512  "max-width"
+			header.append("<script type=\"text/javascript\"> var windowWidthThreshold = "+maxWidth+" </script>\n");
+    		
+    		header.append("<script src=\"js/script1.js\"></script>\n");
             //added by goto 20121217 end
             
             header.append("\n");
@@ -292,6 +299,8 @@ public class HTMLEnv extends LocalEnv {
             header.append("<!-- * { white-space: normal; } -->");
           	header.append("</style>\n");
 
+	        //added by goto 20130512  "Tableのセンタリング（画面横幅の大きいデバイスで見ると効果が分かる）"
+//          	header.append("<style type=\"text/css\"><!-- table{ margin:auto; } --></style>\n");
             
             //20130206
             //下記は2013.02のSSQL教育で使用
@@ -351,147 +360,187 @@ public class HTMLEnv extends LocalEnv {
             
 
             
-            //added by goto 20121222 start, changed by goto 20130110
-            //js/script.jsの生成・書き込み
-            // TODO: 下記の場所を他へ変更（下記だと複数回生成・書き込みが行われる）
-            // TODO: -outdir?時の処理（下記は、出力先が.sqlファイル格納場所に限定）
-//            System.out.println("GlobalEnv.getfilename()="+GlobalEnv.getfilename());
-            String fileName=GlobalEnv.getfilename();
-            String fileDir = "";
-            if(fileName.contains("/")){
-            	//TODO: filename.substring(ファイル名)へ変更
-            	fileDir = fileName.substring(0,fileName.lastIndexOf("/"));
-            }else{
-            	//TODO: fileNameのカレントディレクトリの絶対パスを取得
-            	//fileDir = fileNameのカレントディレクトリの絶対パス
-            }
-            //		下記は、linkを使うときのみ有効 (commentted out by goto 20130110)
-            //      String fileDir = new File(linkurl).getAbsoluteFile().getParent();	//htm_env.~をcut
-//            System.out.println("fileDir= "+fileDir);
-//            String relative_path = linkurl.substring(fileDir.length()+1);
-            // 書き込むファイルの名前
-            //String outputFileName = "/Applications/XAMPP/htdocs/ssql/js/c2.js";
-            //String outputFileName = fileDir+"/js/script.js";
-            String outputFileName = fileDir + "/js/script.js";
-//            System.out.println("outputFileName="+outputFileName);
-            // ファイルオブジェクトの生成
-            File outputFile = new File(outputFileName);
-            
-            File dir = outputFile.getParentFile();  
-            if (!dir.exists()) {
-                dir.mkdirs();   //make folders
-            }
-
-            try {
-              // 出力ストリームの生成
-//              FileOutputStream fos = new FileOutputStream(outputFile);
-//              OutputStreamWriter osw = new OutputStreamWriter(fos);
-//              PrintWriter pw = new PrintWriter(osw);
-              
-    	  		PrintWriter pw;
-    	        if (charset != null){
-    	        	pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
-    	        			new FileOutputStream(outputFile),charset)));
-    	        	//Log.info("File encoding: "+html_env.charset);
-    	        }else
-    	        	pw = new PrintWriter(new BufferedWriter(new FileWriter(
-    	        			outputFile)));
-              
-              	// ファイルへの書き込み
-    	        //twitter
-              	pw.println("$(document).on(\"pagebeforecreate\",'[data-role=page]',function(e){\n" +
-              			"  $.ajaxSetup({cache : true});\n" +
-              			"  $.getScript('http://platform.twitter.com/widgets.js');\n" +
-              			"  $.ajaxSetup({cache : false});\n" +
-              			"});\n\n");
-              	//facebook
-              	pw.println("$(document).on('pageshow', '[data-role=page]', function(e) {\n" +
-              			"  var src = '//www.facebook.com/plugins/like.php?href=';\n" +
-              			"  src += encodeURIComponent(location.href);\n" +
-              			"  src += '&send=false&layout=button_count&width=200&show_faces=true&action=like&colorscheme=light&height=21';\n" +
-              			"  $('.like-btn').attr('src', src);\n" +
-              			"});\n\n");
-              	//bookmark
-              	pw.println("function addBookmark(title,url) {\n" +
-              			"	//IE\n" +
-              			"	if(navigator.userAgent.indexOf(\"MSIE\") > -1){\n" +
-						"		window.external.AddFavorite(url, title);\n" +
-						"	}\n" +
-						"	//Firefox\n" +
-						"	else if(navigator.userAgent.indexOf(\"Firefox\") > -1){\n" +
-						"		window.sidebar.addPanel(title, url, \"\");\n" +
-						"	}\n" +
-						"	//Opera\n" +
-						"	else if(navigator.userAgent.indexOf(\"Opera\") > -1){\n" +
-						"		document.write('<div style=\"text-align:center\"><a href=\"'+url+'\" rel=\"sidebar\" title=\"'+title+'\">ブックマークに追加</a></div><br>');\n" +
-						"	}\n" +
-						"	//Netscape\n" +
-						"	else if(navigator.userAgent.indexOf(\"Netscape\") > -1){\n" +
-						"		document.write('<div style=\"text-align:center\"><input type=\"button\" value=\"ブックマークに追加\"');\n" +
-						"		document.write(' onclick=\"window.sidebar.addPanel(\\''+title+'\\',\\''+url+'\\',\\'\\');\"></div><br>');\n" +
-						"	}\n" +
-						"	else{\n" +
-						"    	alert(\"このブラウザへのお気に入り追加ボタンは、Chrome/Safari等には対応しておりません。\\nChrome/Safariの場合、CtrlキーとDキーを同時に押してください。\\nその他の場合はご自身のブラウザからお気に入りへ追加下さい。\");\n" +
-						"  	}\n" +
-						"}\n");
-              	//added by goto 20130110
-              	//slideshow
-              	pw.println("$(document).on('pageshow', '#p-gallery', function(e){\n" +
-              			"	var currentPage = $(e.target);\n" +
-              			"	photoSwipeInstance = $(\"ul.gallery a\", e.target).photoSwipe({},  currentPage.attr('id'));\n" +
-              			"}).on('pagehide', '#p-gallery', function(e){\n" +
-              			"	var currentPage = $(e.target),\n" +
-              			"	photoSwipeInstance = window.Code.PhotoSwipe.getInstance(currentPage.attr('id'));\n" +
-              			"	if (typeof photoSwipeInstance != \"undefined\" && photoSwipeInstance != null) {\n" +
-              			"		window.Code.PhotoSwipe.detatch(photoSwipeInstance);\n" +
-              			"	}\n" +
-              			"});\n");
-              	
-              	//added by goto 20130330
-              	//tab
-              	pw.println("$(document).ready(function() {\n" +
-              			"	$( \"[id=tabs]\" ).tabs();\n" +
-//              			"	$( \"#tabs\" ).tabs();\n" +
-              			"});\n");
-              	
-//              	//added by goto 20130503
-//              	//panel
-//              	pw.println("$(document).on('click',\"button.open\",function(){\n" +
-//              			"	$(\"[id=ssqlpanel]\").panel(\"open\")\n" +
-//      					"}).on('click',\"button.close\",function(){\n" +
-//						"	$(\"[id=ssqlpanel]\").panel(\"close\")\n" +
-//						"});\n");
-              
-              	// 後始末
-              	pw.close();
-            // エラーがあった場合は、スタックトレースを出力
-            } catch(Exception e) {
-            	e.printStackTrace();
-            }
-            //added by goto 20121222 end
-            
-            
+          	if(headerFlag==1){		//通常時のみ（Prev/Nextでは行わない）
+	            //added by goto 20121222 start, changed by goto 20130110
+	            //js/script1.jsの生成・書き込み
+	            // TODO: 下記の場所を他へ変更（下記だと複数回生成・書き込みが行われる）
+	            // TODO: -outdir?時の処理（下記は、出力先が.sqlファイル格納場所に限定）
+	//            System.out.println("GlobalEnv.getfilename()="+GlobalEnv.getfilename());
+	            String fileName=GlobalEnv.getfilename();
+	            String fileDir = "";
+	            if(fileName.contains("/")){
+	            	//TODO: filename.substring(ファイル名)へ変更
+	            	fileDir = fileName.substring(0,fileName.lastIndexOf("/"));
+	            }else{
+	            	//TODO: fileNameのカレントディレクトリの絶対パスを取得
+	            	//fileDir = fileNameのカレントディレクトリの絶対パス
+	            }
+	            //		下記は、linkを使うときのみ有効 (commentted out by goto 20130110)
+	            //      String fileDir = new File(linkurl).getAbsoluteFile().getParent();	//htm_env.~をcut
+	//            System.out.println("fileDir= "+fileDir);
+	//            String relative_path = linkurl.substring(fileDir.length()+1);
+	            // 書き込むファイルの名前
+	            //String outputFileName = "/Applications/XAMPP/htdocs/ssql/js/c2.js";
+	            String outputFileName = fileDir + "/js/script1.js";
+	//            System.out.println("outputFileName="+outputFileName);
+	            // ファイルオブジェクトの生成
+	            File outputFile = new File(outputFileName);
+	            
+	            File dir = outputFile.getParentFile();  
+	            if (!dir.exists()) {
+	                dir.mkdirs();   //make folders
+	            }
+	
+	            try {
+	              // 出力ストリームの生成
+	//              FileOutputStream fos = new FileOutputStream(outputFile);
+	//              OutputStreamWriter osw = new OutputStreamWriter(fos);
+	//              PrintWriter pw = new PrintWriter(osw);
+	              
+	    	  		PrintWriter pw;
+	    	        if (charset != null){
+	    	        	pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
+	    	        			new FileOutputStream(outputFile),charset)));
+	    	        	//Log.info("File encoding: "+html_env.charset);
+	    	        }else
+	    	        	pw = new PrintWriter(new BufferedWriter(new FileWriter(
+	    	        			outputFile)));
+	              
+	              	// ファイルへの書き込み
+	    	        //画面サイズに応じて表示widthを変更		//added by goto 20130512
+	    	        pw.println("\n/** 画面サイズに応じて表示widthを変更 **/\n" +
+	    	        		"/** 画面width > 閾値 のとき、widthを固定して表示をセンタリング **/\n" +
+	    	        		"//閾値(windowWidthThreshold)は、HTMLファイルの<head>で指定\n" +
+	    	        		//"var windowWidthThreshold = 500; 	//閾値\n" +
+	    	        		"//初期load時\n" +
+	    	        		"$(document).ready(function(){\n" +
+	    	        		"	if( $(window).width() > windowWidthThreshold ){\n" +
+	    	        		"		//$(\"table\").css(\"width\",\"auto\");\n" +
+	    	        		"		$(\"#header1\").css(\"width\",windowWidthThreshold).css(\"margin\",\"auto\");\n" +
+	    	        		"		$(\"#content1\").css(\"width\",windowWidthThreshold).css(\"margin\",\"auto\");\n" +
+	    	        		"		$(\"#footer1\").css(\"width\",windowWidthThreshold).css(\"margin\",\"auto\");\n" +
+	    	        		"		$(\"#LOGINpanel1\").css(\"width\",windowWidthThreshold).css(\"margin\",\"auto\");\n" +
+	    	        		"		$(\"#LOGOUTpanel1\").css(\"width\",windowWidthThreshold).css(\"margin\",\"auto\");\n" +
+	    	        		"	}\n" +
+	    	        		"});\n" +
+	    	        		"//画面サイズが変更されたとき\n" +
+	    	        		"window.onresize = function() {\n" +
+	    	        		"	if( $(window).width() > windowWidthThreshold ){\n" +
+	    	        		"    	//$(\"table\").css(\"width\",\"auto\");\n" +
+	    	        		"		$(\"#header1\").css(\"width\",windowWidthThreshold).css(\"margin\",\"auto\");\n" +
+	    	        		"		$(\"#content1\").css(\"width\",windowWidthThreshold).css(\"margin\",\"auto\");\n" +
+	    	        		"		$(\"#footer1\").css(\"width\",windowWidthThreshold).css(\"margin\",\"auto\");\n" +
+	    	        		"		$(\"#LOGINpanel1\").css(\"width\",windowWidthThreshold).css(\"margin\",\"auto\");\n" +
+	    	        		"		$(\"#LOGOUTpanel1\").css(\"width\",windowWidthThreshold).css(\"margin\",\"auto\");\n" +
+	    	        		"	}else{\n" +
+	    	        		"		//$(\"table\").css(\"width\",\"100%\");\n" +
+	    	        		"		$(\"#header1\").css(\"width\",\"100%\");\n" +
+	    	        		"		$(\"#content1\").css(\"width\",\"100%\");\n" +
+	    	        		"		$(\"#footer1\").css(\"width\",\"100%\");\n" +
+	    	        		"		$(\"#LOGINpanel1\").css(\"width\",\"100%\");\n" +
+	    	        		"		$(\"#LOGOUTpanel1\").css(\"width\",\"100%\");\n" +
+	    	        		"	}\n" +
+	    	        		"}\n\n");
+	    	        //twitter
+	              	pw.println("$(document).on(\"pagebeforecreate\",'[data-role=page]',function(e){\n" +
+	              			"  $.ajaxSetup({cache : true});\n" +
+	              			"  $.getScript('http://platform.twitter.com/widgets.js');\n" +
+	              			"  $.ajaxSetup({cache : false});\n" +
+	              			"});\n\n");
+	              	//facebook
+	              	pw.println("$(document).on('pageshow', '[data-role=page]', function(e) {\n" +
+	              			"  var src = '//www.facebook.com/plugins/like.php?href=';\n" +
+	              			"  src += encodeURIComponent(location.href);\n" +
+	              			"  src += '&send=false&layout=button_count&width=200&show_faces=true&action=like&colorscheme=light&height=21';\n" +
+	              			"  $('.like-btn').attr('src', src);\n" +
+	              			"});\n\n");
+	              	//bookmark
+	              	pw.println("function addBookmark(title,url) {\n" +
+	              			"	//IE\n" +
+	              			"	if(navigator.userAgent.indexOf(\"MSIE\") > -1){\n" +
+							"		window.external.AddFavorite(url, title);\n" +
+							"	}\n" +
+							"	//Firefox\n" +
+							"	else if(navigator.userAgent.indexOf(\"Firefox\") > -1){\n" +
+							"		window.sidebar.addPanel(title, url, \"\");\n" +
+							"	}\n" +
+							"	//Opera\n" +
+							"	else if(navigator.userAgent.indexOf(\"Opera\") > -1){\n" +
+							"		document.write('<div style=\"text-align:center\"><a href=\"'+url+'\" rel=\"sidebar\" title=\"'+title+'\">ブックマークに追加</a></div><br>');\n" +
+							"	}\n" +
+							"	//Netscape\n" +
+							"	else if(navigator.userAgent.indexOf(\"Netscape\") > -1){\n" +
+							"		document.write('<div style=\"text-align:center\"><input type=\"button\" value=\"ブックマークに追加\"');\n" +
+							"		document.write(' onclick=\"window.sidebar.addPanel(\\''+title+'\\',\\''+url+'\\',\\'\\');\"></div><br>');\n" +
+							"	}\n" +
+							"	else{\n" +
+							"    	alert(\"このブラウザへのお気に入り追加ボタンは、Chrome/Safari等には対応しておりません。\\nChrome/Safariの場合、CtrlキーとDキーを同時に押してください。\\nその他の場合はご自身のブラウザからお気に入りへ追加下さい。\");\n" +
+							"  	}\n" +
+							"}\n");
+	              	//added by goto 20130110
+	              	//slideshow
+	              	pw.println("$(document).on('pageshow', '#p-gallery', function(e){\n" +
+	              			"	var currentPage = $(e.target);\n" +
+	              			"	photoSwipeInstance = $(\"ul.gallery a\", e.target).photoSwipe({},  currentPage.attr('id'));\n" +
+	              			"}).on('pagehide', '#p-gallery', function(e){\n" +
+	              			"	var currentPage = $(e.target),\n" +
+	              			"	photoSwipeInstance = window.Code.PhotoSwipe.getInstance(currentPage.attr('id'));\n" +
+	              			"	if (typeof photoSwipeInstance != \"undefined\" && photoSwipeInstance != null) {\n" +
+	              			"		window.Code.PhotoSwipe.detatch(photoSwipeInstance);\n" +
+	              			"	}\n" +
+	              			"});\n");
+	              	
+	              	//added by goto 20130330
+	              	//tab
+	              	pw.println("$(document).ready(function() {\n" +
+	              			"	$( \"[id=tabs]\" ).tabs();\n" +
+	//              			"	$( \"#tabs\" ).tabs();\n" +
+	              			"});\n");
+	              	
+	//              	//added by goto 20130503
+	//              	//panel
+	//              	pw.println("$(document).on('click',\"button.open\",function(){\n" +
+	//              			"	$(\"[id=ssqlpanel]\").panel(\"open\")\n" +
+	//      					"}).on('click',\"button.close\",function(){\n" +
+	//						"	$(\"[id=ssqlpanel]\").panel(\"close\")\n" +
+	//						"});\n");
+	              
+	              	// 後始末
+	              	pw.close();
+	            // エラーがあった場合は、スタックトレースを出力
+	            } catch(Exception e) {
+	            	e.printStackTrace();
+	            }
+	            //added by goto 20121222 end
+          	}//通常のみの処理（jsファイル作成）end
         	
 	        header.append("</HEAD>\n");
 
 	        //header.append("<BODY class=\"body\">\n");
 	        header.append("<BODY>\n");
-	        header.append("<div data-role=\"page\">\n");
-	        header.append("<div data-role=\"content\" style=\"padding:0\">\n");
+	        header.append("<!-- data-role=page start -->\n<div data-role=\"page\">\n\n");
 	        
 	        //added by goto 20130508  "Login&Logout" start
 	        //ログイン・ログアウト・新規登録
 	        if(SSQLparser.sessionFlag){
 	        	String s = SSQLparser.sessionString;
 	        	//Log.i("s:" + s);
-	        	String DB = GlobalEnv.getdbname();							//DB
-	        	String c1 = s.substring(s.indexOf("(")+1,s.indexOf(","));	//ID column
-	        	//String c2 = s.substring(s.indexOf(",")+1,s.indexOf(")"));	//PW column
-	        	//String from = s.substring(s.indexOf(")")+1);				//FROM
-	        	String c2 = s.substring(s.indexOf(",")+1,s.lastIndexOf(","));//PW column
-	        	String from = s.substring(s.lastIndexOf(",")+1,s.indexOf(")"));				//FROM
-	        	String DBMS = GlobalEnv.getdbms();							//DBMS
-	        	//Log.i("c1:"+c1+"   c2:"+c2+"   from:"+from+"   DB:"+DB+"	DBMS:"+DBMS);
+	        	String DB = GlobalEnv.getdbname();										//DB
+	        	String c1str = "ID:";													//ID string
+	        	String c1 = s.substring(s.indexOf("(")+1,s.indexOf(",")).trim();		//ID column
+	        	if(c1.contains(":")){
+	        		c1str = c1.substring(0,c1.lastIndexOf(":")+1);
+	        		c1 = c1.substring(c1.lastIndexOf(":")+1).trim();
+	        	}
+	        	String c2str = "Password";												//PW string
+	        	String c2 = s.substring(s.indexOf(",")+1,s.lastIndexOf(",")).trim();	//PW column
+	        	if(c2.contains(":")){
+	        		c2str = c2.substring(0,c2.lastIndexOf(":"));
+	        		c2 = c2.substring(c2.lastIndexOf(":")+1).trim();
+	        	}
+	        	String from = s.substring(s.lastIndexOf(",")+1,s.indexOf(")")).trim();	//FROM
+	        	String DBMS = GlobalEnv.getdbms();										//DBMS
+	        	//Log.i(c1str+c1+"   "+c2str+c2+"   from:"+from+"   DB:"+DB+"	DBMS:"+DBMS);
 	        	
 	        	//sqlite3 php
 	        	if(DBMS.equals("sqlite3")){
@@ -513,7 +562,7 @@ public class HTMLEnv extends LocalEnv {
 	        				"?>\n" +
 	        				"	<script type=\"text/javascript\">\n" +
 	        				"	$(document).ready(function(){\n" +
-	        				"   	$('#LOGOUTpanel1').hide();\n" +
+	        				"		$('#LOGOUTpanel1').hide();\n" +
 	        				"	});\n" +
 	        				"	</script>\n" +
 	        				"<?php\n" +
@@ -522,11 +571,13 @@ public class HTMLEnv extends LocalEnv {
 	        				"\n" +
 	        				"<!-- Login & Registration start -->\n" +
 	        				"<!-- Login Panel start -->\n" +
-	        				"<div id=\"LOGINpanel1\" style=\"background-color:black; width:100%;\" data-role=\"none\">\n" +
+	        				"<br>\n" +
+	        				"<div id=\"LOGINpanel1\" style=\"background-color:whitesmoke; width:100%; border-radius:20px; border:5px gray solid;\" data-role=\"none\">\n" +
+	        				"<div style=\"color:lightgray; font-size:30; background-color:black; border-radius:15px 15px 0px 0px;\" id=\"loginTitle1\">Log in</div>\n" +
 	        				"<br>\n" +
 	        				"<form method=\"post\" action=\"\" target=\"login_ifr1\">\n" +
 	        				"<div>\n" +
-	        				"	<div style=\"color:lightgray; font-size:20;\">ID:&nbsp;&nbsp;</div>\n" +
+	        				"	<div style=\"font-size:20;\">"+c1str+"&nbsp;&nbsp;</div>\n" +
 	        				"	<input type=\"text\" name=\"id\" style=\"width:100%;\" data-mini=\"true\">\n" +
 	        				"	<fieldset data-role=\"controlgroup\" data-type=\"horizontal\" data-mini=\"true\">\n" +
 	        				"		<input type=\"radio\" name=\"choose\" id=\"login1\" value=\"login1\" checked=\"checked\">\n" +
@@ -536,13 +587,15 @@ public class HTMLEnv extends LocalEnv {
 	        				"	</fieldset>\n" +
 	        				"</div>\n" +
 	        				"<div id=\"login_block\">\n" +
-	        				"	<div style=\"color:lightgray; font-size:20;\">Password:&nbsp;&nbsp;&nbsp;</div>\n" +
+	        				"	<div style=\"font-size:20;\">"+c2str+":&nbsp;&nbsp;&nbsp;</div>\n" +
 	        				"	<input type=\"password\" name=\"password\" id=\"password\" style=\"width:100%;\" data-mini=\"true\">\n" +
 	        				"	<input type=\"submit\" value=\" Login \" name=\"sqlite3_login1\" id=\"sqlite3_login1\" data-mini=\"false\" data-inline=\"false\">\n" +
 	        				"</div>\n" +
 	        				"<div id=\"signup_block\" style=\"display:none\" data-role=\"none\">\n" +
-	        				"	<div style=\"color:lightgray; font-size:20;\">Choose password:&nbsp;&nbsp;</div>\n" +
+	        				"	<div style=\"font-size:20;\">Choose "+c2str+":&nbsp;&nbsp;</div>\n" +
 	        				"	<input type=\"password\" name=\"newpassword\" id=\"newpassword\" style=\"width:100%;\" data-mini=\"true\">\n" +
+	        				"	<div style=\"font-size:20;\">Reinput "+c2str+":&nbsp;&nbsp;</div>\n" +
+	        				"	<input type=\"password\" name=\"re_newpassword\" id=\"re_newpassword\" style=\"width:100%;\" data-mini=\"true\">\n" +
 	        				"	<input type=\"submit\" value=\" Signup \" name=\"sqlite3_login1\" id=\"sqlite3_login1\" data-mini=\"false\" data-inline=\"false\">\n" +
 	        				"</div>\n" +
 	        				"</form>\n" +
@@ -565,6 +618,7 @@ public class HTMLEnv extends LocalEnv {
 	        				"	$id = $_POST['id'];\n" +
 	        				"	$pw = $_POST['password'];\n" +
 	        				"	$newpw = $_POST['newpassword'];\n" +
+	        				"	$re_newpw = $_POST['re_newpassword'];\n" +
 	        				"\n" +
 	        				"	if($pw && $id){\n" +
 	        				"		//Login\n" +
@@ -583,35 +637,40 @@ public class HTMLEnv extends LocalEnv {
 	        				"			echo '<script type=\"text/javascript\">window.parent.$(\\'#Login_text1\\').text(\"\");</script>';\n" +
 	        				"			echo '<script type=\"text/javascript\">window.parent.history.go(0);</script>';	//reload\n" +
 	        				"	    }\n" +
-	        				"	}else if($newpw && $id){\n" +
-	        				"		//check & registration\n" +
-	        				"		$db = new SQLite3($sqlite3_DB);\n" +
-	        				"		\n" +
-	        				"		//check\n" +
-	        				"		$sql1 = \"SELECT \".$sqlite3_id.\" FROM \".$sqlite3_table.\" where \".$sqlite3_id.\"='\".$id.\"'\";\n" +
-	        				"	    $result1 = $db->query($sql1);\n" +
-	        				"	    $i=0;\n" +
-	        				"	    while($res = $result1->fetchArray(SQLITE3_ASSOC)){\n" +
-	        				"	          $i++;\n" +
-	        				"	          if($i==1)	break;\n" +
-	        				"	    }\n" +
-	        				"	    if($i > 0)	p('<font color=#ff0000>It has been already registered.</font>');	//already registered.\n" +
-	        				"		else{\n" +
-	        				"			//registration\n" +
-	        				"			$sql2 = \"INSERT INTO \".$sqlite3_table.\" (\".$sqlite3_id.\", \".$sqlite3_pw.\") VALUES ('\".$id.\"','\".$newpw.\"')\";\n" +
-	        				"			try{\n" +
-	        				"				$result2 = $db->exec($sql2);\n" +
-	        				"				p('<font color=gold>Registration Success!!</font>');\n" +
-	        				"			}catch(Exception $e){\n" +
-	        				"				p('<font color=#ff0000>Registration failed.</font>'.$e->getMessage());\n" +
-	        				"			}\n" +
+	        				"	}else if($newpw && $re_newpw && $id){\n" +
+	        				"		//check (pw==re_pw)?\n" +
+	        				"		if($newpw != $re_newpw){\n" +
+	        				"			p('<font color=#ff0000>Please input the same "+c2str+".</font>');	//PW is not equal\n" +
+	        				"		}else{\n" +
+	        				
+	        				"			//check & registration\n" +
+	        				"			$db = new SQLite3($sqlite3_DB);\n" +
+	        				"			\n" +
+	        				"			//check\n" +
+	        				"			$sql1 = \"SELECT \".$sqlite3_id.\" FROM \".$sqlite3_table.\" where \".$sqlite3_id.\"='\".$id.\"'\";\n" +
+	        				"		    $result1 = $db->query($sql1);\n" +
+	        				"		    $i=0;\n" +
+	        				"		    while($res = $result1->fetchArray(SQLITE3_ASSOC)){\n" +
+	        				"	   	       $i++;\n" +
+	        				"	   	       if($i==1)	break;\n" +
+	        				"		    }\n" +
+	        				"		    if($i > 0)	p('<font color=#ff0000>\\\''.$id.'\\\' has been already registered.</font>');	//already registered.\n" +
+	        				"		    else{\n" +
+	        				"	   	       //registration\n" +
+	        				"	   	       $sql2 = \"INSERT INTO \".$sqlite3_table.\" (\".$sqlite3_id.\", \".$sqlite3_pw.\") VALUES ('\".$id.\"','\".$newpw.\"')\";\n" +
+	        				"	   	       try{\n" +
+	        				"					$result2 = $db->exec($sql2);\n" +
+	        				"					p('<font color=gold>Registration Success!!</font>');\n" +
+	        				"	   	       }catch(Exception $e){\n" +
+	        				"					p('<font color=#ff0000>Registration failed.</font>'.$e->getMessage());\n" +
+	        				"	   	       }\n" +
+	        				"		    }\n" +
+	        				
 	        				"		}\n" +
 	        				"	}else{\n" +
 	        				"		p('<font color=#ff0000>Please input form.</font>');\n" +
 	        				"	}\n" +
 	        				"	unset($db);\n" +
-	        				"	\n" +
-	        				"	if($_SESSION[id]!=\"\")	p('<a href=\"#\" onclick=\"<?php sdes(); ?> return false;\" data-role=\"button\">Log out</a>');\n" +
 	        				"}\n" +
 	        				"function p($str){\n" +
 	        				"	//親ウインドウのJavaScript関数（テキストエリアへ書き込み）を呼び出す\n" +
@@ -623,14 +682,19 @@ public class HTMLEnv extends LocalEnv {
 	        				"$(document).ready(function(){\n" +
 	        				"	//アカウントあり or 新規登録 クリック時の処理\n" +
 	        				"	$('#signup1').click(function(){\n" +
+	        				"		$('#loginTitle1').text('Sign up');\n" +
 	        				"		$('#password').val('');\n" +
 	        				"		$('#login_block').hide();\n" +
 	        				"		$('#signup_block').show();\n" +
+	        				"		Login_echo1(\"\");\n" +
 	        				"	});\n" +
 	        				"	$('#login1').click(function(){\n" +
+	        				"		$('#loginTitle1').text('Log in');\n" +
 	        				"		$('#newpassword').val('');\n" +
+	        				"		$('#re_newpassword').val('');\n" +
 	        				"		$('#signup_block').hide();\n" +
 	        				"		$('#login_block').show();\n" +
+	        				"		Login_echo1(\"\");\n" +
 	        				"	});\n" +
 	        				"});\n" +
 	        				"\n" +
@@ -642,10 +706,15 @@ public class HTMLEnv extends LocalEnv {
 	        				"</script>\n" +
 	        				"<!-- Login & Registration end -->\n" +
 	        				"\n" +
-	        				"\n" +
+	        				"\n");
+	        				
+    				//ログアウトボタンの付加
+	        		if(headerFlag==1)		//通常時のみ（Prev/Nextでは行わない）
+    				header.append(
 	        				"<!-- Logout start -->\n" +
-	        				"<form method=\"post\" action=\"\" target=\"logout_ifr1\" id=\"LOGOUTpanel1\">\n" +
+	        				"<form method=\"post\" action=\"\" target=\"logout_ifr1\" id=\"LOGOUTpanel1\" name=\"LOGOUTpanel1\">\n" +
 	        				"<input type=\"submit\" value=\" Logout \" name=\"sqlite3_logout1\" data-mini=\"false\" data-inline=\"false\">\n" +
+	        				"<input type=\"hidden\" value=\" Logout \" name=\"sqlite3_logout1\">\n" +
 	        				"</form>\n" +
 	        				"<iframe name=\"logout_ifr1\" style=\"display:none;\"></iframe>\n" +
 	        				"\n" +
@@ -663,7 +732,9 @@ public class HTMLEnv extends LocalEnv {
 	        				"	echo '<script type=\"text/javascript\">window.parent.history.go(0);</script>';	//reload\n" +
 	        				"}\n" +
 	        				"?>\n" +
-	        				"<!-- Logout end -->\n" +
+	        				"<!-- Logout end -->\n");
+	        				
+					header.append(
 	        				"<!-- \"Login & Logout\" end -->\n" +
 	        				"\n" +
 	        				"\n" +
@@ -679,6 +750,15 @@ public class HTMLEnv extends LocalEnv {
 	        	//}
 	        }
 	        //added by goto 20130508  "Login&Logout" end
+	        
+	        if(headerFlag==1){		//通常時のみ（Prev/Nextでは行わない）
+		        if(HTMLFunction.headerString != ""){		//data-role="header"
+		        	header.append("\n<!-- data-role=header start -->\n"
+						+HTMLFunction.headerString+"<!-- data-role=header end -->\n\n\n");
+		        }
+	        }
+	        //data-role="content"
+	        header.append("<!-- data-role=content start -->\n<div data-role=\"content\" style=\"padding:0\" id=\"content1\">\n");
 
 	        //commented out by goto  201203
 //	        header.append("<div");
@@ -752,7 +832,7 @@ public class HTMLEnv extends LocalEnv {
     	}
     }
 
-    public void getFooter() {
+    public void getFooter(int footerFlag) {		//[headerFlag] 1:通常、2:Prev/Next
     	if(Connector.updateFlag || Connector.insertFlag|| Connector.deleteFlag || Connector.loginFlag ){
 	    	footer.append("<input type=\"submit\" name=\"login\" value=\"Let's go!\">");
 	    	footer.append("</form>\n");
@@ -770,6 +850,12 @@ public class HTMLEnv extends LocalEnv {
     	}
 
     	if(GlobalEnv.getframeworklist() == null){
+    		footer.append("</div><!-- Close <div data-role=\"content\"> -->\n<!-- data-role=content end -->\n");		//Close <div data-role="content">
+    		//data-role="footer"
+    		if(HTMLFunction.footerString != "" && footerFlag==1)	//通常時のみ（Prev/Nextでは行わない）
+    			footer.append("\n\n<!-- data-role=footer start -->\n"+HTMLFunction.footerString+"<!-- data-role=footer end -->\n\n");
+    		if(panel.length() != 0)															//20130503  Panel
+    			footer.append("\n<!-- Panel start -->\n"+panel+"\n<!-- Panel end -->\n\n");	//Add panel contents.	
     		//added by goto 20130508  "Login&Logout"
     		if(SSQLparser.sessionFlag){
     			footer.append("\n" +
@@ -778,12 +864,11 @@ public class HTMLEnv extends LocalEnv {
     					"}//end function\n" +
     					"//<!-- display_html end -->\n" +
     					"?>\n");
-    		}
-    		footer.append("</div><!-- Close <div data-role=\"content\"> -->\n");		//Close <div data-role="content">
-    		footer.append("\n<!-- Panel start -->\n"+panel+"\n<!-- Panel end -->\n\n");	//Add panel contents.	//20130503  Panel
-    		footer.append("</div><!-- Close <div data-role=\"page\"> -->\n");			//Close <div data-role="page">
-    		
-    		footer.append("<BR><BR></BODY></HTML>\n");
+    		}//else
+    		if(footerFlag==1)		//通常時のみ（Prev/Nextでは行わない）
+    			footer.append("\n<BR><BR>\n");
+    		footer.append("</div><!-- Close <div data-role=\"page\"> -->\n<!-- data-role=page end -->\n");			//Close <div data-role="page">
+    		footer.append("\n</BODY>\n</HTML>\n");
 	        Log.out("</body></html>");
     	}
     }
@@ -1003,18 +1088,27 @@ public class HTMLEnv extends LocalEnv {
         //added by goto 20130311  "background"
         if (decos.containsKey("background"))
         	bg = decos.getStr("background");
-
+        
+        //added by goto 20130512  "max-width"
+        try{
+	        if (decos.containsKey("max-width"))
+	        	maxWidth = Integer.parseInt(decos.getStr("max-width"));
+	        else if (decos.containsKey("maxwidth"))
+	        	maxWidth = Integer.parseInt(decos.getStr("maxwidth"));
+        }catch(Exception e){ /*数値以外*/ }
         
         if (decos.containsKey("description"))
-            metabuf.append("<meta name=\"Description\" content=\"" + decos.getStr("description") + "\">");
+            metabuf.append("\n<meta name=\"Description\" content=\"" + decos.getStr("description") + "\">");
         if (decos.containsKey("keyword"))
-            metabuf.append("<meta name=\"Keyword\" content=\"" + decos.getStr("keyword") + "\">");
+            metabuf.append("\n<meta name=\"Keyword\" content=\"" + decos.getStr("keyword") + "\">");
         if (decos.containsKey("author"))
-            metabuf.append("<meta name=\"Author\" content=\"" + decos.getStr("author") + "\">");
+        	metabuf.append("\n<meta name=\"Author\" content=\"" + decos.getStr("author") + "\">");
+        if (decos.containsKey("copyright"))
+        	metabuf.append("\n<meta name=\"Copyright\" content=\"" + decos.getStr("copyright") + "\">");
         if (decos.containsKey("pragma"))
-            metabuf.append("<meta http-equiv=\"Pragma\" content=\"" + decos.getStr("pragma") + "\">");
+            metabuf.append("\n<meta http-equiv=\"Pragma\" content=\"" + decos.getStr("pragma") + "\">");
         if (decos.containsKey("robot"))
-            metabuf.append("<meta name=\"Robot\" content=\"" + decos.getStr("robot") + "\">");
+            metabuf.append("\n<meta name=\"Robot\" content=\"" + decos.getStr("robot") + "\">");
         //tk end///////////////////////////////////////////////////////////////////
 
         if (cssbuf.length() > 0) {

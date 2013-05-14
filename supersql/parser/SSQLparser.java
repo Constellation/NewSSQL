@@ -223,6 +223,14 @@ public class SSQLparser {
 						"$0]! ");
 			}
 		}
+        //addde by goto 20130422  For "!number ,number"
+        //☆ 次の}(閉じるカッコ)までの0文字以上の任意の文字列: [^\\}]*
+        //For !number
+        query = query.replaceAll("\\]\\s*!\\s*([0-9]+)\\s*@\\s*\\{([^\\}]*)", "]!@{$2,row=$1");
+    	query = query.replaceAll("\\]\\s*!\\s*([0-9]+)", "]!@{row=$1}");
+        //For ,number
+    	query = query.replaceAll("\\]\\s*\\,\\s*([0-9]+)\\s*@\\s*\\{([^\\}]*)", "],@{$2,column=$1");
+    	query = query.replaceAll("\\]\\s*\\,\\s*([0-9]+)", "],@{column=$1}");
 
 		return query;
 	}
@@ -718,23 +726,23 @@ public class SSQLparser {
 					break;
 			}
 		}
-
-		// GENERATE medium
-		if (!nt.equalsIgnoreCase("GENERATE")) {
-			System.err.println("*** The Query should start by GENERATE ***");
-			throw (new IllegalStateException());
-		}
-        
-        //SESSION  //added by goto 20130508  "Login&Logout"
+		
+		//SESSION  //added by goto 20130508  "Login&Logout"
         if (nt.matches("SESSION.*")) {
             while (st.hasMoreTokens()) {
-            	sessionString += nt;
+            	sessionString += nt+" ";
                 nt = st.nextToken().toString();
                 if (nt.equalsIgnoreCase("GENERATE"))
                     break;
             }
             sessionFlag = true;
         }
+
+		// GENERATE medium
+		if (!nt.equalsIgnoreCase("GENERATE")) {
+			System.err.println("*** The Query should start by GENERATE ***");
+			throw (new IllegalStateException());
+		}
         
 		if (!st.hasMoreTokens()) {
 			System.err.println("*** No medium/tfe Specified ***");
