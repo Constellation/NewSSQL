@@ -64,8 +64,6 @@ public class SSQLparser {
 	private String groupStatement;
 	private String havingStatement;
 	private String media;
-	private String orderStatement;
-
 	private String QueryImage;
 
 	private int tableNum = 0;
@@ -326,7 +324,6 @@ public class SSQLparser {
 	}
 
 	private void processFROM(StringBuffer tfe, StringTokenizer st) {
-
 		while (st.hasMoreTokens()) {
 			String nt = st.nextToken().toString();
 			if (nt.equalsIgnoreCase("FROM"))
@@ -561,6 +558,13 @@ public class SSQLparser {
 		}
 	}
 
+	/**
+	 * Fills the buffers from_c, where_c, order_c, group_c and having_c.
+	 * Whenever we encounter a keyword the local variable buffer changes
+	 * and points to the next buffer. Keywords are not appended in the 
+	 * buffers.
+	 * @param st
+	 */
 	private void processKeywords(StringTokenizer st){
 		StringBuffer buffer = new StringBuffer();
 		buffer = from_c;
@@ -635,7 +639,6 @@ public class SSQLparser {
 		}
 
 		QueryImage = QueryString;
-
 		StringTokenizer st = new StringTokenizer(QueryString);
 
 		try {
@@ -695,7 +698,7 @@ public class SSQLparser {
 			return;
 		}
 	}
-	
+
 	private void preProcess(StringTokenizer st, String nt) {
 		// FOREACH
 		if (nt.equalsIgnoreCase("FOREACH")) {

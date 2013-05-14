@@ -4,7 +4,6 @@ import supersql.codegenerator.CodeGenerator;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.dataconstructor.DataConstructor;
-import supersql.extendclass.ExtList;
 import supersql.parser.SSQLparser;
 
 public class FrontEnd {
@@ -47,6 +46,9 @@ public class FrontEnd {
 		}
 
 		long end = System.currentTimeMillis();
+		Log.info("Parsing Time : " + (afterparser - start) + "msec");
+		Log.info("Data construction Time : "+ (afterdc - afterparser) + "msec");
+		Log.info("Code generation Time : " + (aftercg - afterdc) + "msec");
 		Log.info("ExecTime: " + (end - start) + "msec");
 
 		if (GlobalEnv.getErrFlag() == 0)
