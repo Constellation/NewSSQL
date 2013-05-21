@@ -100,14 +100,9 @@ public class XMLG0 extends Grouper {
 
         Log.out("G0 tag(start) : " + tag);
 
-
-
         while (this.hasMoreItems()) {
-
         	this.worknextItem();
-
         }
-
 
         if(Grouper_flag == 1){
         	xml_env.code.append("</" + tag + ">");

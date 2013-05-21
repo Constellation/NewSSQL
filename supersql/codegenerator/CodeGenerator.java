@@ -170,21 +170,12 @@ public class CodeGenerator{
 		//	manager.preProcess(tab,le,le1,le2,le3);
 		//	manager.createSchema(tab,le,le1,le2,le3);
 
-		Log.out("===============================");
-		Log.out("     generateCode is start     ");
-		Log.out("===============================");
-
 		// ?番外が Grouperのときにdata_infoを調整す?
 		if (tfe_info instanceof Grouper && data_info.size() != 0) {
 			data_info = (ExtList) data_info.get(0);
 		}
 
-		//tk start//////////////////////////////////////////////
-//		if(data_info.size() == 0)
-//			manager.generateCodeNotuple(tfe_info);
-//		else
-			manager.generateCode(tfe_info, data_info);
-		//tk end///////////////////////////////////////////////
+		manager.generateCode(tfe_info, data_info);
 		manager.finish();
 
 
