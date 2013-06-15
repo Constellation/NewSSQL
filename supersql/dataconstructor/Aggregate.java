@@ -196,7 +196,7 @@ public class Aggregate {
 				int sum = 0;
 				
 				for (int i = 0; i < buffer.size(); i++) {
-					sum += Integer.parseInt(((ExtList)(buffer.get(i))).get(Integer.parseInt(target)).toString().substring(4));
+					sum += Integer.parseInt(((ExtList)(buffer.get(i))).get(Integer.parseInt(target)).toString());
 				}
 				
 				float avg = sum / buffer.size();
