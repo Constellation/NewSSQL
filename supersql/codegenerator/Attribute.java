@@ -223,8 +223,7 @@ public class Attribute extends Operand {
 		if(AttNames.size() > 1)
 			return AttNames.toString();
 		else
-			return AttName;
-			
+			return AttName;			
 	}
 
 	public String getKey() {
