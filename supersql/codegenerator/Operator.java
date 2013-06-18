@@ -13,6 +13,6 @@ public abstract class Operator extends TFE implements IOperator {
     }
 
 	@Override
-	public abstract void work(ExtList data_info);
+	public abstract void work(ExtList<ExtList<String>> data_info);
 
 }

@@ -22,7 +22,6 @@ public class FrontEnd {
 
 		GlobalEnv.setGlobalEnv(args);
 
-		// GlobalEnv.endnum = 30;
 		Log.info("//Entering SuperSQL System//");
 
 		SSQLparser parser = new SSQLparser();

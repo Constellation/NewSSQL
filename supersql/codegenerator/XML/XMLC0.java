@@ -1,6 +1,8 @@
 package supersql.codegenerator.XML;
 
+import supersql.codegenerator.Attribute;
 import supersql.codegenerator.Connector;
+import supersql.codegenerator.Function;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.Manager;
 import supersql.common.Log;
@@ -28,7 +30,7 @@ public class XMLC0 extends Connector {
         this.xml_env2 = xenv2;
     }
 
-    public void work(ExtList data_info) {
+    public void work(ExtList<ExtList<String>> data_info) {
     	Log.out("------------- XMLC0 -------------");
 
     	XMLC0_passflag++;
@@ -40,47 +42,35 @@ public class XMLC0 extends Connector {
         String tag = null;
 
 	    if(decos.containsKey("tag")){
-
         	tag = decos.getStr("tag");
 
-        	if(tag.equals("")){
-        		tag = "null";
-        	}
-
-	        xml_env.code.append("<" + tag);
+	        xml_env.code.append("<" + tag + ">");
 		    parent_attflag = 1;
 		    decos_tag_flag = 1;
 	   }
-
 	    else{
 	    	decos_tag_flag = 0;
 	    }
 
-	   	 while(this.hasMoreItems()) {
+	    while(this.hasMoreItems()) {
+	    	ITFE tfe = (ITFE) tfes.get(sindex);
+	    	Log.out("tfe : " + tfe);
 
-		    ITFE tfe = (ITFE)tfes.get(i);
+	    	int ci = tfe.countconnectitem();
 
-		    this.worknextItem_GENERATEXML();
-		}
+	    	ExtList subdata = data.ExtsubList(dindex, dindex + ci);
+	    	Log.out("subdata : " + subdata);
 
-
-	   	if(tagclose_flag == 0){
-
-	   		if(XMLAttribute.absent_on_null_flag != 1){
-
-		   		if(XMLFunction.function_close != 1){
-		   			xml_env.code.append(">");
-		   		}
-
-		   		if(XMLAttribute.no_close_tag_flag == 0){
-		   			xml_env.code.append(XMLAttribute.tag_value);
-		   			xml_env.code.append("</" + XMLAttribute.tag + ">");
-		   		}
-	   		}
-
-        	XMLAttribute.absent_on_null_flag = 0;
-
-	   	}
+	    	if (tfe instanceof Connector || tfe instanceof Attribute
+	    			|| tfe instanceof Function) {
+	    		tfe.work(subdata);
+	    	} else {
+	    		tfe.work((ExtList) subdata.get(0));
+	    	}
+	    	sindex++;
+	    	dindex += ci;
+	    	Log.out("tfe.countconnectitem() : " + ci);	   		 
+	    }
 
 	   	XMLFunction.function_close = 0;
 	   	tagclose_flag++;
@@ -91,9 +81,8 @@ public class XMLC0 extends Connector {
 
 	   	Log.out("C0 tag(end) : " + tag);
 	   	Log.out("TFEId = " + XMLEnv.getClassID(this));
-
     }
-
+    
     public String getSymbol() {
         return "XMLC0";
     }
