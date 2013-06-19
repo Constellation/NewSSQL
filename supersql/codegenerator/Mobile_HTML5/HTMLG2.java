@@ -510,8 +510,8 @@ public class HTMLG2 extends Grouper {
     
     //added by goto 20130413  "row Prev/Next"
     private void createHTMLfile(){
-    	html_env.getHeader();
-        html_env.getFooter();
+    	html_env.getHeader(2);
+        html_env.getFooter(2);
         //Log.info(html_env.filename);
     	
         try {
@@ -522,20 +522,22 @@ public class HTMLG2 extends Grouper {
             else
             	pw = new PrintWriter(new BufferedWriter(new FileWriter(
         	                    html_env.filename)));
-            //added by goto 20130508  "Login&Logout"
-            //Logputボタンをカット
-            if(SSQLparser.sessionFlag){
-            	int x = html_env.header.indexOf("<!-- Logout start -->");
-            	int y = html_env.header.lastIndexOf("<!-- Logout end -->");
-            	pw.println(html_env.header.delete(x,y));
-            }else	pw.println(html_env.header);
+//            //added by goto 20130508  "Login&Logout"
+//            //Logputボタンをカット
+//            if(SSQLparser.sessionFlag){
+//            	int x = html_env.header.indexOf("<!-- Logout start -->");
+//            	int y = html_env.header.lastIndexOf("<!-- Logout end -->");
+//            	pw.println(html_env.header.delete(x,y));
+//            }else	pw.println(html_env.header);
+        	pw.println(html_env.header);
         	pw.println(codeBuf);
-            //delete: 最後の<BR><BR>カット
-            int a = html_env.footer.lastIndexOf("<BR><BR>");
-            int b = a+"<BR><BR>".length();
-            //Log.info(html_env.footer.delete(html_env.footer.indexOf("<BR><BR>"),html_env.footer.lastIndexOf("<BR><BR>")));
-            //Log.info(html_env.footer.delete(a,b));
-            pw.println(html_env.footer.delete(a,b));
+//            //delete: 最後の<BR><BR>カット
+//            int a = html_env.footer.lastIndexOf("<BR><BR>");
+//            int b = a+"<BR><BR>".length();
+//            //Log.info(html_env.footer.delete(html_env.footer.indexOf("<BR><BR>"),html_env.footer.lastIndexOf("<BR><BR>")));
+//            //Log.info(html_env.footer.delete(a,b));
+//            try { pw.println(html_env.footer.delete(a,b)); } catch (Exception e) { }
+            pw.println(html_env.footer);
             pw.close();
             html_env.header = new StringBuffer();
             html_env.footer = new StringBuffer();

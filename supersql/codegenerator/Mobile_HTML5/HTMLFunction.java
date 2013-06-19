@@ -47,7 +47,10 @@ public class HTMLFunction extends Function {
     static boolean slideshowFlg = false;	//added by goto 20130110
     int slideshowNum = 0;					//added by goto 20130110
     
-    static int popCount = 1;	//added by goto 20130313  "popup"
+    static int popCount = 1;				//added by goto 20130313  "popup"
+
+    static String headerString = "";		//data-role="header"
+    static String footerString = "";		//data-role="footer"
     
     static String updateFile;
 
@@ -427,6 +430,11 @@ public class HTMLFunction extends Function {
     				"<g:plusone size=\"medium\"></g:plusone>" +
     				"</td></tr></table>\n";
     		statement += "</div>\n</DIV>\n";
+    	}else if(button_media.equals("logout")){		//ex. button("logout")
+    		//added by goto 20130508  "Login&Logout"
+    		//Logoutボタンを設置
+            if(SSQLparser.sessionFlag)
+            	statement += "<a href=\"\" onclick=\"document.LOGOUTpanel1.submit();return falese;\" data-role=\"button\">Logout</a>\n";
     	}
 		
     	// 各引数毎に処理した結果をHTMLに書きこむ
@@ -619,34 +627,40 @@ public class HTMLFunction extends Function {
     			statement = fa1.getStr();
     		else	return;
     	}catch(Exception e){ return; }
-		
-    	html_env.code.append("<div data-role=\"header\" data-position=\"fixed\" style=\"padding: 11px 0px;\">\n");
-    	html_env.code.append("<a href=\"\" data-rel=\"back\" data-role=\"button\" data-icon=\"back\" data-mini=\"true\">Back</a>\n");
-    	html_env.code.append("\n");
-    	html_env.code.append("<div class=\"ui-btn-right\">\n");
-    	html_env.code.append("	<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>\n");
-    	html_env.code.append("		<a href=\"index.html\" data-role=\"button\" data-icon=\"home\" data-iconpos=\"notext\" data-mini=\"true\"></a>\n");
-    	html_env.code.append("	</td><td>\n");
-    	html_env.code.append("		<form style=\"display:inline;\">\n");
-    	html_env.code.append("			<input type=\"button\" data-icon=\"forward\" data-iconpos=\"notext\" data-mini=\"true\" onClick=\"history.forward()\" >\n");
-    	html_env.code.append("		</form>\n");
-    	html_env.code.append("	</td><td>\n");
-    	html_env.code.append("		<a href=\"#popupMenu\" data-rel=\"popup\" data-role=\"button\" data-icon=\"grid\" data-iconpos=\"notext\" data-mini=\"true\"></a>\n");
-    	html_env.code.append("		<div data-role=\"popup\" id=\"popupMenu\" data-transition=\"slidedown\" style=\"width:95%;\" data-overlay-theme=\"a\">\n");
-    	html_env.code.append("			<a href=\"#\" data-rel=\"back\" data-role=\"button\" data-theme=\"a\" data-icon=\"delete\" data-iconpos=\"notext\" class=\"ui-btn-right\">Close</a>\n");
-    	html_env.code.append("			<ul data-role=\"listview\" data-inset=\"true\" style=\"min-width:210px;\" data-theme=\"d\">\n");
-    	html_env.code.append("				<li data-role=\"divider\" data-theme=\"a\">Menu</li>\n");
-    	html_env.code.append("				<li><a href=\"login.html\">Log in</a></li>\n");
-    	html_env.code.append("				<li><a href=\"options.html\">Options</a></li>\n");
-    	html_env.code.append("				<li><a href=\"https://www.google.com/\">Search</a></li>\n");
-    	html_env.code.append("			</ul>\n");
-    	html_env.code.append("		</div>\n");
-    	html_env.code.append("	</td></tr></table>\n");
-    	html_env.code.append("</div>\n\n");
     	
-    	html_env.code.append("<div>"+statement+"</div>\n");
-    	html_env.code.append("</div>\n");
-    	return;
+    	headerString += "<div data-role=\"header\" data-position=\"fixed\" style=\"padding: 11px 0px;\" id=\"header1\">\n" +
+		    	"<a href=\"\" data-rel=\"back\" data-role=\"button\" data-icon=\"back\" data-mini=\"true\">Back</a>\n" +
+		    	"\n" +
+		    	"<div class=\"ui-btn-right\">\n" +
+		    	"	<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>\n" +
+		    	"		<a href=\"index.html\" data-role=\"button\" data-icon=\"home\" data-iconpos=\"notext\" data-mini=\"true\"></a>\n" +
+		    	"	</td><td>\n" +
+		    	"		<form style=\"display:inline;\">\n" +
+		    	"			<input type=\"button\" data-icon=\"forward\" data-iconpos=\"notext\" data-mini=\"true\" onClick=\"history.forward()\" >\n" +
+		    	"		</form>\n" +
+		    	"	</td><td>\n" +
+		    	"		<a href=\"#popupMenu\" data-rel=\"popup\" data-role=\"button\" data-icon=\"grid\" data-iconpos=\"notext\" data-mini=\"true\"></a>\n" +
+		    	"		<div data-role=\"popup\" id=\"popupMenu\" data-transition=\"slidedown\" style=\"width:95%;\" data-overlay-theme=\"a\">\n" +
+		    	"			<a href=\"#\" data-rel=\"back\" data-role=\"button\" data-theme=\"a\" data-icon=\"delete\" data-iconpos=\"notext\" class=\"ui-btn-right\">Close</a>\n" +
+		    	"			<ul data-role=\"listview\" data-inset=\"true\" style=\"min-width:210px;\" data-theme=\"d\">\n" +
+		    	"				<li data-role=\"divider\" data-theme=\"a\">Menu</li>\n";
+    	//added by goto 20130508  "Login&Logout"
+        if(!SSQLparser.sessionFlag)
+        	headerString += "				<li><a href=\"login.html\">Log in</a></li>\n";
+        headerString += "				<li><a href=\"options.html\">Options</a></li>\n" +
+        		"				<li><a href=\"https://www.google.com/\">Search</a></li>\n";
+    	//added by goto 20130508  "Login&Logout"
+    	//Logoutボタン
+        if(SSQLparser.sessionFlag)
+        	headerString += "				<li><a href=\"\" data-rel=\"back\" onclick=\"document.LOGOUTpanel1.submit();return falese;\">Logout</a></li>\n";
+        headerString += "			</ul>\n" +
+		    	"		</div>\n" +
+		    	"	</td></tr></table>\n" +
+		    	"</div>\n\n" +
+		    	
+		    	"<div>"+statement+"</div>\n" +
+		    	"</div>\n";
+        return;
     }
     //added by goto 20130313 end
     
@@ -662,9 +676,9 @@ public class HTMLFunction extends Function {
     		else	return;
     	}catch(Exception e){ return; }
 		
-    	html_env.code.append("<div data-role=\"footer\" data-position=\"fixed\" style=\"padding: 11px 0px;\">\n");
-    	html_env.code.append(statement+"\n");
-    	html_env.code.append("</div>\n");
+    	footerString += "<div data-role=\"footer\" data-position=\"fixed\" style=\"padding: 11px 0px;\" id=\"footer1\">\n" +
+				statement+"\n" +
+	    		"</div>\n";
     	return;
     }
     //added by goto 20130313 end

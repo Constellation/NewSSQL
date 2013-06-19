@@ -89,8 +89,8 @@ public class HTMLG3 extends Grouper {
             }
             i++;
             html_env.glevel--;
-            html_env.getHeader();
-            html_env.getFooter();
+            html_env.getHeader(1);
+            html_env.getFooter(1);
             html_env2.header.append("<?xml version=\"1.0\" encoding=\""+html_env.getEncode()+"\"?><SSQL>");
             html_env2.footer.append("</SSQL>");
 

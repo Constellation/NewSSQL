@@ -177,32 +177,23 @@ public class CodeGenerator{
 		//	必要ならコメントアウト外し、Managerの中も変更
 		//	manager.preProcess(tab,le,le1,le2,le3);
 		//	manager.createSchema(tab,le,le1,le2,le3);
-
-		Log.out("===============================");
-		Log.out("     generateCode has started     ");
-		Log.out("===============================");
-
 		// ?番外が Grouperのときにdata_infoを調整す?
 		if (tfe_info instanceof Grouper && data_info.size() != 0) {
 			data_info = (ExtList) data_info.get(0);
 		}
 
-		//tk start//////////////////////////////////////////////
-//		if(data_info.size() == 0)
-//			manager.generateCodeNotuple(tfe_info);
-//		else
-			//manager.generateCode(tfe_info, data_info);
-			Element result = (Element)manager.generateCodeForJsoup(tfe_info, data_info);
-			try {
-				Writer out = new BufferedWriter(new OutputStreamWriter(
-					    new FileOutputStream("jsoup.html"), "UTF-8"));
-				out.write(result.html());
-				out.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		//tk end///////////////////////////////////////////////
+		manager.generateCode(tfe_info, data_info);
+//		Element result = (Element)manager.generateCodeForJsoup(tfe_info, data_info);
+//		try {
+//			Writer out = new BufferedWriter(new OutputStreamWriter(
+//				    new FileOutputStream("jsoup.html"), "UTF-8"));
+//			out.write(result.html());
+//			out.close();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+
 		manager.finish();
 
 

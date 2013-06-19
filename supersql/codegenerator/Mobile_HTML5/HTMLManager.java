@@ -45,6 +45,19 @@ public class HTMLManager extends Manager{
 		}
 		return true;
 	}
+	//メソッドオーバーロード
+	public static boolean replaceCode(StringBuffer sb,String a,String b){
+		try{
+	    	sb.replace(
+	    			sb.lastIndexOf(a), 
+	    			sb.lastIndexOf(a)+a.length(),
+	    			b);
+		}catch(Exception e){ 
+			/*Log.info("Catch exception.");*/
+			return false;
+		}
+		return true;
+	}
 
     @Override
 	public void generateCode(ITFE tfe_info, ExtList data_info) {
@@ -101,8 +114,8 @@ public class HTMLManager extends Manager{
         else
         	tfe_info.work(data_info);
 
-        html_env.getHeader();
-        html_env.getFooter();
+        html_env.getHeader(1);
+        html_env.getFooter(1);
         html_env2.header.append("<?xml version=\"1.0\" encoding=\""+html_env.getEncode()+"\"?><SSQL>");
         html_env2.footer.append("</SSQL>");
         try {
@@ -110,6 +123,7 @@ public class HTMLManager extends Manager{
         		//changed by goto 20120715 start
 	        	//PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(
 	            //        html_env.filename)));
+        		Log.info("Window max-width: "+html_env.maxWidth);
         		PrintWriter pw;
 	            if (html_env.charset != null){
 		        	pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
@@ -351,8 +365,8 @@ public class HTMLManager extends Manager{
         html_env.setOutlineMode();
         tfe_info.work(data_info);
 
-        html_env.getHeader();
-        html_env.getFooter();
+        html_env.getHeader(1);
+        html_env.getFooter(1);
         html_env.embedflag = false;
         Log.out("header : "+ html_env.header);
 

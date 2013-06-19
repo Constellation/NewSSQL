@@ -122,8 +122,8 @@ public class HTMLC3 extends Connector {
                 if (k < c3items - 1) {
                     html_env.link_flag--;
                 }
-                html_env.getHeader();
-                html_env.getFooter();
+                html_env.getHeader(1);
+                html_env.getFooter(1);
                 //html_env2.header.append("<?xml version=\"1.0\" encoding=\"Shift_JIS\"?><SSQL>");
                 html_env2.header.append("<?xml version=\"1.0\" encoding=\""+html_env.getEncode()+"\"?><SSQL>");
                 html_env2.footer.append("</SSQL>");

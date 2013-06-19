@@ -173,6 +173,7 @@ public class HTMLC2 extends Connector {
 	        		html_env.code.append("\" ");
 	        	}
 	        	html_env.code.append(">");
+	        	//html_env.code.append("align=\"center\">");
         	}
         }
         if(GlobalEnv.isOpt()){

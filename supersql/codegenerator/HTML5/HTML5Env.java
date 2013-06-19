@@ -23,6 +23,7 @@ public class HTML5Env extends HTMLEnv {
         Log.out("<!docutype html>");
         Log.out("<HTML>");
         Log.out("<head>");
+        header.append("<meta name=\"Generator\" content=\" SuperSQL (Generate HTML5) \">\n");	//Generator
     	header.append("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />");
     	header.append("<meta http-equiv=\"Content-Language\" content=\"ja\" />");
     	header.append("<meta http-equiv=\"Content-Style-Type\" content=\"text/css\" />");

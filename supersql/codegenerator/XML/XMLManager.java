@@ -45,9 +45,7 @@ public class XMLManager extends Manager{
         if(data_info.size() == 0)
         {
         	Log.out("no data");
-        	//xml_env.code.append("<div class=\"nodata\" >");
         	xml_env.code.append("NO DATA FOUND");
-        	//xml_env.code.append("</div>");
         }
         else
         	tfe_info.work(data_info);

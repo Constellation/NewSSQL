@@ -6,6 +6,6 @@ import supersql.extendclass.ExtList;
 
 public abstract interface IOperator extends ITFE {
 
-	public void work(ExtList data_info);
+	public void work(ExtList<ExtList<String>> data_info);
 
 }

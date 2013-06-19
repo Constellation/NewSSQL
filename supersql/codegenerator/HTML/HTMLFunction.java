@@ -128,6 +128,14 @@ public class HTMLFunction extends Function {
         } else if (FuncName.equalsIgnoreCase("null")) {
             Func_null();
         }
+        //added by goto 20130308  "urlリンク"
+        else if(FuncName.equalsIgnoreCase("url") || FuncName.equalsIgnoreCase("anchor") || FuncName.equalsIgnoreCase("a")){
+        	Func_url(false);
+        }
+        //added by goto 20130417  "mail"
+        else if(FuncName.equalsIgnoreCase("mail")){
+        	Func_url(true);
+        }
 //        // for practice
 //        else if(FuncName.equalsIgnoreCase("button")){
 //        	Func_button();
@@ -362,6 +370,127 @@ public class HTMLFunction extends Function {
         //tk///////////////////////////////////////////////////////////////////////////////////
         return;
     }
+    
+    //added by goto 20130308 start  "anchor"  anchor(), a(), url(), mail()
+    /** anchor関数: anchor( name/button-name/button-url, url, type(bt/button/img/image) )
+     *          @{ width=~, height=~, transition=~ } 
+    /*    url("title", "detail/imgURL", int type), anchor(), a()    */
+    /*    <type:1> a(リンク元の名前, リンク先URL) <=> a(リンク元の名前, リンク先URL, 1)    */
+    /*    <type:2> a(画像URL, リンク先URL, 2)    	   	*/
+    /*    <type:3> a(ボタンの名前, リンク先URL, 3)        	*/
+    /*    mail()でも使用							        */
+    private void Func_url(boolean mailFncFlg) {
+    	String statement = "";
+    	FuncArg fa1 = (FuncArg) this.getArgs().get(0), fa2, fa3;
+    	String url, name, type;
+    	
+    	try{					//引数2つ or 3つの場合
+    		fa2 = (FuncArg) this.getArgs().get(1);
+    		url = ((mailFncFlg)?("mailto:"):("")) + fa2.getStr();
+    		name = fa1.getStr();
+        	
+        	try{						//引数3つの場合
+        		fa3 = (FuncArg) this.getArgs().get(2);
+        		type = fa3.getStr();
+        		
+        		//type=1 -> 文字
+        		if(type.equals("1") || type.equals("text") || type.equals("")){
+        			statement = getTextAnchor(url, name);
+        			//statement = "<a href=\""+url+"\""+transition()+prefetch()+target(url)+">"+name+"</a>";
+        		
+//        		//type=2 -> urlモバイルボタン
+//        		}else if(type.equals("3") || type.equals("button") || type.equals("bt")){
+//            		statement = "<a href=\""+url+"\" data-role=\"button\""+transition()+prefetch()+target(url)+">"+name+"</a>";
+
+            	//urlボタン(デスクトップ・モバイル共通)
+//        		}else if(type.equals("dbutton") || type.equals("dbt")){
+        		}else if(type.equals("3") || type.equals("button") || type.equals("bt")){
+            		statement = "<input type=\"button\" value=\""+name+"\" onClick=\"location.href='"+url+"'\"";
+            		
+            		//urlボタン width,height指定時の処理
+            		if(decos.containsKey("width") || decos.containsKey("height")){
+            			statement += " style=\"";
+            			if(decos.containsKey("width"))	statement += "WIDTH:"+decos.getStr("width").replace("\"", "")+"; ";
+            			if(decos.containsKey("height"))	statement += "HEIGHT:"+decos.getStr("height").replace("\"", "")+"; ";	//100; ";
+            			statement += "\"";
+                	}
+            		statement += ">";
+            	
+            	//type=3 -> url画像
+            	}else if(type.equals("2") || type.equals("image") || type.equals("img")){
+            		statement = "<a href=\""+url+"\""+transition()+prefetch()+target(url)+"><img src=\""+name+"\"";
+    		        
+        			//url画像 width,height指定時の処理
+            		if(decos.containsKey("width"))	statement += " width="+decos.getStr("width").replace("\"", "");
+            		else{
+            	        //added by goto 20130312  "Default width: 100%"
+            			statement += " width=\"100%\"";
+            		}
+        			if(decos.containsKey("height"))	statement += " height="+decos.getStr("height").replace("\"", "");	//100; ";
+        			statement += "></a>";
+            	}
+        		
+        	}catch(Exception e){		//引数2つの場合
+    			statement = getTextAnchor(url, name);
+        		//statement = "<a href=\""+url+"\""+transition()+prefetch()+target(url)+">"+name+"</a>";
+        	}
+        	
+    	}catch(Exception e){	//引数1つの場合
+    		url = fa1.getStr();
+    		statement = "<a href=\""+((mailFncFlg)?("mailto:"):("")) + url+"\""+transition()+prefetch()+target(url)+">"+url+"</a>";
+    	}
+    	
+    	// 各引数毎に処理した結果をHTMLに書きこむ
+    	htmlEnv.code.append(statement);
+    	return;
+    }
+    private String getTextAnchor(String url, String name) {
+    	//[ ]で囲われた部分をハイパーリンクにする
+    	//ex) a("[This] is anchor.","URL")
+    	String A="",notA1="",notA2="";
+    	int a1 = 0, a2 = name.length()-1;
+    	try{
+    		for(int i=0;i<name.length();i++){
+    			if(i>0 && name.charAt(i)=='[' && name.charAt(i-1)!='\\')		a1=i;
+    			else if(i>0 && name.charAt(i)==']' && name.charAt(i-1)!='\\')	a2=i;
+    		}
+    		if(a1==0 && a2==name.length()-1)	A=name.substring(a1,a2+1);
+    		else								A=name.substring(a1+1,a2);
+    		A=A.replaceAll("\\\\\\[", "[").replaceAll("\\\\\\]", "]");
+    		notA1=name.substring(0,a1).replaceAll("\\\\\\[", "[").replaceAll("\\\\\\]", "]");
+    		notA2=name.substring(a2+1).replaceAll("\\\\\\[", "[").replaceAll("\\\\\\]", "]");
+    	}catch(Exception e){}
+    	
+    	return notA1+"<a href=\""+url+"\""+transition()+prefetch()+target(url)+">"+A+"</a>"+notA2;
+    }
+	private String transition() {
+    	//画面遷移アニメーション(data-transition)指定時の処理
+    	//※外部ページへの遷移には対応していない
+    	if (decos.containsKey("transition"))
+    		return " data-transition=\"" + decos.getStr("transition") + "\"";
+    	if (decos.containsKey("trans"))
+    		return " data-transition=\"" + decos.getStr("trans") + "\"";
+		return "";
+    }
+    private String prefetch() {
+    	//遷移先ページプリフェッチ(data-prefetch)指定時の処理
+    	//※外部ページへの遷移に使用してはいけない決まりがある
+    	if (decos.containsKey("prefetch") || decos.containsKey("pref"))
+    		return " data-prefetch";
+		return "";
+    }
+    private String target(String url) {
+    	//新規ウィンドウで表示する場合(target="_blank")の処理　=> _blankはW3Cで禁止されているため、JS + rel=externalを使用
+    	//「外部ページに飛ぶ場合( http(s)://で始まる場合)」のみ新規ウィンドウ表示
+    	if (url.matches("\\s*(http|https)://.*"))
+    		return "  rel=\"external\"";
+    		//return " target=\"_blank\"";
+		return " target=\"_self\"";
+    }
+    //added by goto 20130308 end
+
+    
+    
 
 //    // for practice 2012/02/09
 //    private void Func_button() {

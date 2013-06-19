@@ -100,6 +100,8 @@ public class HTMLEnv extends LocalEnv {
 	public static String condName = "";
 	public static String cond = "";
 	
+    public static String bg = "";			//added by goto 20130311  "background"
+	
 	public HTMLEnv() {
 		// TODO Put the file name in the configuration
 		File input = new File("template.html");
@@ -267,7 +269,7 @@ public class HTMLEnv extends LocalEnv {
 
 			// TODO something to put a h1 tag for the title
 		}
-
+		
 		if (decos.containsKey("tableborder"))
 			tableBorder = decos.getStr("tableborder");
 
@@ -277,12 +279,12 @@ public class HTMLEnv extends LocalEnv {
 		// call another method here
 
 		Attributes attributes = new Attributes();
-
+		
 		// added by goto 20120715 start
 		if (decos.containsKey("charset"))
 			charset = decos.getStr("charset");
 		else if (!charsetFlg)
-			charset = "EUC-JP"; // default charset = EUC-JP
+			charset = "UTF-8"; // default charset = UTF-8
 		if (!charsetFlg && charset != null) {
 			attributes.put("http-equiv", "Content-Type");
 			attributes.put("content", "text/html");
@@ -592,6 +594,18 @@ public class HTMLEnv extends LocalEnv {
 		if (decos.containsKey("border-collapse"))
 			cssbuf.append(" border-collapse:" + decos.getStr("border-collapse")
 					+ ";");
+		
+		
+        //added by goto 20130311  "background"
+        if (decos.containsKey("background"))
+        	bg = decos.getStr("background");
+		
+        //added by goto 20130501  "style"
+        if (decos.containsKey("style")){
+        	String style = decos.getStr("style");
+        	cssbuf.append(" " + style);
+        	if(!style.matches(".*;\\s*$"))	cssbuf.append(";");	//最後に";"が無かった場合
+        }
 
 		// tk
 		// start////////////////////////////////////////////////////////////////
@@ -599,7 +613,7 @@ public class HTMLEnv extends LocalEnv {
 		if (decos.containsKey("charset"))
 			charset = decos.getStr("charset");
 		else if (!charsetFlg)
-			charset = "EUC-JP"; // default charset = EUC-JP
+			charset = "UTF-8"; // default charset = UTF-8
 		if (!charsetFlg && charset != null) {
 			metabuf.append("<meta http-equiv=\"Content-Type\" content=\"text/html; charset="
 					+ charset + "\">");
@@ -730,6 +744,13 @@ public class HTMLEnv extends LocalEnv {
 		}
 
 		if (GlobalEnv.getframeworklist() == null) {
+            //added by goto 20130311  "background"
+	        if (!bg.equals("")){
+	        	header.append("<style type=\"text/css\">");
+	            header.append("<!-- body { background-image: url("+bg+"); } -->");
+	          	header.append("</style>\n");
+	        }
+			
 			header.append("</HEAD>\n");
 
 			header.append("<BODY class=\"body\">\n");
@@ -797,6 +818,7 @@ public class HTMLEnv extends LocalEnv {
 			header.insert(index, "<HTML>\n");
 			Log.out("<HTML>");
 			Log.out("<head>");
+	        header.append("<meta name=\"GENERATOR\" content=\" SuperSQL (Generate HTML) \">\n");	//Generator
 			header.append(cssFile);
 			header.append("<STYLE TYPE=\"text/css\">\n");
 			header.append("<!--\n");

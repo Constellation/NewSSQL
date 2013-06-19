@@ -20,6 +20,8 @@ public class Connector extends Operator{
     public static boolean loginFlag;
     public static boolean logoutFlag;
 
+	protected int sindex, dindex;
+
 	public Connector() {
 		super();
 		Dimension = -1;
@@ -87,8 +89,6 @@ public class Connector extends Operator{
 		return items;
 	}
 
-	private int sindex, dindex;
-
 	public void setDataList(ExtList d) {
 		data = d;
 		sindex = 0;
@@ -134,44 +134,6 @@ public class Connector extends Operator{
 		dindex += ci;
 
 	}
-
-	//ryuryu start////////////////////////////////////////////////
-	public void worknextItem_GENERATEXML() {
-
-		ITFE tfe = (ITFE) tfes.get(sindex);
-		Log.out("tfe : " + tfe);
-
-		int ci = tfe.countconnectitem();
-
-		if(tfe instanceof Connector || tfe instanceof Grouper){
-
-			if(XMLAttribute.tagcount >= 1){
-				XMLC0.xml_env.code.append(">");
-				XMLC0.xml_env.code.append(XMLAttribute.tag_value);
-				XMLC0.xml_env.code.append("</" + XMLAttribute.tag + ">");
-				XMLAttribute.tagcount = 0;
-			}
-
-			else if(XMLC0.parent_attflag == 1){
-				XMLC0.xml_env.code.append(">");
-			}
-		}
-
-		ExtList subdata = data.ExtsubList(dindex, dindex + ci);
-		Log.out("subdata : " + subdata);
-
-		if (tfe instanceof Connector || tfe instanceof Attribute
-				|| tfe instanceof Function) {
-			tfe.work(subdata);
-		} else {
-			tfe.work((ExtList) subdata.get(0));
-		}
-		sindex++;
-		dindex += ci;
-		Log.out("tfe.countconnectitem() : " + ci);
-	}
-	//ryuryu end////////////////////////////////////////////////
-
 
 	public boolean isFirstItem() {
 	    return (sindex == 0);
