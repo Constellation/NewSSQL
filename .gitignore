@@ -22,8 +22,5 @@ bin/
 .checkstyle
 bin/
 js/script.js
-<<<<<<< HEAD
 *.sql
 jsoup.html
-=======
->>>>>>> master
