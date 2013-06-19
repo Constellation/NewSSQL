@@ -8,6 +8,11 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
+import org.jsoup.parser.Tag;
+
 import supersql.codegenerator.Attribute;
 import supersql.codegenerator.Connector;
 import supersql.codegenerator.ITFE;
@@ -26,6 +31,85 @@ public class HTMLC3 extends Connector {
     public HTMLC3(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
         this.htmlEnv = henv;
         this.htmlEnv2 = henv2;
+    }
+    
+    public Element createNode(ExtList data_info){
+    	
+    	//TODO
+    	Element result = new Element(Tag.valueOf("div"), "");
+    	
+    	String parentfile = htmlEnv.fileName;
+        String parentfile2 = htmlEnv2.fileName;
+        StringBuffer parentcode = new StringBuffer();
+        StringBuffer parentcss = new StringBuffer();
+        StringBuffer parentheader = new StringBuffer();
+        StringBuffer parentfooter = new StringBuffer();
+        StringBuffer parentcode2 = new StringBuffer();
+        StringBuffer parentcss2 = new StringBuffer();
+        StringBuffer parentheader2 = new StringBuffer();
+        StringBuffer parentfooter2 = new StringBuffer();
+        ITFE[] tfe = new ITFE[tfeItems];
+        int c3items = tfeItems;
+        for (int j = 0; j < tfeItems - 1; j++) {
+            tfe[j] = (ITFE) tfes.get(j);
+            if (j < tfeItems - 2 && tfe[j] instanceof HTMLG3) {
+                System.err.println("Error: % after []% is not allowed");
+                GlobalEnv.addErr("Error: % after []% is not allowed");
+            }
+        }
+        htmlEnv.countFile++;
+
+        htmlEnv.linkUrl = htmlEnv.linkOutFile
+                + String.valueOf(htmlEnv.countFile) + ".html";
+        htmlEnv.linkFlag++;
+        this.setDataList(data_info);
+
+        result.appendChild((Element) this.createNextItemNode(data_info));
+        htmlEnv.linkFlag--;
+
+        for (int k = 1; k < c3items; k++) {
+            ITFE intfe = (ITFE) tfes.get(k);
+            htmlEnv.fileName = htmlEnv.outFile
+                    + String.valueOf(htmlEnv.countFile) + ".html";
+            if (intfe instanceof HTMLG3) {
+                htmlEnv.countFile--;
+                result.appendChild((Element) this.createNextItemNode(data_info));
+            } else {
+                parentcode = htmlEnv.code;
+                parentcss = htmlEnv.css;
+                parentheader = htmlEnv.header;
+                parentfooter = htmlEnv.footer;
+                htmlEnv.code = new StringBuffer();
+                htmlEnv.header = new StringBuffer();
+                htmlEnv.footer = new StringBuffer();
+
+                if (k < c3items - 1) {
+                    htmlEnv.countFile++;
+                    htmlEnv.linkUrl = htmlEnv.linkOutFile
+                            + String.valueOf(htmlEnv.countFile) + ".html";
+                    htmlEnv.linkFlag++;
+                }
+
+                htmlEnv.setOutlineMode();
+                result.appendChild((Element) this.createNextItemNode(data_info));
+
+                if (k < c3items - 1) {
+                    htmlEnv.linkFlag--;
+                }
+                htmlEnv.getHeader();
+                htmlEnv.getFooter();
+                htmlEnv.code = parentcode;
+                htmlEnv.css = parentcss;
+                htmlEnv.header = parentheader;
+                htmlEnv.footer = parentfooter;
+            }
+        }
+        // TODO
+        htmlEnv.fileName = parentfile;
+
+        //result.appendChild(cssDefTd(HTMLEnv.getClassID(this), this.decos));
+        htmlEnv.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
+        return result;
     }
 
     //C3､ﾎwork･皈ｽ･ﾃ･ﾉ

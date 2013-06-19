@@ -85,6 +85,12 @@ public class IfCondition extends Operator {
 		else
 			return "if " + condition + " then "+ thenTfe + " else "+elseTfe;
 	}
+
+	@Override
+	public Object createNode(ExtList<ExtList<String>> data_info) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	
 

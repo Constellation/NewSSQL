@@ -166,5 +166,11 @@ public class Function extends Operand {
 
 		return outsch;
 	}
+
+	@Override
+	public Object createNode(ExtList<ExtList<String>> data_info) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

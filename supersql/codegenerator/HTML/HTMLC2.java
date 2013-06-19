@@ -1,5 +1,8 @@
 package supersql.codegenerator.HTML;
 
+import org.jsoup.nodes.Element;
+import org.jsoup.parser.Tag;
+
 import supersql.codegenerator.Connector;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.Manager;
@@ -19,7 +22,76 @@ public class HTMLC2 extends Connector {
         this.htmlEnv2 = henv2;
     }
 
-    //C2¤Îwork¥á¥½¥Ã¥É
+    @Override
+    public Element createNode(ExtList data_info){
+    	Element result = new Element(Tag.valueOf("table"), "");
+    	this.setDataList(data_info);
+
+        if(decos.containsKey("form") && decos.getStr("form").toLowerCase().equals("search")){
+    		HTMLEnv.setSearch(true);
+        }	
+        
+        if(decos.containsKey("insert")){
+        	HTMLEnv.setIDU("insert");
+        }
+        if(decos.containsKey("update")){
+        	HTMLEnv.setIDU("update");
+        }
+        if(decos.containsKey("delete")){
+        	HTMLEnv.setIDU("delete");
+        }
+
+        htmlEnv.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
+        
+        if(!GlobalEnv.isOpt()){
+        	result.attr("cellSpacing", "0");
+        	result.attr("cellPadding", "0");
+        	result.attr("border", htmlEnv.tableBorder);
+        	if(!htmlEnv.isOutlineModeForJsoup()){
+        		result.attr("frame", "void");
+        	}
+        	if(htmlEnv.writtenClassId.contains(HTMLEnv.getClassID(this))){
+        		result.attr("class", HTMLEnv.getClassID(this));
+        	}
+
+        	if(decos.containsKey("class")){
+        		result.attr("class", result.attr("class") + " " + decos.getStr("class"));
+        	}
+        }
+
+        int i = 0;
+        
+    	if(decos.containsKey("form")){
+    		result.appendChild(HTMLFunction.createFormForJsoup(decos));
+           	HTMLEnv.setFormItemFlg(true,null);
+        }
+    	
+        while (this.hasMoreItems()) {
+            ITFE tfe = (ITFE) tfes.get(i);
+            Element tr = new Element(Tag.valueOf("tr"), "");
+            Element td = new Element(Tag.valueOf("td"), "");
+            td.attr("class", HTMLEnv.getClassID(tfe) + " nest");
+            
+        	String classid = HTMLEnv.getClassID(tfe);
+
+            td.appendChild((Element)this.createNextItemNode(data_info));
+
+            tr.appendChild(td);
+            result.appendChild(tr);
+            i++;
+        }
+
+        if(decos.containsKey("form")){
+        	result.appendChild(HTMLEnv.exFormNameCreateForJsoup());
+           	HTMLEnv.setFormItemFlg(false,null);
+           	HTMLEnv.incrementFormNumber();
+           	if(decos.getStr("form").toLowerCase().equals("search"))
+        		HTMLEnv.setSearch(false);
+        }
+        return result;
+    }
+    
+    //C2ï¿½ï¿½workï¿½á¥½ï¿½Ã¥ï¿½
     public void work(ExtList data_info) {
         Log.out("------- C2 -------");
         Log.out("tfes.contain_itemnum=" + tfes.contain_itemnum());

@@ -15,7 +15,6 @@ public class SQLQuery extends ArrayList {
 	
 	public String getString()
 	{
-		new ExtList();
 		int column = 0;
 		long start, end;
 

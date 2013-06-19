@@ -1,5 +1,7 @@
 package supersql;
 
+import org.jsoup.nodes.Element;
+
 import supersql.codegenerator.CodeGenerator;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
@@ -40,6 +42,7 @@ public class FrontEnd {
 
 				if (GlobalEnv.getErrFlag() == 0) {
 					codegenerator.generateCode(parser, dc.getData());
+					
 					aftercg = System.currentTimeMillis();
 				}
 			}

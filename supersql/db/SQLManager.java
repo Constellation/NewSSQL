@@ -72,7 +72,7 @@ public class SQLManager {
     	}
 
         Log.out("[SQLManager ExecQuery]");
-        if(!query.equals("SELECT DISTINCT  FROM ;")){
+        if(!query.equals("SELECT DISTINCT  FROM ;") && !query.equals("SELECT  FROM ;")){
 	        Log.info("********** SQL is **********");
 	        Log.info(query);
         }
@@ -123,7 +123,7 @@ public class SQLManager {
             }
 
         } catch (SQLException e) {
-        	if(!query.equals("SELECT DISTINCT  FROM ;")){
+        	if(!query.equals("SELECT DISTINCT  FROM ;") && !query.equals("SELECT  FROM ;")){
 	              System.err
 	              .println("Error[SQLManager.ExecSQL]: Can't Exec Query : query = "
 			                      + query);

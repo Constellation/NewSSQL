@@ -19,7 +19,7 @@ public class HTML5Env extends HTMLEnv {
    		int index = 0;
         header.insert(index,"<HEAD>\n");
         header.insert(index,"<HTML>\n");
-        header.insert(index,"<!docutype html>\n");
+        header.insert(index,"<!doctype html>\n");
         Log.out("<!docutype html>");
         Log.out("<HTML>");
         Log.out("<head>");

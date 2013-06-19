@@ -1,6 +1,9 @@
 package supersql.codegenerator;
 
+import org.jsoup.nodes.Element;
+
 import supersql.extendclass.ExtList;
+import supersql.parser.SSQLparser;
 
 /**
  * ?象クラスManager。ソース生成にあたっての共通な機能をまとめた。 前処?、スキーマ生成、インスタンス移行、後処?。
@@ -49,7 +52,7 @@ public abstract class Manager {
 		StringBuffer code = new StringBuffer();
 		return code;
 	}
-	
+
 	//return cssfile for embed function
 	public StringBuffer generateCssfile(ITFE tfe_info, ExtList data_info) {
 		StringBuffer cssfile = new StringBuffer();
@@ -67,6 +70,11 @@ public abstract class Manager {
 
 	//後処?
 	public abstract void finish();
+
+	public Object generateCodeForJsoup(ITFE tfe_info, ExtList data_info) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }
 

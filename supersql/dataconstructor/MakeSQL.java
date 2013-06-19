@@ -56,17 +56,11 @@ public class MakeSQL {
 		if (Preprocessor.isAggregate()) {
 			buf = new StringBuffer("SELECT ALL ");
 		} else {
-
-			//ryuryu
-			/*buf = new StringBuffer("SELECT DISTINCT ");*/
-
-			//ryuryu(start)/////////////////////////////////////////////////////
-			if(SSQLparser.xpathExist == 1){
-				buf = new StringBuffer("SELECT ");
-			}
-
-			else{
+			if(SSQLparser.isDistinct()){
 				buf = new StringBuffer("SELECT DISTINCT ");
+			}
+			else{
+				buf = new StringBuffer("SELECT ");
 			}
 			//ryuryu(end)/////////////////////////////////////////////////////
 		}

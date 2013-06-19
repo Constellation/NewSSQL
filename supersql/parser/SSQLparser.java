@@ -76,6 +76,8 @@ public class SSQLparser {
 	private static StringBuffer order_c = new StringBuffer();
 	private static StringBuffer group_c = new StringBuffer();
 	private static StringBuffer having_c = new StringBuffer();
+	
+	private static boolean distinct = false;
 
 	public static String get_from_info_st() {
 		if (fromInfoString == null) {
@@ -645,6 +647,10 @@ public class SSQLparser {
 			preProcess(st, nt);
 
 			media = st.nextToken().toString();
+			if(media.equalsIgnoreCase("DISTINCT")){
+				distinct = true;
+				media = st.nextToken().toString();
+			}
 
 			// for embed css TFE_ID
 			codeGenerator = new CodeGenerator(id);
@@ -765,6 +771,14 @@ public class SSQLparser {
 				queryResult += fnt + " ";
 				break;
 			}
+		}
+		String distinctString;
+		if(fst.hasMoreTokens()){
+			distinctString = fst.nextToken();
+			if(distinctString.equalsIgnoreCase("DISTINCT"))
+				distinct = true;
+			else
+				tfe+= distinctString;
 		}
 		while (fst.hasMoreTokens()) {
 			String fnt = fst.nextToken();
@@ -1347,5 +1361,13 @@ public class SSQLparser {
         query = QueryBuffer;
         return  query;
     }
+
+	public static boolean isDistinct() {
+		return distinct;
+	}
+
+	public static void setDistinct(boolean distinct) {
+		SSQLparser.distinct = distinct;
+	}
 
 }

@@ -1,5 +1,13 @@
 package supersql.codegenerator;
 
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+
+import org.jsoup.nodes.Element;
+
 import supersql.codegenerator.HTML.HTMLFactory;
 import supersql.codegenerator.HTML5.HTML5Factory;
 import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5Factory;
@@ -171,7 +179,7 @@ public class CodeGenerator{
 		//	manager.createSchema(tab,le,le1,le2,le3);
 
 		Log.out("===============================");
-		Log.out("     generateCode is start     ");
+		Log.out("     generateCode has started     ");
 		Log.out("===============================");
 
 		// ?番外が Grouperのときにdata_infoを調整す?
@@ -183,7 +191,17 @@ public class CodeGenerator{
 //		if(data_info.size() == 0)
 //			manager.generateCodeNotuple(tfe_info);
 //		else
-			manager.generateCode(tfe_info, data_info);
+			//manager.generateCode(tfe_info, data_info);
+			Element result = (Element)manager.generateCodeForJsoup(tfe_info, data_info);
+			try {
+				Writer out = new BufferedWriter(new OutputStreamWriter(
+					    new FileOutputStream("jsoup.html"), "UTF-8"));
+				out.write(result.html());
+				out.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		//tk end///////////////////////////////////////////////
 		manager.finish();
 

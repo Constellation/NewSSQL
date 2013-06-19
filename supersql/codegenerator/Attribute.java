@@ -258,5 +258,10 @@ public class Attribute extends Operand {
 		}
 		decos.put(key, val, condition);
 	}
-	
+
+	@Override
+	public Object createNode(ExtList<ExtList<String>> data_info) {
+		return null;
+	}
+
 }

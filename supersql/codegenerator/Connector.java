@@ -98,7 +98,23 @@ public class Connector extends Operator{
 	public boolean hasMoreItems() {
 		return (sindex < tfes.size());
 	}
+	
+	public Object createNextItemNode(ExtList data) {
+		ITFE tfe = (ITFE) tfes.get(sindex);
+		int ci = tfe.countconnectitem();
 
+		ExtList subdata = data.ExtsubList(dindex, dindex + ci);
+		sindex++;
+		dindex += ci;
+		if (tfe instanceof Connector || tfe instanceof Attribute
+				|| tfe instanceof Function || tfe instanceof IfCondition) {
+			return tfe.createNode(subdata);
+		}
+		else {
+			return tfe.createNode((ExtList) subdata.get(0));
+		}
+	}
+	
 	public void worknextItem() {
 		ITFE tfe = (ITFE) tfes.get(sindex);
 		int ci = tfe.countconnectitem();
@@ -182,4 +198,9 @@ public class Connector extends Operator{
 
 	@Override
 	public void work(ExtList data_info) {}
+
+	@Override
+	public Object createNode(ExtList<ExtList<String>> data_info) {
+		return null;
+	}
 }

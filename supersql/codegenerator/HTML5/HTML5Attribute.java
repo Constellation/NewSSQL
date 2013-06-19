@@ -1,514 +1,28 @@
 package supersql.codegenerator.HTML5;
 
-import supersql.codegenerator.Attribute;
 import supersql.codegenerator.Manager;
-import supersql.common.GlobalEnv;
+import supersql.codegenerator.HTML.HTMLAttribute;
+import supersql.codegenerator.HTML.HTMLEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
 
-public class HTML5Attribute extends Attribute {
-
-	private HTML5Env html5_env;
-	private HTML5Env html5_env2;
+public class HTML5Attribute extends HTMLAttribute {
 
 	private String[] formSql = {"","delete","update","insert","login","logout"};
 	private String[] formHtml = {"","submit","select","checkbox","radio","text","textarea","hidden"};
 	private int whichForm;
 
 	//���󥹥ȥ饯��
-	public HTML5Attribute(Manager manager, HTML5Env henv, HTML5Env henv2) {
-		super();
-		this.html5_env = henv;
-		this.html5_env2 = henv2;
+	public HTML5Attribute(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
+		super(manager, henv, henv2);
 	}
 	
 	public HTML5Attribute(Manager manager, HTML5Env henv, HTML5Env henv2, boolean b) {
-		super(b);
-		this.html5_env = henv;
-		this.html5_env2 = henv2;
+		super(manager, henv, henv2, b);
 	}
 
-	//Attribute��work�᥽�å�
-	public void work(ExtList data_info) {
-		/*
-        if(GlobalEnv.getSelectFlg())
-        	data_info = (ExtList) data_info.get(0);
-        	*/
-		html5_env.append_css_def_td(HTML5Env.getClassID(this), this.decos);
-
-		if(GlobalEnv.isOpt()){
-			work_opt(data_info);
-		}else{
-			if(HTML5Env.getFormItemFlg() && HTML5Env.getFormItemName().equals(formHtml[2])){
-
-			}else{
-				html5_env.code.append("<table" + html5_env.getOutlineModeAtt() + " ");
-				html5_env.code.append("class=\"att");
-				//tk start/////////////////////////////////////////////////////////
-				if(html5_env.writtenClassId.contains(HTML5Env.getClassID(this))){
-					//class���äƤ���Ȥ�(ex.TFE10000)�Τ߻���
-					html5_env.code.append(" " + HTML5Env.getClassID(this));
-				}
-				if(decos.containsKey("class")){
-					//class����(ex.class=menu)������Ȥ�
-					html5_env.code.append(" " + decos.getStr("class"));
-				}
-				html5_env.code.append("\"");
-				html5_env.code.append(">");
-			}
-
-			if(HTML5Env.getFormItemFlg()){
-
-			}else{
-				html5_env.code.append("<tr><td>\n");
-				Log.out("<table class=\"att\"><tr><td>");
-			}
-
-			if (html5_env.linkFlag > 0 || html5_env.sinvokeFlag) {
-
-				//tk start for draggable div///////////////////////////////////////
-				if(html5_env.draggable)
-				{
-					html5_env.code.append("<div id=\""+html5_env.dragDivId+"\" class=\"draggable\"");
-					Log.out("<div id=\""+html5_env.dragDivId+"\" ");
-				}
-				else{
-					//tk end for draggable div/////////////////////////////////////////
-					if(html5_env.isPanel)
-						html5_env.code.append("<div id=\"container\">");
-
-					html5_env.code.append("<A href=\"" + html5_env.linkUrl + "\" ");
-
-				}
-				//tk start//////////////////////////////////////////////////////////
-				if(decos.containsKey("target")){
-					html5_env.code.append(" target=\"" + decos.getStr("target")+"\"");
-				}
-				if(decos.containsKey("class")){
-					html5_env.code.append(" class=\"" + decos.getStr("class") + "\"");
-				}
-
-				if(GlobalEnv.isAjax() && html5_env.isPanel)
-				{
-					html5_env.code.append(" onClick =\"return panel('Panel','"+html5_env.ajaxQuery+"'," +
-							"'"+html5_env.dragDivId+"','"+html5_env.ajaxCond+"')\"");
-				}
-				else if(GlobalEnv.isAjax() && !html5_env.draggable)
-				{
-					String target = GlobalEnv.getAjaxTarget();
-					if(target == null)
-					{
-						String query = html5_env.ajaxQuery;
-						if(query.contains("/"))
-						{
-							target = query.substring(query.lastIndexOf("/")+1,query.indexOf(".sql"));
-						}
-						else
-							target = query.substring(0,query.indexOf(".sql"));
-
-						if(html5_env.hasDispDiv)
-						{
-							target = html5_env.ajaxtarget;
-						}
-						Log.out("a target:"+target);
-					}
-					html5_env.code.append(" onClick =\"return loadFile('"+html5_env.ajaxQuery+"','"+target+
-							"','"+html5_env.ajaxCond+"',"+html5_env.inEffect+","+html5_env.outEffect+")\"");
-
-				}
-
-
-				html5_env.code.append(">\n");
-				//tk end////////////////////////////////////////////////////////////
-
-				Log.out("<A href=\"" + html5_env.linkUrl + "\">");
-			}
-
-			//Log.out("data_info: "+this.getStr(data_info));
-
-
-			createForm(data_info);
-
-
-			if(whichForm == 0){ //normal process (not form)
-				//***APPEND DATABASE VALUE***//
-				Log.out(data_info);
-				html5_env.code.append(this.getStr(data_info));
-
-				Log.out(this.getStr(data_info));
-			}
-
-			if (html5_env.linkFlag > 0 || html5_env.sinvokeFlag) {
-				if(html5_env.draggable)
-					html5_env.code.append("</div>\n");
-				else
-				{
-					html5_env.code.append("</A>\n");
-
-					if(html5_env.isPanel)
-						html5_env.code.append("</div>\n");
-				}
-				Log.out("</A>");
-			}
-
-			/*
-			if(whichForm > 0){
-				html5_env.code.append("\" />\n");
-				Log.out("\" \\>\n");
-			}
-			*/
-
-
-
-			//Log.out("tuple: " + tuple_count + "/"+GlobalEnv.getTuplesNum() );
-
-			if(HTML5Env.getFormItemFlg() && HTML5Env.getFormItemName().equals(formHtml[2])){
-
-			}else{
-				html5_env.code.append("</td></tr></table>\n");
-				Log.out("</td></tr></table>");
-			}
-
-
-			Log.out("TFEId = " + HTML5Env.getClassID(this));
-			//html5_env.append_css_def_td(HTML5Env.getClassID(this), this.decos);
-		}
-
-	}
-
-	//optimizer
-	public void work_opt(ExtList data_info){
-		StringBuffer string_tmp = new StringBuffer();
-		string_tmp.append("<VALUE");
-		if(html5_env.writtenClassId.contains(HTML5Env.getClassID(this))){
-			//class���äƤ���Ȥ�(ex.TFE10000)�Τ߻���
-			string_tmp.append(" class=\"");
-			string_tmp.append(HTML5Env.getClassID(this));
-		}
-
-		if(decos.containsKey("class")){
-			//class����(ex.class=menu)������Ȥ�
-			if(!html5_env.writtenClassId.contains(HTML5Env.getClassID(this))){
-				string_tmp.append(" class=\"");
-			}else{
-				string_tmp.append(" ");
-			}
-			string_tmp.append(decos.getStr("class") + "\"");
-		}else if(html5_env.writtenClassId.contains(HTML5Env.getClassID(this))){
-			string_tmp.append("\"");
-		}
-
-		if(decos.containsKey("update") || decos.containsKey("insert")||decos.containsKey("delete")||decos.containsKey("login")||decos.containsKey("logout") || HTML5Env.getFormItemFlg() ||
-			(HTML5Env.getIDU()!= null && !HTML5Env.getIDU().isEmpty())){
-			string_tmp.append(" type=\"form\"");
-		}
-
-
-		if(decos.containsKey("tabletype")){
-			string_tmp.append(" tabletype=\"" + decos.getStr("tabletype") + "\"");
-		}
-
-		//link and sinvoke
-		if (html5_env.linkFlag > 0 || html5_env.sinvokeFlag) {
-			string_tmp.append(" href=\"" + html5_env.linkUrl + "\" ");
-			if(decos.containsKey("target")){
-				string_tmp.append(" target=\"" + decos.getStr("target")+"\"");
-			}
-			if(decos.containsKey("class")){
-				string_tmp.append(" aclass=\"" + decos.getStr("class") + "\"");
-			}
-		}
-
-		string_tmp.append(">");
-
-
-		if(HTML5Env.getFormItemFlg() && HTML5Env.getFormItemName().equals(formHtml[2]) && HTML5Env.getSelectRepeat()){
-
-		}else{
-			html5_env2.code.append(string_tmp);
-			Log.out(string_tmp);
-		}
-
-		createForm(data_info);
-
-
-		if(whichForm == 0){
-			//***APPEND DATABASE VALUE***//
-			String s = this.getStr(data_info);
-			if(s.contains("&"))
-				s = s.replace("&", "&amp;");
-			if(s.contains("<"))
-				s = s.replaceAll("<", "&lt;");
-			if(s.contains(">"))
-				s = s.replaceAll(">", "&gt;");
-			if(s.contains("���"))
-				s = s.replaceAll("���", "&#65374;");
-			if(s.isEmpty())
-				s = "��";
-			html5_env2.code.append(s);
-			Log.out(this.getStr(data_info));
-		}
-
-		/*
-		if(decos.containsKey("update") || decos.containsKey("insert")|| decos.containsKey("delete") || decos.containsKey("login")){
-			html5_env2.code.append("\" />");
-			Log.out("\" \\>\n");
-		}
-		*/
-
-		//Log.out("tuple: " + tuple_count + "/"+GlobalEnv.getTuplesNum() );
-
-		if(HTML5Env.getFormItemFlg() && HTML5Env.getFormItemName().equals(formHtml[2])){
-				//select
-		}else{
-		     html5_env2.code.append("</VALUE>");
-		     Log.out("</VALUE>");
-		     if(HTML5Env.getFormItemFlg() && HTML5Env.getFormItemName().equals(formHtml[5])){
-		    	 HTML5Env.incrementFormPartsNumber();
-		     }
-		}
-
-
-	}
-
-
-
-	/*
-  //Attribute��work�᥽�å�
-    public void work(ExtList data_info) {
-
-        html5_env.append_css_def_td(HTML5Env.getClassID(this), this.decos);
-
-        if(!GlobalEnv.isOpt()){
-        	if(HTMLEnv.getFormItemFlg()){
-
-            }else{
-	        	html5_env.code.append("<table" + html5_env.getOutlineModeAtt() + " ");
-	        	html5_env.code.append("class=\"att");
-	        	//tk start/////////////////////////////////////////////////////////
-	        	if(html5_env.written_classid.contains(HTML5Env.getClassID(this))){
-	        		//class���äƤ���Ȥ�(ex.TFE10000)�Τ߻���
-	        		html5_env.code.append(" " + HTML5Env.getClassID(this));
-	        	}
-	        	if(decos.containsKey("class")){
-	        		//class����(ex.class=menu)������Ȥ�
-	        		html_env.code.append(" " + decos.getStr("class"));
-	        	}
-	        	html5_env.code.append("\"");
-	        	html5_env.code.append(">");
-            }
-        }
-
-
-        if(GlobalEnv.isOpt()){
-        	html5_env2.code.append("<VALUE");
-        	if(html5_env.written_classid.contains(HTML5Env.getClassID(this))){
-        		//class���äƤ���Ȥ�(ex.TFE10000)�Τ߻���
-        		html5_env2.code.append(" class=\"");
-        		html5_env2.code.append(HTMLEnv.getClassID(this));
-        	}
-
-        	if(decos.containsKey("class")){
-        		//class����(ex.class=menu)������Ȥ�
-        		if(!html5_env.written_classid.contains(HTML5Env.getClassID(this))){
-        			html5_env2.code.append(" class=\"");
-        		}else{
-        			html5_env2.code.append(" ");
-        		}
-        		html_env2.code.append(decos.getStr("class") + "\"");
-        	}else if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
-        		html5_env2.code.append("\"");
-        	}
-
-        	if(decos.containsKey("update") || decos.containsKey("insert")||decos.containsKey("delete")||decos.containsKey("login")){
-        		html5_env2.code.append(" type=\"form\"");
-        	}
-
-
-        	if(decos.containsKey("tabletype"))
-        		html5_env2.code.append(" tabletype=\"" + decos.getStr("tabletype") + "\"");
-
-        }
-        //tk end////////////////////////////////////////////////////////////
-
-        if(HTML5Env.getFormItemFlg()){
-
-        }else{
-	        html5_env.code.append("<tr><td>\n");
-	        Log.out("<table class=\"att\"><tr><td>");
-        }
-
-        if (html5_env.link_flag > 0 || html5_env.sinvoke_flag) {
-
-        	//tk start for draggable div///////////////////////////////////////
-        	if(html5_env.draggable)
-        	{
-        		html5_env.code.append("<div id=\""+html5_env.dragdivid+"\" class=\"draggable\"");
-        		Log.out("<div id=\""+html5_env.dragdivid+"\" ");
-        	}
-        	else{
-        	//tk end for draggable div/////////////////////////////////////////
-        		if(html5_env.isPanel)
-        			html5_env.code.append("<div id=\"container\">");
-
-        		html5_env.code.append("<A href=\"" + html5_env.linkurl + "\" ");
-        		html5_env2.code.append(" href=\"" + html5_env.linkurl + "\" ");
-
-        	}
-            //tk start//////////////////////////////////////////////////////////
-            if(decos.containsKey("target")){
-            	html5_env.code.append(" target=\"" + decos.getStr("target")+"\"");
-            	html5_env2.code.append(" target=\"" + decos.getStr("target")+"\"");
-            }
-            if(decos.containsKey("class")){
-            	html5_env.code.append(" class=\"" + decos.getStr("class") + "\"");
-            	html5_env2.code.append(" aclass=\"" + decos.getStr("class") + "\"");
-            }
-
-            if(GlobalEnv.isAjax() && html_env.isPanel)
-            {
-            	html5_env.code.append(" onClick =\"return panel('Panel','"+html5_env.ajaxquery+"'," +
-            			"'"+html5_env.dragdivid+"','"+html5_env.ajaxcond+"')\"");
-            }
-            else if(GlobalEnv.isAjax() && !html_env.draggable)
-            {
-            	String target = GlobalEnv.getAjaxTarget();
-            	if(target == null)
-            	{
-            		String query = html5_env.ajaxquery;
-            		if(query.contains("/"))
-            		{
-            			target = query.substring(query.lastIndexOf("/")+1,query.indexOf(".sql"));
-            		}
-            		else
-            			target = query.substring(0,query.indexOf(".sql"));
-
-            		if(html5_env.has_dispdiv)
-            		{
-            			target = html5_env.ajaxtarget;
-            		}
-            		Log.out("a target:"+target);
-            	}
-            	html5_env.code.append(" onClick =\"return loadFile('"+html5_env.ajaxquery+"','"+target+
-            			"','"+html5_env.ajaxcond+"',"+html5_env.inEffect+","+html5_env.outEffect+")\"");
-
-            }
-
-
-            html5_env.code.append(">\n");
-            //tk end////////////////////////////////////////////////////////////
-
-            Log.out("<A href=\"" + html5_env.linkurl + "\">");
-        }
-
-        //Log.out("data_info: "+this.getStr(data_info));
-
-        html5_env2.code.append(">");
-
-        String form = new String();
-        if(decos.containsKey("update") || decos.containsKey("insert")|| decos.containsKey("login")){
-        	String name = new String();
-        	//Log.out(decos.containsKey("insert"));
-        	//Log.out(decos.getStr("insert"));
-        	//String DataID = HTML5Env.getDataID(this);
-        	if(decos.containsKey("update")){
-        		name = decos.getStr("update");
-        	}else if(decos.containsKey("insert")){
-        		name = decos.getStr("insert");
-        	}else if(decos.containsKey("login")){
-        		name = decos.getStr("login");
-        		if(decos.containsKey("att")){
-        			html5_env.code.append("<input type=\"hidden\" name=\"att\" value=\"" + decos.getStr("att") +"\" />");
-                	html5_env2.code.append("<input type=\"hidden\" name=\"att\" value=\"" + decos.getStr("att") +"\" />");
-        		}
-        	}
-
-    		if(decos.containsKey("pwd")){
-    			html5_env.code.append("<input type=\"password\" name=\"" + name + "\" value=\"");
-            	html5_env2.code.append("<input type=\"password\" name=\"" + name + "\" value=\"");
-    		}else{
-    			html5_env.code.append("<input type=\"text\" name=\"" + name + "\" value=\"");
-        		html5_env2.code.append("<input type=\"text\" name=\"" + name + "\" value=\"");
-    		}
-        	Log.out("<input type=\"text\" name=\"" + name + "\" value=\"");
-
-        }else if(decos.containsKey("delete")){
-    		String name = decos.getStr("delete");
-        	html5_env.code.append("<input type=\"checkbox\" name=\"" + name + "\" value=\"");
-        	html5_env2.code.append("<input type=\"checkbox\" name=\"" + name + "\" value=\"");
-        	Log.out("<input type=\"checkbox\" name=\"" + name + "\" value=\"");
-        }else if(HTML5Env.getFormItemFlg()){
-    		String name = decos.getStr("select");
-    		form = inputFormItems(data_info,"select",name);
-        	html5_env.code.append(form);
-        }
-
-    	Log.out(GlobalEnv.getTuplesNum());
-        //change      chie
-
-        if(decos.containsKey("insert") || decos.containsKey("login") || !form.isEmpty()){
-
-        }else{
-        	//***APPEND DATABASE VALUE***
-        	html5_env.code.append(this.getStr(data_info));
-
-
-            String s = this.getStr(data_info);
-            if(s.contains("&"))
-            	s = s.replace("&", "&amp;");
-            if(s.contains("<"))
-            	s = s.replaceAll("<", "&lt;");
-            if(s.contains(">"))
-            	s = s.replaceAll(">", "&gt;");
-            if(s.contains("���"))
-            	s = s.replaceAll("���", "&#65374;");
-            html5_env2.code.append(s);
-
-        	Log.out(this.getStr(data_info));
-        }
-
-        if (html5_env.link_flag > 0 || html5_env.sinvoke_flag) {
-        	if(html5_env.draggable)
-        		html5_env.code.append("</div>\n");
-        	else
-        	{
-        		html5_env.code.append("</A>\n");
-
-        		if(html5_env.isPanel)
-        			html5_env.code.append("</div>\n");
-        	}
-            Log.out("</A>");
-        }
-
-
-        if(decos.containsKey("update") || decos.containsKey("insert")|| decos.containsKey("delete") || decos.containsKey("login")){
-            html5_env.code.append("\" />\n");
-            html5_env2.code.append("\" />");
-            Log.out("\" \\>\n");
-        }
-
-        html5_env2.code.append("</VALUE>");
-
-        if(HTML5Env.getFormItemFlg()){
-            if(tuple_count == GlobalEnv.getTuplesNum()){
-                closeFormItems("select");
-            }
-        }else{
-        	html5_env.code.append("</td></tr></table>\n");
-            Log.out("</td></tr></table>");
-        }
-
-
-        Log.out("TFEId = " + HTML5Env.getClassID(this));
-        //html5_env.append_css_def_td(HTML5Env.getClassID(this), this.decos);
-
-    }
-	 */
-
-
-	//static int tuple_count = 0;
-
-	private void createForm(ExtList data_info){
+	@Override
+	protected void createForm(ExtList data_info){
 
 		new String();
 		String name = new String();
@@ -654,13 +168,13 @@ public class HTML5Attribute extends Attribute {
 
 			Log.out("pppppp"+decos.containsKey("pkey"));
 			if(decos.containsKey("pkey") && whichForm == 2){//update
-				if(!html5_env.code.toString().contains("<input type=\"hidden\" name=\"pkey\" value=\"" + name + "\" />"))
+				if(!htmlEnv.code.toString().contains("<input type=\"hidden\" name=\"pkey\" value=\"" + name + "\" />"))
 					inputFormString += "<input type=\"hidden\" name=\"pkey\" value=\"" + name + "\" />";
 			}
 		}
 
-		html5_env.code.append(inputFormString);
-		html5_env2.code.append(inputFormString);
+		htmlEnv.code.append(inputFormString);
+		htmlEnv2.code.append(inputFormString);
 		Log.out(inputFormString);
 
 		inputFormString = new String();
@@ -706,27 +220,15 @@ public class HTML5Attribute extends Attribute {
 			}
 		}
 
-		html5_env.code.append(inputFormString);
-		html5_env2.code.append(inputFormString);
+		htmlEnv.code.append(inputFormString);
+		htmlEnv2.code.append(inputFormString);
 		Log.out(inputFormString);
 
 
 	}
 
-/*
-	private String closeFormItems(String itemType){
-		String ret = new String();
-		tuple_count = 0;
-		if(itemType.equals("select")){
-			HTML5Env.setSelectRepeat(false);
-			ret = "</select>";
-		}
-		HTML5Env.incrementFormName();
-		return ret;
-	}
-	*/
-
-	private String inputFormItems(ExtList data_info,String itemType,String real_value){
+	@Override
+	protected String inputFormItems(ExtList data_info,String itemType,String real_value){
 		String ret = "";
 		String formname = HTML5Env.getFormPartsName();;
 		if(HTML5Env.getSearch()){
@@ -840,19 +342,6 @@ public class HTML5Attribute extends Attribute {
 			ret += "<input type=\"hidden\" name=\""+ formname +":const\" value=\""+ constraint +"\" />";
 
 
-		return ret;
-	}
-
-	private String cond(){
-		String ret = "";
-		if(HTML5Env.formPartsNumber != HTML5Env.searchId){
-			HTML5Env.searchId = HTML5Env.formPartsNumber;
-			if(!HTML5Env.condName.isEmpty() && !HTML5Env.cond.isEmpty()){
-				ret += "<input type=\"hidden\" name=\"cond_name"+ HTML5Env.formPartsNumber +"\" value=\""+ HTML5Env.condName +"\" />";
-				ret += "<input type=\"hidden\" name=\"cond"+ HTML5Env.formPartsNumber +"\" value=\""+ HTML5Env.cond +"\" />";
-				ret += "<input type=\"hidden\" name=\"value_type"+ HTML5Env.formPartsNumber +"\" value=\"String\" />";
-			}
-		}
 		return ret;
 	}
 

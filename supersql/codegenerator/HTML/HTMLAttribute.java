@@ -2,6 +2,9 @@ package supersql.codegenerator.HTML;
 
 import java.io.File;
 
+import org.jsoup.nodes.Element;
+import org.jsoup.parser.Tag;
+
 import supersql.codegenerator.Attribute;
 import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
@@ -11,8 +14,8 @@ import supersql.extendclass.ExtList;
 
 public class HTMLAttribute extends Attribute {
 
-	private HTMLEnv htmlEnv;
-	private HTMLEnv htmlEnv2;
+	protected HTMLEnv htmlEnv;
+	protected HTMLEnv htmlEnv2;
 
 	private String[] formSql = {"","delete","update","insert","login","logout"};
 	private String[] formHtml = {"","submit","select","checkbox","radio","text","textarea","hidden"};
@@ -30,20 +33,127 @@ public class HTMLAttribute extends Attribute {
 		this.htmlEnv = henv;
 		this.htmlEnv2 = henv2;
 	}
-	//Attribute��work�᥽�å�
-	public void work(ExtList data_info) {
-		/*
-        if(GlobalEnv.getSelectFlg())
-        	data_info = (ExtList) data_info.get(0);
-        	*/
+	
+	@Override
+	public Element createNode(ExtList data_info){
+		Element result = new Element(Tag.valueOf("table"), "");
 		htmlEnv.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
 
 		if(GlobalEnv.isOpt()){
 			work_opt(data_info);
 		}else{
-			if(HTMLEnv.getFormItemFlg() && HTMLEnv.getFormItemName().equals(formHtml[2])){
+			if(!(HTMLEnv.getFormItemFlg() && HTMLEnv.getFormItemName().equals(formHtml[2]))){
+				if(htmlEnv.isOutlineModeForJsoup())
+					result.attr("outline",  "");
+				result.addClass("att");
+				if(htmlEnv.writtenClassId.contains(HTMLEnv.getClassID(this))){
+					result.addClass(HTMLEnv.getClassID(this));
+				}
+				if(decos.containsKey("class")){ 
+					result.addClass(decos.getStr("class"));
+				}
+				if(decos.getConditions().size() > 0){
+					result.addClass(computeStringForDecoration(data_info));
+				}
+			}
+			Element tr = new Element(Tag.valueOf("tr"), "");
+			Element td = new Element(Tag.valueOf("td"), "");
+			tr.appendChild(td);
+			Element div = new Element(Tag.valueOf("div"), "");
+			Element a = new Element(Tag.valueOf("a"), "");
+			
+			if(!HTMLEnv.getFormItemFlg()){
+				result.appendChild(tr);
+			}
 
-			}else{
+			if (htmlEnv.linkFlag > 0 || htmlEnv.sinvokeFlag) {
+
+				//tk start for draggable div///////////////////////////////////////
+				if(htmlEnv.draggable)
+				{	
+					div.addClass("draggable").attr("id", htmlEnv.dragDivId);
+					htmlEnv.code.append("<div id=\""+htmlEnv.dragDivId+"\" class=\"draggable\"");
+					Log.out("<div id=\""+htmlEnv.dragDivId+"\" ");
+				}	
+				else{
+					//tk end for draggable div/////////////////////////////////////////
+					if(htmlEnv.isPanel)
+						div.attr("id", "container");
+
+					String fileDir = new File(htmlEnv.linkUrl).getAbsoluteFile().getParent();
+					if(fileDir.length() < htmlEnv.linkUrl.length()
+					&& fileDir.equals(htmlEnv.linkUrl.substring(0,fileDir.length()))){
+						String relative_path = htmlEnv.linkUrl.substring(fileDir.length()+1);
+						a = new Element(Tag.valueOf("a"), "").attr("href", relative_path);
+					}else
+						a = new Element(Tag.valueOf("a"), "").attr("href", htmlEnv.linkUrl);
+				}
+				if(decos.containsKey("target")){
+					a.attr("target", decos.getStr("target"));
+				}
+				if(decos.containsKey("class")){
+					a.addClass(decos.getStr("class"));
+				}
+
+				if(GlobalEnv.isAjax() && htmlEnv.isPanel)
+				{
+					a.attr("onClick", "return panel('Panel','"+htmlEnv.ajaxQuery+"'," +
+							"'"+htmlEnv.dragDivId+"','"+htmlEnv.ajaxCond+"')");
+				}
+				else if(GlobalEnv.isAjax() && !htmlEnv.draggable)
+				{
+					String target = GlobalEnv.getAjaxTarget();
+					if(target == null)
+					{
+						String query = htmlEnv.ajaxQuery;
+						if(query.contains("/"))
+						{
+							target = query.substring(query.lastIndexOf("/")+1,query.indexOf(".sql"));
+						}
+						else
+							target = query.substring(0,query.indexOf(".sql"));
+
+						if(htmlEnv.hasDispDiv)
+						{
+							target = htmlEnv.ajaxtarget;
+						}
+					}
+					a.attr("onClick", "return loadFile('"+htmlEnv.ajaxQuery+"','"+target+
+							"','"+htmlEnv.ajaxCond+"',"+htmlEnv.inEffect+","+htmlEnv.outEffect+")");
+				}
+			}
+
+			result.appendChild(createFormForJsoup(data_info));
+			
+
+			if(whichForm == 0){ //normal process (not form)
+				//***APPEND DATABASE VALUE***//
+				td.html(this.getStr(data_info));
+			}
+
+			if (htmlEnv.linkFlag > 0 || htmlEnv.sinvokeFlag) {
+				if(htmlEnv.draggable)
+					result.appendChild(div);
+				else
+				{
+					result.appendChild(a);
+
+					if(htmlEnv.isPanel)
+						result.appendChild(div);
+				}
+			}
+		}
+		return result;
+	}
+	
+	//Attribute��work�᥽�å�
+	public void work(ExtList data_info) {
+		htmlEnv.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
+
+		if(GlobalEnv.isOpt()){
+			work_opt(data_info);
+		}else{
+			if(!(HTMLEnv.getFormItemFlg() && HTMLEnv.getFormItemName().equals(formHtml[2]))){
 				htmlEnv.code.append("<table" + htmlEnv.getOutlineModeAtt() + " ");
 				htmlEnv.code.append("class=\"att");
 				//tk start/////////////////////////////////////////////////////////
@@ -52,7 +162,8 @@ public class HTMLAttribute extends Attribute {
 					htmlEnv.code.append(" " + HTMLEnv.getClassID(this));
 				}
 				if(decos.containsKey("class")){ 
-					//class����(ex.class=menu)������Ȥ�					html_env.code.append(" " + decos.getStr("class"));    	
+					//class����(ex.class=menu)������Ȥ�					
+					htmlEnv.code.append(" " + decos.getStr("class"));    	
 				}
 				if(decos.getConditions().size() > 0){
 					htmlEnv.code.append(" "+computeStringForDecoration(data_info));
@@ -61,9 +172,7 @@ public class HTMLAttribute extends Attribute {
 				htmlEnv.code.append(">");
 			}
 
-			if(HTMLEnv.getFormItemFlg()){
-
-			}else{
+			if(!HTMLEnv.getFormItemFlg()){
 				htmlEnv.code.append("<tr><td>\n");
 				Log.out("<table class=\"att\"><tr><td>");
 			}
@@ -290,8 +399,59 @@ public class HTMLAttribute extends Attribute {
 		
 		
 	}
+
+	protected Element createFormForJsoup(ExtList data_info){
+		Element form = new Element(Tag.valueOf("form"), "");
+		String name = new String();		
+		String inputFormString = new String();
+
+		for(int i = 1; i < formSql.length ; i++ ){
+			if(decos.containsKey(formSql[i]) || HTMLEnv.getIDU().equals(formSql[i])){
+				switch(i){
+				case 1 : //delete
+					if(decos.containsKey(formSql[i])){
+						name = decos.getStr("delete");
+					}else{
+						name = decos.getStr("attributeName");
+					}
+					form.appendChild(new Element(Tag.valueOf("input"), "").attr("type", "checkbox").attr("name", name).attr("value", this.getStr(data_info)));
+					whichForm = i;
+					break;
+				case 2 : //update
+					if(decos.containsKey(formSql[i])){
+						name = decos.getStr("update");
+					}else{
+						name = decos.getStr("attributeName");
+					}
+					whichForm = i;
+					break;
+				case 3 : //insert
+					if(decos.containsKey(formSql[i])){
+						name = decos.getStr("insert");
+					}else{
+						name = decos.getStr("attributeName");
+					}
+					whichForm = i;
+					break;
+				case 4 : //login
+					name = decos.getStr("login");
+					if(decos.containsKey("att")){
+						form.appendChild(new Element(Tag.valueOf("input"), "").attr("type", "hidden").attr("name", "att").attr("value", decos.getStr("att")));
+					}
+					whichForm = i;
+					break;
+				case 5 : //logout
+					form.appendChild(new Element(Tag.valueOf("input"), "").attr("type", "hidden").attr("name", "sqlfile").attr("value", decos.getStr("linkfile").replace("\"", "")));
+					form.appendChild(new Element(Tag.valueOf("input"), "").attr("type", "submit").attr("name", "logout").attr("value", this.getStr(data_info)));
+					whichForm = i;
+					break;
+				}	
+			}	
+		}
+		return form;
+	}
 	
-	private void createForm(ExtList data_info){
+	protected void createForm(ExtList data_info){
 
 		String name = new String();		
 		String inputFormString = new String();
@@ -458,20 +618,7 @@ public class HTMLAttribute extends Attribute {
 		
 	}
 	
-/*
-	private String closeFormItems(String itemType){
-		String ret = new String();
-		tuple_count = 0;
-		if(itemType.equals("select")){
-			HTMLEnv.setSelectRepeat(false);
-			ret = "</select>";
-		}
-		HTMLEnv.incrementFormName();
-		return ret;
-	}
-	*/
-
-	private String inputFormItems(ExtList data_info,String itemType,String real_value){
+	protected String inputFormItems(ExtList data_info,String itemType,String real_value){
 		String ret = "";
 		String formname = HTMLEnv.getFormPartsName();;
 		if(HTMLEnv.getSearch()){
@@ -588,7 +735,7 @@ public class HTMLAttribute extends Attribute {
 		return ret;
 	}
 	
-	private String cond(){
+	protected String cond(){
 		String ret = "";
 		if(HTMLEnv.formPartsNumber != HTMLEnv.searchId){
 			HTMLEnv.searchId = HTMLEnv.formPartsNumber;
@@ -601,7 +748,7 @@ public class HTMLAttribute extends Attribute {
 		return ret;
 	}
 
-	private <T> String computeStringForDecoration(ExtList<T> data_info) {
+	protected <T> String computeStringForDecoration(ExtList<T> data_info) {
 		String classNames = "";
 		for(int i = 1; i < this.AttNames.size(); i++){
 			if(((data_info.get(i))).toString().equals("t")){
