@@ -19,7 +19,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Hashtable;
 
-import org.jsoup.nodes.Attributes;
 import org.jsoup.nodes.Element;
 import org.jsoup.parser.Tag;
 
@@ -38,8 +37,8 @@ public class HTMLFunction extends Function {
 
 	protected HTMLEnv htmlEnv;
 	protected HTMLEnv htmlEnv2;
-
-	protected static String updateFile;
+	private static int meter_id=0;
+	private static String updateFile;
 
     public HTMLFunction()
     {
@@ -104,6 +103,7 @@ public class HTMLFunction extends Function {
         htmlEnv.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
         return null;
 	}
+    
 	//Functionのworkメソッド
     public void work(ExtList data_info) {
         this.setDataList(data_info);
@@ -119,27 +119,15 @@ public class HTMLFunction extends Function {
             Func_invoke();
         } else if (FuncName.equalsIgnoreCase("foreach")) {
             try {
-				Func_foreach(data_info);
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-			}
+    			Func_foreach(data_info);
+    		} catch (UnsupportedEncodingException e) {
+    			e.printStackTrace();
+    		}
         } else if (FuncName.equalsIgnoreCase("sinvoke") || FuncName.equalsIgnoreCase("link")) {
             Func_sinvoke(data_info);
         } else if (FuncName.equalsIgnoreCase("null")) {
             Func_null();
         }
-        //added by goto 20130308  "urlリンク"
-        else if(FuncName.equalsIgnoreCase("url") || FuncName.equalsIgnoreCase("anchor") || FuncName.equalsIgnoreCase("a")){
-        	Func_url(false);
-        }
-        //added by goto 20130417  "mail"
-        else if(FuncName.equalsIgnoreCase("mail")){
-        	Func_url(true);
-        }
-//        // for practice
-//        else if(FuncName.equalsIgnoreCase("button")){
-//        	Func_button();
-//        }
         //chie
         else if (FuncName.equalsIgnoreCase("submit")) {
             Func_submit();
@@ -164,7 +152,15 @@ public class HTMLFunction extends Function {
         }
         else if (FuncName.equalsIgnoreCase("session")) {
             //Func_session(); not use
+        }//ishizaki//
+        else if (FuncName.equalsIgnoreCase("youtube")){
+        	Func_youtube();
+        } else if (FuncName.equalsIgnoreCase("movie")){
+        	Func_moviefile();
+        } else if (FuncName.equalsIgnoreCase("meter")){
+        	Func_meter();
         }
+        //ishizaki//
         //tk start//////////////////////////////////
         else if (FuncName.equalsIgnoreCase("embed")) {
         	Log.out("[enter embed]");
@@ -523,7 +519,7 @@ public class HTMLFunction extends Function {
 
     	//submit only ----- no "@{form}"
     	if(!HTMLEnv.getFormItemFlg() && !decos.containsKey("form")){
-    		form = createForm();
+    		form = createForm(decos);
         	openFormInThis = true;
     	}else if(decos.containsKey("form")){
     		form = createForm(decos);
@@ -609,7 +605,7 @@ public class HTMLFunction extends Function {
     	boolean openFormInThis = false;
 
     	if(!HTMLEnv.getFormItemFlg()){
-    		form = createForm();
+    		form = createForm(decos);
         	openFormInThis = true;
     	}
 
@@ -678,7 +674,7 @@ public class HTMLFunction extends Function {
     	boolean openFormInThis = false;
 
     	if(!HTMLEnv.getFormItemFlg()){
-    		form = createForm();
+    		form = createForm(decos);
         	openFormInThis = true;
     	}
 
@@ -788,101 +784,9 @@ public class HTMLFunction extends Function {
         return result;
     }
 
-    protected String createForm() {
-    	String path = new String();
-    	String form = new String();
-    	if(this.getAtt("path") != null &&  !this.getAtt("path").isEmpty()){
-    		 path =  this.getAtt("path").replaceAll("\"", "");
-    	}else{
-    		path = ".";
-    	}
-
-    	form += "<form method=\"POST\" action=\"" + path + "/servlet/supersql.form.FormServlet\"" +">";
-
-    	form += "<input type=\"hidden\" name=\"configfile\" value=\"" +
-		path + "/config.ssql\" />";
-
-        if(this.getAtt("link") != null && !this.getAtt("link").isEmpty()){
-        	form += "<input type=\"hidden\" name=\"sqlfile\" value=\"" + path + "/" + this.getAtt("link").replaceAll("\"", "") + "\" />";
-        }else if(this.getAtt("linkfile") != null && !this.getAtt("linkfile").isEmpty()){
-        	form += "<input type=\"hidden\" name=\"sqlfile\" value=\"" + path + "/" + this.getAtt("linkfile").replaceAll("\"", "") + "\" />";
-        }
-    	/*
-        if(!this.getAtt("default").equals(null)){
-        	form += "<input type=\"hidden\" name=\"value1\" value=\""+this.getAtt("default").replaceAll("\"", "")+"\" />";
-        }
-        */
-
-        if(this.getAtt("cond")!= null && !this.getAtt("cond").isEmpty()){
-        	if(!this.getAtt("cond").replaceAll("\"", "").isEmpty())
-        		form += "<input type=\"hidden\" name=\"cond1\" value=\""+this.getAtt("cond").replaceAll("\"", "")+"\" />";
-        }
-
-        String att = new String();
-        Integer attNo = 1;
-        while (!this.getAtt("att"+attNo).equals("")){
-        	if(attNo > 1)
-        		att += ",";
-        	att += this.getAtt("att"+attNo);
-        	attNo ++;
-        	Log.out("att:" + att + " attNo:" + attNo);
-        }
-
-        if(attNo == 1 && !this.getAtt("att").equals("")){
-        	att += this.getAtt("att");
-        	Log.out("att:" + att + " attNo:" + attNo);
-        }
-
-        if(this.getAtt("update")!=null && !this.getAtt("update").isEmpty()){
-        	form += "<input type=\"hidden\" name=\"updatefile\" value=\"" + path + "/" +this.getAtt("update").replaceAll("\"", "")+"(" + att + ")\" />";
-        }else if(this.getAtt("updatefile")!=null && !this.getAtt("updatefile").isEmpty()){
-        	form += "<input type=\"hidden\" name=\"updatefile\" value=\"" + path + "/" +this.getAtt("updatefile").replaceAll("\"", "")+"(" + att + ")\" />";
-        }
-
-
-        Log.out(form);
-        return form;
-    }
     
-    protected static Element createFormForJsoup(DecorateList decos){
-    	Element result = new Element(Tag.valueOf("form"), "");
-    	String path = new String();
-    	if(decos.containsKey("path")){
-    		path =  decos.getStr("path").replaceAll("\"", "");
-    	}else{
-    		path = ".";
-    	}
-    	
-    	result.attr("method", "POST");
-    	result.attr("action", path + "/supersql.form.FormServlet");
-    	result.attr("name", HTMLEnv.getFormName());
-    	
-    	result.appendChild(JsoupFactory.createInput("hidden","configFile", GlobalEnv.getFileDirectory() + "/config.ssql"));
-    	
-        if(decos.containsKey("link")){
-        	opt(decos.getStr("link"));
-        	result.appendChild(JsoupFactory.createInput("hidden","sqlfile", path + "/" + decos.getStr("link").replaceAll("\"", "")));
-        }
-
-        if(decos.containsKey("cond")){
-        	result.appendChild(JsoupFactory.createInput("hidden","cond1", path + "/" + decos.getStr("link").replaceAll("\"", "")));
-        }
-
-        
-        if(decos.containsKey("updatefile")){
-        	result.appendChild(JsoupFactory.createInput("hidden","updateFile", path + "/" + opt(decos.getStr("updatefile"))));
-        }
-        if(decos.containsKey("linkfile")){
-        	opt(decos.getStr("linkfile"));
-        	result.appendChild(JsoupFactory.createInput("hidden","linkfile", path + "/" + decos.getStr("linkfile").replaceAll("\"", "")));
-        }
-        if(decos.containsKey("cond")){
-        	result.appendChild(JsoupFactory.createInput("hidden","linkcond", decos.getStr("cond").replaceAll("\"", "")));
-        }
-        return result;
-    }
-
-    protected static String createForm(DecorateList decos) {
+    public static String createForm(DecorateList decos) {
+    	new String();
     	String path = new String();
     	String form = new String();
     	//System.out.println(this.getAtt("label"));
@@ -923,6 +827,44 @@ public class HTMLFunction extends Function {
         Log.out(form);
         HTMLEnv.setFormDetail(form);
         return form;
+    }
+    
+    protected static Element createFormForJsoup(DecorateList decos){
+    	Element result = new Element(Tag.valueOf("form"), "");
+    	String path = new String();
+    	if(decos.containsKey("path")){
+    		path =  decos.getStr("path").replaceAll("\"", "");
+    	}else{
+    		path = ".";
+    	}
+    	
+    	result.attr("method", "POST");
+    	result.attr("action", path + "/supersql.form.FormServlet");
+    	result.attr("name", HTMLEnv.getFormName());
+    	
+    	result.appendChild(JsoupFactory.createInput("hidden","configFile", GlobalEnv.getFileDirectory() + "/config.ssql"));
+    	
+        if(decos.containsKey("link")){
+        	opt(decos.getStr("link"));
+        	result.appendChild(JsoupFactory.createInput("hidden","sqlfile", path + "/" + decos.getStr("link").replaceAll("\"", "")));
+        }
+
+        if(decos.containsKey("cond")){
+        	result.appendChild(JsoupFactory.createInput("hidden","cond1", path + "/" + decos.getStr("link").replaceAll("\"", "")));
+        }
+
+        
+        if(decos.containsKey("updatefile")){
+        	result.appendChild(JsoupFactory.createInput("hidden","updateFile", path + "/" + opt(decos.getStr("updatefile"))));
+        }
+        if(decos.containsKey("linkfile")){
+        	opt(decos.getStr("linkfile"));
+        	result.appendChild(JsoupFactory.createInput("hidden","linkfile", path + "/" + decos.getStr("linkfile").replaceAll("\"", "")));
+        }
+        if(decos.containsKey("cond")){
+        	result.appendChild(JsoupFactory.createInput("hidden","linkcond", decos.getStr("cond").replaceAll("\"", "")));
+        }
+        return result;
     }
 
     protected void Func_invoke() {
@@ -1665,4 +1607,128 @@ public class HTMLFunction extends Function {
     	}
     	return s;
     }
+    
+
+    private void Func_youtube(){
+    	/*
+    	 * <object width="480" height="385"><param name="movie" value="http://www.youtube.com/v/f3Afu5CBZUA?fs=1&amp;hl=ja_JP"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/f3Afu5CBZUA?fs=1&amp;hl=ja_JP" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="480" height="385"></embed></object>
+         */
+
+        String path = this.getAtt("default");
+    	String a = "<object width=\"480\" height=\"385\">" +
+    			"<param name=\"movie\" value=\"http://www.youtube.com/v/" +
+    			path +
+    			"?fs=1&amp;hl=ja_JP\"></param><param name=\"allowFullScreen\" value=\"true\">" +
+    			"</param><param name=\"allowscriptaccess\" value=\"always\"></param><embed src=\"http://www.youtube.com/v/" +
+    			path +
+    			"?fs=1&amp;hl=ja_JP\" type=\"application/x-shockwave-flash\" " +
+    			"allowscriptaccess=\"always\" allowfullscreen=\"true\" width=\"480\" height=\"385\">" +
+    			"</embed></object>";
+    	htmlEnv.code.append(a);
+    	return;
+    }
+
+    private void Func_moviefile(){
+
+        String path = this.getAtt("path", ".");
+        if (!path.startsWith("/")) {
+            String basedir = GlobalEnv.getBaseDir();
+            if (basedir != null && basedir != "") {
+                path = GlobalEnv.getBaseDir() + "/" + path;
+            }
+        }
+
+       	htmlEnv.code.append("<video class=\"" + HTMLEnv.getClassID(this) +"\" ");
+       	if(decos.containsKey("class"))
+    		htmlEnv.code.append(decos.getStr("class"));
+
+    	htmlEnv.code.append(" \" src=\"" + path + "/" + this.getAtt("default")+"\"");
+    	htmlEnv.code.append("autobuffer controls poster=\"http://www.db.ics.keio.ac.jp/ssql/img/ssqllogo.gif\">" +
+    			"<p>Try this page in Safari 4! Or you can <a href=\"" +
+    			path + "/" + this.getAtt("default")+"\"" +
+    			">download the video</a> instead.</p>");
+
+    	return;
+    }
+    private void Func_meter(){
+ /*   	<script type="text/javascript">addEvent(window,"load",function() {
+			var layout = [
+				200,				//width
+				40,					//height
+				170,					//m_width
+				25,					//m_height
+				100,				//max
+				0,				//min
+				30,				//low
+				70				//high
+				]
+			var color = [
+				"#FF0000",				//max_color
+				"#00FFFF",				//low_color
+				"#00FFFF",				//high_color
+				"#00FF00",				//mid_color
+				"#CCCCCC"				//bg_color
+			]
+			draw("meter2",layout,color,70);
+			});</script>
+
+<div><canvas width="200" height="40" id="meter2"></canvas></div>
+*/
+
+    	meter_id++;
+
+
+       	htmlEnv.code.append("<script type=\"text/javascript\">addEvent(window,\"load\",function() { \nvar layout = [");
+      	if(decos.containsKey("width"))
+       		htmlEnv.code.append(decos.getStr("width"));
+      	htmlEnv.code.append(",");
+      	if(decos.containsKey("height"))
+       		htmlEnv.code.append(decos.getStr("height"));
+      	htmlEnv.code.append(",");
+      	if(decos.containsKey("m_width"))
+       		htmlEnv.code.append(decos.getStr("m_width"));
+      	htmlEnv.code.append(",");
+      	if(decos.containsKey("m_height"))
+       		htmlEnv.code.append(decos.getStr("m_height"));
+      	htmlEnv.code.append(",");
+      	if(decos.containsKey("max"))
+       		htmlEnv.code.append(decos.getStr("max"));
+      	htmlEnv.code.append(",");
+      	if(decos.containsKey("min"))
+       		htmlEnv.code.append(decos.getStr("min"));
+      	htmlEnv.code.append(",");
+      	if(decos.containsKey("low"))
+       		htmlEnv.code.append(decos.getStr("low"));
+      	htmlEnv.code.append(",");
+      	if(decos.containsKey("high"))
+       		htmlEnv.code.append(decos.getStr("high"));
+      	htmlEnv.code.append("] \nvar color = [");
+      	if(decos.containsKey("max_color"))
+       		htmlEnv.code.append(decos.getStr("max_color"));
+      	htmlEnv.code.append(",");
+      	if(decos.containsKey("low_color"))
+       		htmlEnv.code.append(decos.getStr("low_color"));
+      	htmlEnv.code.append(",");
+      	if(decos.containsKey("high_color"))
+       		htmlEnv.code.append(decos.getStr("high_color"));
+      	htmlEnv.code.append(",");
+      	if(decos.containsKey("mid_color"))
+       		htmlEnv.code.append(decos.getStr("mid_color"));
+      	htmlEnv.code.append(",");
+      	if(decos.containsKey("bg_color"))
+      		htmlEnv.code.append(decos.getStr("bg_color"));
+      	htmlEnv.code.append("] \ndraw(\"meter"+meter_id+"\",layout,color,"+this.getAtt("default") +");});</script>");
+
+      	htmlEnv.code.append("<div><canvas ");
+    	if(decos.containsKey("width"))
+       		htmlEnv.code.append("width=" + decos.getStr("width") + " ");
+       	else
+       		htmlEnv.code.append("width = 200 ");
+    	if(decos.containsKey("height"))
+       		htmlEnv.code.append("height=" + decos.getStr("height") + " ");
+       	else
+       		htmlEnv.code.append("height = 40 ");
+     	htmlEnv.code.append("id=\"meter"+meter_id+"\"></canvas></div>");
+    }
+
 }

@@ -9,7 +9,6 @@ import java.io.Writer;
 import org.jsoup.nodes.Element;
 
 import supersql.codegenerator.HTML.HTMLFactory;
-import supersql.codegenerator.HTML5.HTML5Factory;
 import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5Factory;
 import supersql.codegenerator.PDF.PDFFactory;
 import supersql.codegenerator.SWF.SWFFactory;
@@ -66,8 +65,6 @@ public class CodeGenerator{
 			factory = new XMLFactory();
 		} else if (media.toLowerCase().equals("swf")) {
 		 	factory = new SWFFactory();
-		} else if (media.toLowerCase().equals("html5")) {
-		 	factory = new HTML5Factory();
 		} else if (media.toLowerCase().equals("mobile_html5")) {	//added by goto 20121217
 		 	factory = new Mobile_HTML5Factory();
 		}  else if (media.toLowerCase().equals("csv")) {
@@ -179,17 +176,17 @@ public class CodeGenerator{
 			data_info = (ExtList) data_info.get(0);
 		}
 
-//		manager.generateCode(tfe_info, data_info);
-		Element result = (Element)manager.generateCodeForJsoup(tfe_info, data_info);
-		try {
-			Writer out = new BufferedWriter(new OutputStreamWriter(
-				    new FileOutputStream("jsoup.html"), "UTF-8"));
-			out.write(result.html());
-			out.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		manager.generateCode(tfe_info, data_info);
+//		Element result = (Element)manager.generateCodeForJsoup(tfe_info, data_info);
+//		try {
+//			Writer out = new BufferedWriter(new OutputStreamWriter(
+//				    new FileOutputStream("jsoup.html"), "UTF-8"));
+//			out.write(result.html());
+//			out.close();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 
 		manager.finish();
 
