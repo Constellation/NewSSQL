@@ -36,8 +36,8 @@ import supersql.parser.SSQLparser;
 
 public class HTMLFunction extends Function {
 
-	private HTMLEnv htmlEnv;
-	private HTMLEnv htmlEnv2;
+	protected HTMLEnv htmlEnv;
+	protected HTMLEnv htmlEnv2;
 
 	protected static String updateFile;
 
@@ -176,26 +176,26 @@ public class HTMLFunction extends Function {
         htmlEnv.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
     }
 
-    private Element FuncEmbedForJsoup(ExtList<ExtList<String>> data_info) {
+    protected Element FuncEmbedForJsoup(ExtList<ExtList<String>> data_info) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	private Element FuncHiddenForJsoup() {
+    protected Element FuncHiddenForJsoup() {
 		return FuncFormCommonForJsoup("hidden");
 	}
-	private Element FuncTextareaForJsoup() {
+	protected Element FuncTextareaForJsoup() {
 		return FuncFormCommonForJsoup("textarea");
 	}
-	private Element FuncInputtextForJsoup() {
+	protected Element FuncInputtextForJsoup() {
 		return FuncFormCommonForJsoup("text");
 	}
-	private Element FuncRadioForJsoup() {
+	protected Element FuncRadioForJsoup() {
 		if(!this.getAtt("checked").equals("")){
         	HTMLEnv.setChecked(this.getAtt("checked"));
         }
         return FuncFormCommonForJsoup("radio");
 	}
-	private Element FuncCheckboxForJsoup() {
+	protected Element FuncCheckboxForJsoup() {
 		Element result = FuncFormCommonForJsoup("checkbox");
 
 		if(!this.getAtt("checked").equals("")){
@@ -205,14 +205,14 @@ public class HTMLFunction extends Function {
         return result;
 	}
 
-	private Element FuncSelectForJsoup() {
+	protected Element FuncSelectForJsoup() {
         if(!this.getAtt("selected").equals("")){
         	HTMLEnv.setSelected(this.getAtt("selected"));
         }
         return FuncFormCommonForJsoup("select");
 	}
 	
-	private Element FuncSubmitForJsoup() {
+	protected Element FuncSubmitForJsoup() {
 		Element result = new Element(Tag.valueOf("form"), "");
     	boolean openFormInThis = false;
 
@@ -243,14 +243,14 @@ public class HTMLFunction extends Function {
 
         return result;
 	}
-	private Element FuncNullForJsoup() {
+	protected Element FuncNullForJsoup() {
 		return new Element(Tag.valueOf("span"), "");
 	}
-	private Element FuncSinvokeForJsoup(ExtList<ExtList<String>> data_info) {
+	protected Element FuncSinvokeForJsoup(ExtList<ExtList<String>> data_info) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	private Element FuncForeachForJsoup(ExtList<ExtList<String>> data_info) {
+	protected Element FuncForeachForJsoup(ExtList<ExtList<String>> data_info) {
 		String att = new String();
     	for (int i = 0; i < this.countconnectitem(); i++) {
     		att = att + "_" + this.getAtt(Integer.toString(i));
@@ -265,11 +265,11 @@ public class HTMLFunction extends Function {
         htmlEnv.fileName = filename;
 		return null;
 	}
-	private Element FuncInvokeForJsoup() {
+	protected Element FuncInvokeForJsoup() {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	private Element FuncImagefileForJsoup() {
+	protected Element FuncImagefileForJsoup() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -463,7 +463,7 @@ public class HTMLFunction extends Function {
     	
     	return notA1+"<a href=\""+url+"\""+transition()+prefetch()+target(url)+">"+A+"</a>"+notA2;
     }
-	private String transition() {
+    protected String transition() {
     	//画面遷移アニメーション(data-transition)指定時の処理
     	//※外部ページへの遷移には対応していない
     	if (decos.containsKey("transition"))
@@ -472,14 +472,14 @@ public class HTMLFunction extends Function {
     		return " data-transition=\"" + decos.getStr("trans") + "\"";
 		return "";
     }
-    private String prefetch() {
+    protected String prefetch() {
     	//遷移先ページプリフェッチ(data-prefetch)指定時の処理
     	//※外部ページへの遷移に使用してはいけない決まりがある
     	if (decos.containsKey("prefetch") || decos.containsKey("pref"))
     		return " data-prefetch";
 		return "";
     }
-    private String target(String url) {
+    protected String target(String url) {
     	//新規ウィンドウで表示する場合(target="_blank")の処理　=> _blankはW3Cで禁止されているため、JS + rel=externalを使用
     	//「外部ページに飛ぶ場合( http(s)://で始まる場合)」のみ新規ウィンドウ表示
     	if (url.matches("\\s*(http|https)://.*"))
@@ -554,7 +554,7 @@ public class HTMLFunction extends Function {
     }
 
   //added by chie 2009 func form select
-    private void Func_select() {
+    protected void Func_select() {
         if(!this.getAtt("selected").equals("")){
         	HTMLEnv.setSelected(this.getAtt("selected"));
         }
@@ -564,7 +564,7 @@ public class HTMLFunction extends Function {
         return;
     }
   //added by chie 2009 func form checkbox
-    private void Func_checkbox() {
+    protected void Func_checkbox() {
 		Func_FormCommon("checkbox");
 
 		if(!this.getAtt("checked").equals("")){
@@ -574,7 +574,7 @@ public class HTMLFunction extends Function {
         return;
     }
     //added by chie 2009 func form radio
-    private void Func_radio() {
+    protected void Func_radio() {
 
 		if(!this.getAtt("checked").equals("")){
         	HTMLEnv.setChecked(this.getAtt("checked"));
@@ -585,23 +585,23 @@ public class HTMLFunction extends Function {
         return;
     }
     //added by chie 2009 func form inputtext
-    private void Func_inputtext() {
+    protected void Func_inputtext() {
 		Func_FormCommon("text");
         return;
     }
     //added by chie 2009 func form textarea
-    private void Func_textarea() {
+    protected void Func_textarea() {
 		Func_FormCommon("textarea");
         return;
     }
 
   //added by chie 2009 func form hidden
-    private void Func_hidden() {
+    protected void Func_hidden() {
 		Func_FormCommon("hidden");
         return;
     }
     
-    private Element FuncFormCommonForJsoup(String s){
+    protected Element FuncFormCommonForJsoup(String s){
     	Element result = new Element(Tag.valueOf("div"),  "");
     	
     	String form = new String();
@@ -672,7 +672,7 @@ public class HTMLFunction extends Function {
         return result;
     }
 
-    private void Func_FormCommon(String s){
+    protected void Func_FormCommon(String s){
     	String form = new String();
 
     	boolean openFormInThis = false;
@@ -742,7 +742,7 @@ public class HTMLFunction extends Function {
     }
 
     
-    private Element createFormForJsoup(){
+    protected Element createFormForJsoup(){
     	Element result = new Element(Tag.valueOf("form"), "");
     	String path = new String();
     	if(this.getAtt("path") != null &&  !this.getAtt("path").isEmpty()){
@@ -788,7 +788,7 @@ public class HTMLFunction extends Function {
         return result;
     }
 
-    private String createForm() {
+    protected String createForm() {
     	String path = new String();
     	String form = new String();
     	if(this.getAtt("path") != null &&  !this.getAtt("path").isEmpty()){
@@ -844,7 +844,7 @@ public class HTMLFunction extends Function {
         return form;
     }
     
-    public static Element createFormForJsoup(DecorateList decos){
+    protected static Element createFormForJsoup(DecorateList decos){
     	Element result = new Element(Tag.valueOf("form"), "");
     	String path = new String();
     	if(decos.containsKey("path")){
@@ -857,32 +857,32 @@ public class HTMLFunction extends Function {
     	result.attr("action", path + "/supersql.form.FormServlet");
     	result.attr("name", HTMLEnv.getFormName());
     	
-    	result.appendChild(createHiddenInput("configFile", GlobalEnv.getFileDirectory() + "/config.ssql"));
+    	result.appendChild(JsoupFactory.createInput("hidden","configFile", GlobalEnv.getFileDirectory() + "/config.ssql"));
     	
         if(decos.containsKey("link")){
         	opt(decos.getStr("link"));
-        	result.appendChild(createHiddenInput("sqlfile", path + "/" + decos.getStr("link").replaceAll("\"", "")));
+        	result.appendChild(JsoupFactory.createInput("hidden","sqlfile", path + "/" + decos.getStr("link").replaceAll("\"", "")));
         }
 
         if(decos.containsKey("cond")){
-        	result.appendChild(createHiddenInput("cond1", path + "/" + decos.getStr("link").replaceAll("\"", "")));
+        	result.appendChild(JsoupFactory.createInput("hidden","cond1", path + "/" + decos.getStr("link").replaceAll("\"", "")));
         }
 
         
         if(decos.containsKey("updatefile")){
-        	result.appendChild(createHiddenInput("updateFile", path + "/" + opt(decos.getStr("updatefile"))));
+        	result.appendChild(JsoupFactory.createInput("hidden","updateFile", path + "/" + opt(decos.getStr("updatefile"))));
         }
         if(decos.containsKey("linkfile")){
         	opt(decos.getStr("linkfile"));
-        	result.appendChild(createHiddenInput("linkfile", path + "/" + decos.getStr("linkfile").replaceAll("\"", "")));
+        	result.appendChild(JsoupFactory.createInput("hidden","linkfile", path + "/" + decos.getStr("linkfile").replaceAll("\"", "")));
         }
         if(decos.containsKey("cond")){
-        	result.appendChild(createHiddenInput("linkcond", decos.getStr("cond").replaceAll("\"", "")));
+        	result.appendChild(JsoupFactory.createInput("hidden","linkcond", decos.getStr("cond").replaceAll("\"", "")));
         }
         return result;
     }
 
-    public static String createForm(DecorateList decos) {
+    protected static String createForm(DecorateList decos) {
     	String path = new String();
     	String form = new String();
     	//System.out.println(this.getAtt("label"));
@@ -925,7 +925,7 @@ public class HTMLFunction extends Function {
         return form;
     }
 
-    private void Func_invoke() {
+    protected void Func_invoke() {
 
         /*
          * Invoke function : <td> <a
@@ -983,7 +983,7 @@ public class HTMLFunction extends Function {
         return;
     }
 
-    private void Func_foreach(ExtList data_info) throws UnsupportedEncodingException {
+    protected void Func_foreach(ExtList data_info) throws UnsupportedEncodingException {
     	String att = new String();
     	for (int i = 0; i < this.countconnectitem(); i++) {
     		att = att + "_" + this.getAtt(Integer.toString(i));
@@ -998,7 +998,7 @@ public class HTMLFunction extends Function {
     }
 
     //tk start//////////////////////////////////////////////////////////////////////////////
-    private void Func_embed(ExtList data_info){
+    protected void Func_embed(ExtList data_info){
     	String file = this.getAtt("file");
     	String where = this.getAtt("where");
     	String att = this.getAtt("att");
@@ -1115,13 +1115,6 @@ public class HTMLFunction extends Function {
 
 			return;
         }
-        // end ajax divname ////////////////////////////////////////////////
-
-/*    	if(border.compareTo("1") == 0)
-    	{}
-    	else
-    		html_env.css.append(".embed { vertical-align : text-top; padding : 0px ; margin : 0px; border: 0px,0px,0px,0px; width: 100%;}");
- */
     	if(att.compareTo("") != 0 ){
     		condition = condition + where+att;
     	}
@@ -1466,7 +1459,7 @@ public class HTMLFunction extends Function {
     }
     //tk end////////////////////////////////////////////////////////////////////////////
 
-    private void Func_sinvoke(ExtList data_info) {
+    protected void Func_sinvoke(ExtList data_info) {
         String file = this.getAtt("file");
         String action = this.getAtt("action");
         int attNo = 1;
@@ -1501,8 +1494,8 @@ public class HTMLFunction extends Function {
 				file = file.substring(0, file.indexOf(".html"));
 			}
 		}catch(Exception e){
-			GlobalEnv.addErr("Error[HTMLFunction]: filename is invalid.");
-			System.err.println("Error[HTMLFunction]: filename is invalid.");
+			GlobalEnv.addErr("Error["+getClassName()+"]: filename is invalid.");
+			System.err.println("Error["+getClassName()+"]: filename is invalid.");
 		}
 
         String filename = new String();
@@ -1672,13 +1665,4 @@ public class HTMLFunction extends Function {
     	}
     	return s;
     }
-    
-    private static Element createHiddenInput(String name, String value){
-    	Element result = new Element(Tag.valueOf("input"), "");
-    	result.attr("name", name);
-    	result.attr("type", "hidden");
-    	result.attr("value", value);
-    	return result;
-    }
-
 }
