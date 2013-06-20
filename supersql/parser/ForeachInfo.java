@@ -3,7 +3,6 @@
  */
 package supersql.parser;
 
-import java.util.Hashtable;
 import java.util.StringTokenizer;
 
 public class ForeachInfo {
@@ -16,8 +15,6 @@ public class ForeachInfo {
 
 	private StringBuffer foreach_where;
 
-	private Hashtable foreach_table;
-
 	public ForeachInfo(String line) {
 		this.line = line;
 		this.foreach_att = new String();
@@ -27,7 +24,7 @@ public class ForeachInfo {
 	}
 
 	public void makeInfo(String line) {
-		StringBuffer buf = new StringBuffer();
+		new StringBuffer();
 		if (line.startsWith("(")) {
 			line = line.substring(1, line.length() - 1);
 		}

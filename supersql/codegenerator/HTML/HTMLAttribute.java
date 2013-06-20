@@ -17,9 +17,9 @@ public class HTMLAttribute extends Attribute {
 	protected HTMLEnv htmlEnv;
 	protected HTMLEnv htmlEnv2;
 
-	private String[] formSql = {"","delete","update","insert","login","logout"};
-	private String[] formHtml = {"","submit","select","checkbox","radio","text","textarea","hidden"};
-	private int whichForm;
+	protected String[] formSql = {"","delete","update","insert","login","logout"};
+	protected String[] formHtml = {"","submit","select","checkbox","radio","text","textarea","hidden"};
+	protected int whichForm;
 
 	//コンストラクタ
 	public HTMLAttribute(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
@@ -513,13 +513,50 @@ public class HTMLAttribute extends Attribute {
 				if(decos.containsKey("md5")){
 					inputFormString += "<input type=\"hidden\" name=\"" + name + ":pwd\" value=\"md5\" />";
 				}
-			
+			}if(decos.containsKey("img")){
+				inputFormString +="<input type=\"file\" name=\"" + name + "\" value=\"" + s + "\" >";
 			}else{
+				//ishizaki start (html5)
 				if(s.isEmpty()){
-					inputFormString += "<input type=\"text\" name=\"" + name + "\" />";					
+					//inputFormString += "<input type=\"text\" name=\"" + name + "\" />";
+					if(decos.containsKey("type")){
+						if(decos.getStr("type").equals("tel"))
+							inputFormString += "<input type=\"tel\" name=\"" + name + "\" pattern=\"\\d{2,4}-\\d{2,4}-\\d{4}\"/>";
+						if(decos.getStr("type").equals("mail"))
+							inputFormString += "<input type=\"email\" name=\"" + name +
+							"\" pattern=\"[\\w\\.\\-]+@(?:[\\w\\-]+\\.)+[\\w\\-]+\"/>";
+						if(decos.getStr("type").equals("age"))
+							inputFormString += "<input type=\"text\" name=\"" + name + "\" pattern=\"\\d{1,3}\" >";
+						if(decos.getStr("type").equals("url"))
+							inputFormString += "<input type=\"url\" name=\"" + name + "\" >";
+					}else
+						inputFormString += "<input type=\"text\" name=\"" + name + "\" />";
 				}else{
-					inputFormString += "<input type=\"text\" name=\"" + name + "\" value=\"" + s + "\" />";
+					//inputFormString += "<input type=\"text\" name=\"" + name + "\" value=\"" + s + "\" />";
+					if(decos.containsKey("type")){
+						if(decos.getStr("type").equals("tel")){
+							inputFormString += "<input type=\"tel\" name=\"" + name + "\" pattern=\"\\d{2,4}-\\d{2,4}-\\d{4}\"/ value=\"" + s + "\">";
+						}else if(decos.getStr("type").equals("mail")){
+							inputFormString += "<input type=\"email\" name=\"" + name +
+							"\" pattern=\"[\\w\\.\\-]+@(?:[\\w\\-]+\\.)+[\\w\\-]+\"/ value=\"" + s + "\">";
+						}else if(decos.getStr("type").equals("age")){
+							inputFormString += "<input type=\"text\" name=\"" + name + "\" pattern=\"\\d{1,3}\" value=\"" + s + "\">";
+						}else if(decos.getStr("type").equals("url")){
+							inputFormString += "<input type=\"url\" name=\"" + name + "\" value=\"" + s + "\">";
+						}else
+							inputFormString += "<input type=\"text\" name=\"" + name + "\" value=\"" + s + "\"/>";
+					}else
+							inputFormString += "<input type=\"text\" name=\"" + name + "\" value=\"" + s + "\"/>";
 				}
+				/*
+				if(s.isEmpty()){
+					inputFormString += "<input ref=\"" + name + "\"><label></label></input>";
+				}else{
+					inputFormString += "<input ref=\"" + name + "\"><label>" + s + "</label></input>";
+				}
+				*/
+				//ishizaki end(html5)
+
 			}	
 			
 			//add constraint
@@ -557,7 +594,6 @@ public class HTMLAttribute extends Attribute {
 				inputFormString += "<input type=\"hidden\" name=\""+ name +":const\" value=\""+ constraint +"\" />";
 			
 
-			Log.out("pppppp"+decos.containsKey("pkey"));
 			if(decos.containsKey("pkey") && whichForm == 2){//update
 				if(!htmlEnv.code.toString().contains("<input type=\"hidden\" name=\"pkey\" value=\"" + name + "\" />"))
 					inputFormString += "<input type=\"hidden\" name=\"pkey\" value=\"" + name + "\" />";
