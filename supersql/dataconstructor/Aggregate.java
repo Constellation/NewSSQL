@@ -134,11 +134,11 @@ public class Aggregate {
 			if (way.equals("max")) {
 				
 				/* obtain the maximum value */				
-				int max = Integer.parseInt(((ExtList)(buffer.get(0))).get(Integer.parseInt(target)).toString().substring(4));
+				int max = Integer.parseInt(((ExtList)(buffer.get(0))).get(Integer.parseInt(target)).toString());
 			
 				for (int i = 1; i < buffer.size(); i++) {
-					if (Integer.parseInt(((ExtList)(buffer.get(i))).get(Integer.parseInt(target)).toString().substring(4)) > max) {
-						max = Integer.parseInt(((ExtList)(buffer.get(i))).get(Integer.parseInt(target)).toString().substring(4));
+					if (Integer.parseInt(((ExtList)(buffer.get(i))).get(Integer.parseInt(target)).toString()) > max) {
+						max = Integer.parseInt(((ExtList)(buffer.get(i))).get(Integer.parseInt(target)).toString());
 					}
 				}
 				
@@ -155,11 +155,11 @@ public class Aggregate {
 			} else if (way.equals("min")) {
 				
 				/* obtain the minimum value */
-				int min = Integer.parseInt(((ExtList)(buffer.get(0))).get(Integer.parseInt(target)).toString().substring(4));
+				int min = Integer.parseInt(((ExtList)(buffer.get(0))).get(Integer.parseInt(target)).toString());
 				
 				for (int i = 1; i < buffer.size(); i++) {
-					if (Integer.parseInt(((ExtList)(buffer.get(i))).get(Integer.parseInt(target)).toString().substring(4)) < min) {
-						min = Integer.parseInt(((ExtList)(buffer.get(i))).get(Integer.parseInt(target)).toString().substring(4));
+					if (Integer.parseInt(((ExtList)(buffer.get(i))).get(Integer.parseInt(target)).toString()) < min) {
+						min = Integer.parseInt(((ExtList)(buffer.get(i))).get(Integer.parseInt(target)).toString());
 					}
 				}
 					
@@ -178,7 +178,7 @@ public class Aggregate {
 				int sum = 0;
 				
 				for (int i = 0; i < buffer.size(); i++) {
-					sum += Integer.parseInt(((ExtList)(buffer.get(i))).get(Integer.parseInt(target)).toString().substring(4));
+					sum += Integer.parseInt(((ExtList)(buffer.get(i))).get(Integer.parseInt(target)).toString());
 				}
 				
 				/* write the summation value */
