@@ -1,5 +1,8 @@
 package supersql.codegenerator.HTML;
 
+import org.jsoup.nodes.Element;
+import org.jsoup.parser.Tag;
+
 import supersql.codegenerator.Connector;
 import supersql.codegenerator.Manager;
 import supersql.extendclass.ExtList;
@@ -10,13 +13,41 @@ public class HTMLC0 extends Connector {
 	private HTMLEnv htmlEnv;
 	private HTMLEnv htmlEnv2;
 
-	//¥³¥ó¥¹¥È¥é¥¯¥¿
+	//ï¿½ï¿½ï¿½ó¥¹¥È¥é¥¯ï¿½ï¿½
 	public HTMLC0(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
 		this.htmlEnv = henv;
 		this.htmlEnv2 = henv2;
 	}
 
-	//C2¤Îwork¥á¥½¥Ã¥É
+	@Override
+	public Element createNode(ExtList data_info){
+		this.setDataList(data_info);
+		Element result = new Element(Tag.valueOf("div"), ""); 
+		
+		 if(decos.containsKey("form")){
+			result.appendChild(HTMLFunction.createFormForJsoup(decos));
+           	HTMLEnv.setFormItemFlg(true,null);
+        	if(decos.getStr("form").toLowerCase().equals("search"))
+        		HTMLEnv.setSearch(true);
+		 }	 
+		
+		while (this.hasMoreItems()) {
+			result.appendChild((Element)this.createNextItemNode(data_info));
+		}
+		
+
+       if(decos.containsKey("form")){
+    	   result.appendChild(HTMLEnv.exFormNameCreateForJsoup());
+    	   HTMLEnv.setFormItemFlg(false,null);
+    	   HTMLEnv.incrementFormNumber();
+    	   if(decos.getStr("form").toLowerCase().equals("search"))
+    		   HTMLEnv.setSearch(false);
+       }
+       
+       return result;
+	}
+	
+	//C2ï¿½ï¿½workï¿½á¥½ï¿½Ã¥ï¿½
 	@Override
 	public void work(ExtList data_info) {
 

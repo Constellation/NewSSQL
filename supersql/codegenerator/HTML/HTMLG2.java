@@ -2,6 +2,10 @@ package supersql.codegenerator.HTML;
 
 import java.util.Vector;
 
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
+import org.jsoup.parser.Tag;
+
 import supersql.codegenerator.Grouper;
 import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
@@ -18,6 +22,71 @@ public class HTMLG2 extends Grouper {
         this.html_env = henv;
         this.html_env2 = henv2;
 
+    }
+    
+    @Override
+    public Element createNode(ExtList data_info){
+    	Element result = new Element(Tag.valueOf("table"), "");
+        this.setDataList(data_info);
+        if(HTMLEnv.getSelectFlg())
+        	data_info = (ExtList) data_info.get(0);
+
+        html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
+        
+        if(!GlobalEnv.isOpt()){
+        	result.attr("cellSpacing", "0");
+        	result.attr("cellPadding", "0");
+        	result.attr("border", html_env.tableBorder);
+	        if(html_env.embedFlag)
+	        	result.addClass("embed");
+	        
+	        if(decos.containsKey("outborder"))
+	        	result.addClass("noborder");
+	        
+	        if(decos.containsKey("class")){
+	        	result.addClass(html_env.tableBorder);
+	        }
+	        if(html_env.writtenClassId.contains(HTMLEnv.getClassID(this))){
+	        	result.addClass(HTMLEnv.getClassID(this));
+	        }
+	        result.addClass("nest");
+
+	        if(!html_env.isOutlineModeForJsoup()){
+	        	result.attr("frame", "void");
+	        }
+        }
+        
+        while (this.hasMoreItems()) {
+            html_env.gLevel++;
+            Element tr = new Element(Tag.valueOf("tr"), "");
+            if( !HTMLEnv.getSelectRepeat() ){
+            	
+            	Element td = new Element(Tag.valueOf("td"), "").addClass(HTMLEnv.getClassID(tfe)).addClass("nest");
+	            tr.appendChild(td);
+            	
+            }
+            String classid = HTMLEnv.getClassID(tfe);
+            
+            tr.children().last().appendChild((Element) this.createNextItemNode());
+            
+            if(!HTMLEnv.getSelectRepeat()){
+            	result.appendChild(tr);
+            }
+            html_env.gLevel--;
+            
+        }
+
+        
+        if(HTMLEnv.getSelectRepeat()){		
+	        if(HTMLEnv.getSelectRepeat()){
+	        	HTMLEnv.setSelectRepeat(false);
+	        	HTMLEnv.incrementFormPartsNumber();
+	        }else{
+	        	HTMLEnv.incrementFormPartsNumber();
+	        }
+		}
+        return result;
+    	
     }
 
     //G2のworkメソッド

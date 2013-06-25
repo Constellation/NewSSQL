@@ -19,6 +19,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Hashtable;
 
+import org.jsoup.nodes.Element;
+import org.jsoup.parser.Tag;
+
 import supersql.codegenerator.CodeGenerator;
 import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.FuncArg;
@@ -32,10 +35,10 @@ import supersql.parser.SSQLparser;
 
 public class HTMLFunction extends Function {
 
-	private HTMLEnv htmlEnv;
-	private HTMLEnv htmlEnv2;
-
-	protected static String updateFile;
+	protected HTMLEnv htmlEnv;
+	protected HTMLEnv htmlEnv2;
+	private static int meter_id=0;
+	private static String updateFile;
 
     public HTMLFunction()
     {
@@ -47,8 +50,61 @@ public class HTMLFunction extends Function {
         this.htmlEnv = henv;
         this.htmlEnv2 = henv2;
     }
+    
+    
 
-    //Functionのworkメソッド
+    @Override
+	public Element createNode(ExtList<ExtList<String>> data_info) {
+    	this.setDataList(data_info);
+    	String FuncName = this.getFuncName();
+    	if (FuncName.equalsIgnoreCase("imagefile")) {
+            return FuncImagefileForJsoup();
+        } else if (FuncName.equalsIgnoreCase("invoke")) {
+            return FuncInvokeForJsoup();
+        } else if (FuncName.equalsIgnoreCase("foreach")) {
+            return FuncForeachForJsoup(data_info);
+        } else if (FuncName.equalsIgnoreCase("sinvoke") || FuncName.equalsIgnoreCase("link")) {
+            return FuncSinvokeForJsoup(data_info);
+        } else if (FuncName.equalsIgnoreCase("null")) {
+            return FuncNullForJsoup();
+        }
+        else if (FuncName.equalsIgnoreCase("submit")) {
+            return FuncSubmitForJsoup();
+        }
+        else if (FuncName.equalsIgnoreCase("select")) {
+            return FuncSelectForJsoup();
+        }
+        else if (FuncName.equalsIgnoreCase("checkbox")) {
+            return FuncCheckboxForJsoup();
+        }
+        else if (FuncName.equalsIgnoreCase("radio")) {
+            return FuncRadioForJsoup();
+        }
+        else if (FuncName.equalsIgnoreCase("inputtext")) {
+            return FuncInputtextForJsoup();
+        }
+        else if (FuncName.equalsIgnoreCase("textarea")) {
+            return FuncTextareaForJsoup();
+        }
+        else if (FuncName.equalsIgnoreCase("hidden")) {
+            return FuncHiddenForJsoup();
+        }
+        else if (FuncName.equalsIgnoreCase("session")) {
+            //Func_session(); not use
+        	return new Element(Tag.valueOf(""), "");
+        }
+        //tk start//////////////////////////////////
+        else if (FuncName.equalsIgnoreCase("embed")) {
+        	Log.out("[enter embed]");
+        	return FuncEmbedForJsoup(data_info);
+        }
+        //tk end////////////////////////////////////
+        Log.out("TFEId = " + HTMLEnv.getClassID(this));
+        htmlEnv.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
+        return null;
+	}
+    
+	//Functionのworkメソッド
     public void work(ExtList data_info) {
         this.setDataList(data_info);
         //    	Log.out("FuncName= " + this.getFuncName());
@@ -63,27 +119,15 @@ public class HTMLFunction extends Function {
             Func_invoke();
         } else if (FuncName.equalsIgnoreCase("foreach")) {
             try {
-				Func_foreach(data_info);
-			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
-			}
+    			Func_foreach(data_info);
+    		} catch (UnsupportedEncodingException e) {
+    			e.printStackTrace();
+    		}
         } else if (FuncName.equalsIgnoreCase("sinvoke") || FuncName.equalsIgnoreCase("link")) {
             Func_sinvoke(data_info);
         } else if (FuncName.equalsIgnoreCase("null")) {
             Func_null();
         }
-        //added by goto 20130308  "urlリンク"
-        else if(FuncName.equalsIgnoreCase("url") || FuncName.equalsIgnoreCase("anchor") || FuncName.equalsIgnoreCase("a")){
-        	Func_url(false);
-        }
-        //added by goto 20130417  "mail"
-        else if(FuncName.equalsIgnoreCase("mail")){
-        	Func_url(true);
-        }
-//        // for practice
-//        else if(FuncName.equalsIgnoreCase("button")){
-//        	Func_button();
-//        }
         //chie
         else if (FuncName.equalsIgnoreCase("submit")) {
             Func_submit();
@@ -108,7 +152,15 @@ public class HTMLFunction extends Function {
         }
         else if (FuncName.equalsIgnoreCase("session")) {
             //Func_session(); not use
+        }//ishizaki//
+        else if (FuncName.equalsIgnoreCase("youtube")){
+        	Func_youtube();
+        } else if (FuncName.equalsIgnoreCase("movie")){
+        	Func_moviefile();
+        } else if (FuncName.equalsIgnoreCase("meter")){
+        	Func_meter();
         }
+        //ishizaki//
         //tk start//////////////////////////////////
         else if (FuncName.equalsIgnoreCase("embed")) {
         	Log.out("[enter embed]");
@@ -118,10 +170,106 @@ public class HTMLFunction extends Function {
 
         Log.out("TFEId = " + HTMLEnv.getClassID(this));
         htmlEnv.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
-
     }
 
-    protected void Func_imagefile() {
+    protected Element FuncEmbedForJsoup(ExtList<ExtList<String>> data_info) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+    protected Element FuncHiddenForJsoup() {
+		return FuncFormCommonForJsoup("hidden");
+	}
+	protected Element FuncTextareaForJsoup() {
+		return FuncFormCommonForJsoup("textarea");
+	}
+	protected Element FuncInputtextForJsoup() {
+		return FuncFormCommonForJsoup("text");
+	}
+	protected Element FuncRadioForJsoup() {
+		if(!this.getAtt("checked").equals("")){
+        	HTMLEnv.setChecked(this.getAtt("checked"));
+        }
+        return FuncFormCommonForJsoup("radio");
+	}
+	protected Element FuncCheckboxForJsoup() {
+		Element result = FuncFormCommonForJsoup("checkbox");
+
+		if(!this.getAtt("checked").equals("")){
+        	HTMLEnv.setChecked(this.getAtt("checked"));
+        }
+
+        return result;
+	}
+
+	protected Element FuncSelectForJsoup() {
+        if(!this.getAtt("selected").equals("")){
+        	HTMLEnv.setSelected(this.getAtt("selected"));
+        }
+        return FuncFormCommonForJsoup("select");
+	}
+	
+	protected Element FuncSubmitForJsoup() {
+		Element result = new Element(Tag.valueOf("form"), "");
+    	boolean openFormInThis = false;
+
+    	//submit only ----- no "@{form}"
+    	if(!HTMLEnv.getFormItemFlg() && !decos.containsKey("form")){
+    		result = createFormForJsoup();
+        	openFormInThis = true;
+    	}else if(decos.containsKey("form")){
+    		result = createFormForJsoup(decos);
+        	openFormInThis = true;
+    	}
+
+
+		HTMLEnv.setFormItemFlg(true,"submit");
+
+    	String value = "";
+    	if(!this.getAtt("default").equals(null)){
+        	value = this.getAtt("default");
+        }
+
+    	result.appendChild(JsoupFactory.createInput("submit", "", value));
+    	if(openFormInThis == true){
+    		HTMLEnv.setFormItemFlg(false,null);
+    		openFormInThis = false;
+    	}else{
+    		HTMLEnv.setFormItemFlg(true,null);
+    	}
+
+        return result;
+	}
+	protected Element FuncNullForJsoup() {
+		return new Element(Tag.valueOf("span"), "");
+	}
+	protected Element FuncSinvokeForJsoup(ExtList<ExtList<String>> data_info) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	protected Element FuncForeachForJsoup(ExtList<ExtList<String>> data_info) {
+		String att = new String();
+    	for (int i = 0; i < this.countconnectitem(); i++) {
+    		att = att + "_" + this.getAtt(Integer.toString(i));
+    	}
+    	try {
+			att = URLEncoder.encode(att, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+    	String filename = htmlEnv.outFile + att + ".html";
+
+        htmlEnv.fileName = filename;
+		return null;
+	}
+	protected Element FuncInvokeForJsoup() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	protected Element FuncImagefileForJsoup() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	protected void Func_imagefile() {
 
         /*
          * ImageFile function : <td> <img src="${imgpath}/"+att /> </td>
@@ -311,7 +459,7 @@ public class HTMLFunction extends Function {
     	
     	return notA1+"<a href=\""+url+"\""+transition()+prefetch()+target(url)+">"+A+"</a>"+notA2;
     }
-	private String transition() {
+    protected String transition() {
     	//画面遷移アニメーション(data-transition)指定時の処理
     	//※外部ページへの遷移には対応していない
     	if (decos.containsKey("transition"))
@@ -320,14 +468,14 @@ public class HTMLFunction extends Function {
     		return " data-transition=\"" + decos.getStr("trans") + "\"";
 		return "";
     }
-    private String prefetch() {
+    protected String prefetch() {
     	//遷移先ページプリフェッチ(data-prefetch)指定時の処理
     	//※外部ページへの遷移に使用してはいけない決まりがある
     	if (decos.containsKey("prefetch") || decos.containsKey("pref"))
     		return " data-prefetch";
 		return "";
     }
-    private String target(String url) {
+    protected String target(String url) {
     	//新規ウィンドウで表示する場合(target="_blank")の処理　=> _blankはW3Cで禁止されているため、JS + rel=externalを使用
     	//「外部ページに飛ぶ場合( http(s)://で始まる場合)」のみ新規ウィンドウ表示
     	if (url.matches("\\s*(http|https)://.*"))
@@ -371,7 +519,7 @@ public class HTMLFunction extends Function {
 
     	//submit only ----- no "@{form}"
     	if(!HTMLEnv.getFormItemFlg() && !decos.containsKey("form")){
-    		form = createForm();
+    		form = createForm(decos);
         	openFormInThis = true;
     	}else if(decos.containsKey("form")){
     		form = createForm(decos);
@@ -402,7 +550,7 @@ public class HTMLFunction extends Function {
     }
 
   //added by chie 2009 func form select
-    private void Func_select() {
+    protected void Func_select() {
         if(!this.getAtt("selected").equals("")){
         	HTMLEnv.setSelected(this.getAtt("selected"));
         }
@@ -412,7 +560,7 @@ public class HTMLFunction extends Function {
         return;
     }
   //added by chie 2009 func form checkbox
-    private void Func_checkbox() {
+    protected void Func_checkbox() {
 		Func_FormCommon("checkbox");
 
 		if(!this.getAtt("checked").equals("")){
@@ -422,7 +570,7 @@ public class HTMLFunction extends Function {
         return;
     }
     //added by chie 2009 func form radio
-    private void Func_radio() {
+    protected void Func_radio() {
 
 		if(!this.getAtt("checked").equals("")){
         	HTMLEnv.setChecked(this.getAtt("checked"));
@@ -433,29 +581,100 @@ public class HTMLFunction extends Function {
         return;
     }
     //added by chie 2009 func form inputtext
-    private void Func_inputtext() {
+    protected void Func_inputtext() {
 		Func_FormCommon("text");
         return;
     }
     //added by chie 2009 func form textarea
-    private void Func_textarea() {
+    protected void Func_textarea() {
 		Func_FormCommon("textarea");
         return;
     }
 
   //added by chie 2009 func form hidden
-    private void Func_hidden() {
+    protected void Func_hidden() {
 		Func_FormCommon("hidden");
         return;
     }
-
-    private void Func_FormCommon(String s){
+    
+    protected Element FuncFormCommonForJsoup(String s){
+    	Element result = new Element(Tag.valueOf("div"),  "");
+    	
     	String form = new String();
 
     	boolean openFormInThis = false;
 
     	if(!HTMLEnv.getFormItemFlg()){
-    		form = createForm();
+    		form = createForm(decos);
+        	openFormInThis = true;
+    	}
+
+		HTMLEnv.setFormItemFlg(true,s);
+
+        String att = new String();
+        Integer attNo = 1;
+        while (!this.getAtt("att"+attNo).equals("")){
+        	if(attNo > 1)
+        		att += ",";
+        	att += this.getAtt("att"+attNo);
+        	Log.out("att:" + att + " attNo:" + attNo);
+        	attNo ++;
+        }
+        if(attNo == 1 && !this.getAtt("att").equals("")){
+        	att += this.getAtt("att");
+        	Log.out("att:" + att + " attNo:" + attNo);
+        }
+
+        if(!this.getAtt("name").equals("")){
+        	HTMLEnv.setFormPartsName(this.getAtt("name"));
+        	HTMLEnv.exFormName();
+        }else{
+        	HTMLEnv.setFormPartsName(null);
+        }
+
+        if(!this.getAtt("id").equals("")){
+        	HTMLEnv.nameId = this.getAtt("id");
+        }
+
+        if(!this.getAtt("cond_name").equals("")){
+        	HTMLEnv.condName = this.getAtt("cond_name");
+        }
+        if(!this.getAtt("cond").equals("")){
+        	HTMLEnv.cond = this.getAtt("cond");
+        }
+
+
+        htmlEnv.code.append(form);
+
+        if(this.getArgs().get(0) instanceof FuncArg)
+        {
+        	//HTMLEnv.setSelectFlg(true,(String)this.decos.get("select"));
+        	HTMLEnv.setFormValueString(att);
+        	Log.out("ARGS are function");
+        	FuncArg fa = (FuncArg) this.getArgs().get(0);
+        	fa.workAtt();
+        }
+        else{
+            this.workAtt("default");
+        }
+
+    	if(openFormInThis == true){
+    		htmlEnv.code.append("</form>");
+    		HTMLEnv.setFormItemFlg(false,null);
+        	openFormInThis = false;
+    	}else{
+    		HTMLEnv.setFormItemFlg(true,null);
+    	}
+        return result;
+    }
+
+    protected void Func_FormCommon(String s){
+    	String form = new String();
+
+    	boolean openFormInThis = false;
+
+    	if(!HTMLEnv.getFormItemFlg()){
+    		form = createForm(decos);
         	openFormInThis = true;
     	}
 
@@ -518,35 +737,28 @@ public class HTMLFunction extends Function {
         return;
     }
 
-
-    private String createForm() {
+    
+    protected Element createFormForJsoup(){
+    	Element result = new Element(Tag.valueOf("form"), "");
     	String path = new String();
-    	String form = new String();
     	if(this.getAtt("path") != null &&  !this.getAtt("path").isEmpty()){
     		 path =  this.getAtt("path").replaceAll("\"", "");
     	}else{
     		path = ".";
     	}
-
-    	form += "<form method=\"POST\" action=\"" + path + "/servlet/supersql.form.FormServlet\"" +">";
-
-    	form += "<input type=\"hidden\" name=\"configfile\" value=\"" +
-		path + "/config.ssql\" />";
+    	
+    	result.attr("method", "POST").attr("action", path+"/servlet/supersql.form.FormServlet");
+    	result.appendChild(JsoupFactory.createInput("hidden", "configfile", path+"/config.ssql"));
 
         if(this.getAtt("link") != null && !this.getAtt("link").isEmpty()){
-        	form += "<input type=\"hidden\" name=\"sqlfile\" value=\"" + path + "/" + this.getAtt("link").replaceAll("\"", "") + "\" />";
+        	result.appendChild(JsoupFactory.createInput("hidden", "sqlfile",path + "/" + this.getAtt("link").replaceAll("\"", "")));
         }else if(this.getAtt("linkfile") != null && !this.getAtt("linkfile").isEmpty()){
-        	form += "<input type=\"hidden\" name=\"sqlfile\" value=\"" + path + "/" + this.getAtt("linkfile").replaceAll("\"", "") + "\" />";
+        	result.appendChild(JsoupFactory.createInput("hidden", "sqlfile", path + "/" + this.getAtt("linkfile").replaceAll("\"", "")));
         }
-    	/*
-        if(!this.getAtt("default").equals(null)){
-        	form += "<input type=\"hidden\" name=\"value1\" value=\""+this.getAtt("default").replaceAll("\"", "")+"\" />";
-        }
-        */
 
         if(this.getAtt("cond")!= null && !this.getAtt("cond").isEmpty()){
         	if(!this.getAtt("cond").replaceAll("\"", "").isEmpty())
-        		form += "<input type=\"hidden\" name=\"cond1\" value=\""+this.getAtt("cond").replaceAll("\"", "")+"\" />";
+        		result.appendChild(JsoupFactory.createInput("hidden", "cond1", this.getAtt("cond").replaceAll("\"", "")));
         }
 
         String att = new String();
@@ -565,16 +777,14 @@ public class HTMLFunction extends Function {
         }
 
         if(this.getAtt("update")!=null && !this.getAtt("update").isEmpty()){
-        	form += "<input type=\"hidden\" name=\"updatefile\" value=\"" + path + "/" +this.getAtt("update").replaceAll("\"", "")+"(" + att + ")\" />";
+        	result.appendChild(JsoupFactory.createInput("hidden", "updatefile", path + "/" +this.getAtt("update").replaceAll("\"", "")+"(" + att + ")"));
         }else if(this.getAtt("updatefile")!=null && !this.getAtt("updatefile").isEmpty()){
-        	form += "<input type=\"hidden\" name=\"updatefile\" value=\"" + path + "/" +this.getAtt("updatefile").replaceAll("\"", "")+"(" + att + ")\" />";
+        	result.appendChild(JsoupFactory.createInput("hidden", "updatefile", path + "/" +this.getAtt("updatefile").replaceAll("\"", "")+"(" + att + ")"));
         }
-
-
-        Log.out(form);
-        return form;
+        return result;
     }
 
+    
     public static String createForm(DecorateList decos) {
     	new String();
     	String path = new String();
@@ -618,18 +828,46 @@ public class HTMLFunction extends Function {
         HTMLEnv.setFormDetail(form);
         return form;
     }
+    
+    protected static Element createFormForJsoup(DecorateList decos){
+    	Element result = new Element(Tag.valueOf("form"), "");
+    	String path = new String();
+    	if(decos.containsKey("path")){
+    		path =  decos.getStr("path").replaceAll("\"", "");
+    	}else{
+    		path = ".";
+    	}
+    	
+    	result.attr("method", "POST");
+    	result.attr("action", path + "/supersql.form.FormServlet");
+    	result.attr("name", HTMLEnv.getFormName());
+    	
+    	result.appendChild(JsoupFactory.createInput("hidden","configFile", GlobalEnv.getFileDirectory() + "/config.ssql"));
+    	
+        if(decos.containsKey("link")){
+        	opt(decos.getStr("link"));
+        	result.appendChild(JsoupFactory.createInput("hidden","sqlfile", path + "/" + decos.getStr("link").replaceAll("\"", "")));
+        }
 
-    //not use
-    /*
-    private void Func_session() {
-    	System.out.println("aaaaaaaaa"+this.getClassName());
-    	html_env.code.append("b");
-        html_env2.code.append("<VALUE type=\"form\">b</VALUE>");
-    	return;
+        if(decos.containsKey("cond")){
+        	result.appendChild(JsoupFactory.createInput("hidden","cond1", path + "/" + decos.getStr("link").replaceAll("\"", "")));
+        }
+
+        
+        if(decos.containsKey("updatefile")){
+        	result.appendChild(JsoupFactory.createInput("hidden","updateFile", path + "/" + opt(decos.getStr("updatefile"))));
+        }
+        if(decos.containsKey("linkfile")){
+        	opt(decos.getStr("linkfile"));
+        	result.appendChild(JsoupFactory.createInput("hidden","linkfile", path + "/" + decos.getStr("linkfile").replaceAll("\"", "")));
+        }
+        if(decos.containsKey("cond")){
+        	result.appendChild(JsoupFactory.createInput("hidden","linkcond", decos.getStr("cond").replaceAll("\"", "")));
+        }
+        return result;
     }
-    */
 
-    private void Func_invoke() {
+    protected void Func_invoke() {
 
         /*
          * Invoke function : <td> <a
@@ -687,7 +925,7 @@ public class HTMLFunction extends Function {
         return;
     }
 
-    private void Func_foreach(ExtList data_info) throws UnsupportedEncodingException {
+    protected void Func_foreach(ExtList data_info) throws UnsupportedEncodingException {
     	String att = new String();
     	for (int i = 0; i < this.countconnectitem(); i++) {
     		att = att + "_" + this.getAtt(Integer.toString(i));
@@ -702,7 +940,7 @@ public class HTMLFunction extends Function {
     }
 
     //tk start//////////////////////////////////////////////////////////////////////////////
-    private void Func_embed(ExtList data_info){
+    protected void Func_embed(ExtList data_info){
     	String file = this.getAtt("file");
     	String where = this.getAtt("where");
     	String att = this.getAtt("att");
@@ -819,13 +1057,6 @@ public class HTMLFunction extends Function {
 
 			return;
         }
-        // end ajax divname ////////////////////////////////////////////////
-
-/*    	if(border.compareTo("1") == 0)
-    	{}
-    	else
-    		html_env.css.append(".embed { vertical-align : text-top; padding : 0px ; margin : 0px; border: 0px,0px,0px,0px; width: 100%;}");
- */
     	if(att.compareTo("") != 0 ){
     		condition = condition + where+att;
     	}
@@ -1170,7 +1401,7 @@ public class HTMLFunction extends Function {
     }
     //tk end////////////////////////////////////////////////////////////////////////////
 
-    private void Func_sinvoke(ExtList data_info) {
+    protected void Func_sinvoke(ExtList data_info) {
         String file = this.getAtt("file");
         String action = this.getAtt("action");
         int attNo = 1;
@@ -1205,8 +1436,8 @@ public class HTMLFunction extends Function {
 				file = file.substring(0, file.indexOf(".html"));
 			}
 		}catch(Exception e){
-			GlobalEnv.addErr("Error[HTMLFunction]: filename is invalid.");
-			System.err.println("Error[HTMLFunction]: filename is invalid.");
+			GlobalEnv.addErr("Error["+getClassName()+"]: filename is invalid.");
+			System.err.println("Error["+getClassName()+"]: filename is invalid.");
 		}
 
         String filename = new String();
@@ -1375,6 +1606,129 @@ public class HTMLFunction extends Function {
     		s = s.substring(1,s.length());
     	}
     	return s;
+    }
+    
+
+    private void Func_youtube(){
+    	/*
+    	 * <object width="480" height="385"><param name="movie" value="http://www.youtube.com/v/f3Afu5CBZUA?fs=1&amp;hl=ja_JP"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/f3Afu5CBZUA?fs=1&amp;hl=ja_JP" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="480" height="385"></embed></object>
+         */
+
+        String path = this.getAtt("default");
+    	String a = "<object width=\"480\" height=\"385\">" +
+    			"<param name=\"movie\" value=\"http://www.youtube.com/v/" +
+    			path +
+    			"?fs=1&amp;hl=ja_JP\"></param><param name=\"allowFullScreen\" value=\"true\">" +
+    			"</param><param name=\"allowscriptaccess\" value=\"always\"></param><embed src=\"http://www.youtube.com/v/" +
+    			path +
+    			"?fs=1&amp;hl=ja_JP\" type=\"application/x-shockwave-flash\" " +
+    			"allowscriptaccess=\"always\" allowfullscreen=\"true\" width=\"480\" height=\"385\">" +
+    			"</embed></object>";
+    	htmlEnv.code.append(a);
+    	return;
+    }
+
+    private void Func_moviefile(){
+
+        String path = this.getAtt("path", ".");
+        if (!path.startsWith("/")) {
+            String basedir = GlobalEnv.getBaseDir();
+            if (basedir != null && basedir != "") {
+                path = GlobalEnv.getBaseDir() + "/" + path;
+            }
+        }
+
+       	htmlEnv.code.append("<video class=\"" + HTMLEnv.getClassID(this) +"\" ");
+       	if(decos.containsKey("class"))
+    		htmlEnv.code.append(decos.getStr("class"));
+
+    	htmlEnv.code.append(" \" src=\"" + path + "/" + this.getAtt("default")+"\"");
+    	htmlEnv.code.append("autobuffer controls poster=\"http://www.db.ics.keio.ac.jp/ssql/img/ssqllogo.gif\">" +
+    			"<p>Try this page in Safari 4! Or you can <a href=\"" +
+    			path + "/" + this.getAtt("default")+"\"" +
+    			">download the video</a> instead.</p>");
+
+    	return;
+    }
+    private void Func_meter(){
+ /*   	<script type="text/javascript">addEvent(window,"load",function() {
+			var layout = [
+				200,				//width
+				40,					//height
+				170,					//m_width
+				25,					//m_height
+				100,				//max
+				0,				//min
+				30,				//low
+				70				//high
+				]
+			var color = [
+				"#FF0000",				//max_color
+				"#00FFFF",				//low_color
+				"#00FFFF",				//high_color
+				"#00FF00",				//mid_color
+				"#CCCCCC"				//bg_color
+			]
+			draw("meter2",layout,color,70);
+			});</script>
+
+<div><canvas width="200" height="40" id="meter2"></canvas></div>
+*/
+
+    	meter_id++;
+
+
+       	htmlEnv.code.append("<script type=\"text/javascript\">addEvent(window,\"load\",function() { \nvar layout = [");
+      	if(decos.containsKey("width"))
+       		htmlEnv.code.append(decos.getStr("width"));
+      	htmlEnv.code.append(",");
+      	if(decos.containsKey("height"))
+       		htmlEnv.code.append(decos.getStr("height"));
+      	htmlEnv.code.append(",");
+      	if(decos.containsKey("m_width"))
+       		htmlEnv.code.append(decos.getStr("m_width"));
+      	htmlEnv.code.append(",");
+      	if(decos.containsKey("m_height"))
+       		htmlEnv.code.append(decos.getStr("m_height"));
+      	htmlEnv.code.append(",");
+      	if(decos.containsKey("max"))
+       		htmlEnv.code.append(decos.getStr("max"));
+      	htmlEnv.code.append(",");
+      	if(decos.containsKey("min"))
+       		htmlEnv.code.append(decos.getStr("min"));
+      	htmlEnv.code.append(",");
+      	if(decos.containsKey("low"))
+       		htmlEnv.code.append(decos.getStr("low"));
+      	htmlEnv.code.append(",");
+      	if(decos.containsKey("high"))
+       		htmlEnv.code.append(decos.getStr("high"));
+      	htmlEnv.code.append("] \nvar color = [");
+      	if(decos.containsKey("max_color"))
+       		htmlEnv.code.append(decos.getStr("max_color"));
+      	htmlEnv.code.append(",");
+      	if(decos.containsKey("low_color"))
+       		htmlEnv.code.append(decos.getStr("low_color"));
+      	htmlEnv.code.append(",");
+      	if(decos.containsKey("high_color"))
+       		htmlEnv.code.append(decos.getStr("high_color"));
+      	htmlEnv.code.append(",");
+      	if(decos.containsKey("mid_color"))
+       		htmlEnv.code.append(decos.getStr("mid_color"));
+      	htmlEnv.code.append(",");
+      	if(decos.containsKey("bg_color"))
+      		htmlEnv.code.append(decos.getStr("bg_color"));
+      	htmlEnv.code.append("] \ndraw(\"meter"+meter_id+"\",layout,color,"+this.getAtt("default") +");});</script>");
+
+      	htmlEnv.code.append("<div><canvas ");
+    	if(decos.containsKey("width"))
+       		htmlEnv.code.append("width=" + decos.getStr("width") + " ");
+       	else
+       		htmlEnv.code.append("width = 200 ");
+    	if(decos.containsKey("height"))
+       		htmlEnv.code.append("height=" + decos.getStr("height") + " ");
+       	else
+       		htmlEnv.code.append("height = 40 ");
+     	htmlEnv.code.append("id=\"meter"+meter_id+"\"></canvas></div>");
     }
 
 }

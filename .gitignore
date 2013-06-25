@@ -22,3 +22,5 @@ bin/
 .checkstyle
 bin/
 js/script.js
+*.sql
+jsoup.html
