@@ -1,5 +1,8 @@
 package supersql.codegenerator.HTML;
 
+import org.jsoup.nodes.Element;
+import org.jsoup.parser.Tag;
+
 import supersql.codegenerator.Grouper;
 import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
@@ -16,6 +19,62 @@ public class HTMLG1 extends Grouper {
         this.html_env = henv;
         this.html_env2 = henv2;
   
+    }
+    
+    @Override
+    public Element createNode(ExtList data_info){
+        this.setDataList(data_info);
+        html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
+        
+        Element result = new Element(Tag.valueOf("table"), "");
+        
+        if(!GlobalEnv.isOpt()){
+        	result.attr("cellSpacing", "0");
+        	result.attr("cellPadding", "0");
+        	result.attr("border", html_env.tableBorder);
+	        
+	        if(html_env.embedFlag)
+	        	result.addClass("embed");
+	
+	        if(decos.containsKey("outborder"))
+	        	result.addClass("noborder");
+	        
+	        if(decos.containsKey("class")){
+	        	result.addClass(decos.getStr("class"));
+	        }
+	        if(html_env.haveClass == 1){
+	        	result.addClass(HTMLEnv.getClassID(this));
+	        }
+        	result.addClass("nest");
+        	
+        	if(!html_env.isOutlineModeForJsoup()){
+        		result.attr("frame", "void");
+        	}
+        }
+
+        Element tr = new Element(Tag.valueOf("tr"), "");
+        
+        while (this.hasMoreItems()) {
+        	html_env.gLevel++;
+            
+        	Element td = new Element(Tag.valueOf("td"), "");
+        	td.addClass(HTMLEnv.getClassID(tfe));
+        	td.addClass("nest");
+        	
+            String classid = HTMLEnv.getClassID(tfe);
+            	
+            td.appendChild((Element)this.createNextItemNode());
+            
+            tr.appendChild(td);
+            html_env.gLevel--;
+        }
+        
+        if(HTMLEnv.getFormItemFlg()){		
+	        HTMLEnv.incrementFormPartsNumber();
+		}
+        result.appendChild(tr);
+        return result;
+
     }
 
     //G1のworkメソッド

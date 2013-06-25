@@ -1,10 +1,13 @@
 package supersql.codegenerator.HTML;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Vector;
 
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.Attributes;
 import org.jsoup.nodes.Document;
@@ -100,12 +103,16 @@ public class HTMLEnv extends LocalEnv {
     public static String bg = "";			//added by goto 20130311  "background"
 	
 	public HTMLEnv() {
-		this.htmlEnv1 = new Document("");
-		new Document("");
+		// TODO Put the file name in the configuration
+		File input = new File("template.html");
+		try {
+			this.htmlEnv1 = Jsoup.parse(input, "UTF-8", "");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
-
 	
-
 	public void createHeader() {
 		Attributes attributes = new Attributes();
 		attributes.put("type", "text/css");
@@ -118,7 +125,7 @@ public class HTMLEnv extends LocalEnv {
 					+ ".noborder { 	border-width : 0px; "
 					+ "-top : -1px; padding-top : -1px;	"
 					+ "-bottom : -1px;	padding-bottom : -1px;}\n-->\n"
-					+ "</STYLE>");
+					+ "</style>");
 		}
 
 		htmlEnv1.head().appendChild(style);
@@ -138,18 +145,18 @@ public class HTMLEnv extends LocalEnv {
 				if (js.endsWith("/"))
 					js = js.substring(0, js.lastIndexOf("/"));
 				htmlEnv1.head().appendChild(
-						createJsElement(js + "/prototype.js"));
-				htmlEnv1.head().appendChild(createJsElement(js + "/ajax.js"));
+						JsoupFactory.createJsElement(js + "/prototype.js"));
+				htmlEnv1.head().appendChild(JsoupFactory.createJsElement(js + "/ajax.js"));
 			} else {
 				htmlEnv1.head()
 						.appendChild(
-								createJsElement("http://localhost:8080/tab/prototype.js"));
+								JsoupFactory.createJsElement("http://localhost:8080/tab/prototype.js"));
 				htmlEnv1.head().appendChild(
-						createJsElement("http://localhost:8080/tab/ajax.js"));
+						JsoupFactory.createJsElement("http://localhost:8080/tab/ajax.js"));
 			}
 
 			// Insertion of javascript files
-			ArrayList<Element> elements = createJsElements("js/lightbox.js",
+			ArrayList<Element> elements = JsoupFactory.createJsElements("js/lightbox.js",
 					"js/scriptaculous.js?load=effects", "js/prototype.js",
 					"build/animation/animation.js",
 					"build/container/container.js", "build/tabview/tabview.js",
@@ -163,14 +170,14 @@ public class HTMLEnv extends LocalEnv {
 			}
 
 			// Insertion of css files
-			elements = createStylesheetElements(
+			elements = JsoupFactory.createStylesheetElements(
 					"build/tabview/assets/border_tabs.css",
 					"build/tabview/assets/tabview.css",
 					"build/container/assets/container.css");
 			for (Element element : elements) {
 				htmlEnv1.head().appendChild(element);
 			}
-			elements = createStylesheetElements(new String[] {
+			elements = JsoupFactory.createStylesheetElements(new String[] {
 					"css/lightbox.css", "screen" }, new String[] {
 					"css/tabview-core.css", "screen" }, new String[] {
 					"css/panel.css", "screen" });
@@ -197,15 +204,32 @@ public class HTMLEnv extends LocalEnv {
 				|| Connector.updateFlag) {
 			Element form = createInsertDeleteUpdateForm();
 			if (Connector.insertFlag)
-				form.appendChild(createInput("hidden", "sql_param", "insert"));
+				form.appendChild(JsoupFactory.createInput("hidden", "sql_param", "insert"));
 			if (Connector.deleteFlag)
-				form.appendChild(createInput("hidden", "sql_param", "delete"));
+				form.appendChild(JsoupFactory.createInput("hidden", "sql_param", "delete"));
 			if (Connector.updateFlag)
-				form.appendChild(createInput("hidden", "sql_param", "update"));
+				form.appendChild(JsoupFactory.createInput("hidden", "sql_param", "update"));
 
-			form.appendChild(createInput("submit", "login", "Let's go!"));
+			form.appendChild(JsoupFactory.createInput("submit", "login", "Let's go!"));
 			htmlEnv1.appendChild(form);
 		}
+	}
+	
+	public void createFooter(){
+		if (Connector.updateFlag || Connector.insertFlag
+				|| Connector.deleteFlag || Connector.loginFlag) {
+			htmlEnv1.body().getElementsByTag("form").last().appendChild(JsoupFactory.createInput("submit", "login", "Let's go!"));
+			Connector.updateFlag = false;
+			Connector.insertFlag = false;
+			Connector.deleteFlag = false;
+			Connector.loginFlag = false;
+		}
+
+		if (Connector.logoutFlag) {
+			Connector.logoutFlag = false;
+		}
+
+		fillHeadTag();
 	}
 
 	public void includeDecorationProperties(String classId, DecorateList decos) {
@@ -311,6 +335,82 @@ public class HTMLEnv extends LocalEnv {
 		} else {
 			Log.out("==> style is null. not created style");
 			notWrittenClassId.addElement(classId);
+		}
+	}
+	
+	public void fillHeadTag(){
+		if (GlobalEnv.isAjax()) {
+			String js = GlobalEnv.getJsDirectory();
+			if (js != null) {
+				if (js.endsWith("/"))
+					js = js.substring(0, js.lastIndexOf("/"));
+				htmlEnv1.head().appendChild(JsoupFactory.createJsElement(js + "/prototype.js"));
+				htmlEnv1.head().appendChild(JsoupFactory.createJsElement(js+ "/ajax.js"));
+			} else {
+				htmlEnv1.head().appendChild(JsoupFactory.createJsElement("http://localhost:8080/tab/prototype.js"));
+				htmlEnv1.head().appendChild(JsoupFactory.createJsElement("http://localhost:8080/tab/ajax.js"));
+			}
+
+			ArrayList<Element> javascripts = JsoupFactory.createJsElements("build/yahoo/yahoo-min.js", "build/event/event-min.js", "build/dom/dom-min.js",
+					"build/dragdrop/dragdrop-min.js", "ssqlajax.js", "prototype.js", "build/element/element-beta.js", "build/tabview/tabview.js",
+					"build/container/container.js", "build/animation/animation.js", "js/prototype.js", "js/scriptaculous.js?load=effects", "js/lightbox.js");
+			
+			for(Element e : javascripts){
+				htmlEnv1.head().appendChild(e);
+			}
+			
+			ArrayList<Element> stylesheets = JsoupFactory.createStylesheetElements("build/tabview/assets/border_tabs.css", "build/tabview/assets/tabview.css", "build/container/assets/container.css",
+					"css/lightbox.css", "css/tabview-core.css", "css/panel.css");
+			
+			for(Element e : stylesheets){
+				htmlEnv1.head().appendChild(e);
+			}
+
+			Element inlineJavascript = new Element(Tag.valueOf("script"), "");
+			inlineJavascript.appendText(script.toString());
+			htmlEnv1.head().appendChild(inlineJavascript);
+			
+		}
+
+		if (GlobalEnv.getframeworklist() == null) {
+			htmlEnv1.body().addClass("body");
+			header.append("<BODY class=\"body\">\n");
+			Element divElement = new Element(Tag.valueOf("div"), "");
+			divElement.append(title.toString());
+			//TODO
+			//header.append("<div");
+			//header.append(div);
+			//header.append(titleClass);
+			//header.append(">");
+			header.append(title);
+		}
+
+		if (Connector.loginFlag) {
+			Element form = new Element(Tag.valueOf("form"), "");
+			form.attr("action", GlobalEnv.getFileDirectory() + "/servlet/supersql.form.Session").attr("method", "post").attr("name", "theForm");
+			form.appendChild(JsoupFactory.createInput("hidden", "tableinfo", SSQLparser.get_from_info_st()));
+			form.appendChild(JsoupFactory.createInput("hidden", "configfile", GlobalEnv.getconfigfile()));
+			htmlEnv1.body().appendChild(form);
+		}
+
+		if (Connector.logoutFlag) {
+			Element form = new Element(Tag.valueOf("form"), "");
+			form.attr("action", GlobalEnv.getFileDirectory() + "/servlet/supersql.form.Session").attr("method", "post").attr("name", "theForm");
+			form.appendChild(JsoupFactory.createInput("hidden", "configfile", GlobalEnv.getconfigfile()));
+			htmlEnv1.body().appendChild(form);
+		}
+
+		if (Connector.insertFlag || Connector.deleteFlag
+				|| Connector.updateFlag) {
+			Element form = new Element(Tag.valueOf("form"), "").attr("action", "/servlet/supersql.form.Update").attr("method", "post").attr("name", "theForm");
+			form.appendChild(JsoupFactory.createInput("hidden", "tableinfo", SSQLparser.get_from_info_st()));
+			form.appendChild(JsoupFactory.createInput("hidden", "configfile", GlobalEnv.getconfigfile()));
+			if (Connector.insertFlag)
+				form.appendChild(JsoupFactory.createInput("hidden", "sql_param", "insert"));
+			if (Connector.deleteFlag)
+				form.appendChild(JsoupFactory.createInput("hidden", "sql_param", "delete"));
+			if (Connector.updateFlag)
+				form.appendChild(JsoupFactory.createInput("hidden", "sql_param", "update"));
 		}
 	}
 
@@ -710,7 +810,7 @@ public class HTMLEnv extends LocalEnv {
 				header.append("<input type=\"hidden\" name=\"sql_param\" value=\"update\" >");
 		}
 	}
-
+	
 	public void getHeader() {
 		int index = 0;
 		if (GlobalEnv.getframeworklist() == null) {
@@ -769,6 +869,14 @@ public class HTMLEnv extends LocalEnv {
 		OutlineMode = true;
 	}
 
+	public boolean isOutlineModeForJsoup(){
+		if(OutlineMode){
+			OutlineMode = false;
+			return true;
+		}
+		return false;
+	}
+	
 	public String getOutlineMode() {
 		if (OutlineMode) {
 			OutlineMode = false;
@@ -929,6 +1037,18 @@ public class HTMLEnv extends LocalEnv {
 		}
 	}
 
+	public static Element exFormNameCreateForJsoup(){
+		if (exchange_form_name != null) {
+			Element result = new Element(Tag.valueOf("input"), "");
+			result.attr("type", "hidden");
+			result.attr("name", "exchangeName");
+			result.attr("value", exchange_form_name);
+			return result;
+		} else {
+			return null;
+		}
+	}
+	
 	public static String exFormNameCreate() {
 		String ret = new String();
 		if (exchange_form_name != null) {
@@ -1047,73 +1167,7 @@ public class HTMLEnv extends LocalEnv {
 
 
 
-	private Element createJsElement(String src) {
-		Attributes attributes = new Attributes();
-		attributes.put("type", "text/javascript");
-		attributes.put("src", src);
-		return new Element(Tag.valueOf("script"), "", attributes);
-	}
 
-
-
-	private ArrayList<Element> createJsElements(String... srcs) {
-		ArrayList<Element> elements = new ArrayList<Element>();
-		for (String string : srcs) {
-			elements.add(createJsElement(string));
-		}
-		return elements;
-	}
-
-
-
-	private Element createStylesheetElement(String src) {
-		return createStylesheetElement(src, null);
-	}
-
-
-
-	private Element createStylesheetElement(String src, String media) {
-		Attributes attributes = new Attributes();
-		attributes.put("rel", "stylesheet");
-		attributes.put("type", "text/css");
-		attributes.put("href", src);
-		if (media != null) {
-			attributes.put("media", media);
-		}
-		return new Element(Tag.valueOf("link"), "", attributes);
-	}
-
-
-
-	private ArrayList<Element> createStylesheetElements(String... srcs) {
-		ArrayList<Element> elements = new ArrayList<Element>();
-		for (String string : srcs) {
-			elements.add(createStylesheetElement(string));
-		}
-		return elements;
-	}
-
-
-
-	private ArrayList<Element> createStylesheetElements(String[]... srcs) {
-		ArrayList<Element> elements = new ArrayList<Element>();
-		for (String[] strings : srcs) {
-			if (strings.length != 2)
-				continue;
-			elements.add(createStylesheetElement(strings[0], strings[1]));
-		}
-		return elements;
-	}
-
-
-
-	private Element createInput(String type, String name, String value) {
-		Attributes attributes = new Attributes();
-		attributes.put("type", type);
-		attributes.put("name", name);
-		attributes.put("value", value);
-		return new Element(Tag.valueOf("input"), "", attributes);
-	}
 
 
 
@@ -1125,9 +1179,9 @@ public class HTMLEnv extends LocalEnv {
 		formAttributes.put("name", "theForm");
 		Element form = new Element(Tag.valueOf("form"), "", formAttributes);
 	
-		form.appendChild(createInput("hidden", "tableinfo",
+		form.appendChild(JsoupFactory.createInput("hidden", "tableinfo",
 				SSQLparser.get_from_info_st()));
-		form.appendChild(createInput("hidden", "configfile",
+		form.appendChild(JsoupFactory.createInput("hidden", "configfile",
 				GlobalEnv.getconfigfile()));
 	
 		return form;
@@ -1182,6 +1236,10 @@ public class HTMLEnv extends LocalEnv {
 		form.appendChild(firstInput);
 		form.appendChild(secondInput);
 		return form;
+	}
+
+	public Document getHtmlEnv1() {
+		return htmlEnv1;
 	}
 
 }

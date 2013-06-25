@@ -10,6 +10,9 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.Vector;
 
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
@@ -26,6 +29,66 @@ public class HTMLManager extends Manager{
     public HTMLManager(HTMLEnv henv,HTMLEnv henv2) {
         this.htmlEnv = henv;
         this.htmlEnv2 = henv2;
+    }
+    
+    @Override
+    public Object generateCodeForJsoup(ITFE tfe_info, ExtList data_info){
+    	HTMLEnv.initAllFormFlg();
+
+        htmlEnv.countFile = 0;
+        htmlEnv.code = new StringBuffer();
+        htmlEnv.css = new StringBuffer();
+        htmlEnv.header = new StringBuffer();
+        htmlEnv.footer = new StringBuffer();
+        htmlEnv.foreachFlag = GlobalEnv.getForeachFlag();
+        htmlEnv.writtenClassId = new Vector();
+        htmlEnv.notWrittenClassId = new Vector();
+        HTMLEnv localenv = new HTMLEnv();
+        Document result = htmlEnv.getHtmlEnv1();
+        
+        getOutfilename();
+
+        if (tfe_info instanceof HTMLG3) {
+        	result.body().appendChild((Element) tfe_info.createNode(data_info));
+        	return result;
+        }
+
+        htmlEnv.fileName = htmlEnv.outFile + ".html";
+
+        htmlEnv.setOutlineMode();
+        
+        if(data_info.size() == 0
+           	&& !DataConstructor.SQL_string.equals("SELECT DISTINCT  FROM ;")  && !DataConstructor.SQL_string.equals("SELECT  FROM ;"))
+        {
+        	Log.out("no data");
+        	return new Document("").body().append("NO DATA FOUND");
+        }
+        else
+        	result.body().appendChild((Element)tfe_info.createNode(data_info));
+
+        htmlEnv.createHeader();
+        htmlEnv.createFooter();
+        try {
+	        if(GlobalEnv.cssout()!=null){
+	        	PrintWriter pw3 = new PrintWriter(new BufferedWriter(new FileWriter(
+	        			GlobalEnv.cssout())));
+	            pw3.println(htmlEnv.header);
+	            pw3.close();
+	        }
+
+            HTMLEnv.initAllFormFlg();
+        } catch (FileNotFoundException fe) {
+        	fe.printStackTrace();
+        	System.err.println("Error: specified outdirectory \""
+                    + htmlEnv.outDir + "\" is not found to write " + htmlEnv.fileName );
+        	GlobalEnv.addErr("Error: specified outdirectory \""
+                    + htmlEnv.outDir + "\" is not found to write " + htmlEnv.fileName );
+        } catch (IOException e) {
+            System.err.println("Error[HTMLManager]: File IO Error in HTMLManager");
+            e.printStackTrace();
+           	GlobalEnv.addErr("Error[HTMLManager]: File IO Error in HTMLManager");
+        }
+        return result;
     }
 
 
@@ -73,7 +136,7 @@ public class HTMLManager extends Manager{
 
         if(data_info.size() == 0
             //added by goto 20130306  "FROMなしクエリ対策 3/3"
-           	&& !DataConstructor.SQL_string.equals("SELECT DISTINCT  FROM ;"))
+           	&& !DataConstructor.SQL_string.equals("SELECT DISTINCT  FROM ;")  && !DataConstructor.SQL_string.equals("SELECT  FROM ;"))
         {
         	Log.out("no data");
         	htmlEnv.code.append("<div class=\"nodata\" >");

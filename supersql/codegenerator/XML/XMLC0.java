@@ -30,7 +30,8 @@ public class XMLC0 extends Connector {
         this.xml_env2 = xenv2;
     }
 
-    public void work(ExtList<ExtList<String>> data_info) {
+    @Override
+    public void work(ExtList data_info) {
     	Log.out("------------- XMLC0 -------------");
 
     	XMLC0_passflag++;

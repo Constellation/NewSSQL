@@ -25,7 +25,6 @@ public class FromInfo {
 		if(line.equalsIgnoreCase("dbpedia")){
 			SSQLparser.setDbpediaQuery(true);
 		}else{
-			StringBuffer buf = new StringBuffer();
 			StringTokenizer st = new StringTokenizer(line, ",");
 			while (st.hasMoreTokens()) {
 				String ch = st.nextToken().trim();

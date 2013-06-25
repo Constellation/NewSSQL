@@ -79,6 +79,17 @@ public class Grouper extends Operator {
     public boolean hasMoreItems() {
         return (dindex < data.size());
     }
+    
+    public Object createNextItemNode(){
+    	ExtList subdata = (ExtList) (data.get(dindex));
+    	dindex++;
+        if (tfe instanceof Connector || tfe instanceof Attribute
+                || tfe instanceof Function || tfe instanceof IfCondition) {
+            return tfe.createNode(subdata);
+        } else {
+            return tfe.createNode((ExtList) subdata.get(0));
+        }
+    }
 
     public void worknextItem() {
 
@@ -109,6 +120,12 @@ public class Grouper extends Operator {
 
 	public void addDeco(String name, String value, String condition) {
         decos.put(name, value, condition);
+	}
+
+	@Override
+	public Object createNode(ExtList<ExtList<String>> data_info) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
