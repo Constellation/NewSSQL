@@ -76,4 +76,16 @@ public class JsoupFactory {
 		return new Element(Tag.valueOf("input"), "", attributes);
 	}
 	
+	public static Element createLink(String href, String id, String content, String... classes){
+		Element element = new Element(Tag.valueOf("a"), "").attr("href", href);
+		for(String cls : classes){
+			element.addClass(cls);
+		}
+		if(!id.isEmpty()){
+			element.attr("id", id);
+		}
+		element.html(content);
+		return element;
+	}
+	
 }

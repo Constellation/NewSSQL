@@ -13,6 +13,7 @@ import org.jsoup.nodes.Attributes;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.parser.Tag;
+import org.jsoup.select.Elements;
 
 import supersql.codegenerator.Connector;
 import supersql.codegenerator.DecorateList;
@@ -34,7 +35,7 @@ public class HTMLEnv extends LocalEnv {
 	public String linkOutFile;
 	public String nextBackFile = new String();
 	public String outDir;
-	public int countFile;
+	public static int countFile;
 	public StringBuffer code;
 	public StringBuffer css;
 	protected static int IDCounter = 0; // add oka
@@ -113,10 +114,11 @@ public class HTMLEnv extends LocalEnv {
 		}
 	}
 	
-	public void createHeader() {
+	public Elements createHeader() {
 		Attributes attributes = new Attributes();
 		attributes.put("type", "text/css");
 		Element style = new Element(Tag.valueOf("style"), "", attributes);
+		Elements headElements = new Elements();
 
 		if (GlobalEnv.isOpt()) {
 			style.text("<!--\n.att { padding: 0px; margin : 0px;height : 100%; z-index: 2}\n"
@@ -128,7 +130,7 @@ public class HTMLEnv extends LocalEnv {
 					+ "</style>");
 		}
 
-		htmlEnv1.head().appendChild(style);
+		headElements.add(style);
 
 		Attributes meta_attributes = new Attributes();
 		meta_attributes.put("http-equiv", "Content-Type");
@@ -136,7 +138,7 @@ public class HTMLEnv extends LocalEnv {
 		meta_attributes.put("charset", "UTF-8");
 		Element meta = new Element(Tag.valueOf("meta"), "", meta_attributes);
 
-		htmlEnv1.head().appendChild(meta);
+		headElements.add(meta);
 
 		if (GlobalEnv.isAjax()) {
 			String js = GlobalEnv.getJsDirectory();
@@ -144,14 +146,14 @@ public class HTMLEnv extends LocalEnv {
 			if (js != null) {
 				if (js.endsWith("/"))
 					js = js.substring(0, js.lastIndexOf("/"));
-				htmlEnv1.head().appendChild(
+				headElements.add(
 						JsoupFactory.createJsElement(js + "/prototype.js"));
-				htmlEnv1.head().appendChild(JsoupFactory.createJsElement(js + "/ajax.js"));
+				headElements.add(JsoupFactory.createJsElement(js + "/ajax.js"));
 			} else {
-				htmlEnv1.head()
-						.appendChild(
+				headElements
+						.add(
 								JsoupFactory.createJsElement("http://localhost:8080/tab/prototype.js"));
-				htmlEnv1.head().appendChild(
+				headElements.add(
 						JsoupFactory.createJsElement("http://localhost:8080/tab/ajax.js"));
 			}
 
@@ -165,34 +167,32 @@ public class HTMLEnv extends LocalEnv {
 					"build/event/event-min.js", "build/dom/dom-min.js",
 					"build/dragdrop/dragdrop-min.js");
 
-			for (Element element : elements) {
-				htmlEnv1.head().appendChild(element);
-			}
+			headElements.addAll(elements);
 
 			// Insertion of css files
 			elements = JsoupFactory.createStylesheetElements(
 					"build/tabview/assets/border_tabs.css",
 					"build/tabview/assets/tabview.css",
 					"build/container/assets/container.css");
-			for (Element element : elements) {
-				htmlEnv1.head().appendChild(element);
-			}
+			headElements.addAll(elements);
 			elements = JsoupFactory.createStylesheetElements(new String[] {
 					"css/lightbox.css", "screen" }, new String[] {
 					"css/tabview-core.css", "screen" }, new String[] {
 					"css/panel.css", "screen" });
-			for (Element element : elements) {
-				htmlEnv1.head().appendChild(element);
-			}
+			
+			headElements.addAll(elements);
+			
 			Attributes jsType = new Attributes();
 			attributes.put("type", "text/javascript");
 			Element element = new Element(Tag.valueOf("script"), "", jsType);
 			element.text(script.toString());
-			htmlEnv1.appendChild(element);
-		} else {
-
+			headElements.add(element);
 		}
-
+		
+		for(Element elt : headElements){
+			htmlEnv1.head().appendChild(elt);
+		}
+		return headElements;
 	}
 
 	public void createSSQLForm() {

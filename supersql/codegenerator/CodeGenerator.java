@@ -178,14 +178,16 @@ public class CodeGenerator{
 
 		manager.generateCode(tfe_info, data_info);
 //		Element result = (Element)manager.generateCodeForJsoup(tfe_info, data_info);
-//		try {
-//			Writer out = new BufferedWriter(new OutputStreamWriter(
-//				    new FileOutputStream("jsoup.html"), "UTF-8"));
-//			out.write(result.html());
-//			out.close();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
+//		if (result != null){
+//			try {
+//				Writer out = new BufferedWriter(new OutputStreamWriter(
+//					    new FileOutputStream("jsoup.html"), "UTF-8"));
+//				out.write(result.html());
+//				out.close();
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 //		}
 
 		manager.finish();
