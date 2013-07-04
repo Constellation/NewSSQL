@@ -35,7 +35,7 @@ public class HTMLManager extends Manager{
     public Object generateCodeForJsoup(ITFE tfe_info, ExtList data_info){
     	HTMLEnv.initAllFormFlg();
 
-        htmlEnv.countFile = 0;
+        HTMLEnv.countFile = 0;
         htmlEnv.code = new StringBuffer();
         htmlEnv.css = new StringBuffer();
         htmlEnv.header = new StringBuffer();
@@ -43,7 +43,6 @@ public class HTMLManager extends Manager{
         htmlEnv.foreachFlag = GlobalEnv.getForeachFlag();
         htmlEnv.writtenClassId = new Vector();
         htmlEnv.notWrittenClassId = new Vector();
-        HTMLEnv localenv = new HTMLEnv();
         Document result = htmlEnv.getHtmlEnv1();
         
         getOutfilename();

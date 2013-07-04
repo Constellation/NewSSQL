@@ -4,14 +4,21 @@
 package supersql.codegenerator.HTML;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.Writer;
 
-import supersql.codegenerator.Attribute;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
+import org.jsoup.parser.Tag;
+
 import supersql.codegenerator.Grouper;
 import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
@@ -33,8 +40,94 @@ public class HTMLG3 extends Grouper {
         this.html_env = henv;
         this.html_env2 = henv2;
     }
+    
+    
 
-    //G3��work�᥽�å�
+    @Override
+	public Element createNode(ExtList<ExtList<String>> data_info) {
+    	Element result = new Element(Tag.valueOf("div"), "");
+    	String parentfile = html_env.fileName;
+        String parentnextbackfile = html_env.nextBackFile;
+        StringBuffer parentcode = html_env.code;
+        StringBuffer parentcss = html_env.css;
+        StringBuffer parentheader = html_env.header;
+        StringBuffer parentfooter = html_env.footer;
+        html_env.css = new StringBuffer();
+        html_env.header = new StringBuffer();
+        html_env.footer = new StringBuffer();
+        this.setDataList(data_info);
+        File input = new File("template.html");
+        Document template;
+		try {
+			template = Jsoup.parse(input, "UTF-8", "");
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.err.println("*** Error while parsing the template file ***");
+			throw new IllegalStateException();
+		}
+        while (this.hasMoreItems()) {
+        	Document toWrite = template.clone();
+            html_env.gLevel++;
+
+            html_env.code = new StringBuffer();
+
+            if (!html_env.foreachFlag) {
+                backfile = html_env.nextBackFile;
+                HTMLEnv.countFile++;
+                countinstance++;
+                html_env.fileName = html_env.outFile
+                        + String.valueOf(HTMLEnv.countFile) + ".html";
+                html_env.nextBackFile = html_env.linkOutFile
+                        + String.valueOf(HTMLEnv.countFile) + ".html";
+            }
+
+            html_env.setOutlineMode();
+            toWrite.body().appendChild((Element) this.createNextItemNode());
+
+            if (!html_env.foreachFlag) {
+                String nextfile = new String();
+                nextfile = html_env.linkOutFile
+                        + String.valueOf(HTMLEnv.countFile + 1) + ".html";
+                toWrite.body().appendChild(new Element(Tag.valueOf("div"), "").addClass("linkbutton").addClass(HTMLEnv.getClassID(tfe)));
+                if (countinstance > 1) {
+                	toWrite.body().children().last().appendChild(JsoupFactory.createLink(backfile, "", "[back]"));
+                }
+                if (this.hasMoreItems()) {
+                	toWrite.body().children().last().appendChild(JsoupFactory.createLink(nextfile, "", "[next]"));
+                }
+                
+            }
+            html_env.gLevel--;
+            for(Element elt : html_env.createHeader()){
+            	toWrite.head().appendChild(elt);
+            }
+            //TODO
+//            html_env.getFooter();
+            result.appendChild(toWrite);
+            try {
+				Writer out = new BufferedWriter(new OutputStreamWriter(
+					    new FileOutputStream(html_env.fileName), "UTF-8"));
+				out.write(toWrite.html());
+				out.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+				System.err.println("*** IO Error while writing a file ***");
+				throw new IllegalStateException();
+			}
+        }
+
+        html_env.fileName = parentfile;
+        html_env.code = parentcode;
+        html_env.css = parentcss;
+        html_env.header = parentheader;
+        html_env.footer = parentfooter;
+        html_env.nextBackFile = parentnextbackfile;
+        html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
+		return result;
+
+    }
+
+	//G3��work�᥽�å�
     @Override
 	public void work(ExtList data_info) {
         String parentfile = html_env.fileName;
@@ -69,12 +162,12 @@ public class HTMLG3 extends Grouper {
              */
             if (!html_env.foreachFlag) {
                 backfile = html_env.nextBackFile;
-                html_env.countFile++;
+                HTMLEnv.countFile++;
                 countinstance++;
                 html_env.fileName = html_env.outFile
-                        + String.valueOf(html_env.countFile) + ".html";
+                        + String.valueOf(HTMLEnv.countFile) + ".html";
                 html_env.nextBackFile = html_env.linkOutFile
-                        + String.valueOf(html_env.countFile) + ".html";
+                        + String.valueOf(HTMLEnv.countFile) + ".html";
             }
 
             html_env.setOutlineMode();
@@ -178,7 +271,7 @@ public class HTMLG3 extends Grouper {
     private void setLinkButton() {
         String nextfile = new String();
         nextfile = html_env.linkOutFile
-                + String.valueOf(html_env.countFile + 1) + ".html";
+                + String.valueOf(HTMLEnv.countFile + 1) + ".html";
         html_env.code.append("<DIV class=\"linkbutton "
                 + HTMLEnv.getClassID(tfe) + "\">\n");
         if (countinstance > 1) {
