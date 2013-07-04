@@ -1,9 +1,6 @@
 package supersql.codegenerator;
 
-import org.jsoup.nodes.Element;
-
 import supersql.extendclass.ExtList;
-import supersql.parser.SSQLparser;
 
 /**
  * ?象クラスManager。ソース生成にあたっての共通な機能をまとめた。 前処?、スキーマ生成、インスタンス移行、後処?。
