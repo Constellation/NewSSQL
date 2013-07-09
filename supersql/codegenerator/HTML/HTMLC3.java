@@ -1,13 +1,16 @@
 package supersql.codegenerator.HTML;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.Writer;
 
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
@@ -33,21 +36,24 @@ public class HTMLC3 extends Connector {
         this.htmlEnv2 = henv2;
     }
     
-    public Element createNode(ExtList data_info){
+    public Document createNode(ExtList data_info){
     	
     	//TODO
-    	Element result = new Element(Tag.valueOf("div"), "");
+    	File input = new File("template.html");
+    	Document result = null;
+		try {
+			result = Jsoup.parse(input, "UTF-8", "");
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.err.println("Error while creating HTML document from template.");
+			throw new IllegalStateException();
+		}
     	
     	String parentfile = htmlEnv.fileName;
-        String parentfile2 = htmlEnv2.fileName;
         StringBuffer parentcode = new StringBuffer();
         StringBuffer parentcss = new StringBuffer();
         StringBuffer parentheader = new StringBuffer();
         StringBuffer parentfooter = new StringBuffer();
-        StringBuffer parentcode2 = new StringBuffer();
-        StringBuffer parentcss2 = new StringBuffer();
-        StringBuffer parentheader2 = new StringBuffer();
-        StringBuffer parentfooter2 = new StringBuffer();
         ITFE[] tfe = new ITFE[tfeItems];
         int c3items = tfeItems;
         for (int j = 0; j < tfeItems - 1; j++) {
@@ -57,23 +63,23 @@ public class HTMLC3 extends Connector {
                 GlobalEnv.addErr("Error: % after []% is not allowed");
             }
         }
-        htmlEnv.countFile++;
+        HTMLEnv.countFile++;
 
         htmlEnv.linkUrl = htmlEnv.linkOutFile
-                + String.valueOf(htmlEnv.countFile) + ".html";
+                + String.valueOf(HTMLEnv.countFile) + ".html";
         htmlEnv.linkFlag++;
         this.setDataList(data_info);
 
-        result.appendChild((Element) this.createNextItemNode(data_info));
+        result.body().appendChild((Element) this.createNextItemNode(data_info));
         htmlEnv.linkFlag--;
 
         for (int k = 1; k < c3items; k++) {
             ITFE intfe = (ITFE) tfes.get(k);
             htmlEnv.fileName = htmlEnv.outFile
-                    + String.valueOf(htmlEnv.countFile) + ".html";
+                    + String.valueOf(HTMLEnv.countFile) + ".html";
             if (intfe instanceof HTMLG3) {
-                htmlEnv.countFile--;
-                result.appendChild((Element) this.createNextItemNode(data_info));
+                HTMLEnv.countFile--;
+                result.body().appendChild((Element) this.createNextItemNode(data_info));
             } else {
                 parentcode = htmlEnv.code;
                 parentcss = htmlEnv.css;
@@ -84,14 +90,14 @@ public class HTMLC3 extends Connector {
                 htmlEnv.footer = new StringBuffer();
 
                 if (k < c3items - 1) {
-                    htmlEnv.countFile++;
+                    HTMLEnv.countFile++;
                     htmlEnv.linkUrl = htmlEnv.linkOutFile
-                            + String.valueOf(htmlEnv.countFile) + ".html";
+                            + String.valueOf(HTMLEnv.countFile) + ".html";
                     htmlEnv.linkFlag++;
                 }
 
                 htmlEnv.setOutlineMode();
-                result.appendChild((Element) this.createNextItemNode(data_info));
+                result.body().appendChild((Element) this.createNextItemNode(data_info));
 
                 if (k < c3items - 1) {
                     htmlEnv.linkFlag--;
@@ -103,7 +109,20 @@ public class HTMLC3 extends Connector {
                 htmlEnv.header = parentheader;
                 htmlEnv.footer = parentfooter;
             }
+            
+            // Writing the file
+            try {
+            	Writer out = new BufferedWriter(new OutputStreamWriter(
+            			new FileOutputStream(htmlEnv.fileName), "UTF-8"));
+            	out.write(result.html());
+            	out.close();
+            } catch (IOException e) {
+            	e.printStackTrace();
+            	System.err.println("Error while writing the HTML file.");
+            	throw new IllegalStateException();
+            }
         }
+
         // TODO
         htmlEnv.fileName = parentfile;
 
@@ -138,10 +157,10 @@ public class HTMLC3 extends Connector {
             }
         }
         Log.out("------- C3 -------");
-        htmlEnv.countFile++;
+        HTMLEnv.countFile++;
 
         htmlEnv.linkUrl = htmlEnv.linkOutFile
-                + String.valueOf(htmlEnv.countFile) + ".html";
+                + String.valueOf(HTMLEnv.countFile) + ".html";
         htmlEnv.linkFlag++;
         Log.out("linkflag =" + htmlEnv.linkFlag);
         this.setDataList(data_info);
@@ -152,11 +171,11 @@ public class HTMLC3 extends Connector {
         for (int k = 1; k < c3items; k++) {
             ITFE intfe = (ITFE) tfes.get(k);
             htmlEnv.fileName = htmlEnv.outFile
-                    + String.valueOf(htmlEnv.countFile) + ".html";
+                    + String.valueOf(HTMLEnv.countFile) + ".html";
             htmlEnv2.fileName = htmlEnv.outFile
-            + String.valueOf(htmlEnv.countFile) + ".xml";
+            + String.valueOf(HTMLEnv.countFile) + ".xml";
             if (intfe instanceof HTMLG3) {
-                htmlEnv.countFile--;
+                HTMLEnv.countFile--;
                 this.worknextItem();
             } else {
                 parentcode = htmlEnv.code;
@@ -176,9 +195,9 @@ public class HTMLC3 extends Connector {
                 htmlEnv2.footer = new StringBuffer();
 
                 if (k < c3items - 1) {
-                    htmlEnv.countFile++;
+                    HTMLEnv.countFile++;
                     htmlEnv.linkUrl = htmlEnv.linkOutFile
-                            + String.valueOf(htmlEnv.countFile) + ".html";
+                            + String.valueOf(HTMLEnv.countFile) + ".html";
                     htmlEnv.linkFlag++;
                     Log.out("linkflag =" + htmlEnv.linkFlag);
                 }

@@ -45,20 +45,12 @@ public class HTMLIfCondition extends IfCondition {
 				|| thenTfe instanceof Function || thenTfe instanceof IfCondition)
 				thenTfe.work((ExtList)data_info.ExtsubList(1, thenTfe.countconnectitem()+1));
 		}
-		if((((data_info.get(0))).toString()).equals("t")){
-			if(thenTfe instanceof Connector || thenTfe instanceof Attribute
-				|| thenTfe instanceof Function || thenTfe instanceof IfCondition)
-				thenTfe.work(data_info.ExtsubList(1, thenTfe.countconnectitem()+1));
-			else
-				thenTfe.work((ExtList)data_info.get(1));
-
-		}
 		else if(elseTfe != null){
 			if(elseTfe instanceof Connector || elseTfe instanceof Attribute
 					|| elseTfe instanceof Function || elseTfe instanceof IfCondition)
-				elseTfe.work(data_info.ExtsubList(2, data_info.size()));
+				elseTfe.work(data_info.ExtsubList(3, data_info.size()));
 			else
-				elseTfe.work((ExtList)data_info.get(2));
+				elseTfe.work((ExtList)data_info.get(3));
 			}		
 		}
 }
