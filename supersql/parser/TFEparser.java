@@ -466,7 +466,7 @@ public class TFEparser {
 		if (equalidx != -1) {
 			// found key = att
 			key = token.substring(0, equalidx);
-			token = token.substring(equalidx + 1);
+//			token = token.substring(equalidx + 1);
 
 			// tk to ignore space between = and value/////////////////
 			key = key.trim();
