@@ -160,6 +160,14 @@ public class HTMLFunction extends Function {
         } else if (FuncName.equalsIgnoreCase("meter")){
         	Func_meter();
         }
+        //added by goto 20130308  "url¥ê¥ó¥¯"
+        else if(FuncName.equalsIgnoreCase("url") || FuncName.equalsIgnoreCase("anchor") || FuncName.equalsIgnoreCase("a")){
+        	Func_url(false);
+        }
+        //added by goto 20130417  "mail"
+        else if(FuncName.equalsIgnoreCase("mail")){
+        	Func_url(true);
+        }
         //ishizaki//
         //tk start//////////////////////////////////
         else if (FuncName.equalsIgnoreCase("embed")) {
