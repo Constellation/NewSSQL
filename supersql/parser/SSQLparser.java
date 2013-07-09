@@ -71,11 +71,11 @@ public class SSQLparser {
 	private TFEparser tfeInfo;
 	private WhereInfo whereInfo = new WhereInfo();
 
-	private static StringBuffer from_c = new StringBuffer();
-	private static StringBuffer where_c = new StringBuffer();
-	private static StringBuffer order_c = new StringBuffer();
-	private static StringBuffer group_c = new StringBuffer();
-	private static StringBuffer having_c = new StringBuffer();
+	private StringBuffer from_c = new StringBuffer();
+	private StringBuffer where_c = new StringBuffer();
+	private StringBuffer order_c = new StringBuffer();
+	private StringBuffer group_c = new StringBuffer();
+	private StringBuffer having_c = new StringBuffer();
 	
 	private static boolean distinct = false;
 
