@@ -47,6 +47,8 @@ public class HTMLEnv extends LocalEnv {
 	protected StringBuffer title = new StringBuffer();
 	protected StringBuffer titleClass = new StringBuffer();
 	public StringBuffer cssFile = new StringBuffer();
+	public StringBuffer jsFile = new StringBuffer();	//added by goto 20130703
+	public StringBuffer cssjsFile = new StringBuffer();	//added by goto 20130703
 	public String tableBorder = new String("1");
 	public boolean embedFlag = false;
 	public int embedCount = 0;
@@ -444,31 +446,66 @@ public class HTMLEnv extends LocalEnv {
 			cssclass.put(classid, decos.getStr("class"));
 			Log.out("class =" + classid + decos.getStr("class"));
 		}
-
+		
+		//changed by goto 20130703  ex) cssfile=" a.css; b.css "
 		if (decos.containsKey("cssfile")) {
-			cssFile.delete(0, cssFile.length());
-			if (GlobalEnv.isServlet()) {
-				cssFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\""
-						+ GlobalEnv.getFileDirectory()
-						+ decos.getStr("cssfile") + "\">\n");
-			} else {
-				cssFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\""
-						+ decos.getStr("cssfile") + "\">\n");
+			String css = decos.getStr("cssfile").trim();
+			if(!css.contains(",")){
+				cssFile.delete(0, cssFile.length());
+				if (GlobalEnv.isServlet()) {
+					cssFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\""
+							+ GlobalEnv.getFileDirectory()
+							+ css + "\">\n");
+				} else {
+					cssFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\""
+							+ css + "\">\n");
+				}
+			}else{
+				if(!css.endsWith(","))	css+=",";
+				while(css.contains(",")){
+					cssFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + css.substring(0,css.indexOf(",")).trim() + "\">\n");
+					css = css.substring(css.indexOf(",")+1);
+				}
 			}
 		} else if (cssFile.length() == 0) {
 			if (GlobalEnv.isServlet()) {
 				cssFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\""
-						+ GlobalEnv.getFileDirectory() + "/default.css \">\n");
+						+ GlobalEnv.getFileDirectory() + "/default1.css \">\n");
 			} else {
 				if (Utils.getOs().contains("Windows")) {
-					cssFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"default.css\">\n");
+					cssFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"default1.css\">\n");
 				} else {
 					// itc
 					if (GlobalEnv.isOpt())
 						cssFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"http://www.db.ics.keio.ac.jp/ssqlcss/default_opt.css\">\n");
 					else
-						cssFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"http://www.db.ics.keio.ac.jp/ssqlcss/default.css\">\n");
+						cssFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"http://www.db.ics.keio.ac.jp/ssqlcss/default1.css\">\n");
 				}
+			}
+		}
+		
+		//added by goto 20130703  ex) jsfile=" a.js; b.js "
+		if (decos.containsKey("jsfile")) {
+			String js = decos.getStr("jsfile").trim();
+			if(!js.endsWith(","))	js+=",";
+			while(js.contains(",")){
+				jsFile.append("<script type=\"text/javascript\" src=\""	+ js.substring(0,js.indexOf(",")).trim() + "\"></script>\n");
+				js = js.substring(js.indexOf(",")+1);
+			}
+		}
+		
+		//added by goto 20130703  ex) require=" a.css; a.js;  b.css; b.js "
+		if (decos.containsKey("require")) {
+			String file = decos.getStr("require").trim();
+			if(!file.endsWith(","))	file+=",";
+			String fileName = "";
+			while(file.contains(",")){
+				fileName = file.substring(0,file.indexOf(",")).trim();
+				if(fileName.endsWith(".css"))
+					cssjsFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + fileName + "\">\n");
+				else if(fileName.endsWith(".js"))
+					cssjsFile.append("<script type=\"text/javascript\" src=\"" + fileName + "\"></script>\n");
+				file = file.substring(file.indexOf(",")+1);
 			}
 		}
 
@@ -819,7 +856,9 @@ public class HTMLEnv extends LocalEnv {
 			Log.out("<HTML>");
 			Log.out("<head>");
 	        header.append("<meta name=\"GENERATOR\" content=\" SuperSQL (Generate HTML) \">\n");	//Generator
-			header.append(cssFile);
+	        header.append(cssjsFile);	//added by goto 20130703
+	        header.append(cssFile);
+			header.append(jsFile);		//added by goto 20130703
 			header.append("<STYLE TYPE=\"text/css\">\n");
 			header.append("<!--\n");
 			commonCSS();

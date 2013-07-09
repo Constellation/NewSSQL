@@ -57,7 +57,7 @@ public class HTMLFunction extends Function {
 	public Element createNode(ExtList<ExtList<String>> data_info) {
     	this.setDataList(data_info);
     	String FuncName = this.getFuncName();
-    	if (FuncName.equalsIgnoreCase("imagefile")) {
+    	if (FuncName.equalsIgnoreCase("imagefile") || FuncName.equalsIgnoreCase("image") || FuncName.equalsIgnoreCase("img")) {
             return FuncImagefileForJsoup();
         } else if (FuncName.equalsIgnoreCase("invoke")) {
             return FuncInvokeForJsoup();
@@ -67,6 +67,12 @@ public class HTMLFunction extends Function {
             return FuncSinvokeForJsoup(data_info);
         } else if (FuncName.equalsIgnoreCase("null")) {
             return FuncNullForJsoup();
+        }
+        else if(FuncName.equalsIgnoreCase("url") || FuncName.equalsIgnoreCase("anchor") || FuncName.equalsIgnoreCase("a")){
+        	return FuncNullForJsoup();
+        }
+        else if(FuncName.equalsIgnoreCase("mail")){
+        	return FuncNullForJsoup();
         }
         else if (FuncName.equalsIgnoreCase("submit")) {
             return FuncSubmitForJsoup();
@@ -113,7 +119,7 @@ public class HTMLFunction extends Function {
 
         String FuncName = this.getFuncName();
 
-        if (FuncName.equalsIgnoreCase("imagefile")) {
+        if (FuncName.equalsIgnoreCase("imagefile") || FuncName.equalsIgnoreCase("image") || FuncName.equalsIgnoreCase("img")) {
             Func_imagefile();
         } else if (FuncName.equalsIgnoreCase("invoke")) {
             Func_invoke();
@@ -127,6 +133,14 @@ public class HTMLFunction extends Function {
             Func_sinvoke(data_info);
         } else if (FuncName.equalsIgnoreCase("null")) {
             Func_null();
+        }
+        //added by goto 20130308  "urlリンク"
+        else if(FuncName.equalsIgnoreCase("url") || FuncName.equalsIgnoreCase("anchor") || FuncName.equalsIgnoreCase("a")){
+        	Func_url(false);
+        }
+        //added by goto 20130417  "mail"
+        else if(FuncName.equalsIgnoreCase("mail")){
+        	Func_url(true);
         }
         //chie
         else if (FuncName.equalsIgnoreCase("submit")) {
@@ -275,7 +289,7 @@ public class HTMLFunction extends Function {
          * ImageFile function : <td> <img src="${imgpath}/"+att /> </td>
          */
 
-        String path = this.getAtt("path", ".");
+		String path = this.getAtt("path", ".");
         if (!path.startsWith("/")) {
             String basedir = GlobalEnv.getBaseDir();
             if (basedir != null && basedir != "") {
@@ -293,11 +307,11 @@ public class HTMLFunction extends Function {
 
         //tk to make hyper link to image//////////////////////////////////////////////////////////////////////////////////
         if (htmlEnv.linkFlag > 0 || htmlEnv.sinvokeFlag) {
-			//added by goto 20121222 start
+        	//added by goto 20121222 start
         	//以下は、-fのファイル名指定が絶対パスになっている場合の処理(?)
 			//[%連結子] hrefの指定を絶対パスから「相対パス形式」へ変更
 			//20120622の修正だと、「-f フルパスファイル名」を用いている場合、相対パス形式にならない
-			String fileDir = new File(htmlEnv.linkUrl).getAbsoluteFile().getParent();
+        	String fileDir = new File(htmlEnv.linkUrl).getAbsoluteFile().getParent();
 			
 			if(fileDir.length() < htmlEnv.linkUrl.length()
 			&& fileDir.equals(htmlEnv.linkUrl.substring(0,fileDir.length()))){
@@ -320,7 +334,6 @@ public class HTMLFunction extends Function {
         //tk/////////////////////////////////////////////////////////////////////////////////
 
 
-        
         if(decos.containsKey("lightbox"))
         {
     		Date d1 = new Date();
@@ -349,8 +362,14 @@ public class HTMLFunction extends Function {
         		htmlEnv.code.append(decos.getStr("class"));
 
             //System.out.println("out:path:"+this.getAtt("default"));
-        	htmlEnv.code.append(" \" src=\"" + path + "/" + this.getAtt("default") + "\"/>");
-        	htmlEnv2.code.append(" \" src=\"" + path + "/" + this.getAtt("default") + "\" ");
+        	//added 20130703
+        	if(this.getAtt("default").startsWith("http://") || this.getAtt("default").startsWith("https://")){
+	        	htmlEnv.code.append(" \" src=\"" + this.getAtt("default") + "\"/>");
+	        	htmlEnv2.code.append(" \" src=\"" + this.getAtt("default") + "\" ");
+        	}else{
+	        	htmlEnv.code.append(" \" src=\"" + path + "/" + this.getAtt("default") + "\"/>");
+	        	htmlEnv2.code.append(" \" src=\"" + path + "/" + this.getAtt("default") + "\" ");
+        	}
         	if(decos.containsKey("width")){
         		htmlEnv2.code.append("width=\"" + decos.getStr("width").replace("\"", "")+"\" " );
         	}
@@ -366,7 +385,7 @@ public class HTMLFunction extends Function {
         //tk///////////////////////////////////////////////////////////////////////////////////
         return;
     }
-    
+	
     //added by goto 20130308 start  "anchor"  anchor(), a(), url(), mail()
     /** anchor関数: anchor( name/button-name/button-url, url, type(bt/button/img/image) )
      *          @{ width=~, height=~, transition=~ } 
@@ -401,7 +420,7 @@ public class HTMLFunction extends Function {
             	//urlボタン(デスクトップ・モバイル共通)
 //        		}else if(type.equals("dbutton") || type.equals("dbt")){
         		}else if(type.equals("3") || type.equals("button") || type.equals("bt")){
-            		statement = "<input type=\"button\" value=\""+name+"\" onClick=\"location.href='"+url+"'\"";
+            		statement = "<input type=\"button\" value=\""+name+"\" onClick=\"location.href='"+url+"'\""+className();
             		
             		//urlボタン width,height指定時の処理
             		if(decos.containsKey("width") || decos.containsKey("height")){
@@ -414,7 +433,7 @@ public class HTMLFunction extends Function {
             	
             	//type=3 -> url画像
             	}else if(type.equals("2") || type.equals("image") || type.equals("img")){
-            		statement = "<a href=\""+url+"\""+transition()+prefetch()+target(url)+"><img src=\""+name+"\"";
+            		statement = "<a href=\""+url+"\""+className()+transition()+prefetch()+target(url)+"><img src=\""+name+"\"";
     		        
         			//url画像 width,height指定時の処理
             		if(decos.containsKey("width"))	statement += " width="+decos.getStr("width").replace("\"", "");
@@ -457,7 +476,12 @@ public class HTMLFunction extends Function {
     		notA2=name.substring(a2+1).replaceAll("\\\\\\[", "[").replaceAll("\\\\\\]", "]");
     	}catch(Exception e){}
     	
-    	return notA1+"<a href=\""+url+"\""+transition()+prefetch()+target(url)+">"+A+"</a>"+notA2;
+    	return notA1+"<a href=\""+url+"\""+className()+transition()+prefetch()+target(url)+">"+A+"</a>"+notA2;
+    }
+    protected String className() {	//added 20130703
+    	if(decos.containsKey("class"))
+    		return " class=\""+decos.getStr("class")+"\" ";
+    	return "";
     }
     protected String transition() {
     	//画面遷移アニメーション(data-transition)指定時の処理
