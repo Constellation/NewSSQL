@@ -87,7 +87,7 @@ public class HTMLFunction extends Function {
 
         String FuncName = this.getFuncName();
 
-        if (FuncName.equalsIgnoreCase("imagefile")) {
+    	if (FuncName.equalsIgnoreCase("imagefile") || FuncName.equalsIgnoreCase("image") || FuncName.equalsIgnoreCase("img")) {
             Func_imagefile();
         } else if (FuncName.equalsIgnoreCase("invoke")) {
             Func_invoke();
@@ -341,13 +341,20 @@ public class HTMLFunction extends Function {
         	html_env2.code.append("<VALUE type=\"img\" class=\"" + HTMLEnv.getClassID(this) +" ");
         	if(decos.containsKey("class"))
         		html_env.code.append(decos.getStr("class"));
-
+        	
             //System.out.println("out:path:"+this.getAtt("default"));
         	
         	//added by goto 20121217 start
         	//html_env.code.append(" \" src=\"" + path + "/" + this.getAtt("default") + "\"/>");
         	if(type.matches(".") || type.matches("normal")){					//type==null
-        		html_env.code.append(" \" src=\"" + path + "/" + this.getAtt("default") + "\"/>");
+        		
+        		//added 20130703  For external URLs.
+        		//html_env.code.append(" \" src=\"" + path + "/" + this.getAtt("default") + "\"/>");
+            	if(this.getAtt("default").startsWith("http://") || this.getAtt("default").startsWith("https://")){
+    	        	html_env.code.append(" \" src=\"" + this.getAtt("default") + "\"/>");
+            	}else{
+    	        	html_env.code.append(" \" src=\"" + path + "/" + this.getAtt("default") + "\"/>");
+            	}
         		
         		//20130206
         		if (decos.containsKey("effect") && decos.getStr("effect").matches("bound"))
@@ -519,11 +526,11 @@ public class HTMLFunction extends Function {
         		
         		//type=2 -> urlモバイルボタン
         		}else if(type.equals("3") || type.equals("button") || type.equals("bt")){
-            		statement = "<a href=\""+url+"\" data-role=\"button\""+transition()+prefetch()+target(url)+">"+name+"</a>";
+            		statement = "<a href=\""+url+"\" data-role=\"button\""+className()+transition()+prefetch()+target(url)+">"+name+"</a>";
 
             	//urlボタン(デスクトップ・モバイル共通)
             	}else if(type.equals("dbutton") || type.equals("dbt")){
-            		statement = "<input type=\"button\" value=\""+name+"\" onClick=\"location.href='"+url+"'\"";
+            		statement = "<input type=\"button\" value=\""+name+"\" onClick=\"location.href='"+url+"'\""+className();
             		
             		//urlボタン width,height指定時の処理
             		if(decos.containsKey("width") || decos.containsKey("height")){
@@ -536,7 +543,7 @@ public class HTMLFunction extends Function {
             	
             	//type=3 -> url画像
             	}else if(type.equals("2") || type.equals("image") || type.equals("img")){
-            		statement = "<a href=\""+url+"\""+transition()+prefetch()+target(url)+"><img src=\""+name+"\"";
+            		statement = "<a href=\""+url+"\""+className()+transition()+prefetch()+target(url)+"><img src=\""+name+"\"";
     		        
         			//url画像 width,height指定時の処理
             		if(decos.containsKey("width"))	statement += " width="+decos.getStr("width").replace("\"", "");
@@ -562,7 +569,6 @@ public class HTMLFunction extends Function {
     	html_env.code.append(statement);
     	return;
     }
-    
 //    private String getTextAnchor(String url, String name) {
 //    	//[ ]で囲われた部分をハイパーリンクにする
 //    	//ex1) a("[This] is anchor.","URL")
@@ -614,9 +620,8 @@ public class HTMLFunction extends Function {
 //		
 //		Log.i("s:"+s);
 //		return s;
-////		return notA1+"<a href=\""+url+"\""+transition()+prefetch()+target(url)+">"+A+"</a>"+notA2;
+////		return notA1+"<a href=\""+url+"\""+className()+transition()+prefetch()+target(url)+">"+A+"</a>"+notA2;
 //    }
-    
     private String getTextAnchor(String url, String name) {
     	//[ ]で囲われた部分をハイパーリンクにする
     	//ex) a("[This] is anchor.","URL")
@@ -634,9 +639,13 @@ public class HTMLFunction extends Function {
     		notA2=name.substring(a2+1).replaceAll("\\\\\\[", "[").replaceAll("\\\\\\]", "]");
     	}catch(Exception e){}
     	
-    	return notA1+"<a href=\""+url+"\""+transition()+prefetch()+target(url)+">"+A+"</a>"+notA2;
+    	return notA1+"<a href=\""+url+"\""+className()+transition()+prefetch()+target(url)+">"+A+"</a>"+notA2;
     }
-    
+    protected String className() {	//added 20130703
+    	if(decos.containsKey("class"))
+    		return " class=\""+decos.getStr("class")+"\" ";
+    	return "";
+    }
 	private String transition() {
     	//画面遷移アニメーション(data-transition)指定時の処理
     	//※外部ページへの遷移には対応していない
@@ -646,7 +655,6 @@ public class HTMLFunction extends Function {
     		return " data-transition=\"" + decos.getStr("trans") + "\"";
 		return "";
     }
-    
     private String prefetch() {
     	//遷移先ページプリフェッチ(data-prefetch)指定時の処理
     	//※外部ページへの遷移に使用してはいけない決まりがある
@@ -654,7 +662,6 @@ public class HTMLFunction extends Function {
     		return " data-prefetch";
 		return "";
     }
-    
     private String target(String url) {
     	//新規ウィンドウで表示する場合(target="_blank")の処理　=> _blankはW3Cで禁止されているため、JS + rel=externalを使用
     	//「外部ページに飛ぶ場合( http(s)://で始まる場合)」のみ新規ウィンドウ表示

@@ -339,7 +339,7 @@ public class HTMLG1 extends Grouper {
             //classid0 = HTMLEnv.getClassID(tfe);
             	
             //Log.out("<TD class=\"" + HTMLEnv.getClassID(tfe) + " nest\">");
-    	    Log.info("tfe : " + tfe);
+    	    //Log.info("tfe : " + tfe);
             //Log.info("tfe : " + this.tfes);
             //Log.info("tfe : " + this.tfeItems);
             

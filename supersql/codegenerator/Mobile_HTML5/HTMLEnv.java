@@ -93,6 +93,8 @@ public class HTMLEnv extends LocalEnv {
     //StringBuffer title = new StringBuffer();		//disuse
     StringBuffer titleclass = new StringBuffer();
     StringBuffer cssfile = new StringBuffer();
+	StringBuffer jsFile = new StringBuffer();		//added by goto 20130703
+	StringBuffer cssjsFile = new StringBuffer();	//added by goto 20130703
     String tableborder=new String("1");
     boolean embedflag = false;
     int embedcount = 0;
@@ -271,7 +273,6 @@ public class HTMLEnv extends LocalEnv {
             //added by goto 20121217 start
         	header.append("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no\"/>\n");
         	
-        	header.append(cssfile);
 	        header.append("<STYLE TYPE=\"text/css\">\n");
 	        header.append("<!--\n");
 	        commonCSS();
@@ -604,6 +605,10 @@ public class HTMLEnv extends LocalEnv {
 	            //added by goto 20121222 end
           	}//通常のみの処理（jsファイル作成）end
         	
+          	header.append("\n");
+	        header.append(cssjsFile);	//added by goto 20130703
+	        header.append(cssfile);
+			header.append(jsFile);		//added by goto 20130703
 	        header.append("</HEAD>\n");
 
 	        //header.append("<BODY class=\"body\">\n");
@@ -1572,14 +1577,26 @@ public class HTMLEnv extends LocalEnv {
         	Log.out("class =" + classid + decos.getStr("class"));
         }
 
-
-        if(decos.containsKey("cssfile")){
-        	cssfile.delete(0,cssfile.length());
-        	if(GlobalEnv.isServlet()){
-            	cssfile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + GlobalEnv.getFileDirectory() + decos.getStr("cssfile") + "\">\n");
-            }else{
-            	cssfile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + decos.getStr("cssfile") + "\">\n");
-            }
+		//changed by goto 20130703  ex) cssfile=" a.css; b.css "
+		if (decos.containsKey("cssfile")) {
+			String css = decos.getStr("cssfile").trim();
+			if(!css.contains(",")){
+				cssfile.delete(0, cssfile.length());
+				if (GlobalEnv.isServlet()) {
+					cssfile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\""
+							+ GlobalEnv.getFileDirectory()
+							+ css + "\">\n");
+				} else {
+					cssfile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\""
+							+ css + "\">\n");
+				}
+			}else{
+				if(!css.endsWith(","))	css+=",";
+				while(css.contains(",")){
+					cssfile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + css.substring(0,css.indexOf(",")).trim() + "\">\n");
+					css = css.substring(css.indexOf(",")+1);
+				}
+			}
         }else if(cssfile.length() == 0){
         	if(GlobalEnv.isServlet()){
             	cssfile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + GlobalEnv.getFileDirectory() +"/default.css \">\n");
@@ -1596,6 +1613,46 @@ public class HTMLEnv extends LocalEnv {
             	}
             }
         }
+		
+		//added by goto 20130703  ex) jsfile=" a.js; b.js "
+		if (decos.containsKey("jsfile")) {
+			String js = decos.getStr("jsfile").trim();
+			if(!js.endsWith(","))	js+=",";
+			while(js.contains(",")){
+				jsFile.append("<script type=\"text/javascript\" src=\""	+ js.substring(0,js.indexOf(",")).trim() + "\"></script>\n");
+				js = js.substring(js.indexOf(",")+1);
+			}
+		}
+		
+		//added by goto 20130703  ex) require=" a.css; a.js;  b.css; b.js "
+		if (decos.containsKey("require")) {
+			String file = decos.getStr("require").trim();
+			if(!file.endsWith(","))	file+=",";
+			String fileName = "";
+			while(file.contains(",")){
+				fileName = file.substring(0,file.indexOf(",")).trim();
+				if(fileName.endsWith(".css"))
+					cssjsFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + fileName + "\">\n");
+				else if(fileName.endsWith(".js"))
+					cssjsFile.append("<script type=\"text/javascript\" src=\"" + fileName + "\"></script>\n");
+				else{
+					//added by goto 20130710  ex) require="Folder name"
+			        try{
+			            String[] fileArray = new File(fileName).getAbsoluteFile().list();
+			            for(int i = 0; i < fileArray.length; i++) {
+			                if(fileArray[i].endsWith(".css"))
+								cssjsFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + fileName + "/" + fileArray[i] + "\">\n");
+							else if(fileArray[i].endsWith(".js"))
+								cssjsFile.append("<script type=\"text/javascript\" src=\"" + fileName + "/" + fileArray[i] + "\"></script>\n");
+			            }
+			        }catch (Exception e){
+			        	System.err.println("<Warning> require=に指定されたフォルダ「"+fileName+"」が見つかりません。");
+			        }
+				}
+				
+				file = file.substring(file.indexOf(",")+1);
+			}
+		}
 
         if (decos.containsKey("divalign") && div.length() == 0)
         	div.append(" align=" +decos.getStr("divalign"));
