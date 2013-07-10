@@ -79,7 +79,7 @@ public class HTMLEnv extends LocalEnv {
 	public int linkFlag;
 	public String linkUrl;
 
-	// outline����Ϥ����ɤ����Υե饰��?
+	// outline����Ϥ����ɤ����Υե饰��?
 	protected boolean OutlineMode = false;
 	private static boolean isFormItem;
 	private static String formItemName;
@@ -423,7 +423,7 @@ public class HTMLEnv extends LocalEnv {
 
 		// ��classid�Υ�����?�����Ȥ��������ꤷ�����Ȥ���?��
 		if (writtenClassId.contains(classid)) {
-			// ������ѤΥ�����?������
+			// ������ѤΥ�����?������
 			haveClass = 1;
 			Log.out("==> already created style");
 			return;
@@ -505,6 +505,21 @@ public class HTMLEnv extends LocalEnv {
 					cssjsFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + fileName + "\">\n");
 				else if(fileName.endsWith(".js"))
 					cssjsFile.append("<script type=\"text/javascript\" src=\"" + fileName + "\"></script>\n");
+				else{
+					//added by goto 20130710  ex) require="Folder name"
+			        try{
+			            String[] fileArray = new File(fileName).getAbsoluteFile().list();
+			            for(int i = 0; i < fileArray.length; i++) {
+			                if(fileArray[i].endsWith(".css"))
+								cssjsFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + fileName + "/" + fileArray[i] + "\">\n");
+							else if(fileArray[i].endsWith(".js"))
+								cssjsFile.append("<script type=\"text/javascript\" src=\"" + fileName + "/" + fileArray[i] + "\"></script>\n");
+			            }
+			        }catch (Exception e){
+			        	System.err.println("<Warning> require=に指定されたフォルダ「"+fileName+"」が見つかりません。");
+			        }
+				}
+				
 				file = file.substring(file.indexOf(",")+1);
 			}
 		}
@@ -548,7 +563,7 @@ public class HTMLEnv extends LocalEnv {
 			// cssbuf.append(" padding:0.3em;");
 		}
 
-		// �ѥǥ��󥰡�;���
+		// �ѥǥ��󥰡�;���
 		if (decos.containsKey("padding")) {
 			cssbuf.append(" padding:" + decos.getStr("padding") + ";");
 			// } else {
@@ -610,7 +625,7 @@ public class HTMLEnv extends LocalEnv {
 			else
 				cssbuf.append(" font-size:" + decos.getStr("size") + "px;");
 
-		// ʸ�������
+		// ʸ�������
 		if (decos.containsKey("font-weight"))
 			cssbuf.append(" font-weight:" + decos.getStr("font-weight") + ";");
 
@@ -641,7 +656,7 @@ public class HTMLEnv extends LocalEnv {
         if (decos.containsKey("style")){
         	String style = decos.getStr("style");
         	cssbuf.append(" " + style);
-        	if(!style.matches(".*;\\s*$"))	cssbuf.append(";");	//�Ǹ��";"��̵���ä����
+        	if(!style.matches(".*;\\s*$"))	cssbuf.append(";");	//�Ǹ��";"��̵���ä����
         }
 
 		// tk

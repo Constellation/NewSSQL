@@ -73,7 +73,7 @@ public class SQLManager {
 
         Log.out("[SQLManager ExecQuery]");
         if(!query.equals("SELECT DISTINCT  FROM ;") && !query.equals("SELECT  FROM ;")){
-	        Log.info("********** SQL is **********");
+	        Log.info("\n********** SQL is **********");
 	        Log.info(query);
         }
 
