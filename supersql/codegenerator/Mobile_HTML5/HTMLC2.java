@@ -83,6 +83,9 @@ public class HTMLC2 extends Connector {
     		tableFlg = false;
     	}//else divFlg = false;
         
+        //20130529
+        if(decos.containsKey("dynamic"))	HTMLEnv.dynamicFlg = true;
+        
         if(!GlobalEnv.isOpt()){
         	//20130503  Panel
     	    panelFlg = HTMLC1.panelProcess1(decos, html_env);
@@ -299,6 +302,12 @@ public class HTMLC2 extends Connector {
                     + HTMLEnv.getClassID(tfe) + " nest\"> decos:" + decos);
 	      	}
         	
+	      	if(HTMLEnv.dynamicFlg){	//20130529 dynamic
+	      		//☆★      		 Log.info("C2 tfe : " + tfe);
+            	//☆★            Log.info("C2 tfes : " + this.tfes);
+            	//☆★            Log.info("C2 tfeItems : " + this.tfeItems);
+	      	}
+	      	
         	//Log.info("C2  !!");
             this.worknextItem();
             //Log.info("C2-2:	"+tableFlg+"	"+decos.containsKey("table")+"	"+decos.containsKey("table0"));
@@ -318,6 +327,9 @@ public class HTMLC2 extends Connector {
         		divFlg = true;
         		tableFlg = false;
         	}//else divFlg = false;
+            
+            //20130529
+            if(decos.containsKey("dynamic"))	HTMLEnv.dynamicFlg = true;
 
             //20130306
             //20130314  table
@@ -389,6 +401,8 @@ public class HTMLC2 extends Connector {
     	HTMLC1.panelProcess2(decos, html_env, panelFlg);
 	    	
       	if(divFlg)	divFlg = false;		//20130326  div
+      	
+        if(HTMLEnv.dynamicFlg)	HTMLEnv.dynamicFlg = false;		//20130529 dynamic
 
         Log.out("TFEId = " + HTMLEnv.getClassID(this));
         //html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);

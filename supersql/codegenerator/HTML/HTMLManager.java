@@ -116,12 +116,12 @@ public class HTMLManager extends Manager{
         /*** start oka ***/
 
 
-        // ½ÐÎÏ¤¹?¥Õ¥¡¥¤?Ì¾¤ÎÀß?
+        // ï¿½ï¿½ï¿½Ï¤ï¿½?ï¿½Õ¥ï¿½ï¿½ï¿½?Ì¾ï¿½ï¿½ï¿½ï¿½?
         getOutfilename();
 
         Log.out("[HTMLManager:generateCode]");
 
-        // ?ÈÖ³°Â¦¤¬G3¤Î??
+        // ?ï¿½Ö³ï¿½Â¦ï¿½ï¿½G3ï¿½ï¿½??
         if (tfe_info instanceof HTMLG3) {
             tfe_info.work(data_info);
             return;
@@ -134,7 +134,7 @@ public class HTMLManager extends Manager{
         htmlEnv.setOutlineMode();
 
         if(data_info.size() == 0
-            //added by goto 20130306  "FROM¤Ê¤·¥¯¥¨¥êÂÐºö 3/3"
+            //added by goto 20130306  "FROMï¿½Ê¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ðºï¿½ 3/3"
            	&& !DataConstructor.SQL_string.equals("SELECT DISTINCT  FROM ;")  && !DataConstructor.SQL_string.equals("SELECT  FROM ;"))
         {
         	Log.out("no data");
@@ -229,13 +229,13 @@ public class HTMLManager extends Manager{
     }
 
     private int lastIndexOf(String string) {
-		// TODO ¼«Æ°À¸À®¤µ¤ì¤¿¥á¥½¥Ã¥É¡¦¥¹¥¿¥Ö
+		// TODO ï¿½ï¿½Æ°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ì¤¿ï¿½á¥½ï¿½Ã¥É¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		return 0;
 	}
 
 
 	private int indexOf(String string) {
-		// TODO ¼«Æ°À¸À®¤µ¤ì¤¿¥á¥½¥Ã¥É¡¦¥¹¥¿¥Ö
+		// TODO ï¿½ï¿½Æ°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ì¤¿ï¿½á¥½ï¿½Ã¥É¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		return 0;
 	}
 
@@ -262,17 +262,17 @@ public class HTMLManager extends Manager{
         htmlEnv2.footer = new StringBuffer();
         String xml_str = null;
         StringBuffer returncode = new StringBuffer();
-        // ½ÐÎÏ¤¹?¥Õ¥¡¥¤?Ì¾¤ÎÀß?
+        // ï¿½ï¿½ï¿½Ï¤ï¿½?ï¿½Õ¥ï¿½ï¿½ï¿½?Ì¾ï¿½ï¿½ï¿½ï¿½?
         getOutfilename();
 
         Log.out("[HTMLManager:generateCode2]");
 
-        // ?ÈÖ³°Â¦¤¬G3¤Î??
+        // ?ï¿½Ö³ï¿½Â¦ï¿½ï¿½G3ï¿½ï¿½??
         if (tfe_info instanceof HTMLG3) {
             tfe_info.work(data_info);
             return htmlEnv.code;
         }
-        // ?ÈÖ³°Â¦¤¬G3¤Ç¤Ê¤¤??
+        // ?ï¿½Ö³ï¿½Â¦ï¿½ï¿½G3ï¿½Ç¤Ê¤ï¿½??
         htmlEnv.setOutlineMode();
         tfe_info.work(data_info);
 
@@ -345,12 +345,12 @@ public class HTMLManager extends Manager{
 
         Log.out("[HTMLManager:generateCode]");
 
-        // ?ÈÖ³°Â¦¤¬G3¤Î??
+        // ?ï¿½Ö³ï¿½Â¦ï¿½ï¿½G3ï¿½ï¿½??
         if (tfe_info instanceof HTMLG3) {
             tfe_info.work(data_info);
             return htmlEnv.code;
         }
-        // ?ÈÖ³°Â¦¤¬G3¤Ç¤Ê¤¤??
+        // ?ï¿½Ö³ï¿½Â¦ï¿½ï¿½G3ï¿½Ç¤Ê¤ï¿½??
 
 
         htmlEnv.setOutlineMode();
@@ -382,7 +382,7 @@ public class HTMLManager extends Manager{
 
         HTMLEnv localenv = new HTMLEnv();
 
-        // ½ÐÎÏ¤¹?¥Õ¥¡¥¤?Ì¾¤ÎÀß?
+        // ï¿½ï¿½ï¿½Ï¤ï¿½?ï¿½Õ¥ï¿½ï¿½ï¿½?Ì¾ï¿½ï¿½ï¿½ï¿½?
         getOutfilename();
 
         Log.out("[HTMLManager:generateCode]");
@@ -435,9 +435,9 @@ public StringBuffer generateCssfile(ITFE tfe_info, ExtList data_info) {
         htmlEnv.outDir = outdir;
 
         /*
-         * ½ÐÎÏ¥Õ¥¡¥¤?(outfilename)¤¬»ØÄê¤µ?¤Æ¤¤???
-         * html_env.outfile¤òglobalenv.outfilename¤Ë¤¹?
-         * ¤½?°Ê³°¤Î¤È¤­¤Ï¥¯¥¨?¥Õ¥¡¥¤?¤ÎÌ¾Á°(filename)¤Ë¤¹?
+         * ï¿½ï¿½ï¿½Ï¥Õ¥ï¿½ï¿½ï¿½?(outfilename)ï¿½ï¿½ï¿½ï¿½ï¿½ê¤µ?ï¿½Æ¤ï¿½???
+         * html_env.outfileï¿½ï¿½globalenv.outfilenameï¿½Ë¤ï¿½?
+         * ï¿½ï¿½?ï¿½Ê³ï¿½ï¿½Î¤È¤ï¿½ï¿½Ï¥ï¿½ï¿½ï¿½?ï¿½Õ¥ï¿½ï¿½ï¿½?ï¿½ï¿½Ì¾ï¿½ï¿½(filename)ï¿½Ë¤ï¿½?
          */
         if (GlobalEnv.getQuery()!=null) {
         	htmlEnv.outFile = "./fromquery";
@@ -468,8 +468,8 @@ public StringBuffer generateCssfile(ITFE tfe_info, ExtList data_info) {
         //tk end
   */
         /*
-         * ½ÐÎÏÀè¥Ç¥£?¥¯¥È?(outdirectory)¤¬»ØÄê¤µ?¤Æ¤¤???
-         * outdirectory¤Èfilename¤ò¤Ä¤Ê¤²¤¿¤â¤Î¤òfile¤È¤¹?
+         * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç¥ï¿½?ï¿½ï¿½ï¿½ï¿½?(outdirectory)ï¿½ï¿½ï¿½ï¿½ï¿½ê¤µ?ï¿½Æ¤ï¿½???
+         * outdirectoryï¿½ï¿½filenameï¿½ï¿½Ä¤Ê¤ï¿½ï¿½ï¿½ï¿½ï¿½Î¤ï¿½fileï¿½È¤ï¿½?
          */
  
         

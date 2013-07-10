@@ -20,7 +20,7 @@ import supersql.extendclass.ExtList;
 import supersql.parser.SSQLparser;
 
 /**
- * ¥³¡¼¥É¥¸¥§¥Í?¡¼¥¿¥Þ¥Í¡¼¥¸¥ã¥¯¥é¥¹ »ØÄê¤µ?¤¿ÇÞÂÎ¤Ë¤è¤Ã¤Æ¥³¡¼¥É¥¸¥§¥Í?¡¼¥¿¤Î¹½À®ÉôÉÊ¤òÀ¸À®¤¹? ¹©?(Factory)¤òÀ¸À®¤¹?
+ * ï¿½ï¿½ï¿½ï¿½ï¿½É¥ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½Þ¥Í¡ï¿½ï¿½ï¿½ï¿½ã¥¯ï¿½é¥¹ ï¿½ï¿½ï¿½ê¤µ?ï¿½ï¿½ï¿½ï¿½ï¿½Î¤Ë¤ï¿½Ã¤Æ¥ï¿½ï¿½ï¿½ï¿½É¥ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½Î¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½? ï¿½ï¿½?(Factory)ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?
  */
 public class CodeGenerator{
 	private Factory factory;
@@ -31,7 +31,7 @@ public class CodeGenerator{
 	
 	private String media;
 	/**
-	 * ¥³¥ó¥¹¥È¥é¥¯¥¿
+	 * ï¿½ï¿½ï¿½ó¥¹¥È¥é¥¯ï¿½ï¿½
 	 */
 	public CodeGenerator() {
 	}
@@ -40,7 +40,7 @@ public class CodeGenerator{
 		TFEid = id;
 	}
 	/**
-	 * ½é?²½¤ò¹Ô¤¦
+	 * ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½Ô¤ï¿½
 	 */
 	public void initiate() {
 		if (factory != null) {
@@ -51,7 +51,7 @@ public class CodeGenerator{
 	}
 
 	/**
-	 * »ØÄê¤µ?¤¿ÇÞÂÎ¤Ë¤è¤Ã¤ÆºûÒÈ¤ò°Ñ¾ù¤¹?¤¿¤á¤Î¹©?(Factory)? À¸À®¤·¤ÆÇÛÃÖ¤¹?
+	 * ï¿½ï¿½ï¿½ê¤µ?ï¿½ï¿½ï¿½ï¿½ï¿½Î¤Ë¤ï¿½Ã¤Æºï¿½ï¿½È¤ï¿½Ñ¾ï¿½?ï¿½ï¿½ï¿½ï¿½Î¹ï¿½?(Factory)? ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¤ï¿½?
 	 */
 	public void setFactory(String media) {
 		this.media = media;
@@ -83,7 +83,7 @@ public class CodeGenerator{
 	}
 
 	/**
-	 * ±é»»»ÒConnector¤Î²¼°Ì¥¯¥é¥¹¥¤¥ó¥¹¥¿¥ó¥¹¤òÀ¸À®¤·¤ÆÊÖ¤¹
+	 * ï¿½é»»ï¿½ï¿½Connectorï¿½Î²ï¿½ï¿½Ì¥ï¿½ï¿½é¥¹ï¿½ï¿½ï¿½ó¥¹¥ï¿½ï¿½ó¥¹¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¤ï¿½
 	 */
 	public Connector createConnector(int dim) {
 		Connector connector = null;
@@ -108,7 +108,7 @@ public class CodeGenerator{
 	}
 
 	/**
-	 * ±é»»»ÒGrouper¤Î²¼°Ì¥¯¥é¥¹¥¤¥ó¥¹¥¿¥ó¥¹¤òÀ¸À®¤·¤ÆÊÖ¤¹
+	 * ï¿½é»»ï¿½ï¿½Grouperï¿½Î²ï¿½ï¿½Ì¥ï¿½ï¿½é¥¹ï¿½ï¿½ï¿½ó¥¹¥ï¿½ï¿½ó¥¹¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¤ï¿½
 	 */
 	public Grouper createGrouper(int dim) {
 		Grouper grouper = null;
@@ -132,7 +132,7 @@ public class CodeGenerator{
 	}
 
 	/**
-	 * Attribute¤Î²¼°Ì¥¯¥é¥¹¥¤¥ó¥¹¥¿¥ó¥¹¤òÀ¸À®¤·¤ÆÊÖ¤¹
+	 * Attributeï¿½Î²ï¿½ï¿½Ì¥ï¿½ï¿½é¥¹ï¿½ï¿½ï¿½ó¥¹¥ï¿½ï¿½ó¥¹¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¤ï¿½
 	 */
 	public Attribute createAttribute() {
 	    Attribute attribute = factory.createAttribute(manager);
@@ -153,7 +153,7 @@ public class CodeGenerator{
 	}
 
 	/**
-	 * Function¤Î²¼°Ì¥¯¥é¥¹¥¤¥ó¥¹¥¿¥ó¥¹¤òÀ¸À®¤·¤ÆÊÖ¤¹
+	 * Functionï¿½Î²ï¿½ï¿½Ì¥ï¿½ï¿½é¥¹ï¿½ï¿½ï¿½ó¥¹¥ï¿½ï¿½ó¥¹¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¤ï¿½
 	 */
 	public Function createFunction() {
 	    Function function = factory.createFunction(manager);
@@ -162,16 +162,16 @@ public class CodeGenerator{
 	}
 
 	/**
-	 * ¹½Â¤¾ðÊó¡¢Áõ?¾ðÊó¡¢Relation¥¯¥é¥¹¤Î¥ª¥Ö¥¸¥§¥¯¥È¤«¤éO2C, SQL¥½¡¼¥¹ ¤òÀ¸À®¤¹?
+	 * ï¿½ï¿½Â¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½Relationï¿½ï¿½ï¿½é¥¹ï¿½Î¥ï¿½ï¿½Ö¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¤ï¿½ï¿½ï¿½O2C, SQLï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½?
 	 */
 
 	public void generateCode(SSQLparser parser, ExtList data_info) {
 		ITFE tfe_info = parser.get_TFEschema();
 
-		//	É¬Í×¤Ê¤é¥³¥á¥ó¥È¥¢¥¦¥È³°¤·¡¢Manager¤ÎÃæ¤âÊÑ¹¹
+		//	É¬ï¿½×¤Ê¤é¥³ï¿½ï¿½ï¿½È¥ï¿½ï¿½ï¿½ï¿½È³ï¿½ï¿½ï¿½ï¿½ï¿½Managerï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¹ï¿½
 		//	manager.preProcess(tab,le,le1,le2,le3);
 		//	manager.createSchema(tab,le,le1,le2,le3);
-		// ?ÈÖ³°¤¬ Grouper¤Î¤È¤­¤Ëdata_info¤òÄ´À°¤¹?
+		// ?ï¿½Ö³ï¿½ï¿½ï¿½ Grouperï¿½Î¤È¤ï¿½ï¿½ï¿½data_infoï¿½ï¿½Ä´ï¿½ï¿½ï¿½ï¿½?
 		if (tfe_info instanceof Grouper && data_info.size() != 0) {
 			data_info = (ExtList) data_info.get(0);
 		}
@@ -199,7 +199,7 @@ public class CodeGenerator{
 	public StringBuffer generateCode2(SSQLparser parser, ExtList data_info) {
 		ITFE tfe_info = parser.get_TFEschema();
 
-		//	É¬Í×¤Ê¤é¥³¥á¥ó¥È¥¢¥¦¥È³°¤·¡¢Manager¤ÎÃæ¤âÊÑ¹¹
+		//	É¬ï¿½×¤Ê¤é¥³ï¿½ï¿½ï¿½È¥ï¿½ï¿½ï¿½ï¿½È³ï¿½ï¿½ï¿½ï¿½ï¿½Managerï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¹ï¿½
 		//	manager.preProcess(tab,le,le1,le2,le3);
 		//	manager.createSchema(tab,le,le1,le2,le3);
 
@@ -208,7 +208,7 @@ public class CodeGenerator{
 		Log.out("===============================");
 
 
-		// ?ÈÖ³°¤¬ Grouper¤Î¤È¤­¤Ëdata_info¤òÄ´À°¤¹?
+		// ?ï¿½Ö³ï¿½ï¿½ï¿½ Grouperï¿½Î¤È¤ï¿½ï¿½ï¿½data_infoï¿½ï¿½Ä´ï¿½ï¿½ï¿½ï¿½?
 		if (tfe_info instanceof Grouper && data_info.size() != 0) {
 			data_info = (ExtList) data_info.get(0);
 		}
@@ -223,7 +223,7 @@ public class CodeGenerator{
 	public StringBuffer generateCode3(SSQLparser parser, ExtList data_info) {
 		ITFE tfe_info = parser.get_TFEschema();
 
-		//	É¬Í×¤Ê¤é¥³¥á¥ó¥È¥¢¥¦¥È³°¤·¡¢Manager¤ÎÃæ¤âÊÑ¹¹
+		//	É¬ï¿½×¤Ê¤é¥³ï¿½ï¿½ï¿½È¥ï¿½ï¿½ï¿½ï¿½È³ï¿½ï¿½ï¿½ï¿½ï¿½Managerï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¹ï¿½
 		//	manager.preProcess(tab,le,le1,le2,le3);
 		//	manager.createSchema(tab,le,le1,le2,le3);
 
@@ -231,7 +231,7 @@ public class CodeGenerator{
 		Log.out("     generateCode3 is start     ");
 		Log.out("===============================");
 
-		// ?ÈÖ³°¤¬ Grouper¤Î¤È¤­¤Ëdata_info¤òÄ´À°¤¹?
+		// ?ï¿½Ö³ï¿½ï¿½ï¿½ Grouperï¿½Î¤È¤ï¿½ï¿½ï¿½data_infoï¿½ï¿½Ä´ï¿½ï¿½ï¿½ï¿½?
 		if (tfe_info instanceof Grouper && data_info.size() != 0) {
 			data_info = (ExtList) data_info.get(0);
 		}
@@ -246,7 +246,7 @@ public class CodeGenerator{
 	public StringBuffer generateCode4(SSQLparser parser, ExtList data_info) {
 		ITFE tfe_info = parser.get_TFEschema();
 
-		//	É¬Í×¤Ê¤é¥³¥á¥ó¥È¥¢¥¦¥È³°¤·¡¢Manager¤ÎÃæ¤âÊÑ¹¹
+		//	É¬ï¿½×¤Ê¤é¥³ï¿½ï¿½ï¿½È¥ï¿½ï¿½ï¿½ï¿½È³ï¿½ï¿½ï¿½ï¿½ï¿½Managerï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¹ï¿½
 		//	manager.preProcess(tab,le,le1,le2,le3);
 		//	manager.createSchema(tab,le,le1,le2,le3);
 
@@ -254,7 +254,7 @@ public class CodeGenerator{
 		Log.out("     generateCode4 is start     ");
 		Log.out("===============================");
 
-		// ?ÈÖ³°¤¬ Grouper¤Î¤È¤­¤Ëdata_info¤òÄ´À°¤¹?
+		// ?ï¿½Ö³ï¿½ï¿½ï¿½ Grouperï¿½Î¤È¤ï¿½ï¿½ï¿½data_infoï¿½ï¿½Ä´ï¿½ï¿½ï¿½ï¿½?
 		if (tfe_info instanceof Grouper && data_info.size() != 0) {
 			data_info = (ExtList) data_info.get(0);
 		}
@@ -269,7 +269,7 @@ public class CodeGenerator{
 	public StringBuffer generateCssfile(SSQLparser parser, ExtList data_info) {
 		ITFE tfe_info = parser.get_TFEschema();
 
-		//	É¬Í×¤Ê¤é¥³¥á¥ó¥È¥¢¥¦¥È³°¤·¡¢Manager¤ÎÃæ¤âÊÑ¹¹
+		//	É¬ï¿½×¤Ê¤é¥³ï¿½ï¿½ï¿½È¥ï¿½ï¿½ï¿½ï¿½È³ï¿½ï¿½ï¿½ï¿½ï¿½Managerï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¹ï¿½
 		//	manager.preProcess(tab,le,le1,le2,le3);
 		//	manager.createSchema(tab,le,le1,le2,le3);
 
@@ -277,7 +277,7 @@ public class CodeGenerator{
 		Log.out("     generateCssfile is start     ");
 		Log.out("==================================");
 
-		// ?ÈÖ³°¤¬ Grouper¤Î¤È¤­¤Ëdata_info¤òÄ´À°¤¹?
+		// ?ï¿½Ö³ï¿½ï¿½ï¿½ Grouperï¿½Î¤È¤ï¿½ï¿½ï¿½data_infoï¿½ï¿½Ä´ï¿½ï¿½ï¿½ï¿½?
 		if (tfe_info instanceof Grouper && data_info.size() != 0) {
 			data_info = (ExtList) data_info.get(0);
 		}

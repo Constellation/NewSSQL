@@ -1,9 +1,11 @@
 package supersql.parser;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -133,7 +135,17 @@ public class SSQLparser {
 		StringBuffer tmp = new StringBuffer();
 		try 
 		{
-			in = new BufferedReader(new FileReader(filename));
+			//in = new BufferedReader(new FileReader(filename));
+			//TODO: file-encodingï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¿ï¿½Ç¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½JISAutoDetect: Ê¸ï¿½ï¿½ï¿½É¤Î¼ï¿½Æ°È½ï¿½ï¿½ï¿½Readerï¿½ï¿½ï¿½é¥¹ï¿½Î¤ï¿½ï¿½ï¿½ï¿½Ñ²Ä¡ï¿½
+			// ï¿½ï¿½ï¿½ï¿½ï¿½Ö¥ï¿½Ã¥È¤Ç¥ê¥¯ï¿½ï¿½ï¿½ï¿½ï¿½È¥Ç¡ï¿½ï¿½ï¿½ï¿½ï¿½Ê¸ï¿½ï¿½ï¿½É¤ï¿½Æ°ï¿½Ñ´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É¤ß¹ï¿½ï¿½ï¿½ï¿½ï¿½
+			//BufferedReader
+			//InputStream is = getInputStream(filename);
+			//in = new BufferedReader(new InputStreamReader(getInputStream(filename), "JISAutoDetect"));
+			//in = new BufferedReader(new InputStreamReader(res.getInputStream(), "JISAutoDetect"));
+			// ï¿½ï¿½ï¿½ï¿½ï¿½Ö¥ï¿½Ã¥È¤Ç¥ì¥¹ï¿½Ý¥ó¥¹¥Ç¡ï¿½ï¿½ï¿½ï¿½ï¿½EUCï¿½ï¿½ï¿½ï¿½ï¿½É¤ï¿½ï¿½Ñ´ï¿½ï¿½ï¿½ï¿½Æ½ñ¤­¹ï¿½ï¿½ï¿½ï¿½ï¿½
+			//PrintWriter out = new PrintWriter(new OutputStreamWriter(res.getOutputStream(), "EUC-JP"))
+			in = new BufferedReader(new InputStreamReader(new FileInputStream(filename), "UTF-8"));		//changed by goto 20130519 (This is an important change.)
+
 			String line = null;
 			while (true) 
 			{
@@ -191,16 +203,27 @@ public class SSQLparser {
 
 		Log.info("[Paser:Parser] ssql statement = " + query);
 
-		// addde by goto 20130122 For "slideshow"
+		// addded by goto
+		// () -> ("")
+		boolean dqFlg = false;
+		for (int i = 0; i < query.length(); i++) {
+			if (query.charAt(i) == '"' && !dqFlg)		dqFlg = true;
+			else if (query.charAt(i) == '"' && dqFlg)	dqFlg = false;
+			
+			if (!dqFlg && i < query.length() - 1 && (query.charAt(i) == '(' && query.charAt(i+1) == ')'))
+				query = query.substring(0,i+1) + "\"\"" + query.substring(i+1);
+		}
+		
+		// addded by goto 20130122 For "slideshow"
 		if (query.contains("slideshow")) 
 		{
-			// TODO: 1."sslideshow"Åù¤Î¥ß¥¹¥¿¥¤¥×»þ¤Î¥¨¥é¡¼É½¼¨¡¢2.Àµ¤·¤¤Àµµ¬É½¸½¤«¤É¤¦¤«¤ÎÈ½Äê
+			// TODO: 1."sslideshow"ï¿½ï¿½Î¥ß¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×»ï¿½ï¿½Î¥ï¿½ï¿½é¡¼É½ï¿½ï¿½ï¿½ï¿½2.ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É½ï¿½ï¿½ï¿½ï¿½ï¿½É¤ï¿½ï¿½ï¿½ï¿½ï¿½È½ï¿½ï¿½
 
-			// ÃÖ´¹: replaceAll
-			// <Àµµ¬É½¸½>
-			// 0Ê¸»ú°Ê¾å¤ÎÇ¤°Õ¤ÎÊ¸»úÎó¡§.*
-			// 0¸Ä°Ê¾å¤Î¶õÇò¡§\\s*
-			// ( )¤Ç°Ï¤Ã¤¿ÉôÊ¬¤Ï¡¢S1,¡¡$2Åù¤È¤·¤Æ¡¢ÃÖ´¹¸å¤ÎÊ¸»úÎó¤Ë»ÈÍÑ²ÄÇ½¡ÊÃÖ´¹Á°¤ÎÁ´Ê¸»úÎó¤Ï¡¢$0)
+			// ï¿½Ö´ï¿½: replaceAll
+			// <ï¿½ï¿½ï¿½ï¿½É½ï¿½ï¿½>
+			// 0Ê¸ï¿½ï¿½Ê¾ï¿½ï¿½Ç¤ï¿½Õ¤ï¿½Ê¸ï¿½ï¿½ï¿½ï¿½.*
+			// 0ï¿½Ä°Ê¾ï¿½Î¶ï¿½ï¿½ï¿½\\s*
+			// ( )ï¿½Ç°Ï¤Ã¤ï¿½ï¿½ï¿½Ê¬ï¿½Ï¡ï¿½S1,ï¿½ï¿½$2ï¿½ï¿½È¤ï¿½ï¿½Æ¡ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½Ê¸ï¿½ï¿½ï¿½ï¿½Ë»ï¿½ï¿½Ñ²ï¿½Ç½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¸ï¿½ï¿½ï¿½ï¿½Ï¡ï¿½$0)
 
 			// "slideshow [" -> "[imagefile("
 			query = query.replaceAll("slideshow\\s*\\[", "\\[imagefile(");
@@ -210,21 +233,21 @@ public class SSQLparser {
 					"$1, type=\"slideshow\")");
 
 			if (query.matches(".*\\[imagefile\\(.*\\)\\s*\\@\\s*\\{.*\\}.*")) {
-				// @¤¢¤ê
+				// @ï¿½ï¿½ï¿½ï¿½
 				// "[imagefile(*) @ {*}" -> "[imagefile(*) @ {*} ]! "
 				query = query
 						.replaceAll(
 								"\\[imagefile\\(.*\\)\\s*\\@\\s*\\{[a-zA-Z0-9=\\s,]*\\}",
 								"$0]! ");
 			} else {
-				// @Ìµ¤·
+				// @Ìµï¿½ï¿½
 				// "[imagefile(*) " -> "[imagefile(*)]! "
 				query = query.replaceAll("\\[imagefile\\(.*\\)", // "(\\[imagefile\\(.*\\)[\\s*|\\s*^\\@])",
 						"$0]! ");
 			}
 		}
         //addde by goto 20130422  For "!number ,number"
-        //¡ù ¼¡¤Î}(ÊÄ¤¸¤ë¥«¥Ã¥³)¤Þ¤Ç¤Î0Ê¸»ú°Ê¾å¤ÎÇ¤°Õ¤ÎÊ¸»úÎó: [^\\}]*
+        //ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½}(ï¿½Ä¤ï¿½ï¿½ë¥«ï¿½Ã¥ï¿½)ï¿½Þ¤Ç¤ï¿½0Ê¸ï¿½ï¿½Ê¾ï¿½ï¿½Ç¤ï¿½Õ¤ï¿½Ê¸ï¿½ï¿½ï¿½ï¿½: [^\\}]*
         //For !number
         query = query.replaceAll("\\]\\s*!\\s*([0-9]+)\\s*@\\s*\\{([^\\}]*)", "]!@{$2,row=$1");
     	query = query.replaceAll("\\]\\s*!\\s*([0-9]+)", "]!@{row=$1}");
@@ -587,6 +610,7 @@ public class SSQLparser {
 			else {
 				buffer.append(nt + " ");
 			}
+			supersql.codegenerator.Mobile_HTML5.HTMLFunction.after_from_string += nt+" ";	//added by goto 20130515  "search"
 		}
 	}
 

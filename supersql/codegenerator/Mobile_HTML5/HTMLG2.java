@@ -342,6 +342,11 @@ public class HTMLG2 extends Grouper {
 	            }
 	            html_env2.code.append(">");
             }
+            
+    	    //Log.info("tfeG2 : " + tfe);
+            //Log.info("tfe : " + this.tfes);
+            //Log.info("tfe : " + this.tfeItems);
+
 
             this.worknextItem();
             if(decos.containsKey("table0") || HTMLC1.table0Flg || HTMLC2.table0Flg || HTMLG1.table0Flg)	table0Flg = true;

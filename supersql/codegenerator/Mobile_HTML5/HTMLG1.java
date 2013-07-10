@@ -339,7 +339,9 @@ public class HTMLG1 extends Grouper {
             //classid0 = HTMLEnv.getClassID(tfe);
             	
             //Log.out("<TD class=\"" + HTMLEnv.getClassID(tfe) + " nest\">");
-
+    	    Log.info("tfe : " + tfe);
+            //Log.info("tfe : " + this.tfes);
+            //Log.info("tfe : " + this.tfeItems);
             
             this.worknextItem();
             if(decos.containsKey("table0") || HTMLC1.table0Flg || HTMLC2.table0Flg || HTMLG2.table0Flg)	table0Flg = true;

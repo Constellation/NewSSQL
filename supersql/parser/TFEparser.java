@@ -471,7 +471,7 @@ public class TFEparser {
 		if (equalidx != -1 && !skipCondition) {
 			// found key = att
 			key = token.substring(0, equalidx);
-			token = token.substring(equalidx + 1);
+			token = token.substring(equalidx + 1);		//TODO: <= This causes an error.  ex) "x==100"!
 
 			// tk to ignore space between = and value/////////////////
 			key = key.trim();
@@ -826,8 +826,8 @@ public class TFEparser {
     }
     //hanki end
     /*
-     * // Áõ?»ØÄê¡÷°Ê²¼¤ò²òÀÏ // private Function deco_read(String fn) { private void
-     * deco_read(TFE tfe) { // ºÇ½é¤¬@¤Ç»Ï¤Þ¤Ã¤Æ¤¤¤Ê¤±?¤ÐÁõ?¤Ê¤· if
+     * // ï¿½ï¿½?ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ // private Function deco_read(String fn) { private void
+     * deco_read(TFE tfe) { // ï¿½Ç½é¤¬@ï¿½Ç»Ï¤Þ¤Ã¤Æ¤ï¿½ï¿½Ê¤ï¿½?ï¿½ï¿½ï¿½ï¿½?ï¿½Ê¤ï¿½ if
      * (!toks.lookToken().equals("@")) return; toks.nextToken();
      *
      * Log.out("@@ start read decoration @@");
@@ -849,7 +849,7 @@ public class TFEparser {
 
     private void decoration_out(ITFE tfe, String name, Object value) {
 
-        /* »Ã?Åª¤ËString¤·¤«ÆÉ¤á¤Ê¤¤ */
+        /* ï¿½ï¿½?Åªï¿½ï¿½Stringï¿½ï¿½ï¿½ï¿½ï¿½É¤ï¿½Ê¤ï¿½ */
         tfe.addDeco(name, (String) value);
         Log.out("[decoration name=" + name + " value=" + value + "]");
 

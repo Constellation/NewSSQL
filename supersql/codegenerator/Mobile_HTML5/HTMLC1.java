@@ -86,6 +86,9 @@ public class HTMLC1 extends Connector {
     		divFlg = true;
     		tableFlg = false;
     	}//else divFlg = false;
+        
+        //20130529
+        if(decos.containsKey("dynamic"))	HTMLEnv.dynamicFlg = true;
 
         if(!GlobalEnv.isOpt()){
         	//20130503  Panel
@@ -333,6 +336,13 @@ public class HTMLC1 extends Connector {
         	}
             String classid = HTMLEnv.getClassID(tfe);
             
+
+	      	if(HTMLEnv.dynamicFlg){	//20130529 dynamic
+	    		//☆★            Log.info("C1 tfe : " + tfe);
+	            //☆★            Log.info("C1 tfes : " + this.tfes);
+	            //☆★            Log.info("C1 tfeItems : " + this.tfeItems);
+	      	}
+            
             //Log.out("<TD class=\""
             //        + HTMLEnv.getClassID(tfe) + " nest\"> decos : " + decos);
 //x            html_env.code.append("	<Table border=1 align=center valign=middle text-align=center><tr><td>\n");
@@ -355,6 +365,9 @@ public class HTMLC1 extends Connector {
         		divFlg = true;
         		tableFlg = false;
         	}//else divFlg = false;
+            
+            //20130529
+            if(decos.containsKey("dynamic"))	HTMLEnv.dynamicFlg = true;
             
             //20130309
         	//if((Count>1 && !HTMLG1.G1Flg && !tableFlg) || (Count>1 && divFlg)){		//20130326  div
@@ -446,6 +459,8 @@ public class HTMLC1 extends Connector {
         jj=0;
       	
       	if(divFlg)	divFlg = false;		//20130326  div
+      	
+        if(HTMLEnv.dynamicFlg)	HTMLEnv.dynamicFlg = false;		//20130529 dynamic
       	
         //Log.out("</TR></TABLE>");
 
