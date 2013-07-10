@@ -1599,17 +1599,17 @@ public class HTMLEnv extends LocalEnv {
 			}
         }else if(cssfile.length() == 0){
         	if(GlobalEnv.isServlet()){
-            	cssfile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + GlobalEnv.getFileDirectory() +"/default.css \">\n");
+            	cssfile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + GlobalEnv.getFileDirectory() +"/default1.css \">\n");
             }else{
             	if(getOs().contains("Windows")){
-            		cssfile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"default.css\">\n");
+            		cssfile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"default1.css\">\n");
             	}else{
             		//commented out by goto 201303
 //            		//itc
 //            		if(GlobalEnv.isOpt())
 //            			cssfile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"http://www.db.ics.keio.ac.jp/ssqljscss/default_opt.css\">\n");
 //            		else
-//            			cssfile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"http://www.db.ics.keio.ac.jp/ssqljscss/default.css\">\n");
+//            			cssfile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"http://www.db.ics.keio.ac.jp/ssqljscss/default1.css\">\n");
             	}
             }
         }
