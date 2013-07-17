@@ -166,9 +166,9 @@ public class HTMLFunction extends Function {
         else if (FuncName.equalsIgnoreCase("$session")||FuncName.equalsIgnoreCase("$s")||FuncName.equalsIgnoreCase("$_session")||FuncName.equalsIgnoreCase("$_s")) {
             Func_$session();
         }
-        //added by goto 20130607  "$time,$date"
-        else if (FuncName.equalsIgnoreCase("$time") || FuncName.equalsIgnoreCase("$date")) {
-        	Func_$time();
+        //added by goto 20130607  "time,date"
+        else if (FuncName.equalsIgnoreCase("time") || FuncName.equalsIgnoreCase("date")) {
+        	Func_time();
         }
         
         //chie
@@ -1826,14 +1826,17 @@ public class HTMLFunction extends Function {
     		
     		//$session()あり
     		if(a.contains("=")){
-    			if(a.contains("$session")){
+    			String a_right = a.substring(a.indexOf("=")+1).trim();
+    			if(a_right.startsWith("$session(")){
     				$session_array[i] = a.substring(a.indexOf("$session(")+"$session(".length(),a.indexOf(")"));
     				$time_array[i] = "";
     				button_array[i] = "";
     				a = a.substring(0,a.indexOf("=")).trim() + a.substring(a.indexOf(")")+1).trim();
         			s_array[i] = s_array[i].substring(0,s_array[i].indexOf("=")).trim() + s_array[i].substring(s_array[i].indexOf(")")+1).trim();
-    			}else if(a.contains("$time")){
-    				$time_array[i] = "date(\"Y-m-d H:i:s\")";	//"date(\"Y/m/d(D) H:i:s\")";
+    			}else if(a_right.startsWith("time(") || a_right.startsWith("date(")){
+    				String d = s_array[i].substring(s_array[i].indexOf("(")+1,s_array[i].lastIndexOf(")")).trim(); 
+//    				$time_array[i] = "date(\"Y-m-d H:i:s\")";	//"date(\"Y/m/d(D) H:i:s\")";
+    				$time_array[i] = "date(\""+( (d.equals(""))? ("Y-m-d H:i:s") : (d) )+"\")";	//"date(\"Y/m/d(D) H:i:s\")";
     				$session_array[i] = "";
     				button_array[i] = "";
     				a = a.substring(0,a.indexOf("=")).trim() + a.substring(a.indexOf(")")+1).trim();
@@ -2480,9 +2483,9 @@ public class HTMLFunction extends Function {
     }
     //$session end
     
-    //added by goto 20130607 start  "$time,$date"
-    /*  $time(),$date(),$time("Y-m-d")など  */
-    private void Func_$time() {
+    //added by goto 20130607 start  "time,date"
+    /*  time(),date(),time("Y-m-d")など  */
+    private void Func_time() {
 		String statement = "\n";
 		String format = "";
 		try{

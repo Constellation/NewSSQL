@@ -471,7 +471,7 @@ public class TFEparser {
 		if (equalidx != -1 && !skipCondition) {
 			// found key = att
 			key = token.substring(0, equalidx);
-			token = token.substring(equalidx + 1);		//TODO: <= This causes an error.  ex) "x==100"!
+//			token = token.substring(equalidx + 1);		//TODO: <= This causes an error.  ex) "x==100"!
 
 			// tk to ignore space between = and value/////////////////
 			key = key.trim();
