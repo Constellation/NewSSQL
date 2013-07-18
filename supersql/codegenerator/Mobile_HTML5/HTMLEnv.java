@@ -613,7 +613,7 @@ public class HTMLEnv extends LocalEnv {
 
 	        //header.append("<BODY class=\"body\">\n");
 	        header.append("<BODY>\n");
-	        header.append("<!-- data-role=page start -->\n<div data-role=\"page\">\n\n");
+	        header.append("<!-- data-role=page start -->\n<div data-role=\"page\" id=\"p-top1\" >\n\n");
 	        
 	        //added by goto 20130508  "Login&Logout" start
 	        //ログイン・ログアウト・新規登録

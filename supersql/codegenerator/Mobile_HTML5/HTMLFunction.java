@@ -63,6 +63,9 @@ public class HTMLFunction extends Function {
     static int insertCount = 1;		//20130529	"insert"
 
     static int checkCount = 1;		//20130531	"check"
+
+    static int mapFuncCount = 1;	//20130717  "map"
+    static int gpsFuncCount = 1;	//20130717  "gps"
     
     static String updateFile;
 
@@ -169,6 +172,18 @@ public class HTMLFunction extends Function {
         //added by goto 20130607  "time,date"
         else if (FuncName.equalsIgnoreCase("time") || FuncName.equalsIgnoreCase("date")) {
         	Func_time();
+        }
+    	//added by goto 20130717  "map"
+        else if (FuncName.equalsIgnoreCase("map")) {
+        	Func_map();
+        }
+        //added by goto 20130717  "gps,gps_map"
+        else if (FuncName.equalsIgnoreCase("gps") || FuncName.equalsIgnoreCase("gps_map")) {
+        	Func_gps();
+        }
+    	//added by goto 20130717  "gps_info"
+        else if (FuncName.equalsIgnoreCase("gps_info")) {
+        	Func_gps_info();
         }
         
         //chie
@@ -1814,6 +1829,7 @@ public class HTMLFunction extends Function {
     	String notnullFlg_array = "";
     	String[] $session_array = new String[col_num];
     	String[] $time_array = new String[col_num];
+    	String[] $gps_array = new String[col_num];
     	String[] button_array = new String[col_num];
     	String buttonSubmit = "";
     	String insert_aFlg = "\"";	//Flg
@@ -1830,6 +1846,7 @@ public class HTMLFunction extends Function {
     			if(a_right.startsWith("$session(")){
     				$session_array[i] = a.substring(a.indexOf("$session(")+"$session(".length(),a.indexOf(")"));
     				$time_array[i] = "";
+    				$gps_array[i] = "";
     				button_array[i] = "";
     				a = a.substring(0,a.indexOf("=")).trim() + a.substring(a.indexOf(")")+1).trim();
         			s_array[i] = s_array[i].substring(0,s_array[i].indexOf("=")).trim() + s_array[i].substring(s_array[i].indexOf(")")+1).trim();
@@ -1838,6 +1855,18 @@ public class HTMLFunction extends Function {
 //    				$time_array[i] = "date(\"Y-m-d H:i:s\")";	//"date(\"Y/m/d(D) H:i:s\")";
     				$time_array[i] = "date(\""+( (d.equals(""))? ("Y-m-d H:i:s") : (d) )+"\")";	//"date(\"Y/m/d(D) H:i:s\")";
     				$session_array[i] = "";
+    				$gps_array[i] = "";
+    				button_array[i] = "";
+    				a = a.substring(0,a.indexOf("=")).trim() + a.substring(a.indexOf(")")+1).trim();
+    				s_array[i] = s_array[i].substring(0,s_array[i].indexOf("=")).trim() + s_array[i].substring(s_array[i].indexOf(")")+1).trim();
+    			}else if(a_right.startsWith("gps_info(")){
+    				//gps_info()の取得
+    				//String d = s_array[i].substring(s_array[i].indexOf("(")+1,s_array[i].lastIndexOf(")")).trim(); 
+    				//$gps_array[i] = "date(\""+( (d.equals(""))? ("Y-m-d H:i:s") : (d) )+"\")";	//"date(\"Y/m/d(D) H:i:s\")";
+    				$gps_array[i] = "gps_info";
+    				
+    				$session_array[i] = "";
+    				$time_array[i] = "";
     				button_array[i] = "";
     				a = a.substring(0,a.indexOf("=")).trim() + a.substring(a.indexOf(")")+1).trim();
     				s_array[i] = s_array[i].substring(0,s_array[i].indexOf("=")).trim() + s_array[i].substring(s_array[i].indexOf(")")+1).trim();
@@ -1846,16 +1875,19 @@ public class HTMLFunction extends Function {
     				button_array[i] = ss;
     				$session_array[i] = "";
     				$time_array[i] = "";
+    				$gps_array[i] = "";
     				a = a.substring(0,a.indexOf("=")).trim() + a.substring(a.indexOf("}")+1).trim();
         			s_array[i] = s_array[i].substring(0,s_array[i].indexOf("=")).trim() + s_array[i].substring(s_array[i].indexOf("}")+1).trim();
     			}else{
     				$session_array[i] = "";
     				$time_array[i] = "";
+    				$gps_array[i] = "";
     				button_array[i] = "";
     			}
     		}else{
     			$session_array[i] = "";
     			$time_array[i] = "";
+    			$gps_array[i] = "";
     			button_array[i] = "";
     		}
     		//Log.i(s_array[i]+"	"+$session_array[i]);
@@ -1970,6 +2002,7 @@ public class HTMLFunction extends Function {
     	
 
     	String statement = "";
+    	String gps_js = "";
     	//sqlite3 php
     	if(DBMS.equals("sqlite3")){
     		statement += 
@@ -1985,7 +2018,7 @@ public class HTMLFunction extends Function {
     		int insertWordCount = 0;
     		for(int i=0; i<col_num; i++){
 //    			if(!textareaFlg[i]){
-				if($session_array[i].equals("") && $time_array[i].equals("")){
+				if($session_array[i].equals("") && $time_array[i].equals("") && $gps_array[i].equals("")){
 					if(!button_array[i].equals("")){
 						//Log.i("bt_array:"+button_array[i]);
 						String ss = button_array[i]+"|";
@@ -2042,13 +2075,46 @@ public class HTMLFunction extends Function {
 					String echo = "";
 					if(!$session_array[i].equals(""))	echo += "	echo $_SESSION["+$session_array[i]+"];\n";
 					else if(!$time_array[i].equals(""))	echo += "	echo "+$time_array[i]+";\n";
+					//else if(!$gps_array[i].equals(""))	echo += "	echo \"<script> getGPSinfo(); </script>\";\n";
+					//else if(!$gps_array[i].equals(""))	echo += "	echo\"<script> getGPSinfo(); </script>\";\n";
+					else if(!$gps_array[i].equals("")){
+						echo += "	echo \"位置情報(緯度・経度)\";\n";
+						gps_js +=
+								"\n<!-- getGPSinfo() -->\n" +
+								"<script src=\"http://maps.google.com/maps/api/js?sensor=false&libraries=geometry\"></script>\n" +
+								"<script type=\"text/javascript\">\n" +
+								"<!--\n" +
+								"$(document).on(\"pageinit\", \"#p-top1\", function(e) {\n" +
+								"  	// Geolocation APIのオプション設定\n" +
+								"  	var geolocationOptions = {\n" +
+								"    	\"enableHighAccuracy\" : true, // 高精度位置情報の取得\n" +
+								"    	\"maximumAge\" : 0, // キャッシュの無効化\n" +
+								"    	\"timeout\" : 30000 // タイムアウトは30秒\n" +
+								"  	};\n" +
+								"    navigator.geolocation.getCurrentPosition(function(pos) {\n" +
+								"      	// 経度、緯度を取得 //\n" +
+								"		document.getElementsByName('insert_words"+(insertWordCount+1)+"')[0].value=pos.coords.latitude+\",\"+pos.coords.longitude;\n" +
+								"    }, function(e) {\n" +
+								"		gpsInfo = \"\";\n" +
+								"    }, geolocationOptions);\n" +
+								"});\n" +
+								"// -->\n" +
+								"</script>\n";
+					}
 					
 					statement += 
 							"    <"+((!textareaFlg[i])?("input"):("textarea"))+" type=\""+((!hiddenFlg[i])?("text"):("hidden"))+"\" disabled=\"disabled\" value=\""+( (!s_name_array[i].equals(""))? (s_name_array[i]+": "):("") )+"" +
-							""+( (!textareaFlg[i])? ("\n") : ((!s_name_array[i].equals(""))? ("\">"+s_name_array[i]+": "):("")) )+"\n" +
-							"EOF;\n" +
-							echo +
-							"		echo <<<EOF\n" +
+							""+( (!textareaFlg[i])? ("\n") : ((!s_name_array[i].equals(""))? ("\">"+s_name_array[i]+": "):("")) )+"\n";
+					//if($gps_array[i].equals(""))
+						statement += 
+								"EOF;\n" +
+								echo +
+								"		echo <<<EOF\n";
+//					else{
+//						statement += "";
+//					}
+						
+					statement += 
 							""+((!textareaFlg[i])?("\">"):("</textarea>"))+"\n";
 					if(!noinsertFlg[i])
 						statement += 
@@ -2075,7 +2141,36 @@ public class HTMLFunction extends Function {
     				"<div id=\"Insert"+insertCount+"_text0\" data-role=\"none\"><!-- Insertコメント --></div>\n" +
     				"\n" +
     				"<br>\n" +
-    				"</div>\n" +
+    				"</div>\n";
+    		//getGPSinfo()
+    		statement += gps_js;
+//    				"\n<!-- getGPSinfo() -->\n" +
+//					"<script src=\"http://maps.google.com/maps/api/js?sensor=false&libraries=geometry\"></script>\n" +
+//					"<script type=\"text/javascript\">\n" +
+//					"<!--\n" +
+//					"function getGPSinfo() {\n" +
+//					"\n" +
+//					"var gpsInfo = \"\";\n" +
+//					"$(document).on(\"pageinit\", \"#p-top1\", function(e) {\n" +
+//					"  	// Geolocation APIのオプション設定\n" +
+//					"  	var geolocationOptions = {\n" +
+//					"    	\"enableHighAccuracy\" : true, // 高精度位置情報の取得\n" +
+//					"    	\"maximumAge\" : 0, // キャッシュの無効化\n" +
+//					"    	\"timeout\" : 30000 // タイムアウトは30秒\n" +
+//					"  	};\n" +
+//					"    navigator.geolocation.getCurrentPosition(function(pos) {\n" +
+//					"      	// 経度、緯度を取得 //\n" +
+//					"		gpsInfo += pos.coords.latitude+\",\"+pos.coords.latitude;\n" +
+//					"    }, function(e) {\n" +
+//					"		gpsInfo = \"\";\n" +
+//					"    }, geolocationOptions);\n" +
+//					"});\n" +
+//					"return gpsInfo;\n" +
+//					"\n" +
+//					"}\n" +
+//					"// -->\n" +
+//					"</script>\n";
+    		statement += 
     				"<!-- Insert Panel end -->\n" +
     				"\n";
 			
@@ -2498,7 +2593,232 @@ public class HTMLFunction extends Function {
 		html_env.code.append(statement);
     	return;
     }
-    //$time end
+    //time end
+    
+    //added by goto 20130717  "map"
+    /*  map(geolocation, zoom, icon)  */
+    /*  geolocation: 住所(address) or 緯度,経度(latitude,longitude)  */
+    private void Func_map() {
+    	String statement = "\n";
+    	String geolocation = "";
+    	String zoom = "";
+    	String icon = "";
+    	try{
+    		geolocation = ((FuncArg) this.getArgs().get(0)).getStr().trim();
+    		try{
+    			zoom = ((FuncArg) this.getArgs().get(1)).getStr().trim();
+    			try{
+        			icon = ((FuncArg) this.getArgs().get(2)).getStr().trim();
+        		}catch(Exception e){ }
+    		}catch(Exception e){ }
+    	}catch(Exception e){
+			System.err.println("<Warning> map関数の引数が不足しています。 ex. map(geolocation, zoom, icon)");
+			return;
+    	}
+    	
+    	statement += 
+    			"		<script src=\"http://maps.google.com/maps/api/js?sensor=false&libraries=geometry\"></script>\n" +
+				"		<script type=\"text/javascript\">\n" +
+				"		<!--\n" +
+				"$(document).on(\"pageinit\", \"#p-top1\", function(e) {\n" +
+				"  	var map = null; // Google Map\n" +
+				"    $(\"#map"+mapFuncCount+"\").remove();	// 地図をクリア\n" +
+				"    $(\"#map-wrapper"+mapFuncCount+"\").append('<div id=\"map"+mapFuncCount+"\" style=\"width: 100%; height: 250px;\"></div>'); // 地図を作成\n" +
+				"      \n" +
+//				"    var sad = \"矢上キャンパス\";\n" +
+//				"    var sad = \"34.2242935279642, 132.879638671875\";\n" +
+//				"    var sad = \"大崎上島\";\n" +
+				"    var sad = \""+geolocation+"\";\n" +
+				"    var geocoder = new google.maps.Geocoder();\n" +
+				"    geocoder.geocode({'address': sad}, function(results, status) {\n" +
+				"      if (status == google.maps.GeocoderStatus.OK) {\n" +
+				"	      var mapOptions = {\n" +
+				//"	        zoom: 17, // ズーム倍率\n" +
+				"        	zoom: " + ((zoom.equals(""))? ("17"):(zoom)  ) + ", // ズーム倍率\n" +
+				"	        center: results[0].geometry.location,\n" +
+				"	        mapTypeId: google.maps.MapTypeId.ROADMAP // 地図の種類(市街地図)\n" +
+				"	      };\n" +
+				"	      map = new google.maps.Map(document.getElementById(\"map"+mapFuncCount+"\"),mapOptions);\n" +
+				"      	  new google.maps.Marker({map : map, position : results[0].geometry.location" + ((icon.equals(""))? (""):(", icon : '"+icon+"'")  ) + "}); //\n" +
+				//"	      new google.maps.Marker({map : map, position : results[0].geometry.location});\n" +
+				"      } else {\n" +
+				"      	  alert('住所から場所を特定できませんでした。入力内容をご確認ください。');\n" +
+				"      }\n" +
+				"    });\n" +
+				"});\n" +
+				"		// -->\n" +
+				"		</script>\n" +
+				"		\n" +
+				"		<div id=\"map-wrapper"+mapFuncCount+"\"></div>";
+    	
+    			mapFuncCount++;
+
+    	
+//    			"		<script src=\"http://maps.google.com/maps/api/js?sensor=false&libraries=geometry\"></script>\n" +
+//				"		<script type=\"text/javascript\">\n" +
+//				"		<!--\n" +
+//				"$(document).on(\"pageinit\", \"#p-top1\", function(e) {\n" +
+//				"  	var Position = null; // 位置\n" +
+//				"  	var map = null; // Google Map\n" +
+//				"    navigator.geolocation.getCurrentPosition(function(pos) {\n" +
+//				"      $(\"#map\").remove();	// 地図をクリア\n" +
+//				//"      Position = new google.maps.LatLng(34.2242935279642, 132.879638671875); // 位置を表示\n" +
+//				"      Position = new google.maps.LatLng("+geolocation+"); // 位置を表示\n" +
+//				"      $(\"#map-wrapper\").append('<div id=\"map\" style=\"width: 100%; height: 250px;\"></div>'); // 地図を作成\n" +
+//				"      var mapOptions = {\n" +
+//				//"        zoom: 17, // ズーム倍率\n" +
+//				"        zoom: " + ((zoom.equals(""))? ("17"):(zoom)  ) + ", // ズーム倍率\n" +
+//				"        center: Position,\n" +
+//				"        mapTypeId: google.maps.MapTypeId.ROADMAP // 地図の種類(市街地図)\n" +
+//				"      };\n" +
+//				"      map = new google.maps.Map(document.getElementById(\"map\"),mapOptions);\n" +
+//				//"      new google.maps.Marker({map : map, position : Position}); //\n" +
+//				"      new google.maps.Marker({map : map, position : Position" + ((icon.equals(""))? (""):(", icon : '"+icon+"'")  ) + "}); //\n" +
+//				"    }, function(e) {\n" +
+//				"      alert(e.message);\n" +
+//				"    }, geolocationOptions);\n" +
+//				"});\n" +
+//				"		// -->\n" +
+//				"		</script>\n" +
+//				"		\n" +
+//				"		<div id=\"map-wrapper\"></div>";
+    	
+    	// 各引数毎に処理した結果をHTMLに書きこむ
+    	html_env.code.append(statement);
+    	return;
+    }
+    //map end
+    
+    //added by goto 20130717  "gps,gps_map"
+    /*  gps(type,icon) or gps_map(type,icon)  */
+    /*  type:1 map  */
+    /*  type:2 map + button */
+    private void Func_gps() {
+		String statement = "\n";
+		String type = "";
+		String zoom = "";
+		String icon = "";
+		try{
+			type = ((FuncArg) this.getArgs().get(0)).getStr().trim();
+			try{
+				zoom = ((FuncArg) this.getArgs().get(1)).getStr().trim();
+				try{
+					icon = ((FuncArg) this.getArgs().get(2)).getStr().trim();
+				}catch(Exception e){ }
+			}catch(Exception e){ }
+		}catch(Exception e){ }
+
+		statement += 
+				"		<script src=\"http://maps.google.com/maps/api/js?sensor=false&libraries=geometry\"></script>\n" +
+				"		<script type=\"text/javascript\">\n" +
+				"		<!--\n" +
+				"$(document).on(\"pageinit\", \"#p-top1\", function(e) {\n" +
+				"  // Geolocation APIのオプション設定\n" +
+				"  var geolocationOptions = {\n" +
+				"    \"enableHighAccuracy\" : true, // 高精度位置情報の取得\n" +
+				"    \"maximumAge\" : 0, // キャッシュの無効化\n" +
+				"    \"timeout\" : 30000 // タイムアウトは30秒\n" +
+				"  };\n" +
+				"  var Position = null; // 開始位置\n" +
+				"\n" +
+				"  var map = null; // Google Map\n";
+		if(type.equals("2")){
+			statement += 
+				"  // 移動開始ボタンクリック時の処理\n" +
+				"  $(this).on(\"click\", \"#gps_button\", function(e) {\n" +
+				"    $(\"#gps_button\").addClass(\"ui-disabled\"); 	// ボタンの無効化\n";
+		}
+		statement += 
+				"    navigator.geolocation.getCurrentPosition(function(pos) {\n" +
+				"      // 画面上の経度、緯度、距離、地図をクリア //\n" +
+				"      $(\"[id=gps_latitude]\").html(\"\");\n" +
+				"      $(\"[id=gps_longitude]\").html(\"\");\n" +
+				"      $(\"#gps_map\").remove();\n" +
+				"      // 位置を表示 //\n" +
+				"      $(\"[id=gps_latitude]\").html(pos.coords.latitude);\n" +
+				"      $(\"[id=gps_longitude]\").html(pos.coords.longitude);\n" +
+				"      Position = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude); //\n" +
+				"      // 地図を作成 //\n" +
+				"      $(\"#gps_map-wrapper\").append('<div id=\"gps_map\" style=\"width: 100%; height: 250px;\"></div>'); //\n" +
+				"      var mapOptions = {\n" +
+				"        zoom: " + ((zoom.equals(""))? ("17"):(zoom)  ) + ", // ズーム倍率\n" +
+				"        center: Position,\n" +
+				"        mapTypeId: google.maps.MapTypeId.ROADMAP // 地図の種類(市街地図)\n" +
+				"      };\n" +
+				"      map = new google.maps.Map(document.getElementById(\"gps_map\"),mapOptions);\n" +
+				"      new google.maps.Marker({map : map, position : Position" + ((icon.equals(""))? (""):(", icon : '"+icon+"'")  ) + "}); //\n" +
+				//"      //new google.maps.Marker({map : map, position : Position, icon : 'star6.gif'}); // \n" +
+				"    }, function(e) {\n" +
+				"      alert(e.message);\n" +
+				"    }, geolocationOptions);\n";
+		if(type.equals("2"))
+			statement += 
+				"    $(\"#gps_button\").removeClass(\"ui-disabled\"); // ボタンの有効化\n" +
+				"  });\n";
+		statement +=
+				"});\n" +
+				"		// -->\n" +
+				"		</script>\n" +
+				"		\n";
+		if(type.equals("2")){
+			statement += 
+				"		<div>\n" +
+				"			<a href=\"#\" data-role=\"button\" data-icon=\"home\" id=\"gps_button\">現在地を表示</a>\n" +
+				"		</div>\n";
+		}
+		statement +=
+				"		<div id=\"gps_map-wrapper\"></div>\n" +
+				"\n";
+//				"		<ul data-role=\"listview\" data-inset=\"true\">\n" +
+//				"			<li>緯度:&nbsp;<span id=\"gps_latitude\"></span></li>\n" +
+//				"			<li>経度:&nbsp;<span id=\"gps_longitude\"></span></li>\n" +
+//				"		</ul>";
+		
+		// 各引数毎に処理した結果をHTMLに書きこむ
+		html_env.code.append(statement);
+    	return;
+    }
+    //gps end
+    //added by goto 20130717  "gps_info"
+    /*  gps_info()  */
+    private void Func_gps_info() {
+    	String statement = "\n";
+//		String format = "";
+//		try{
+//			format = ((FuncArg) this.getArgs().get(0)).getStr();
+//		}catch(Exception e){ }
+    	statement += 
+    			"		<script src=\"http://maps.google.com/maps/api/js?sensor=false&libraries=geometry\"></script>\n" +
+				"		<script type=\"text/javascript\">\n" +
+				"		<!--\n" +
+				"$(document).on(\"pageinit\", \"#p-top1\", function(e) {\n" +
+				"  	// Geolocation APIのオプション設定\n" +
+				"  	var geolocationOptions = {\n" +
+				"    	\"enableHighAccuracy\" : true, // 高精度位置情報の取得\n" +
+				"    	\"maximumAge\" : 0, // キャッシュの無効化\n" +
+				"    	\"timeout\" : 30000 // タイムアウトは30秒\n" +
+				"  	};\n" +
+				"    navigator.geolocation.getCurrentPosition(function(pos) {\n" +
+				"      	// 経度、緯度を表示 //\n" +
+				"      	$(\"[id=gps_latitude]\").html(pos.coords.latitude);\n" +
+				"      	$(\"[id=gps_longitude]\").html(pos.coords.longitude);\n" +
+				"    }, function(e) {\n" +
+				"      	alert(e.message);\n" +
+				"    }, geolocationOptions);\n" +
+				"});\n" +
+				"		// -->\n" +
+				"		</script>" +
+				"		<ul data-role=\"listview\" data-inset=\"true\">\n" +
+				"			<li>緯度:&nbsp;<span id=\"gps_latitude\"></span></li>\n" +
+				"			<li>経度:&nbsp;<span id=\"gps_longitude\"></span></li>\n" +
+				"		</ul>";
+    	
+    	// 各引数毎に処理した結果をHTMLに書きこむ
+    	html_env.code.append(statement);
+    	return;
+    }
+    //gps_info end
+    
     
     private void Func_null() {
         return;
