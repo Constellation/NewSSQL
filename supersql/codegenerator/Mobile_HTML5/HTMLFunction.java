@@ -151,11 +151,15 @@ public class HTMLFunction extends Function {
         }
         //added by goto 20130529  "insert"
         else if(FuncName.equalsIgnoreCase("insert")){
-        	Func_insert(false);
+        	Func_insert(false,false);
         }
-        //added by goto 20130605  "update"
+    	//added by goto 20130605  "update"
         else if(FuncName.equalsIgnoreCase("update")){
-        	Func_insert(true);
+        	Func_insert(true,false);
+        }
+        //added by goto 20130721  "update"
+        else if(FuncName.equalsIgnoreCase("insert_update")){
+        	Func_insert(false,true);
         }
         //added by goto 20130531  "check"
         else if(FuncName.equalsIgnoreCase("check")){
@@ -1732,9 +1736,10 @@ public class HTMLFunction extends Function {
     
     
     //added by goto 20130515 start  "insert","update"
-    /*	insert("title", "c1:column1, c2:column2, ... ", "From以下")	*/
-    /*	update("title", "c1:column1, c2:column2, ... ", "From以下", "insert Flag")	*/
-    private void Func_insert(boolean update) {
+    /* insert("title", "c1:column1, c2:column2, ... ", "From以下")	*/
+    /* update("title", "c1:column1, c2:column2, ... ", "From以下"(, "insert Flag"))	*/
+    /* insert_update("title", "c1:column1, c2:column2, ... ", "From以下")  データ無し->新規insert,データあり->update */
+    private void Func_insert(boolean update, boolean insert_update) {
     	
     	String title = "";
     	String columns = "";
@@ -1744,7 +1749,10 @@ public class HTMLFunction extends Function {
     		//title（第一引数）
     		FuncArg fa1 = (FuncArg) this.getArgs().get(0);
     		if(!fa1.getStr().equals(""))	title = fa1.getStr();
-    		else							title = "Insert";
+    		else{
+    			if(update || insert_update)	title = "Update";
+    			else						title = "Insert";
+    		}
     		//columns（第二引数）
     		FuncArg fa2 = (FuncArg) this.getArgs().get(1);
     		columns += fa2.getStr();
@@ -1766,6 +1774,7 @@ public class HTMLFunction extends Function {
     		return;
 		}
 		if(after_from.toLowerCase().startsWith("from "))	after_from = after_from.substring("from".length()).trim();
+		if(insert_update)	insertFlag = "true";	//20130721
 		//Log.info(title);
     	
     	
