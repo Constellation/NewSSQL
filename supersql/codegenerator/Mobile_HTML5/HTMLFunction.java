@@ -179,7 +179,11 @@ public class HTMLFunction extends Function {
         }
     	//added by goto 20130717  "map"
         else if (FuncName.equalsIgnoreCase("map")) {
-        	Func_map();
+        	Func_map(false);
+        }
+    	//added by goto 20130721  "search_map"
+        else if (FuncName.equalsIgnoreCase("search_map")) {
+        	Func_map(true);
         }
         //added by goto 20130717  "gps,gps_map"
         else if (FuncName.equalsIgnoreCase("gps") || FuncName.equalsIgnoreCase("gps_map")) {
@@ -2614,38 +2618,61 @@ public class HTMLFunction extends Function {
     
     //added by goto 20130717  "map"
     /*  map(geolocation, zoom, icon)  */
+    /*  search_map(zoom, icon)  */
     /*  geolocation: 住所(address) or 緯度,経度(latitude,longitude)  */
-    private void Func_map() {
+    private void Func_map(boolean searchFlg) {
     	String statement = "\n";
     	String geolocation = "";
     	String zoom = "";
     	String icon = "";
     	try{
-    		geolocation = ((FuncArg) this.getArgs().get(0)).getStr().trim();
-    		try{
-    			zoom = ((FuncArg) this.getArgs().get(1)).getStr().trim();
-    			try{
-        			icon = ((FuncArg) this.getArgs().get(2)).getStr().trim();
-        		}catch(Exception e){ }
-    		}catch(Exception e){ }
+    		if(!searchFlg){
+    			//map()
+	    		geolocation = ((FuncArg) this.getArgs().get(0)).getStr().trim();
+	    		try{
+	    			zoom = ((FuncArg) this.getArgs().get(1)).getStr().trim();
+	    			try{
+	        			icon = ((FuncArg) this.getArgs().get(2)).getStr().trim();
+	        		}catch(Exception e){ }
+	    		}catch(Exception e){ }
+    		}else{
+    			//search_map()
+    			zoom = ((FuncArg) this.getArgs().get(0)).getStr().trim();
+	    		try{
+	    			icon = ((FuncArg) this.getArgs().get(1)).getStr().trim();
+	    		}catch(Exception e){ }
+    		}
     	}catch(Exception e){
-			System.err.println("<Warning> map関数の引数が不足しています。 ex. map(geolocation, zoom, icon)");
-			return;
+    		if(!searchFlg){
+    			System.err.println("<Warning> map関数の引数が不足しています。 ex. map(geolocation, zoom, icon)");
+    			return;
+    		}
     	}
     	
+    	if(searchFlg){
+	    	statement += 
+	    			"		<form method=\"post\" action=\"\" target=\"dummy_ifr\">\n" +
+					"    		<input type=\"search\" id=\"search_map_words"+mapFuncCount+"\" placeholder=\"住所など\">\n" +
+					"    		<input type=\"submit\" value=\"地図を表示&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\" id=\"search_map"+mapFuncCount+"\" data-icon=\"search\" data-mini=\"false\" data-inline=\"false\">\n" +
+					"		</form>\n";
+    	}
     	statement += 
     			"		<script src=\"http://maps.google.com/maps/api/js?sensor=false&libraries=geometry\"></script>\n" +
 				"		<script type=\"text/javascript\">\n" +
-				"		<!--\n" +
-				"$(document).on(\"pageinit\", \"#p-top1\", function(e) {\n" +
+				"		<!--\n";
+    	if(!searchFlg)	statement += "$(document).on(\"pageinit\", \"#p-top1\", function(e) {\n";
+    	else			statement += "$(\"#search_map"+mapFuncCount+"\").click(function () {\n";
+    	statement += 
 				"  	var map = null; // Google Map\n" +
 				"    $(\"#map"+mapFuncCount+"\").remove();	// 地図をクリア\n" +
 				"    $(\"#map-wrapper"+mapFuncCount+"\").append('<div id=\"map"+mapFuncCount+"\" style=\"width: 100%; height: 250px;\"></div>'); // 地図を作成\n" +
-				"      \n" +
+				"      \n";
 //				"    var sad = \"矢上キャンパス\";\n" +
 //				"    var sad = \"34.2242935279642, 132.879638671875\";\n" +
 //				"    var sad = \"大崎上島\";\n" +
-				"    var sad = \""+geolocation+"\";\n" +
+    	if(!searchFlg)	statement += "    var sad = \""+geolocation+"\";\n";
+    	else			statement += "    var sad = $(\"#search_map_words"+mapFuncCount+"\").val();\n";
+		statement += 
 				"    var geocoder = new google.maps.Geocoder();\n" +
 				"    geocoder.geocode({'address': sad}, function(results, status) {\n" +
 				"      if (status == google.maps.GeocoderStatus.OK) {\n" +
@@ -2659,7 +2686,8 @@ public class HTMLFunction extends Function {
 				"      	  new google.maps.Marker({map : map, position : results[0].geometry.location" + ((icon.equals(""))? (""):(", icon : '"+icon+"'")  ) + "}); //\n" +
 				//"	      new google.maps.Marker({map : map, position : results[0].geometry.location});\n" +
 				"      } else {\n" +
-				"      	  alert('住所から場所を特定できませんでした。入力内容をご確認ください。');\n" +
+				//"      	  alert('場所を特定できませんでした。入力内容をご確認ください。');\n" +
+				"      	  $(\"#map"+mapFuncCount+"\").text('場所を特定できませんでした。');\n" +
 				"      }\n" +
 				"    });\n" +
 				"});\n" +
