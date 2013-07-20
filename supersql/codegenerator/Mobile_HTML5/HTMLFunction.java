@@ -1105,11 +1105,10 @@ public class HTMLFunction extends Function {
     				"<!-- Search start -->\n" +
     				"<!-- Search Panel start -->\n" +
     				"<br>\n" +
-//    				"<div id=\"SEARCH"+searchCount+"panel\" style=\"background-color:whitesmoke; width:99%; border-radius:10px; border:2px gray solid;\" data-role=\"none\">\n" +
-//    				"<div style=\"color:lightgray; font-size:30; background-color:black; border-radius:8.5px 8.5px 0px 0px;\" id=\"SearchTitle1\">"+title+"</div>\n" +
-    				"<div id=\"SEARCH"+searchCount+"panel\" style=\"background-color:whitesmoke; width:99%; border:0.1px gray solid;\" data-role=\"none\">\n" +
-    				//"<div style=\"padding:3px 5px;border-color:#990000;border-width:0 0 1px 7px;border-style:solid;background:#F8F8F8; font-size:30;\" id=\"SearchTitle1\">"+title+"</div>\n" +
-    				"<div style=\"padding:3px 5px;border-color:darkgreen;border-width:0 0 1px 7px;border-style:solid;background:#F8F8F8; font-size:30;\" id=\"SearchTitle1\">"+title+"</div>\n" +
+    				//"<div id=\"SEARCH"+searchCount+"panel\" style=\"background-color:whitesmoke; width:99%; border:0.1px gray solid;\" data-role=\"none\">\n" +
+    				//"<div style=\"padding:3px 5px;border-color:darkgreen;border-width:0 0 1px 7px;border-style:solid;background:#F8F8F8; font-size:30;\" id=\"SearchTitle"+searchCount+"\">"+title+"</div>\n" +
+    				"<div id=\"SEARCH"+searchCount+"panel\" style=\"\" data-role=\"none\">\n" +
+    				"<hr>\n<div style=\"font-size:30;\" id=\"SearchTitle"+searchCount+"\">"+title+"</div>\n<hr>\n" +
     				"<br>\n" +
     				"<form method=\"post\" action=\"\" target=\"dummy_ifr\">\n" +
     				//"<form method=\"post\" action=\"\" target=\"search"+searchCount+"_ifr\">\n" +
@@ -1529,8 +1528,10 @@ public class HTMLFunction extends Function {
     				"<!-- Select start -->\n" +
 					"<!-- Select Panel start -->\n" +
 					"<br>\n" +
-					"<div id=\"SELECT"+selectCount+"panel\" style=\"background-color:whitesmoke; width:99%; border:0.1px gray solid;\" data-role=\"none\">\n" +
-					"<div style=\"padding:3px 5px;border-color:slateblue;border-width:0 0 1px 7px;border-style:solid;background:#F8F8F8; font-size:30;\" id=\"SelectTitle1\">"+title+"</div>\n" +
+					//"<div id=\"SELECT"+selectCount+"panel\" style=\"background-color:whitesmoke; width:99%; border:0.1px gray solid;\" data-role=\"none\">\n" +
+					//"<div style=\"padding:3px 5px;border-color:slateblue;border-width:0 0 1px 7px;border-style:solid;background:#F8F8F8; font-size:30;\" id=\"SelectTitle"+selectCount+"\">"+title+"</div>\n" +
+					"<div id=\"SELECT"+selectCount+"panel\" style=\"\" data-role=\"none\">\n" +
+					"<hr>\n<div style=\"font-size:30;\" id=\"SelectTitle"+selectCount+"\">"+title+"</div>\n<hr>\n" +
 					"<br>\n" +
 //							"<form method=\"post\" action=\"\" target=\"select"+selectCount+"_ifr\">\n" +
 //							"    <input type=\"select\" name=\"select_words"+selectCount+"\" placeholder=\"Select keywords\">\n" +
@@ -2009,8 +2010,10 @@ public class HTMLFunction extends Function {
     				"<!-- Insert start -->\n" +
     				"<!-- Insert Panel start -->\n" +
     				"<br>\n" +
-    				"<div id=\"INSERT"+insertCount+"panel\" style=\"background-color:whitesmoke; width:99%; border:0.1px gray solid;\" data-role=\"none\">\n" +
-    				"<div style=\"padding:3px 5px;border-color:hotpink;border-width:0 0 1px 7px;border-style:solid;background:#F8F8F8; font-size:30;\" id=\"InsertTitle1\">"+title+"</div>\n" +
+    				//"<div id=\"INSERT"+insertCount+"panel\" style=\"background-color:whitesmoke; width:99%; border:0.1px gray solid;\" data-role=\"none\">\n" +
+    				//"<div style=\"padding:3px 5px;border-color:hotpink;border-width:0 0 1px 7px;border-style:solid;background:#F8F8F8; font-size:30;\" id=\"InsertTitle"+insertCount+"\">"+title+"</div>\n" +
+    				"<div id=\"INSERT"+insertCount+"panel\" style=\"\" data-role=\"none\">\n" +
+    				"<hr>\n<div style=\"font-size:30;\" id=\"InsertTitle"+insertCount+"\">"+title+"</div>\n<hr>\n" +
     				"<br>\n" +
     				"<form method=\"post\" action=\"\" target=\"dummy_ifr\">\n";
     				//"<form method=\"post\" action=\"\" target=\"insert"+insertCount+"_ifr\">\n";
