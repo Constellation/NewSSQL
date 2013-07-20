@@ -2665,11 +2665,10 @@ public class HTMLFunction extends Function {
     	statement += 
 				"  	var map = null; // Google Map\n" +
 				"    $(\"#map"+mapFuncCount+"\").remove();	// 地図をクリア\n" +
-				"    $(\"#map-wrapper"+mapFuncCount+"\").append('<div id=\"map"+mapFuncCount+"\" style=\"width: 100%; height: 250px;\"></div>'); // 地図を作成\n" +
+				//"    $(\"#map-wrapper"+mapFuncCount+"\").append('<div id=\"map"+mapFuncCount+"\" style=\"width: 100%; height: 250px;\"></div>'); // 地図を作成\n" +
+				"    $(\"#map-wrapper"+mapFuncCount+"\").append('<div id=\"map"+mapFuncCount+"\"" +
+						" style=\"width: 100%; height: "+( (!decos.containsKey("height"))? ("250px"):(decos.getStr("height")) )+";\"></div>'); // 地図を作成\n" +
 				"      \n";
-//				"    var sad = \"矢上キャンパス\";\n" +
-//				"    var sad = \"34.2242935279642, 132.879638671875\";\n" +
-//				"    var sad = \"大崎上島\";\n" +
     	if(!searchFlg)	statement += "    var sad = \""+geolocation+"\";\n";
     	else			statement += "    var sad = $(\"#search_map_words"+mapFuncCount+"\").val();\n";
 		statement += 
