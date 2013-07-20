@@ -2199,7 +2199,12 @@ public class HTMLFunction extends Function {
     				//"    	$insert_str .= trim($var[$k]);\n" +
     				"    	if($notnullFlg[$k-1]){\n" +
     				"    		if(trim($var[$k]) == \"\")	$insert_str = \"\";\n" +
-    				"    	}\n" +
+    				"    	}\n";
+			for(int i=0; i<col_num; i++){
+				if(!$time_array[i].equals(""))
+					HTMLEnv.PHP += "		if($k=="+i+")	$var[$k] = "+$time_array[i]+";\n";	//現在時刻
+			}
+			HTMLEnv.PHP +=	
     				"    }\n" +
     				"\n" +
     				"	if($insert_str == \"\"){\n" +
