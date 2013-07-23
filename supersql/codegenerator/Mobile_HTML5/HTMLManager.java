@@ -103,7 +103,7 @@ public class HTMLManager extends Manager{
 
         if(data_info.size() == 0
         	//added by goto 20130306  "FROMなしクエリ対策 3/3"
-        	&& !DataConstructor.SQL_string.equals("SELECT DISTINCT  FROM ;"))
+        	&& !DataConstructor.SQL_string.equals("SELECT DISTINCT  FROM ;") && !DataConstructor.SQL_string.equals("SELECT  FROM ;"))
         {
         	Log.info("no data");
 
