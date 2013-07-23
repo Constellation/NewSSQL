@@ -79,7 +79,7 @@ public class HTMLEnv extends LocalEnv {
 	public int linkFlag;
 	public String linkUrl;
 
-	// outline����Ϥ����ɤ����Υե饰��?
+	// outline鐃緒申鐃緒申呂鐃緒申鐃緒申匹鐃緒申鐃緒申離侫薀逸申鐃�
 	protected boolean OutlineMode = false;
 	private static boolean isFormItem;
 	private static String formItemName;
@@ -421,9 +421,9 @@ public class HTMLEnv extends LocalEnv {
 		Log.out("[HTML append_css_def_att] classid=" + classid);
 		Log.out("decos = " + decos);
 
-		// ��classid�Υ�����?�����Ȥ��������ꤷ�����Ȥ���?��
+		// 鐃緒申classid鐃塾ワ申鐃緒申鐃緒申?鐃緒申鐃緒申鐃夙わ申鐃緒申鐃緒申鐃緒申鐃所し鐃緒申鐃緒申鐃夙わ申鐃緒申?鐃緒申
 		if (writtenClassId.contains(classid)) {
-			// ������ѤΥ�����?������
+			// 鐃緒申鐃緒申鐃緒申僂離鐃緒申鐃緒申鐃�鐃緒申鐃緒申鐃緒申
 			haveClass = 1;
 			Log.out("==> already created style");
 			return;
@@ -538,7 +538,7 @@ public class HTMLEnv extends LocalEnv {
 
 		computeConditionalDecorations(decos, css);
 
-		// ��??
+		// 鐃緒申??
 		if (decos.containsKey("width")) {
 			if (GlobalEnv.getframeworklist() == null)
 				cssbuf.append(" width:" + decos.getStr("width") + ";");
@@ -548,7 +548,7 @@ public class HTMLEnv extends LocalEnv {
 			// cssbuf.append(" width:120;");
 		}
 
-		// ��??
+		// 鐃緒申??
 		if (decos.containsKey("height")) {
 			if (GlobalEnv.getframeworklist() == null)
 				cssbuf.append(" height:" + decos.getStr("height") + ";");
@@ -563,7 +563,7 @@ public class HTMLEnv extends LocalEnv {
 			// cssbuf.append(" padding:0.3em;");
 		}
 
-		// �ѥǥ��󥰡�;���
+		// 鐃術デワ申鐃藷グ￥申余鐃緒申鐃�		
 		if (decos.containsKey("padding")) {
 			cssbuf.append(" padding:" + decos.getStr("padding") + ";");
 			// } else {
@@ -585,22 +585,22 @@ public class HTMLEnv extends LocalEnv {
 					+ ";");
 		}
 
-		// ������
+		// 鐃緒申鐃緒申鐃緒申
 		if (decos.containsKey("align"))
 			cssbuf.append(" text-align:" + decos.getStr("align") + ";");
 
-		// �İ���
+		// 鐃縦逸申鐃緒申
 		if (decos.containsKey("valign"))
 			cssbuf.append(" vertical-align:" + decos.getStr("valign") + ";");
 
-		// �طʿ�
+		// 鐃舜景随申
 		if (decos.containsKey("background-color"))
 			cssbuf.append(" background-color:"
 					+ decos.getStr("background-color") + ";");
 		if (decos.containsKey("bgcolor"))
 			cssbuf.append(" background-color:" + decos.getStr("bgcolor") + ";");
 
-		// ʸ��
+		// 文鐃緒申
 		if (decos.containsKey("color"))
 			cssbuf.append(" color:" + decos.getStr("color") + ";");
 		if (decos.containsKey("font-color"))
@@ -608,7 +608,7 @@ public class HTMLEnv extends LocalEnv {
 		if (decos.containsKey("font color"))
 			cssbuf.append(" color:" + decos.getStr("font color") + ";");
 
-		// ʸ����
+		// 文鐃緒申鐃緒申
 		if (decos.containsKey("font-size"))
 			if (GlobalEnv.getframeworklist() == null)
 				cssbuf.append(" font-size:" + decos.getStr("font-size") + ";");
@@ -625,11 +625,11 @@ public class HTMLEnv extends LocalEnv {
 			else
 				cssbuf.append(" font-size:" + decos.getStr("size") + "px;");
 
-		// ʸ�������
+		// 文鐃緒申鐃緒申鐃緒申鐃�
 		if (decos.containsKey("font-weight"))
 			cssbuf.append(" font-weight:" + decos.getStr("font-weight") + ";");
 
-		// ʸ����?
+		// 文鐃緒申鐃緒申?
 		if (decos.containsKey("font-style"))
 			cssbuf.append(" font-style:" + decos.getStr("font-style") + ";");
 		if (decos.containsKey("font-family"))
@@ -656,7 +656,7 @@ public class HTMLEnv extends LocalEnv {
         if (decos.containsKey("style")){
         	String style = decos.getStr("style");
         	cssbuf.append(" " + style);
-        	if(!style.matches(".*;\\s*$"))	cssbuf.append(";");	//�Ǹ��";"��̵���ä����
+        	if(!style.matches(".*;\\s*$"))	cssbuf.append(";");	//鐃叔醐申鐃�;"鐃緒申無鐃緒申鐃獣わ申鐃緒申鐃�
         }
 
 		// tk
@@ -703,14 +703,14 @@ public class HTMLEnv extends LocalEnv {
 
 		if (cssbuf.length() > 0) {
 			haveClass = 1;
-			// ����?�Υ�����?����
+			// 鐃緒申鐃緒申?鐃塾ワ申鐃緒申鐃緒申?鐃緒申鐃緒申
 			css.append("." + classid + "{");
 
 			css.append(cssbuf);
-			// ��?�Υ�����?�Ĥ�
+			// 鐃緒申?鐃塾ワ申鐃緒申鐃緒申?鐃縦わ申
 			css.append(" }\n");
 
-			// ������?��?�Ѥߥ��饹��id����¸���Ƥ���
+			// 鐃緒申鐃緒申鐃緒申?鐃緒申?鐃術みワ申鐃初ス鐃緒申id鐃緒申鐃緒申存鐃緒申鐃銃わ申鐃緒申
 			writtenClassId.addElement(classid);
 		} else {
 			Log.out("==> style is null. not created style");
@@ -724,7 +724,7 @@ public class HTMLEnv extends LocalEnv {
             meta.append(metabuf);
          	meta.append("\n");
 
-		}
+        }
 		// tk end////////////////////////////////////////////////////////////
 
 	}

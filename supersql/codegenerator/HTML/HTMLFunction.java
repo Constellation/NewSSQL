@@ -44,7 +44,7 @@ public class HTMLFunction extends Function {
     {
 
     }
-    //���󥹥ȥ饯��
+    //鐃緒申鐃藷ストラク鐃緒申
     public HTMLFunction(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
         super();
         this.htmlEnv = henv;
@@ -110,7 +110,7 @@ public class HTMLFunction extends Function {
         return null;
 	}
     
-	//Function��work�᥽�å�
+	//Function鐃緒申work鐃潤ソ鐃獣ワ申
     public void work(ExtList data_info) {
         this.setDataList(data_info);
         //    	Log.out("FuncName= " + this.getFuncName());
@@ -134,7 +134,7 @@ public class HTMLFunction extends Function {
         } else if (FuncName.equalsIgnoreCase("null")) {
             Func_null();
         }
-        //added by goto 20130308  "url���"
+        //added by goto 20130308  "url鐃緒申鐃�
         else if(FuncName.equalsIgnoreCase("url") || FuncName.equalsIgnoreCase("anchor") || FuncName.equalsIgnoreCase("a")){
         	Func_url(false);
         }
@@ -308,9 +308,9 @@ public class HTMLFunction extends Function {
         //tk to make hyper link to image//////////////////////////////////////////////////////////////////////////////////
         if (htmlEnv.linkFlag > 0 || htmlEnv.sinvokeFlag) {
 			//added by goto 20121222 start
-        	//以下は、-fのファイル名指定が絶対パスになっている場合の処理(?)
-			//[%連結子] hrefの指定を絶対パスから「相対パス形式」へ変更
-			//20120622の修正だと、「-f フルパスファイル名」を用いている場合、相対パス形式にならない
+        	//篁ヤ����-f����＜���������偽絲障��鴻����������������(?)
+			//[%�ｇ�絖� href���絎��腟九����������絲障��劫就綣���紊��
+			//20120622��信罩ｃ������f ����������ゃ��������������翫����絲障��劫就綣��������
         	String fileDir = new File(htmlEnv.linkUrl).getAbsoluteFile().getParent();
 			
 			if(fileDir.length() < htmlEnv.linkUrl.length()
@@ -387,42 +387,42 @@ public class HTMLFunction extends Function {
     }
 	
     //added by goto 20130308 start  "anchor"  anchor(), a(), url(), mail()
-    /** anchor�ؿ�: anchor( name/button-name/button-url, url, type(bt/button/img/image) )
+    /** anchor鐃舜随申: anchor( name/button-name/button-url, url, type(bt/button/img/image) )
      *          @{ width=~, height=~, transition=~ } 
     /*    url("title", "detail/imgURL", int type), anchor(), a()    */
-    /*    <type:1> a(��󥯸���̾��, �����URL) <=> a(��󥯸���̾��, �����URL, 1)    */
-    /*    <type:2> a(����URL, �����URL, 2)    	   	*/
-    /*    <type:3> a(�ܥ����̾��, �����URL, 3)        	*/
-    /*    mail()�Ǥ����							        */
+    /*    <type:1> a(鐃緒申鵐�鐃緒申鐃縮常申鐃� 鐃緒申鐃緒申鐃�RL) <=> a(鐃緒申鵐�鐃緒申鐃縮常申鐃� 鐃緒申鐃緒申鐃�RL, 1)    */
+    /*    <type:2> a(鐃緒申鐃緒申URL, 鐃緒申鐃緒申鐃�RL, 2)    	   	*/
+    /*    <type:3> a(鐃旬ワ申鐃緒申鐃縮常申鐃� 鐃緒申鐃緒申鐃�RL, 3)        	*/
+    /*    mail()鐃叔わ申鐃緒申鐃�						        */
     private void Func_url(boolean mailFncFlg) {
     	String statement = "";
     	FuncArg fa1 = (FuncArg) this.getArgs().get(0), fa2, fa3;
     	String url, name, type;
     	
-    	try{					//���2�� or 3�Ĥξ��
+    	try{					//鐃緒申鐃�鐃緒申 or 3鐃縦の常申鐃�
     		fa2 = (FuncArg) this.getArgs().get(1);
     		url = ((mailFncFlg)?("mailto:"):("")) + fa2.getStr();
     		name = fa1.getStr();
         	
-        	try{						//���3�Ĥξ��
+        	try{						//鐃緒申鐃�鐃縦の常申鐃�
         		fa3 = (FuncArg) this.getArgs().get(2);
         		type = fa3.getStr();
         		
-        		//type=1 -> ʸ��
+        		//type=1 -> 文鐃緒申
         		if(type.equals("1") || type.equals("text") || type.equals("")){
         			statement = getTextAnchor(url, name);
         			//statement = "<a href=\""+url+"\""+transition()+prefetch()+target(url)+">"+name+"</a>";
         		
-//        		//type=2 -> url��Х���ܥ���
+//        		//type=2 -> url鐃緒申丱鐃緒申鐃旬ワ申鐃緒申
 //        		}else if(type.equals("3") || type.equals("button") || type.equals("bt")){
 //            		statement = "<a href=\""+url+"\" data-role=\"button\""+transition()+prefetch()+target(url)+">"+name+"</a>";
 
-            	//url�ܥ���(�ǥ����ȥåס���Х��붦��)
+            	//url鐃旬ワ申鐃緒申(鐃叔ワ申鐃緒申鐃夙ップ￥申鐃緒申丱鐃緒申覿�申鐃�
 //        		}else if(type.equals("dbutton") || type.equals("dbt")){
         		}else if(type.equals("3") || type.equals("button") || type.equals("bt")){
             		statement = "<input type=\"button\" value=\""+name+"\" onClick=\"location.href='"+url+"'\""+className();
             		
-            		//url�ܥ��� width,height������ν���
+            		//url鐃旬ワ申鐃緒申 width,height鐃緒申鐃緒申鐃緒申僚鐃緒申鐃�
             		if(decos.containsKey("width") || decos.containsKey("height")){
             			statement += " style=\"";
             			if(decos.containsKey("width"))	statement += "WIDTH:"+decos.getStr("width").replace("\"", "")+"; ";
@@ -431,11 +431,11 @@ public class HTMLFunction extends Function {
                 	}
             		statement += ">";
             	
-            	//type=3 -> url����
+            	//type=3 -> url鐃緒申鐃緒申
             	}else if(type.equals("2") || type.equals("image") || type.equals("img")){
             		statement = "<a href=\""+url+"\""+className()+transition()+prefetch()+target(url)+"><img src=\""+name+"\"";
     		        
-        			//url���� width,height������ν���
+        			//url鐃緒申鐃緒申 width,height鐃緒申鐃緒申鐃緒申僚鐃緒申鐃�
             		if(decos.containsKey("width"))	statement += " width="+decos.getStr("width").replace("\"", "");
             		else{
             	        //added by goto 20130312  "Default width: 100%"
@@ -445,23 +445,21 @@ public class HTMLFunction extends Function {
         			statement += "></a>";
             	}
         		
-        	}catch(Exception e){		//���2�Ĥξ��
-    			statement = getTextAnchor(url, name);
+        	}catch(Exception e){		//鐃緒申鐃�鐃縦の常申鐃�    			statement = getTextAnchor(url, name);
         		//statement = "<a href=\""+url+"\""+transition()+prefetch()+target(url)+">"+name+"</a>";
         	}
         	
-    	}catch(Exception e){	//���1�Ĥξ��
+    	}catch(Exception e){	//鐃緒申鐃�鐃縦の常申鐃�
     		url = fa1.getStr();
     		statement = "<a href=\""+((mailFncFlg)?("mailto:"):("")) + url+"\""+transition()+prefetch()+target(url)+">"+url+"</a>";
     	}
     	
-    	// �ư����˽����̤�HTML�˽񤭤���
+    	// 鐃銃逸申鐃緒申鐃祝緒申鐃緒申鐃縮わ申HTML鐃祝書きわ申鐃緒申
     	htmlEnv.code.append(statement);
     	return;
     }
     private String getTextAnchor(String url, String name) {
-    	//[ ]�ǰϤ�줿��ʬ��ϥ��ѡ���󥯤ˤ���
-    	//ex) a("[This] is anchor.","URL")
+    	//[ ]鐃叔囲わ申譴随申鐃淑�申鐃熟ワ申鐃術￥申鐃緒申鵐�砲鐃緒申鐃�    	//ex) a("[This] is anchor.","URL")
     	String A="",notA1="",notA2="";
     	int a1 = 0, a2 = name.length()-1;
     	try{
@@ -484,8 +482,7 @@ public class HTMLFunction extends Function {
     	return "";
     }
     protected String transition() {
-    	//�������ܥ��˥᡼�����(data-transition)������ν���
-    	//�������ڡ����ؤ����ܤˤ��б����Ƥ��ʤ�
+    	//鐃緒申鐃緒申鐃緒申鐃旬ワ申鐃祝メー鐃緒申鐃緒申鐃�data-transition)鐃緒申鐃緒申鐃緒申僚鐃緒申鐃�    	//鐃緒申鐃緒申鐃緒申鐃准￥申鐃緒申鐃舜わ申鐃緒申鐃旬にわ申鐃出縁申鐃緒申鐃銃わ申鐃淑わ申
     	if (decos.containsKey("transition"))
     		return " data-transition=\"" + decos.getStr("transition") + "\"";
     	if (decos.containsKey("trans"))
@@ -493,15 +490,13 @@ public class HTMLFunction extends Function {
 		return "";
     }
     protected String prefetch() {
-    	//������ڡ����ץ�ե��å�(data-prefetch)������ν���
-    	//�������ڡ����ؤ����ܤ˻��Ѥ��ƤϤ����ʤ���ޤ꤬����
+    	//鐃緒申鐃緒申鐃緒申據鐃緒申鐃緒申廛鐃春ワ申鐃獣ワ申(data-prefetch)鐃緒申鐃緒申鐃緒申僚鐃緒申鐃�    	//鐃緒申鐃緒申鐃緒申鐃准￥申鐃緒申鐃舜わ申鐃緒申鐃旬に誌申鐃術わ申鐃銃はわ申鐃緒申鐃淑わ申鐃緒申泙蠅�申鐃緒申鐃�
     	if (decos.containsKey("prefetch") || decos.containsKey("pref"))
     		return " data-prefetch";
 		return "";
     }
     protected String target(String url) {
-    	//����������ɥ���ɽ��������(target="_blank")�ν���=> _blank��W3C�Ƕػߤ���Ƥ��뤿�ᡢJS + rel=external�����
-    	//�ֳ����ڡ��������־��( http(s)://�ǻϤޤ���)�פΤ߿���������ɥ�ɽ��
+    	//鐃緒申鐃緒申鐃緒申鐃緒申鐃緒申疋鐃緒申鐃宿緒申鐃緒申鐃緒申鐃緒申鐃�target="_blank")鐃塾緒申鐃緒申=> _blank鐃緒申W3C鐃叔禁止わ申鐃緒申討鐃緒申襪随申瓠�S + rel=external鐃緒申鐃緒申鐃�    	//鐃瞬鰹申鐃緒申鐃准￥申鐃緒申鐃緒申鐃緒申鐃瞬常申鐃� http(s)://鐃叔始まわ申鐃緒申)鐃竣のみ随申鐃緒申鐃緒申鐃緒申鐃緒申疋鐃宿緒申鐃�
     	if (url.matches("\\s*(http|https)://.*"))
     		return "  rel=\"external\"";
     		//return " target=\"_blank\"";
@@ -517,17 +512,15 @@ public class HTMLFunction extends Function {
 //    	String statement ="";
 //    	String button_media = this.getArgs().get(0).toString();
 //    	if (button_media.equals("\"goback\"")){
-//    		// ���ܥ������������
-//			statement = "<form><INPUT type=\"button\" onClick='history.back();' value=\"���\"></form>";
+//    		// 鐃緒申鐃旬ワ申鐃緒申鐃緒申鐃緒申鐃緒申鐃緒申鐃�//			statement = "<form><INPUT type=\"button\" onClick='history.back();' value=\"鐃緒申鐃�"></form>";
 //    	}else if(button_media.equals("\"bookmark\"")){
-//    		// �����˥֥å��ޡ�������򵭽Ҥ���
-//    	}else if(button_media.equals("\"facebook\"")){
-//    		// facebook�Τ����͡��ܥ���ν���򵭽Ҥ���
+//    		// 鐃緒申鐃緒申鐃祝ブッワ申鐃殉￥申鐃緒申鐃緒申鐃緒申魑�劼鐃緒申鐃�//    	}else if(button_media.equals("\"facebook\"")){
+//    		// facebook鐃塾わ申鐃緒申鐃粛￥申鐃旬ワ申鐃緒申僚鐃緒申鐃薯記述わ申鐃緒申
 //    	}else{
-//    		// �ä˻��꤬�ʤ�������ܥ���ˤ���
-//    		statement = "<form><INPUT type=\"button\" onClick='history.back();' value=\"���\"></form>";
+//    		// 鐃獣に誌申鐃所が鐃淑わ申鐃緒申鐃緒申鐃緒申椒鐃緒申鐃祝わ申鐃緒申
+//    		statement = "<form><INPUT type=\"button\" onClick='history.back();' value=\"鐃緒申鐃�"></form>";
 //    	}
-//    	// �ư����˽����̤�HTML�˽񤭤���
+//    	// 鐃銃逸申鐃緒申鐃祝緒申鐃緒申鐃縮わ申HTML鐃祝書きわ申鐃緒申
 //    	html_env.code.append(statement);
 //    	return;
 //    }
@@ -1236,7 +1229,7 @@ public class HTMLFunction extends Function {
 					Log.out("<div id="+divname+">");
 				}
 
-				//xml�����
+				//xml鐃緒申鐃緒申鐃�
 				if(!is_hidden){
 					htmlEnv2.code.append("<EMBED>");
 					htmlEnv.code.append(returnedcode);
@@ -1582,7 +1575,7 @@ public class HTMLFunction extends Function {
         			droptarget[0] = value;
 
 
-        		//script ����
+        		//script 鐃緒申鐃緒申
         		Date d1 = new Date();
         		SimpleDateFormat sdf = new SimpleDateFormat("yyyymmddHHmmss");
         		String today = sdf.format(d1);

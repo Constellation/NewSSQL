@@ -471,7 +471,7 @@ public class TFEparser {
 		if (equalidx != -1 && !skipCondition) {
 			// found key = att
 			key = token.substring(0, equalidx);
-//			token = token.substring(equalidx + 1);		//TODO: <= This causes an error.  ex) "x==100"!
+			token = token.substring(equalidx + 1);		//TODO: <= This causes an error.  ex) "x==100"!
 
 			// tk to ignore space between = and value/////////////////
 			key = key.trim();
@@ -583,12 +583,12 @@ public class TFEparser {
 
 		String token;
 
-		// @�ǻϤޤäƤ�?��
+		// @鐃叔始まってわ申?鐃緒申
 		if (!toks.lookToken().equals("@"))
 			return;
 		toks.nextToken();
 
-		// ���μ��� {
+		// 鐃緒申鐃塾種申鐃緒申 {
 		if (!toks.nextToken().equals("{")) {
 			System.err
 					.println("*** Illegal Token Found after Decoration token '@' ***");
@@ -826,8 +826,8 @@ public class TFEparser {
     }
     //hanki end
     /*
-     * // ��?������ʲ������ // private Function deco_read(String fn) { private void
-     * deco_read(TFE tfe) { // �ǽ餬@�ǻϤޤäƤ��ʤ�?����?�ʤ� if
+     * // 鐃緒申?鐃緒申鐃緒申鐃緒申焚鐃緒申鐃緒申鐃緒申 // private Function deco_read(String fn) { private void
+     * deco_read(TFE tfe) { // 鐃叔初が@鐃叔始まってわ申鐃淑わ申?鐃緒申鐃緒申?鐃淑わ申 if
      * (!toks.lookToken().equals("@")) return; toks.nextToken();
      *
      * Log.out("@@ start read decoration @@");
@@ -849,7 +849,7 @@ public class TFEparser {
 
     private void decoration_out(ITFE tfe, String name, Object value) {
 
-        /* ��?Ū��String�����ɤ�ʤ� */
+        /* 鐃緒申?的鐃緒申String鐃緒申鐃緒申鐃宿わ申覆鐃�*/
         tfe.addDeco(name, (String) value);
         Log.out("[decoration name=" + name + " value=" + value + "]");
 
