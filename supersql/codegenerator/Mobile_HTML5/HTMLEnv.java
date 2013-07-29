@@ -30,8 +30,11 @@ public class HTMLEnv extends LocalEnv {
     
     String title = "";		//added by goto 20130411  "title"
     String bg = "";			//added by goto 20130311  "background"
-    int maxWidth = 350;		//added by goto 20130512  "max-width"	Default:350
-
+//    int maxWidth = 350;		//added by goto 20130512  "max-width"	Default:350
+    int portraitWidth = -1;		//added by goto 20130512  "max-width"	Default:-1
+    int landscapeWidth = -1;	//added by goto 20130512  "max-width"	Default:-1
+    int pcWidth = -1;			//added by goto 20130512  "max-width"	Default:-1
+    
     public static String 	//added by goto 20130515  "search"
 	    PHP = "<?php\n" +	//初期定義
 	    		"//XSS対策\n" +
@@ -321,7 +324,15 @@ public class HTMLEnv extends LocalEnv {
 
     		
     		//added by goto 20130512  "max-width"
-			header.append("<script type=\"text/javascript\"> var windowWidthThreshold = "+maxWidth+" </script>\n");
+//    		header.append("<script type=\"text/javascript\"> var windowWidthThreshold = "+maxWidth+" </script>\n");
+			header.append(
+					"<script type=\"text/javascript\">\n" +
+					"<!-- \n" +
+					"var portraitWidth = "+portraitWidth+";\n" +
+					"var landscapeWidth = "+landscapeWidth+";\n" +
+					"var pcWidth = "+pcWidth+";\n" +
+					"-->\n" +
+					"</script>\n");
     		
 //退避    		header.append("<script src=\"js/script1.js\"></script>\n");
     		header.append("<script src=\"jscss/script1.js\"></script>\n");
@@ -425,7 +436,7 @@ public class HTMLEnv extends LocalEnv {
 	//            String relative_path = linkurl.substring(fileDir.length()+1);
 	            // 書き込むファイルの名前
 	            //String outputFileName = "/Applications/XAMPP/htdocs/ssql/js/c2.js";
-	            String outputFileName = fileDir + "/js/script1.js";
+	            String outputFileName = fileDir + "/jscss/script1.js";
 	//            System.out.println("outputFileName="+outputFileName);
 	            // ファイルオブジェクトの生成
 	            File outputFile = new File(outputFileName);
@@ -501,10 +512,14 @@ public class HTMLEnv extends LocalEnv {
 	    	        //画面サイズに応じて表示widthを変更		//added by goto 20130512
 	    	        pw.println("\n/** 画面サイズに応じて表示widthを変更 **/\n" +
 	    	        		"/** 画面width > 閾値 のとき、widthを固定して表示をセンタリング **/\n" +
-	    	        		"//閾値(windowWidthThreshold)は、HTMLファイルの<head>で指定\n" +
+	    	        		//"//閾値(windowWidthThreshold)は、HTMLファイルの<head>で指定\n" +
+	    	        		"//PC: pc-width値に固定(指定なし(-1):350)\n" +
+	    	        		"//モバイル: 縦=portrait-width値に固定(指定なし(-1):100%) ／ 縦=landscape-width値に固定(指定なし(-1):100%)\n" +
 	    	        		//"var windowWidthThreshold = 500; 	//閾値\n" +
 	    	        		"//初期load時\n" +
+	    	        		"var windowWidthThreshold = 0;\n" +
 	    	        		"$(document).ready(function(){\n" +
+	    	        		"	windowWidthThreshold = getWindowWidthThreshold();\n" +
 	    	        		"	if( $(window).width() > windowWidthThreshold ){\n" +
 	    	        		"		//$(\"table\").css(\"width\",\"auto\");\n" +
 	    	        		"		$(\"#header1\").css(\"width\",windowWidthThreshold).css(\"margin\",\"auto\");\n" +
@@ -516,6 +531,7 @@ public class HTMLEnv extends LocalEnv {
 	    	        		"});\n" +
 	    	        		"//画面サイズが変更されたとき\n" +
 	    	        		"window.onresize = function() {\n" +
+	    	        		"	windowWidthThreshold = getWindowWidthThreshold();\n" +
 	    	        		"	if( $(window).width() > windowWidthThreshold ){\n" +
 	    	        		"    	//$(\"table\").css(\"width\",\"auto\");\n" +
 	    	        		"		$(\"#header1\").css(\"width\",windowWidthThreshold).css(\"margin\",\"auto\");\n" +
@@ -531,6 +547,29 @@ public class HTMLEnv extends LocalEnv {
 	    	        		"		$(\"#LOGINpanel1\").css(\"width\",\"97%\");\n" +
 	    	        		"		$(\"#LOGOUTpanel1\").css(\"width\",\"100%\");\n" +
 	    	        		"	}\n" +
+	    	        		"}\n" +
+	    	        		"//画面width閾値を返す\n" +
+	    	        		"function getWindowWidthThreshold(){\n" +
+	    	        		"	if(!isSmartphone()){\n" +
+	    	        		"		//PC\n" +
+	    	        		"		if(pcWidth < 0)	return 350;\n" +
+	    	        		"		else			return pcWidth;\n" +
+	    	        		"	}else{\n" +
+	    	        		"		//モバイル\n" +
+	    	        		"		if(isPortrait()){\n" +
+	    	        		"			//縦向き\n" +
+	    	        		"			return portraitWidth;\n" +
+	    	        		"		}else{\n" +
+	    	        		"			//横向き\n" +
+	    	        		"			return landscapeWidth;\n" +
+	    	        		"		}\n" +
+	    	        		"	}\n" +
+	    	        		"}\n" +
+	    	        		"//端末が縦向きかどうか\n" +
+	    	        		"function isPortrait(){\n" +
+	    	        		"	if($(window).width() < $(window).height())\n" +
+	    	        		"		return true;\n" +
+	    	        		"	return false;\n" +
 	    	        		"}\n\n");
 	    	        //twitter
 	              	pw.println("$(document).on(\"pagebeforecreate\",'[data-role=page]',function(e){\n" +
@@ -1498,6 +1537,7 @@ public class HTMLEnv extends LocalEnv {
     	}
 
     	if(GlobalEnv.getframeworklist() == null){
+    		footer.append("<hr size=\"1\">");
     		if(footerFlag==1)		//通常時のみ（Prev/Nextでは行わない）
 	    		if(!copyright.equals("")){	//copyrightの宣伝を付加
 	    			footer.append("<div>\n");
@@ -1818,10 +1858,20 @@ public class HTMLEnv extends LocalEnv {
         
         //added by goto 20130512  "max-width"
         try{
-	        if (decos.containsKey("max-width"))
-	        	maxWidth = Integer.parseInt(decos.getStr("max-width"));
-	        else if (decos.containsKey("maxwidth"))
-	        	maxWidth = Integer.parseInt(decos.getStr("maxwidth"));
+//	        if (decos.containsKey("max-width"))
+//	        	maxWidth = Integer.parseInt(decos.getStr("max-width"));
+//	        else if (decos.containsKey("maxwidth"))
+//	        	maxWidth = Integer.parseInt(decos.getStr("maxwidth"));
+	        if (decos.containsKey("portrait-width"))
+	        	portraitWidth = Integer.parseInt(decos.getStr("portrait-width"));
+	        else if (decos.containsKey("p-width"))
+	        	portraitWidth = Integer.parseInt(decos.getStr("p-width"));
+	        if (decos.containsKey("landscape-width"))
+	        	landscapeWidth = Integer.parseInt(decos.getStr("landscape-width"));
+	        else if (decos.containsKey("l-width"))
+	        	landscapeWidth = Integer.parseInt(decos.getStr("l-width"));
+	        if (decos.containsKey("pc-width"))
+	        	pcWidth = Integer.parseInt(decos.getStr("pc-width"));
         }catch(Exception e){ /*数値以外*/ }
         
         if (decos.containsKey("description"))

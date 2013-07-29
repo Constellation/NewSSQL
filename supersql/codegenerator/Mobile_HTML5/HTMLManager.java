@@ -123,7 +123,7 @@ public class HTMLManager extends Manager{
         		//changed by goto 20120715 start
 	        	//PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(
 	            //        html_env.filename)));
-        		Log.info("Window max-width: "+html_env.maxWidth);
+//        		Log.info("Window max-width: "+html_env.maxWidth);
         		PrintWriter pw;
 	            if (html_env.charset != null){
 		        	pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
