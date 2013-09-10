@@ -851,6 +851,7 @@ public class HTMLFunction extends Function {
     	try{					//引数2つ or 3つの場合
     		fa2 = (FuncArg) this.getArgs().get(1);
     		detailORurl = fa2.getStr();
+    		if(detailORurl.equals(""))	return;		//added 20130910
     		title = fa1.getStr();
         	
         	try{						//引数3つの場合
