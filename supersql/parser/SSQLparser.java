@@ -138,8 +138,7 @@ public class SSQLparser {
 		Log.info("[Paser:Parser] filename = " + filename);
 		BufferedReader in;
 		StringBuffer tmp = new StringBuffer();
-		try 
-		{
+		try{
 			//in = new BufferedReader(new FileReader(filename));
 			//TODO: file-encoding鐃緒申鐃緒申鐃緒申鐃緒申鐃緒申鐃緒申鐃緒申鐃緒申鐃夙随申任鐃緒申鐃緒申鐃緒申鐃緒申 鐃緒申鐃緒申JISAutoDetect: 文鐃緒申鐃宿の種申動判鐃緒申鐃�eader鐃緒申鐃初ス鐃塾わ申鐃緒申鐃術可￥申
 			// 鐃緒申鐃緒申鐃瞬ワ申奪箸妊螢�申鐃緒申鐃緒申肇如鐃緒申鐃緒申鐃淑醐申鐃緒申匹鐃銃逸申儡鐃緒申鐃緒申鐃緒申匹濆鐃緒申鐃緒申鐃�			//BufferedReader
@@ -151,15 +150,12 @@ public class SSQLparser {
 			in = new BufferedReader(new InputStreamReader(new FileInputStream(filename), "UTF-8"));		//changed by goto 20130519 (This is an important change.)
 
 			String line = null;
-			while (true) 
-			{
+			while (true){
 				line = in.readLine();
-				if (line == null)
-					break;
+				if (line == null)	break;
 				
 				//goto 20130915  "<?  ?>"
-				if (line.startsWith("<?"))
-				{
+				if (line.startsWith("<?")){
 					String line1 = line.substring(0, line.indexOf("<?"));
 					String buf = "";
 					while (!line.startsWith("?>")){
@@ -168,38 +164,30 @@ public class SSQLparser {
 					}
 					buf = buf.substring(0,buf.lastIndexOf("?>"));	//substring last '?>'
 					textString.add(textNum, buf);
-//					int t = line.indexOf("?>");
 					line = line1 + "text(\"TextLabel_"+textNum+"\")!" + line.substring(line.indexOf("?>") + 2);	//add label
 					//Log.i("textString.get("+textNum+") = \n"+textString.get(textNum));
 					textNum++;
 				}
 
-				if (line.contains("/*"))
-				{
-					int s = line.indexOf("/*");
-					String line1 = line.substring(0, s);
-					// tmp.append(" "+line1);
+				if (line.contains("/*")){
+					String line1 = line.substring(0, line.indexOf("/*"));
 					while (!line.contains("*/"))
 						line = in.readLine();
-					int t = line.indexOf("*/");
-					line = line1 + line.substring(t + 2);
+					line = line1 + line.substring(line.indexOf("*/") + 2);
 				}
-				if (line.contains("//")) 
-				{
+				
+				if (line.contains("//") || line.contains("\\\"")){
 					boolean dqFlg = false;
 					int i = 0;
-
-					for (i = 0; i < line.length(); i++) 
-					{
-						if (line.charAt(i) == '"' && !dqFlg)
+					for (i=0; i < line.length(); i++){
+						if (!dqFlg && line.charAt(i) == '"' && i>0 && line.charAt(i-1) != '\\')		//omit \"
 							dqFlg = true;
-						else if (line.charAt(i) == '"' && dqFlg)
+						else if (dqFlg && line.charAt(i) == '"' && i>0 && line.charAt(i-1) != '\\')	//omit \"
 							dqFlg = false;
 
-						if (!dqFlg
-								&& i < line.length() - 1
-								&& (line.charAt(i) == '/' && line
-								.charAt(i + 1) == '/'))
+						if(dqFlg && i>0 && line.charAt(i-1)=='\\' && line.charAt(i)=='"')	//if \"
+							line = line.substring(0,i-1)+"&quot;"+line.substring(i+1,line.length());
+						else if (!dqFlg && i < line.length()-1 && line.charAt(i)=='/' && line.charAt(i+1)=='/')
 							break;
 					}
 					line = line.substring(0, i);
@@ -209,10 +197,8 @@ public class SSQLparser {
 			in.close();
 			query = tmp.toString().trim();
 		} catch (FileNotFoundException e) {
-			System.err.println("Error[SQLparser]: File(" + filename
-					+ ") Is Not Found.");
-			GlobalEnv.addErr("Error[SQLparser]: File(" + filename
-					+ ") Is Not Found." + e);
+			System.err.println("Error[SQLparser]: File(" + filename	+ ") Is Not Found.");
+			GlobalEnv.addErr("Error[SQLparser]: File(" + filename + ") Is Not Found." + e);
 			return "";
 		} catch (IOException e) {
 			GlobalEnv.addErr("Error[SQLparser]:" + e);
@@ -312,56 +298,6 @@ public class SSQLparser {
 //		}catch(Exception e){ }
 		
 		
-////		//20130915  for last '!'
-//		// ! FROM  ->  FROM
-//		try{
-//			StringTokenizer st = new StringTokenizer(query);
-//			String s = "";
-//			String q = "";
-//			boolean f = false;
-//			while(st.hasMoreTokens()){
-//				s = st.nextToken().toString();
-//				Log.i(s);
-//				q += s+" ";
-//				if (!f && s.endsWith("!"))		f = true;
-////				if (!f && s.equals("!"))		f = true;
-//				else if (f && !s.equals(" ") && !s.equals("	") && !s.toLowerCase().equals("from"))	f = false;
-//				else if (f && s.toLowerCase().equals("from")){
-//					q = q.substring(0,q.lastIndexOf("!")) + " from ";
-//					Log.i("	q = "+q);
-//					f = false;
-//				}
-//				Log.i(f);
-//				query = q;
-//			}
-//		}catch(Exception e){ }
-//		Log.i(query);
-		
-//		//<? -- ?>
-//		try{
-//			StringTokenizer st = new StringTokenizer(query);
-//			String s = "";
-//			String ps = "";
-//			String q = "";
-//			String nq = "";
-//			boolean in = false;
-//			while(st.hasMoreTokens()){
-//				s = st.nextToken().toString();
-//				if(!in && s.equals("<?"))	in = true;
-//				else if(in && ps.equals("?>")) in = false;
-//				ps=s;
-//					
-//				if(!in)		q += s+" ";
-//				else		nq += s+" ";
-//			}
-//			Log.i("	!!q = "+q);
-//			Log.i("	!!nq = "+nq);
-//			query = q;
-//		}catch(Exception e){ }
-		
-		
-		
-		
 		//added by goto For "slideshow"
 		if(media.equals("mobile_html5") && query.contains("slideshow")){
 			// TODO: 1."sslideshow"鐃緒申離潺鐃緒申鐃緒申鐃緒申彁鐃緒申離鐃緒申蕁蕊緒申鐃緒申鐃�.鐃緒申鐃緒申鐃緒申鐃緒申鐃緒申表鐃緒申鐃緒申鐃宿わ申鐃緒申鐃緒申判鐃緒申
@@ -383,8 +319,7 @@ public class SSQLparser {
 			if (query.matches(".*\\[imagefile\\(.*\\)\\s*\\@\\s*\\{.*\\}.*")) {
 				// @鐃緒申鐃緒申
 				// "[imagefile(*) @ {*}" -> "[imagefile(*) @ {*} ]! "
-				query = query
-						.replaceAll(
+				query = query.replaceAll(
 								"\\[imagefile\\(.*\\)\\s*\\@\\s*\\{[a-zA-Z0-9=\\s,]*\\}",
 								"$0]! ");
 			} else {
