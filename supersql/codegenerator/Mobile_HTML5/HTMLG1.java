@@ -74,6 +74,13 @@ public class HTMLG1 extends Grouper {
     		tableFlg = false;
     	}//else divFlg = false;
         
+        //20130529
+        if(decos.containsKey("dynamic")){
+        	if(!HTMLEnv.dynamicFlg)	HTMLEnv.staticBuf = html_env.code;
+        	HTMLEnv.dynamicFlg = true;
+        	Log.i("※G1 HTMLEnv.staticBuf: "+HTMLEnv.staticBuf);
+        }
+        
         if(!GlobalEnv.isOpt()){
         	//20130503  Panel
     	    panelFlg = HTMLC1.panelProcess1(decos, html_env);
@@ -342,6 +349,15 @@ public class HTMLG1 extends Grouper {
     	    //Log.info("tfe : " + tfe);
             //Log.info("tfe : " + this.tfes);
             //Log.info("tfe : " + this.tfeItems);
+    	    
+	      	
+    	    if(HTMLEnv.dynamicFlg){	//20130529 dynamic
+	      		//☆★
+	      		Log.info("★★G1-1 tfe : " + tfe);
+	    		//☆★            Log.info("G1 tfe : " + tfe);
+	            //☆★            Log.info("G1 tfes : " + this.tfes);
+	            //☆★            Log.info("G1 tfeItems : " + this.tfeItems);
+	      	}
             
             this.worknextItem();
             if(decos.containsKey("table0") || HTMLC1.table0Flg || HTMLC2.table0Flg || HTMLG2.table0Flg)	table0Flg = true;
@@ -352,6 +368,17 @@ public class HTMLG1 extends Grouper {
         		tableFlg = false;
         	}
             
+            //20130529
+            if(decos.containsKey("dynamic"))	HTMLEnv.dynamicFlg = true;
+            
+	      	
+    	    if(HTMLEnv.dynamicFlg){	//20130529 dynamic
+	      		//☆★
+	      		Log.info("★★G1-2 tfe : " + tfe);
+	    		//☆★            Log.info("G1 tfe : " + tfe);
+	            //☆★            Log.info("G1 tfes : " + this.tfes);
+	            //☆★            Log.info("G1 tfeItems : " + this.tfeItems);
+	      	}
             //20130309
             //20130314  table
         	if(tableFlg){
@@ -440,6 +467,8 @@ public class HTMLG1 extends Grouper {
         }
         
         if(divFlg)	divFlg = false;		//20130326  div
+        
+        if(HTMLEnv.dynamicFlg)	HTMLEnv.dynamicFlg = false;		//20130529 dynamic
         
         
         G1Flg=false;

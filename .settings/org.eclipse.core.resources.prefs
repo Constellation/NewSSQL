@@ -36,6 +36,6 @@ encoding//supersql/dataconstructor/TreeGenerator.java=EUC-JP
 encoding//supersql/embed/TestServlet.java=euc-jp
 encoding//supersql/extendclass/ExtList.java=euc-jp
 encoding//supersql/invoke/InvokeEnv.java=UTF-8
-encoding//supersql/parser/SSQLparser.java=EUC-JP
+encoding//supersql/parser/SSQLparser.java=UTF-8
 encoding//supersql/parser/TFEparser.java=UTF-8
 instance/org.eclipse.core.net/org.eclipse.core.net.hasMigrated=true

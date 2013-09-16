@@ -39,6 +39,9 @@ public class HTMLFunction extends Function {
 	protected HTMLEnv htmlEnv2;
 	private static int meter_id=0;
 	private static String updateFile;
+	static Integer seq_num = 1;			//20130914  "SEQ_NUM"
+	static String seq_num_ClassID = "";	//20130914  "SEQ_NUM"
+	static boolean DESC_Flg = false;	//20130914  "SEQ_NUM"
 
     public HTMLFunction()
     {
@@ -72,6 +75,9 @@ public class HTMLFunction extends Function {
         	return FuncNullForJsoup();
         }
         else if(FuncName.equalsIgnoreCase("mail")){
+        	return FuncNullForJsoup();
+        }
+        else if(FuncName.equalsIgnoreCase("seq_num")){
         	return FuncNullForJsoup();
         }
         else if (FuncName.equalsIgnoreCase("submit")) {
@@ -141,6 +147,10 @@ public class HTMLFunction extends Function {
         //added by goto 20130417  "mail"
         else if(FuncName.equalsIgnoreCase("mail")){
         	Func_url(true);
+        }
+    	//added by goto 20130914  "SEQ_NUM"
+        else if (FuncName.equalsIgnoreCase("seq_num")) {
+        	Func_seq_num();
         }
         //chie
         else if (FuncName.equalsIgnoreCase("submit")) {
@@ -504,6 +514,33 @@ public class HTMLFunction extends Function {
     }
     //added by goto 20130308 end
 
+	//added by goto 20130914  "SEQ_NUM"
+    /*  SEQ_NUM( [Start number [, ASC or DESC] ] )  */
+    private void Func_seq_num() {
+        String classID = HTMLEnv.getClassID(this);
+        if(!classID.equals(seq_num_ClassID)){
+            seq_num_ClassID = classID;
+            try{
+                //第一引数
+                seq_num = Integer.parseInt( ((FuncArg) this.getArgs().get(0)).getStr());
+                try{
+                    //第二引数
+                    String str = ((FuncArg) this.getArgs().get(1)).getStr().toLowerCase().trim();
+                    if(str.equals("desc"))    DESC_Flg = true;
+                }catch(Exception e){
+                    DESC_Flg = false;    //default
+                }
+            }catch(Exception e){
+                seq_num = 1;        //SEQ_NUM() default
+                DESC_Flg = false;    //default
+            }
+        }
+        
+        // 各引数毎に処理した結果をHTMLに書きこむ
+        htmlEnv.code.append(""+((!DESC_Flg)? (seq_num++):(seq_num--)));
+        return;
+	}
+    //seq_num end
     
     
 

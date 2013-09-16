@@ -87,8 +87,13 @@ public class HTMLC1 extends Connector {
     		tableFlg = false;
     	}//else divFlg = false;
         
+        
         //20130529
-        if(decos.containsKey("dynamic"))	HTMLEnv.dynamicFlg = true;
+        if(decos.containsKey("dynamic")){
+        	if(!HTMLEnv.dynamicFlg)	HTMLEnv.staticBuf = html_env.code;
+        	HTMLEnv.dynamicFlg = true;
+        	Log.i("※C1 HTMLEnv.staticBuf: "+HTMLEnv.staticBuf);
+        }
 
         if(!GlobalEnv.isOpt()){
         	//20130503  Panel
@@ -338,9 +343,13 @@ public class HTMLC1 extends Connector {
             
 
 	      	if(HTMLEnv.dynamicFlg){	//20130529 dynamic
+	      		//☆★
+	      		Log.info("☆★C1 tfe : " + tfe);
 	    		//☆★            Log.info("C1 tfe : " + tfe);
-	            //☆★            Log.info("C1 tfes : " + this.tfes);
-	            //☆★            Log.info("C1 tfeItems : " + this.tfeItems);
+	            //☆★
+	      		Log.info("	C1 tfes : " + this.tfes);
+	            //☆★
+	      		Log.info("	C1 tfeItems : " + this.tfeItems);
 	      	}
             
             //Log.out("<TD class=\""
@@ -460,7 +469,20 @@ public class HTMLC1 extends Connector {
       	
       	if(divFlg)	divFlg = false;		//20130326  div
       	
-        if(HTMLEnv.dynamicFlg)	HTMLEnv.dynamicFlg = false;		//20130529 dynamic
+        if(HTMLEnv.dynamicFlg){
+        	HTMLEnv.dynamicFlg = false;		//20130529 dynamic
+//        	StringBuffer buf = new StringBuffer();
+//        	buf = HTMLEnv.staticBuf;
+//        	Log.i("\nbuf = "+buf);
+////        	HTMLEnv.dynamicBuf.append(html_env.code.delete(0, buf.length()));
+//        	HTMLEnv.dynamicBuf.insert(0,"");
+////        	HTMLEnv.dynamicBuf=HTMLEnv.staticBuf;
+//        	HTMLEnv.dynamicBuf.append(html_env.code.delete(0, buf.length()));
+//        	
+//        	html_env.code = buf;
+//        	Log.i("\n\nHTMLEnv.dynamicBuf = "+HTMLEnv.dynamicBuf);
+//        	Log.i("\n\nhtml_env.code = "+html_env.code);
+        }
       	
         //Log.out("</TR></TABLE>");
 

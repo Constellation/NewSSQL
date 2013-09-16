@@ -459,19 +459,33 @@ public class TFEparser {
 		return makeAttribute(token, false);
 	}
 	
-	//TODO Change the way to create the attribute if there is an equal sign
+	//TODO Change the way to create the attribute if there is an equal sign  -> solved
 	private Attribute makeAttribute(String token, boolean skipCondition) {
-
 		String line;
 		String name;
 		String key = null;
-
 		int equalidx = token.indexOf('=');
 
-		if (equalidx != -1 && !skipCondition) {
+		//goto 20130916   For the equal sign problem.
+		//""の外に=があるかどうかチェック
+		//(Check whether there is an equal sign outside the double quote.)
+		boolean equalSignOutsideDoubleQuote = false;
+		if(token.contains("\"")){
+			for(int i=0;i<token.length();i++){
+				if(token.charAt(i) == '"'){
+					break;
+				}else if(token.charAt(i)=='='){
+					equalSignOutsideDoubleQuote = true;
+					break;
+				}
+			}
+		}else equalSignOutsideDoubleQuote = true;
+		
+//		if (equalidx != -1 && !skipCondition) {
+		if (equalidx != -1 && !skipCondition && equalSignOutsideDoubleQuote) {
 			// found key = att
 			key = token.substring(0, equalidx);
-			token = token.substring(equalidx + 1);		//TODO: <= This causes an error.  ex) "x==100"!
+			token = token.substring(equalidx + 1);		//TODO: <= This causes an error.  ex) "x==100"!  -> solved
 
 			// tk to ignore space between = and value/////////////////
 			key = key.trim();

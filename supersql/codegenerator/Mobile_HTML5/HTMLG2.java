@@ -134,6 +134,13 @@ public class HTMLG2 extends Grouper {
     		tableFlg = false;
     	}//else divFlg = false;
         
+        //20130529
+        if(decos.containsKey("dynamic")){
+        	if(!HTMLEnv.dynamicFlg)	HTMLEnv.staticBuf = html_env.code;
+        	HTMLEnv.dynamicFlg = true;
+        	Log.i("※G2 HTMLEnv.staticBuf: "+HTMLEnv.staticBuf);
+        }
+        
         if(!GlobalEnv.isOpt()){
         	//20130503  Panel
     	    panelFlg = HTMLC1.panelProcess1(decos, html_env);
@@ -347,6 +354,14 @@ public class HTMLG2 extends Grouper {
             //Log.info("tfe : " + this.tfes);
             //Log.info("tfe : " + this.tfeItems);
 
+            
+	      	if(HTMLEnv.dynamicFlg){	//20130529 dynamic
+	      		//☆★
+	      		Log.info("★★G2-1 tfe : " + tfe);
+	    		//☆★            Log.info("G2 tfe : " + tfe);
+	            //☆★            Log.info("G2 tfes : " + this.tfes);
+	            //☆★            Log.info("G2 tfeItems : " + this.tfeItems);
+	      	}
 
             this.worknextItem();
             if(decos.containsKey("table0") || HTMLC1.table0Flg || HTMLC2.table0Flg || HTMLG1.table0Flg)	table0Flg = true;
@@ -356,6 +371,18 @@ public class HTMLG2 extends Grouper {
         		divFlg = true;
         		tableFlg = false;
         	}
+        	
+            //20130529
+            if(decos.containsKey("dynamic"))	HTMLEnv.dynamicFlg = true;
+            
+            
+            if(HTMLEnv.dynamicFlg){	//20130529 dynamic
+	      		//☆★
+	      		Log.info("★★G2-2 tfe : " + tfe);
+	    		//☆★            Log.info("G2 tfe : " + tfe);
+	            //☆★            Log.info("G2 tfes : " + this.tfes);
+	            //☆★            Log.info("G2 tfeItems : " + this.tfeItems);
+	      	}
             
             if (html_env.not_written_classid.contains(classid) && html_env.code.indexOf(classid) >= 0 ){
             	html_env.code.delete(html_env.code.indexOf(classid),html_env.code.indexOf(classid)+classid.length()+1);
@@ -501,6 +528,8 @@ public class HTMLG2 extends Grouper {
     	HTMLC1.panelProcess2(decos, html_env, panelFlg);
         
         if(divFlg)	divFlg = false;		//20130326  div
+        
+        if(HTMLEnv.dynamicFlg)	HTMLEnv.dynamicFlg = false;		//20130529 dynamic
 
         //added by goto 20130413  "row Prev/Next"
         if(rowFlg){

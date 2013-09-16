@@ -67,6 +67,10 @@ public class HTMLFunction extends Function {
     static int mapFuncCount = 1;	//20130717  "map"
     static int gpsFuncCount = 1;	//20130717  "gps"
     
+	static Integer seq_num = 1;			//20130914  "SEQ_NUM"
+	static String seq_num_ClassID = "";	//20130914  "SEQ_NUM"
+	static boolean DESC_Flg = false;	//20130914  "SEQ_NUM"
+    
     static String updateFile;
 
     public HTMLFunction()
@@ -158,7 +162,7 @@ public class HTMLFunction extends Function {
         	Func_insert(true,false);
         }
         //added by goto 20130721  "update"
-        else if(FuncName.equalsIgnoreCase("insert_update")){
+        else if(FuncName.equalsIgnoreCase("insert_update") || FuncName.equalsIgnoreCase("form")){
         	Func_insert(false,true);
         }
         //added by goto 20130531  "check"
@@ -192,6 +196,26 @@ public class HTMLFunction extends Function {
     	//added by goto 20130717  "gps_info"
         else if (FuncName.equalsIgnoreCase("gps_info")) {
         	Func_gps_info();
+        }
+    	//added by goto 20130914  "audio"
+        else if (FuncName.equalsIgnoreCase("music") || FuncName.equalsIgnoreCase("audio")) {
+        	Func_audio();
+        }
+    	//added by goto 20130914  "movie"
+        else if (FuncName.equalsIgnoreCase("movie") || FuncName.equalsIgnoreCase("video")) {
+        	Func_movie();
+        }
+    	//added by goto 20130914  "object"
+        else if (FuncName.equalsIgnoreCase("object")) {
+        	Func_object();
+        }
+    	//added by goto 20130914  "SEQ_NUM"
+        else if (FuncName.equalsIgnoreCase("seq_num")) {
+        	Func_seq_num();
+        }
+    	//added by goto 20130915  "text"
+        else if (FuncName.equalsIgnoreCase("text")) {
+        	Func_text();
         }
         
         //chie
@@ -843,6 +867,8 @@ public class HTMLFunction extends Function {
     /*	<type:1> pop("title","detail") <=> pop("title","detail",1)	*/
     /*	<type:2> pop("title","image URL",2)		*/
     private void Func_pop() {
+        Log.i(this.getArgs());
+    	
     	FuncArg fa1 = (FuncArg) this.getArgs().get(0), fa2, fa3;
     	String title, detailORurl, type;
     	int type1Flg = 0; //type1(文字)フラグ
@@ -1043,8 +1069,10 @@ public class HTMLFunction extends Function {
     		search_col_array += s_array[i] +"\""+((i<col_num-1)?(",\""):(""));
     	}
     	col_num -= a_pop_count;
-    	search_col = search_col.replaceAll("a\\(","").replaceAll("anchor\\(","").replaceAll("mail\\(","").replaceAll("pop\\(","").replaceAll("popup\\(","").replaceAll("\\)","");
-    	search_col_array = search_col_array.replaceAll("a\\(","").replaceAll("anchor\\(","").replaceAll("mail\\(","").replaceAll("pop\\(","").replaceAll("popup\\(","").replaceAll("\\)","");
+//    	search_col = search_col.replaceAll("a\\(","").replaceAll("anchor\\(","").replaceAll("mail\\(","").replaceAll("pop\\(","").replaceAll("popup\\(","").replaceAll("\\)","");
+//    	search_col_array = search_col_array.replaceAll("a\\(","").replaceAll("anchor\\(","").replaceAll("mail\\(","").replaceAll("pop\\(","").replaceAll("popup\\(","").replaceAll("\\)","");
+    	search_col = search_col.replaceAll("a\\(","").replaceAll("anchor\\(","").replaceAll("mail\\(","").replaceAll("pop\\(","").replaceAll("popup\\(","").replaceAll("count\\(\\*\\)","count[*]").replaceAll("\\)","").replaceAll("count\\[\\*\\]","count(*)");
+    	search_col_array = search_col_array.replaceAll("a\\(","").replaceAll("anchor\\(","").replaceAll("mail\\(","").replaceAll("pop\\(","").replaceAll("popup\\(","").replaceAll("count\\(\\*\\)","count[*]").replaceAll("\\)","").replaceAll("count\\[\\*\\]","count(*)");
     	
     	//Log.i("	1:"+title+"	2:"+columns+"	col_num:"+col_num);
     	//Log.i("	search_col:"+search_col+"	search_col_array:"+search_col_array);
@@ -1270,7 +1298,7 @@ public class HTMLFunction extends Function {
     				"                    else if($j>0 && $search_a_Flg[$j-1]=='true')	search"+searchCount+"_p2('<a href=\\\"'.$row[$j].'\\\" target=\\\"_blank\\\" rel=\\\"external\\\" style=\\\"white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\\\">'.$row[$j-1].'</a>', ++$k);     //tdに結果を埋め込む\n" +
     				"                    else if($j>0 && $search_mail_Flg[$j-1]=='true')	search"+searchCount+"_p2('<a href=\\\"mailto:'.$row[$j].'\\\" target=\\\"_self\\\" style=\\\"white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\\\">'.$row[$j-1].'</a>', ++$k);     				//tdに結果を埋め込む\n" +
     				"                    //else if($j>0 && $search_pop_Flg[$j-1]=='true')	search"+searchCount+"_p2('<a href=\\\"'.$row[$j].'\\\" target=\\\"_blank\\\" rel=\\\"external\\\" style=\\\"white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\\\">'.$row[$j-1].'</a>', ++$k);     //tdに結果を埋め込む\n" +
-    				"                    else if($j>0 && $search_pop_Flg[$j-1]=='true'){\n" +
+    				"                    else if($j>0 && $search_pop_Flg[$j-1]=='true' && !is_null($row[$j])){\n" +
     				"                    	$pop_str = '<a href=\\\"#search_popup1_'.(++$pop_num).'\\\" data-rel=\\\"popup\\\" data-icon=\\\"arrow-r\\\" style=\\\"white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\\\">'.$row[$j-1].'</a>'\n" +
     				"							.'<div data-role=\\\"popup\\\" id=\\\"search_popup1_'.($pop_num).'\\\" data-transition=\\\"slideup\\\" style=\\\"width:95%;\\\" data-overlay-theme=\\\"a\\\">'\n" +
     				"								.'<a href=\\\"#\\\" data-rel=\\\"back\\\" data-role=\\\"button\\\" data-theme=\\\"a\\\" data-icon=\\\"delete\\\" data-iconpos=\\\"notext\\\" class=\\\"ui-btn-right\\\">Close</a>'\n" +
@@ -1388,7 +1416,6 @@ public class HTMLFunction extends Function {
     	if(after_from.toLowerCase().startsWith("from "))	after_from = after_from.substring("from".length()).trim();
     	//Log.info(title);
     	
-    	
     	int col_num=1;
     	String columns0 = columns;
     	while(columns0.contains(",")){
@@ -1466,8 +1493,10 @@ public class HTMLFunction extends Function {
     		select_col_array += s_array[i] +"\""+((i<col_num-1)?(",\""):(""));
     	}
     	col_num -= a_pop_count;
-    	select_col = select_col.replaceAll("a\\(","").replaceAll("anchor\\(","").replaceAll("mail\\(","").replaceAll("pop\\(","").replaceAll("popup\\(","").replaceAll("\\)","");
-    	select_col_array = select_col_array.replaceAll("a\\(","").replaceAll("anchor\\(","").replaceAll("mail\\(","").replaceAll("pop\\(","").replaceAll("popup\\(","").replaceAll("\\)","");
+//    	select_col = select_col.replaceAll("a\\(","").replaceAll("anchor\\(","").replaceAll("mail\\(","").replaceAll("pop\\(","").replaceAll("popup\\(","").replaceAll("\\)","");
+//    	select_col_array = select_col_array.replaceAll("a\\(","").replaceAll("anchor\\(","").replaceAll("mail\\(","").replaceAll("pop\\(","").replaceAll("popup\\(","").replaceAll("\\)","");
+    	select_col = select_col.replaceAll("a\\(","").replaceAll("anchor\\(","").replaceAll("mail\\(","").replaceAll("pop\\(","").replaceAll("popup\\(","").replaceAll("count\\(\\*\\)","count[*]").replaceAll("\\)","").replaceAll("count\\[\\*\\]","count(*)");
+    	select_col_array = select_col_array.replaceAll("a\\(","").replaceAll("anchor\\(","").replaceAll("mail\\(","").replaceAll("pop\\(","").replaceAll("popup\\(","").replaceAll("count\\(\\*\\)","count[*]").replaceAll("\\)","").replaceAll("count\\[\\*\\]","count(*)");
     	
     	//Log.i("	1:"+title+"	2:"+columns+"	col_num:"+col_num);
     	//Log.i("	select_col:"+select_col+"	select_col_array:"+select_col_array);
@@ -1491,6 +1520,7 @@ public class HTMLFunction extends Function {
     		if(query.contains("#"))	query = query.substring(0,query.indexOf("#")).trim().toLowerCase();
     	}else
     		query = after_from.toLowerCase();			//From以下を第三引数へ書く場合
+
     	//Log.i("\n	Query: "+query);
     	String from = "";
     	String where = "";
@@ -1668,7 +1698,7 @@ public class HTMLFunction extends Function {
 							"                    else if($j>0 && $select_a_Flg[$j-1]=='true')	select"+selectCount+"_p2('<a href=\\\"'.$row[$j].'\\\" target=\\\"_blank\\\" rel=\\\"external\\\" style=\\\"white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\\\">'.$row[$j-1].'</a>', ++$k);     //tdに結果を埋め込む\n" +
 							"                    else if($j>0 && $select_mail_Flg[$j-1]=='true')	select"+selectCount+"_p2('<a href=\\\"mailto:'.$row[$j].'\\\" target=\\\"_self\\\" style=\\\"white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\\\">'.$row[$j-1].'</a>', ++$k);     //tdに結果を埋め込む\n" +
 							"                    //else if($j>0 && $select_pop_Flg[$j-1]=='true')	select"+selectCount+"_p2('<a href=\\\"'.$row[$j].'\\\" target=\\\"_blank\\\" rel=\\\"external\\\" style=\\\"white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\\\">'.$row[$j-1].'</a>', ++$k);     //tdに結果を埋め込む\n" +
-							"                    else if($j>0 && $select_pop_Flg[$j-1]=='true'){\n" +
+							"                    else if($j>0 && $select_pop_Flg[$j-1]=='true' && !is_null($row[$j])){\n" +
 							"                    	$pop_str = '<a href=\\\"#select_popup1_'.(++$pop_num).'\\\" data-rel=\\\"popup\\\" data-icon=\\\"arrow-r\\\" style=\\\"white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\\\">'.$row[$j-1].'</a>'\n" +
 							"							.'<div data-role=\\\"popup\\\" id=\\\"select_popup1_'.($pop_num).'\\\" data-transition=\\\"slideup\\\" style=\\\"width:95%;\\\" data-overlay-theme=\\\"a\\\">'\n" +
 							"								.'<a href=\\\"#\\\" data-rel=\\\"back\\\" data-role=\\\"button\\\" data-theme=\\\"a\\\" data-icon=\\\"delete\\\" data-iconpos=\\\"notext\\\" class=\\\"ui-btn-right\\\">Close</a>'\n" +
@@ -2864,6 +2894,108 @@ public class HTMLFunction extends Function {
     }
     //gps_info end
     
+    //added by goto 20130914  "audio"
+    /*  audio("HTML・画像・動画ファイル等のファイル名")  */
+    private void Func_audio() {
+//    	String classID = HTMLEnv.getClassID(this);
+//    	HTMLManager.replaceCode(html_env, classID, "");		//直前の<div>に書き込まれているclassIDを削除
+    	
+    	String str = "";
+    	try{
+    		str = ((FuncArg) this.getArgs().get(0)).getStr();
+    	}catch(Exception e){ }
+    	
+    	// 各引数毎に処理した結果をHTMLに書きこむ
+    	html_env.code.append("<audio src=\""+str+"\" controls>\n");
+    	return;
+    }
+    //audio end
+    
+    //added by goto 20130914  "movie"
+    /*  movie("HTML・画像・動画ファイル等のファイル名")  */
+    private void Func_movie() {
+    	String classID = HTMLEnv.getClassID(this);
+    	HTMLManager.replaceCode(html_env, classID, "");		//直前の<div>に書き込まれているclassIDを削除
+    	
+    	String str = "";
+    	try{
+    		str = ((FuncArg) this.getArgs().get(0)).getStr();
+    	}catch(Exception e){ }
+    	
+    	// 各引数毎に処理した結果をHTMLに書きこむ
+//    	html_env.code.append("<video src=\""+str+"\" class=\"" + classID +"\">\n</video>\n");
+//    	html_env.code.append("<video src=\""+str+"\" class=\"" + classID +"\" controls>\n</video>\n");
+    	html_env.code.append("<video src=\""+str+"\" class=\"" + classID +"\" preload=\"none\" onclick=\"this.play()\" controls>\n</video>\n");
+//    	html_env.code.append("<video src=\""+str+"\" class=\"" + classID +"\" poster=\"XXX.jpg\" preload=\"none\" onclick=\"this.play()\" controls>\n</video>\n");
+    	return;
+    }
+    //movie end
+    
+    //added by goto 20130914  "object"
+    /*  object("HTML・画像・動画ファイル等のファイル名")  */
+    private void Func_object() {
+    	String classID = HTMLEnv.getClassID(this);
+    	HTMLManager.replaceCode(html_env, classID, "");		//直前の<div>に書き込まれているclassIDを削除
+    	
+//    	String statement = "\n";
+		String str = "";
+		try{
+			str = ((FuncArg) this.getArgs().get(0)).getStr();
+		}catch(Exception e){ }
+//		statement += "<object data=\""+str+"\" class=\"" + classID +"\" >\n</object>\n";
+    	
+    	// 各引数毎に処理した結果をHTMLに書きこむ
+    	html_env.code.append("<object data=\""+str+"\" class=\"" + classID +"\" >\n</object>\n");
+    	return;
+    }
+    //object end
+    
+	//added by goto 20130914  "SEQ_NUM"
+    /*  SEQ_NUM( [Start number [, ASC or DESC] ] )  */
+    private void Func_seq_num() {
+    	String classID = HTMLEnv.getClassID(this);
+    	if(!classID.equals(seq_num_ClassID)){
+    		seq_num_ClassID = classID;
+			try{
+				//第一引数
+				seq_num = Integer.parseInt( ((FuncArg) this.getArgs().get(0)).getStr());
+				try{
+					//第二引数
+					String str = ((FuncArg) this.getArgs().get(1)).getStr().toLowerCase().trim();
+					if(str.equals("desc"))	DESC_Flg = true;
+				}catch(Exception e){
+					DESC_Flg = false;	//default
+				}
+			}catch(Exception e){
+				seq_num = 1;		//SEQ_NUM() default
+				DESC_Flg = false;	//default
+			}
+    	}
+    	
+    	// 各引数毎に処理した結果をHTMLに書きこむ
+    	html_env.code.append(""+((!DESC_Flg)? (seq_num++):(seq_num--)));
+    	return;
+    }
+    //seq_num end
+
+	//added by goto 20130914  "text"
+    /*  text("TextLabel_" + Number)  */
+    private void Func_text() {
+    	String str = "";
+    	int textNum = -1;
+		try{
+			//第一引数
+			str = ((FuncArg) this.getArgs().get(0)).getStr();
+			if(str.startsWith("TextLabel_"))
+				textNum = Integer.parseInt( str.substring("TextLabel_".length()) );
+			str = SSQLparser.textString.get(textNum);
+		}catch(Exception e){ }
+    	
+    	// 各引数毎に処理した結果をHTMLに書きこむ
+    	html_env.code.append(str);
+    	return;
+    }
+    //text end
     
     private void Func_null() {
         return;

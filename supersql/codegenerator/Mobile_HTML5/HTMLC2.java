@@ -84,7 +84,11 @@ public class HTMLC2 extends Connector {
     	}//else divFlg = false;
         
         //20130529
-        if(decos.containsKey("dynamic"))	HTMLEnv.dynamicFlg = true;
+        if(decos.containsKey("dynamic")){
+        	if(!HTMLEnv.dynamicFlg)	HTMLEnv.staticBuf = html_env.code;
+        	HTMLEnv.dynamicFlg = true;
+        	Log.i("※C2 HTMLEnv.staticBuf: "+HTMLEnv.staticBuf);
+        }
         
         if(!GlobalEnv.isOpt()){
         	//20130503  Panel
@@ -302,7 +306,10 @@ public class HTMLC2 extends Connector {
                     + HTMLEnv.getClassID(tfe) + " nest\"> decos:" + decos);
 	      	}
         	
+	      	
 	      	if(HTMLEnv.dynamicFlg){	//20130529 dynamic
+	      		//☆★
+	      		Log.info("☆★C2 tfe : " + tfe);
 	      		//☆★      		 Log.info("C2 tfe : " + tfe);
             	//☆★            Log.info("C2 tfes : " + this.tfes);
             	//☆★            Log.info("C2 tfeItems : " + this.tfeItems);

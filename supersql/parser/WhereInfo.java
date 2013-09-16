@@ -51,7 +51,7 @@ public class WhereInfo {
 					paren--;
 					buf.append(ch);
 				} else if (ch.equalsIgnoreCase("and") && (paren == 0)) {
-					//clause分け
+					//clause分鐃緒申
 					WhereParse wp = new WhereParse(buf.toString().trim());
 					where_clause.add(wp);
 					buf = new StringBuffer();
@@ -60,7 +60,7 @@ public class WhereInfo {
 				}
 			}
 		}
-		//clause分け
+		//clause分鐃緒申
 		WhereParse wp = new WhereParse(buf.toString());
 		where_clause.add(wp);
 	}
