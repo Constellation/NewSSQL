@@ -97,7 +97,7 @@ public class HTMLG2 extends Grouper {
         	//Log.info("row:"+decos.getStr("row").replace("\"", ""));
         	row = Integer.parseInt(decos.getStr("row").replace("\"", ""));
         	if(row<1){	//範囲外のとき
-        		Log.info("<<Warning>> row指定の範囲は、1〜です。指定された「row="+row+"」は使用できません。デフォルト値(1)を使用します。");
+        		System.err.println("<<Warning>> row指定の範囲は、1〜です。指定された「row="+row+"」は使用できません。デフォルト値(1)を使用します。");
         		row = 1;
         	}
 //            Log.info("1:	"+decos+"	"+codeCount);

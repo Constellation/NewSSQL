@@ -260,24 +260,25 @@ public class SSQLparser {
 				query = query.substring(0,i) + "<BR>" + query.substring(i+2);
 			
 			//20130915  for last '!'
-			// ! }  ->  }   or   ! FROM  ->  FROM
-			if(!dqFlg && !squareBracketsFlg && c == ']')		squareBracketsFlg = true;	//check squareBracketsFlg
-			else if(!dqFlg && squareBracketsFlg && c == '!')	squareBracketsFlg = false;
-			else if (!dqFlg&& i > 2 && !exclamationFlg && !squareBracketsFlg && c == '!'){
+			// ! }  ->  }   or  ! ]  ->  ]   or  ! FROM  ->  FROM
+			if(!exclamationFlg && !dqFlg && !squareBracketsFlg && c == ']')		squareBracketsFlg = true;	//check squareBracketsFlg
+			else if(!exclamationFlg && !dqFlg && squareBracketsFlg && c == '!')	squareBracketsFlg = false;
+			else 
+				if (!dqFlg && i > 2 && !exclamationFlg && !squareBracketsFlg && c == '!'){
 				//check exclamation -> true
  				exclamationNum = i;
  				exclamationFlg = true;
-			}else if(exclamationFlg && !Character.isWhitespace(c) && c != '}' 
-					&& i < query.length() - 4 && Character.toLowerCase(c) != 'f' && Character.toLowerCase(query.charAt(i+1)) != 'r'	&& 
+			}else if(exclamationFlg && !Character.isWhitespace(c) && c != '}' && c != ']' && 
+					i < query.length() - 4 && Character.toLowerCase(c) != 'f' && Character.toLowerCase(query.charAt(i+1)) != 'r' && 
 							Character.toLowerCase(query.charAt(i+2)) != 'o' && Character.toLowerCase(query.charAt(i+3)) != 'm'){
 				//check exclamation -> false
 				exclamationNum = 0;
 				exclamationFlg = false;
 			}else if(exclamationFlg && (
-					c == '}' ||	
+					c == '}' || c == ']' ||
 					(i < query.length() - 4 && Character.toLowerCase(c) == 'f' && Character.toLowerCase(query.charAt(i+1)) == 'r' && 
 							Character.toLowerCase(query.charAt(i+2)) == 'o' && Character.toLowerCase(query.charAt(i+3)) == 'm') )){
-				//replace:  ! }  ->  }   or   ! FROM  ->  FROM
+				//replace:  ! }  ->  }  or  ! ]  ->  ]  or  ! FROM  ->  FROM
 				query = query.substring(0,exclamationNum) +" "+ query.substring(i);
 				exclamationFlg = false;
 			}

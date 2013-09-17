@@ -19,7 +19,8 @@ public class HTMLG1 extends Grouper {
     static int ii =0, jj = 0, Count = 0;
     //int ii =0, jj = 0, Count = 0;
     static boolean G1Flg=false;
-    int pic_column = 3;		//1行ごとのカラム数指定 (Default: 3, range: 2〜5)
+    int numberOfColumns = 3;		//1行ごとのカラム数指定 (Default: 3, range: 2〜5)
+    int table_column_num = 0;		//20130917  [ ],10@{table}
     
     static boolean tableFlg = false;		//20130314  table
     static boolean table0Flg = false;		//20130325  table0
@@ -184,19 +185,22 @@ public class HTMLG1 extends Grouper {
         	
             //1行ごとのカラム数指定 (Default: 3, range: 2〜5)
             //int pic_column = 3;		
-            if(decos.containsKey("column") && !tableFlg){
-            	//Log.info("column:"+decos.getStr("column").replace("\"", ""));
-            	pic_column = Integer.parseInt(decos.getStr("column").replace("\"", ""));
-            	if(pic_column<2 || pic_column>5){	//範囲外のとき
-            		Log.info("<<Warning>> column指定の範囲は、2〜5です。指定された「column="+pic_column+"」は使用できません。デフォルト値(3)を使用します。");
-            		pic_column = 3;
+        	if(tableFlg)	numberOfColumns = -1;	//@{table}時のDefault	//20130917  [ ],10@{table}
+            if(decos.containsKey("column")){
+            	numberOfColumns = Integer.parseInt(decos.getStr("column").replace("\"", ""));
+            	if(!tableFlg && (numberOfColumns<2 || numberOfColumns>5)){	//範囲外のとき
+            		System.err.println("<<Warning>> column指定の範囲は、2〜5です。指定された「column="+numberOfColumns+"」は使用できません。デフォルト値(3)を使用します。");
+            		numberOfColumns = 3;
+            	}else if(tableFlg && numberOfColumns<2){	//20130917  [ ],10@{table}
+            		System.err.println("<<Warning>> column指定の範囲は、2〜です。指定された「column="+numberOfColumns+"」は使用できません。");
+            		numberOfColumns = -1;
             	}
             }
             
             //20130314  table
             if(tableFlg){
             	//added by goto 20130318  横スクロール
-            	html_env.code.append("<div style=\"overflow:auto;\">\n");
+            	if(numberOfColumns < 0)	html_env.code.append("<div style=\"overflow:auto;\">\n");	//20130917  [ ],10@{table}
             	//html_env.code.append("<div style=\"height:60px; width:0px; overflow:auto;\">\n");
             	
             	html_env.code.append("<TABLE width=\"100%\" cellSpacing=\"0\" cellPadding=\"0\" border=\"");
@@ -325,7 +329,15 @@ public class HTMLG1 extends Grouper {
             //Log.info("★G1★"+gridInt+" "+ii+" "+jj+"  "+Count+"  "+Count%5+"	"+HTMLG1.G1Flg);
 //            Count %= 5;
             //Log.info("	☆★"+gridInt+" "+ii+" "+jj+"  "+Count+"  "+Count%pic_column+"	"+HTMLG1.G1Flg);
-            Count %= pic_column;
+            Count %= numberOfColumns;
+            
+            
+        	//20130917  [ ],10@{table}
+            if(tableFlg && numberOfColumns > 1 && Count == 0){
+            	if(table_column_num>0)	html_env.code.append("</TR><TR>\n");
+            	else					table_column_num++;
+            }
+            
             
             //html_env.code.append("	<div>");
 	        //html_env.code.append("	<div class=\"ui-block-a\">");
@@ -463,7 +475,7 @@ public class HTMLG1 extends Grouper {
         	html_env.code.append("</TR></TABLE>\n");	//20130314  table
         	tableFlg = false;
         	table0Flg = false;		//20130325 table0
-        	html_env.code.append("</div>\n");			//added by goto 20130318  横スクロール
+        	if(numberOfColumns < 0)	html_env.code.append("</div>\n");	//added by goto 20130318  横スクロール		//20130917  [ ],10@{table}
         }
         
         if(divFlg)	divFlg = false;		//20130326  div
