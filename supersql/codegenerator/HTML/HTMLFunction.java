@@ -3,6 +3,7 @@ package supersql.codegenerator.HTML;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -27,6 +28,11 @@ import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.FuncArg;
 import supersql.codegenerator.Function;
 import supersql.codegenerator.Manager;
+import supersql.codegenerator.Mobile_HTML5.HTMLC1;
+import supersql.codegenerator.Mobile_HTML5.HTMLC2;
+import supersql.codegenerator.Mobile_HTML5.HTMLG1;
+import supersql.codegenerator.Mobile_HTML5.HTMLG2;
+import supersql.codegenerator.Mobile_HTML5.HTMLManager;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.dataconstructor.DataConstructor;
@@ -75,6 +81,9 @@ public class HTMLFunction extends Function {
         	return FuncNullForJsoup();
         }
         else if(FuncName.equalsIgnoreCase("mail")){
+        	return FuncNullForJsoup();
+        }
+        else if(FuncName.equalsIgnoreCase("object")){
         	return FuncNullForJsoup();
         }
         else if(FuncName.equalsIgnoreCase("seq_num")){
@@ -147,6 +156,10 @@ public class HTMLFunction extends Function {
         //added by goto 20130417  "mail"
         else if(FuncName.equalsIgnoreCase("mail")){
         	Func_url(true);
+        }
+        //added by goto 20130914  "object"
+        else if (FuncName.equalsIgnoreCase("object")) {
+        	Func_object("");
         }
     	//added by goto 20130914  "SEQ_NUM"
         else if (FuncName.equalsIgnoreCase("seq_num")) {
@@ -513,6 +526,44 @@ public class HTMLFunction extends Function {
 		return " target=\"_self\"";
     }
     //added by goto 20130308 end
+    
+    //added by goto 20130914  "object"
+    /*  object("file name")  */
+    /*  object("HTML・PDF・FLASH・画像・動画・PHP・JSファイル等のファイル名")  */
+    private void Func_object(String path) {
+        String classID = HTMLEnv.getClassID(this);
+
+//    	//not @{table}
+//    	if(!decos.containsKey("table") && !HTMLC1.table0Flg && !HTMLC2.tableFlg && !HTMLG1.tableFlg && !HTMLG2.tableFlg)
+//    		HTMLManager.replaceCode(html_env, classID, "");		//直前の<div>に書き込まれているclassIDを削除
+        
+        if(path.equals("")){
+            try{
+                path = ((FuncArg) this.getArgs().get(0)).getStr().trim();
+            }catch(Exception e){ }
+        }
+        
+        // 各引数毎に処理した結果をHTMLに書きこむ
+        if(path.endsWith(".php")){    //.php file
+            BufferedReader in;
+            try{
+                in = new BufferedReader(new InputStreamReader(new FileInputStream(path), "UTF-8"));
+                String line = null;
+                while (true){
+                    line = in.readLine();
+                    if (line == null)    break;
+                    else htmlEnv.code.append(line+"\n");
+                }
+            }catch(Exception e){
+                System.err.println("<Warning> Can't open '"+path+"'.");
+            }
+        }else if(path.endsWith(".js"))    //.js file
+        	htmlEnv.code.append("<script type=\"text/javascript\" src=\""+path+"\">\n</script>\n");
+        else    //.html, .pdf, .swf, .gif, .mp4, etc.
+        	htmlEnv.code.append("<object data=\""+path+"\" class=\"" + classID +"\" >\n</object>\n");
+        return;
+    }
+    //object end
 
 	//added by goto 20130914  "SEQ_NUM"
     /*  SEQ_NUM( [Start number [, ASC or DESC] ] )  */
@@ -995,6 +1046,13 @@ public class HTMLFunction extends Function {
 
     //tk start//////////////////////////////////////////////////////////////////////////////
     protected void Func_embed(ExtList data_info){
+    	//goto 20130917
+		try{
+			Func_object( ((FuncArg) this.getArgs().get(0)).getStr().trim() );	//if embed("file name")
+			return;
+		}catch(Exception e){ }
+		
+    	
     	String file = this.getAtt("file");
     	String where = this.getAtt("where");
     	String att = this.getAtt("att");

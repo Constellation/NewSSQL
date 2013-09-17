@@ -3,6 +3,7 @@ package supersql.codegenerator.Mobile_HTML5;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -207,7 +208,7 @@ public class HTMLFunction extends Function {
         }
     	//added by goto 20130914  "object"
         else if (FuncName.equalsIgnoreCase("object")) {
-        	Func_object();
+        	Func_object("");
         }
     	//added by goto 20130914  "SEQ_NUM"
         else if (FuncName.equalsIgnoreCase("seq_num")) {
@@ -2932,20 +2933,39 @@ public class HTMLFunction extends Function {
     //movie end
     
     //added by goto 20130914  "object"
-    /*  object("HTML・画像・動画ファイル等のファイル名")  */
-    private void Func_object() {
+    /*  object("file name")  */
+    /*  object("HTML・PDF・FLASH・画像・動画・PHP・JSファイル等のファイル名")  */
+    private void Func_object(String path) {
     	String classID = HTMLEnv.getClassID(this);
-    	HTMLManager.replaceCode(html_env, classID, "");		//直前の<div>に書き込まれているclassIDを削除
+
+    	//not @{table}
+    	if(!decos.containsKey("table") && !HTMLC1.table0Flg && !HTMLC2.tableFlg && !HTMLG1.tableFlg && !HTMLG2.tableFlg)
+    		HTMLManager.replaceCode(html_env, classID, "");		//直前の<div>に書き込まれているclassIDを削除
     	
-//    	String statement = "\n";
-		String str = "";
-		try{
-			str = ((FuncArg) this.getArgs().get(0)).getStr();
-		}catch(Exception e){ }
-//		statement += "<object data=\""+str+"\" class=\"" + classID +"\" >\n</object>\n";
+    	if(path.equals("")){
+			try{
+				path = ((FuncArg) this.getArgs().get(0)).getStr().trim();
+			}catch(Exception e){ }
+    	}
     	
     	// 各引数毎に処理した結果をHTMLに書きこむ
-    	html_env.code.append("<object data=\""+str+"\" class=\"" + classID +"\" >\n</object>\n");
+		if(path.endsWith(".php")){	//.php file
+			BufferedReader in;
+			try{
+				in = new BufferedReader(new InputStreamReader(new FileInputStream(path), "UTF-8"));
+				String line = null;
+				while (true){
+					line = in.readLine();
+					if (line == null)	break;
+					else html_env.code.append(line+"\n");
+				}
+			}catch(Exception e){
+				System.err.println("<Warning> Can't open '"+path+"'.");
+			}
+		}else if(path.endsWith(".js"))	//.js file
+			html_env.code.append("<script type=\"text/javascript\" src=\""+path+"\">\n</script>\n");
+		else	//.html, .pdf, .swf, .gif, .mp4, etc.
+			html_env.code.append("<object data=\""+path+"\" class=\"" + classID +"\" >\n</object>\n");
     	return;
     }
     //object end
@@ -3349,6 +3369,13 @@ public class HTMLFunction extends Function {
 
     //tk start//////////////////////////////////////////////////////////////////////////////
     private void Func_embed(ExtList data_info){
+    	//goto 20130917
+		try{
+			Func_object( ((FuncArg) this.getArgs().get(0)).getStr().trim() );	//if embed("file name")
+			return;
+		}catch(Exception e){ }
+		
+    	
     	String file = this.getAtt("file");
     	String where = this.getAtt("where");
     	String att = this.getAtt("att");
