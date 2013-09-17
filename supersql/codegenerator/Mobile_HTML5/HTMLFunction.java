@@ -3742,6 +3742,7 @@ public class HTMLFunction extends Function {
             				file = file.substring(1,file.length());
             			}
             			Log.out("embed file (html):"+path+file);
+            				//TODO
 	            			if(path.startsWith("http:")){
 	            				URL fileurl = new URL(path + file);
 	                    		URLConnection fileurlConnection = fileurl.openConnection();
@@ -3786,7 +3787,7 @@ public class HTMLFunction extends Function {
                		Log.out("line : "+line);
                		line = dis.readLine();
                		if(!line.equalsIgnoreCase("</body>")){
-               			html_env.code.append(line);
+               			html_env.code.append(line+"\n");
                	        if(line.contains("&"))
                	        	line = line.replace("&", "&amp;");
                			if(line.contains("<"));

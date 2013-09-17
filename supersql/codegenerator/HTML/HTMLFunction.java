@@ -1423,7 +1423,7 @@ public class HTMLFunction extends Function {
                		Log.out("line : "+line);
                		line = dis.readLine();
                		if(!line.equalsIgnoreCase("</body>")){
-               			htmlEnv.code.append(line);
+               			htmlEnv.code.append(line+"\n");
                	        if(line.contains("&"))
                	        	line = line.replace("&", "&amp;");
                			if(line.contains("<"));
