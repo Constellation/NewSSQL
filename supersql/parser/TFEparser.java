@@ -63,10 +63,11 @@ public class TFEparser {
 			System.err.println(toks.DebugTrace());
 			GlobalEnv.addErr("Error[TFEparser]: Syntax Error in TFE");
 		}
-		sch = schemaTop.makesch();
-
-		Log.out("Schema is " + sch);
-		Log.out("le0 is " + schemaTop.makele0());;
+		try {
+			sch = schemaTop.makesch();
+			Log.out("Schema is " + sch);
+			Log.out("le0 is " + schemaTop.makele0());;
+		} catch (Exception e) {	}
 	}
 
 	private Grouper grouper() {
@@ -878,7 +879,9 @@ public class TFEparser {
 		Log.out("========================================");
 		Log.out("  output Schema Tree");
 		Log.out("========================================");
-		schemaTop.debugout(0);
+		try {
+			schemaTop.debugout(0);
+		} catch(Exception e) { }
 	}
 
 	public Hashtable get_attp() {

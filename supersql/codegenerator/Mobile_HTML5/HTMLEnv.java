@@ -350,10 +350,14 @@ public class HTMLEnv extends LocalEnv {
 	        }
 	        
             //20130309  "div"
-            header.append("<style type=\"text/css\">");
-            header.append("<!-- div{ text-align:center; float:center; vertical-align:middle; } -->");
+            header.append("<style type=\"text/css\">\n");
+            header.append("<!-- div{ text-align:center; float:center; vertical-align:middle; } -->\n");
             //20130315	"長い文字が...と省略されるのを防ぐ (*:全てのタイプに適用) "
-            header.append("<!-- * { white-space: normal; } -->");
+            header.append("<!-- * { white-space: normal; } -->\n");
+            header.append("<!--\n");
+            header.append(".ui-grid { overflow: hidden; }\n");
+            header.append(".ui-block { margin: 0; padding: 0; border: 0; float: left; min-height: 1px; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -ms-box-sizing: border-box; box-sizing: border-box; }\n");
+            header.append("-->\n");
           	header.append("</style>\n");
 
 	        //added by goto 20130512  "Tableのセンタリング（画面横幅の大きいデバイスで見ると効果が分かる）"

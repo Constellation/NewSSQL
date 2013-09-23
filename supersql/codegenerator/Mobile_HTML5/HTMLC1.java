@@ -102,16 +102,17 @@ public class HTMLC1 extends Connector {
         	//20130330 tab
         	//tab1
         	if(decos.containsKey("tab1")){
-        		//TODO: 下記の効率化、最後の</DIV>を出力しない
-        		//,で結合(水平結合)した際
-        		//replace: 不要な「<div class=〜」をカット
-    			String[] s = {"a","b","c","d","e"};
-    			int j=0;
-    			while(!HTMLManager.replaceCode(html_env, "<div class=\"ui-block-"+s[j]+" "+HTMLEnv.getClassID(this)+"\">", "")
-    					 || !HTMLManager.replaceCode(html_env, "<DIV Class=\"ui-grid-"+s[j]+" #"+(HTMLEnv.uiGridCount-1)+"\">", "")){
-    				if(j>3) break;
-    				j++;
-    			}
+//        		//↓下記はおそらく不要	20130924
+//        		//TODO: 下記の効率化、最後の</DIV>を出力しない
+//        		//,で結合(水平結合)した際
+//        		//replace: 不要な「<div class=〜」をカット
+//    			String[] s = {"a","b","c","d","e"};
+//    			int j=0;
+//    			while(!HTMLManager.replaceCode(html_env, "<div class=\"ui-block-"+s[j]+" "+HTMLEnv.getClassID(this)+"\">", "")
+//    					 || !HTMLManager.replaceCode(html_env, "<DIV Class=\"ui-grid-"+s[j]+" #"+(HTMLEnv.uiGridCount-1)+"\">", "")){
+//    				if(j>3) break;
+//    				j++;
+//    			}
         		
             	html_env.code.append("<div data-role=\"content\"> <div id=\"tabs\">\n<ul>\n");
             	html_env.code.append("	<li><a href=\"#tabs-"+HTMLEnv.tabCount+"\">");
@@ -150,14 +151,15 @@ public class HTMLC1 extends Connector {
     	        		//if(!HTMLManager.replaceCode(html_env, "<div "+cutClass+">", "")){
     	        		//	cutClass="";
     	        			
-    	        			//Log.info("Cannot cut. "+HTMLEnv.getClassID(this));
-    	        			String[] s = {"a","b","c","d","e"};
-    	        			int j=0;
-    	        			while(!HTMLManager.replaceCode(html_env, "<div class=\"ui-block-"+s[j]+" "+HTMLEnv.getClassID(this)+"\">", "")){
-    	        				//,で結合(水平結合)した際に、このwhileに入る（レアケース）
-    	        				j++;
-    	        				if(j>4) break;
-    	        			}
+    	        			//TODO ,で結合(水平結合)した際の処理		20130924
+//    	        			//Log.info("Cannot cut. "+HTMLEnv.getClassID(this));
+//    	        			String[] s = {"a","b","c","d","e"};
+//    	        			int j=0;
+//    	        			while(!HTMLManager.replaceCode(html_env, "<div class=\"ui-block-"+s[j]+" "+HTMLEnv.getClassID(this)+"\">", "")){
+//    	        				//,で結合(水平結合)した際に、このwhileに入る（レアケース）
+//    	        				j++;
+//    	        				if(j>4) break;
+//    	        			}
     	        		}
     	            	
     	        		html_env.code.append("<div id=\"tabs-"+HTMLEnv.tabCount+"\">\n");
@@ -187,9 +189,11 @@ public class HTMLC1 extends Connector {
         	if(/* !HTMLG1.G1Flg  && */ !tableFlg){
         		//html_env.code.append("<DIV Class=\"ui-grid-a #"+HTMLEnv.uiGridCount+"\"");
         		if(html_env.written_classid.contains(HTMLEnv.getClassID(this)))
-        			html_env.code.append("<DIV Class=\"ui-grid-a #"+HTMLEnv.uiGridCount+" "+HTMLEnv.getClassID(this)+"\"");
+        			html_env.code.append("<DIV Class=\"ui-grid #"+HTMLEnv.uiGridCount+" "+HTMLEnv.getClassID(this)+"\"");
+//        			html_env.code.append("<DIV Class=\"ui-grid-a #"+HTMLEnv.uiGridCount+" "+HTMLEnv.getClassID(this)+"\"");
         		else
-        			html_env.code.append("<DIV Class=\"ui-grid-a #"+HTMLEnv.uiGridCount+"\"");
+        			html_env.code.append("<DIV Class=\"ui-grid #"+HTMLEnv.uiGridCount+"\"");
+//        			html_env.code.append("<DIV Class=\"ui-grid-a #"+HTMLEnv.uiGridCount+"\"");
         		HTMLEnv.uiGridCount++;
         		//Log.info("ui-grid-a #"+HTMLEnv.uiGridCount+"	"+"<DIV Class=\"ui-grid-a #"+HTMLEnv.uiGridCount+"\"");
         	}
@@ -321,19 +325,33 @@ public class HTMLC1 extends Connector {
         	}//else divFlg = false;
         	
             ITFE tfe = (ITFE) tfes.get(i);
+//            Log.e(tfes.contain_itemnum());
             
             //20130309
             //Count = ( ((gridInt>=jj)&&(!HTMLG1.G1Flg))? jj:gridInt );
             Count = ( (gridInt>=jj)? jj:gridInt );
 //            Log.info("☆C1☆"+gridInt+" "+ii+" "+jj+"  "+Count+"  "+Count%5+"	"+HTMLG1.G1Flg+"	"+
 //            ((!HTMLC3.C3Flg)?"":HTMLC3.C3Flg));
-            Count %= 5;
+            
+            //Count %= 5;	//commented out 20130924
+            
             //gridInt %= 5;
             //html_env.code.append("\n<div class=\"ui-block-"+gridString[gridInt]+"\">\n");	//20130309
            	//if((!HTMLG1.G1Flg && !tableFlg) || divFlg)		//20130326  div
-            if(/* !HTMLG1.G1Flg  && */ !tableFlg)
-            	html_env.code.append("\n<div class=\"ui-block-"+gridString[Count]+" "+HTMLEnv.getClassID(tfe)+"\">\n");	//20130309
-
+            if(/* !HTMLG1.G1Flg  && */ !tableFlg){
+//            	float divWidth0 = (float)Math.floor((double)(100.0/(Count))* 1000) / 1000;
+//            	String style0 = "style=\"width:"+divWidth0+"%;\"";
+            	int tfesItemNum = tfes.contain_itemnum();
+            	float divWidth = (float)Math.floor((double)(100.0/(tfesItemNum))* 1000) / 1000;
+//            	String style = "style=\"width:"+divWidth+"%;\"";
+//	            if(Count>0){
+//	            	Log.e(style0+" "+style);
+//	            	HTMLManager.replaceCode(html_env, style0, style);
+//            	}
+            	html_env.code.append("\n<div class=\"ui-block "+HTMLEnv.getClassID(tfe)+"\" style=\"width:"+divWidth+"%;\">\n");	//20130309
+//            	html_env.code.append("\n<div class=\"ui-block-"+gridString[Count]+" "+HTMLEnv.getClassID(tfe)+"\">\n");	//20130309
+            }
+            	
             //20130314  table
         	if(tableFlg){
         		//html_env.code.append("<TD align=\"center\" valign=\"middle\" class=\""
@@ -378,21 +396,22 @@ public class HTMLC1 extends Connector {
             //20130529
             if(decos.containsKey("dynamic"))	HTMLEnv.dynamicFlg = true;
             
-            //20130309
-        	//if((Count>1 && !HTMLG1.G1Flg && !tableFlg) || (Count>1 && divFlg)){		//20130326  div
-            if(Count>1 && /* !HTMLG1.G1Flg  && */ !tableFlg){
-//            	String rep="ui-grid-"+gridString[Count-2];
-        		String rep="ui-grid-"+gridString[Count-2]+" #"+(HTMLEnv.uiGridCount-1);
-            	//Log.info("rep = "+rep+" TO "+"ui-grid-"+gridString[Count-1]+" #"+(HTMLEnv.uiGridCount));
-            	try{
-	            	html_env.code.replace(
-	            			html_env.code.lastIndexOf(rep), 
-	            			html_env.code.lastIndexOf(rep)+rep.length(),
-	            			"ui-grid-"+gridString[Count-1]+" #"+(HTMLEnv.uiGridCount++));
-	            	//Log.info("	C1 !   replaced !!");
-//		            Log.info("	C1 !   rep = "+rep+"  TO  ui-grid-"+gridString[Count-1]+"	"+HTMLEnv.uiGridCount+" TO "+(++HTMLEnv.uiGridCount));
-            	}catch(Exception e){ /*Log.info("C1 Catch exception.");*/ }
-            }
+//        	//TODO 必要？不要？　→　おそらく不要？
+//            //20130309
+//        	//if((Count>1 && !HTMLG1.G1Flg && !tableFlg) || (Count>1 && divFlg)){		//20130326  div
+//            if(Count>1 && /* !HTMLG1.G1Flg  && */ !tableFlg){
+////            	String rep="ui-grid-"+gridString[Count-2];
+//        		String rep="ui-grid-"+gridString[Count-2]+" #"+(HTMLEnv.uiGridCount-1);
+//            	//Log.info("rep = "+rep+" TO "+"ui-grid-"+gridString[Count-1]+" #"+(HTMLEnv.uiGridCount));
+//            	try{
+//	            	html_env.code.replace(
+//	            			html_env.code.lastIndexOf(rep), 
+//	            			html_env.code.lastIndexOf(rep)+rep.length(),
+//	            			"ui-grid-"+gridString[Count-1]+" #"+(HTMLEnv.uiGridCount++));
+//	            	//Log.info("	C1 !   replaced !!");
+////		            Log.info("	C1 !   rep = "+rep+"  TO  ui-grid-"+gridString[Count-1]+"	"+HTMLEnv.uiGridCount+" TO "+(++HTMLEnv.uiGridCount));
+//            	}catch(Exception e){ /*Log.info("C1 Catch exception.");*/ }
+//            }
             ii++;
             jj++;
             gridInt++;
@@ -428,7 +447,7 @@ public class HTMLC1 extends Connector {
         }
         
         //20130309
-        if(/* !HTMLG1.G1Flg  && */ !tableFlg)	html_env.code.append("</DIV>\n");			//20130309
+        if(/* !HTMLG1.G1Flg  && */ !tableFlg)	html_env.code.append("\n</DIV>\n");			//20130309
         
         //20130314  table
       	if(tableFlg){

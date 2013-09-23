@@ -164,7 +164,7 @@ public class SSQLparser {
 					}
 					buf = buf.substring(0,buf.lastIndexOf("?>"));	//substring last '?>'
 					textString.add(textNum, buf);
-					line = line1 + "text(\"TextLabel_"+textNum+"\")!" + line.substring(line.indexOf("?>") + 2);	//add label
+					line = line1 + "text(\"#TextLabel_"+textNum+"\")!" + line.substring(line.indexOf("?>") + 2);	//add label
 					//Log.i("textString.get("+textNum+") = \n"+textString.get(textNum));
 					textNum++;
 				}
@@ -176,16 +176,19 @@ public class SSQLparser {
 					line = line1 + line.substring(line.indexOf("*/") + 2);
 				}
 				
-				if (line.contains("//") || line.contains("\\\"")){
+				if(line.contains("'\""))	Log.i(line);
+				
+				if (line.contains("//") || line.contains("\\\"") /*|| line.contains("'\"")*/){
 					boolean dqFlg = false;
 					int i = 0;
 					for (i=0; i < line.length(); i++){
-						if (!dqFlg && line.charAt(i) == '"' && i>0 && line.charAt(i-1) != '\\')		//omit \"
+						if (!dqFlg && line.charAt(i) == '"' && i>0 && (line.charAt(i-1) != '\\' /*&& line.charAt(i-1) != '\''*/))		//omit \" and ""
 							dqFlg = true;
-						else if (dqFlg && line.charAt(i) == '"' && i>0 && line.charAt(i-1) != '\\')	//omit \"
+						else if (dqFlg && line.charAt(i) == '"' && i>0 && (line.charAt(i-1) != '\\' /*&& line.charAt(i-1) != '\''*/))	//omit \" and ""
 							dqFlg = false;
 
-						if(dqFlg && i>0 && line.charAt(i-1)=='\\' && line.charAt(i)=='"')	//if \"
+//						Log.i(line.charAt(i)+":"+dqFlg);
+						if(dqFlg && i>0 && (line.charAt(i-1)=='\\' /*|| line.charAt(i-1) != '\''*/) && line.charAt(i)=='"')	//if \" or ""		//TODO
 							line = line.substring(0,i-1)+"&quot;"+line.substring(i+1,line.length());
 						else if (!dqFlg && i < line.length()-1 && line.charAt(i)=='/' && line.charAt(i+1)=='/')
 							break;

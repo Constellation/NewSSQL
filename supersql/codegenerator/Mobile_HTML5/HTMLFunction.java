@@ -2999,15 +2999,15 @@ public class HTMLFunction extends Function {
     //seq_num end
 
 	//added by goto 20130914  "text"
-    /*  text("TextLabel_" + Number)  */
+    /*  text("#TextLabel_" + Number)  */
     private void Func_text() {
     	String str = "";
     	int textNum = -1;
 		try{
 			//第一引数
 			str = ((FuncArg) this.getArgs().get(0)).getStr();
-			if(str.startsWith("TextLabel_"))
-				textNum = Integer.parseInt( str.substring("TextLabel_".length()) );
+			if(str.startsWith("#TextLabel_"))
+				textNum = Integer.parseInt( str.substring("#TextLabel_".length()) );
 			str = SSQLparser.textString.get(textNum);
 		}catch(Exception e){ }
     	
@@ -3021,8 +3021,18 @@ public class HTMLFunction extends Function {
         return;
     }
     
-    
+    //20130920
+    private String getValue(int x) {
+		try{
+			String str = ((FuncArg) this.getArgs().get(x-1)).getStr();	//第x引数
+			if(!str.equals(""))	return str;
+			else				return "";
+		}catch(Exception e){
+			return "";
+		}
+    }
 
+    
     //added by chie 2009 func form submit
     private void Func_submit() {
     	String form = new String();

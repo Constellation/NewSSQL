@@ -15,11 +15,11 @@ public class HTMLG1 extends Grouper {
     
     //20130309
     static int gridInt = 0;
-    String[] gridString = {"a","b","c","d","e"};
+//    String[] gridString = {"a","b","c","d","e"};
     static int ii =0, jj = 0, Count = 0;
     //int ii =0, jj = 0, Count = 0;
     static boolean G1Flg=false;
-    int numberOfColumns = 3;		//1行ごとのカラム数指定 (Default: 3, range: 2〜5)
+    int numberOfColumns = 0;		//1行ごとのカラム数 (range: 2〜)
     int table_column_num = 0;		//20130917  [ ],10@{table}
     
     static boolean tableFlg = false;		//20130314  table
@@ -173,28 +173,27 @@ public class HTMLG1 extends Grouper {
         	//if(!tableFlg) 	html_env.code.append("	<DIV Class=\"ui-grid-a\">");
         	if(!tableFlg){
         		if(html_env.written_classid.contains(HTMLEnv.getClassID(this)))
-        			html_env.code.append("\n<DIV Class=\"ui-grid-a ##"+HTMLEnv.uiGridCount2+" "+HTMLEnv.getClassID(this)+"\"");
+        			html_env.code.append("\n<DIV Class=\"ui-grid ##"+HTMLEnv.uiGridCount2+" "+HTMLEnv.getClassID(this)+"\"");
+//	        		html_env.code.append("\n<DIV Class=\"ui-grid-a ##"+HTMLEnv.uiGridCount2+" "+HTMLEnv.getClassID(this)+"\"");
         		else
-        			html_env.code.append("\n<DIV Class=\"ui-grid-a ##"+HTMLEnv.uiGridCount2+"\"");
+        			html_env.code.append("\n<DIV Class=\"ui-grid ##"+HTMLEnv.uiGridCount2+"\"");
+//        			html_env.code.append("\n<DIV Class=\"ui-grid-a ##"+HTMLEnv.uiGridCount2+"\"");
         		html_env.code.append(">\n");
         		HTMLEnv.uiGridCount2++;
         	}
-        	//html_env.code.append("	<DIV Class=\"ui-grid-a #"+HTMLEnv.uiGridCount+"\"");
-            		//HTMLEnv.uiGridCount++;
-            		//Log.info("ui-grid-"+HTMLEnv.uiGridCount);
         	
-            //1行ごとのカラム数指定 (Default: 3, range: 2〜5)
-            //int pic_column = 3;		
+            //1行ごとのカラム数 (range: 2〜)
         	if(tableFlg)	numberOfColumns = -1;	//@{table}時のDefault	//20130917  [ ],10@{table}
-            if(decos.containsKey("column")){
-            	numberOfColumns = Integer.parseInt(decos.getStr("column").replace("\"", ""));
-            	if(!tableFlg && (numberOfColumns<2 || numberOfColumns>5)){	//範囲外のとき
-            		System.err.println("<<Warning>> column指定の範囲は、2〜5です。指定された「column="+numberOfColumns+"」は使用できません。デフォルト値(3)を使用します。");
-            		numberOfColumns = 3;
-            	}else if(tableFlg && numberOfColumns<2){	//20130917  [ ],10@{table}
-            		System.err.println("<<Warning>> column指定の範囲は、2〜です。指定された「column="+numberOfColumns+"」は使用できません。");
-            		numberOfColumns = -1;
-            	}
+        	else			numberOfColumns = data_info.contain_itemnum();	//div
+        	if(decos.containsKey("column")){
+            	try{
+	            	numberOfColumns = Integer.parseInt(decos.getStr("column").replace("\"", ""));
+	            	if(numberOfColumns<2){
+	            		Log.err("<<Warning>> column指定の範囲は、2〜です。指定された「column="+numberOfColumns+"」は使用できません。");
+		            	if(tableFlg)	numberOfColumns = -1;							//20130917  [ ],10@{table}
+		            	else			numberOfColumns = data_info.contain_itemnum();	//div
+	            	}
+            	}catch(Exception e){ }
             }
             
             //20130314  table
@@ -348,7 +347,12 @@ public class HTMLG1 extends Grouper {
 //    	        html_env.code.append("	<p>\n");
 //        	}else{
         		//20130309
-    	    if(!tableFlg)   html_env.code.append("\n	<div class=\"ui-block-"+gridString[Count]+" "+HTMLEnv.getClassID(tfe)+"\">\n");
+    	    if(!tableFlg){
+    	    	float divWidth = (float)Math.floor((double)(100.0/numberOfColumns)* 1000) / 1000;
+    	    	if(Count!=0)	html_env.code.append("\n	<div class=\"ui-block"+" "+HTMLEnv.getClassID(tfe)+"\" style=\"width:"+divWidth+"%;\">\n");
+    	    	else			html_env.code.append("\n	<div class=\"ui-block"+" "+HTMLEnv.getClassID(tfe)+"\" style=\"width:"+divWidth+"%; clear:left;\">\n");
+    	    }
+//    	    if(!tableFlg)   html_env.code.append("\n	<div class=\"ui-block-"+gridString[Count]+" "+HTMLEnv.getClassID(tfe)+"\">\n");
     	    //20130314  table
     	    else{
 	            html_env.code.append("<TD class=\"" + HTMLEnv.getClassID(tfe) + " nest\">\n");       
@@ -408,15 +412,18 @@ public class HTMLG1 extends Grouper {
 ////            if(Count>1/* && HTMLG1.G1Flg*/){
 //        	}else 
             
-            if(Count>1 && HTMLG1.G1Flg && /* !HTMLG2.G2Flg &&*/ !tableFlg){
-        		String rep="ui-grid-"+gridString[Count-2]+" ##"+(HTMLEnv.uiGridCount2-1);
-            	try{
-	            	html_env.code.replace(
-	            			html_env.code.lastIndexOf(rep), 
-	            			html_env.code.lastIndexOf(rep)+rep.length(),
-	            			"ui-grid-"+gridString[Count-1]+" ##"+(HTMLEnv.uiGridCount2++));
-            	}catch(Exception e){ /*Log.info("G1 Catch exception.");*/ }
-            }
+//        	//TODO 必要？不要？　→　おそらく不要？
+//            if(Count>1 && HTMLG1.G1Flg && /* !HTMLG2.G2Flg &&*/ !tableFlg){
+//        		String rep="ui-grid ##"+(HTMLEnv.uiGridCount2-1);
+////        		String rep="ui-grid-"+gridString[Count-2]+" ##"+(HTMLEnv.uiGridCount2-1);
+//            	try{
+//	            	html_env.code.replace(
+//	            			html_env.code.lastIndexOf(rep), 
+//	            			html_env.code.lastIndexOf(rep)+rep.length(),
+//	            			"ui-grid ##"+(HTMLEnv.uiGridCount2++));
+////	            			"ui-grid-"+gridString[Count-1]+" ##"+(HTMLEnv.uiGridCount2++));
+//            	}catch(Exception e){ /*Log.info("G1 Catch exception.");*/ }
+//            }
             ii++;
             jj++;
             gridInt++;
@@ -442,14 +449,17 @@ public class HTMLG1 extends Grouper {
             html_env.glevel--;
         }	// /while
         
-        //[重要] For [ [], ]! || [],
-        //[],内が1つの値のみだったとき -> 直近のui-grid-aとui-block-aをカット
+//        //TOOD 必要？不要？　→　不要のような気がするけど？？？
+//        //[重要] For [ [], ]! || [],
+//        //[],内が1つの値のみだったとき -> 直近のui-grid-aとui-block-aをカット
     	if(HTMLG1.gridInt == 1){
         //if(HTMLG1.jj == 1 && HTMLG1.gridInt == 1 /*&& HTMLG2.G2Flg*/){
         	//Log.i("			HTMLG1.jj = "+HTMLG1.jj+"	HTMLG1.gridInt = "+HTMLG1.gridInt+"		HTMLG1.classid = "+HTMLG1.classid+"		!!");
         	//Log.i("			"+HTMLManager.replaceCode(html_env, "ui-grid-a ##"+(HTMLEnv.uiGridCount2-1), "##"+(HTMLEnv.uiGridCount2-1)));
-        	HTMLManager.replaceCode(html_env, "ui-grid-a ##"+(HTMLEnv.uiGridCount2-1), "##"+(HTMLEnv.uiGridCount2-1));
-    		HTMLManager.replaceCode(html_env, "ui-block-a "+HTMLG1.classid, "### "+HTMLG1.classid);
+        	HTMLManager.replaceCode(html_env, "ui-grid ##"+(HTMLEnv.uiGridCount2-1), "##"+(HTMLEnv.uiGridCount2-1));	//TODO
+//        	HTMLManager.replaceCode(html_env, "ui-grid-a ##"+(HTMLEnv.uiGridCount2-1), "##"+(HTMLEnv.uiGridCount2-1));
+    		HTMLManager.replaceCode(html_env, "ui-block "+HTMLG1.classid, "### "+HTMLG1.classid);	//TODO
+//    		HTMLManager.replaceCode(html_env, "ui-block-a "+HTMLG1.classid, "### "+HTMLG1.classid);
     	}
 
 //        Log.i("	"+jj+"	"+gridInt);
@@ -470,7 +480,7 @@ public class HTMLG1 extends Grouper {
 
         //html_env2.code.append("</tfe>");
         
-        if(!tableFlg)	html_env.code.append("	</DIV>\n");			//20130309
+        if(!tableFlg)	html_env.code.append("\n</DIV>\n");			//20130309
         else{
         	html_env.code.append("</TR></TABLE>\n");	//20130314  table
         	tableFlg = false;
