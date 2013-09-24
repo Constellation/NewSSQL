@@ -17,6 +17,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 
@@ -45,9 +46,9 @@ public class HTMLFunction extends Function {
 	protected HTMLEnv htmlEnv2;
 	private static int meter_id=0;
 	private static String updateFile;
-	static Integer seq_num = 1;			//20130914  "SEQ_NUM"
-	static String seq_num_ClassID = "";	//20130914  "SEQ_NUM"
-	static boolean DESC_Flg = false;	//20130914  "SEQ_NUM"
+	static ArrayList<Integer> seq_num = new ArrayList<Integer>();		//20130914  "SEQ_NUM"
+	static ArrayList<String> seq_num_ClassID = new ArrayList<String>();	//20130914  "SEQ_NUM"
+	static ArrayList<Boolean> DESC_Flg = new ArrayList<Boolean>();		//20130914  "SEQ_NUM"
 
     public HTMLFunction()
     {
@@ -565,32 +566,37 @@ public class HTMLFunction extends Function {
     }
     //object end
 
-	//added by goto 20130914  "SEQ_NUM"
+    //added by goto 20130914  "SEQ_NUM"
     /*  SEQ_NUM( [Start number [, ASC or DESC] ] )  */
     private void Func_seq_num() {
         String classID = HTMLEnv.getClassID(this);
-        if(!classID.equals(seq_num_ClassID)){
-            seq_num_ClassID = classID;
+        int i;
+        for(i=0; i<seq_num_ClassID.size()+1; i++){
             try{
-                //第一引数
-                seq_num = Integer.parseInt( ((FuncArg) this.getArgs().get(0)).getStr());
+                if(classID.equals(seq_num_ClassID.get(i)))
+                    break;
+            }catch(Exception e1){
+                seq_num_ClassID.add(i, classID);
                 try{
+                    //第一引数
+                    seq_num.add(i, Integer.parseInt(getValue(1)));
                     //第二引数
-                    String str = ((FuncArg) this.getArgs().get(1)).getStr().toLowerCase().trim();
-                    if(str.equals("desc"))    DESC_Flg = true;
-                }catch(Exception e){
-                    DESC_Flg = false;    //default
+                    if(getValue(2).toLowerCase().trim().equals("desc"))    DESC_Flg.add(i, true);
+                    else                                                DESC_Flg.add(i, false);
+                }catch(Exception e2){
+                    seq_num.add(i, 1);            //default
+                    DESC_Flg.add(i, false);        //default
                 }
-            }catch(Exception e){
-                seq_num = 1;        //SEQ_NUM() default
-                DESC_Flg = false;    //default
+                break;
             }
         }
         
         // 各引数毎に処理した結果をHTMLに書きこむ
-        htmlEnv.code.append(""+((!DESC_Flg)? (seq_num++):(seq_num--)));
+        htmlEnv.code.append(""+((!DESC_Flg.get(i))? (seq_num.get(i)):(seq_num.get(i))));
+        if(!DESC_Flg.get(i))    seq_num.set(i,seq_num.get(i)+1);
+        else                    seq_num.set(i,seq_num.get(i)-1);
         return;
-	}
+    }
     //seq_num end
     
     
@@ -1843,4 +1849,21 @@ public class HTMLFunction extends Function {
      	htmlEnv.code.append("id=\"meter"+meter_id+"\"></canvas></div>");
     }
 
+    //20130920
+    private String getValue(int x) {
+		try{
+			String str = ((FuncArg) this.getArgs().get(x-1)).getStr();	//第x引数
+			if(!str.equals(""))	return str;
+			else				return "";
+		}catch(Exception e){
+			return "";
+		}
+    }
+    private int getIntValue(int x) {
+		try{
+			return Integer.parseInt(getValue(x));
+		}catch(Exception e){
+			return Integer.MIN_VALUE;
+		}
+    }
 }
