@@ -357,8 +357,9 @@ public class HTMLC2 extends Connector {
             //20130312 collapsible
 	      	if(decos.containsKey("collapse"))
 	          	html_env.code.append("</p>\n");
-	      	else if(!tableFlg)
+	      	else if(!tableFlg && !HTMLFunction.textFlg)	//20130914  "text"
 	        	html_env.code.append("\n</div>");
+	      	HTMLFunction.textFlg = false;				//20130914  "text"
             
             html_env.code.append("\n");		//20130309
 

@@ -17,6 +17,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 
@@ -68,9 +69,13 @@ public class HTMLFunction extends Function {
     static int mapFuncCount = 1;	//20130717  "map"
     static int gpsFuncCount = 1;	//20130717  "gps"
     
-	static Integer seq_num = 1;			//20130914  "SEQ_NUM"
-	static String seq_num_ClassID = "";	//20130914  "SEQ_NUM"
+//	static Integer seq_num = 1;			//20130914  "SEQ_NUM"
+	static Integer[] seq_num = new Integer[100];			//20130914  "SEQ_NUM"
+//	static String seq_num_ClassID = "";	//20130914  "SEQ_NUM"
+	static String[] seq_num_ClassID = new String[100];		//20130914  "SEQ_NUM"
 	static boolean DESC_Flg = false;	//20130914  "SEQ_NUM"
+	
+	static boolean textFlg = false;	//20130914  "text"
     
     static String updateFile;
 
@@ -2973,27 +2978,98 @@ public class HTMLFunction extends Function {
 	//added by goto 20130914  "SEQ_NUM"
     /*  SEQ_NUM( [Start number [, ASC or DESC] ] )  */
     private void Func_seq_num() {
-    	String classID = HTMLEnv.getClassID(this);
-    	if(!classID.equals(seq_num_ClassID)){
-    		seq_num_ClassID = classID;
-			try{
-				//第一引数
-				seq_num = Integer.parseInt( ((FuncArg) this.getArgs().get(0)).getStr());
-				try{
-					//第二引数
-					String str = ((FuncArg) this.getArgs().get(1)).getStr().toLowerCase().trim();
-					if(str.equals("desc"))	DESC_Flg = true;
-				}catch(Exception e){
-					DESC_Flg = false;	//default
-				}
-			}catch(Exception e){
-				seq_num = 1;		//SEQ_NUM() default
-				DESC_Flg = false;	//default
-			}
-    	}
+//    	ArrayList<String> texts0=new ArrayList<String>();
+//    	texts0.add("あ");
+//    	texts0.add("い");
+//    	texts0.add("う");
+//    	texts0.add("え");
+//    	texts0.add("お");
+//    	ArrayList<Integer> texts1=new ArrayList<Integer>();
+//    	texts1.add(1);
+//    	texts1.add(2);
+//    	texts1.add(3);
+//    	texts1.add(4);
+//    	texts1.add(5);
+////    	ArrayList<ArrayList<String>> textsList=new ArrayList<ArrayList<String>>();
+////    	textsList.add(texts0);
+////    	textsList.add(texts1.toString());
+////    	Log.e(textsList.get(0).get(3)); // え
+//    	for(int i=0;i<5;i++){
+//    		Log.e(texts0.get(i)+" "+texts1.get(i));
+//    	}
+//    	
+//    	int[][] int2Array = new int[10][10];
+    
+//    	int i=0;
+//    	while(true){
+//    		if(seq_num_ClassID[i].equals("")){
+//    			seq_num_ClassID[i]=""; 
+//    			seq_num[i]=1;
+//    			break;
+//    		}
+//    	}
     	
-    	// 各引数毎に処理した結果をHTMLに書きこむ
-    	html_env.code.append(""+((!DESC_Flg)? (seq_num++):(seq_num--)));
+//    	if(seq_num[0]==null){
+//	    	seq_num_ClassID[0]=""; 
+//	    	seq_num[0]=1; 
+//    	}
+    	
+    	String classID = HTMLEnv.getClassID(this);
+    	int i=0;
+    	for(i=0;i<5;i++){
+        	if(seq_num[i]==null){
+    	    	//seq_num_ClassID[i]=""; 
+    	    	seq_num[i]=1; 
+        	}
+//    		Log.e(i+":"+classID+":"+seq_num_ClassID[i]+":"+seq_num[i]);
+	    	if(!classID.equals(seq_num_ClassID[i])){
+	    		if(seq_num[i]==null){
+		    		seq_num_ClassID[i+1] = classID;
+					try{
+						//第一引数
+						seq_num[i+1] = Integer.parseInt(getValue(1));
+						//第二引数
+						if(getValue(2).toLowerCase().trim().equals("desc"))	DESC_Flg = true;
+						else												DESC_Flg = false;	//default
+					}catch(Exception e){
+						seq_num[i+1] = 1;		//SEQ_NUM() default
+						DESC_Flg = false;	//default
+					}
+					break;
+	    		}
+	    	}
+	    	if(classID.equals(seq_num_ClassID[i])){
+	    		break;
+	    	}
+    	}
+    	Log.e(i+":"+classID+":"+seq_num_ClassID[i]+":"+seq_num[i]);
+	    	
+	    	// 各引数毎に処理した結果をHTMLに書きこむ
+	    	html_env.code.append(""+((!DESC_Flg)? (seq_num[i-1]++):(seq_num[i-1]--)));
+	    	
+
+    	
+//    	String classID = HTMLEnv.getClassID(this);
+//    	if(!classID.equals(seq_num_ClassID)){
+//    		seq_num_ClassID = classID;
+//    		try{
+//    			//第一引数
+//    			seq_num = Integer.parseInt( ((FuncArg) this.getArgs().get(0)).getStr());
+//    			try{
+//    				//第二引数
+//    				String str = ((FuncArg) this.getArgs().get(1)).getStr().toLowerCase().trim();
+//    				if(str.equals("desc"))	DESC_Flg = true;
+//    			}catch(Exception e){
+//    				DESC_Flg = false;	//default
+//    			}
+//    		}catch(Exception e){
+//    			seq_num = 1;		//SEQ_NUM() default
+//    			DESC_Flg = false;	//default
+//    		}
+//    	}
+//    	
+//    	// 各引数毎に処理した結果をHTMLに書きこむ
+//    	html_env.code.append(""+((!DESC_Flg)? (seq_num++):(seq_num--)));
     	return;
     }
     //seq_num end
@@ -3001,6 +3077,10 @@ public class HTMLFunction extends Function {
 	//added by goto 20130914  "text"
     /*  text("#TextLabel_" + Number)  */
     private void Func_text() {
+    	html_env.code.delete(html_env.code.lastIndexOf("<"),html_env.code.lastIndexOf(">")+1);	//delete last <div class="">
+    	//TODO: 改行コード削除
+    	textFlg = true;
+    	
     	String str = "";
     	int textNum = -1;
 		try{
@@ -3029,6 +3109,13 @@ public class HTMLFunction extends Function {
 			else				return "";
 		}catch(Exception e){
 			return "";
+		}
+    }
+    private int getIntValue(int x) {
+		try{
+			return Integer.parseInt(getValue(x));
+		}catch(Exception e){
+			return Integer.MIN_VALUE;
 		}
     }
 
