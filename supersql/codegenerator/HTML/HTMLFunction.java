@@ -173,9 +173,418 @@ public class HTMLFunction extends Function {
     }
 
     protected Element FuncEmbedForJsoup(ExtList<ExtList<String>> data_info) {
-		// TODO Auto-generated method stub
-		return null;
+    	String file = this.getAtt("file");
+    	String where = this.getAtt("where");
+    	String att = this.getAtt("att");
+    	String att2 = this.getAtt("attString");
+    	String condition = new String();
+		boolean is_hidden = false;
+		Element result = null;
+
+		if(decos.containsKey("status"))
+        	if(decos.getStr("status").compareTo("hidden") == 0)
+        		is_hidden = true;
+
+		//for tab
+		if(decos.containsKey("tab"))
+		{
+			result = new Element(Tag.valueOf("div"), "");
+			result.attr("id", "myTab");
+			if(decos.containsKey("class"))
+				result.addClass(decos.getStr("class"));
+			Element div = new Element(Tag.valueOf("div"), "").attr("id", "mTab").addClass("yui-navset");
+			result.appendChild(div);
+			
+			Element script = new Element(Tag.valueOf("script"), "");
+			script.append("var mTab = new YAHOO.widget.TabView(\"mTab\");\new YAHOO.util.DDTarget(\"myTab\", \"myTab\");");
+			result.appendChild(script);
+			
+			return result;
+		}
+
+        if(!is_hidden)
+        {
+        	result = new Element(Tag.valueOf("table"), "").addClass("att").addClass(htmlEnv.getOutlineModeAtt());
+
+        	if(decos.containsKey("class"))
+        		result.addClass(decos.getStr("class"));
+        	else
+        		result.addClass(HTMLEnv.getClassID(this));
+        	result.append("<tr><td></td></tr>");
+        	//htmlEnv.code.append("><tr><td>");
+        }
+
+        // for ajax div id //////////////////////////////////////////////////////
+
+        String divname = "";
+        boolean has_divid = false;
+
+        if(decos.containsKey("divid"))
+		{
+			has_divid = true;
+			Log.out("embed contains decos with divid");
+			String tmpdivid = decos.getStr("divid");
+			String tmp;
+			String ans;
+
+			if(tmpdivid.contains("+"))
+			{
+				ans = tmpdivid.substring(0,tmpdivid.indexOf("+"));
+				tmp = tmpdivid.substring(tmpdivid.indexOf("+")+1,tmpdivid.length());
+
+				if(tmp.compareTo("att") == 0)
+				{
+					tmp = att;
+				}
+				divname = ans + "_" + tmp;
+				Log.out("ans :"+ans+" tmp:"+tmp+" divname:"+divname);
+			}
+			else{
+				divname = decos.getStr("divid");
+			}
+		}
+        Element script = null;
+        if(GlobalEnv.isAjax() && decos.containsKey("droppable"))
+        {
+        	script = new Element(Tag.valueOf("script"), "").append("new YAHOO.util.DDTarget(\""+divname+"\", \""+divname+"\");");
+        }
+        //ajax & decos contains status=hidden
+        if(is_hidden && GlobalEnv.isAjax()){
+
+        	result = new Element(Tag.valueOf("div"), "").attr("id", divname);
+        	
+			htmlEnv.code.append("<div id=\""+divname+"\" ");
+			if(script!= null){
+				result.appendChild(script);
+			}
+			if(decos.containsKey("class"))
+				htmlEnv.code.append("class=\""+decos.getStr("class")+ "\" ");
+
+			htmlEnv.code.append("></div>");
+			Log.out("<div id="+divname+"></div>");
+
+			return result;
+        }
+    	if(att.compareTo("") != 0 ){
+    		condition = condition + where+att;
+    	}
+    	else if(att2.compareTo("") != 0){
+    		condition = condition + where+"'"+att2+"'";
+    	}
+    	//store original config
+    	Hashtable tmphash = GlobalEnv.getEnv();
+
+    	String[] args;
+    	if(GlobalEnv.isAjax())
+    	{
+    		if(condition.equals(""))
+    		{
+    	   		args = new String[3];
+        		args[0] = "-f";
+        		args[1] = file;
+        		args[2] = "-ajax";
+
+    		}
+    		else
+    		{
+    	   		args = new String[5];
+        		args[0] = "-f";
+        		args[1] = file;
+        		args[2] = "-cond";
+       			args[3] = condition;
+        		args[4] = "-ajax";
+    		}
+    	}
+    	else
+    	{
+    		if(GlobalEnv.isOpt()){
+    			args = new String[5];
+	    		args[0] = "-f";
+	    		args[1] = file;
+	    		args[2] = "-cond";
+	    		args[3] = condition;
+	    		args[4] = "-optimizer";
+    		}else{
+	    		args = new String[4];
+	    		args[0] = "-f";
+	    		args[1] = file;
+	    		args[2] = "-cond";
+	    		args[3] = condition;
+    		}
+    	}
+
+    	htmlEnv.embedCount++;
+
+    	if(file.contains(".sql"))
+    	{
+
+    		String makedfilename = file.substring(file.lastIndexOf("\\")+1, file.indexOf("."));
+
+    		if(att.compareTo("") != 0)
+    			makedfilename = makedfilename.concat("_"+att);
+    		if(att2.compareTo("") != 0)
+    			makedfilename = makedfilename.concat("_"+att2);
+
+    		makedfilename= makedfilename.concat(".html");
+
+    		Log.out("embed tmpfilename:"+makedfilename+" option:"+GlobalEnv.getEmbedOption());
+
+    		File makedfile = new File(GlobalEnv.getEmbedTmp(), makedfilename);
+
+    		if(makedfile.exists() && GlobalEnv.isNewEmbed() == 1)
+    		{
+    			Log.out("[Enter new Embed]");
+    			Log.out("embed read tmp file");
+    			BufferedReader dis;
+    			String line = new String();
+    			try{
+    				dis = new BufferedReader(new FileReader(makedfile));
+
+               		try{
+               			while(!line.equalsIgnoreCase(" "))
+                   	{
+                   		Log.out("line : "+line);
+                   		line = dis.readLine();
+                   		if(line != null)
+                   			htmlEnv.code.append(line);
+                   	}
+               		}catch(NullPointerException e)
+               		{
+               			Log.out("no more lines");
+               		}
+
+                    dis.close();
+    			}
+    			catch (IOException ioe) {
+                     System.out.println("IOException: " + ioe);
+                }
+    		}
+    		else
+    		{
+    			Log.out("embed make file");
+
+    			GlobalEnv.setGlobalEnvEmbed(args);
+
+
+    			SSQLparser parser;
+    			if(file.contains("http"))
+    			{
+    				parser = new SSQLparser("online");
+    			}
+    			else
+    			{
+	    			parser = new SSQLparser(10000*(htmlEnv.embedCount+1));
+	    		}
+
+	    		CodeGenerator codegenerator = parser.getcodegenerator();
+				DataConstructor dc = new DataConstructor(parser);
+
+				StringBuffer returnedcode = codegenerator.generateCode2(parser,dc.getData());
+
+				//ajax add div tag////////////////////////////////////////////////////////////////////
+				if(GlobalEnv.isAjax())
+				{
+					if(!has_divid)
+					{
+						//online file
+						if(file.contains("/"))
+						{
+							divname = file.substring(file.lastIndexOf("/")+1,file.indexOf(".sql"));
+						}
+						//ofline file
+						else if(file.contains("\\"))
+						{
+							divname = file.substring(file.lastIndexOf("\\")+1,file.indexOf(".sql"));
+						}
+						//only file name
+						else
+						{
+							divname = file.substring(0,file.indexOf(".sql"));
+						}
+					}
+
+					htmlEnv.code.append("<div id=\""+divname+"\" ");
+
+					if(decos.containsKey("class"))
+						htmlEnv.code.append("class=\""+decos.getStr("class")+ "\" ");
+
+					htmlEnv.code.append(">");
+					Log.out("<div id="+divname+">");
+				}
+
+				//xml§ÚΩ–Œœ
+				if(!is_hidden){
+					htmlEnv2.code.append("<EMBED>");
+					htmlEnv.code.append(returnedcode);
+					htmlEnv2.code.append(returnedcode);
+					htmlEnv2.code.append("</EMBED>");
+				}
+
+				if(GlobalEnv.isAjax())
+					htmlEnv.code.append("</div>");
+				// end ajax /////////////////////////////////////////////////////////////////
+
+				if(htmlEnv.embedCount >= 1)
+				{
+					htmlEnv.css.append(codegenerator.generateCode3(parser,dc.getData()));
+					htmlEnv.cssFile.append(codegenerator.generateCssfile(parser,dc.getData()));
+				}
+
+				//restore original config
+				GlobalEnv.setEnv(tmphash);
+
+				//writing tmpfile
+				Log.out("embed hogehoge:"+GlobalEnv.isNewEmbed());
+				Log.out("enb:"+GlobalEnv.getEnv());
+
+				if(GlobalEnv.isNewEmbed() == 1)
+				{
+					GlobalEnv.addEmbedFile(makedfilename);
+					Log.out("embed start writing");
+					String filename = GlobalEnv.getEmbedTmp();
+
+					if(filename.endsWith("/") || filename.endsWith("\\"))
+						filename = filename + makedfilename;
+					else
+						filename = filename + "/" + makedfilename;
+
+					try {
+						OutputStream fout = new FileOutputStream(filename);
+			        	OutputStream bout = new BufferedOutputStream(fout);
+			        	OutputStreamWriter out = new OutputStreamWriter(bout,"UTF-8");
+
+			        	out.write(htmlEnv.header.toString());
+			        	out.write(returnedcode.toString());
+			        	out.write(htmlEnv.footer.toString());
+
+			        	out.close();
+			        } catch (FileNotFoundException fe) {
+
+			        	fe.printStackTrace();
+			        	System.err.println("Error: specified embedtmp outdirectory \""
+			                    + GlobalEnv.getEmbedTmp() + "\" is not found to write " + htmlEnv.fileName );
+
+		                GlobalEnv.addErr("Error: specified embedtmp outdirectory \""
+			                    + GlobalEnv.getEmbedTmp() + "\" is not found to write " + htmlEnv.fileName);
+			        } catch (IOException e) {
+			            System.err.println("Error[HTMLManager]: File IO Error in HTMLManager at embed");
+			            e.printStackTrace();
+			            GlobalEnv.addErr("Error[HTMLManager]: File IO Error in HTMLManager at embed");
+			        }
+				}
+
+    		}
+    	}
+    	//embed html file
+    	else if(file.contains(".html"))
+    	{
+            String line = new String();
+
+            if(decos.containsKey("divid"))
+            	divname = decos.getStr("divid");
+            else if(file.contains("\\"))
+            	divname = file.substring(file.lastIndexOf("\\")+1,file.indexOf(".html"));
+            else if(file.contains("/"))
+            	divname = file.substring(file.lastIndexOf("/")+1,file.indexOf(".html"));
+            else
+            	divname = file.substring(0,file.indexOf(".html"));
+
+            BufferedReader dis;
+            try {
+            	if(file.contains("http://"))
+            	{
+            		URL fileurl = new URL(file);
+
+            		URLConnection fileurlConnection = fileurl.openConnection();
+            		dis = new BufferedReader(new InputStreamReader(fileurlConnection.getInputStream()));
+            	}
+            	else{
+            		try{
+            			Log.out("embed file (html):"+file);
+            			dis = new BufferedReader(new FileReader(new File(file)));
+            		}catch(IOException ioe){
+            			String path = htmlEnv.outFile;
+            			if(path.contains("\\"))
+            				path = path.substring(0,path.lastIndexOf("\\")+1);
+            			else if(path.contains("/"))
+            				path = path.substring(0,path.lastIndexOf("/")+1);
+            			if(file.startsWith("./")){
+            				file = file.substring(1,file.length());
+            			}
+            			Log.out("embed file (html):"+path+file);
+	            			if(path.startsWith("http:")){
+	            				URL fileurl = new URL(path + file);
+	                    		URLConnection fileurlConnection = fileurl.openConnection();
+	            				dis = new BufferedReader(new InputStreamReader(fileurlConnection.getInputStream()));
+	            			}else{
+	                			dis = new BufferedReader(new FileReader(new File(path+file)));
+
+	            			}
+            		}
+            	}
+                line = dis.readLine(); //read <BODY> and/or <HEAD>
+                if(line.contains("<head>"))
+                {
+                }
+                else
+                {
+                	line = dis.readLine(); //read <HEAD>
+                }
+
+
+               	while(!line.equalsIgnoreCase("</head>"))
+               	{
+               		line = dis.readLine();
+               		if(!line.equalsIgnoreCase("</head>"))
+               			htmlEnv.header.append(line+"\n");
+               	}
+               	line = dis.readLine(); //read <body>
+
+    			htmlEnv.code.append("<div id=\""+divname+"\" ");
+
+    			if(decos.containsKey("class"))
+    				htmlEnv.code.append("class=\""+decos.getStr("class")+ "\" ");
+
+    			htmlEnv.code.append(">");
+
+
+       			htmlEnv2.code.append("<EMBED>");
+               	while(!line.equalsIgnoreCase("</body>"))
+               	{
+               		Log.out("line : "+line);
+               		line = dis.readLine();
+               		if(!line.equalsIgnoreCase("</body>")){
+               			htmlEnv.code.append(line);
+               	        if(line.contains("&"))
+               	        	line = line.replace("&", "&amp;");
+               			if(line.contains("<"));
+               				line = line.replace("<", "&lt;");
+               			if(line.contains(">"))
+               		        line = line.replace(">", "&gt;");
+               	        if(line.contains("è¢∑"))
+               	        	line = line.replace("è¢∑", "&#65374;");
+               			htmlEnv2.code.append(line);
+               		}
+               	}
+       			htmlEnv2.code.append("</EMBED>");
+
+               	htmlEnv.code.append("</div>");
+                dis.close();
+
+            } catch (MalformedURLException me) {
+                System.out.println("MalformedURLException: " + me);
+            } catch (IOException ioe) {
+                System.out.println("HTMLFuncEmbed:IOException: " + ioe);
+            }
+
+    	}
+    	if(!is_hidden)
+    		htmlEnv.code.append("</td></tr></table>");
+
+    	htmlEnv.embedCount += 1;
+		return result;
 	}
+    
     protected Element FuncHiddenForJsoup() {
 		return FuncFormCommonForJsoup("hidden");
 	}
