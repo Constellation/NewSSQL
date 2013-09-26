@@ -1,5 +1,7 @@
 package supersql.codegenerator.Mobile_HTML5;
 
+import java.io.File;
+
 import supersql.codegenerator.Grouper;
 import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
@@ -26,6 +28,14 @@ public class HTMLG1 extends Grouper {
     static boolean table0Flg = false;		//20130325  table0
     static boolean divFlg = false;			//20130326  div
 
+    //added by goto 20130413  "row Prev/Next"
+    int j = 1;
+    int row = 1;		//1ページごとの行数指定 (Default: 1, range: 1〜)
+    int rowNum = 0;
+    //static int rowFileNum = 1;
+    boolean rowFlg = false;
+    StringBuffer codeBuf = new StringBuffer();
+    
     static String classid = "" ;
     
     //���󥹥ȥ饯��
@@ -40,6 +50,47 @@ public class HTMLG1 extends Grouper {
     @Override
 	public void work(ExtList data_info) {
         int panelFlg = 0;	//20130503  Panel
+        
+        //1行ごとのカラム数 (range: 2〜)
+        boolean columnFlg = false;
+    	if(tableFlg)	numberOfColumns = -1;	//@{table}時のDefault	//20130917  [ ],10@{table}
+    	else			numberOfColumns = data_info.contain_itemnum();	//div
+    	if(decos.containsKey("column")){
+        	try{
+            	numberOfColumns = Integer.parseInt(decos.getStr("column").replace("\"", ""));
+            	if(numberOfColumns<2){
+            		Log.err("<<Warning>> column指定の範囲は、2〜です。指定された「column="+numberOfColumns+"」は使用できません。");
+	            	if(tableFlg)	numberOfColumns = -1;							//20130917  [ ],10@{table}
+	            	else			numberOfColumns = data_info.contain_itemnum();	//div
+            	}else columnFlg = true;
+        	}catch(Exception e){ }
+        }
+        
+    	//added by goto 20130413  "row Prev/Next"
+    	//1ページごとの行数指定 (Default: 1, range: 1〜)
+    	String parentfile = null;
+        String parentnextbackfile = null;
+        StringBuffer parentcode = null;
+        StringBuffer parentcss = null;
+        StringBuffer parentheader = null;
+        StringBuffer parentfooter = null;
+        if(decos.containsKey("row") && columnFlg){
+        	row = Integer.parseInt(decos.getStr("row").replace("\"", ""));
+        	if(row<1){	//範囲外のとき
+        		Log.err("<<Warning>> row指定の範囲は、1〜です。指定された「row="+row+"」は使用できません。");
+        	}else{
+            	parentfile = html_env.filename;
+                parentnextbackfile = html_env.nextbackfile;
+                parentcode = html_env.code;
+                parentcss = html_env.css;
+                parentheader = html_env.header;
+                parentfooter = html_env.footer;
+    	        html_env.css = new StringBuffer();
+    	        html_env.header = new StringBuffer();
+    	        html_env.footer = new StringBuffer();
+            	rowFlg = true;
+        	}
+        }
     	
         Log.out("------- G1 -------");
         this.setDataList(data_info);
@@ -181,20 +232,6 @@ public class HTMLG1 extends Grouper {
         		html_env.code.append(">\n");
         		HTMLEnv.uiGridCount2++;
         	}
-        	
-            //1行ごとのカラム数 (range: 2〜)
-        	if(tableFlg)	numberOfColumns = -1;	//@{table}時のDefault	//20130917  [ ],10@{table}
-        	else			numberOfColumns = data_info.contain_itemnum();	//div
-        	if(decos.containsKey("column")){
-            	try{
-	            	numberOfColumns = Integer.parseInt(decos.getStr("column").replace("\"", ""));
-	            	if(numberOfColumns<2){
-	            		Log.err("<<Warning>> column指定の範囲は、2〜です。指定された「column="+numberOfColumns+"」は使用できません。");
-		            	if(tableFlg)	numberOfColumns = -1;							//20130917  [ ],10@{table}
-		            	else			numberOfColumns = data_info.contain_itemnum();	//div
-	            	}
-            	}catch(Exception e){ }
-            }
             
             //20130314  table
             if(tableFlg){
@@ -202,50 +239,11 @@ public class HTMLG1 extends Grouper {
             	if(numberOfColumns < 0)	html_env.code.append("<div style=\"overflow:auto;\">\n");	//20130917  [ ],10@{table}
             	//html_env.code.append("<div style=\"height:60px; width:0px; overflow:auto;\">\n");
             	
-            	html_env.code.append("<TABLE width=\"100%\" cellSpacing=\"0\" cellPadding=\"0\" border=\"");
-            	//html_env.code.append("<TABLE width=\"100%\" align=\"center\" cellSpacing=\"0\" cellPadding=\"0\" border=\"");
-		        //html_env.code.append("<TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
-		        //html_env.code.append(((!decos.containsKey("table0"))? html_env.tableborder : "0") + "\"");
-        		if(table0Flg)	html_env.code.append("0" + "\"");	//20130325 table0
-	        	else			html_env.code.append(html_env.tableborder + "\"");
-//		        html_env.code.append(html_env.tableborder + "\"");
-		        
-	        	//classid������Ȥ��ˤ�������
-	        	if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
-	        		html_env.code.append(" class=\"");
-	        		html_env.code.append(HTMLEnv.getClassID(this));
-	        	}
-	        	if(decos.containsKey("class")){
-	        		if(!html_env.written_classid.contains(HTMLEnv.getClassID(this)))
-	        			html_env.code.append(" class=\"");
-	        		else
-	        			html_env.code.append(" ");
-	        		html_env.code.append(decos.getStr("class")+"\" ");
-	        	}else if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
-	        		html_env.code.append("\" ");
-	        	}
-//		        html_env.code.append(" class=\"");
-//		        if(html_env.embedflag)
-//		        	html_env.code.append("embed ");
-//		        if(decos.containsKey("outborder"))
-//		        	html_env.code.append(" noborder ");
-//		        if(decos.containsKey("class")){
-//		        	//class=menu�Ȃǂ̎w�肪��������t��
-//		        	html_env.code.append(" class=\"");
-//		        	html_env.code.append(decos.getStr("class") + " ");
-//		        }
-//		        if(html_env.haveClass == 1){
-//		        	//class=menu�Ȃǂ̎w�肪��������t��
-//		        	html_env.code.append(" class=\"");
-//		        	html_env.code.append(HTMLEnv.getClassID(this) + " ");
-//		        }
-//		        html_env.code.append("nest\"");
-//		        html_env.code.append(html_env.getOutlineMode());
-		        html_env.code.append("><TR>");
+            	if(row>1 && tableFlg)	HTMLG2.tableStartTag = HTMLC1.getTableStartTag(html_env, decos, this)+"<TR>";
+            	else					html_env.code.append(HTMLC1.getTableStartTag(html_env, decos, this)+"<TR>");
             }
         }
         //tk end//////////////////////////////////////////////////////
-        
         Log.out("<TABLE class=\""+HTMLEnv.getClassID(this) + "\"><TR>");
 
         //html_env2.code.append("<tfe type=\"connect\" dimension=\"1\" >");
@@ -260,6 +258,15 @@ public class HTMLG1 extends Grouper {
         	}
         	
             html_env.glevel++;
+            
+            //added by goto 20130413  "row Prev/Next"
+            if(rowFlg){
+            	html_env.code = new StringBuffer();
+            	html_env.countfile++;
+                html_env.filename = html_env.outfile + "_row" + HTMLG2.rowFileNum + "_" + j + ".html";
+                html_env.nextbackfile = html_env.linkoutfile + "_row" + HTMLG2.rowFileNum + "_" + j + ".html";
+                html_env.setOutlineMode();
+            }
             
 //            //おそらくXML
 //            if(GlobalEnv.isOpt()){
@@ -447,7 +454,37 @@ public class HTMLG1 extends Grouper {
 //            	//Count = 0;
 //            }
             html_env.glevel--;
+            
+            //added by goto 20130413  "row Prev/Next"
+            if(rowFlg){
+            	codeBuf.append(html_env.code);
+            	if((rowNum+1)%(row*numberOfColumns)==0){
+	                HTMLG2.createHTMLfile_ForPrevNext(html_env, codeBuf);
+	                j++;
+	                codeBuf = new StringBuffer();
+                }
+                rowNum++;
+            }
         }	// /while
+        
+        //added by goto 20130413  "row Prev/Next"
+        if(rowFlg){
+        	if(rowNum%(row*numberOfColumns)!=0){	//最後の child HTML を create
+        		HTMLG2.createHTMLfile_ForPrevNext(html_env, codeBuf);
+        	}
+        	//ファイル名・コード等をparent HTMLのものへ戻す
+        	html_env.filename = parentfile;
+        	html_env.code = parentcode;
+            html_env.css = parentcss;
+            html_env.header = parentheader;
+            html_env.footer = parentfooter;
+            html_env.nextbackfile = parentnextbackfile;
+            Log.out("TFEId = " + HTMLEnv.getClassID(this));
+            html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
+            
+            int first = 1, last = ((rowNum%(row*numberOfColumns)!=0)? (rowNum/(row*numberOfColumns)+1):(rowNum/(row*numberOfColumns)));	//for G1
+            HTMLG2.PrevNextProcess(html_env, rowNum, row, first, last, numberOfColumns);
+        }
         
 ////        //TOOD 必要？不要？　→　不要のような気がするけど？？？　→　あると余計な部分が消されることがあるので無い方が良い(2013.09.26)
 ////        //[重要] For [ [], ]! || [],
@@ -482,7 +519,7 @@ public class HTMLG1 extends Grouper {
         
         if(!tableFlg)	html_env.code.append("\n</DIV>\n");			//20130309
         else{
-        	html_env.code.append("</TR></TABLE>\n");	//20130314  table
+        	if(!(row>1 && tableFlg))	html_env.code.append("</TR></TABLE>\n");	//20130314  table
         	tableFlg = false;
         	table0Flg = false;		//20130325 table0
         	if(numberOfColumns < 0)	html_env.code.append("</div>\n");	//added by goto 20130318  横スクロール		//20130917  [ ],10@{table}
@@ -517,6 +554,13 @@ public class HTMLG1 extends Grouper {
 	    
     	//20130503  Panel
     	HTMLC1.panelProcess2(decos, html_env, panelFlg);
+    	
+    	//added by goto 20130413  "row Prev/Next"
+        if(rowFlg){
+        	HTMLG2.rowFileNum++;
+        	rowFlg = false;
+        	HTMLG2.tableStartTag = "";
+        }
 
         Log.out("TFEId = " + HTMLEnv.getClassID(this));
         //html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);

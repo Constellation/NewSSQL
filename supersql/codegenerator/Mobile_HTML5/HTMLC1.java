@@ -197,101 +197,66 @@ public class HTMLC1 extends Connector {
         		HTMLEnv.uiGridCount++;
         		//Log.info("ui-grid-a #"+HTMLEnv.uiGridCount+"	"+"<DIV Class=\"ui-grid-a #"+HTMLEnv.uiGridCount+"\"");
         	}
-        	
+        	//if((!HTMLG1.G1Flg && !tableFlg) || divFlg)		html_env.code.append(">");		//20130326  div	//20130309	
+        	if(/* !HTMLG1.G1Flg  && */ !tableFlg)	html_env.code.append(">");		//20130309
         	
         	//20130314  table
         	if(tableFlg){
-        		html_env.code.append("<TABLE width=\"100%\" cellSpacing=\"0\" cellPadding=\"0\" border=\"");
-        		//html_env.code.append("<TABLE width=\"100%\" align=\"center\" cellSpacing=\"0\" cellPadding=\"0\" border=\"");
-	        	//html_env.code.append("<TABLE width=\"95%\" align=\"center\" cellSpacing=\"0\" cellPadding=\"0\" border=\"");
-        		//html_env.code.append(((!table0Flg)? html_env.tableborder : "0") + "\"");
-	        	if(table0Flg || HTMLC2.table0Flg || HTMLG1.table0Flg || HTMLG2.table0Flg)
-	        		html_env.code.append("0" + "\"");	//20130325 table0
-	        	else	html_env.code.append(html_env.tableborder + "\"");
-//	        	html_env.code.append(html_env.tableborder + "\"");
-	        	html_env.code.append(html_env.getOutlineMode());
+        		html_env.code.append(getTableStartTag(html_env, decos, this)+"<TR>");
         	}
-        	/*
-        if(decos.containsKey("outborder")){
-        	html_env.code.append(" noborder ");
-        	html_env2.code.append(" noborder ");
-        }
-        	 */     
-        	if(tableFlg){
-	        	//classid������Ȥ��ˤ�������
-	        	if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
-	        		html_env.code.append(" class=\"");
-	        		html_env.code.append(HTMLEnv.getClassID(this));
-	        	}
-	
-	        	if(decos.containsKey("class")){
-	        		if(!html_env.written_classid.contains(HTMLEnv.getClassID(this))){
-	        			html_env.code.append(" class=\"");
-	        		}else{
-	        			html_env.code.append(" ");
-	        		}
-	        		html_env.code.append(decos.getStr("class")+"\" ");
-	        	}else if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
-	        		html_env.code.append("\" ");
-	        	}
-        	}
-        	//if((!HTMLG1.G1Flg && !tableFlg) || divFlg)		html_env.code.append(">");		//20130326  div	//20130309	
-        	if(/* !HTMLG1.G1Flg  && */ !tableFlg)	html_env.code.append(">");		//20130309
-
-        	if(tableFlg)	html_env.code.append("><TR>");		//20130314  table
         }
 
-        //xml
-        if(GlobalEnv.isOpt()){
-	        html_env2.code.append("<tfe type=\"connect\" dimension =\"1\"");
-	        if (decos.containsKey("tablealign") )
-	        	html_env2.code.append(" align=\"" + decos.getStr("tablealign") +"\"");
-	        if (decos.containsKey("tablevalign") )
-	        	html_env2.code.append(" valign=\"" + decos.getStr("tablevalign") +"\"");
-	        if(decos.containsKey("tabletype")){
-	        	html_env2.code.append(" tabletype=\"" + decos.getStr("tabletype") + "\"");
-	        	if(decos.containsKey("cellspacing")){
-	            	html_env2.code.append(" cellspacing=\"" + decos.getStr("cellspacing") + "\"");
-	            }
-	        	if(decos.containsKey("cellpadding")){
-	            	html_env2.code.append(" cellpadding=\"" + decos.getStr("cellpadding") + "\"");
-	            }
-	        	if(decos.containsKey("border")){
-        			html_env2.code.append(" border=\"" + decos.getStr("border").replace("\"", "") + "\"");
-        		}
-	        	if(decos.containsKey("tableborder")){
-        			html_env2.code.append(" tableborder=\"" + decos.getStr("tableborder").replace("\"", "") + "\"");
-        		}
-        	}else{
-        		if(decos.containsKey("border")){
-        			html_env2.code.append(" border=\"" + decos.getStr("border").replace("\"", "") + "\"");
-        		}else{
-            		html_env2.code.append(" border=\"" + html_env.tableborder.replace("\"", "") +"\"");
-        		}
-	        	if(decos.containsKey("tableborder")){
-        			html_env2.code.append(" tableborder=\"" + decos.getStr("tableborder").replace("\"", "") + "\"");
-        		}
-        	}
-	        if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
-		        html_env2.code.append(" class=\"");
-		        html_env2.code.append(HTMLEnv.getClassID(this));
-	        }
-	        if(decos.containsKey("class")){
-	        	if(!html_env.written_classid.contains(HTMLEnv.getClassID(this))){
-	    	        html_env2.code.append(" class=\"");
-	            }else{
-	    	        html_env2.code.append(" ");
-	            }
-	        	html_env2.code.append(decos.getStr("class")+"\" ");
-	        }else if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
-	        		html_env2.code.append("\" "); 
-	        }
-	        
-	        if(decos.containsKey("form")){
-	        	html_env2.code.append(" form=\""+ HTMLEnv.getFormNumber() +"\" ");
-	        }	        
-	    	html_env2.code.append(">"); 
-        }
+//        //xml
+//        if(GlobalEnv.isOpt()){
+//	        html_env2.code.append("<tfe type=\"connect\" dimension =\"1\"");
+//	        if (decos.containsKey("tablealign") )
+//	        	html_env2.code.append(" align=\"" + decos.getStr("tablealign") +"\"");
+//	        if (decos.containsKey("tablevalign") )
+//	        	html_env2.code.append(" valign=\"" + decos.getStr("tablevalign") +"\"");
+//	        if(decos.containsKey("tabletype")){
+//	        	html_env2.code.append(" tabletype=\"" + decos.getStr("tabletype") + "\"");
+//	        	if(decos.containsKey("cellspacing")){
+//	            	html_env2.code.append(" cellspacing=\"" + decos.getStr("cellspacing") + "\"");
+//	            }
+//	        	if(decos.containsKey("cellpadding")){
+//	            	html_env2.code.append(" cellpadding=\"" + decos.getStr("cellpadding") + "\"");
+//	            }
+//	        	if(decos.containsKey("border")){
+//        			html_env2.code.append(" border=\"" + decos.getStr("border").replace("\"", "") + "\"");
+//        		}
+//	        	if(decos.containsKey("tableborder")){
+//        			html_env2.code.append(" tableborder=\"" + decos.getStr("tableborder").replace("\"", "") + "\"");
+//        		}
+//        	}else{
+//        		if(decos.containsKey("border")){
+//        			html_env2.code.append(" border=\"" + decos.getStr("border").replace("\"", "") + "\"");
+//        		}else{
+//            		html_env2.code.append(" border=\"" + html_env.tableborder.replace("\"", "") +"\"");
+//        		}
+//	        	if(decos.containsKey("tableborder")){
+//        			html_env2.code.append(" tableborder=\"" + decos.getStr("tableborder").replace("\"", "") + "\"");
+//        		}
+//        	}
+//	        if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
+//		        html_env2.code.append(" class=\"");
+//		        html_env2.code.append(HTMLEnv.getClassID(this));
+//	        }
+//	        if(decos.containsKey("class")){
+//	        	if(!html_env.written_classid.contains(HTMLEnv.getClassID(this))){
+//	    	        html_env2.code.append(" class=\"");
+//	            }else{
+//	    	        html_env2.code.append(" ");
+//	            }
+//	        	html_env2.code.append(decos.getStr("class")+"\" ");
+//	        }else if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
+//	        		html_env2.code.append("\" "); 
+//	        }
+//	        
+//	        if(decos.containsKey("form")){
+//	        	html_env2.code.append(" form=\""+ HTMLEnv.getFormNumber() +"\" ");
+//	        }	        
+//	    	html_env2.code.append(">"); 
+//        }
         
         //tk end////////////////////////////////////////////////////////////////////
       
@@ -564,8 +529,44 @@ public class HTMLC1 extends Connector {
     	return false;
     }
 
-    public String getSymbol() {
-        return "HTMLC1";
+	//return <TABLE cellSpacing=\"0\" cellPadding=\"0\" border=  class=   >
+    public static String getTableStartTag(HTMLEnv html_env, DecorateList decos, ITFE tfe) {
+    	String s = "";
+    	s += "<TABLE width=\"100%\" cellSpacing=\"0\" cellPadding=\"0\" border=\"";
+		//s += "<TABLE width=\"100%\" align=\"center\" cellSpacing=\"0\" cellPadding=\"0\" border=\"";
+    	//s += "<TABLE width=\"95%\" align=\"center\" cellSpacing=\"0\" cellPadding=\"0\" border=\"";
+		//s += ((!table0Flg)? html_env.tableborder : "0") + "\"";
+    	if(HTMLC1.table0Flg || HTMLC2.table0Flg || HTMLG1.table0Flg || HTMLG2.table0Flg)
+    		s += "0" + "\"";	//20130325 table0
+    	else	s += html_env.tableborder + "\"";
+    	//s += html_env.tableborder + "\"";
+    	s += html_env.getOutlineMode();
+    	
+    	s += getClassIdText(html_env, decos, tfe);
+    	return s+">";
     }
 
+    //return class=
+    public static String getClassIdText(HTMLEnv html_env, DecorateList decos, ITFE tfe) {
+    	String s = "";
+    	if(html_env.written_classid.contains(HTMLEnv.getClassID(tfe))){
+    		s += " class=\"" + HTMLEnv.getClassID(tfe);
+    	}
+    	if(decos.containsKey("class")){
+    		if(!html_env.written_classid.contains(HTMLEnv.getClassID(tfe))){
+    			s += " class=\"";
+    		}else{
+    			s += " ";
+    		}
+    		s += decos.getStr("class")+"\" ";
+    	}else if(html_env.written_classid.contains(HTMLEnv.getClassID(tfe))){
+    		s += "\" ";
+    	}
+    	return s;
+    }
+    
+    
+    public String getSymbol() {
+    	return "HTMLC1";
+    }
 }

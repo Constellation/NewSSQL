@@ -333,18 +333,18 @@ public class SSQLparser {
 			}
 		}
 		//TODO
-        //added by goto 20130422  For "!number ,number"
+        //added by goto 20130422  For "!number, / ,number! / ,number!nuber, "
         //鐃緒申 鐃緒申鐃緒申}(鐃縦わ申鐃暑カ鐃獣ワ申)鐃殉でわ申0文鐃緒申幣鐃緒申任鐃春わ申文鐃緒申鐃緒申: [^\\}]*
-        //For !number
-        query = query.replaceAll("\\]\\s*!\\s*([0-9]+)\\s*,\\s*@\\s*\\{([^\\}]*)", "]!@{$2,row=$1");
-    	query = query.replaceAll("\\]\\s*!\\s*([0-9]+)\\s*,", "]!@{row=$1}");
-//    	query = query.replaceAll("\\]\\s*!\\s*([0-9]+)\\s*@\\s*\\{([^\\}]*)", "]!@{$2,row=$1");
-//    	query = query.replaceAll("\\]\\s*!\\s*([0-9]+)", "]!@{row=$1}");
-        //For ,number
+        //For ,number!number,
+    	query = query.replaceAll("\\]\\s*\\,\\s*([0-9]+)\\s*!\\s*([0-9]+)\\s*,\\s*@\\s*\\{([^\\}]*)", "],@{$3,column=$1,row=$2");
+    	query = query.replaceAll("\\]\\s*\\,\\s*([0-9]+)\\s*!\\s*([0-9]+)\\s*,", "],@{column=$1,row=$2}");
+    	//For ,number!
     	query = query.replaceAll("\\]\\s*\\,\\s*([0-9]+)\\s*!\\s*@\\s*\\{([^\\}]*)", "],@{$2,column=$1");
     	query = query.replaceAll("\\]\\s*\\,\\s*([0-9]+)\\s*!", "],@{column=$1}");
-//    	query = query.replaceAll("\\]\\s*\\,\\s*([0-9]+)\\s*@\\s*\\{([^\\}]*)", "],@{$2,column=$1");
-//    	query = query.replaceAll("\\]\\s*\\,\\s*([0-9]+)", "],@{column=$1}");
+        //For !number,
+        query = query.replaceAll("\\]\\s*!\\s*([0-9]+)\\s*,\\s*@\\s*\\{([^\\}]*)", "]!@{$2,row=$1");
+    	query = query.replaceAll("\\]\\s*!\\s*([0-9]+)\\s*,", "]!@{row=$1}");
+
 
 //    	Log.i("	query = "+query);
 		return query;
