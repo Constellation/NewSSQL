@@ -449,18 +449,18 @@ public class HTMLG1 extends Grouper {
             html_env.glevel--;
         }	// /while
         
-//        //TOOD 必要？不要？　→　不要のような気がするけど？？？
-//        //[重要] For [ [], ]! || [],
-//        //[],内が1つの値のみだったとき -> 直近のui-grid-aとui-block-aをカット
-    	if(HTMLG1.gridInt == 1){
-        //if(HTMLG1.jj == 1 && HTMLG1.gridInt == 1 /*&& HTMLG2.G2Flg*/){
-        	//Log.i("			HTMLG1.jj = "+HTMLG1.jj+"	HTMLG1.gridInt = "+HTMLG1.gridInt+"		HTMLG1.classid = "+HTMLG1.classid+"		!!");
-        	//Log.i("			"+HTMLManager.replaceCode(html_env, "ui-grid-a ##"+(HTMLEnv.uiGridCount2-1), "##"+(HTMLEnv.uiGridCount2-1)));
-        	HTMLManager.replaceCode(html_env, "ui-grid ##"+(HTMLEnv.uiGridCount2-1), "##"+(HTMLEnv.uiGridCount2-1));	//TODO
-//        	HTMLManager.replaceCode(html_env, "ui-grid-a ##"+(HTMLEnv.uiGridCount2-1), "##"+(HTMLEnv.uiGridCount2-1));
-    		HTMLManager.replaceCode(html_env, "ui-block "+HTMLG1.classid, "### "+HTMLG1.classid);	//TODO
-//    		HTMLManager.replaceCode(html_env, "ui-block-a "+HTMLG1.classid, "### "+HTMLG1.classid);
-    	}
+////        //TOOD 必要？不要？　→　不要のような気がするけど？？？　→　あると余計な部分が消されることがあるので無い方が良い(2013.09.26)
+////        //[重要] For [ [], ]! || [],
+////        //[],内が1つの値のみだったとき -> 直近のui-grid-aとui-block-aをカット
+//    	if(HTMLG1.gridInt == 1){
+//        //if(HTMLG1.jj == 1 && HTMLG1.gridInt == 1 /*&& HTMLG2.G2Flg*/){
+//        	//Log.i("			HTMLG1.jj = "+HTMLG1.jj+"	HTMLG1.gridInt = "+HTMLG1.gridInt+"		HTMLG1.classid = "+HTMLG1.classid+"		!!");
+//        	//Log.i("			"+HTMLManager.replaceCode(html_env, "ui-grid-a ##"+(HTMLEnv.uiGridCount2-1), "##"+(HTMLEnv.uiGridCount2-1)));
+//        	HTMLManager.replaceCode(html_env, "ui-grid ##"+(HTMLEnv.uiGridCount2-1), "##"+(HTMLEnv.uiGridCount2-1));	//TODO
+////        	HTMLManager.replaceCode(html_env, "ui-grid-a ##"+(HTMLEnv.uiGridCount2-1), "##"+(HTMLEnv.uiGridCount2-1));
+//    		HTMLManager.replaceCode(html_env, "ui-block "+HTMLG1.classid, "### "+HTMLG1.classid);	//TODO
+////    		HTMLManager.replaceCode(html_env, "ui-block-a "+HTMLG1.classid, "### "+HTMLG1.classid);
+//    	}
 
 //        Log.i("	"+jj+"	"+gridInt);
     	/* 
