@@ -3,6 +3,7 @@ package supersql.codegenerator.HTML;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -16,6 +17,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 
@@ -27,6 +29,11 @@ import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.FuncArg;
 import supersql.codegenerator.Function;
 import supersql.codegenerator.Manager;
+import supersql.codegenerator.Mobile_HTML5.HTMLC1;
+import supersql.codegenerator.Mobile_HTML5.HTMLC2;
+import supersql.codegenerator.Mobile_HTML5.HTMLG1;
+import supersql.codegenerator.Mobile_HTML5.HTMLG2;
+import supersql.codegenerator.Mobile_HTML5.HTMLManager;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.dataconstructor.DataConstructor;
@@ -39,12 +46,15 @@ public class HTMLFunction extends Function {
 	protected HTMLEnv htmlEnv2;
 	private static int meter_id=0;
 	private static String updateFile;
+	static ArrayList<Integer> seq_num = new ArrayList<Integer>();		//20130914  "SEQ_NUM"
+	static ArrayList<String> seq_num_ClassID = new ArrayList<String>();	//20130914  "SEQ_NUM"
+	static ArrayList<Boolean> DESC_Flg = new ArrayList<Boolean>();		//20130914  "SEQ_NUM"
 
     public HTMLFunction()
     {
 
     }
-    //¥³¥ó¥¹¥È¥é¥¯¥¿
+    //éƒç·’ç”³éƒè—·ã‚¹ãƒˆãƒ©ã‚¯éƒç·’ç”³
     public HTMLFunction(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
         super();
         this.htmlEnv = henv;
@@ -57,7 +67,7 @@ public class HTMLFunction extends Function {
 	public Element createNode(ExtList<ExtList<String>> data_info) {
     	this.setDataList(data_info);
     	String FuncName = this.getFuncName();
-    	if (FuncName.equalsIgnoreCase("imagefile")) {
+    	if (FuncName.equalsIgnoreCase("imagefile") || FuncName.equalsIgnoreCase("image") || FuncName.equalsIgnoreCase("img")) {
             return FuncImagefileForJsoup();
         } else if (FuncName.equalsIgnoreCase("invoke")) {
             return FuncInvokeForJsoup();
@@ -67,6 +77,18 @@ public class HTMLFunction extends Function {
             return FuncSinvokeForJsoup(data_info);
         } else if (FuncName.equalsIgnoreCase("null")) {
             return FuncNullForJsoup();
+        }
+        else if(FuncName.equalsIgnoreCase("url") || FuncName.equalsIgnoreCase("anchor") || FuncName.equalsIgnoreCase("a")){
+        	return FuncNullForJsoup();
+        }
+        else if(FuncName.equalsIgnoreCase("mail")){
+        	return FuncNullForJsoup();
+        }
+        else if(FuncName.equalsIgnoreCase("object")){
+        	return FuncNullForJsoup();
+        }
+        else if(FuncName.equalsIgnoreCase("seq_num")){
+        	return FuncNullForJsoup();
         }
         else if (FuncName.equalsIgnoreCase("submit")) {
             return FuncSubmitForJsoup();
@@ -104,7 +126,7 @@ public class HTMLFunction extends Function {
         return null;
 	}
     
-	//Function¤Îwork¥á¥½¥Ã¥É
+	//Functionéƒç·’ç”³workéƒæ½¤ã‚½éƒç£ãƒ¯ç”³
     public void work(ExtList data_info) {
         this.setDataList(data_info);
         //    	Log.out("FuncName= " + this.getFuncName());
@@ -113,7 +135,7 @@ public class HTMLFunction extends Function {
 
         String FuncName = this.getFuncName();
 
-        if (FuncName.equalsIgnoreCase("imagefile")) {
+        if (FuncName.equalsIgnoreCase("imagefile") || FuncName.equalsIgnoreCase("image") || FuncName.equalsIgnoreCase("img")) {
             Func_imagefile();
         } else if (FuncName.equalsIgnoreCase("invoke")) {
             Func_invoke();
@@ -127,6 +149,22 @@ public class HTMLFunction extends Function {
             Func_sinvoke(data_info);
         } else if (FuncName.equalsIgnoreCase("null")) {
             Func_null();
+        }
+        //added by goto 20130308  "urléƒç·’ç”³éƒï¿½
+        else if(FuncName.equalsIgnoreCase("url") || FuncName.equalsIgnoreCase("anchor") || FuncName.equalsIgnoreCase("a")){
+        	Func_url(false);
+        }
+        //added by goto 20130417  "mail"
+        else if(FuncName.equalsIgnoreCase("mail")){
+        	Func_url(true);
+        }
+        //added by goto 20130914  "object"
+        else if (FuncName.equalsIgnoreCase("object")) {
+        	Func_object("");
+        }
+    	//added by goto 20130914  "SEQ_NUM"
+        else if (FuncName.equalsIgnoreCase("seq_num")) {
+        	Func_seq_num();
         }
         //chie
         else if (FuncName.equalsIgnoreCase("submit")) {
@@ -692,7 +730,7 @@ public class HTMLFunction extends Function {
          * ImageFile function : <td> <img src="${imgpath}/"+att /> </td>
          */
 
-        String path = this.getAtt("path", ".");
+		String path = this.getAtt("path", ".");
         if (!path.startsWith("/")) {
             String basedir = GlobalEnv.getBaseDir();
             if (basedir != null && basedir != "") {
@@ -711,10 +749,10 @@ public class HTMLFunction extends Function {
         //tk to make hyper link to image//////////////////////////////////////////////////////////////////////////////////
         if (htmlEnv.linkFlag > 0 || htmlEnv.sinvokeFlag) {
 			//added by goto 20121222 start
-        	//°Ê²¼¤Ï¡¢-f¤Î¥Õ¥¡¥¤¥ëÌ¾»ØÄê¤¬ÀäÂĞ¥Ñ¥¹¤Ë¤Ê¤Ã¤Æ¤¤¤ë¾ì¹ç¤Î½èÍı(?)
-			//[%Ï¢·ë»Ò] href¤Î»ØÄê¤òÀäÂĞ¥Ñ¥¹¤«¤é¡ÖÁêÂĞ¥Ñ¥¹·Á¼°¡×¤ØÊÑ¹¹
-			//20120622¤Î½¤Àµ¤À¤È¡¢¡Ö-f ¥Õ¥ë¥Ñ¥¹¥Õ¥¡¥¤¥ëÌ¾¡×¤òÍÑ¤¤¤Æ¤¤¤ë¾ì¹ç¡¢ÁêÂĞ¥Ñ¥¹·Á¼°¤Ë¤Ê¤é¤Ê¤¤
-			String fileDir = new File(htmlEnv.linkUrl).getAbsoluteFile().getParent();
+        	//ç¯ãƒ¤ï¿½ï¿½ï¿½ï¿½-fï¿½ï¿½ï¿½ï¿½ï¼œï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½å½çµ²éšœï¿½ï¿½é´»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(?)
+			//[%ï¿½ï½‡ï¿½çµ–ï¿½ hrefï¿½ï¿½ï¿½çµï¿½ï¿½è…Ÿä¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½çµ²éšœï¿½ï¿½åŠ«å°±ç¶£ï¿½ï¿½ï¿½ç´Šï¿½ï¿½
+			//20120622ï¿½ï¿½ä¿¡ç½©ï½ƒï¿½ï¿½ï¿½ï¿½ï¿½ï¿½f ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ã‚ƒï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ç¿«ï¿½ï¿½ï¿½ï¿½çµ²éšœï¿½ï¿½åŠ«å°±ç¶£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        	String fileDir = new File(htmlEnv.linkUrl).getAbsoluteFile().getParent();
 			
 			if(fileDir.length() < htmlEnv.linkUrl.length()
 			&& fileDir.equals(htmlEnv.linkUrl.substring(0,fileDir.length()))){
@@ -737,7 +775,6 @@ public class HTMLFunction extends Function {
         //tk/////////////////////////////////////////////////////////////////////////////////
 
 
-        
         if(decos.containsKey("lightbox"))
         {
     		Date d1 = new Date();
@@ -766,8 +803,14 @@ public class HTMLFunction extends Function {
         		htmlEnv.code.append(decos.getStr("class"));
 
             //System.out.println("out:path:"+this.getAtt("default"));
-        	htmlEnv.code.append(" \" src=\"" + path + "/" + this.getAtt("default") + "\"/>");
-        	htmlEnv2.code.append(" \" src=\"" + path + "/" + this.getAtt("default") + "\" ");
+        	//added 20130703
+        	if(this.getAtt("default").startsWith("http://") || this.getAtt("default").startsWith("https://")){
+	        	htmlEnv.code.append(" \" src=\"" + this.getAtt("default") + "\"/>");
+	        	htmlEnv2.code.append(" \" src=\"" + this.getAtt("default") + "\" ");
+        	}else{
+	        	htmlEnv.code.append(" \" src=\"" + path + "/" + this.getAtt("default") + "\"/>");
+	        	htmlEnv2.code.append(" \" src=\"" + path + "/" + this.getAtt("default") + "\" ");
+        	}
         	if(decos.containsKey("width")){
         		htmlEnv2.code.append("width=\"" + decos.getStr("width").replace("\"", "")+"\" " );
         	}
@@ -783,44 +826,44 @@ public class HTMLFunction extends Function {
         //tk///////////////////////////////////////////////////////////////////////////////////
         return;
     }
-    
+	
     //added by goto 20130308 start  "anchor"  anchor(), a(), url(), mail()
-    /** anchor´Ø¿ô: anchor( name/button-name/button-url, url, type(bt/button/img/image) )
+    /** anchoréƒèˆœéšç”³: anchor( name/button-name/button-url, url, type(bt/button/img/image) )
      *          @{ width=~, height=~, transition=~ } 
     /*    url("title", "detail/imgURL", int type), anchor(), a()    */
-    /*    <type:1> a(¥ê¥ó¥¯¸µ¤ÎÌ¾Á°, ¥ê¥ó¥¯ÀèURL) <=> a(¥ê¥ó¥¯¸µ¤ÎÌ¾Á°, ¥ê¥ó¥¯ÀèURL, 1)    */
-    /*    <type:2> a(²èÁüURL, ¥ê¥ó¥¯ÀèURL, 2)    	   	*/
-    /*    <type:3> a(¥Ü¥¿¥ó¤ÎÌ¾Á°, ¥ê¥ó¥¯ÀèURL, 3)        	*/
-    /*    mail()¤Ç¤â»ÈÍÑ							        */
+    /*    <type:1> a(éƒç·’ç”³éµï¿½éƒç·’ç”³éƒç¸®å¸¸ç”³éƒï¿½ éƒç·’ç”³éƒç·’ç”³éƒï¿½RL) <=> a(éƒç·’ç”³éµï¿½éƒç·’ç”³éƒç¸®å¸¸ç”³éƒï¿½ éƒç·’ç”³éƒç·’ç”³éƒï¿½RL, 1)    */
+    /*    <type:2> a(éƒç·’ç”³éƒç·’ç”³URL, éƒç·’ç”³éƒç·’ç”³éƒï¿½RL, 2)    	   	*/
+    /*    <type:3> a(éƒæ—¬ãƒ¯ç”³éƒç·’ç”³éƒç¸®å¸¸ç”³éƒï¿½ éƒç·’ç”³éƒç·’ç”³éƒï¿½RL, 3)        	*/
+    /*    mail()éƒå”ã‚ç”³éƒç·’ç”³éƒï¿½						        */
     private void Func_url(boolean mailFncFlg) {
     	String statement = "";
     	FuncArg fa1 = (FuncArg) this.getArgs().get(0), fa2, fa3;
     	String url, name, type;
     	
-    	try{					//°ú¿ô2¤Ä or 3¤Ä¤Î¾ì¹ç
+    	try{					//éƒç·’ç”³éƒï¿½éƒç·’ç”³ or 3éƒç¸¦ã®å¸¸ç”³éƒï¿½
     		fa2 = (FuncArg) this.getArgs().get(1);
     		url = ((mailFncFlg)?("mailto:"):("")) + fa2.getStr();
     		name = fa1.getStr();
         	
-        	try{						//°ú¿ô3¤Ä¤Î¾ì¹ç
+        	try{						//éƒç·’ç”³éƒï¿½éƒç¸¦ã®å¸¸ç”³éƒï¿½
         		fa3 = (FuncArg) this.getArgs().get(2);
         		type = fa3.getStr();
         		
-        		//type=1 -> Ê¸»ú
+        		//type=1 -> æ–‡éƒç·’ç”³
         		if(type.equals("1") || type.equals("text") || type.equals("")){
         			statement = getTextAnchor(url, name);
         			//statement = "<a href=\""+url+"\""+transition()+prefetch()+target(url)+">"+name+"</a>";
         		
-//        		//type=2 -> url¥â¥Ğ¥¤¥ë¥Ü¥¿¥ó
+//        		//type=2 -> urléƒç·’ç”³ä¸±éƒç·’ç”³éƒæ—¬ãƒ¯ç”³éƒç·’ç”³
 //        		}else if(type.equals("3") || type.equals("button") || type.equals("bt")){
 //            		statement = "<a href=\""+url+"\" data-role=\"button\""+transition()+prefetch()+target(url)+">"+name+"</a>";
 
-            	//url¥Ü¥¿¥ó(¥Ç¥¹¥¯¥È¥Ã¥×¡¦¥â¥Ğ¥¤¥ë¶¦ÄÌ)
+            	//urléƒæ—¬ãƒ¯ç”³éƒç·’ç”³(éƒå”ãƒ¯ç”³éƒç·’ç”³éƒå¤™ãƒƒãƒ—ï¿¥ç”³éƒç·’ç”³ä¸±éƒç·’ç”³è¦¿ï¿½ç”³éƒï¿½
 //        		}else if(type.equals("dbutton") || type.equals("dbt")){
         		}else if(type.equals("3") || type.equals("button") || type.equals("bt")){
-            		statement = "<input type=\"button\" value=\""+name+"\" onClick=\"location.href='"+url+"'\"";
+            		statement = "<input type=\"button\" value=\""+name+"\" onClick=\"location.href='"+url+"'\""+className();
             		
-            		//url¥Ü¥¿¥ó width,height»ØÄê»ş¤Î½èÍı
+            		//urléƒæ—¬ãƒ¯ç”³éƒç·’ç”³ width,heightéƒç·’ç”³éƒç·’ç”³éƒç·’ç”³åƒšéƒç·’ç”³éƒï¿½
             		if(decos.containsKey("width") || decos.containsKey("height")){
             			statement += " style=\"";
             			if(decos.containsKey("width"))	statement += "WIDTH:"+decos.getStr("width").replace("\"", "")+"; ";
@@ -829,11 +872,11 @@ public class HTMLFunction extends Function {
                 	}
             		statement += ">";
             	
-            	//type=3 -> url²èÁü
+            	//type=3 -> urléƒç·’ç”³éƒç·’ç”³
             	}else if(type.equals("2") || type.equals("image") || type.equals("img")){
-            		statement = "<a href=\""+url+"\""+transition()+prefetch()+target(url)+"><img src=\""+name+"\"";
+            		statement = "<a href=\""+url+"\""+className()+transition()+prefetch()+target(url)+"><img src=\""+name+"\"";
     		        
-        			//url²èÁü width,height»ØÄê»ş¤Î½èÍı
+        			//urléƒç·’ç”³éƒç·’ç”³ width,heightéƒç·’ç”³éƒç·’ç”³éƒç·’ç”³åƒšéƒç·’ç”³éƒï¿½
             		if(decos.containsKey("width"))	statement += " width="+decos.getStr("width").replace("\"", "");
             		else{
             	        //added by goto 20130312  "Default width: 100%"
@@ -843,23 +886,21 @@ public class HTMLFunction extends Function {
         			statement += "></a>";
             	}
         		
-        	}catch(Exception e){		//°ú¿ô2¤Ä¤Î¾ì¹ç
-    			statement = getTextAnchor(url, name);
+        	}catch(Exception e){		//éƒç·’ç”³éƒï¿½éƒç¸¦ã®å¸¸ç”³éƒï¿½    			statement = getTextAnchor(url, name);
         		//statement = "<a href=\""+url+"\""+transition()+prefetch()+target(url)+">"+name+"</a>";
         	}
         	
-    	}catch(Exception e){	//°ú¿ô1¤Ä¤Î¾ì¹ç
+    	}catch(Exception e){	//éƒç·’ç”³éƒï¿½éƒç¸¦ã®å¸¸ç”³éƒï¿½
     		url = fa1.getStr();
     		statement = "<a href=\""+((mailFncFlg)?("mailto:"):("")) + url+"\""+transition()+prefetch()+target(url)+">"+url+"</a>";
     	}
     	
-    	// ³Æ°ú¿ôËè¤Ë½èÍı¤·¤¿·ë²Ì¤òHTML¤Ë½ñ¤­¤³¤à
+    	// éƒéŠƒé€¸ç”³éƒç·’ç”³éƒç¥ç·’ç”³éƒç·’ç”³éƒç¸®ã‚ç”³HTMLéƒç¥æ›¸ãã‚ç”³éƒç·’ç”³
     	htmlEnv.code.append(statement);
     	return;
     }
     private String getTextAnchor(String url, String name) {
-    	//[ ]¤Ç°Ï¤ï¤ì¤¿ÉôÊ¬¤ò¥Ï¥¤¥Ñ¡¼¥ê¥ó¥¯¤Ë¤¹¤ë
-    	//ex) a("[This] is anchor.","URL")
+    	//[ ]éƒå”å›²ã‚ç”³è­´éšç”³éƒæ·‘ï¿½ç”³éƒç†Ÿãƒ¯ç”³éƒè¡“ï¿¥ç”³éƒç·’ç”³éµï¿½ç ²éƒç·’ç”³éƒï¿½    	//ex) a("[This] is anchor.","URL")
     	String A="",notA1="",notA2="";
     	int a1 = 0, a2 = name.length()-1;
     	try{
@@ -874,11 +915,15 @@ public class HTMLFunction extends Function {
     		notA2=name.substring(a2+1).replaceAll("\\\\\\[", "[").replaceAll("\\\\\\]", "]");
     	}catch(Exception e){}
     	
-    	return notA1+"<a href=\""+url+"\""+transition()+prefetch()+target(url)+">"+A+"</a>"+notA2;
+    	return notA1+"<a href=\""+url+"\""+className()+transition()+prefetch()+target(url)+">"+A+"</a>"+notA2;
+    }
+    protected String className() {	//added 20130703
+    	if(decos.containsKey("class"))
+    		return " class=\""+decos.getStr("class")+"\" ";
+    	return "";
     }
     protected String transition() {
-    	//²èÌÌÁ«°Ü¥¢¥Ë¥á¡¼¥·¥ç¥ó(data-transition)»ØÄê»ş¤Î½èÍı
-    	//¢¨³°Éô¥Ú¡¼¥¸¤Ø¤ÎÁ«°Ü¤Ë¤ÏÂĞ±ş¤·¤Æ¤¤¤Ê¤¤
+    	//éƒç·’ç”³éƒç·’ç”³éƒç·’ç”³éƒæ—¬ãƒ¯ç”³éƒç¥ãƒ¡ãƒ¼éƒç·’ç”³éƒç·’ç”³éƒï¿½data-transition)éƒç·’ç”³éƒç·’ç”³éƒç·’ç”³åƒšéƒç·’ç”³éƒï¿½    	//éƒç·’ç”³éƒç·’ç”³éƒç·’ç”³éƒå‡†ï¿¥ç”³éƒç·’ç”³éƒèˆœã‚ç”³éƒç·’ç”³éƒæ—¬ã«ã‚ç”³éƒå‡ºç¸ç”³éƒç·’ç”³éƒéŠƒã‚ç”³éƒæ·‘ã‚ç”³
     	if (decos.containsKey("transition"))
     		return " data-transition=\"" + decos.getStr("transition") + "\"";
     	if (decos.containsKey("trans"))
@@ -886,22 +931,90 @@ public class HTMLFunction extends Function {
 		return "";
     }
     protected String prefetch() {
-    	//Á«°ÜÀè¥Ú¡¼¥¸¥×¥ê¥Õ¥§¥Ã¥Á(data-prefetch)»ØÄê»ş¤Î½èÍı
-    	//¢¨³°Éô¥Ú¡¼¥¸¤Ø¤ÎÁ«°Ü¤Ë»ÈÍÑ¤·¤Æ¤Ï¤¤¤±¤Ê¤¤·è¤Ş¤ê¤¬¤¢¤ë
+    	//éƒç·’ç”³éƒç·’ç”³éƒç·’ç”³æ“šéƒç·’ç”³éƒç·’ç”³å»›éƒæ˜¥ãƒ¯ç”³éƒç£ãƒ¯ç”³(data-prefetch)éƒç·’ç”³éƒç·’ç”³éƒç·’ç”³åƒšéƒç·’ç”³éƒï¿½    	//éƒç·’ç”³éƒç·’ç”³éƒç·’ç”³éƒå‡†ï¿¥ç”³éƒç·’ç”³éƒèˆœã‚ç”³éƒç·’ç”³éƒæ—¬ã«èªŒç”³éƒè¡“ã‚ç”³éƒéŠƒã¯ã‚ç”³éƒç·’ç”³éƒæ·‘ã‚ç”³éƒç·’ç”³æ³™è …ï¿½ç”³éƒç·’ç”³éƒï¿½
     	if (decos.containsKey("prefetch") || decos.containsKey("pref"))
     		return " data-prefetch";
 		return "";
     }
     protected String target(String url) {
-    	//¿·µ¬¥¦¥£¥ó¥É¥¦¤ÇÉ½¼¨¤¹¤ë¾ì¹ç(target="_blank")¤Î½èÍı¡¡=> _blank¤ÏW3C¤Ç¶Ø»ß¤µ¤ì¤Æ¤¤¤ë¤¿¤á¡¢JS + rel=external¤ò»ÈÍÑ
-    	//¡Ö³°Éô¥Ú¡¼¥¸¤ËÈô¤Ö¾ì¹ç( http(s)://¤Ç»Ï¤Ş¤ë¾ì¹ç)¡×¤Î¤ß¿·µ¬¥¦¥£¥ó¥É¥¦É½¼¨
+    	//éƒç·’ç”³éƒç·’ç”³éƒç·’ç”³éƒç·’ç”³éƒç·’ç”³ç–‹éƒç·’ç”³éƒå®¿ç·’ç”³éƒç·’ç”³éƒç·’ç”³éƒç·’ç”³éƒï¿½target="_blank")éƒå¡¾ç·’ç”³éƒç·’ç”³=> _blankéƒç·’ç”³W3Céƒå”ç¦æ­¢ã‚ç”³éƒç·’ç”³è¨éƒç·’ç”³è¥ªéšç”³ç“ ï¿½S + rel=externaléƒç·’ç”³éƒç·’ç”³éƒï¿½    	//éƒç¬é°¹ç”³éƒç·’ç”³éƒå‡†ï¿¥ç”³éƒç·’ç”³éƒç·’ç”³éƒç·’ç”³éƒç¬å¸¸ç”³éƒï¿½ http(s)://éƒå”å§‹ã¾ã‚ç”³éƒç·’ç”³)éƒç«£ã®ã¿éšç”³éƒç·’ç”³éƒç·’ç”³éƒç·’ç”³éƒç·’ç”³ç–‹éƒå®¿ç·’ç”³éƒï¿½
     	if (url.matches("\\s*(http|https)://.*"))
     		return "  rel=\"external\"";
     		//return " target=\"_blank\"";
 		return " target=\"_self\"";
     }
     //added by goto 20130308 end
+    
+    //added by goto 20130914  "object"
+    /*  object("file name")  */
+    /*  object("HTMLãƒ»PDFãƒ»FLASHãƒ»ç”»åƒãƒ»å‹•ç”»ãƒ»PHPãƒ»JSãƒ•ã‚¡ã‚¤ãƒ«ç­‰ã®ãƒ•ã‚¡ã‚¤ãƒ«å")  */
+    private void Func_object(String path) {
+        String classID = HTMLEnv.getClassID(this);
 
+//    	//not @{table}
+//    	if(!decos.containsKey("table") && !HTMLC1.table0Flg && !HTMLC2.tableFlg && !HTMLG1.tableFlg && !HTMLG2.tableFlg)
+//    		HTMLManager.replaceCode(html_env, classID, "");		//ç›´å‰ã®<div>ã«æ›¸ãè¾¼ã¾ã‚Œã¦ã„ã‚‹classIDã‚’å‰Šé™¤
+        
+        if(path.equals("")){
+            try{
+                path = ((FuncArg) this.getArgs().get(0)).getStr().trim();
+            }catch(Exception e){ }
+        }
+        
+        // å„å¼•æ•°æ¯ã«å‡¦ç†ã—ãŸçµæœã‚’HTMLã«æ›¸ãã“ã‚€
+        if(path.endsWith(".php")){    //.php file
+            BufferedReader in;
+            try{
+                in = new BufferedReader(new InputStreamReader(new FileInputStream(path), "UTF-8"));
+                String line = null;
+                while (true){
+                    line = in.readLine();
+                    if (line == null)    break;
+                    else htmlEnv.code.append(line+"\n");
+                }
+            }catch(Exception e){
+                System.err.println("<Warning> Can't open '"+path+"'.");
+            }
+        }else if(path.endsWith(".js"))    //.js file
+        	htmlEnv.code.append("<script type=\"text/javascript\" src=\""+path+"\">\n</script>\n");
+        else    //.html, .pdf, .swf, .gif, .mp4, etc.
+        	htmlEnv.code.append("<object data=\""+path+"\" class=\"" + classID +"\" >\n</object>\n");
+        return;
+    }
+    //object end
+
+    //added by goto 20130914  "SEQ_NUM"
+    /*  SEQ_NUM( [Start number [, ASC or DESC] ] )  */
+    private void Func_seq_num() {
+        String classID = HTMLEnv.getClassID(this);
+        int i;
+        for(i=0; i<seq_num_ClassID.size()+1; i++){
+            try{
+                if(classID.equals(seq_num_ClassID.get(i)))
+                    break;
+            }catch(Exception e1){
+                seq_num_ClassID.add(i, classID);
+                try{
+                    //ç¬¬ä¸€å¼•æ•°
+                    seq_num.add(i, Integer.parseInt(getValue(1)));
+                    //ç¬¬äºŒå¼•æ•°
+                    if(getValue(2).toLowerCase().trim().equals("desc"))    DESC_Flg.add(i, true);
+                    else                                                DESC_Flg.add(i, false);
+                }catch(Exception e2){
+                    seq_num.add(i, 1);            //default
+                    DESC_Flg.add(i, false);        //default
+                }
+                break;
+            }
+        }
+        
+        // å„å¼•æ•°æ¯ã«å‡¦ç†ã—ãŸçµæœã‚’HTMLã«æ›¸ãã“ã‚€
+        htmlEnv.code.append(""+((!DESC_Flg.get(i))? (seq_num.get(i)):(seq_num.get(i))));
+        if(!DESC_Flg.get(i))    seq_num.set(i,seq_num.get(i)+1);
+        else                    seq_num.set(i,seq_num.get(i)-1);
+        return;
+    }
+    //seq_num end
     
     
 
@@ -910,17 +1023,15 @@ public class HTMLFunction extends Function {
 //    	String statement ="";
 //    	String button_media = this.getArgs().get(0).toString();
 //    	if (button_media.equals("\"goback\"")){
-//    		// Ìá¤ë¥Ü¥¿¥ó¤òÀ¸À®¤¹¤ë
-//			statement = "<form><INPUT type=\"button\" onClick='history.back();' value=\"Ìá¤ë\"></form>";
+//    		// éƒç·’ç”³éƒæ—¬ãƒ¯ç”³éƒç·’ç”³éƒç·’ç”³éƒç·’ç”³éƒç·’ç”³éƒç·’ç”³éƒï¿½//			statement = "<form><INPUT type=\"button\" onClick='history.back();' value=\"éƒç·’ç”³éƒï¿½"></form>";
 //    	}else if(button_media.equals("\"bookmark\"")){
-//    		// ¤³¤³¤Ë¥Ö¥Ã¥¯¥Ş¡¼¥¯½èÍı¤òµ­½Ò¤¹¤ë
-//    	}else if(button_media.equals("\"facebook\"")){
-//    		// facebook¤Î¤¤¤¤¤Í¡ª¥Ü¥¿¥ó¤Î½èÍı¤òµ­½Ò¤¹¤ë
+//    		// éƒç·’ç”³éƒç·’ç”³éƒç¥ãƒ–ãƒƒãƒ¯ç”³éƒæ®‰ï¿¥ç”³éƒç·’ç”³éƒç·’ç”³éƒç·’ç”³é­‘ï¿½åŠ¼éƒç·’ç”³éƒï¿½//    	}else if(button_media.equals("\"facebook\"")){
+//    		// facebookéƒå¡¾ã‚ç”³éƒç·’ç”³éƒç²›ï¿¥ç”³éƒæ—¬ãƒ¯ç”³éƒç·’ç”³åƒšéƒç·’ç”³éƒè–¯è¨˜è¿°ã‚ç”³éƒç·’ç”³
 //    	}else{
-//    		// ÆÃ¤Ë»ØÄê¤¬¤Ê¤±¤ì¤ĞÌá¤ë¥Ü¥¿¥ó¤Ë¤¹¤ë
-//    		statement = "<form><INPUT type=\"button\" onClick='history.back();' value=\"Ìá¤ë\"></form>";
+//    		// éƒç£ã«èªŒç”³éƒæ‰€ãŒéƒæ·‘ã‚ç”³éƒç·’ç”³éƒç·’ç”³éƒç·’ç”³æ¤’éƒç·’ç”³éƒç¥ã‚ç”³éƒç·’ç”³
+//    		statement = "<form><INPUT type=\"button\" onClick='history.back();' value=\"éƒç·’ç”³éƒï¿½"></form>";
 //    	}
-//    	// ³Æ°ú¿ôËè¤Ë½èÍı¤·¤¿·ë²Ì¤òHTML¤Ë½ñ¤­¤³¤à
+//    	// éƒéŠƒé€¸ç”³éƒç·’ç”³éƒç¥ç·’ç”³éƒç·’ç”³éƒç¸®ã‚ç”³HTMLéƒç¥æ›¸ãã‚ç”³éƒç·’ç”³
 //    	html_env.code.append(statement);
 //    	return;
 //    }
@@ -1358,6 +1469,13 @@ public class HTMLFunction extends Function {
 
     //tk start//////////////////////////////////////////////////////////////////////////////
     protected void Func_embed(ExtList data_info){
+    	//goto 20130917
+		try{
+			Func_object( ((FuncArg) this.getArgs().get(0)).getStr().trim() );	//if embed("file name")
+			return;
+		}catch(Exception e){ }
+		
+    	
     	String file = this.getAtt("file");
     	String where = this.getAtt("where");
     	String att = this.getAtt("att");
@@ -1629,7 +1747,7 @@ public class HTMLFunction extends Function {
 					Log.out("<div id="+divname+">");
 				}
 
-				//xml¤ò½ĞÎÏ
+				//xmléƒç·’ç”³éƒç·’ç”³éƒï¿½
 				if(!is_hidden){
 					htmlEnv2.code.append("<EMBED>");
 					htmlEnv.code.append(returnedcode);
@@ -1786,15 +1904,15 @@ public class HTMLFunction extends Function {
                		Log.out("line : "+line);
                		line = dis.readLine();
                		if(!line.equalsIgnoreCase("</body>")){
-               			htmlEnv.code.append(line);
+               			htmlEnv.code.append(line+"\n");
                	        if(line.contains("&"))
                	        	line = line.replace("&", "&amp;");
                			if(line.contains("<"));
                				line = line.replace("<", "&lt;");
                			if(line.contains(">"))
                		        line = line.replace(">", "&gt;");
-               	        if(line.contains("¢·"))
-               	        	line = line.replace("¢·", "&#65374;");
+               	        if(line.contains("ï¿½ï¿½ï¿½"))
+               	        	line = line.replace("ï¿½ï¿½ï¿½", "&#65374;");
                			htmlEnv2.code.append(line);
                		}
                	}
@@ -1975,7 +2093,7 @@ public class HTMLFunction extends Function {
         			droptarget[0] = value;
 
 
-        		//script À¸À®
+        		//script éƒç·’ç”³éƒç·’ç”³
         		Date d1 = new Date();
         		SimpleDateFormat sdf = new SimpleDateFormat("yyyymmddHHmmss");
         		String today = sdf.format(d1);
@@ -2148,4 +2266,21 @@ public class HTMLFunction extends Function {
      	htmlEnv.code.append("id=\"meter"+meter_id+"\"></canvas></div>");
     }
 
+    //20130920
+    private String getValue(int x) {
+		try{
+			String str = ((FuncArg) this.getArgs().get(x-1)).getStr();	//ç¬¬xå¼•æ•°
+			if(!str.equals(""))	return str;
+			else				return "";
+		}catch(Exception e){
+			return "";
+		}
+    }
+    private int getIntValue(int x) {
+		try{
+			return Integer.parseInt(getValue(x));
+		}catch(Exception e){
+			return Integer.MIN_VALUE;
+		}
+    }
 }

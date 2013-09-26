@@ -3,6 +3,7 @@ package supersql.codegenerator.Mobile_HTML5;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -16,6 +17,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 
@@ -52,6 +54,27 @@ public class HTMLFunction extends Function {
     static String headerString = "";		//data-role="header"
     static String footerString = "";		//data-role="footer"
     
+    static boolean logoutButtonFlg = false; //added by goto 20130508  "Login&Logout"
+	static String movetoFlg = ""; 		    //added by goto 20130519  "moveto"
+
+	//added by goto 20130515  "search"
+    public static String after_from_string = "";
+    static int searchCount = 1;
+    
+    static int selectCount = 1;		//20130529	"select"
+    static int insertCount = 1;		//20130529	"insert"
+
+    static int checkCount = 1;		//20130531	"check"
+
+    static int mapFuncCount = 1;	//20130717  "map"
+    static int gpsFuncCount = 1;	//20130717  "gps"
+    
+	static ArrayList<Integer> seq_num = new ArrayList<Integer>();		//20130914  "SEQ_NUM"
+	static ArrayList<String> seq_num_ClassID = new ArrayList<String>();	//20130914  "SEQ_NUM"
+	static ArrayList<Boolean> DESC_Flg = new ArrayList<Boolean>();		//20130914  "SEQ_NUM"
+	
+	static boolean textFlg = false;	//20130914  "text"
+    
     static String updateFile;
 
     public HTMLFunction()
@@ -75,7 +98,7 @@ public class HTMLFunction extends Function {
 
         String FuncName = this.getFuncName();
 
-        if (FuncName.equalsIgnoreCase("imagefile")) {
+    	if (FuncName.equalsIgnoreCase("imagefile") || FuncName.equalsIgnoreCase("image") || FuncName.equalsIgnoreCase("img")) {
             Func_imagefile();
         } else if (FuncName.equalsIgnoreCase("invoke")) {
             Func_invoke();
@@ -126,13 +149,86 @@ public class HTMLFunction extends Function {
         else if(FuncName.equalsIgnoreCase("pop") || FuncName.equalsIgnoreCase("popup")){
         	Func_pop();
         }
+        //added by goto 20130515  "search"
+        else if(FuncName.equalsIgnoreCase("search")){
+        	Func_search();
+        }
+        //added by goto 20130529  "select"
+        else if(FuncName.equalsIgnoreCase("select")){
+        	Func_select();
+        }
+        //added by goto 20130529  "insert"
+        else if(FuncName.equalsIgnoreCase("insert")){
+        	Func_insert(false,false);
+        }
+    	//added by goto 20130605  "update"
+        else if(FuncName.equalsIgnoreCase("update")){
+        	Func_insert(true,false);
+        }
+        //added by goto 20130721  "update"
+        else if(FuncName.equalsIgnoreCase("insert_update") || FuncName.equalsIgnoreCase("form")){
+        	Func_insert(false,true);
+        }
+        //added by goto 20130531  "check"
+        else if(FuncName.equalsIgnoreCase("check")){
+        	Func_check();
+        }
+        //added by goto 20130519  "moveto"
+        else if(FuncName.equalsIgnoreCase("moveto")){
+        	Func_moveto();
+        }
+        //added by goto 20130603  "$session"
+        else if (FuncName.equalsIgnoreCase("$session")||FuncName.equalsIgnoreCase("$s")||FuncName.equalsIgnoreCase("$_session")||FuncName.equalsIgnoreCase("$_s")) {
+            Func_$session();
+        }
+        //added by goto 20130607  "time,date"
+        else if (FuncName.equalsIgnoreCase("time") || FuncName.equalsIgnoreCase("date")) {
+        	Func_time();
+        }
+    	//added by goto 20130717  "map"
+        else if (FuncName.equalsIgnoreCase("map")) {
+        	Func_map(false);
+        }
+    	//added by goto 20130721  "search_map"
+        else if (FuncName.equalsIgnoreCase("search_map")) {
+        	Func_map(true);
+        }
+        //added by goto 20130717  "gps,gps_map"
+        else if (FuncName.equalsIgnoreCase("gps") || FuncName.equalsIgnoreCase("gps_map")) {
+        	Func_gps();
+        }
+    	//added by goto 20130717  "gps_info"
+        else if (FuncName.equalsIgnoreCase("gps_info")) {
+        	Func_gps_info();
+        }
+    	//added by goto 20130914  "audio"
+        else if (FuncName.equalsIgnoreCase("music") || FuncName.equalsIgnoreCase("audio")) {
+        	Func_audio();
+        }
+    	//added by goto 20130914  "movie"
+        else if (FuncName.equalsIgnoreCase("movie") || FuncName.equalsIgnoreCase("video")) {
+        	Func_movie();
+        }
+    	//added by goto 20130914  "object"
+        else if (FuncName.equalsIgnoreCase("object")) {
+        	Func_object("");
+        }
+    	//added by goto 20130914  "SEQ_NUM"
+        else if (FuncName.equalsIgnoreCase("seq_num")) {
+        	Func_seq_num();
+        }
+    	//added by goto 20130915  "text"
+        else if (FuncName.equalsIgnoreCase("text")) {
+        	Func_text();
+        }
+        
         //chie
         else if (FuncName.equalsIgnoreCase("submit")) {
             Func_submit();
         }
-        else if (FuncName.equalsIgnoreCase("select")) {
-            Func_select();
-        }
+//        else if (FuncName.equalsIgnoreCase("select")) {
+//            Func_select();
+//        }
         else if (FuncName.equalsIgnoreCase("checkbox")) {
             Func_checkbox();
         }
@@ -199,9 +295,9 @@ public class HTMLFunction extends Function {
 			if(fileDir.length() < html_env.linkurl.length()
 			&& fileDir.equals(html_env.linkurl.substring(0,fileDir.length()))){
 				String relative_path = html_env.linkurl.substring(fileDir.length()+1);
-				html_env.code.append("<A href=\"" + relative_path + "\" ");
+				html_env.code.append("<A href=\"" + relative_path + "\" target=\"_self\" ");
 			}else
-				html_env.code.append("<A href=\"" + html_env.linkurl + "\" ");
+				html_env.code.append("<A href=\"" + html_env.linkurl + "\" target=\"_self\" ");
 			
             //html_env.code.append("<A href=\"" + html_env.linkurl + "\" ");
 			//added by goto 20121222 end
@@ -260,7 +356,7 @@ public class HTMLFunction extends Function {
         		if (decos.containsKey("effect") && decos.getStr("effect").matches("bound")){
 	                //String display_type = decos.getStr("display-type");//.replace("\"", "") +"\" " );
 	                //this.getAtt("display-type", "null");
-	                Log.info("bound!");
+	                //Log.info("bound!");
 	                //System.out.println("type="+type);
 	                html_env.code.append("<div id=\"bounce\" class=\"ui-widget-content ui-corner-all\">" +
 	                		"<img class=\"" + HTMLEnv.getClassID(this) +" ");
@@ -296,13 +392,20 @@ public class HTMLFunction extends Function {
         	html_env2.code.append("<VALUE type=\"img\" class=\"" + HTMLEnv.getClassID(this) +" ");
         	if(decos.containsKey("class"))
         		html_env.code.append(decos.getStr("class"));
-
+        	
             //System.out.println("out:path:"+this.getAtt("default"));
         	
         	//added by goto 20121217 start
         	//html_env.code.append(" \" src=\"" + path + "/" + this.getAtt("default") + "\"/>");
         	if(type.matches(".") || type.matches("normal")){					//type==null
-        		html_env.code.append(" \" src=\"" + path + "/" + this.getAtt("default") + "\"/>");
+        		
+        		//added 20130703  For external URLs.
+        		//html_env.code.append(" \" src=\"" + path + "/" + this.getAtt("default") + "\"/>");
+            	if(this.getAtt("default").startsWith("http://") || this.getAtt("default").startsWith("https://")){
+    	        	html_env.code.append(" \" src=\"" + this.getAtt("default") + "\"/>");
+            	}else{
+    	        	html_env.code.append(" \" src=\"" + path + "/" + this.getAtt("default") + "\"/>");
+            	}
         		
         		//20130206
         		if (decos.containsKey("effect") && decos.getStr("effect").matches("bound"))
@@ -433,9 +536,11 @@ public class HTMLFunction extends Function {
     	}else if(button_media.equals("logout")){		//ex. button("logout")
     		//added by goto 20130508  "Login&Logout"
     		//Logoutボタンを設置
-            if(SSQLparser.sessionFlag)
+            if(SSQLparser.sessionFlag){
             	statement += "<a href=\"\" onclick=\"document.LOGOUTpanel1.submit();return falese;\" data-role=\"button\">Logout</a>\n";
-    	}
+            	logoutButtonFlg = true;
+            }
+        }
 		
     	// 各引数毎に処理した結果をHTMLに書きこむ
     	html_env.code.append(statement);
@@ -443,13 +548,13 @@ public class HTMLFunction extends Function {
     }
     //added by goto 20121217 end
     
-    //added by goto 20130308 start  "urlリンク"  url(),anchor(),a()
-    /** url関数: url( name/button-name/button-url, url, type(bt/button/img/image) )
+    //added by goto 20130308 start  "anchor"  anchor(), a(), url(), mail()
+    /** anchor関数: anchor( name/button-name/button-url, url, type(bt/button/img/image) )
      *          @{ width=~, height=~, transition=~ } 
     /*    url("title", "detail/imgURL", int type), anchor(), a()    */
-    /*    <type:1> url(リンク元の名前, リンク先URL) <=> url(リンク元の名前, リンク先URL, 1)    */
-    /*    <type:2> url(画像URL, リンク先URL, 2)    	   	*/
-    /*    <type:3> url(ボタンの名前, リンク先URL, 3)        	*/
+    /*    <type:1> a(リンク元の名前, リンク先URL) <=> a(リンク元の名前, リンク先URL, 1)    */
+    /*    <type:2> a(画像URL, リンク先URL, 2)    	   	*/
+    /*    <type:3> a(ボタンの名前, リンク先URL, 3)        	*/
     /*    mail()でも使用							        */
     private void Func_url(boolean mailFncFlg) {
     	String statement = "";
@@ -467,15 +572,16 @@ public class HTMLFunction extends Function {
         		
         		//type=1 -> 文字
         		if(type.equals("1") || type.equals("text") || type.equals("")){
-        			statement = "<a href=\""+url+"\""+transition()+prefetch()+target(url)+">"+name+"</a>";
+        			statement = getTextAnchor(url, name);
+        			//statement = "<a href=\""+url+"\""+transition()+prefetch()+target(url)+">"+name+"</a>";
         		
         		//type=2 -> urlモバイルボタン
         		}else if(type.equals("3") || type.equals("button") || type.equals("bt")){
-            		statement = "<a href=\""+url+"\" data-role=\"button\""+transition()+prefetch()+target(url)+">"+name+"</a>";
+            		statement = "<a href=\""+url+"\" data-role=\"button\""+className()+transition()+prefetch()+target(url)+">"+name+"</a>";
 
             	//urlボタン(デスクトップ・モバイル共通)
             	}else if(type.equals("dbutton") || type.equals("dbt")){
-            		statement = "<input type=\"button\" value=\""+name+"\" onClick=\"location.href='"+url+"'\"";
+            		statement = "<input type=\"button\" value=\""+name+"\" onClick=\"location.href='"+url+"'\""+className();
             		
             		//urlボタン width,height指定時の処理
             		if(decos.containsKey("width") || decos.containsKey("height")){
@@ -488,7 +594,7 @@ public class HTMLFunction extends Function {
             	
             	//type=3 -> url画像
             	}else if(type.equals("2") || type.equals("image") || type.equals("img")){
-            		statement = "<a href=\""+url+"\""+transition()+prefetch()+target(url)+"><img src=\""+name+"\"";
+            		statement = "<a href=\""+url+"\""+className()+transition()+prefetch()+target(url)+"><img src=\""+name+"\"";
     		        
         			//url画像 width,height指定時の処理
             		if(decos.containsKey("width"))	statement += " width="+decos.getStr("width").replace("\"", "");
@@ -501,7 +607,8 @@ public class HTMLFunction extends Function {
             	}
         		
         	}catch(Exception e){		//引数2つの場合
-        		statement = "<a href=\""+url+"\""+transition()+prefetch()+target(url)+">"+name+"</a>";
+    			statement = getTextAnchor(url, name);
+        		//statement = "<a href=\""+url+"\""+transition()+prefetch()+target(url)+">"+name+"</a>";
         	}
         	
     	}catch(Exception e){	//引数1つの場合
@@ -513,8 +620,84 @@ public class HTMLFunction extends Function {
     	html_env.code.append(statement);
     	return;
     }
-    
-    private String transition() {
+//    private String getTextAnchor(String url, String name) {
+//    	//[ ]で囲われた部分をハイパーリンクにする
+//    	//ex1) a("[This] is anchor.","URL")
+//    	//ex2) a("[This] is [anchor].","URL1|URL2")
+//    	url += "|";
+//    	int urlNum = url.length() - url.replaceAll("\\|","").length();
+//    	Log.i("urlNum:"+urlNum);
+//    	String s="";
+////		String A="",notA1="",notA2="";
+////		int a1 = 0, a2 = name.length()-1;
+//		try{
+//			for(int i=0;i<name.length();i++){
+//				if(i==0 && name.charAt(i)=='['){
+//					i++;
+//					s += "<a href=\""+url+"\""+transition()+prefetch()+target(url)+">"+name.charAt(i);
+//				}
+//				else if(i>0 && name.charAt(i)=='[' && name.charAt(i-1)!='\\'){
+//					//a1=i;
+//					i++;
+//					s += "<a href=\""+url+"\""+transition()+prefetch()+target(url)+">"+name.charAt(i);
+//				}
+//				else if(i<name.length() && name.charAt(i+1)=='[' && name.charAt(i)=='\\'){
+//					i++;
+//					s += name.charAt(i);
+//				}
+//				else if(i>0 && name.charAt(i)==']' && name.charAt(i-1)!='\\'){
+//					//a2=i;
+//					//i++;
+//					//s += name.charAt(i-1)+"</a>";
+//					s += "</a>"+name.charAt(++i);
+//				}
+//				else if(i>0 && name.charAt(i+1)==']' && name.charAt(i)=='\\'){
+//					i++;
+//					s += name.charAt(i);
+//				}else{
+//					s += name.charAt(i);
+//				}
+//			}
+//			
+//			
+//			s=s.replaceAll("\\\\\\[", "[").replaceAll("\\\\\\]", "]");
+////			if(a1==0 && a2==name.length()-1)	A=name.substring(a1,a2+1);
+////			else								A=name.substring(a1+1,a2);
+////			A=A.replaceAll("\\\\\\[", "[").replaceAll("\\\\\\]", "]");
+////			notA1=name.substring(0,a1).replaceAll("\\\\\\[", "[").replaceAll("\\\\\\]", "]");
+////			notA2=name.substring(a2+1).replaceAll("\\\\\\[", "[").replaceAll("\\\\\\]", "]");
+//		}catch(Exception e){}
+//		
+//		
+//		Log.i("s:"+s);
+//		return s;
+////		return notA1+"<a href=\""+url+"\""+className()+transition()+prefetch()+target(url)+">"+A+"</a>"+notA2;
+//    }
+    private String getTextAnchor(String url, String name) {
+    	//[ ]で囲われた部分をハイパーリンクにする
+    	//ex) a("[This] is anchor.","URL")
+    	String A="",notA1="",notA2="";
+    	int a1 = 0, a2 = name.length()-1;
+    	try{
+    		for(int i=0;i<name.length();i++){
+    			if(i>0 && name.charAt(i)=='[' && name.charAt(i-1)!='\\')		a1=i;
+    			else if(i>0 && name.charAt(i)==']' && name.charAt(i-1)!='\\')	a2=i;
+    		}
+    		if(a1==0 && a2==name.length()-1)	A=name.substring(a1,a2+1);
+    		else								A=name.substring(a1+1,a2);
+    		A=A.replaceAll("\\\\\\[", "[").replaceAll("\\\\\\]", "]");
+    		notA1=name.substring(0,a1).replaceAll("\\\\\\[", "[").replaceAll("\\\\\\]", "]");
+    		notA2=name.substring(a2+1).replaceAll("\\\\\\[", "[").replaceAll("\\\\\\]", "]");
+    	}catch(Exception e){}
+    	
+    	return notA1+"<a href=\""+url+"\""+className()+transition()+prefetch()+target(url)+">"+A+"</a>"+notA2;
+    }
+    protected String className() {	//added 20130703
+    	if(decos.containsKey("class"))
+    		return " class=\""+decos.getStr("class")+"\" ";
+    	return "";
+    }
+	private String transition() {
     	//画面遷移アニメーション(data-transition)指定時の処理
     	//※外部ページへの遷移には対応していない
     	if (decos.containsKey("transition"))
@@ -523,7 +706,6 @@ public class HTMLFunction extends Function {
     		return " data-transition=\"" + decos.getStr("trans") + "\"";
 		return "";
     }
-    
     private String prefetch() {
     	//遷移先ページプリフェッチ(data-prefetch)指定時の処理
     	//※外部ページへの遷移に使用してはいけない決まりがある
@@ -531,12 +713,12 @@ public class HTMLFunction extends Function {
     		return " data-prefetch";
 		return "";
     }
-    
     private String target(String url) {
-    	//新規ウィンドウで表示する場合(target="_blank")の処理
+    	//新規ウィンドウで表示する場合(target="_blank")の処理　=> _blankはW3Cで禁止されているため、JS + rel=externalを使用
     	//「外部ページに飛ぶ場合( http(s)://で始まる場合)」のみ新規ウィンドウ表示
     	if (url.matches("\\s*(http|https)://.*"))
-    		return " target=\"_blank\"";
+    		return "  rel=\"external\"";
+    		//return " target=\"_blank\"";
 		return " target=\"_self\"";
     }
     //added by goto 20130308 end
@@ -689,6 +871,8 @@ public class HTMLFunction extends Function {
     /*	<type:1> pop("title","detail") <=> pop("title","detail",1)	*/
     /*	<type:2> pop("title","image URL",2)		*/
     private void Func_pop() {
+        Log.i(this.getArgs());
+    	
     	FuncArg fa1 = (FuncArg) this.getArgs().get(0), fa2, fa3;
     	String title, detailORurl, type;
     	int type1Flg = 0; //type1(文字)フラグ
@@ -697,6 +881,7 @@ public class HTMLFunction extends Function {
     	try{					//引数2つ or 3つの場合
     		fa2 = (FuncArg) this.getArgs().get(1);
     		detailORurl = fa2.getStr();
+    		if(detailORurl.equals(""))	return;		//added 20130910
     		title = fa1.getStr();
         	
         	try{						//引数3つの場合
@@ -757,12 +942,2098 @@ public class HTMLFunction extends Function {
     }
     //added by goto 20130313 end
     
+    //added by goto 20130515 start  "search"
+    /*	search("title", "c1:column1, c2:column2, ... ", "From以下")	*/
+    private void Func_search() {
+    	/*  //ユーザ定義
+		    $sqlite3_DB = '/Users/goto/Desktop/SQLite_DB/sample2.db';
+		    $search_col = "w.name, pr.name, count(*), w.r_year, ko.kind";
+		    $col_num = 5;                          //カラム数(Java側で指定)
+		*    $table = 'world_heritage w, prefectures pr, wh_prefectures wpr, kind_of_wh ko';
+		*    $where0 = 'w.wh_id=wpr.wh_id and wpr.p_id=pr.p_id and w.k_id=ko.k_id';
+		    $search_col_array = array("w.name","pr.name", "count(*)", "w.r_year", "ko.kind");
+		*    $groupby = " pr.name "; 	           //null => WHERE句にlikeを書く／ not null => HAVING句に～    //[要] Java側で、列名に予約語から始まるものがあるかチェック
+		*    $having0 = " count(*)>1 ";
+		*    $orderby = " ORDER BY w.name asc ";
+		*    $limit = " LIMIT 10 ";
+    	 */
+    	
+    	String title = "";
+    	String columns = "";
+    	String after_from = "";
+    	try{
+    		//title（第一引数）
+    		FuncArg fa1 = (FuncArg) this.getArgs().get(0);
+    		if(!fa1.getStr().equals(""))	title = fa1.getStr();
+    		else							title = "Search";
+    		//columns（第二引数）
+    		FuncArg fa2 = (FuncArg) this.getArgs().get(1);
+    		columns += fa2.getStr();
+    		//after_from（第三引数）
+    		FuncArg fa3 = (FuncArg) this.getArgs().get(2);
+    		after_from += fa3.getStr().trim();
+    	}catch(Exception e){
+    		Log.info("<Warning> serach関数の引数が不足しています。 ex. search(\"title\", \"c1:column1, c2:column2, ... \", \"From以下\")");
+    		return;
+    	}
+		if(columns.trim().equals("") || after_from.equals("")){
+			Log.info("<Warning> serach関数の引数が不足しています。 ex. search(\"title\", \"c1:column1, c2:column2, ... \", \"From以下\")");
+    		return;
+		}
+		if(after_from.toLowerCase().startsWith("from "))	after_from = after_from.substring("from".length()).trim();
+    	//Log.info(title);
+    	
+    	
+    	int col_num=1;
+    	String columns0 = columns;
+    	while(columns0.contains(",")){
+    		columns0 = columns0.substring(columns0.indexOf(",")+1);
+    		col_num++;		//カウント
+    	}
+    	String[] s_name_array = new String[col_num];
+    	String[] s_array = new String[col_num];
+    	columns0 = columns;
+    	for(int i=0; i<col_num-1; i++){
+    		s_array[i] = columns0.substring(0,columns0.indexOf(","));
+    		columns0 = columns0.substring(columns0.indexOf(",")+1);
+    		//Log.i( "s_array["+i+"] = "+s_array[i]+"	"+columns0);
+    	}
+    	s_array[col_num-1] = columns0;
+		//Log.i( "s_array["+(col_num-1)+"] = "+s_array[col_num-1]);
+    	int j=0;
+		for(int i=0; i<col_num; i++){
+			if(s_array[i].contains(":")){
+				if(!s_array[i].substring(0,s_array[i].indexOf(":")).contains(")"))
+						s_name_array[j++] = s_array[i].substring(0,s_array[i].indexOf(":"));
+				s_array[i] = s_array[i].substring(s_array[i].indexOf(":")+1);
+			}else{
+				if(!s_array[i].contains(")"))	s_name_array[j++] = s_array[i];
+			}
+			//Log.i("s_name_array["+(j-1)+"] = "+s_name_array[j-1] + "	s_array["+i+"] = "+s_array[i]);
+		}
+		boolean groupbyFlg = false;	//Flg
+		//boolean[] aFlg = new boolean[col_num];	//Flg
+		//boolean[] popFlg = new boolean[col_num];	//Flg
+		String a = "";
+    	String search_col = "";
+    	String search_col_array = "\"";
+    	String search_aFlg = "\"";		//Flg
+    	String search_mailFlg = "\"";		//Flg
+    	String search_popFlg = "\"";	//Flg
+    	int a_pop_count = 0;
+    	for(int i=0; i<col_num; i++){
+    		a = s_array[i].replaceAll(" ","");
+    		if( a.startsWith("max(") || a.startsWith("min(") || a.startsWith("avg(") ||  a.startsWith("count(") )	groupbyFlg = true;
+    		if(a.startsWith("a(") || a.startsWith("anchor(")){
+    			search_aFlg += "true\""+((i<col_num-1)?(",\""):(""));
+    			if(a.endsWith(")")){
+//    				search_col += s_array[i] +((i<col_num-1)?(","):(""));
+//    	    		search_col_array += s_array[i] +"\""+((i<col_num-1)?(",\""):(""));
+//    	    		search_aFlg += "false\""+((i<col_num-1)?(",\""):(""));
+//    	    		search_popFlg += "false\""+((i<col_num-1)?(",\""):(""));
+    				search_col += s_array[i]+",";
+    				search_col_array += s_array[i]+"\",\"";
+    				search_aFlg += ((i<col_num-1)?(""):(",\""))+"false\""+((i<col_num-1)?(",\""):(""));
+    				search_mailFlg += ((i<col_num-1)?(""):(",\""))+"false\""+((i<col_num-1)?(",\""):(""));
+    				search_popFlg += ((i<col_num-1)?(""):(",\""))+"false\""+((i<col_num-1)?(",\""):(""));
+    			}else	a_pop_count++;
+    		}else
+    			search_aFlg += "false\""+((i<col_num-1)?(",\""):(""));
+    		if(a.startsWith("mail(")){
+    			search_mailFlg += "true\""+((i<col_num-1)?(",\""):(""));
+    			if(a.endsWith(")")){
+//    				search_col += s_array[i] +((i<col_num-1)?(","):(""));
+//    	    		search_col_array += s_array[i] +"\""+((i<col_num-1)?(",\""):(""));
+//    	    		search_aFlg += "false\""+((i<col_num-1)?(",\""):(""));
+//    	    		search_popFlg += "false\""+((i<col_num-1)?(",\""):(""));
+    	    		search_col += s_array[i]+",";
+    				search_col_array += s_array[i]+"\",\"";
+    				search_aFlg += ((i<col_num-1)?(""):(",\""))+"false\""+((i<col_num-1)?(",\""):(""));
+    				search_mailFlg += ((i<col_num-1)?(""):(",\""))+"false\""+((i<col_num-1)?(",\""):(""));
+    				search_popFlg += ((i<col_num-1)?(""):(",\""))+"false\""+((i<col_num-1)?(",\""):(""));
+    			}else	a_pop_count++;
+    		}else
+    			search_mailFlg += "false\""+((i<col_num-1)?(",\""):(""));
+    		if(a.startsWith("pop(") || a.startsWith("popup(")){
+    			search_popFlg += "true\""+((i<col_num-1)?(",\""):(""));
+    			if(a.endsWith(")")){
+//    				search_col += s_array[i] +((i<col_num-1)?(","):(""));
+//    	    		search_col_array += s_array[i] +"\""+((i<col_num-1)?(",\""):(""));
+//    	    		search_aFlg += "false\""+((i<col_num-1)?(",\""):(""));
+//    	    		search_popFlg += "false\""+((i<col_num-1)?(",\""):(""));
+    				search_col += s_array[i]+",";
+    				search_col_array += s_array[i]+"\",\"";
+    				search_aFlg += ((i<col_num-1)?(""):(",\""))+"false\""+((i<col_num-1)?(",\""):(""));
+    				search_mailFlg += ((i<col_num-1)?(""):(",\""))+"false\""+((i<col_num-1)?(",\""):(""));
+    				search_popFlg += ((i<col_num-1)?(""):(",\""))+"false\""+((i<col_num-1)?(",\""):(""));
+    			}else	a_pop_count++;
+    		}else
+    			search_popFlg += "false\""+((i<col_num-1)?(",\""):(""));
+    		search_col += s_array[i] +((i<col_num-1)?(","):(""));
+    		search_col_array += s_array[i] +"\""+((i<col_num-1)?(",\""):(""));
+    	}
+    	col_num -= a_pop_count;
+//    	search_col = search_col.replaceAll("a\\(","").replaceAll("anchor\\(","").replaceAll("mail\\(","").replaceAll("pop\\(","").replaceAll("popup\\(","").replaceAll("\\)","");
+//    	search_col_array = search_col_array.replaceAll("a\\(","").replaceAll("anchor\\(","").replaceAll("mail\\(","").replaceAll("pop\\(","").replaceAll("popup\\(","").replaceAll("\\)","");
+    	search_col = search_col.replaceAll("a\\(","").replaceAll("anchor\\(","").replaceAll("mail\\(","").replaceAll("pop\\(","").replaceAll("popup\\(","").replaceAll("count\\(\\*\\)","count[*]").replaceAll("\\)","").replaceAll("count\\[\\*\\]","count(*)");
+    	search_col_array = search_col_array.replaceAll("a\\(","").replaceAll("anchor\\(","").replaceAll("mail\\(","").replaceAll("pop\\(","").replaceAll("popup\\(","").replaceAll("count\\(\\*\\)","count[*]").replaceAll("\\)","").replaceAll("count\\[\\*\\]","count(*)");
+    	
+    	//Log.i("	1:"+title+"	2:"+columns+"	col_num:"+col_num);
+    	//Log.i("	search_col:"+search_col+"	search_col_array:"+search_col_array);
+    	//Log.i("	search_aFlg:"+search_aFlg+"	search_popFlg:"+search_popFlg);
+    	//Log.i("	groupbyFlg: "+groupbyFlg);
+    	
+    	
+    	String DBMS = GlobalEnv.getdbms();										//DBMS
+    	String DB = GlobalEnv.getdbname();										//DB
+    	
+    	String query = "";
+    	//Log.i(after_from_string);
+    	if(after_from.startsWith("#")){					//From以下をクエリの下(#*)から取ってくる場合
+    		if(!after_from_string.contains(after_from)){
+    			Log.info("<Warning> serach関数の第三引数に指定されている '"+after_from+"' が見つかりません。");
+    			return;
+    		}
+    		query = after_from_string
+    				.substring(after_from_string.indexOf(after_from)+after_from.length())
+    				.trim().toLowerCase();
+    		if(query.contains("#"))	query = query.substring(0,query.indexOf("#")).trim().toLowerCase();
+    	}else
+    		query = after_from.toLowerCase();			//From以下を第三引数へ書く場合
+    	//Log.i("\n	Query: "+query);
+    	String from = "";
+    	String where = "";
+    	String groupby = "";
+    	String having = "";
+    	String orderby = "";
+    	String limit = "";
+    	if(query.contains(" limit ")){
+    		limit = query.substring(query.lastIndexOf(" limit ")+" limit ".length());
+    		query = query.substring(0,query.lastIndexOf(" limit "));
+    	}
+    	if(query.contains(" order by ")){
+    		orderby = query.substring(query.lastIndexOf(" order by ")+" order by ".length());
+    		query = query.substring(0,query.lastIndexOf(" order by "));
+    	}
+    	if(query.contains(" having ")){
+    		having = query.substring(query.lastIndexOf(" having ")+" having ".length());
+    		having = having.replaceAll("\\\"","\\\\\"");	// " -> \"
+    		query = query.substring(0,query.lastIndexOf(" having "));
+    	}
+    	if(query.contains(" group by ")){
+    		groupby = query.substring(query.lastIndexOf(" group by ")+" group by ".length());
+    		query = query.substring(0,query.lastIndexOf(" group by "));
+    	}
+    	if(query.contains(" where ")){
+    		where = query.substring(query.lastIndexOf(" where ")+" where ".length());
+			where = where.replaceAll("\\'","\\\\'");		// ' -> \'
+    		query = query.substring(0,query.lastIndexOf(" where "));
+    	}
+    	from = query.trim();
+    	//Log.i("	FROM: "+from+"\n	WHERE: "+where+"\n	GROUP: "+groupby+"\n	HAVING: "+having);
+    	//Log.i("	ORDER: "+orderby+"\n	LIMIT: "+limit+"\n	Query: "+query);
+    	
+    	if(!groupbyFlg){
+    		groupby = "";
+    		having = "";
+    	}
+    	
+
+    	String statement = "";
+    	//sqlite3 php
+    	if(DBMS.equals("sqlite3")){
+    		statement += 
+    				"<!-- Search start -->\n" +
+    				"<!-- Search Panel start -->\n" +
+    				"<br>\n" +
+    				//"<div id=\"SEARCH"+searchCount+"panel\" style=\"background-color:whitesmoke; width:99%; border:0.1px gray solid;\" data-role=\"none\">\n" +
+    				//"<div style=\"padding:3px 5px;border-color:darkgreen;border-width:0 0 1px 7px;border-style:solid;background:#F8F8F8; font-size:30;\" id=\"SearchTitle"+searchCount+"\">"+title+"</div>\n" +
+    				"<div id=\"SEARCH"+searchCount+"panel\" style=\"\" data-role=\"none\">\n" +
+    				"<hr>\n<div style=\"font-size:30;\" id=\"SearchTitle"+searchCount+"\">"+title+"</div>\n<hr>\n" +
+    				"<br>\n" +
+    				"<form method=\"post\" action=\"\" target=\"dummy_ifr\">\n" +
+    				//"<form method=\"post\" action=\"\" target=\"search"+searchCount+"_ifr\">\n" +
+    				"    <input type=\"search\" name=\"search_words"+searchCount+"\" placeholder=\"Search keywords\">\n" +
+    				"    <input type=\"submit\" value=\"Search&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\" name=\"search"+searchCount+"\" id=\"search"+searchCount+"\" data-icon=\"search\" data-mini=\"false\" data-inline=\"false\">\n" +
+    				"</form>\n" +
+    				//"<iframe name=\"search"+searchCount+"_ifr\" style=\"display:none;\"></iframe>\n" +
+    				"\n" +
+    				"<div id=\"Search"+searchCount+"_text0\" data-role=\"none\"><!-- 件数 --></div>\n" +
+    				"\n" +
+    				"<table style=\"table-layout:fixed;\" data-role=\"table\" id=\"table-column-toggle"+searchCount+"\" data-mode=\"columntoggle\" class=\"ui-responsive table-stroke\">\n" +
+    				"  <thead>\n" +
+    				"    <tr id=\"Search"+searchCount+"_text_th\">\n";
+    		for(int i=0; i<col_num; i++){
+    			statement += 
+    					"        <th data-priority=\"1\">"+s_name_array[i]+"</th>\n";
+        	}
+//			statement += 
+//					"        <th data-priority=\"1\">名前</th>\n" +
+//    				"        <th data-priority=\"1\">県名</th>\n" +
+//    				"        <th data-priority=\"1\">個数</th>\n" +
+//    				"        <th data-priority=\"1\">年</th>\n" +
+//    				"        <th data-priority=\"1\">種類</th>\n";
+			statement += 
+					"    </tr>\n" +
+    				"  </thead>\n" +
+    				"  <tbody>\n" +
+    				"    <tr>\n";
+			for(int i=0; i<col_num; i++){
+    			statement +=
+    					"        <td id=\"Search"+searchCount+"_text"+(i+1)+"\" style=\"white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\"></td>\n";
+        	}
+//			statement += 
+//					"        <td id=\"Search"+searchCount+"_text1\" style=\"white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\"></td>\n" +
+//    				"        <td id=\"Search"+searchCount+"_text2\" style=\"white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\"></td>\n" +
+//    				"        <td id=\"Search"+searchCount+"_text3\" style=\"white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\"></td>\n" +
+//    				"        <td id=\"Search"+searchCount+"_text4\" style=\"white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\"></td>\n" +
+//    				"        <td id=\"Search"+searchCount+"_text5\" style=\"white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\"></td>\n";
+			statement += 
+					"    </tr>\n" +
+    				"  </tbody>\n" +
+    				"</table>\n" +
+    				"\n" +
+    				"<br>\n" +
+    				"</div>\n" +
+    				"<script type=\"text/javascript\"> $('#Search"+searchCount+"_text_th').hide(); </script>\n" +
+    				"<!-- Search Panel end -->\n" +
+    				"\n";
+			
+			HTMLEnv.PHP +=
+    				"<?php\n" +
+    				"if($_POST['search"+searchCount+"'] || $_POST['search_words"+searchCount+"']){\n" +
+    				"    echo '<script type=\"text/javascript\">window.parent.Search"+searchCount+"_refresh();</script>';    //表示をリフレッシュ\n" +
+    				"\n" +
+    				"    //ユーザ定義\n" +
+//    				"    $sqlite3_DB = '/Users/goto/Desktop/SQLite_DB/sample2.db';\n" +
+//    				"    $search_col = \"w.name, pr.name, count(*), w.r_year, ko.kind\";\n" +
+//    				"    $col_num = 5;                          //カラム数(Java側で指定)\n" +
+//    				"    $table = 'world_heritage w, prefectures pr, wh_prefectures wpr, kind_of_wh ko';\n" +
+//    				"    $where0 = 'w.wh_id=wpr.wh_id and wpr.p_id=pr.p_id and w.k_id=ko.k_id';\n" +
+//    				"    $search_col_array = array(\"w.name\",\"pr.name\", \"count(*)\", \"w.r_year\", \"ko.kind\");\n" +
+//    				"    $groupby = \" pr.name \"; 	           //null => WHERE句にlikeを書く／ not null => HAVING句に～    //[要] Java側で、列名に予約語から始まるものがあるかチェック\n" +
+//    				"    $having0 = \" count(*)>1 \";\n" +
+//    				"    $orderby = \" ORDER BY w.name asc \";\n" +
+//    				"    $limit = \" LIMIT 10 \";\n" +
+//    				"\n" +
+    				"    $sqlite3_DB = '"+DB+"';\n" +
+    				"    $search_col = \""+search_col+"\";\n" +
+    				"    $col_num = "+col_num+";                          //カラム数(Java側で指定)\n" +
+    				"    $table = '"+from+"';\n" +
+    				"    $where0 = '"+where+"';\n" +
+    				"    $search_col_array = array("+search_col_array+");\n" +
+    				"    $search_col_num = count($search_col_array);\n" +
+    				"    $search_a_Flg = array("+search_aFlg+");\n" +
+    				"    $search_mail_Flg = array("+search_mailFlg+");\n" +
+    				"    $search_pop_Flg = array("+search_popFlg+");\n" +
+    				"    $groupby = \""+groupby+"\"; 	           //null => WHERE句にlikeを書く／ not null => HAVING句に～    //[要] Java側で、列名に予約語から始まるものがあるかチェック\n" +
+    				"    $having0 = \""+having+"\";\n" +
+//    				"    $orderby = \" ORDER BY "+orderby+" \";\n" +
+    				"    $orderby = \""+((orderby!="")?(" ORDER BY "+orderby+" "):("")) +"\";\n" +
+//    				"    $limit = \" LIMIT "+limit+" \";\n" +
+    				"    $limit = \""+((limit!="")?(" LIMIT "+limit+" "):("")) +"\";\n" +
+    				"\n" +
+    				"    $searchWord"+searchCount+" = checkHTMLsc($_POST['search_words"+searchCount+"']);\n" +
+    				"    $searchWord"+searchCount+" = preg_replace('/　/', ' ', $searchWord"+searchCount+");       //全角スペースを半角スペースへ\n" +
+    				"    $searchWord"+searchCount+" = preg_replace('/\\s+/', ' ', $searchWord"+searchCount+");      //連続する半角スペースを1つの半角スペースへ\n" +
+    				"    $searchWord"+searchCount+" = trim($searchWord"+searchCount+");                            //trim\n" +
+    				"    $searchWord"+searchCount+" = preg_replace('/\\s/', '%', $searchWord"+searchCount+");       //半角スペースを%へ変換\n" +
+    				"\n" +
+    				"    if($searchWord"+searchCount+" != \"\"){\n" +
+    				"        $db"+searchCount+" = new SQLite3($sqlite3_DB);\n" +
+    				"        $sql = \"SELECT DISTINCT \".$search_col.\" FROM \".$table;\n" +
+    				"        if($where0 != \"\")    $sql .= \" WHERE \".$where0.\" \";\n" +
+    				"    \n" +
+    				"    	//左辺の作成（※Java側でOK?)\n" +
+    				"        $sw = $searchWord"+searchCount+";\n" +
+    				"        $sw_buf = \"\";\n" +
+    				"        $l_str = \"\";\n" +
+    				"        foreach($search_col_array as $val)    $l_str .= \"ifnull(\".$val.\",'')||\";\n" +
+    				"        $l_str = substr($l_str, 0, -2);      //substring   最後の||をカット\n" +
+    				"        $l_str .= \" LIKE '%\";\n" +
+    				"        //右辺の作成\n" +
+    				"        while(strpos($sw,'%')){		//%を含んでいる間\n" +
+    				"            $pos = strpos($sw,'%');          //indxOf  		%が最初に現れる位置\n" +
+    				"            $rest = substr($sw, 0, $pos);    //substring    最初の%以降をカット\n" +
+    				"            $sw = substr($sw, $pos+1);       //substring    最初の%までカット\n" +
+    				"            $sw_buf .= $l_str.$rest.\"%' AND \";\n" +
+    				"        }\n" +
+    				"        $sw_buf .= $l_str.$sw.\"%' \";         //最後のswを結合\n" +
+    				"        \n" +
+    				"        if($groupby == \"\"){    //null => WHERE句にlikeを書く／ not null => HAVING句に～\n" +
+    				"            /*** WHERE句の作成 start ***/\n" +
+    				"            //WHERE  ifnull(id,'')||ifnull(name,'')||ifnull(r_year,'') LIKE '%sw[1]%'\n" +
+    				"            //   AND ifnull(id,'')||ifnull(name,'')||ifnull(r_year,'') LIKE '%sw[2]%'...\n" +
+    				"            \n" +
+    				"            $WHERE = \"\";\n" +
+    				"            if($where0 == \"\")   $WHERE = \" WHERE \";\n" +
+    				"            else                $WHERE = \" AND \";\n" +
+    				"            $WHERE .= $sw_buf;\n" +
+    				"            \n" +
+    				"            $sql .= \" \".$WHERE.\" \";\n" +
+    				"            //$sql .= $WHERE.\" \".$groupby.\" \";\n" +
+    				"            /*** WHERE句の作成 end ***/\n" +
+    				"        }else{                        //null => WHERE句にlikeを書く／ not null => HAVING句に～\n" +
+    				"            /*** HAVING句の作成 start ***/\n" +
+    				"            //HAVING  ifnull(id,'')||ifnull(name,'')||ifnull(r_year,'') LIKE '%sw[1]%'\n" +
+    				"            //    AND ifnull(id,'')||ifnull(name,'')||ifnull(r_year,'') LIKE '%sw[2]%'...\n" +
+    				"            \n" +
+    				"            $HAVING = \"\";\n" +
+    				"            if($having0 == \"\")  $HAVING = \" HAVING \";\n" +
+    				"            else	            $HAVING = \" HAVING \".$having0.\" AND \";\n" +
+    				"    		$HAVING .= $sw_buf;\n" +
+    				"            \n" +
+    				"            $sql .= \" GROUP BY \".$groupby.\" \".$HAVING;\n" +
+    				"            /*** HAVING句の作成 end ***/\n" +
+    				"        }\n" +
+    				"        $sql .= \" \".$orderby.\" \".$limit;	//order by句とlimitを結合\n" +
+    				"        search"+searchCount+"_p1('<font color=red>SQL error: '.$sql.\";</font>\");	//エラー時\n" +
+    				"\n" +
+    				"        $result = $db"+searchCount+"->query($sql);\n" +
+    				"\n" +
+    				"        $i = 0;\n" +
+    				"        $pop_num = 0;\n" +
+    				"        while($row = $result->fetchArray()){\n" +
+    				"              $i++;\n" +
+    				"              $k=0;\n" +
+    				"              for($j=0; $j<$search_col_num; $j++){\n" +
+    				//"                    search"+searchCount+"_p2($row[$j], $j+1);     //tdに結果を埋め込む\n" +
+    				"					if($search_a_Flg[$j]=='true' || $search_mail_Flg[$j]=='true' || $search_pop_Flg[$j]=='true')	;\n" +
+    				"                    else if($j>0 && $search_a_Flg[$j-1]=='true')	search"+searchCount+"_p2('<a href=\\\"'.$row[$j].'\\\" target=\\\"_blank\\\" rel=\\\"external\\\" style=\\\"white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\\\">'.$row[$j-1].'</a>', ++$k);     //tdに結果を埋め込む\n" +
+    				"                    else if($j>0 && $search_mail_Flg[$j-1]=='true')	search"+searchCount+"_p2('<a href=\\\"mailto:'.$row[$j].'\\\" target=\\\"_self\\\" style=\\\"white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\\\">'.$row[$j-1].'</a>', ++$k);     				//tdに結果を埋め込む\n" +
+    				"                    //else if($j>0 && $search_pop_Flg[$j-1]=='true')	search"+searchCount+"_p2('<a href=\\\"'.$row[$j].'\\\" target=\\\"_blank\\\" rel=\\\"external\\\" style=\\\"white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\\\">'.$row[$j-1].'</a>', ++$k);     //tdに結果を埋め込む\n" +
+    				"                    else if($j>0 && $search_pop_Flg[$j-1]=='true' && !is_null($row[$j])){\n" +
+    				"                    	$pop_str = '<a href=\\\"#search_popup1_'.(++$pop_num).'\\\" data-rel=\\\"popup\\\" data-icon=\\\"arrow-r\\\" style=\\\"white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\\\">'.$row[$j-1].'</a>'\n" +
+    				"							.'<div data-role=\\\"popup\\\" id=\\\"search_popup1_'.($pop_num).'\\\" data-transition=\\\"slideup\\\" style=\\\"width:95%;\\\" data-overlay-theme=\\\"a\\\">'\n" +
+    				"								.'<a href=\\\"#\\\" data-rel=\\\"back\\\" data-role=\\\"button\\\" data-theme=\\\"a\\\" data-icon=\\\"delete\\\" data-iconpos=\\\"notext\\\" class=\\\"ui-btn-right\\\">Close</a>'\n" +
+    				"								.'<h2>'.$row[$j-1].'</h2>'\n" +
+    				"								.'<p>'.$row[$j].'</p>'\n" +
+    				"							.'</div>';\n" +
+    				"                    	search"+searchCount+"_p2($pop_str, ++$k);     	//tdに結果を埋め込む\n" +
+    				"                    }else									search"+searchCount+"_p2($row[$j], ++$k);     //tdに結果を埋め込む\n" +
+    				"              }\n" +
+    				"        }\n" +
+    				"		 if($i>0)	echo \"<script type=\\\"text/javascript\\\">window.parent.$('#Search"+searchCount+"_text_th').show();</script>\";    //カラム名を表示\n" +
+    				"        search"+searchCount+"_p1($i.' result'.(($i != 1)?('s'):('')));    //件数表示\n" +
+    				"    }else{\n" +
+    				"        search"+searchCount+"_p1('0 results');\n" +
+    				"    }\n" +
+    				"    \n" +
+    				"    unset($db"+searchCount+");\n" +
+    				"}\n" +
+    				"function search"+searchCount+"_p1($str){\n" +
+    				"    echo '<script type=\"text/javascript\">window.parent.Search"+searchCount+"_echo1(\"'.$str.'\");</script>';\n" +
+    				"}\n" +
+    				"function search"+searchCount+"_p2($str,$num){\n" +
+    				"    echo '<script type=\"text/javascript\">window.parent.Search"+searchCount+"_echo2(\"'.$str.'\",\"'.$num.'\");</script>';\n" +
+    				"}\n" +
+    				"?>\n";
+    				
+			statement += 
+    				"\n" +
+    				"<script type=\"text/javascript\">\n" +
+    				"function Search"+searchCount+"_echo1(str){\n" +
+    				"  var textArea = document.getElementById(\"Search"+searchCount+"_text0\");\n" +
+    				"  textArea.innerHTML = str;\n" +
+    				"}\n" +
+    				"function Search"+searchCount+"_echo2(str,num){\n" +
+    				"  var textArea = document.getElementById(\"Search"+searchCount+"_text\"+num);\n" +
+    				//"  textArea.innerHTML += str+\"<br>\";\n" +
+    				"  $(\"#Search"+searchCount+"_text\"+num).html(textArea.innerHTML+str+\"<br>\").trigger(\"create\");\n" +
+    				"}\n" +
+    				"\n" +
+    				"function Search"+searchCount+"_refresh(){\n";
+
+    		for(int i=0; i<col_num; i++){
+    			statement +=
+    					"  document.getElementById(\"Search"+searchCount+"_text"+(i+1)+"\").innerHTML = \"\";\n";
+    				
+    		}
+//    		"  document.getElementById(\"Search"+searchCount+"_text1\").innerHTML = \"\";\n" +
+//			"  document.getElementById(\"Search"+searchCount+"_text2\").innerHTML = \"\";\n" +
+//			"  document.getElementById(\"Search"+searchCount+"_text3\").innerHTML = \"\";\n" +
+//			"  document.getElementById(\"Search"+searchCount+"_text4\").innerHTML = \"\";\n" +
+//			"  document.getElementById(\"Search"+searchCount+"_text5\").innerHTML = \"\";\n";
+    		statement +=
+    				"}\n" +
+    				"</script>\n" +
+    				"<!-- Search end -->\n";
+    		
+    		
+    		
+    		
+    		
+    	}
+    	//else if(DBMS.equals("postgresql")){
+    	//	;
+    	//}
+    	
+    	
+
+    	// 各引数毎に処理した結果をHTMLに書きこむ
+    	html_env.code.append(statement);
+    	
+    	searchCount++;
+    	return;
+    }
+    //search end
+    
+    
+    //added by goto 20130529 start  "select"
+    /*	select("title", "c1:column1, c2:column2, ... ", "From以下")	*/
+    private void Func_select() {
+    	/*  //ユーザ定義
+		    $sqlite3_DB = '/Users/goto/Desktop/SQLite_DB/sample2.db';
+		    $select_col = "w.name, pr.name, count(*), w.r_year, ko.kind";
+		    $col_num = 5;                          //カラム数(Java側で指定)
+    	 *    $table = 'world_heritage w, prefectures pr, wh_prefectures wpr, kind_of_wh ko';
+    	 *    $where0 = 'w.wh_id=wpr.wh_id and wpr.p_id=pr.p_id and w.k_id=ko.k_id';
+		    $select_col_array = array("w.name","pr.name", "count(*)", "w.r_year", "ko.kind");
+    	 *    $groupby = " pr.name "; 	           //null => WHERE句にlikeを書く／ not null => HAVING句に～    //[要] Java側で、列名に予約語から始まるものがあるかチェック
+    	 *    $having0 = " count(*)>1 ";
+    	 *    $orderby = " ORDER BY w.name asc ";
+    	 *    $limit = " LIMIT 10 ";
+    	 */
+    	
+    	String title = "";
+    	String columns = "";
+    	String after_from = "";
+    	try{
+    		//title（第一引数）
+    		FuncArg fa1 = (FuncArg) this.getArgs().get(0);
+    		if(!fa1.getStr().equals(""))	title = fa1.getStr();
+    		else							title = "Select";
+    		//columns（第二引数）
+    		FuncArg fa2 = (FuncArg) this.getArgs().get(1);
+    		columns += fa2.getStr();
+    		//after_from（第三引数）
+    		FuncArg fa3 = (FuncArg) this.getArgs().get(2);
+    		after_from += fa3.getStr().trim();
+    	}catch(Exception e){
+    		Log.info("<Warning> serach関数の引数が不足しています。 ex. select(\"title\", \"c1:column1, c2:column2, ... \", \"From以下\")");
+    		return;
+    	}
+    	if(columns.trim().equals("") || after_from.equals("")){
+    		Log.info("<Warning> serach関数の引数が不足しています。 ex. select(\"title\", \"c1:column1, c2:column2, ... \", \"From以下\")");
+    		return;
+    	}
+    	if(after_from.toLowerCase().startsWith("from "))	after_from = after_from.substring("from".length()).trim();
+    	//Log.info(title);
+    	
+    	int col_num=1;
+    	String columns0 = columns;
+    	while(columns0.contains(",")){
+    		columns0 = columns0.substring(columns0.indexOf(",")+1);
+    		col_num++;		//カウント
+    	}
+    	String[] s_name_array = new String[col_num];
+    	String[] s_array = new String[col_num];
+    	columns0 = columns;
+    	for(int i=0; i<col_num-1; i++){
+    		s_array[i] = columns0.substring(0,columns0.indexOf(","));
+    		columns0 = columns0.substring(columns0.indexOf(",")+1);
+    		//Log.i( "s_array["+i+"] = "+s_array[i]+"	"+columns0);
+    	}
+    	s_array[col_num-1] = columns0;
+    	//Log.i( "s_array["+(col_num-1)+"] = "+s_array[col_num-1]);
+    	int j=0;
+    	for(int i=0; i<col_num; i++){
+    		if(s_array[i].contains(":")){
+    			if(!s_array[i].substring(0,s_array[i].indexOf(":")).contains(")"))
+    				s_name_array[j++] = s_array[i].substring(0,s_array[i].indexOf(":"));
+    			s_array[i] = s_array[i].substring(s_array[i].indexOf(":")+1);
+    		}else{
+    			if(!s_array[i].contains(")"))	s_name_array[j++] = s_array[i];
+    		}
+    		//Log.i("s_name_array["+(j-1)+"] = "+s_name_array[j-1] + "	s_array["+i+"] = "+s_array[i]);
+    	}
+    	boolean groupbyFlg = false;	//Flg
+    	//boolean[] aFlg = new boolean[col_num];	//Flg
+    	//boolean[] popFlg = new boolean[col_num];	//Flg
+    	String a = "";
+    	String select_col = "";
+    	String select_col_array = "\"";
+    	String select_aFlg = "\"";		//Flg
+    	String select_mailFlg = "\"";		//Flg
+    	String select_popFlg = "\"";	//Flg
+    	int a_pop_count = 0;
+    	for(int i=0; i<col_num; i++){
+    		a = s_array[i].replaceAll(" ","");
+    		if( a.startsWith("max(") || a.startsWith("min(") || a.startsWith("avg(") ||  a.startsWith("count(") )	groupbyFlg = true;
+    		if(a.startsWith("a(") || a.startsWith("anchor(")){
+    			select_aFlg += "true\""+((i<col_num-1)?(",\""):(""));
+    			if(a.endsWith(")")){
+    				select_col += s_array[i]+",";
+    				select_col_array += s_array[i]+"\",\"";
+    				select_aFlg += ((i<col_num-1)?(""):(",\""))+"false\""+((i<col_num-1)?(",\""):(""));
+    				select_mailFlg += ((i<col_num-1)?(""):(",\""))+"false\""+((i<col_num-1)?(",\""):(""));
+    				select_popFlg += ((i<col_num-1)?(""):(",\""))+"false\""+((i<col_num-1)?(",\""):(""));
+    			}else	a_pop_count++;
+    		}else
+    			select_aFlg += "false\""+((i<col_num-1)?(",\""):(""));
+    		if(a.startsWith("mail(")){
+    			select_mailFlg += "true\""+((i<col_num-1)?(",\""):(""));
+    			if(a.endsWith(")")){
+    				select_col += s_array[i]+",";
+    				select_col_array += s_array[i]+"\",\"";
+    				select_aFlg += ((i<col_num-1)?(""):(",\""))+"false\""+((i<col_num-1)?(",\""):(""));
+    				select_mailFlg += ((i<col_num-1)?(""):(",\""))+"false\""+((i<col_num-1)?(",\""):(""));
+    				select_popFlg += ((i<col_num-1)?(""):(",\""))+"false\""+((i<col_num-1)?(",\""):(""));
+    			}else	a_pop_count++;
+    		}else
+    			select_mailFlg += "false\""+((i<col_num-1)?(",\""):(""));
+    		if(a.startsWith("pop(") || a.startsWith("popup(")){
+    			select_popFlg += "true\""+((i<col_num-1)?(",\""):(""));
+    			if(a.endsWith(")")){
+    				select_col += s_array[i]+",";
+    				select_col_array += s_array[i]+"\",\"";
+    				select_aFlg += ((i<col_num-1)?(""):(",\""))+"false\""+((i<col_num-1)?(",\""):(""));
+    				select_mailFlg += ((i<col_num-1)?(""):(",\""))+"false\""+((i<col_num-1)?(",\""):(""));
+    				select_popFlg += ((i<col_num-1)?(""):(",\""))+"false\""+((i<col_num-1)?(",\""):(""));
+    			}else	a_pop_count++;
+    		}else
+    			select_popFlg += "false\""+((i<col_num-1)?(",\""):(""));
+    		select_col += s_array[i] +((i<col_num-1)?(","):(""));
+    		select_col_array += s_array[i] +"\""+((i<col_num-1)?(",\""):(""));
+    	}
+    	col_num -= a_pop_count;
+//    	select_col = select_col.replaceAll("a\\(","").replaceAll("anchor\\(","").replaceAll("mail\\(","").replaceAll("pop\\(","").replaceAll("popup\\(","").replaceAll("\\)","");
+//    	select_col_array = select_col_array.replaceAll("a\\(","").replaceAll("anchor\\(","").replaceAll("mail\\(","").replaceAll("pop\\(","").replaceAll("popup\\(","").replaceAll("\\)","");
+    	select_col = select_col.replaceAll("a\\(","").replaceAll("anchor\\(","").replaceAll("mail\\(","").replaceAll("pop\\(","").replaceAll("popup\\(","").replaceAll("count\\(\\*\\)","count[*]").replaceAll("\\)","").replaceAll("count\\[\\*\\]","count(*)");
+    	select_col_array = select_col_array.replaceAll("a\\(","").replaceAll("anchor\\(","").replaceAll("mail\\(","").replaceAll("pop\\(","").replaceAll("popup\\(","").replaceAll("count\\(\\*\\)","count[*]").replaceAll("\\)","").replaceAll("count\\[\\*\\]","count(*)");
+    	
+    	//Log.i("	1:"+title+"	2:"+columns+"	col_num:"+col_num);
+    	//Log.i("	select_col:"+select_col+"	select_col_array:"+select_col_array);
+    	//Log.i("	select_aFlg:"+select_aFlg+"	select_popFlg:"+select_popFlg);
+    	//Log.i("	groupbyFlg: "+groupbyFlg);
+    	
+    	
+    	String DBMS = GlobalEnv.getdbms();										//DBMS
+    	String DB = GlobalEnv.getdbname();										//DB
+    	
+    	String query = "";
+    	//Log.i(after_from_string);
+    	if(after_from.startsWith("#")){					//From以下をクエリの下(#*)から取ってくる場合
+    		if(!after_from_string.contains(after_from)){
+    			Log.info("<Warning> select関数の第三引数に指定されている '"+after_from+"' が見つかりません。");
+    			return;
+    		}
+    		query = after_from_string
+    				.substring(after_from_string.indexOf(after_from)+after_from.length())
+    				.trim().toLowerCase();
+    		if(query.contains("#"))	query = query.substring(0,query.indexOf("#")).trim().toLowerCase();
+    	}else
+    		query = after_from.toLowerCase();			//From以下を第三引数へ書く場合
+
+    	//Log.i("\n	Query: "+query);
+    	String from = "";
+    	String where = "";
+    	String groupby = "";
+    	String having = "";
+    	String orderby = "";
+    	String limit = "";
+    	if(query.contains(" limit ")){
+    		limit = query.substring(query.lastIndexOf(" limit ")+" limit ".length());
+    		query = query.substring(0,query.lastIndexOf(" limit "));
+    	}
+    	if(query.contains(" order by ")){
+    		orderby = query.substring(query.lastIndexOf(" order by ")+" order by ".length());
+    		query = query.substring(0,query.lastIndexOf(" order by "));
+    	}
+    	if(query.contains(" having ")){
+    		having = query.substring(query.lastIndexOf(" having ")+" having ".length());
+    		having = having.replaceAll("\\\"","\\\\\"");	// " -> \"
+    		query = query.substring(0,query.lastIndexOf(" having "));
+    	}
+    	if(query.contains(" group by ")){
+    		groupby = query.substring(query.lastIndexOf(" group by ")+" group by ".length());
+    		query = query.substring(0,query.lastIndexOf(" group by "));
+    	}
+    	if(query.contains(" where ")){
+    		where = query.substring(query.lastIndexOf(" where ")+" where ".length());
+    		where = where.replaceAll("\\'","\\\\'");		// ' -> \'
+    		query = query.substring(0,query.lastIndexOf(" where "));
+    	}
+    	from = query.trim();
+    	//Log.i("	FROM: "+from+"\n	WHERE: "+where+"\n	GROUP: "+groupby+"\n	HAVING: "+having);
+    	//Log.i("	ORDER: "+orderby+"\n	LIMIT: "+limit+"\n	Query: "+query);
+    	
+    	if(!groupbyFlg){
+    		groupby = "";
+    		having = "";
+    	}
+    	
+    	
+    	String statement = "";
+    	//sqlite3 php
+    	if(DBMS.equals("sqlite3")){
+    		statement += 
+    				"<!-- Select start -->\n" +
+					"<!-- Select Panel start -->\n" +
+					"<br>\n" +
+					//"<div id=\"SELECT"+selectCount+"panel\" style=\"background-color:whitesmoke; width:99%; border:0.1px gray solid;\" data-role=\"none\">\n" +
+					//"<div style=\"padding:3px 5px;border-color:slateblue;border-width:0 0 1px 7px;border-style:solid;background:#F8F8F8; font-size:30;\" id=\"SelectTitle"+selectCount+"\">"+title+"</div>\n" +
+					"<div id=\"SELECT"+selectCount+"panel\" style=\"\" data-role=\"none\">\n" +
+					"<hr>\n<div style=\"font-size:30;\" id=\"SelectTitle"+selectCount+"\">"+title+"</div>\n<hr>\n" +
+					"<br>\n" +
+//							"<form method=\"post\" action=\"\" target=\"select"+selectCount+"_ifr\">\n" +
+//							"    <input type=\"select\" name=\"select_words"+selectCount+"\" placeholder=\"Select keywords\">\n" +
+//							"    <input type=\"submit\" value=\"Select&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\" name=\"select"+selectCount+"\" id=\"select"+selectCount+"\" data-icon=\"select\" data-mini=\"false\" data-inline=\"false\">\n" +
+//							"</form>\n" +
+//							"<iframe name=\"select"+selectCount+"_ifr\" style=\"display:none;\"></iframe>\n" +
+					"\n" +
+					"<div id=\"Select"+selectCount+"_text0\" data-role=\"none\"><!-- 件数 --></div>\n" +
+					"\n" +
+					"<table style=\"table-layout:fixed;\" data-role=\"table\" id=\"table-column-toggle"+selectCount+"\" data-mode=\"columntoggle\" class=\"ui-responsive table-stroke\">\n" +
+					"  <thead>\n" +
+					"    <tr id=\"Select"+selectCount+"_text_th\">\n";
+    		for(int i=0; i<col_num; i++){
+    			statement += 
+					"        <th data-priority=\"1\">"+s_name_array[i]+"</th>\n";
+    		}
+    		statement += 
+    				"    </tr>\n" +
+					"  </thead>\n" +
+					"  <tbody>\n" +
+					"    <tr>\n";
+    		for(int i=0; i<col_num; i++){
+    			statement +=
+					"        <td id=\"Select"+selectCount+"_text"+(i+1)+"\" style=\"white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\"></td>\n";
+    		}
+    		statement += 
+    				"    </tr>\n" +
+    						"  </tbody>\n" +
+    						"</table>\n" +
+    						"\n" +
+    						"<br>\n" +
+    						"</div>\n" +
+    						"<script type=\"text/javascript\"> $('#Select"+selectCount+"_text_th').hide(); </script>\n" +
+    						"<!-- Select Panel end -->\n" +
+    						"\n";
+    		
+    		HTMLEnv.PHP +=
+    				"<?php\n" +
+//    						"if($_POST['select"+selectCount+"'] || $_POST['select_words"+selectCount+"']){\n" +
+    						"    echo '<script type=\"text/javascript\">window.parent.Select"+selectCount+"_refresh();</script>';    //表示をリフレッシュ\n" +
+    						"\n" +
+    						"    //ユーザ定義\n" +
+							"    $sqlite3_DB = '"+DB+"';\n" +
+							"    $select_col = \""+select_col+"\";\n" +
+							"    $col_num = "+col_num+";                          //カラム数(Java側で指定)\n" +
+							"    $table = '"+from+"';\n" +
+							"    $where0 = '"+where+"';\n" +
+							"    $select_col_array = array("+select_col_array+");\n" +
+							"    $select_col_num = count($select_col_array);\n" +
+							"    $select_a_Flg = array("+select_aFlg+");\n" +
+							"    $select_mail_Flg = array("+select_mailFlg+");\n" +
+							"    $select_pop_Flg = array("+select_popFlg+");\n" +
+							"    $groupby = \""+groupby+"\"; 	           //null => WHERE句にlikeを書く／ not null => HAVING句に～    //[要] Java側で、列名に予約語から始まるものがあるかチェック\n" +
+							"    $having0 = \""+having+"\";\n" +
+							"    $orderby = \""+((orderby!="")?(" ORDER BY "+orderby+" "):("")) +"\";\n" +
+							"    $limit = \""+((limit!="")?(" LIMIT "+limit+" "):("")) +"\";\n" +
+							"\n" +
+							//"    $selectWord"+selectCount+" = checkHTMLsc($_POST['select_words"+selectCount+"']);\n" +
+							"    $selectWord"+selectCount+" = checkHTMLsc('%');\n" +
+							"    $selectWord"+selectCount+" = preg_replace('/　/', ' ', $selectWord"+selectCount+");       //全角スペースを半角スペースへ\n" +
+							"    $selectWord"+selectCount+" = preg_replace('/\\s+/', ' ', $selectWord"+selectCount+");      //連続する半角スペースを1つの半角スペースへ\n" +
+							"    $selectWord"+selectCount+" = trim($selectWord"+selectCount+");                            //trim\n" +
+							"    $selectWord"+selectCount+" = preg_replace('/\\s/', '%', $selectWord"+selectCount+");       //半角スペースを%へ変換\n" +
+							"\n" +
+							"    if($selectWord"+selectCount+" != \"\"){\n" +
+							"        $select_db"+selectCount+" = new SQLite3($sqlite3_DB);\n" +
+							"        $sql = \"SELECT DISTINCT \".$select_col.\" FROM \".$table;\n" +
+							"        if($where0 != \"\")    $sql .= \" WHERE \".$where0.\" \";\n" +
+							"    \n" +
+							"    	//左辺の作成（※Java側でOK?)\n" +
+							"        $sw = $selectWord"+selectCount+";\n" +
+							"        $sw_buf = \"\";\n" +
+							"        $l_str = \"\";\n" +
+							"        foreach($select_col_array as $val)    $l_str .= \"ifnull(\".$val.\",'')||\";\n" +
+							"        $l_str = substr($l_str, 0, -2);      //substring   最後の||をカット\n" +
+							"        $l_str .= \" LIKE '%\";\n" +
+							"        //右辺の作成\n" +
+							"        while(strpos($sw,'%')){		//%を含んでいる間\n" +
+							"            $pos = strpos($sw,'%');          //indxOf  		%が最初に現れる位置\n" +
+							"            $rest = substr($sw, 0, $pos);    //substring    最初の%以降をカット\n" +
+							"            $sw = substr($sw, $pos+1);       //substring    最初の%までカット\n" +
+							"            $sw_buf .= $l_str.$rest.\"%' AND \";\n" +
+							"        }\n" +
+							"        $sw_buf .= $l_str.$sw.\"%' \";         //最後のswを結合\n" +
+							"        \n" +
+							"        if($groupby == \"\"){    //null => WHERE句にlikeを書く／ not null => HAVING句に～\n" +
+							"            /*** WHERE句の作成 start ***/\n" +
+							"            //WHERE  ifnull(id,'')||ifnull(name,'')||ifnull(r_year,'') LIKE '%sw[1]%'\n" +
+							"            //   AND ifnull(id,'')||ifnull(name,'')||ifnull(r_year,'') LIKE '%sw[2]%'...\n" +
+							"            \n" +
+							"            $WHERE = \"\";\n" +
+							"            if($where0 == \"\")   $WHERE = \" WHERE \";\n" +
+							"            else                $WHERE = \" AND \";\n" +
+							"            $WHERE .= $sw_buf;\n" +
+							"            \n" +
+							"            $sql .= \" \".$WHERE.\" \";\n" +
+							"            //$sql .= $WHERE.\" \".$groupby.\" \";\n" +
+							"            /*** WHERE句の作成 end ***/\n" +
+							"        }else{                        //null => WHERE句にlikeを書く／ not null => HAVING句に～\n" +
+							"            /*** HAVING句の作成 start ***/\n" +
+							"            //HAVING  ifnull(id,'')||ifnull(name,'')||ifnull(r_year,'') LIKE '%sw[1]%'\n" +
+							"            //    AND ifnull(id,'')||ifnull(name,'')||ifnull(r_year,'') LIKE '%sw[2]%'...\n" +
+							"            \n" +
+							"            $HAVING = \"\";\n" +
+							"            if($having0 == \"\")  $HAVING = \" HAVING \";\n" +
+							"            else	            $HAVING = \" HAVING \".$having0.\" AND \";\n" +
+							"    		$HAVING .= $sw_buf;\n" +
+							"            \n" +
+							"            $sql .= \" GROUP BY \".$groupby.\" \".$HAVING;\n" +
+							"            /*** HAVING句の作成 end ***/\n" +
+							"        }\n" +
+							"        $sql .= \" \".$orderby.\" \".$limit;	//order by句とlimitを結合\n" +
+							"        select"+selectCount+"_p1('<font color=red>SQL error: '.$sql.\";</font>\");	//エラー時\n" +
+							"\n" +
+							"        $result = $select_db"+selectCount+"->query($sql);\n" +
+							"\n" +
+							"        $i = 0;\n" +
+							"        $pop_num = 0;\n" +
+							"        while($row = $result->fetchArray()){\n" +
+							"              $i++;\n" +
+							"              $k=0;\n" +
+							"              for($j=0; $j<$select_col_num; $j++){\n" +
+							//"                    select"+selectCount+"_p2($row[$j], $j+1);     //tdに結果を埋め込む\n" +
+							"					if($select_a_Flg[$j]=='true' || $select_mail_Flg[$j]=='true' || $select_pop_Flg[$j]=='true')	;\n" +
+							"                    else if($j>0 && $select_a_Flg[$j-1]=='true')	select"+selectCount+"_p2('<a href=\\\"'.$row[$j].'\\\" target=\\\"_blank\\\" rel=\\\"external\\\" style=\\\"white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\\\">'.$row[$j-1].'</a>', ++$k);     //tdに結果を埋め込む\n" +
+							"                    else if($j>0 && $select_mail_Flg[$j-1]=='true')	select"+selectCount+"_p2('<a href=\\\"mailto:'.$row[$j].'\\\" target=\\\"_self\\\" style=\\\"white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\\\">'.$row[$j-1].'</a>', ++$k);     //tdに結果を埋め込む\n" +
+							"                    //else if($j>0 && $select_pop_Flg[$j-1]=='true')	select"+selectCount+"_p2('<a href=\\\"'.$row[$j].'\\\" target=\\\"_blank\\\" rel=\\\"external\\\" style=\\\"white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\\\">'.$row[$j-1].'</a>', ++$k);     //tdに結果を埋め込む\n" +
+							"                    else if($j>0 && $select_pop_Flg[$j-1]=='true' && !is_null($row[$j])){\n" +
+							"                    	$pop_str = '<a href=\\\"#select_popup1_'.(++$pop_num).'\\\" data-rel=\\\"popup\\\" data-icon=\\\"arrow-r\\\" style=\\\"white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\\\">'.$row[$j-1].'</a>'\n" +
+							"							.'<div data-role=\\\"popup\\\" id=\\\"select_popup1_'.($pop_num).'\\\" data-transition=\\\"slideup\\\" style=\\\"width:95%;\\\" data-overlay-theme=\\\"a\\\">'\n" +
+							"								.'<a href=\\\"#\\\" data-rel=\\\"back\\\" data-role=\\\"button\\\" data-theme=\\\"a\\\" data-icon=\\\"delete\\\" data-iconpos=\\\"notext\\\" class=\\\"ui-btn-right\\\">Close</a>'\n" +
+							"								.'<h2>'.$row[$j-1].'</h2>'\n" +
+							"								.'<p>'.$row[$j].'</p>'\n" +
+							"							.'</div>';\n" +
+							"                    	select"+selectCount+"_p2($pop_str, ++$k);     	//tdに結果を埋め込む\n" +
+							"                    }else									select"+selectCount+"_p2($row[$j], ++$k);     //tdに結果を埋め込む\n" +
+							"              }\n" +
+							"        }\n" +
+							"		 if($i>0)	echo \"<script type=\\\"text/javascript\\\">window.parent.$('#Select"+selectCount+"_text_th').show();</script>\";    //カラム名を表示\n" +
+							"        select"+selectCount+"_p1($i.' result'.(($i != 1)?('s'):('')));    //件数表示\n" +
+							"    }else{\n" +
+							"        select"+selectCount+"_p1('0 results');\n" +
+							"    }\n" +
+							"    \n" +
+							"    unset($select_db"+selectCount+");\n" +
+//							"}\n" +
+							"function select"+selectCount+"_p1($str){\n" +
+							"    echo '<script type=\"text/javascript\">window.parent.Select"+selectCount+"_echo1(\"'.$str.'\");</script>';\n" +
+							"}\n" +
+							"function select"+selectCount+"_p2($str,$num){\n" +
+							"    echo '<script type=\"text/javascript\">window.parent.Select"+selectCount+"_echo2(\"'.$str.'\",\"'.$num.'\");</script>';\n" +
+							"}\n" +
+							"?>\n";
+    		
+    		statement += 
+    						"\n" +
+    						"<script type=\"text/javascript\">\n" +
+    						"function Select"+selectCount+"_echo1(str){\n" +
+    						"  var textArea = document.getElementById(\"Select"+selectCount+"_text0\");\n" +
+    						"  textArea.innerHTML = str;\n" +
+    						"}\n" +
+    						"function Select"+selectCount+"_echo2(str,num){\n" +
+    						"  var textArea = document.getElementById(\"Select"+selectCount+"_text\"+num);\n" +
+    						//"  textArea.innerHTML += str+\"<br>\";\n" +
+    						//"  $(\"#Select"+selectCount+"_text\"+num).html(textArea.innerHTML+str+\"<br>\").trigger(\"create\");\n" +
+    						"  $(\"#Select"+selectCount+"_text\"+num).html(textArea.innerHTML+str+\"<br>\");\n" +
+    						"}\n" +
+    						"\n" +
+    						"function Select"+selectCount+"_refresh(){\n";
+    		
+    		for(int i=0; i<col_num; i++){
+    			statement +=
+    					"  document.getElementById(\"Select"+selectCount+"_text"+(i+1)+"\").innerHTML = \"\";\n";
+    		}
+    		statement +=
+    				"}\n" +
+    						"</script>\n" +
+    						"<!-- Select end -->\n";
+    		
+    		
+    		
+    		
+    		
+    	}
+    	//else if(DBMS.equals("postgresql")){
+    	//	;
+    	//}
+    	
+    	
+    	
+    	// 各引数毎に処理した結果をHTMLに書きこむ
+    	html_env.code.append(statement);
+    	
+    	selectCount++;
+    	return;
+    }
+    //select end
+    
+    
+    //added by goto 20130515 start  "insert","update"
+    /* insert("title", "c1:column1, c2:column2, ... ", "From以下")	*/
+    /* update("title", "c1:column1, c2:column2, ... ", "From以下"(, "insert Flag"))	*/
+    /* insert_update("title", "c1:column1, c2:column2, ... ", "From以下")  データ無し->新規insert,データあり->update */
+    private void Func_insert(boolean update, boolean insert_update) {
+    	
+    	String title = "";
+    	String columns = "";
+    	String after_from = "";
+    	String insertFlag = "";
+    	try{
+    		//title（第一引数）
+    		FuncArg fa1 = (FuncArg) this.getArgs().get(0);
+    		if(!fa1.getStr().equals(""))	title = fa1.getStr();
+    		else{
+    			if(update || insert_update)	title = "Update";
+    			else						title = "Insert";
+    		}
+    		//columns（第二引数）
+    		FuncArg fa2 = (FuncArg) this.getArgs().get(1);
+    		columns += fa2.getStr();
+    		//after_from（第三引数）
+    		FuncArg fa3 = (FuncArg) this.getArgs().get(2);
+    		after_from += fa3.getStr().trim();
+    		if(update){
+	    		//（第四引数）
+	    		FuncArg fa4 = (FuncArg) this.getArgs().get(3);
+	    		insertFlag += fa4.getStr().toLowerCase().trim();
+	    		if(insertFlag.equals(""))	insertFlag="false";
+    		}
+    	}catch(Exception e){
+    		Log.info("<Warning> insert関数の引数が不足しています。 ex. insert(\"title\", \"c1:column1, c2:column2, ... \", \"From以下\")");
+    		return;
+    	}
+		if(columns.trim().equals("") || after_from.equals("")){
+			Log.info("<Warning> insert関数の引数が不足しています。 ex. insert(\"title\", \"c1:column1, c2:column2, ... \", \"From以下\")");
+    		return;
+		}
+		if(after_from.toLowerCase().startsWith("from "))	after_from = after_from.substring("from".length()).trim();
+		if(insert_update)	insertFlag = "true";	//20130721
+		//Log.info(title);
+    	
+    	
+    	//置換 ( @ { , }  ->  @ { ; } )
+		//Log.i("Before: "+columns);
+    	int inAtFlg = 0;
+    	for(int i=0; i<columns.length();i++){
+    		//Log.i(columns.charAt(i));
+    		if(inAtFlg==0){
+    			if(columns.charAt(i)=='@')		inAtFlg=1;
+    		}else if(inAtFlg==1){
+	    		if(columns.charAt(i)==' ')		inAtFlg=1;
+	    		else if(columns.charAt(i)=='{')	inAtFlg=2;
+    		}else if(inAtFlg==2){
+    			if(columns.charAt(i)==',')
+    				columns = columns.substring(0,i)+";"+columns.substring(i+1);	//置換
+    			else if(columns.charAt(i)=='}')	inAtFlg=0;
+    		}
+    	}
+    	//Log.i("After:  "+columns);
+    	
+    	
+    	int col_num=1;
+    	String columns0 = columns;
+    	while(columns0.contains(",")){
+    		columns0 = columns0.substring(columns0.indexOf(",")+1);
+    		col_num++;		//カウント
+    	}
+    	String[] s_name_array = new String[col_num];
+    	String[] s_array = new String[col_num];
+    	columns0 = columns;
+    	for(int i=0; i<col_num-1; i++){
+    		s_array[i] = columns0.substring(0,columns0.indexOf(","));
+    		columns0 = columns0.substring(columns0.indexOf(",")+1);
+    		//Log.i( "s_array["+i+"] = "+s_array[i]+"	"+columns0);
+    	}
+    	s_array[col_num-1] = columns0;
+		//Log.i( "s_array["+(col_num-1)+"] = "+s_array[col_num-1]);
+    	int j=0;
+		for(int i=0; i<col_num; i++){
+			//Log.i( "s_array["+i+"] = "+s_array[i]);
+			if(s_array[i].contains(":")){
+				if(!s_array[i].substring(0,s_array[i].indexOf(":")).contains(")"))
+						s_name_array[j++] = s_array[i].substring(0,s_array[i].indexOf(":")).trim();
+				s_array[i] = s_array[i].substring(s_array[i].indexOf(":")+1);
+			}else{
+				s_name_array[j++] = "";
+				//if(!s_array[i].contains(")"))	s_name_array[j++] = s_array[i];	  <- ??
+			}
+			//Log.i("s_name_array["+(j-1)+"] = "+s_name_array[j-1] + "	s_array["+i+"] = "+s_array[i]);
+		}
+		boolean groupbyFlg = false;	//Flg
+		//boolean[] aFlg = new boolean[col_num];	//Flg
+		//boolean[] popFlg = new boolean[col_num];	//Flg
+		String a = "";
+    	String insert_col = "";
+    	String update_col_array = "'";
+    	String update_where = "";
+    	boolean[] textareaFlg = new boolean[col_num];
+    	boolean[] hiddenFlg = new boolean[col_num];
+    	boolean[] noinsertFlg = new boolean[col_num];
+    	String notnullFlg_array = "";
+    	String[] $session_array = new String[col_num];
+    	String[] $time_array = new String[col_num];
+    	String[] $gps_array = new String[col_num];
+    	String[] button_array = new String[col_num];
+    	String buttonSubmit = "";
+    	String insert_aFlg = "\"";	//Flg
+    	String insert_popFlg = "\"";	//Flg
+    	int noinsert_count = 0;
+    	int a_pop_count = 0;
+    	for(int i=0; i<col_num; i++){
+    		a = s_array[i].replaceAll(" ","");
+    		//Log.i(a);
+    		
+    		//$session()あり
+    		if(a.contains("=")){
+    			String a_right = a.substring(a.indexOf("=")+1).trim();
+    			if(a_right.startsWith("$session(")){
+    				$session_array[i] = a.substring(a.indexOf("$session(")+"$session(".length(),a.indexOf(")"));
+    				$time_array[i] = "";
+    				$gps_array[i] = "";
+    				button_array[i] = "";
+    				a = a.substring(0,a.indexOf("=")).trim() + a.substring(a.indexOf(")")+1).trim();
+        			s_array[i] = s_array[i].substring(0,s_array[i].indexOf("=")).trim() + s_array[i].substring(s_array[i].indexOf(")")+1).trim();
+    			}else if(a_right.startsWith("time(") || a_right.startsWith("date(")){
+    				String d = s_array[i].substring(s_array[i].indexOf("(")+1,s_array[i].lastIndexOf(")")).trim(); 
+//    				$time_array[i] = "date(\"Y-m-d H:i:s\")";	//"date(\"Y/m/d(D) H:i:s\")";
+    				$time_array[i] = "date(\""+( (d.equals(""))? ("Y-m-d H:i:s") : (d) )+"\")";	//"date(\"Y/m/d(D) H:i:s\")";
+    				$session_array[i] = "";
+    				$gps_array[i] = "";
+    				button_array[i] = "";
+    				a = a.substring(0,a.indexOf("=")).trim() + a.substring(a.indexOf(")")+1).trim();
+    				s_array[i] = s_array[i].substring(0,s_array[i].indexOf("=")).trim() + s_array[i].substring(s_array[i].indexOf(")")+1).trim();
+    			}else if(a_right.startsWith("gps_info(")){
+    				//gps_info()の取得
+    				//String d = s_array[i].substring(s_array[i].indexOf("(")+1,s_array[i].lastIndexOf(")")).trim(); 
+    				//$gps_array[i] = "date(\""+( (d.equals(""))? ("Y-m-d H:i:s") : (d) )+"\")";	//"date(\"Y/m/d(D) H:i:s\")";
+    				$gps_array[i] = "gps_info";
+    				
+    				$session_array[i] = "";
+    				$time_array[i] = "";
+    				button_array[i] = "";
+    				a = a.substring(0,a.indexOf("=")).trim() + a.substring(a.indexOf(")")+1).trim();
+    				s_array[i] = s_array[i].substring(0,s_array[i].indexOf("=")).trim() + s_array[i].substring(s_array[i].indexOf(")")+1).trim();
+    			}else if(a.contains("{")){
+    				String ss = a.substring(a.indexOf("{")+"{".length(),a.indexOf("}"));
+    				button_array[i] = ss;
+    				$session_array[i] = "";
+    				$time_array[i] = "";
+    				$gps_array[i] = "";
+    				a = a.substring(0,a.indexOf("=")).trim() + a.substring(a.indexOf("}")+1).trim();
+        			s_array[i] = s_array[i].substring(0,s_array[i].indexOf("=")).trim() + s_array[i].substring(s_array[i].indexOf("}")+1).trim();
+    			}else{
+    				$session_array[i] = "";
+    				$time_array[i] = "";
+    				$gps_array[i] = "";
+    				button_array[i] = "";
+    			}
+    		}else{
+    			$session_array[i] = "";
+    			$time_array[i] = "";
+    			$gps_array[i] = "";
+    			button_array[i] = "";
+    		}
+    		//Log.i(s_array[i]+"	"+$session_array[i]);
+    		//Log.i(button_array[i]+"	"+button_array[i]);
+    		
+    		if(a.startsWith("max(") || a.startsWith("min(") || a.startsWith("avg(") ||  a.startsWith("count(") )	groupbyFlg = true;
+    		if(a.startsWith("a(") || a.startsWith("anchor(")){
+    			insert_aFlg += "true\""+((i<col_num-1)?(",\""):(""));
+    			if(a.endsWith(")")){
+//    				insert_col += s_array[i] +((i<col_num-1)?(","):(""));
+//    	    		insert_col_array += s_array[i] +"\""+((i<col_num-1)?(",\""):(""));
+//    	    		insert_aFlg += "false\""+((i<col_num-1)?(",\""):(""));
+//    	    		insert_popFlg += "false\""+((i<col_num-1)?(",\""):(""));
+    	    		insert_col += s_array[i]+",";
+//    				insert_col_array += s_array[i]+"\",\"";
+    				insert_aFlg += ((i<col_num-1)?(""):(",\""))+"false\""+((i<col_num-1)?(",\""):(""));
+    				insert_popFlg += ((i<col_num-1)?(""):(",\""))+"false\""+((i<col_num-1)?(",\""):(""));
+    			}else	a_pop_count++;
+    		}else
+    			insert_aFlg += "false\""+((i<col_num-1)?(",\""):(""));
+    		if(a.startsWith("pop(") || a.startsWith("popup(")){
+    			insert_popFlg += "true\""+((i<col_num-1)?(",\""):(""));
+    			if(a.endsWith(")")){
+//    				insert_col += s_array[i] +((i<col_num-1)?(","):(""));
+//    	    		insert_col_array += s_array[i] +"\""+((i<col_num-1)?(",\""):(""));
+//    	    		insert_aFlg += "false\""+((i<col_num-1)?(",\""):(""));
+//    	    		insert_popFlg += "false\""+((i<col_num-1)?(",\""):(""));
+    				insert_col += s_array[i]+",";
+//    				insert_col_array += s_array[i]+"\",\"";
+    				insert_aFlg += ((i<col_num-1)?(""):(",\""))+"false\""+((i<col_num-1)?(",\""):(""));
+    				insert_popFlg += ((i<col_num-1)?(""):(",\""))+"false\""+((i<col_num-1)?(",\""):(""));
+    			}else	a_pop_count++;
+    		}else
+    			insert_popFlg += "false\""+((i<col_num-1)?(",\""):(""));
+    		
+    		//Log.i(s_array[i]);
+    		//@textarea, @hidden, @noinsert, @notnullフラグチェック	//TODO:リファクタリング
+    		textareaFlg[i] = false;
+    		hiddenFlg[i] = false;
+    		noinsertFlg[i] = false;
+    		String str = "";
+    		if(s_array[i].replaceAll(" ","").contains("@{")){
+    			str = s_array[i].substring(s_array[i].lastIndexOf("@")+1);	//@以下の文字列
+	    		if(str.contains("textarea"))
+	    			textareaFlg[i] = true;
+	    		if(str.contains("hidden"))
+	    			hiddenFlg[i] = true;
+	    		if(str.contains("no") || str.contains("noinsert") || str.contains("noupdate")){
+	    			noinsertFlg[i] = true;
+	    			noinsert_count++;
+	    		}else{
+		    		if(str.contains("notnull")){
+		    			if(i==(col_num-1))	notnullFlg_array += "TRUE";
+		    			else				notnullFlg_array += "TRUE,";
+		    		}else{
+		    			if(i==(col_num-1))	notnullFlg_array += "FALSE";
+		    			else				notnullFlg_array += "FALSE,";
+		    		}
+	    		}
+	    		s_array[i] = s_array[i].substring(0,s_array[i].indexOf("@"));
+	    		//Log.i(s_array[i]);
+    		}else{
+    			if(i==(col_num-1))	notnullFlg_array += "FALSE";
+    			else				notnullFlg_array += "FALSE,";
+    		}
+    		
+    		if(!noinsertFlg[i]){
+    			insert_col += s_array[i] +((i<col_num-1)?(","):(""));
+    			if(update)	update_col_array += s_array[i] +"'"+((i<col_num-1)?(",'"):(""));
+    		}
+    	}
+    	col_num -= a_pop_count;
+    	insert_col = insert_col.replaceAll("a\\(","").replaceAll("anchor\\(","").replaceAll("pop\\(","").replaceAll("popup\\(","").replaceAll("\\)","");
+//    	insert_col_array = insert_col_array.replaceAll("a\\(","").replaceAll("anchor\\(","").replaceAll("pop\\(","").replaceAll("popup\\(","").replaceAll("\\)","");
+    	
+    	
+    	//Log.i("	1:"+title+"	2:"+columns+"	col_num:"+col_num);
+    	//Log.i("	insert_col:"+insert_col+"	update_col_array:"+update_col_array);
+    	//Log.i("	insert_aFlg:"+insert_aFlg+"	insert_popFlg:"+insert_popFlg);
+    	//Log.i("	notnullFlg_array: "+notnullFlg_array);
+    	
+    	
+    	String DBMS = GlobalEnv.getdbms();										//DBMS
+    	String DB = GlobalEnv.getdbname();										//DB
+    	
+    	String query = "";
+    	//Log.i(after_from_string);
+    	if(after_from.startsWith("#")){					//From以下をクエリの下(#*)から取ってくる場合
+    		if(!after_from_string.contains(after_from)){
+    			Log.info("<Warning> insert関数の第三引数に指定されている '"+after_from+"' が見つかりません。");
+    			return;
+    		}
+    		query = after_from_string
+    				.substring(after_from_string.indexOf(after_from)+after_from.length())
+    				.trim().toLowerCase();
+    		if(query.contains("#"))	query = query.substring(0,query.indexOf("#")).trim().toLowerCase();
+    	}else
+    		query = after_from.toLowerCase();			//From以下を第三引数へ書く場合
+    	//Log.i("\n	Query: "+query);
+    	String from = "";
+    	from = query.toLowerCase().trim();
+    	if(update){
+    		update_where = from.substring(from.indexOf(" where ")).trim();
+    		if(update_where.contains("$session"))
+    			update_where = update_where.replaceAll("\\$session","'\".\\$_SESSION").replaceAll("\\(","[").replaceAll("\\)","].\"'");
+    		from = from.substring(0,from.indexOf(" where ")).trim();
+    	}
+    	//Log.i("	FROM:"+from+"	update_where:"+update_where);
+    	//Log.i("	FROM: "+from+"\n	WHERE: "+where+"\n	GROUP: "+groupby+"\n	HAVING: "+having);
+    	//Log.i("	ORDER: "+orderby+"\n	LIMIT: "+limit+"\n	Query: "+query);
+    	
+    	
+
+    	String statement = "";
+    	String gps_js = "";
+    	//sqlite3 php
+    	if(DBMS.equals("sqlite3")){
+    		statement += 
+    				"<!-- Insert start -->\n" +
+    				"<!-- Insert Panel start -->\n" +
+    				"<br>\n" +
+    				//"<div id=\"INSERT"+insertCount+"panel\" style=\"background-color:whitesmoke; width:99%; border:0.1px gray solid;\" data-role=\"none\">\n" +
+    				//"<div style=\"padding:3px 5px;border-color:hotpink;border-width:0 0 1px 7px;border-style:solid;background:#F8F8F8; font-size:30;\" id=\"InsertTitle"+insertCount+"\">"+title+"</div>\n" +
+    				"<div id=\"INSERT"+insertCount+"panel\" style=\"\" data-role=\"none\">\n" +
+    				"<hr>\n<div style=\"font-size:30;\" id=\"InsertTitle"+insertCount+"\">"+title+"</div>\n<hr>\n" +
+    				"<br>\n" +
+    				"<form method=\"post\" action=\"\" target=\"dummy_ifr\">\n";
+    				//"<form method=\"post\" action=\"\" target=\"insert"+insertCount+"_ifr\">\n";
+    		
+    		int insertWordCount = 0;
+    		for(int i=0; i<col_num; i++){
+//    			if(!textareaFlg[i]){
+				if($session_array[i].equals("") && $time_array[i].equals("") && $gps_array[i].equals("")){
+					if(!button_array[i].equals("")){
+						//Log.i("bt_array:"+button_array[i]);
+						String ss = button_array[i]+"|";
+						int btRcount = ss.length() - ss.replaceAll("\\|","").length();
+						//Log.i("btRcount:"+btRcount);
+						
+						if(btRcount == 1){				//テキスト ex){2013秋}
+
+							//statement +=
+							//		"    <input type="text" disabled="disabled" value="お名前: 五嶋">";
+							statement += 
+									"    <"+((!textareaFlg[i])?("input"):("textarea"))+" type=\""+((!hiddenFlg[i])?("text"):("hidden"))+"\" disabled=\"disabled\" value=\""+( (!s_name_array[i].equals(""))? (s_name_array[i]+": "):("") )+"" +
+									""+( (!textareaFlg[i])? ("\n") : ((!s_name_array[i].equals(""))? ("\">"+s_name_array[i]+": "):("")) )+button_array[i]+"" +
+									""+((!textareaFlg[i])?("\">"):("</textarea>"))+"\n";
+							if(!noinsertFlg[i])
+								statement += 
+										"    <input type=\"hidden\" name=\"insert_words"+(++insertWordCount)+"\" value=\""+button_array[i]+"\">\n";
+						
+						
+						}else if(btRcount == 2){		//ボタン ex){出席|欠席}
+							String bt1=ss.substring(0,ss.indexOf("|")).trim();
+							String bt2=ss.substring(ss.indexOf("|")+1,ss.length()-1).trim();
+							insertWordCount++;
+							statement += 
+									"	<div class=\"ui-grid-a\">\n" +
+									"		<div class=\"ui-block-a\">\n" +
+									"    		<input type=\"submit\" name=\"insert_words"+(insertWordCount)+"\" value=\""+bt1+"\" data-theme=\"a\">\n" +
+									"		</div>\n" +
+									"		<div class=\"ui-block-b\">\n" +
+									"    		<input type=\"submit\" name=\"insert_words"+(insertWordCount)+"\" value=\""+bt2+"\" data-theme=\"a\">\n" +
+									"		</div>\n" +
+									"	</div>\n";
+							buttonSubmit += " || $_POST['insert_words"+(insertWordCount)+"']";
+						}else{							//ラジオボタン ex){出席|欠席|その他}
+							statement += "   <div data-role=\"controlgroup\">\n";
+							insertWordCount++;
+							for(int k=1; k<=btRcount; k++){
+								String val = ss.substring(0,ss.indexOf("|")).trim();
+								statement += 
+										"		<input type=\"radio\" name=\"insert_words"+(insertWordCount)+"\" id=\"insert_words"+(insertWordCount)+"_"+k+"\" value=\""+val+"\""+( (k>1)? (""):(" checked=\"checked\"") )+">\n" +
+										"		<label for=\"insert_words"+(insertWordCount)+"_"+k+"\">"+val+"</label>\n";
+								ss = ss.substring(ss.indexOf("|")+1);
+							}
+							statement += "	</div>\n";
+						}
+					}else{
+						statement += 
+								"    <"+((!textareaFlg[i])?("input"):("textarea"))+" type=\""+((!hiddenFlg[i])?("text"):("hidden"))+"\" name=\"insert_words"+(++insertWordCount)+"\" placeholder=\""+s_name_array[i]+"\">" +
+								""+((!textareaFlg[i])?(""):("</textarea>"))+"\n";
+				    	//statement += "    <input type=\"text\" name=\"insert_words"+(insertWordCount)+"\" placeholder=\""+s_name_array[i]+"\">\n";
+					}
+				}else{
+					//statement += "    <input type=\"text\" name=\"insert_words"+(++insertWordCount)+"\" placeholder=\""+s_name_array[i]+"\">\n";
+					String echo = "";
+					if(!$session_array[i].equals(""))	echo += "	echo $_SESSION["+$session_array[i]+"];\n";
+					else if(!$time_array[i].equals(""))	echo += "	echo "+$time_array[i]+";\n";
+					//else if(!$gps_array[i].equals(""))	echo += "	echo \"<script> getGPSinfo(); </script>\";\n";
+					//else if(!$gps_array[i].equals(""))	echo += "	echo\"<script> getGPSinfo(); </script>\";\n";
+					else if(!$gps_array[i].equals("")){
+						echo += "	echo \"位置情報(緯度・経度)\";\n";
+						gps_js +=
+								"\n<!-- getGPSinfo() -->\n" +
+								"<script src=\"http://maps.google.com/maps/api/js?sensor=false&libraries=geometry\"></script>\n" +
+								"<script type=\"text/javascript\">\n" +
+								"<!--\n" +
+								"$(document).on(\"pageinit\", \"#p-top1\", function(e) {\n" +
+								"  	// Geolocation APIのオプション設定\n" +
+								"  	var geolocationOptions = {\n" +
+								"    	\"enableHighAccuracy\" : true, // 高精度位置情報の取得\n" +
+								"    	\"maximumAge\" : 0, // キャッシュの無効化\n" +
+								"    	\"timeout\" : 30000 // タイムアウトは30秒\n" +
+								"  	};\n" +
+								"    navigator.geolocation.getCurrentPosition(function(pos) {\n" +
+								"      	// 経度、緯度を取得 //\n" +
+								"		document.getElementsByName('insert_words"+(insertWordCount+1)+"')[0].value=pos.coords.latitude+\",\"+pos.coords.longitude;\n" +
+								"    }, function(e) {\n" +
+								"		gpsInfo = \"\";\n" +
+								"    }, geolocationOptions);\n" +
+								"});\n" +
+								"// -->\n" +
+								"</script>\n";
+					}
+					
+					statement += 
+							"    <"+((!textareaFlg[i])?("input"):("textarea"))+" type=\""+((!hiddenFlg[i])?("text"):("hidden"))+"\" disabled=\"disabled\" value=\""+( (!s_name_array[i].equals(""))? (s_name_array[i]+": "):("") )+"" +
+							""+( (!textareaFlg[i])? ("\n") : ((!s_name_array[i].equals(""))? ("\">"+s_name_array[i]+": "):("")) )+"\n";
+					//if($gps_array[i].equals(""))
+						statement += 
+								"EOF;\n" +
+								echo +
+								"		echo <<<EOF\n";
+//					else{
+//						statement += "";
+//					}
+						
+					statement += 
+							""+((!textareaFlg[i])?("\">"):("</textarea>"))+"\n";
+					if(!noinsertFlg[i])
+						statement += 
+								"    <input type=\"hidden\" name=\"insert_words"+(++insertWordCount)+"\" value=\"\n" +
+								"EOF;\n" +
+								echo +
+								"		echo <<<EOF\n" +
+								"\">\n";
+				}
+				//insertWordCount++;
+    		}
+//    			}
+//    			else				statement += "    <textarea type=\"text\" name=\"insert_words"+(insertWordCount)+"\" placeholder=\""+s_name_array[i]+"\"></textarea>\n";
+    		
+    		if(buttonSubmit.equals(""))
+    			statement += 
+    				"    <input type=\"submit\" value=\""+( (!update)? ("登録"):("更新") )+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\" name=\"insert"+insertCount+"\" id=\"insert"+insertCount+"\" data-icon=\"insert\" data-mini=\"false\" data-inline=\"false\">\n";
+			
+    		statement += 
+    				//"    <input type=\"submit\" value=\"Insert&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\" name=\"insert"+insertCount+"\" id=\"insert"+insertCount+"\" data-icon=\"insert\" data-mini=\"false\" data-inline=\"false\">\n" +
+    				"</form>\n" +
+    				//"<iframe name=\"insert"+insertCount+"_ifr\" style=\"display:none;\"></iframe>\n" +
+    				"\n" +
+    				"<div id=\"Insert"+insertCount+"_text0\" data-role=\"none\"><!-- Insertコメント --></div>\n" +
+    				"\n" +
+    				"<br>\n" +
+    				"</div>\n";
+    		//getGPSinfo()
+    		statement += gps_js;
+//    				"\n<!-- getGPSinfo() -->\n" +
+//					"<script src=\"http://maps.google.com/maps/api/js?sensor=false&libraries=geometry\"></script>\n" +
+//					"<script type=\"text/javascript\">\n" +
+//					"<!--\n" +
+//					"function getGPSinfo() {\n" +
+//					"\n" +
+//					"var gpsInfo = \"\";\n" +
+//					"$(document).on(\"pageinit\", \"#p-top1\", function(e) {\n" +
+//					"  	// Geolocation APIのオプション設定\n" +
+//					"  	var geolocationOptions = {\n" +
+//					"    	\"enableHighAccuracy\" : true, // 高精度位置情報の取得\n" +
+//					"    	\"maximumAge\" : 0, // キャッシュの無効化\n" +
+//					"    	\"timeout\" : 30000 // タイムアウトは30秒\n" +
+//					"  	};\n" +
+//					"    navigator.geolocation.getCurrentPosition(function(pos) {\n" +
+//					"      	// 経度、緯度を取得 //\n" +
+//					"		gpsInfo += pos.coords.latitude+\",\"+pos.coords.latitude;\n" +
+//					"    }, function(e) {\n" +
+//					"		gpsInfo = \"\";\n" +
+//					"    }, geolocationOptions);\n" +
+//					"});\n" +
+//					"return gpsInfo;\n" +
+//					"\n" +
+//					"}\n" +
+//					"// -->\n" +
+//					"</script>\n";
+    		statement += 
+    				"<!-- Insert Panel end -->\n" +
+    				"\n";
+			
+			HTMLEnv.PHP +=
+    				"<?php\n" +
+    				"if($_POST['insert"+insertCount+"'] "+buttonSubmit+"){\n" +
+    				//"if($_POST['insert"+insertCount+"'] || $_POST['insert_words"+insertCount+"']){\n" +
+    				"    //ユーザ定義\n" +
+    				"    $sqlite3_DB = '"+DB+"';\n" +
+    				"    $insert_col = \""+insert_col+"\";\n";
+			if(update){
+				HTMLEnv.PHP +=
+						"    $update_col_array = array("+update_col_array+");\n" +
+						"    $update_where = \""+update_where+"\";\n";
+			}
+			HTMLEnv.PHP +=
+    				"    $notnullFlg = array("+notnullFlg_array+");\n" +
+    				"    $col_num = "+(col_num - noinsert_count)+";                          //カラム数(Java側で指定)\n" +
+    				"    $table = '"+from+"';\n" +
+    				"\n" +
+    				"	$insert_str = \"notnull\";\n" +
+    				"	for($k=1; $k<=$col_num; $k++){\n" +
+    				"    	$var[$k] = checkHTMLsc($_POST['insert_words'.$k]);\n" +
+    				"    	$var[$k] = str_replace(array(\"\\r\\n\",\"\\r\",\"\\n\"), '<br>', $var[$k]);	//改行コードを<br>へ\n" +
+    				//"    	//$var[$k] = mb_convert_encoding($var[$k], 'UTF-8', 'auto');					//エンコードをUTF-8へ PHP環境によってはうまく動かない？\n" +
+    				//"    	$insert_str .= trim($var[$k]);\n" +
+    				"    	if($notnullFlg[$k-1]){\n" +
+    				"    		if(trim($var[$k]) == \"\")	$insert_str = \"\";\n" +
+    				"    	}\n";
+			for(int i=0; i<col_num; i++){
+				if(!$time_array[i].equals(""))
+					HTMLEnv.PHP += "		if($k=="+i+")	$var[$k] = "+$time_array[i]+";\n";	//現在時刻
+			}
+			HTMLEnv.PHP +=	
+    				"    }\n" +
+    				"\n" +
+    				"	if($insert_str == \"\"){\n" +
+    				"        insert"+insertCount+"_p1('<font color=\\\"red\\\">入力内容をご確認ください。</font>');\n" +
+    				"	}else{\n";
+			
+			if(!update){
+				//insert()
+				HTMLEnv.PHP +=
+	    				"		$insert_str = \"\";\n" +
+	    				"		for($k=1; $k<=$col_num; $k++){\n" +
+	    				"			if($k==1)	$insert_str .= \"'\".$var[$k].\"'\";\n" +
+	    				"			else		$insert_str .= \",'\".$var[$k].\"'\";\n" +
+	    				"		}\n" +
+	    				"		//DBへ登録\n" +
+	    				"		$insert_db"+insertCount+" = new SQLite3($sqlite3_DB);\n" +
+	    				"        $insert_sql = \"INSERT INTO \".$table.\" (\".$insert_col.\") VALUES (\".$insert_str.\")\";\n" +
+	    				"        \n" +
+	    				"        try{\n" +
+	    				"			$result2 = $insert_db"+insertCount+"->exec($insert_sql);\n" +
+	    				"			unset($insert_db"+insertCount+");\n" +
+	    				"		 	insert"+insertCount+"_p1(\"登録しました。\");\n" +
+	    				"		 	//insert"+insertCount+"_p1($insert_sql);\n" +
+	    				"        }catch(Exception $e){\n" +
+	    				"       		unset($insert_db"+insertCount+");\n" +
+	    				"       		insert"+insertCount+"_p1('<font color=red>Insert failed.</font>');	//登録失敗\n" +
+	    				"        }\n";
+			}else{
+				//update()
+				HTMLEnv.PHP +=
+						"		$insert_db1 = new SQLite3($sqlite3_DB);\n" +
+						"		try{\n" +
+						"			//データが存在しているかチェック\n" +
+						"			$select_sql = \"SELECT \".$insert_col.\" FROM \".$table.\" \".$update_where;\n" +
+						"			$result2 = $insert_db1->query($select_sql);\n" +
+						"			$j = 0;\n" +
+						"			while($row = $result2->fetchArray()){\n" +
+						"			    $j++;\n" +
+						"			}\n" +
+						"			\n" +
+						"			if($j>0){\n" +
+						"				//更新(update)\n" +
+						"				$update_str = \"\";\n" +
+						"				for($k=1; $k<=$col_num; $k++){\n" +
+						"					if($k==1)	$update_str .= $update_col_array[$k-1].\"='\".$var[$k].\"'\";\n" +
+						"					else		$update_str .= \",\".$update_col_array[$k-1].\"='\".$var[$k].\"'\";\n" +
+						"				}\n" +
+						"				\n" +
+						"				$update_sql = \"UPDATE \".$table.\" SET \".$update_str.\" \".$update_where;\n" +
+						"				$result2 = $insert_db1->exec($update_sql);\n" +
+						"				//echo '変更された行の数: ', $db->changes();\n" +
+						"				insert1_p1(\"更新しました。\");\n" +
+						"			}else{\n";
+				//Log.i("insertFlag:"+insertFlag);
+				if(!insertFlag.equals("true"))
+						HTMLEnv.PHP +=
+							"				insert1_p1('<font color=red>更新データがありません。</font>');	//更新データなし\n";
+				else
+						HTMLEnv.PHP +=
+							"				//新規登録(insert)\n" +
+							"				$insert_str = \"\";\n" +
+							"				for($k=1; $k<=$col_num; $k++){\n" +
+							"					if($k==1)	$insert_str .= \"'\".$var[$k].\"'\";\n" +
+							"					else		$insert_str .= \",'\".$var[$k].\"'\";\n" +
+							"				}\n" +
+							"				\n" +
+							"				$insert_sql = \"INSERT INTO \".$table.\" (\".$insert_col.\") VALUES (\".$insert_str.\")\";\n" +
+							"				$result2 = $insert_db1->exec($insert_sql);\n" +
+							"				insert1_p1(\"登録しました。\");\n";
+				HTMLEnv.PHP +=
+						"			}\n" +
+						"        }catch(Exception $e){\n" +
+						"       		unset($insert_db1);\n" +
+						"       		insert1_p1('<font color=red>Update failed.</font>');	//更新失敗\n" +
+						"        }\n" +
+						"        unset($insert_db1);\n";
+			}
+    				
+			HTMLEnv.PHP +=
+    				"    }\n" +
+    				"}\n" +
+    				"function insert"+insertCount+"_p1($str){\n" +
+    				"    echo '<script type=\"text/javascript\">window.parent.Insert"+insertCount+"_echo1(\"'.$str.'\");</script>';\n" +
+    				"}\n" +
+    				"?>\n";
+    				
+			statement += 
+    				"\n" +
+    				"<script type=\"text/javascript\">\n" +
+    				"function Insert"+insertCount+"_echo1(str){\n" +
+    				"  var textArea = document.getElementById(\"Insert"+insertCount+"_text0\");\n" +
+    				"  textArea.innerHTML = str;\n" +
+    				"}\n" +
+    				"</script>\n" +
+    				"<!-- Insert end -->\n";
+    	}
+    	//else if(DBMS.equals("postgresql")){
+    	//	;
+    	//}
+
+    	// 各引数毎に処理した結果をHTMLに書きこむ
+    	html_env.code.append(statement);
+    	
+    	insertCount++;
+    	return;
+    }
+    //insert end
+    
+    
+    //added by goto 20130531  "check"
+    /*  1:check(type, 演算子(=,!=,<,<=,>,>=,...), answer, 正解ステートメント, 不正解ステートメント)  */
+    /*  2:check(type, 識別子("yes|no"など), answer, 正解ステートメント, 不正解ステートメント)  */
+    //check("form","=",answer,"正解","不正解")
+    private void Func_check() {
+    	String statement = "\n";
+    	String type = "";
+    	String operator = "";
+    	String ans = "";
+    	String correct = "";
+    	String incorrect = "";
+    	try{
+			type = ((FuncArg) this.getArgs().get(0)).getStr().trim();
+    		operator = ((FuncArg) this.getArgs().get(1)).getStr();
+    		ans = ((FuncArg) this.getArgs().get(2)).getStr();
+    		correct = ((FuncArg) this.getArgs().get(3)).getStr();
+    		incorrect = ((FuncArg) this.getArgs().get(4)).getStr();
+    	}catch(Exception e){
+    		Log.info("<Warning> check関数の引数が不足しています。 ex. check(type, 演算子(=,!=,<,<=,>,>=,...)・識別子(\"yes|no\"など), answer, 正解ステートメント, 不正解ステートメント)");
+    		return;
+    	}
+    	
+    	if(operator.trim().equals("="))	operator = "==";
+    	else if(operator.trim().equals(""))	operator = "==";
+
+    	//statement += "演算子: "+operator+"<br>";
+    	//statement += incorrect;
+    	
+    	//"<iframe name=\"dummy_ifr\" style=\"display:none;\"><!-- dummy for Form target --></iframe>\n";
+    	
+    	//type = 1
+    	if(type.equals("1") || type.equals("form")){
+	    	statement += 
+	    			"<!-- Check"+checkCount+" start -->\n" +
+	    			"<form method=\"post\" action=\"\" target=\"dummy_ifr\">\n" +
+					//"<form method=\"post\" action=\"\" target=\"check"+checkCount+"_ifr\">\n" +
+					"    <input type=\"text\" name=\"check_word"+checkCount+"\" placeholder=\"Check words\">\n" +
+					"    <input type=\"submit\" value=\"Check&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\" name=\"check"+checkCount+"\" id=\"check"+checkCount+"\" data-icon=\"question\" data-mini=\"false\" data-inline=\"false\">\n" +
+					"</form>\n" +
+	//				"<iframe name=\"check"+checkCount+"_ifr\" style=\"display:none;\"></iframe>\n" +
+					"\n" +
+					"<div id=\"Check"+checkCount+"_text0\" data-role=\"none\"><!-- 結果 --></div>\n" +
+					"\n" +
+					"<script type=\"text/javascript\">\n" +
+					"function Check"+checkCount+"_echo1(str){\n" +
+	//				"  var textArea = document.getElementById(\"Check"+checkCount+"_text0\");\n" +
+	//				"  textArea.innerHTML = str;\n" +
+					"  $.dynamic_popup(str);\n" +
+					"}\n" +
+					"</script>\n" +
+					"<!-- Check"+checkCount+" end -->\n";
+	    	
+	    	HTMLEnv.PHP += 
+	    			"<?php\n" +
+					"//Check"+checkCount+"\n" +
+					//"else if($_POST['check"+checkCount+"'] || $_POST['check_word"+checkCount+"']){\n" +
+					"if($_POST['check"+checkCount+"'] || $_POST['check_word"+checkCount+"']){\n" +
+					"	if(trim($_POST['check_word"+checkCount+"'])==\"\")\n" +
+					"		check"+checkCount+"_p1(\"<br><font color=red>値を入力してください。</font>\");\n" +
+					"	else if($_POST['check_word"+checkCount+"']"+operator+"\""+ans+"\")\n" +
+					"		check"+checkCount+"_p1(\"<h2>結果</h2><br><p><font color=goldenrod>&nbsp;&nbsp;"+correct+"&nbsp;&nbsp;</font></p>\");\n" +
+					"	else\n" +
+					"		check"+checkCount+"_p1(\"<h2>結果</h2><br><p><font color=red>&nbsp;&nbsp;"+incorrect+"&nbsp;&nbsp;</font></p>\");\n" +
+					"}\n" +
+					"function check"+checkCount+"_p1($str){\n" +
+					"    echo '<script type=\"text/javascript\">window.parent.Check"+checkCount+"_echo1(\"'.$str.'\");</script>';\n" +
+					"}\n" +
+					"?>\n";
+	//		HTMLEnv.PHPpost += 
+	//				"\n" +
+	//						"//Check"+checkCount+"\n" +
+	//						//"else if($_POST['check"+checkCount+"'] || $_POST['check_word"+checkCount+"']){\n" +
+	//						"if($_POST['check"+checkCount+"'] || $_POST['check_word"+checkCount+"']){\n" +
+	//						"	if($_POST['check_word"+checkCount+"']"+operator+"\""+ans+"\")\n" +
+	//						"		check"+checkCount+"_p1(\""+correct+"\");\n" +
+	//						"	else\n" +
+	//						"		check"+checkCount+"_p1(\"<font color=red>"+incorrect+"</font>\");\n" +
+	//						"}\n";
+	//		HTMLEnv.PHPfunc +=
+	//				"<?php\n" +
+	//						"function check"+checkCount+"_p1($str){\n" +
+	//						"    echo '<script type=\"text/javascript\">window.parent.Check"+checkCount+"_echo1(\"'.$str.'\");</script>';\n" +
+	//						"}\n" +
+	//						"?>\n";
+    	}
+    	//type = 2
+    	else if(type.equals("2") || type.equals("yesno") || type.equals("ox")){
+    		String yes = "yes";
+    		String no = "no";
+    		if(operator.contains("|")){
+    			yes = operator.substring(0,operator.indexOf("|")).trim();
+	    		no = operator.substring(operator.indexOf("|")+1).trim();
+    		}
+    		//Log.i("y:"+yes+"	n:"+no);
+    		
+	    	statement += 
+	    			"<!-- Check"+checkCount+" start -->\n" +
+	    			"<form method=\"post\" action=\"\" target=\"dummy_ifr\">\n" +
+	    			"	<div class=\"ui-grid-a\">\n" +
+	    			"		<div class=\"ui-block-a\">\n" +
+	    			"    		<input type=\"submit\" name=\"check"+checkCount+"_yes\" value=\"YES\" data-theme=\"a\">\n" +
+	    			"		</div>\n" +
+	    			"		<div class=\"ui-block-b\">\n" +
+	    			"    		<input type=\"submit\" name=\"check"+checkCount+"_no\" value=\"NO\" data-theme=\"a\">\n" +
+	    			"		</div>\n" +
+	    			"	</div>\n" +
+					"</form>\n" +
+					"\n" +
+					//"<div id=\"Check"+checkCount+"_text0\" data-role=\"none\"><!-- 結果 --></div>\n" +
+					//"\n" +
+					"<script type=\"text/javascript\">\n" +
+					"function Check"+checkCount+"_echo1(str){\n" +
+					"  $.dynamic_popup(str);\n" +
+					"}\n" +
+					"</script>\n" +
+					"<!-- Check"+checkCount+" end -->\n";
+	    	
+	    	HTMLEnv.PHP += 
+	    			"<?php\n" +
+					"//Check"+checkCount+"\n" +
+					"if($_POST['check"+checkCount+"_yes'] || $_POST['check"+checkCount+"_no']){\n" +
+					"	$ans = '"+ans+"';\n" +
+					"	if($_POST['check"+checkCount+"_yes'] && $ans=='"+yes+"')\n" +
+					"		check"+checkCount+"_p1(\"<h2>結果</h2><br><p><font color=goldenrod>&nbsp;&nbsp;"+correct+"&nbsp;&nbsp;</font></p>\");\n" +
+					"	else if($_POST['check"+checkCount+"_no'] && $ans=='"+no+"')\n" +
+					"		check"+checkCount+"_p1(\"<h2>結果</h2><br><p><font color=goldenrod>&nbsp;&nbsp;"+correct+"&nbsp;&nbsp;</font></p>\");\n" +
+					"	else\n" +
+					"		check"+checkCount+"_p1(\"<h2>結果</h2><br><p><font color=red>&nbsp;&nbsp;"+incorrect+"&nbsp;&nbsp;</font></p>\");\n" +
+					"}\n" +
+					"function check"+checkCount+"_p1($str){\n" +
+					"    echo '<script type=\"text/javascript\">window.parent.Check"+checkCount+"_echo1(\"'.$str.'\");</script>';\n" +
+					"}\n" +
+					"?>\n";
+    	}
+    	//type = 3
+    	else if(type.equals("3") || type.equals("choose") || type.equals("choice")){
+//    		int columnNum = 1;
+//    		if(operator.contains("|")){
+//    			columnNum = operator.length() - operator.replaceAll("\\|","").length() + 1;
+//    			//Log.info(columnNum);
+//    		}
+    		String[] sbuf = new String[ operator.length() - operator.replaceAll("\\|","").length() + 1 ];
+    		String operator2 = operator + "|";
+    		int columnNum = 0;
+    		while(operator2.contains("|")){
+    			sbuf[columnNum] = operator2.substring(0, operator2.indexOf("|"));
+    			operator2 = operator2.substring(operator2.indexOf("|")+1);
+    			//Log.i("sbuf["+columnNum+"] = "+sbuf[columnNum]);
+    			columnNum++;
+    		}
+    		
+    		
+	    	statement += 
+	    			"<!-- Check"+checkCount+" start -->\n" +
+	    			"<form method=\"post\" action=\"\" target=\"dummy_ifr\">\n" +
+	    			"   <div data-role=\"controlgroup\">\n";
+//	    			"	<div data-role=\"fieldcontain\">\n" +
+//	    			"		<fieldset data-role=\"controlgroup\" style=\"width:100%;\">\n";
+	    	for(int i=0;i<columnNum;i++){
+		    	statement += 	
+		    			"    		<input type=\"radio\" name=\"check"+checkCount+"_choose\" id=\"check"+checkCount+"_choose"+(i+1)+"\" value=\""+sbuf[i]+"\""+( (i<1)? (" checked=\"checked\""):("") )+">\n" +
+		    			"    		<label for=\"check"+checkCount+"_choose"+(i+1)+"\">"+sbuf[i]+"</label>\n";
+		    			//"    		<input type=\"radio\" name=\"check"+checkCount+"_choose\" value=\""+sbuf[i]+"\""+( (i<1)? (" checked"):("") )+">"+sbuf[i]+"\n";
+	    	}
+	    			
+	    	statement += 
+	    			//"		</fieldset>\n" +
+   					"	</div>\n" +
+					"   <input type=\"submit\" value=\"Check&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\" name=\"check"+checkCount+"\" id=\"check"+checkCount+"\" data-icon=\"question\" data-mini=\"false\" data-inline=\"false\">\n" +
+					"</form>\n" +
+					"\n" +
+					//"<div id=\"Check"+checkCount+"_text0\" data-role=\"none\"><!-- 結果 --></div>\n" +
+					//"\n" +
+					"<script type=\"text/javascript\">\n" +
+					"function Check"+checkCount+"_echo1(str){\n" +
+					"  $.dynamic_popup(str);\n" +
+					"}\n" +
+					"</script>\n" +
+					"<!-- Check"+checkCount+" end -->\n";
+	    	
+	    	HTMLEnv.PHP += 
+	    			"<?php\n" +
+					"//Check"+checkCount+"\n" +
+					"if($_POST['check"+checkCount+"']){\n" +
+					"	if($_POST['check"+checkCount+"_choose']==\""+ans+"\")\n" +
+					"		check"+checkCount+"_p1(\"<h2>結果</h2><br><p><font color=goldenrod>&nbsp;&nbsp;"+correct+"&nbsp;&nbsp;</font></p>\");\n" +
+					"	else\n" +
+					"		check"+checkCount+"_p1(\"<h2>結果</h2><br><p><font color=red>&nbsp;&nbsp;"+incorrect+"&nbsp;&nbsp;</font></p>\");\n" +
+					"}\n" +
+					"function check"+checkCount+"_p1($str){\n" +
+					"    echo '<script type=\"text/javascript\">window.parent.Check"+checkCount+"_echo1(\"'.$str.'\");</script>';\n" +
+					"}\n" +
+					"?>\n";
+    	}
+    	
+    	
+    	// 各引数毎に処理した結果をHTMLに書きこむ
+    	html_env.code.append(statement);
+    	
+    	checkCount++;
+    	return;
+    }
+    //check end
+    
+
+    //added by goto 20130519 start  "moveto"
+    /*  moveto(url, sec)  */
+    /*  moveto(title, url, sec)  */
+    private void Func_moveto() {
+    	String statement = "\n";
+    	String url = "";
+    	String sec = "";
+    	String title = "";
+    	try{
+			url = ((FuncArg) this.getArgs().get(0)).getStr();
+    		sec = ((FuncArg) this.getArgs().get(1)).getStr();
+    		
+        	try{						//引数3つ　→　入れ替える
+        		String buf = sec;
+        		sec = ((FuncArg) this.getArgs().get(2)).getStr();
+        		title = url;
+        		url = buf;
+        	}catch(Exception e){ }		//引数2つ
+    	}catch(Exception e){
+    		Log.info("<Warning> moveto関数の引数が不足しています。 ex. moveto(url, sec) or moveto(title, url, sec)");
+    		return;
+    	}
+    	
+    	//movetoFlg  下記は、header()内でappendされる
+    	//<meta http-equiv="refresh" content="3; URL=http://ssql.db.ics.keio.ac.jp/mdemo/list.html">
+    	movetoFlg += "<meta http-equiv=\"refresh\" content=\""+sec+"; URL="+url+"\">";
+    	
+    	//3秒後にDEMO listのページへ移動します。<br>
+    	//自動的に移動しない場合は、<a href="http://ssql.db.ics.keio.ac.jp/mdemo/list.html" target="_self">こちら</a>をクリックしてください。
+    	statement += sec+"秒後に"+((!title.equals(""))? (title+"へ"):(""))+"移動します。<br>\n";
+    	statement += "自動的に移動しない場合は、<a href=\""+url+"\" target=\"_self\">こちら</a>をクリックしてください。\n";
+    	
+    	// 各引数毎に処理した結果をHTMLに書きこむ
+    	html_env.code.append(statement);
+    	return;
+    }
+    //added by goto 20130519 end
+    
+    
+    //added by goto 20130603 start  "$session"
+    /*  $session("SESSION関数(第3引数)でセッション変数へ格納した属性")  */
+    /*  $session("name")など  */
+    private void Func_$session() {
+    	if(!SSQLparser.sessionFlag){
+    		Log.info("<Warning> $session関数は、SESSION()使用時のみ使用可能です。");
+    	}else{
+	    	String statement = "\n";
+	    	String attribute = "";
+	    	try{
+	    		attribute = ((FuncArg) this.getArgs().get(0)).getStr();
+	    	}catch(Exception e){
+	    		Log.info("<Warning> $session関数の引数が不足しています。 ex. $session(\"name\")");
+	    		return;
+	    	}
+	    	statement += "EOF;\n" +
+	    			"		echo $_SESSION["+attribute+"];\n" +
+	    			"		echo <<<EOF\n";
+	    	// 各引数毎に処理した結果をHTMLに書きこむ
+	    	html_env.code.append(statement);
+    	}
+    	return;
+    }
+    //$session end
+    
+    //added by goto 20130607 start  "time,date"
+    /*  time(),date(),time("Y-m-d")など  */
+    private void Func_time() {
+		String statement = "\n";
+		String format = "";
+		try{
+			format = ((FuncArg) this.getArgs().get(0)).getStr();
+		}catch(Exception e){ }
+		statement += "EOF;\n" +
+				"		echo date(\""+( (format.equals(""))? ("Y/m/d(D) H:i:s"):(format) )+"\");\n" +		//第二引数のデフォルト値:time()		//"		echo date(\"Y/m/d(D) H:i:s\", time());\n" +
+				"		echo <<<EOF\n";
+		// 各引数毎に処理した結果をHTMLに書きこむ
+		html_env.code.append(statement);
+    	return;
+    }
+    //time end
+    
+    //added by goto 20130717  "map"
+    /*  map(geolocation, zoom, icon)  */
+    /*  search_map(zoom, icon)  */
+    /*  geolocation: 住所(address) or 緯度,経度(latitude,longitude)  */
+    private void Func_map(boolean searchFlg) {
+    	String statement = "\n";
+    	String geolocation = "";
+    	String zoom = "";
+    	String icon = "";
+    	try{
+    		if(!searchFlg){
+    			//map()
+	    		geolocation = ((FuncArg) this.getArgs().get(0)).getStr().trim();
+	    		try{
+	    			zoom = ((FuncArg) this.getArgs().get(1)).getStr().trim();
+	    			try{
+	        			icon = ((FuncArg) this.getArgs().get(2)).getStr().trim();
+	        		}catch(Exception e){ }
+	    		}catch(Exception e){ }
+    		}else{
+    			//search_map()
+    			zoom = ((FuncArg) this.getArgs().get(0)).getStr().trim();
+	    		try{
+	    			icon = ((FuncArg) this.getArgs().get(1)).getStr().trim();
+	    		}catch(Exception e){ }
+    		}
+    	}catch(Exception e){
+    		if(!searchFlg){
+    			System.err.println("<Warning> map関数の引数が不足しています。 ex. map(geolocation, zoom, icon)");
+    			return;
+    		}
+    	}
+    	
+    	if(searchFlg){
+	    	statement += 
+	    			"		<form method=\"post\" action=\"\" target=\"dummy_ifr\">\n" +
+					"    		<input type=\"search\" id=\"search_map_words"+mapFuncCount+"\" placeholder=\"住所など\">\n" +
+					"    		<input type=\"submit\" value=\"地図を表示&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\" id=\"search_map"+mapFuncCount+"\" data-icon=\"search\" data-mini=\"false\" data-inline=\"false\">\n" +
+					"		</form>\n";
+    	}
+    	statement += 
+    			"		<script src=\"http://maps.google.com/maps/api/js?sensor=false&libraries=geometry\"></script>\n" +
+				"		<script type=\"text/javascript\">\n" +
+				"		<!--\n";
+    	if(!searchFlg)	statement += "$(document).on(\"pageinit\", \"#p-top1\", function(e) {\n";
+    	else			statement += "$(\"#search_map"+mapFuncCount+"\").click(function () {\n";
+    	statement += 
+				"  	var map = null; // Google Map\n" +
+				"    $(\"#map"+mapFuncCount+"\").remove();	// 地図をクリア\n" +
+				//"    $(\"#map-wrapper"+mapFuncCount+"\").append('<div id=\"map"+mapFuncCount+"\" style=\"width: 100%; height: 250px;\"></div>'); // 地図を作成\n" +
+				"    $(\"#map-wrapper"+mapFuncCount+"\").append('<div id=\"map"+mapFuncCount+"\"" +
+						" style=\"width: 100%; height: "+( (!decos.containsKey("height"))? ("250px"):(decos.getStr("height")) )+";\"></div>'); // 地図を作成\n" +
+				"      \n";
+    	if(!searchFlg)	statement += "    var sad = \""+geolocation+"\";\n";
+    	else			statement += "    var sad = $(\"#search_map_words"+mapFuncCount+"\").val();\n";
+		statement += 
+				"    var geocoder = new google.maps.Geocoder();\n" +
+				"    geocoder.geocode({'address': sad}, function(results, status) {\n" +
+				"      if (status == google.maps.GeocoderStatus.OK) {\n" +
+				"	      var mapOptions = {\n" +
+				//"	        zoom: 17, // ズーム倍率\n" +
+				"        	zoom: " + ((zoom.equals(""))? ("17"):(zoom)  ) + ", // ズーム倍率\n" +
+				"	        center: results[0].geometry.location,\n" +
+				"	        mapTypeId: google.maps.MapTypeId.ROADMAP // 地図の種類(市街地図)\n" +
+				"	      };\n" +
+				"	      map = new google.maps.Map(document.getElementById(\"map"+mapFuncCount+"\"),mapOptions);\n" +
+				"      	  new google.maps.Marker({map : map, position : results[0].geometry.location" + ((icon.equals(""))? (""):(", icon : '"+icon+"'")  ) + "}); //\n" +
+				//"	      new google.maps.Marker({map : map, position : results[0].geometry.location});\n" +
+				"      } else {\n" +
+				//"      	  alert('場所を特定できませんでした。入力内容をご確認ください。');\n" +
+				"      	  $(\"#map"+mapFuncCount+"\").text('場所を特定できませんでした。');\n" +
+				"      }\n" +
+				"    });\n" +
+				"});\n" +
+				"		// -->\n" +
+				"		</script>\n" +
+				"		\n" +
+				"		<div id=\"map-wrapper"+mapFuncCount+"\"></div>";
+    	
+    			mapFuncCount++;
+
+    	
+//    			"		<script src=\"http://maps.google.com/maps/api/js?sensor=false&libraries=geometry\"></script>\n" +
+//				"		<script type=\"text/javascript\">\n" +
+//				"		<!--\n" +
+//				"$(document).on(\"pageinit\", \"#p-top1\", function(e) {\n" +
+//				"  	var Position = null; // 位置\n" +
+//				"  	var map = null; // Google Map\n" +
+//				"    navigator.geolocation.getCurrentPosition(function(pos) {\n" +
+//				"      $(\"#map\").remove();	// 地図をクリア\n" +
+//				//"      Position = new google.maps.LatLng(34.2242935279642, 132.879638671875); // 位置を表示\n" +
+//				"      Position = new google.maps.LatLng("+geolocation+"); // 位置を表示\n" +
+//				"      $(\"#map-wrapper\").append('<div id=\"map\" style=\"width: 100%; height: 250px;\"></div>'); // 地図を作成\n" +
+//				"      var mapOptions = {\n" +
+//				//"        zoom: 17, // ズーム倍率\n" +
+//				"        zoom: " + ((zoom.equals(""))? ("17"):(zoom)  ) + ", // ズーム倍率\n" +
+//				"        center: Position,\n" +
+//				"        mapTypeId: google.maps.MapTypeId.ROADMAP // 地図の種類(市街地図)\n" +
+//				"      };\n" +
+//				"      map = new google.maps.Map(document.getElementById(\"map\"),mapOptions);\n" +
+//				//"      new google.maps.Marker({map : map, position : Position}); //\n" +
+//				"      new google.maps.Marker({map : map, position : Position" + ((icon.equals(""))? (""):(", icon : '"+icon+"'")  ) + "}); //\n" +
+//				"    }, function(e) {\n" +
+//				"      alert(e.message);\n" +
+//				"    }, geolocationOptions);\n" +
+//				"});\n" +
+//				"		// -->\n" +
+//				"		</script>\n" +
+//				"		\n" +
+//				"		<div id=\"map-wrapper\"></div>";
+    	
+    	// 各引数毎に処理した結果をHTMLに書きこむ
+    	html_env.code.append(statement);
+    	return;
+    }
+    //map end
+    
+    //added by goto 20130717  "gps,gps_map"
+    /*  gps(type,icon) or gps_map(type,icon)  */
+    /*  type:1 map  */
+    /*  type:2 map + button */
+    private void Func_gps() {
+		String statement = "\n";
+		String type = "";
+		String zoom = "";
+		String icon = "";
+		try{
+			type = ((FuncArg) this.getArgs().get(0)).getStr().trim();
+			try{
+				zoom = ((FuncArg) this.getArgs().get(1)).getStr().trim();
+				try{
+					icon = ((FuncArg) this.getArgs().get(2)).getStr().trim();
+				}catch(Exception e){ }
+			}catch(Exception e){ }
+		}catch(Exception e){ }
+
+		statement += 
+				"		<script src=\"http://maps.google.com/maps/api/js?sensor=false&libraries=geometry\"></script>\n" +
+				"		<script type=\"text/javascript\">\n" +
+				"		<!--\n" +
+				"$(document).on(\"pageinit\", \"#p-top1\", function(e) {\n" +
+				"  // Geolocation APIのオプション設定\n" +
+				"  var geolocationOptions = {\n" +
+				"    \"enableHighAccuracy\" : true, // 高精度位置情報の取得\n" +
+				"    \"maximumAge\" : 0, // キャッシュの無効化\n" +
+				"    \"timeout\" : 30000 // タイムアウトは30秒\n" +
+				"  };\n" +
+				"  var Position = null; // 開始位置\n" +
+				"\n" +
+				"  var map = null; // Google Map\n";
+		if(type.equals("2")){
+			statement += 
+				"  // 移動開始ボタンクリック時の処理\n" +
+				"  $(this).on(\"click\", \"#gps_button\", function(e) {\n" +
+				"    $(\"#gps_button\").addClass(\"ui-disabled\"); 	// ボタンの無効化\n";
+		}
+		statement += 
+				"    navigator.geolocation.getCurrentPosition(function(pos) {\n" +
+				"      // 画面上の経度、緯度、距離、地図をクリア //\n" +
+				"      $(\"[id=gps_latitude]\").html(\"\");\n" +
+				"      $(\"[id=gps_longitude]\").html(\"\");\n" +
+				"      $(\"#gps_map\").remove();\n" +
+				"      // 位置を表示 //\n" +
+				"      $(\"[id=gps_latitude]\").html(pos.coords.latitude);\n" +
+				"      $(\"[id=gps_longitude]\").html(pos.coords.longitude);\n" +
+				"      Position = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude); //\n" +
+				"      // 地図を作成 //\n" +
+				"      $(\"#gps_map-wrapper\").append('<div id=\"gps_map\" style=\"width: 100%; height: 250px;\"></div>'); //\n" +
+				"      var mapOptions = {\n" +
+				"        zoom: " + ((zoom.equals(""))? ("17"):(zoom)  ) + ", // ズーム倍率\n" +
+				"        center: Position,\n" +
+				"        mapTypeId: google.maps.MapTypeId.ROADMAP // 地図の種類(市街地図)\n" +
+				"      };\n" +
+				"      map = new google.maps.Map(document.getElementById(\"gps_map\"),mapOptions);\n" +
+				"      new google.maps.Marker({map : map, position : Position" + ((icon.equals(""))? (""):(", icon : '"+icon+"'")  ) + "}); //\n" +
+				//"      //new google.maps.Marker({map : map, position : Position, icon : 'star6.gif'}); // \n" +
+				"    }, function(e) {\n" +
+				"      alert(e.message);\n" +
+				"    }, geolocationOptions);\n";
+		if(type.equals("2"))
+			statement += 
+				"    $(\"#gps_button\").removeClass(\"ui-disabled\"); // ボタンの有効化\n" +
+				"  });\n";
+		statement +=
+				"});\n" +
+				"		// -->\n" +
+				"		</script>\n" +
+				"		\n";
+		if(type.equals("2")){
+			statement += 
+				"		<div>\n" +
+				"			<a href=\"#\" data-role=\"button\" data-icon=\"home\" id=\"gps_button\">現在地を表示</a>\n" +
+				"		</div>\n";
+		}
+		statement +=
+				"		<div id=\"gps_map-wrapper\"></div>\n" +
+				"\n";
+//				"		<ul data-role=\"listview\" data-inset=\"true\">\n" +
+//				"			<li>緯度:&nbsp;<span id=\"gps_latitude\"></span></li>\n" +
+//				"			<li>経度:&nbsp;<span id=\"gps_longitude\"></span></li>\n" +
+//				"		</ul>";
+		
+		// 各引数毎に処理した結果をHTMLに書きこむ
+		html_env.code.append(statement);
+    	return;
+    }
+    //gps end
+    //added by goto 20130717  "gps_info"
+    /*  gps_info()  */
+    private void Func_gps_info() {
+    	String statement = "\n";
+//		String format = "";
+//		try{
+//			format = ((FuncArg) this.getArgs().get(0)).getStr();
+//		}catch(Exception e){ }
+    	statement += 
+    			"		<script src=\"http://maps.google.com/maps/api/js?sensor=false&libraries=geometry\"></script>\n" +
+				"		<script type=\"text/javascript\">\n" +
+				"		<!--\n" +
+				"$(document).on(\"pageinit\", \"#p-top1\", function(e) {\n" +
+				"  	// Geolocation APIのオプション設定\n" +
+				"  	var geolocationOptions = {\n" +
+				"    	\"enableHighAccuracy\" : true, // 高精度位置情報の取得\n" +
+				"    	\"maximumAge\" : 0, // キャッシュの無効化\n" +
+				"    	\"timeout\" : 30000 // タイムアウトは30秒\n" +
+				"  	};\n" +
+				"    navigator.geolocation.getCurrentPosition(function(pos) {\n" +
+				"      	// 経度、緯度を表示 //\n" +
+				"      	$(\"[id=gps_latitude]\").html(pos.coords.latitude);\n" +
+				"      	$(\"[id=gps_longitude]\").html(pos.coords.longitude);\n" +
+				"    }, function(e) {\n" +
+				"      	alert(e.message);\n" +
+				"    }, geolocationOptions);\n" +
+				"});\n" +
+				"		// -->\n" +
+				"		</script>" +
+				"		<ul data-role=\"listview\" data-inset=\"true\">\n" +
+				"			<li>緯度:&nbsp;<span id=\"gps_latitude\"></span></li>\n" +
+				"			<li>経度:&nbsp;<span id=\"gps_longitude\"></span></li>\n" +
+				"		</ul>";
+    	
+    	// 各引数毎に処理した結果をHTMLに書きこむ
+    	html_env.code.append(statement);
+    	return;
+    }
+    //gps_info end
+    
+    //added by goto 20130914  "audio"
+    /*  audio("HTML・画像・動画ファイル等のファイル名")  */
+    private void Func_audio() {
+//    	String classID = HTMLEnv.getClassID(this);
+//    	HTMLManager.replaceCode(html_env, classID, "");		//直前の<div>に書き込まれているclassIDを削除
+    	
+    	String str = "";
+    	try{
+    		str = ((FuncArg) this.getArgs().get(0)).getStr();
+    	}catch(Exception e){ }
+    	
+    	// 各引数毎に処理した結果をHTMLに書きこむ
+    	html_env.code.append("<audio src=\""+str+"\" controls>\n");
+    	return;
+    }
+    //audio end
+    
+    //added by goto 20130914  "movie"
+    /*  movie("HTML・画像・動画ファイル等のファイル名")  */
+    private void Func_movie() {
+    	String classID = HTMLEnv.getClassID(this);
+    	HTMLManager.replaceCode(html_env, classID, "");		//直前の<div>に書き込まれているclassIDを削除
+    	
+    	String str = "";
+    	try{
+    		str = ((FuncArg) this.getArgs().get(0)).getStr();
+    	}catch(Exception e){ }
+    	
+    	// 各引数毎に処理した結果をHTMLに書きこむ
+//    	html_env.code.append("<video src=\""+str+"\" class=\"" + classID +"\">\n</video>\n");
+//    	html_env.code.append("<video src=\""+str+"\" class=\"" + classID +"\" controls>\n</video>\n");
+    	html_env.code.append("<video src=\""+str+"\" class=\"" + classID +"\" preload=\"none\" onclick=\"this.play()\" controls>\n</video>\n");
+//    	html_env.code.append("<video src=\""+str+"\" class=\"" + classID +"\" poster=\"XXX.jpg\" preload=\"none\" onclick=\"this.play()\" controls>\n</video>\n");
+    	return;
+    }
+    //movie end
+    
+    //added by goto 20130914  "object"
+    /*  object("file name")  */
+    /*  object("HTML・PDF・FLASH・画像・動画・PHP・JSファイル等のファイル名")  */
+    private void Func_object(String path) {
+    	String classID = HTMLEnv.getClassID(this);
+
+    	//not @{table}
+    	if(!decos.containsKey("table") && !HTMLC1.table0Flg && !HTMLC2.tableFlg && !HTMLG1.tableFlg && !HTMLG2.tableFlg)
+    		HTMLManager.replaceCode(html_env, classID, "");		//直前の<div>に書き込まれているclassIDを削除
+    	
+    	if(path.equals("")){
+			try{
+				path = ((FuncArg) this.getArgs().get(0)).getStr().trim();
+			}catch(Exception e){ }
+    	}
+    	
+    	// 各引数毎に処理した結果をHTMLに書きこむ
+		if(path.endsWith(".php")){	//.php file
+			BufferedReader in;
+			try{
+				in = new BufferedReader(new InputStreamReader(new FileInputStream(path), "UTF-8"));
+				String line = null;
+				while (true){
+					line = in.readLine();
+					if (line == null)	break;
+					else html_env.code.append(line+"\n");
+				}
+			}catch(Exception e){
+				System.err.println("<Warning> Can't open '"+path+"'.");
+			}
+		}else if(path.endsWith(".js"))	//.js file
+			html_env.code.append("<script type=\"text/javascript\" src=\""+path+"\">\n</script>\n");
+		else	//.html, .pdf, .swf, .gif, .mp4, etc.
+			html_env.code.append("<object data=\""+path+"\" class=\"" + classID +"\" >\n</object>\n");
+    	return;
+    }
+    //object end
+    
+	//added by goto 20130914  "SEQ_NUM"
+    /*  SEQ_NUM( [Start number [, ASC or DESC] ] )  */
+    private void Func_seq_num() {
+    	String classID = HTMLEnv.getClassID(this);
+    	int i;
+    	for(i=0; i<seq_num_ClassID.size()+1; i++){
+    		try{
+		    	if(classID.equals(seq_num_ClassID.get(i)))
+		    		break;
+    		}catch(Exception e1){
+	    		seq_num_ClassID.add(i, classID);
+				try{
+					//第一引数
+					seq_num.add(i, Integer.parseInt(getValue(1)));
+					//第二引数
+					if(getValue(2).toLowerCase().trim().equals("desc"))	DESC_Flg.add(i, true);
+					else												DESC_Flg.add(i, false);
+				}catch(Exception e2){
+					seq_num.add(i, 1);			//default
+					DESC_Flg.add(i, false);		//default
+				}
+				break;
+    		}
+    	}
+    	
+    	// 各引数毎に処理した結果をHTMLに書きこむ
+    	html_env.code.append(""+((!DESC_Flg.get(i))? (seq_num.get(i)):(seq_num.get(i))));
+    	if(!DESC_Flg.get(i))	seq_num.set(i,seq_num.get(i)+1);
+    	else					seq_num.set(i,seq_num.get(i)-1);
+    	return;
+    }
+    //seq_num end
+
+	//added by goto 20130914  "text"
+    /*  text("#TextLabel_" + Number)  */
+    private void Func_text() {
+    	html_env.code.delete(html_env.code.lastIndexOf("<"),html_env.code.lastIndexOf(">")+1);	//delete last <div class="">
+    	//TODO: 改行コード削除
+    	textFlg = true;
+    	
+    	String str = "";
+    	int textNum = -1;
+		try{
+			//第一引数
+			str = ((FuncArg) this.getArgs().get(0)).getStr();
+			if(str.startsWith("#TextLabel_"))
+				textNum = Integer.parseInt( str.substring("#TextLabel_".length()) );
+			str = SSQLparser.textString.get(textNum);
+		}catch(Exception e){ }
+    	
+    	// 各引数毎に処理した結果をHTMLに書きこむ
+    	html_env.code.append(str);
+    	return;
+    }
+    //text end
+    
     private void Func_null() {
         return;
     }
-    
-    
 
+    
     //added by chie 2009 func form submit
     private void Func_submit() {
     	String form = new String();
@@ -806,16 +3077,16 @@ public class HTMLFunction extends Function {
         return;
     }
 
-  //added by chie 2009 func form select
-    private void Func_select() {
-        if(!this.getAtt("selected").equals("")){
-        	HTMLEnv.setSelected(this.getAtt("selected"));
-        }
-
-		Func_FormCommon("select");
-
-        return;
-    }
+//  //added by chie 2009 func form select
+//    private void Func_select() {
+//        if(!this.getAtt("selected").equals("")){
+//        	HTMLEnv.setSelected(this.getAtt("selected"));
+//        }
+//
+//		Func_FormCommon("select");
+//
+//        return;
+//    }
   //added by chie 2009 func form checkbox
     private void Func_checkbox() {
 		Func_FormCommon("checkbox");
@@ -1109,6 +3380,13 @@ public class HTMLFunction extends Function {
 
     //tk start//////////////////////////////////////////////////////////////////////////////
     private void Func_embed(ExtList data_info){
+    	//goto 20130917
+		try{
+			Func_object( ((FuncArg) this.getArgs().get(0)).getStr().trim() );	//if embed("file name")
+			return;
+		}catch(Exception e){ }
+		
+    	
     	String file = this.getAtt("file");
     	String where = this.getAtt("where");
     	String att = this.getAtt("att");
@@ -1502,6 +3780,7 @@ public class HTMLFunction extends Function {
             				file = file.substring(1,file.length());
             			}
             			Log.out("embed file (html):"+path+file);
+            				//TODO
 	            			if(path.startsWith("http:")){
 	            				URL fileurl = new URL(path + file);
 	                    		URLConnection fileurlConnection = fileurl.openConnection();
@@ -1546,7 +3825,7 @@ public class HTMLFunction extends Function {
                		Log.out("line : "+line);
                		line = dis.readLine();
                		if(!line.equalsIgnoreCase("</body>")){
-               			html_env.code.append(line);
+               			html_env.code.append(line+"\n");
                	        if(line.contains("&"))
                	        	line = line.replace("&", "&amp;");
                			if(line.contains("<"));
@@ -1784,5 +4063,22 @@ public class HTMLFunction extends Function {
     	}
     	return s;
     }
-
+    
+    //20130920
+    private String getValue(int x) {
+		try{
+			String str = ((FuncArg) this.getArgs().get(x-1)).getStr();	//第x引数
+			if(!str.equals(""))	return str;
+			else				return "";
+		}catch(Exception e){
+			return "";
+		}
+    }
+    private int getIntValue(int x) {
+		try{
+			return Integer.parseInt(getValue(x));
+		}catch(Exception e){
+			return Integer.MIN_VALUE;
+		}
+    }
 }

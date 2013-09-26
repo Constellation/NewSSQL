@@ -95,4 +95,10 @@ public class Log {
 		out(o);
 	}
 	
+	public static void err(Object o) {
+		System.err.println(o.toString());
+	}
+	public static void e(Object o) {
+		err(o);
+	}
 }

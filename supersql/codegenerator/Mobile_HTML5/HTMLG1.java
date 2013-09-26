@@ -1,5 +1,7 @@
 package supersql.codegenerator.Mobile_HTML5;
 
+import java.io.File;
+
 import supersql.codegenerator.Grouper;
 import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
@@ -15,16 +17,25 @@ public class HTMLG1 extends Grouper {
     
     //20130309
     static int gridInt = 0;
-    String[] gridString = {"a","b","c","d","e"};
+//    String[] gridString = {"a","b","c","d","e"};
     static int ii =0, jj = 0, Count = 0;
     //int ii =0, jj = 0, Count = 0;
     static boolean G1Flg=false;
-    int pic_column = 3;		//1行ごとのカラム数指定 (Default: 3, range: 2〜5)
+    int numberOfColumns = 0;		//1行ごとのカラム数 (range: 2〜)
+    int table_column_num = 0;		//20130917  [ ],10@{table}
     
     static boolean tableFlg = false;		//20130314  table
     static boolean table0Flg = false;		//20130325  table0
     static boolean divFlg = false;			//20130326  div
 
+    //added by goto 20130413  "row Prev/Next"
+    int j = 1;
+    int row = 1;		//1ページごとの行数指定 (Default: 1, range: 1〜)
+    int rowNum = 0;
+    //static int rowFileNum = 1;
+    boolean rowFlg = false;
+    StringBuffer codeBuf = new StringBuffer();
+    
     static String classid = "" ;
     
     //���󥹥ȥ饯��
@@ -39,6 +50,47 @@ public class HTMLG1 extends Grouper {
     @Override
 	public void work(ExtList data_info) {
         int panelFlg = 0;	//20130503  Panel
+        
+        //1行ごとのカラム数 (range: 2〜)
+        boolean columnFlg = false;
+    	if(tableFlg)	numberOfColumns = -1;	//@{table}時のDefault	//20130917  [ ],10@{table}
+    	else			numberOfColumns = data_info.contain_itemnum();	//div
+    	if(decos.containsKey("column")){
+        	try{
+            	numberOfColumns = Integer.parseInt(decos.getStr("column").replace("\"", ""));
+            	if(numberOfColumns<2){
+            		Log.err("<<Warning>> column指定の範囲は、2〜です。指定された「column="+numberOfColumns+"」は使用できません。");
+	            	if(tableFlg)	numberOfColumns = -1;							//20130917  [ ],10@{table}
+	            	else			numberOfColumns = data_info.contain_itemnum();	//div
+            	}else columnFlg = true;
+        	}catch(Exception e){ }
+        }
+        
+    	//added by goto 20130413  "row Prev/Next"
+    	//1ページごとの行数指定 (Default: 1, range: 1〜)
+    	String parentfile = null;
+        String parentnextbackfile = null;
+        StringBuffer parentcode = null;
+        StringBuffer parentcss = null;
+        StringBuffer parentheader = null;
+        StringBuffer parentfooter = null;
+        if(decos.containsKey("row") && columnFlg){
+        	row = Integer.parseInt(decos.getStr("row").replace("\"", ""));
+        	if(row<1){	//範囲外のとき
+        		Log.err("<<Warning>> row指定の範囲は、1〜です。指定された「row="+row+"」は使用できません。");
+        	}else{
+            	parentfile = html_env.filename;
+                parentnextbackfile = html_env.nextbackfile;
+                parentcode = html_env.code;
+                parentcss = html_env.css;
+                parentheader = html_env.header;
+                parentfooter = html_env.footer;
+    	        html_env.css = new StringBuffer();
+    	        html_env.header = new StringBuffer();
+    	        html_env.footer = new StringBuffer();
+            	rowFlg = true;
+        	}
+        }
     	
         Log.out("------- G1 -------");
         this.setDataList(data_info);
@@ -73,6 +125,13 @@ public class HTMLG1 extends Grouper {
     		divFlg = true;
     		tableFlg = false;
     	}//else divFlg = false;
+        
+        //20130529
+        if(decos.containsKey("dynamic")){
+        	if(!HTMLEnv.dynamicFlg)	HTMLEnv.staticBuf = html_env.code;
+        	HTMLEnv.dynamicFlg = true;
+        	Log.i("※G1 HTMLEnv.staticBuf: "+HTMLEnv.staticBuf);
+        }
         
         if(!GlobalEnv.isOpt()){
         	//20130503  Panel
@@ -165,77 +224,26 @@ public class HTMLG1 extends Grouper {
         	//if(!tableFlg) 	html_env.code.append("	<DIV Class=\"ui-grid-a\">");
         	if(!tableFlg){
         		if(html_env.written_classid.contains(HTMLEnv.getClassID(this)))
-        			html_env.code.append("\n<DIV Class=\"ui-grid-a ##"+HTMLEnv.uiGridCount2+" "+HTMLEnv.getClassID(this)+"\"");
+        			html_env.code.append("\n<DIV Class=\"ui-grid ##"+HTMLEnv.uiGridCount2+" "+HTMLEnv.getClassID(this)+"\"");
+//	        		html_env.code.append("\n<DIV Class=\"ui-grid-a ##"+HTMLEnv.uiGridCount2+" "+HTMLEnv.getClassID(this)+"\"");
         		else
-        			html_env.code.append("\n<DIV Class=\"ui-grid-a ##"+HTMLEnv.uiGridCount2+"\"");
+        			html_env.code.append("\n<DIV Class=\"ui-grid ##"+HTMLEnv.uiGridCount2+"\"");
+//        			html_env.code.append("\n<DIV Class=\"ui-grid-a ##"+HTMLEnv.uiGridCount2+"\"");
         		html_env.code.append(">\n");
         		HTMLEnv.uiGridCount2++;
         	}
-        	//html_env.code.append("	<DIV Class=\"ui-grid-a #"+HTMLEnv.uiGridCount+"\"");
-            		//HTMLEnv.uiGridCount++;
-            		//Log.info("ui-grid-"+HTMLEnv.uiGridCount);
-        	
-            //1行ごとのカラム数指定 (Default: 3, range: 2〜5)
-            //int pic_column = 3;		
-            if(decos.containsKey("column") && !tableFlg){
-            	//Log.info("column:"+decos.getStr("column").replace("\"", ""));
-            	pic_column = Integer.parseInt(decos.getStr("column").replace("\"", ""));
-            	if(pic_column<2 || pic_column>5){	//範囲外のとき
-            		Log.info("<<Warning>> column指定の範囲は、2〜5です。指定された「column="+pic_column+"」は使用できません。デフォルト値(3)を使用します。");
-            		pic_column = 3;
-            	}
-            }
             
             //20130314  table
             if(tableFlg){
             	//added by goto 20130318  横スクロール
-            	html_env.code.append("<div style=\"overflow:auto;\">\n");
+            	if(numberOfColumns < 0)	html_env.code.append("<div style=\"overflow:auto;\">\n");	//20130917  [ ],10@{table}
             	//html_env.code.append("<div style=\"height:60px; width:0px; overflow:auto;\">\n");
             	
-            	html_env.code.append("<TABLE width=\"100%\" cellSpacing=\"0\" cellPadding=\"0\" border=\"");
-            	//html_env.code.append("<TABLE width=\"100%\" align=\"center\" cellSpacing=\"0\" cellPadding=\"0\" border=\"");
-		        //html_env.code.append("<TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
-		        //html_env.code.append(((!decos.containsKey("table0"))? html_env.tableborder : "0") + "\"");
-        		if(table0Flg)	html_env.code.append("0" + "\"");	//20130325 table0
-	        	else			html_env.code.append(html_env.tableborder + "\"");
-//		        html_env.code.append(html_env.tableborder + "\"");
-		        
-	        	//classid������Ȥ��ˤ�������
-	        	if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
-	        		html_env.code.append(" class=\"");
-	        		html_env.code.append(HTMLEnv.getClassID(this));
-	        	}
-	        	if(decos.containsKey("class")){
-	        		if(!html_env.written_classid.contains(HTMLEnv.getClassID(this)))
-	        			html_env.code.append(" class=\"");
-	        		else
-	        			html_env.code.append(" ");
-	        		html_env.code.append(decos.getStr("class")+"\" ");
-	        	}else if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
-	        		html_env.code.append("\" ");
-	        	}
-//		        html_env.code.append(" class=\"");
-//		        if(html_env.embedflag)
-//		        	html_env.code.append("embed ");
-//		        if(decos.containsKey("outborder"))
-//		        	html_env.code.append(" noborder ");
-//		        if(decos.containsKey("class")){
-//		        	//class=menu�Ȃǂ̎w�肪��������t��
-//		        	html_env.code.append(" class=\"");
-//		        	html_env.code.append(decos.getStr("class") + " ");
-//		        }
-//		        if(html_env.haveClass == 1){
-//		        	//class=menu�Ȃǂ̎w�肪��������t��
-//		        	html_env.code.append(" class=\"");
-//		        	html_env.code.append(HTMLEnv.getClassID(this) + " ");
-//		        }
-//		        html_env.code.append("nest\"");
-//		        html_env.code.append(html_env.getOutlineMode());
-		        html_env.code.append("><TR>");
+            	if(row>1 && tableFlg)	HTMLG2.tableStartTag = HTMLC1.getTableStartTag(html_env, decos, this)+"<TR>";
+            	else					html_env.code.append(HTMLC1.getTableStartTag(html_env, decos, this)+"<TR>");
             }
         }
         //tk end//////////////////////////////////////////////////////
-        
         Log.out("<TABLE class=\""+HTMLEnv.getClassID(this) + "\"><TR>");
 
         //html_env2.code.append("<tfe type=\"connect\" dimension=\"1\" >");
@@ -250,6 +258,15 @@ public class HTMLG1 extends Grouper {
         	}
         	
             html_env.glevel++;
+            
+            //added by goto 20130413  "row Prev/Next"
+            if(rowFlg){
+            	html_env.code = new StringBuffer();
+            	html_env.countfile++;
+                html_env.filename = html_env.outfile + "_row" + HTMLG2.rowFileNum + "_" + j + ".html";
+                html_env.nextbackfile = html_env.linkoutfile + "_row" + HTMLG2.rowFileNum + "_" + j + ".html";
+                html_env.setOutlineMode();
+            }
             
 //            //おそらくXML
 //            if(GlobalEnv.isOpt()){
@@ -318,7 +335,15 @@ public class HTMLG1 extends Grouper {
             //Log.info("★G1★"+gridInt+" "+ii+" "+jj+"  "+Count+"  "+Count%5+"	"+HTMLG1.G1Flg);
 //            Count %= 5;
             //Log.info("	☆★"+gridInt+" "+ii+" "+jj+"  "+Count+"  "+Count%pic_column+"	"+HTMLG1.G1Flg);
-            Count %= pic_column;
+            Count %= numberOfColumns;
+            
+            
+        	//20130917  [ ],10@{table}
+            if(tableFlg && numberOfColumns > 1 && Count == 0){
+            	if(table_column_num>0)	html_env.code.append("</TR><TR>\n");
+            	else					table_column_num++;
+            }
+            
             
             //html_env.code.append("	<div>");
 	        //html_env.code.append("	<div class=\"ui-block-a\">");
@@ -329,7 +354,12 @@ public class HTMLG1 extends Grouper {
 //    	        html_env.code.append("	<p>\n");
 //        	}else{
         		//20130309
-    	    if(!tableFlg)   html_env.code.append("\n	<div class=\"ui-block-"+gridString[Count]+" "+HTMLEnv.getClassID(tfe)+"\">\n");
+    	    if(!tableFlg){
+    	    	float divWidth = (float)Math.floor((double)(100.0/numberOfColumns)* 1000) / 1000;
+    	    	if(Count!=0)	html_env.code.append("\n	<div class=\"ui-block"+" "+HTMLEnv.getClassID(tfe)+"\" style=\"width:"+divWidth+"%;\">\n");
+    	    	else			html_env.code.append("\n	<div class=\"ui-block"+" "+HTMLEnv.getClassID(tfe)+"\" style=\"width:"+divWidth+"%; clear:left;\">\n");
+    	    }
+//    	    if(!tableFlg)   html_env.code.append("\n	<div class=\"ui-block-"+gridString[Count]+" "+HTMLEnv.getClassID(tfe)+"\">\n");
     	    //20130314  table
     	    else{
 	            html_env.code.append("<TD class=\"" + HTMLEnv.getClassID(tfe) + " nest\">\n");       
@@ -339,7 +369,18 @@ public class HTMLG1 extends Grouper {
             //classid0 = HTMLEnv.getClassID(tfe);
             	
             //Log.out("<TD class=\"" + HTMLEnv.getClassID(tfe) + " nest\">");
-
+    	    //Log.info("tfe : " + tfe);
+            //Log.info("tfe : " + this.tfes);
+            //Log.info("tfe : " + this.tfeItems);
+    	    
+	      	
+    	    if(HTMLEnv.dynamicFlg){	//20130529 dynamic
+	      		//☆★
+	      		Log.info("★★G1-1 tfe : " + tfe);
+	    		//☆★            Log.info("G1 tfe : " + tfe);
+	            //☆★            Log.info("G1 tfes : " + this.tfes);
+	            //☆★            Log.info("G1 tfeItems : " + this.tfeItems);
+	      	}
             
             this.worknextItem();
             if(decos.containsKey("table0") || HTMLC1.table0Flg || HTMLC2.table0Flg || HTMLG2.table0Flg)	table0Flg = true;
@@ -350,6 +391,17 @@ public class HTMLG1 extends Grouper {
         		tableFlg = false;
         	}
             
+            //20130529
+            if(decos.containsKey("dynamic"))	HTMLEnv.dynamicFlg = true;
+            
+	      	
+    	    if(HTMLEnv.dynamicFlg){	//20130529 dynamic
+	      		//☆★
+	      		Log.info("★★G1-2 tfe : " + tfe);
+	    		//☆★            Log.info("G1 tfe : " + tfe);
+	            //☆★            Log.info("G1 tfes : " + this.tfes);
+	            //☆★            Log.info("G1 tfeItems : " + this.tfeItems);
+	      	}
             //20130309
             //20130314  table
         	if(tableFlg){
@@ -367,15 +419,18 @@ public class HTMLG1 extends Grouper {
 ////            if(Count>1/* && HTMLG1.G1Flg*/){
 //        	}else 
             
-            if(Count>1 && HTMLG1.G1Flg && /* !HTMLG2.G2Flg &&*/ !tableFlg){
-        		String rep="ui-grid-"+gridString[Count-2]+" ##"+(HTMLEnv.uiGridCount2-1);
-            	try{
-	            	html_env.code.replace(
-	            			html_env.code.lastIndexOf(rep), 
-	            			html_env.code.lastIndexOf(rep)+rep.length(),
-	            			"ui-grid-"+gridString[Count-1]+" ##"+(HTMLEnv.uiGridCount2++));
-            	}catch(Exception e){ /*Log.info("G1 Catch exception.");*/ }
-            }
+//        	//TODO 必要？不要？　→　おそらく不要？
+//            if(Count>1 && HTMLG1.G1Flg && /* !HTMLG2.G2Flg &&*/ !tableFlg){
+//        		String rep="ui-grid ##"+(HTMLEnv.uiGridCount2-1);
+////        		String rep="ui-grid-"+gridString[Count-2]+" ##"+(HTMLEnv.uiGridCount2-1);
+//            	try{
+//	            	html_env.code.replace(
+//	            			html_env.code.lastIndexOf(rep), 
+//	            			html_env.code.lastIndexOf(rep)+rep.length(),
+//	            			"ui-grid ##"+(HTMLEnv.uiGridCount2++));
+////	            			"ui-grid-"+gridString[Count-1]+" ##"+(HTMLEnv.uiGridCount2++));
+//            	}catch(Exception e){ /*Log.info("G1 Catch exception.");*/ }
+//            }
             ii++;
             jj++;
             gridInt++;
@@ -399,17 +454,50 @@ public class HTMLG1 extends Grouper {
 //            	//Count = 0;
 //            }
             html_env.glevel--;
+            
+            //added by goto 20130413  "row Prev/Next"
+            if(rowFlg){
+            	codeBuf.append(html_env.code);
+            	if((rowNum+1)%(row*numberOfColumns)==0){
+	                HTMLG2.createHTMLfile_ForPrevNext(html_env, codeBuf);
+	                j++;
+	                codeBuf = new StringBuffer();
+                }
+                rowNum++;
+            }
         }	// /while
         
-        //[重要] For [ [], ]! || [],
-        //[],内が1つの値のみだったとき -> 直近のui-grid-aとui-block-aをカット
-    	if(HTMLG1.gridInt == 1){
-        //if(HTMLG1.jj == 1 && HTMLG1.gridInt == 1 /*&& HTMLG2.G2Flg*/){
-        	//Log.i("			HTMLG1.jj = "+HTMLG1.jj+"	HTMLG1.gridInt = "+HTMLG1.gridInt+"		HTMLG1.classid = "+HTMLG1.classid+"		!!");
-        	//Log.i("			"+HTMLManager.replaceCode(html_env, "ui-grid-a ##"+(HTMLEnv.uiGridCount2-1), "##"+(HTMLEnv.uiGridCount2-1)));
-        	HTMLManager.replaceCode(html_env, "ui-grid-a ##"+(HTMLEnv.uiGridCount2-1), "##"+(HTMLEnv.uiGridCount2-1));
-    		HTMLManager.replaceCode(html_env, "ui-block-a "+HTMLG1.classid, "### "+HTMLG1.classid);
-    	}
+        //added by goto 20130413  "row Prev/Next"
+        if(rowFlg){
+        	if(rowNum%(row*numberOfColumns)!=0){	//最後の child HTML を create
+        		HTMLG2.createHTMLfile_ForPrevNext(html_env, codeBuf);
+        	}
+        	//ファイル名・コード等をparent HTMLのものへ戻す
+        	html_env.filename = parentfile;
+        	html_env.code = parentcode;
+            html_env.css = parentcss;
+            html_env.header = parentheader;
+            html_env.footer = parentfooter;
+            html_env.nextbackfile = parentnextbackfile;
+            Log.out("TFEId = " + HTMLEnv.getClassID(this));
+            html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
+            
+            int first = 1, last = ((rowNum%(row*numberOfColumns)!=0)? (rowNum/(row*numberOfColumns)+1):(rowNum/(row*numberOfColumns)));	//for G1
+            HTMLG2.PrevNextProcess(html_env, rowNum, row, first, last, numberOfColumns);
+        }
+        
+////        //TOOD 必要？不要？　→　不要のような気がするけど？？？　→　あると余計な部分が消されることがあるので無い方が良い(2013.09.26)
+////        //[重要] For [ [], ]! || [],
+////        //[],内が1つの値のみだったとき -> 直近のui-grid-aとui-block-aをカット
+//    	if(HTMLG1.gridInt == 1){
+//        //if(HTMLG1.jj == 1 && HTMLG1.gridInt == 1 /*&& HTMLG2.G2Flg*/){
+//        	//Log.i("			HTMLG1.jj = "+HTMLG1.jj+"	HTMLG1.gridInt = "+HTMLG1.gridInt+"		HTMLG1.classid = "+HTMLG1.classid+"		!!");
+//        	//Log.i("			"+HTMLManager.replaceCode(html_env, "ui-grid-a ##"+(HTMLEnv.uiGridCount2-1), "##"+(HTMLEnv.uiGridCount2-1)));
+//        	HTMLManager.replaceCode(html_env, "ui-grid ##"+(HTMLEnv.uiGridCount2-1), "##"+(HTMLEnv.uiGridCount2-1));	//TODO
+////        	HTMLManager.replaceCode(html_env, "ui-grid-a ##"+(HTMLEnv.uiGridCount2-1), "##"+(HTMLEnv.uiGridCount2-1));
+//    		HTMLManager.replaceCode(html_env, "ui-block "+HTMLG1.classid, "### "+HTMLG1.classid);	//TODO
+////    		HTMLManager.replaceCode(html_env, "ui-block-a "+HTMLG1.classid, "### "+HTMLG1.classid);
+//    	}
 
 //        Log.i("	"+jj+"	"+gridInt);
     	/* 
@@ -429,15 +517,17 @@ public class HTMLG1 extends Grouper {
 
         //html_env2.code.append("</tfe>");
         
-        if(!tableFlg)	html_env.code.append("	</DIV>\n");			//20130309
+        if(!tableFlg)	html_env.code.append("\n</DIV>\n");			//20130309
         else{
-        	html_env.code.append("</TR></TABLE>\n");	//20130314  table
+        	if(!(row>1 && tableFlg))	html_env.code.append("</TR></TABLE>\n");	//20130314  table
         	tableFlg = false;
         	table0Flg = false;		//20130325 table0
-        	html_env.code.append("</div>\n");			//added by goto 20130318  横スクロール
+        	if(numberOfColumns < 0)	html_env.code.append("</div>\n");	//added by goto 20130318  横スクロール		//20130917  [ ],10@{table}
         }
         
         if(divFlg)	divFlg = false;		//20130326  div
+        
+        if(HTMLEnv.dynamicFlg)	HTMLEnv.dynamicFlg = false;		//20130529 dynamic
         
         
         G1Flg=false;
@@ -464,6 +554,13 @@ public class HTMLG1 extends Grouper {
 	    
     	//20130503  Panel
     	HTMLC1.panelProcess2(decos, html_env, panelFlg);
+    	
+    	//added by goto 20130413  "row Prev/Next"
+        if(rowFlg){
+        	HTMLG2.rowFileNum++;
+        	rowFlg = false;
+        	HTMLG2.tableStartTag = "";
+        }
 
         Log.out("TFEId = " + HTMLEnv.getClassID(this));
         //html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);

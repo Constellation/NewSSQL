@@ -63,10 +63,11 @@ public class TFEparser {
 			System.err.println(toks.DebugTrace());
 			GlobalEnv.addErr("Error[TFEparser]: Syntax Error in TFE");
 		}
-		sch = schemaTop.makesch();
-
-		Log.out("Schema is " + sch);
-		Log.out("le0 is " + schemaTop.makele0());;
+		try {
+			sch = schemaTop.makesch();
+			Log.out("Schema is " + sch);
+			Log.out("le0 is " + schemaTop.makele0());;
+		} catch (Exception e) {	}
 	}
 
 	private Grouper grouper() {
@@ -459,19 +460,33 @@ public class TFEparser {
 		return makeAttribute(token, false);
 	}
 	
-	//TODO Change the way to create the attribute if there is an equal sign
+	//TODO Change the way to create the attribute if there is an equal sign  -> solved
 	private Attribute makeAttribute(String token, boolean skipCondition) {
-
 		String line;
 		String name;
 		String key = null;
-
 		int equalidx = token.indexOf('=');
 
-		if (equalidx != -1 && !skipCondition) {
+		//goto 20130916   For the equal sign problem.
+		//""の外に=があるかどうかチェック
+		//(Check whether there is an equal sign outside the double quote.)
+		boolean equalSignOutsideDoubleQuote = false;
+		if(token.contains("\"")){
+			for(int i=0;i<token.length();i++){
+				if(token.charAt(i) == '"'){
+					break;
+				}else if(token.charAt(i)=='='){
+					equalSignOutsideDoubleQuote = true;
+					break;
+				}
+			}
+		}else equalSignOutsideDoubleQuote = true;
+		
+//		if (equalidx != -1 && !skipCondition) {
+		if (equalidx != -1 && !skipCondition && equalSignOutsideDoubleQuote) {
 			// found key = att
 			key = token.substring(0, equalidx);
-			token = token.substring(equalidx + 1);
+			token = token.substring(equalidx + 1);		//TODO: <= This causes an error.  ex) "x==100"!  -> solved
 
 			// tk to ignore space between = and value/////////////////
 			key = key.trim();
@@ -583,12 +598,12 @@ public class TFEparser {
 
 		String token;
 
-		// @�ǻϤޤäƤ�?��
+		// @鐃叔始まってわ申?鐃緒申
 		if (!toks.lookToken().equals("@"))
 			return;
 		toks.nextToken();
 
-		// ���μ��� {
+		// 鐃緒申鐃塾種申鐃緒申 {
 		if (!toks.nextToken().equals("{")) {
 			System.err
 					.println("*** Illegal Token Found after Decoration token '@' ***");
@@ -826,8 +841,8 @@ public class TFEparser {
     }
     //hanki end
     /*
-     * // ��?������ʲ������ // private Function deco_read(String fn) { private void
-     * deco_read(TFE tfe) { // �ǽ餬@�ǻϤޤäƤ��ʤ�?����?�ʤ� if
+     * // 鐃緒申?鐃緒申鐃緒申鐃緒申焚鐃緒申鐃緒申鐃緒申 // private Function deco_read(String fn) { private void
+     * deco_read(TFE tfe) { // 鐃叔初が@鐃叔始まってわ申鐃淑わ申?鐃緒申鐃緒申?鐃淑わ申 if
      * (!toks.lookToken().equals("@")) return; toks.nextToken();
      *
      * Log.out("@@ start read decoration @@");
@@ -849,7 +864,7 @@ public class TFEparser {
 
     private void decoration_out(ITFE tfe, String name, Object value) {
 
-        /* ��?Ū��String�����ɤ�ʤ� */
+        /* 鐃緒申?的鐃緒申String鐃緒申鐃緒申鐃宿わ申覆鐃�*/
         tfe.addDeco(name, (String) value);
         Log.out("[decoration name=" + name + " value=" + value + "]");
 
@@ -864,7 +879,9 @@ public class TFEparser {
 		Log.out("========================================");
 		Log.out("  output Schema Tree");
 		Log.out("========================================");
-		schemaTop.debugout(0);
+		try {
+			schemaTop.debugout(0);
+		} catch(Exception e) { }
 	}
 
 	public Hashtable get_attp() {

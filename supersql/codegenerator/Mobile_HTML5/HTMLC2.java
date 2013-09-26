@@ -83,6 +83,13 @@ public class HTMLC2 extends Connector {
     		tableFlg = false;
     	}//else divFlg = false;
         
+        //20130529
+        if(decos.containsKey("dynamic")){
+        	if(!HTMLEnv.dynamicFlg)	HTMLEnv.staticBuf = html_env.code;
+        	HTMLEnv.dynamicFlg = true;
+        	Log.i("※C2 HTMLEnv.staticBuf: "+HTMLEnv.staticBuf);
+        }
+        
         if(!GlobalEnv.isOpt()){
         	//20130503  Panel
     	    panelFlg = HTMLC1.panelProcess1(decos, html_env);
@@ -146,96 +153,71 @@ public class HTMLC2 extends Connector {
         	//20130309
         	//20130314  table
         	if(tableFlg){
-        		//added 20130314  table width="95%" align="center"
-        		html_env.code.append("<TABLE width=\"100%\" cellSpacing=\"0\" cellPadding=\"0\" border=\"");
-        		//html_env.code.append("<TABLE width=\"100%\" align=\"center\" cellSpacing=\"0\" cellPadding=\"0\" border=\"");
-        		//html_env.code.append("<TABLE width=\"95%\" align=\"center\" cellSpacing=\"0\" cellPadding=\"0\" border=\"");
-//	        	html_env.code.append("<TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
-        		//html_env.code.append(((!table0Flg)? html_env.tableborder : "0") + "\"");
-        		if(table0Flg || HTMLC1.table0Flg || HTMLG1.table0Flg || HTMLG2.table0Flg)
-        			html_env.code.append("0" + "\"");	//20130325 table0
-	        	else	html_env.code.append(html_env.tableborder + "\"");
-//	        	html_env.code.append(html_env.tableborder+ "\" ");
-	        	html_env.code.append(html_env.getOutlineMode());
-	        	if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
-	        		html_env.code.append(" class=\"");
-	        		html_env.code.append(HTMLEnv.getClassID(this));
-	        	}
-	
-	        	if(decos.containsKey("class")){
-	        		if(!html_env.written_classid.contains(HTMLEnv.getClassID(this))){
-	        			html_env.code.append(" class=\"");
-	        		}else{
-	        			html_env.code.append(" ");
-	        		}
-	        		html_env.code.append(decos.getStr("class") + "\" ");   	
-	        	}else if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
-	        		html_env.code.append("\" ");
-	        	}
-	        	html_env.code.append(">");
-	        	//html_env.code.append("align=\"center\">");
+        		html_env.code.append(HTMLC1.getTableStartTag(html_env, decos, this));
         	}
         }
-        if(GlobalEnv.isOpt()){
-            html_env2.code.append("<tfe type=\"connect\" dimension=\"2\"");
-        	if (decos.containsKey("tablealign") )
-        		html_env2.code.append(" align=\"" + decos.getStr("tablealign") +"\"");
-//        	else	//added 20130314
-//        		html_env2.code.append(" align=\"center\"");
-//        	if (decos.containsKey("tablevalign") )
-        		html_env2.code.append(" valign=\"" + decos.getStr("tablevalign") +"\"");
-//        	else	//added 20130314
-//        		html_env2.code.append(" valign=\"middle\"");
-        	if (decos.containsKey("height") )
-        		html_env2.code.append(" height=\"" + decos.getStr("height") +"\"");
-        	if(decos.containsKey("tabletype")){
-        		html_env2.code.append(" tabletype=\"" + decos.getStr("tabletype") + "\"");
-        		if(decos.containsKey("cellspacing")){
-        			html_env2.code.append(" cellspacing=\"" + decos.getStr("cellspacing") + "\"");
-        		}
-        		if(decos.containsKey("cellpadding")){
-        			html_env2.code.append(" cellpadding=\"" + decos.getStr("cellpadding") + "\"");
-        		}
-        		if(decos.containsKey("border")){
-        			html_env2.code.append(" border=\"" + decos.getStr("border").replace("\"", "") + "\"");
-        		}
-
-	        	if(decos.containsKey("tableborder")){
-        			html_env2.code.append(" tableborder=\"" + decos.getStr("tableborder").replace("\"", "") + "\"");
-        		}
-        	}else{
-        		if(decos.containsKey("border")){
-        			html_env2.code.append(" border=\"" + decos.getStr("border").replace("\"", "") + "\"");
-        		}else{
-            		html_env2.code.append(" border=\"" + html_env.tableborder.replace("\"", "") +"\"");
-        		}
-	        	if(decos.containsKey("tableborder")){
-        			html_env2.code.append(" tableborder=\"" + decos.getStr("tableborder").replace("\"", "") + "\"");
-        		}
-        	}
-        	if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
-        		html_env2.code.append(" class=\"");
-        		html_env2.code.append(HTMLEnv.getClassID(this));
-        	}
-
-        	if(decos.containsKey("class")){
-        		if(!html_env.written_classid.contains(HTMLEnv.getClassID(this))){
-        			html_env2.code.append(" class=\"");
-        		}else{
-        			html_env2.code.append(" ");
-        		}
-        		html_env2.code.append(decos.getStr("class"));        	
-        	}else if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
-        		html_env2.code.append("\" ");
-        	}
-        	
-
-	        if(decos.containsKey("form")){
-	        	html_env2.code.append(" form=\""+ HTMLEnv.getFormNumber() +"\" ");
-	        }	        
-	        
-        	html_env2.code.append(">");
-        }
+        
+//        //おそらくxml
+//        if(GlobalEnv.isOpt()){
+//            html_env2.code.append("<tfe type=\"connect\" dimension=\"2\"");
+//        	if (decos.containsKey("tablealign") )
+//        		html_env2.code.append(" align=\"" + decos.getStr("tablealign") +"\"");
+////        	else	//added 20130314
+////        		html_env2.code.append(" align=\"center\"");
+////        	if (decos.containsKey("tablevalign") )
+//        		html_env2.code.append(" valign=\"" + decos.getStr("tablevalign") +"\"");
+////        	else	//added 20130314
+////        		html_env2.code.append(" valign=\"middle\"");
+//        	if (decos.containsKey("height") )
+//        		html_env2.code.append(" height=\"" + decos.getStr("height") +"\"");
+//        	if(decos.containsKey("tabletype")){
+//        		html_env2.code.append(" tabletype=\"" + decos.getStr("tabletype") + "\"");
+//        		if(decos.containsKey("cellspacing")){
+//        			html_env2.code.append(" cellspacing=\"" + decos.getStr("cellspacing") + "\"");
+//        		}
+//        		if(decos.containsKey("cellpadding")){
+//        			html_env2.code.append(" cellpadding=\"" + decos.getStr("cellpadding") + "\"");
+//        		}
+//        		if(decos.containsKey("border")){
+//        			html_env2.code.append(" border=\"" + decos.getStr("border").replace("\"", "") + "\"");
+//        		}
+//
+//	        	if(decos.containsKey("tableborder")){
+//        			html_env2.code.append(" tableborder=\"" + decos.getStr("tableborder").replace("\"", "") + "\"");
+//        		}
+//        	}else{
+//        		if(decos.containsKey("border")){
+//        			html_env2.code.append(" border=\"" + decos.getStr("border").replace("\"", "") + "\"");
+//        		}else{
+//            		html_env2.code.append(" border=\"" + html_env.tableborder.replace("\"", "") +"\"");
+//        		}
+//	        	if(decos.containsKey("tableborder")){
+//        			html_env2.code.append(" tableborder=\"" + decos.getStr("tableborder").replace("\"", "") + "\"");
+//        		}
+//        	}
+//        	if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
+//        		html_env2.code.append(" class=\"");
+//        		html_env2.code.append(HTMLEnv.getClassID(this));
+//        	}
+//
+//        	if(decos.containsKey("class")){
+//        		if(!html_env.written_classid.contains(HTMLEnv.getClassID(this))){
+//        			html_env2.code.append(" class=\"");
+//        		}else{
+//        			html_env2.code.append(" ");
+//        		}
+//        		html_env2.code.append(decos.getStr("class"));        	
+//        	}else if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
+//        		html_env2.code.append("\" ");
+//        	}
+//        	
+//
+//	        if(decos.containsKey("form")){
+//	        	html_env2.code.append(" form=\""+ HTMLEnv.getFormNumber() +"\" ");
+//	        }	        
+//	        
+//        	html_env2.code.append(">");
+//        }
         /*
         if(decos.containsKey("outborder"))
         	html_env.code.append(" noborder ");
@@ -299,6 +281,15 @@ public class HTMLC2 extends Connector {
                     + HTMLEnv.getClassID(tfe) + " nest\"> decos:" + decos);
 	      	}
         	
+	      	
+	      	if(HTMLEnv.dynamicFlg){	//20130529 dynamic
+	      		//☆★
+	      		Log.info("☆★C2 tfe : " + tfe);
+	      		//☆★      		 Log.info("C2 tfe : " + tfe);
+            	//☆★            Log.info("C2 tfes : " + this.tfes);
+            	//☆★            Log.info("C2 tfeItems : " + this.tfeItems);
+	      	}
+	      	
         	//Log.info("C2  !!");
             this.worknextItem();
             //Log.info("C2-2:	"+tableFlg+"	"+decos.containsKey("table")+"	"+decos.containsKey("table0"));
@@ -318,6 +309,9 @@ public class HTMLC2 extends Connector {
         		divFlg = true;
         		tableFlg = false;
         	}//else divFlg = false;
+            
+            //20130529
+            if(decos.containsKey("dynamic"))	HTMLEnv.dynamicFlg = true;
 
             //20130306
             //20130314  table
@@ -338,8 +332,9 @@ public class HTMLC2 extends Connector {
             //20130312 collapsible
 	      	if(decos.containsKey("collapse"))
 	          	html_env.code.append("</p>\n");
-	      	else if(!tableFlg)
+	      	else if(!tableFlg && !HTMLFunction.textFlg)	//20130914  "text"
 	        	html_env.code.append("\n</div>");
+	      	HTMLFunction.textFlg = false;				//20130914  "text"
             
             html_env.code.append("\n");		//20130309
 
@@ -389,6 +384,8 @@ public class HTMLC2 extends Connector {
     	HTMLC1.panelProcess2(decos, html_env, panelFlg);
 	    	
       	if(divFlg)	divFlg = false;		//20130326  div
+      	
+        if(HTMLEnv.dynamicFlg)	HTMLEnv.dynamicFlg = false;		//20130529 dynamic
 
         Log.out("TFEId = " + HTMLEnv.getClassID(this));
         //html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);

@@ -54,7 +54,10 @@ public class Attribute extends Operand {
 			AttNames.add(nm);
 		}
 		ValKey = key;
-
+		try {
+			Integer.parseInt(attimg);
+			attimg ="\""+attimg+"\"";	//Only a numerical value(数値のみ) -> "a numerical value"（ダブルクォートで囲う）
+		} catch (NumberFormatException e) {}
 		//tk/////////////////////////////////////////////////////////////////
 		StringTokenizer st0 = new StringTokenizer(attimg, "\"+", true);		
 		//StringTokenizer st0 = new StringTokenizer(attimg, "\\\"+", true);

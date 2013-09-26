@@ -116,25 +116,25 @@ public class HTMLManager extends Manager{
         /*** start oka ***/
 
 
-        // ���Ϥ�?�ե���?̾����?
+        // 鐃緒申鐃熟わ申?鐃春ワ申鐃緒申?名鐃緒申鐃緒申?
         getOutfilename();
 
         Log.out("[HTMLManager:generateCode]");
 
-        // ?�ֳ�¦��G3��??
+        // ?鐃瞬鰹申側鐃緒申G3鐃緒申??
         if (tfe_info instanceof HTMLG3) {
             tfe_info.work(data_info);
             return;
         }
 
-        // ?�ֳ�¦��G3�Ǥʤ�??]
+        // ?鐃瞬鰹申側鐃緒申G3鐃叔なわ申??]
         htmlEnv.fileName = htmlEnv.outFile + ".html";
         htmlEnv2.fileName = htmlEnv.outFile + ".xml";
 
         htmlEnv.setOutlineMode();
 
         if(data_info.size() == 0
-            //added by goto 20130306  "FROM�ʤ��������к� 3/3"
+            //added by goto 20130306  "FROM鐃淑わ申鐃緒申鐃緒申鐃緒申鐃出削申 3/3"
            	&& !DataConstructor.SQL_string.equals("SELECT DISTINCT  FROM ;")  && !DataConstructor.SQL_string.equals("SELECT  FROM ;"))
         {
         	Log.out("no data");
@@ -229,13 +229,13 @@ public class HTMLManager extends Manager{
     }
 
     private int lastIndexOf(String string) {
-		// TODO ��ư�������줿�᥽�åɡ�������
+		// TODO 鐃緒申動鐃緒申鐃緒申鐃緒申鐃曙た鐃潤ソ鐃獣ド￥申鐃緒申鐃緒申鐃緒申
 		return 0;
 	}
 
 
 	private int indexOf(String string) {
-		// TODO ��ư�������줿�᥽�åɡ�������
+		// TODO 鐃緒申動鐃緒申鐃緒申鐃緒申鐃曙た鐃潤ソ鐃獣ド￥申鐃緒申鐃緒申鐃緒申
 		return 0;
 	}
 
@@ -262,17 +262,17 @@ public class HTMLManager extends Manager{
         htmlEnv2.footer = new StringBuffer();
         String xml_str = null;
         StringBuffer returncode = new StringBuffer();
-        // ���Ϥ�?�ե���?̾����?
+        // 鐃緒申鐃熟わ申?鐃春ワ申鐃緒申?名鐃緒申鐃緒申?
         getOutfilename();
 
         Log.out("[HTMLManager:generateCode2]");
 
-        // ?�ֳ�¦��G3��??
+        // ?鐃瞬鰹申側鐃緒申G3鐃緒申??
         if (tfe_info instanceof HTMLG3) {
             tfe_info.work(data_info);
             return htmlEnv.code;
         }
-        // ?�ֳ�¦��G3�Ǥʤ�??
+        // ?鐃瞬鰹申側鐃緒申G3鐃叔なわ申??
         htmlEnv.setOutlineMode();
         tfe_info.work(data_info);
 
@@ -340,17 +340,17 @@ public class HTMLManager extends Manager{
         htmlEnv.foreachFlag = GlobalEnv.getForeachFlag();
         htmlEnv.writtenClassId = new Vector();
         htmlEnv.embedFlag = true;
-        // ���Ϥ�?�ե���?̾����?
+        // 鐃緒申鐃熟わ申?鐃春ワ申鐃緒申?名鐃緒申鐃緒申?
         getOutfilename();
 
         Log.out("[HTMLManager:generateCode]");
 
-        // ?�ֳ�¦��G3��??
+        // ?鐃瞬鰹申側鐃緒申G3鐃緒申??
         if (tfe_info instanceof HTMLG3) {
             tfe_info.work(data_info);
             return htmlEnv.code;
         }
-        // ?�ֳ�¦��G3�Ǥʤ�??
+        // ?鐃瞬鰹申側鐃緒申G3鐃叔なわ申??
 
 
         htmlEnv.setOutlineMode();
@@ -382,13 +382,13 @@ public class HTMLManager extends Manager{
 
         HTMLEnv localenv = new HTMLEnv();
 
-        // ���Ϥ�?�ե���?̾����?
+        // 鐃緒申鐃熟わ申?鐃春ワ申鐃緒申?名鐃緒申鐃緒申?
         getOutfilename();
 
         Log.out("[HTMLManager:generateCode]");
 
 
-        // ?�ֳ�¦��G3�Ǥʤ�??
+        // ?鐃瞬鰹申側鐃緒申G3鐃叔なわ申??
         htmlEnv.fileName = htmlEnv.outFile + ".html";
         htmlEnv2.fileName = htmlEnv.outFile + ".xml";
 
@@ -415,7 +415,7 @@ public StringBuffer generateCssfile(ITFE tfe_info, ExtList data_info) {
         htmlEnv.foreachFlag = GlobalEnv.getForeachFlag();
         htmlEnv.writtenClassId = new Vector();
         htmlEnv.embedFlag = true;
-        // ���Ϥ�?�ե���?̾����?
+        // 鐃緒申鐃熟わ申?鐃春ワ申鐃緒申?名鐃緒申鐃緒申?
         getOutfilename();
 
         Log.out("[HTMLManager:generateCode]");
@@ -435,9 +435,9 @@ public StringBuffer generateCssfile(ITFE tfe_info, ExtList data_info) {
         htmlEnv.outDir = outdir;
 
         /*
-         * ���ϥե���?(outfilename)�����ꤵ?�Ƥ�???
-         * html_env.outfile��globalenv.outfilename�ˤ�?
-         * ��?�ʳ��ΤȤ��ϥ���?�ե���?��̾��(filename)�ˤ�?
+         * 鐃緒申鐃熟フワ申鐃緒申?(outfilename)鐃緒申鐃緒申鐃所さ?鐃銃わ申???
+         * html_env.outfile鐃緒申globalenv.outfilename鐃祝わ申?
+         * 鐃緒申?鐃淑鰹申鐃塾とわ申鐃熟ワ申鐃緒申?鐃春ワ申鐃緒申?鐃緒申名鐃緒申(filename)鐃祝わ申?
          */
         if (GlobalEnv.getQuery()!=null) {
         	htmlEnv.outFile = "./fromquery";
@@ -468,8 +468,8 @@ public StringBuffer generateCssfile(ITFE tfe_info, ExtList data_info) {
         //tk end
   */
         /*
-         * ������ǥ�?����?(outdirectory)�����ꤵ?�Ƥ�???
-         * outdirectory��filename��Ĥʤ�����Τ�file�Ȥ�?
+         * 鐃緒申鐃緒申鐃緒申妊鐃�鐃緒申鐃緒申?(outdirectory)鐃緒申鐃緒申鐃所さ?鐃銃わ申???
+         * outdirectory鐃緒申filename鐃緒申弔覆鐃緒申鐃緒申鐃塾わ申file鐃夙わ申?
          */
  
         
@@ -494,7 +494,7 @@ public StringBuffer generateCssfile(ITFE tfe_info, ExtList data_info) {
 		String fileDir = new File(htmlEnv.outFile).getAbsoluteFile().getParent();
 		if(fileDir.length() < htmlEnv.outFile.length()
 		&& fileDir.equals(htmlEnv.outFile.substring(0,fileDir.length())))
-			htmlEnv.outFile = htmlEnv.outFile.substring(fileDir.length()+1);	//���Хѥ��ե�����̾
+			htmlEnv.outFile = htmlEnv.outFile.substring(fileDir.length()+1);	//鐃緒申鐃出パワ申鐃春ワ申鐃緒申鐃緒申名
     	//added by goto 20120627 end
     	
         String tmpqueryfile = new String();

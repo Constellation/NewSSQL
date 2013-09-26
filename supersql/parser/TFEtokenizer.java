@@ -3,6 +3,7 @@ package supersql.parser;
 import java.util.StringTokenizer;
 
 import supersql.common.GlobalEnv;
+import supersql.common.Log;
 import supersql.extendclass.ExtList;
 
 public class TFEtokenizer {
