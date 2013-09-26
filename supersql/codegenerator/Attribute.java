@@ -2,6 +2,7 @@ package supersql.codegenerator;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.StringTokenizer;
 
 import supersql.common.Log;
@@ -174,13 +175,19 @@ public class Attribute extends Operand {
 		String str = "";
 		
 		if(conditional){
-			String toCompare = (data_info.get(Items.size()-1-decos.getConditionsSize())).toString();
+			int stringItemsNumber = 0; 
+			Iterator iterator = Items.iterator();
+			while(iterator.hasNext()){
+				if(((AttributeItem)iterator.next()).IsStr)
+					stringItemsNumber++;
+			}
+			String toCompare = (data_info.get(Items.size()-1-decos.getConditionsSize() - stringItemsNumber)).toString();
 			if(toCompare.equals("t") || toCompare.equals("1")){
-				str = (data_info.get(0)).toString();
+				str = Items.get(0).getStr(data_info, AttNo-decos.getConditionsSize());
 			}
 			else if(toCompare.equals("f") || toCompare.equals("0")){
 				if(Items.size()-decos.getConditionsSize() == 3)
-					str = (data_info.get(1)).toString();
+					str = Items.get(1).getStr(data_info, AttNo-decos.getConditionsSize());
 				else
 					str = "";
 			}

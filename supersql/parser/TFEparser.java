@@ -369,7 +369,7 @@ public class TFEparser {
 			throw new IllegalStateException();
 		}
 		toks.nextToken();
-		Attribute condition = makeAttribute(token);
+		Attribute condition = makeAttribute(token, true);
 		if(!toks.nextToken().equalsIgnoreCase("then")){
 			System.err.println("*** Syntax error in the if... then... else... condition ***");
 			throw new IllegalStateException();
@@ -455,7 +455,12 @@ public class TFEparser {
 		return makeConditionalAttribute(condition, attributes);
 	}
 
-	private Attribute makeAttribute(String token) {
+	private Attribute makeAttribute(String token){
+		return makeAttribute(token, false);
+	}
+	
+	//TODO Change the way to create the attribute if there is an equal sign
+	private Attribute makeAttribute(String token, boolean skipCondition) {
 
 		String line;
 		String name;
@@ -463,7 +468,7 @@ public class TFEparser {
 
 		int equalidx = token.indexOf('=');
 
-		if (equalidx != -1) {
+		if (equalidx != -1 && !skipCondition) {
 			// found key = att
 			key = token.substring(0, equalidx);
 			token = token.substring(equalidx + 1);

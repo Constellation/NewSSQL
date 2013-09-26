@@ -28,11 +28,12 @@ public class HTMLIfCondition extends IfCondition {
 				return (Element) thenTfe.createNode((ExtList)data_info.get(1));
 		}
 		else if(elseTfe != null){
+			int from = thenTfe.countconnectitem()+1;
 			if(elseTfe instanceof Connector || elseTfe instanceof Attribute
 					|| elseTfe instanceof Function || elseTfe instanceof IfCondition)
-				return (Element) elseTfe.createNode(data_info.ExtsubList(2, data_info.size()));
+				return (Element) elseTfe.createNode(data_info.ExtsubList(from, data_info.size()));
 			else
-				return (Element) elseTfe.createNode((ExtList)data_info.get(2));		
+				return (Element) elseTfe.createNode((ExtList)data_info.get(from));		
 		}
 		return new Element(Tag.valueOf("span"), "");
 	}
@@ -46,11 +47,13 @@ public class HTMLIfCondition extends IfCondition {
 				thenTfe.work((ExtList)data_info.ExtsubList(1, thenTfe.countconnectitem()+1));
 		}
 		else if(elseTfe != null){
+			int from = thenTfe.countconnectitem()+1;
 			if(elseTfe instanceof Connector || elseTfe instanceof Attribute
-					|| elseTfe instanceof Function || elseTfe instanceof IfCondition)
-				elseTfe.work(data_info.ExtsubList(3, data_info.size()));
+					|| elseTfe instanceof Function || elseTfe instanceof IfCondition){
+				elseTfe.work(data_info.ExtsubList(from, data_info.size()));
+			}
 			else
-				elseTfe.work((ExtList)data_info.get(3));
+				elseTfe.work((ExtList)data_info.get(from));
 			}		
 		}
 }
