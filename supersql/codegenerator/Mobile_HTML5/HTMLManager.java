@@ -103,7 +103,7 @@ public class HTMLManager extends Manager{
 
         if(data_info.size() == 0
         	//added by goto 20130306  "FROMなしクエリ対策 3/3"
-        	&& !DataConstructor.SQL_string.equals("SELECT DISTINCT  FROM ;"))
+        	&& !DataConstructor.SQL_string.equals("SELECT DISTINCT  FROM ;") && !DataConstructor.SQL_string.equals("SELECT  FROM ;"))
         {
         	Log.info("no data");
 
@@ -123,7 +123,7 @@ public class HTMLManager extends Manager{
         		//changed by goto 20120715 start
 	        	//PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(
 	            //        html_env.filename)));
-        		Log.info("Window max-width: "+html_env.maxWidth);
+//        		Log.info("Window max-width: "+html_env.maxWidth);
         		PrintWriter pw;
 	            if (html_env.charset != null){
 		        	pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(

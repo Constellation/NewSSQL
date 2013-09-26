@@ -47,6 +47,8 @@ public class HTMLEnv extends LocalEnv {
 	protected StringBuffer title = new StringBuffer();
 	protected StringBuffer titleClass = new StringBuffer();
 	public StringBuffer cssFile = new StringBuffer();
+	public StringBuffer jsFile = new StringBuffer();	//added by goto 20130703
+	public StringBuffer cssjsFile = new StringBuffer();	//added by goto 20130703
 	public String tableBorder = new String("1");
 	public boolean embedFlag = false;
 	public int embedCount = 0;
@@ -77,7 +79,7 @@ public class HTMLEnv extends LocalEnv {
 	public int linkFlag;
 	public String linkUrl;
 
-	// outline����Ϥ����ɤ����Υե饰��?
+	// outline鐃緒申鐃緒申呂鐃緒申鐃緒申匹鐃緒申鐃緒申離侫薀逸申鐃�
 	protected boolean OutlineMode = false;
 	private static boolean isFormItem;
 	private static String formItemName;
@@ -419,9 +421,9 @@ public class HTMLEnv extends LocalEnv {
 		Log.out("[HTML append_css_def_att] classid=" + classid);
 		Log.out("decos = " + decos);
 
-		// ��classid�Υ�����?�����Ȥ��������ꤷ�����Ȥ���?��
+		// 鐃緒申classid鐃塾ワ申鐃緒申鐃緒申?鐃緒申鐃緒申鐃夙わ申鐃緒申鐃緒申鐃緒申鐃所し鐃緒申鐃緒申鐃夙わ申鐃緒申?鐃緒申
 		if (writtenClassId.contains(classid)) {
-			// ������ѤΥ�����?������
+			// 鐃緒申鐃緒申鐃緒申僂離鐃緒申鐃緒申鐃�鐃緒申鐃緒申鐃緒申
 			haveClass = 1;
 			Log.out("==> already created style");
 			return;
@@ -444,31 +446,81 @@ public class HTMLEnv extends LocalEnv {
 			cssclass.put(classid, decos.getStr("class"));
 			Log.out("class =" + classid + decos.getStr("class"));
 		}
-
+		
+		//changed by goto 20130703  ex) cssfile=" a.css; b.css "
 		if (decos.containsKey("cssfile")) {
-			cssFile.delete(0, cssFile.length());
-			if (GlobalEnv.isServlet()) {
-				cssFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\""
-						+ GlobalEnv.getFileDirectory()
-						+ decos.getStr("cssfile") + "\">\n");
-			} else {
-				cssFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\""
-						+ decos.getStr("cssfile") + "\">\n");
+			String css = decos.getStr("cssfile").trim();
+			if(!css.contains(",")){
+				cssFile.delete(0, cssFile.length());
+				if (GlobalEnv.isServlet()) {
+					cssFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\""
+							+ GlobalEnv.getFileDirectory()
+							+ css + "\">\n");
+				} else {
+					cssFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\""
+							+ css + "\">\n");
+				}
+			}else{
+				if(!css.endsWith(","))	css+=",";
+				while(css.contains(",")){
+					cssFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + css.substring(0,css.indexOf(",")).trim() + "\">\n");
+					css = css.substring(css.indexOf(",")+1);
+				}
 			}
 		} else if (cssFile.length() == 0) {
 			if (GlobalEnv.isServlet()) {
 				cssFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\""
-						+ GlobalEnv.getFileDirectory() + "/default.css \">\n");
+						+ GlobalEnv.getFileDirectory() + "/default1.css \">\n");
 			} else {
 				if (Utils.getOs().contains("Windows")) {
-					cssFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"default.css\">\n");
+					cssFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"default1.css\">\n");
 				} else {
 					// itc
 					if (GlobalEnv.isOpt())
 						cssFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"http://www.db.ics.keio.ac.jp/ssqlcss/default_opt.css\">\n");
 					else
-						cssFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"http://www.db.ics.keio.ac.jp/ssqlcss/default.css\">\n");
+						cssFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"http://www.db.ics.keio.ac.jp/ssqlcss/default1.css\">\n");
 				}
+			}
+		}
+		
+		//added by goto 20130703  ex) jsfile=" a.js; b.js "
+		if (decos.containsKey("jsfile")) {
+			String js = decos.getStr("jsfile").trim();
+			if(!js.endsWith(","))	js+=",";
+			while(js.contains(",")){
+				jsFile.append("<script type=\"text/javascript\" src=\""	+ js.substring(0,js.indexOf(",")).trim() + "\"></script>\n");
+				js = js.substring(js.indexOf(",")+1);
+			}
+		}
+		
+		//added by goto 20130703  ex) require=" a.css; a.js;  b.css; b.js "
+		if (decos.containsKey("require")) {
+			String file = decos.getStr("require").trim();
+			if(!file.endsWith(","))	file+=",";
+			String fileName = "";
+			while(file.contains(",")){
+				fileName = file.substring(0,file.indexOf(",")).trim();
+				if(fileName.endsWith(".css"))
+					cssjsFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + fileName + "\">\n");
+				else if(fileName.endsWith(".js"))
+					cssjsFile.append("<script type=\"text/javascript\" src=\"" + fileName + "\"></script>\n");
+				else{
+					//added by goto 20130710  ex) require="Folder name"
+			        try{
+			            String[] fileArray = new File(fileName).getAbsoluteFile().list();
+			            for(int i = 0; i < fileArray.length; i++) {
+			                if(fileArray[i].endsWith(".css"))
+								cssjsFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + fileName + "/" + fileArray[i] + "\">\n");
+							else if(fileArray[i].endsWith(".js"))
+								cssjsFile.append("<script type=\"text/javascript\" src=\"" + fileName + "/" + fileArray[i] + "\"></script>\n");
+			            }
+			        }catch (Exception e){
+			        	System.err.println("<Warning> require=に指定されたフォルダ「"+fileName+"」が見つかりません。");
+			        }
+				}
+				
+				file = file.substring(file.indexOf(",")+1);
 			}
 		}
 
@@ -486,7 +538,7 @@ public class HTMLEnv extends LocalEnv {
 
 		computeConditionalDecorations(decos, css);
 
-		// ��??
+		// 鐃緒申??
 		if (decos.containsKey("width")) {
 			if (GlobalEnv.getframeworklist() == null)
 				cssbuf.append(" width:" + decos.getStr("width") + ";");
@@ -496,7 +548,7 @@ public class HTMLEnv extends LocalEnv {
 			// cssbuf.append(" width:120;");
 		}
 
-		// ��??
+		// 鐃緒申??
 		if (decos.containsKey("height")) {
 			if (GlobalEnv.getframeworklist() == null)
 				cssbuf.append(" height:" + decos.getStr("height") + ";");
@@ -511,7 +563,7 @@ public class HTMLEnv extends LocalEnv {
 			// cssbuf.append(" padding:0.3em;");
 		}
 
-		// �ѥǥ��󥰡�;���
+		// 鐃術デワ申鐃藷グ￥申余鐃緒申鐃�		
 		if (decos.containsKey("padding")) {
 			cssbuf.append(" padding:" + decos.getStr("padding") + ";");
 			// } else {
@@ -533,22 +585,22 @@ public class HTMLEnv extends LocalEnv {
 					+ ";");
 		}
 
-		// ������
+		// 鐃緒申鐃緒申鐃緒申
 		if (decos.containsKey("align"))
 			cssbuf.append(" text-align:" + decos.getStr("align") + ";");
 
-		// �İ���
+		// 鐃縦逸申鐃緒申
 		if (decos.containsKey("valign"))
 			cssbuf.append(" vertical-align:" + decos.getStr("valign") + ";");
 
-		// �طʿ�
+		// 鐃舜景随申
 		if (decos.containsKey("background-color"))
 			cssbuf.append(" background-color:"
 					+ decos.getStr("background-color") + ";");
 		if (decos.containsKey("bgcolor"))
 			cssbuf.append(" background-color:" + decos.getStr("bgcolor") + ";");
 
-		// ʸ��
+		// 文鐃緒申
 		if (decos.containsKey("color"))
 			cssbuf.append(" color:" + decos.getStr("color") + ";");
 		if (decos.containsKey("font-color"))
@@ -556,7 +608,7 @@ public class HTMLEnv extends LocalEnv {
 		if (decos.containsKey("font color"))
 			cssbuf.append(" color:" + decos.getStr("font color") + ";");
 
-		// ʸ����
+		// 文鐃緒申鐃緒申
 		if (decos.containsKey("font-size"))
 			if (GlobalEnv.getframeworklist() == null)
 				cssbuf.append(" font-size:" + decos.getStr("font-size") + ";");
@@ -573,11 +625,11 @@ public class HTMLEnv extends LocalEnv {
 			else
 				cssbuf.append(" font-size:" + decos.getStr("size") + "px;");
 
-		// ʸ�������
+		// 文鐃緒申鐃緒申鐃緒申鐃�
 		if (decos.containsKey("font-weight"))
 			cssbuf.append(" font-weight:" + decos.getStr("font-weight") + ";");
 
-		// ʸ����?
+		// 文鐃緒申鐃緒申?
 		if (decos.containsKey("font-style"))
 			cssbuf.append(" font-style:" + decos.getStr("font-style") + ";");
 		if (decos.containsKey("font-family"))
@@ -604,7 +656,7 @@ public class HTMLEnv extends LocalEnv {
         if (decos.containsKey("style")){
         	String style = decos.getStr("style");
         	cssbuf.append(" " + style);
-        	if(!style.matches(".*;\\s*$"))	cssbuf.append(";");	//�Ǹ��";"��̵���ä����
+        	if(!style.matches(".*;\\s*$"))	cssbuf.append(";");	//鐃叔醐申鐃�;"鐃緒申無鐃緒申鐃獣わ申鐃緒申鐃�
         }
 
 		// tk
@@ -651,14 +703,14 @@ public class HTMLEnv extends LocalEnv {
 
 		if (cssbuf.length() > 0) {
 			haveClass = 1;
-			// ����?�Υ�����?����
+			// 鐃緒申鐃緒申?鐃塾ワ申鐃緒申鐃緒申?鐃緒申鐃緒申
 			css.append("." + classid + "{");
 
 			css.append(cssbuf);
-			// ��?�Υ�����?�Ĥ�
+			// 鐃緒申?鐃塾ワ申鐃緒申鐃緒申?鐃縦わ申
 			css.append(" }\n");
 
-			// ������?��?�Ѥߥ��饹��id����¸���Ƥ���
+			// 鐃緒申鐃緒申鐃緒申?鐃緒申?鐃術みワ申鐃初ス鐃緒申id鐃緒申鐃緒申存鐃緒申鐃銃わ申鐃緒申
 			writtenClassId.addElement(classid);
 		} else {
 			Log.out("==> style is null. not created style");
@@ -672,7 +724,7 @@ public class HTMLEnv extends LocalEnv {
             meta.append(metabuf);
          	meta.append("\n");
 
-		}
+        }
 		// tk end////////////////////////////////////////////////////////////
 
 	}
@@ -819,7 +871,9 @@ public class HTMLEnv extends LocalEnv {
 			Log.out("<HTML>");
 			Log.out("<head>");
 	        header.append("<meta name=\"GENERATOR\" content=\" SuperSQL (Generate HTML) \">\n");	//Generator
-			header.append(cssFile);
+	        header.append(cssjsFile);	//added by goto 20130703
+	        header.append(cssFile);
+			header.append(jsFile);		//added by goto 20130703
 			header.append("<STYLE TYPE=\"text/css\">\n");
 			header.append("<!--\n");
 			commonCSS();

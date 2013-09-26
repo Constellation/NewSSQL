@@ -1,9 +1,12 @@
 package supersql.codegenerator.Mobile_HTML5;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.Vector;
@@ -27,9 +30,31 @@ public class HTMLEnv extends LocalEnv {
     
     String title = "";		//added by goto 20130411  "title"
     String bg = "";			//added by goto 20130311  "background"
-    int maxWidth = 350;		//added by goto 20130512  "max-width"	Default:350
-
-
+//    int maxWidth = 350;		//added by goto 20130512  "max-width"	Default:350
+    int portraitWidth = -1;		//added by goto 20130512  "max-width"	Default:-1
+    int landscapeWidth = -1;	//added by goto 20130512  "max-width"	Default:-1
+    int pcWidth = -1;			//added by goto 20130512  "max-width"	Default:-1
+    
+    public static String 	//added by goto 20130515  "search"
+	    PHP = "<?php\n" +	//初期定義
+	    		"//XSS対策\n" +
+	    		"function checkHTMLsc($str){\n" +
+	    		"	return htmlspecialchars($str, ENT_QUOTES, 'UTF-8');\n" +
+	    		"}\n" +
+	    		"?>\n";
+    
+//    public static String 				//added by goto 20130531 
+//    	PHPpost = "<?php\n" +	//初期定義(dummy if)
+//	    		"//dummy\n" +
+//	    		"if($_POST['dummy']){\n" +
+//				"	;\n" +
+//				"}\n";
+//    public static String PHPfunc = "";	//added by goto 20130531 
+    
+    static boolean dynamicFlg = false;			//20130529  dynamic
+    static StringBuffer staticBuf;				//20130529  dynamic
+    static StringBuffer dynamicBuf;				//20130529  dynamic
+    
     //Vector not_written_classid;
     Vector<String> not_written_classid= new Vector();
 
@@ -61,6 +86,11 @@ public class HTMLEnv extends LocalEnv {
 	
 	String charset=null;					//added by goto 20120715
 	static boolean charsetFlg=false;		//added by goto 20120715
+
+	String copyright="";					//added by goto 20130518
+	String fff = "";						//20130518  "show query"
+
+	Boolean nobarFlg = false;				//20130521  "nobar"
 	
     //tk start///////////////////////////////////////////////////
     StringBuffer meta = new StringBuffer();
@@ -68,6 +98,8 @@ public class HTMLEnv extends LocalEnv {
     //StringBuffer title = new StringBuffer();		//disuse
     StringBuffer titleclass = new StringBuffer();
     StringBuffer cssfile = new StringBuffer();
+	StringBuffer jsFile = new StringBuffer();		//added by goto 20130703
+	StringBuffer cssjsFile = new StringBuffer();	//added by goto 20130703
     String tableborder=new String("1");
     boolean embedflag = false;
     int embedcount = 0;
@@ -148,10 +180,16 @@ public class HTMLEnv extends LocalEnv {
 	        Log.out("<head>");
 	        
 	        //added by goto 20130508  "Login&Logout"
-	        if(SSQLparser.sessionFlag)	header.insert(index,"<?php\n	session_start();\n?>\n");
+	        if(SSQLparser.sessionFlag){
+	        	//header.insert(index,"<?php\n	session_start();\n	session_regenerate_id(TRUE);\n?>\n");
+	        	String s = "<?php\n	session_start();\n";
+	        	if(headerFlag == 1)	s += "	session_regenerate_id(TRUE);\n";
+	        	s += "?>\n";
+	        	header.insert(index, s);
+	        }
 	        
 	        //Generator
-	        header.append("<meta name=\"Generator\" content=\" SuperSQL (Generate Mobile_HTML5) \">\n");
+	        header.append("<meta name=\"GENERATOR\" content=\" SuperSQL (Generate Mobile_HTML5) \">\n");
 	        
 	        //added by goto 20120629
 	        //header.append("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n");
@@ -240,7 +278,6 @@ public class HTMLEnv extends LocalEnv {
             //added by goto 20121217 start
         	header.append("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no\"/>\n");
         	
-        	header.append(cssfile);
 	        header.append("<STYLE TYPE=\"text/css\">\n");
 	        header.append("<!--\n");
 	        commonCSS();
@@ -248,14 +285,23 @@ public class HTMLEnv extends LocalEnv {
 	        Log.out(css.toString());
 	        header.append("\n-->\n</STYLE>\n");
 
-	        header.append("<link rel=\"stylesheet\" href=\"http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css\"/>\n");
-            header.append("<link rel=\"stylesheet\" href=\"http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.css\"/>\n");
+//退避	        header.append("<link rel=\"stylesheet\" href=\"http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css\"/>\n");
+//退避	        header.append("<link rel=\"stylesheet\" href=\"http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.css\"/>\n");
+//退避	        header.append("<link rel=\"stylesheet\" href=\"js/jqm-icon-pack-2.0-original.css\"/>\n");
+	        header.append("<link rel=\"stylesheet\" href=\"jscss/jquery-ui.css\"/>\n");
+            header.append("<link rel=\"stylesheet\" href=\"jscss/jquery.mobile-1.3.1.min.css\"/>\n");
+            header.append("<link rel=\"stylesheet\" href=\"jscss/jqm-icon-pack-2.0-original.css\"/>\n");
             //header.append("<link rel=\"stylesheet\" href="css/custom.css\"/>\n");
             //20130206
             //※※　要注意　※※　 jquery.jsより先にjquerymobile.jsをインポートすると、ボタン等の表示がうまくいかなくなる!!
-            header.append("<script src=\"http://code.jquery.com/jquery-1.7.1.min.js\"></script>\n");
-            header.append("<script src=\"http://code.jquery.com/ui/1.9.2/jquery-ui.min.js\"></script>\n");
-            header.append("<script src=\"http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.js\"></script>\n");
+//退避            header.append("<script src=\"http://code.jquery.com/jquery-1.7.1.min.js\"></script>\n");
+//退避            header.append("<script src=\"http://code.jquery.com/ui/1.9.2/jquery-ui.min.js\"></script>\n");
+//退避            header.append("<script src=\"http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.js\"></script>\n");
+//退避            header.append("<script src=\"js/jquery.mobile.dynamic.popup.js\"></script>\n");
+            header.append("<script src=\"jscss/jquery-1.7.1.min.js\"></script>\n");
+            header.append("<script src=\"jscss/jquery-ui.min.js\"></script>\n");
+            header.append("<script src=\"jscss/jquery.mobile-1.3.1.min.js\"></script>\n");
+            header.append("<script src=\"jscss/jquery.mobile.dynamic.popup.js\"></script>\n");
             //header.append("<script src=\"js/config.js\"></script>\n");
 
             //added by goto 20130110 start
@@ -264,23 +310,34 @@ public class HTMLEnv extends LocalEnv {
             //header.append("<link href=\"js/photoswipe/jquery-mobile.css\" type=\"text/css\" rel=\"stylesheet\" />\n");
        		//header.append("<script src=\"js/photoswipe/klass.min.js\"></script>\n");
        		//header.append("<script src=\"js/photoswipe/code.photoswipe.jquery-3.0.4.min.js\"></script>\n");
-            header.append("<link href=\"http://www.db.ics.keio.ac.jp/ssqlcss/photoswipe/photoswipe.css\" type=\"text/css\" rel=\"stylesheet\" />\n");
-            header.append("<link href=\"http://www.db.ics.keio.ac.jp/ssqljscss/photoswipe/jquery-mobile.css\" type=\"text/css\" rel=\"stylesheet\" />\n");
-    		header.append("<script src=\"http://www.db.ics.keio.ac.jp/ssqljscss/photoswipe/klass.min.js\"></script>\n");
-    		header.append("<script src=\"http://www.db.ics.keio.ac.jp/ssqljscss/photoswipe/code.photoswipe.jquery-3.0.4.min.js\"></script>\n");
+//退避            header.append("<link href=\"http://www.db.ics.keio.ac.jp/ssqlcss/photoswipe/photoswipe.css\" type=\"text/css\" rel=\"stylesheet\" />\n");
+//退避            header.append("<link href=\"http://www.db.ics.keio.ac.jp/ssqljscss/photoswipe/jquery-mobile.css\" type=\"text/css\" rel=\"stylesheet\" />\n");
+//退避    		header.append("<script src=\"http://www.db.ics.keio.ac.jp/ssqljscss/photoswipe/klass.min.js\"></script>\n");
+//退避    		header.append("<script src=\"http://www.db.ics.keio.ac.jp/ssqljscss/photoswipe/code.photoswipe.jquery-3.0.4.min.js\"></script>\n");
             //added by goto 20130110 end
        		
     		//added by goto 20130413  "row Prev/Next"
 //    		header.append("<script src=\"js/jquery.iframe-auto-height.plugin.js\"></script>\n");
 //    		header.append("<script src=\"js/script2.js\"></script>\n");
-    		header.append("<script src=\"http://www.db.ics.keio.ac.jp/ssqljscss/jquery.iframe-auto-height.plugin.js\"></script>\n");
-    		header.append("<script src=\"http://www.db.ics.keio.ac.jp/ssqljscss/script2.js\"></script>\n");
+//退避    		header.append("<script src=\"http://www.db.ics.keio.ac.jp/ssqljscss/jquery.iframe-auto-height.plugin.js\"></script>\n");
+//退避    		header.append("<script src=\"http://www.db.ics.keio.ac.jp/ssqljscss/script2.js\"></script>\n");
+    		header.append("<script src=\"jscss/jquery.iframe-auto-height.plugin.js\"></script>\n");
+    		header.append("<script src=\"jscss/script2.js\"></script>\n");
 
     		
     		//added by goto 20130512  "max-width"
-			header.append("<script type=\"text/javascript\"> var windowWidthThreshold = "+maxWidth+" </script>\n");
+//    		header.append("<script type=\"text/javascript\"> var windowWidthThreshold = "+maxWidth+" </script>\n");
+			header.append(
+					"<script type=\"text/javascript\">\n" +
+					"<!-- \n" +
+					"var portraitWidth = "+portraitWidth+";\n" +
+					"var landscapeWidth = "+landscapeWidth+";\n" +
+					"var pcWidth = "+pcWidth+";\n" +
+					"-->\n" +
+					"</script>\n");
     		
-    		header.append("<script src=\"js/script1.js\"></script>\n");
+//退避    		header.append("<script src=\"js/script1.js\"></script>\n");
+    		header.append("<script src=\"jscss/script1.js\"></script>\n");
             //added by goto 20121217 end
             
             header.append("\n");
@@ -293,10 +350,14 @@ public class HTMLEnv extends LocalEnv {
 	        }
 	        
             //20130309  "div"
-            header.append("<style type=\"text/css\">");
-            header.append("<!-- div{ text-align:center; float:center; vertical-align:middle; } -->");
+            header.append("<style type=\"text/css\">\n");
+            header.append("<!-- div{ text-align:center; float:center; vertical-align:middle; } -->\n");
             //20130315	"長い文字が...と省略されるのを防ぐ (*:全てのタイプに適用) "
-            header.append("<!-- * { white-space: normal; } -->");
+            header.append("<!-- * { white-space: normal; } -->\n");
+            header.append("<!--\n");
+            header.append(".ui-grid { overflow: hidden; }\n");
+            header.append(".ui-block { margin: 0; padding: 0; border: 0; float: left; min-height: 1px; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -ms-box-sizing: border-box; box-sizing: border-box; }\n");
+            header.append("-->\n");
           	header.append("</style>\n");
 
 	        //added by goto 20130512  "Tableのセンタリング（画面横幅の大きいデバイスで見ると効果が分かる）"
@@ -381,7 +442,7 @@ public class HTMLEnv extends LocalEnv {
 	//            String relative_path = linkurl.substring(fileDir.length()+1);
 	            // 書き込むファイルの名前
 	            //String outputFileName = "/Applications/XAMPP/htdocs/ssql/js/c2.js";
-	            String outputFileName = fileDir + "/js/script1.js";
+	            String outputFileName = fileDir + "/jscss/script1.js";
 	//            System.out.println("outputFileName="+outputFileName);
 	            // ファイルオブジェクトの生成
 	            File outputFile = new File(outputFileName);
@@ -405,15 +466,66 @@ public class HTMLEnv extends LocalEnv {
 	    	        }else
 	    	        	pw = new PrintWriter(new BufferedWriter(new FileWriter(
 	    	        			outputFile)));
-	              
-	              	// ファイルへの書き込み
+	    	        
+	    	        //ファイルへの書き込み
+	    	        //フッタ(id=\"footer1\")の処理
+	    	        //左右フリック・タップすることにより、[進む]・[戻る]・[更新]を行う		//added by goto 20130520
+	    	        pw.println("\n" +
+	    	        		"/** フッタ(id=\"footer1\")の処理 **/\n" +
+	    	        		"//左フリック: [進む]、右フリック: [戻る]、タップ: [更新]\n" +
+	    	        		"$(function() {\n" +
+	    	        		"	//タップ時: [更新]\n" +
+	    	        		"	$('#footer1').bind('tap',function(){\n" +
+	    	        		"		history.go(0);\n" +
+	    	        		"	});\n" +
+	    	        		"\n" +
+	    	        		"	//タッチイベントの取得\n" +
+	    	        		"	$(\"#footer1\").bind(\"touchstart touchmove touchend\", touchHandler);\n" +
+	    	        		"	function touchHandler(e) {  \n" +
+	    	        		"		e.preventDefault();  \n" +
+	    	        		"		var touch = e.originalEvent.touches[0];  \n" +
+	    	        		"\n" +
+	    	        		"		if(e.type == \"touchstart\"){\n" +
+	    	        		"			//タッチ開始時のX座標(startX)\n" +
+	    	        		"			startX = touch.pageX; \n" +
+	    	        		"		}else if(e.type == \"touchmove\"){\n" +
+	    	        		"			//移動距離(diffX) = スライド時のX座標 - 開始時のX座標\n" +
+	    	        		"			diffX = touch.pageX - startX;\n" +
+	    	        		"			if(( diffX > 0 ) || ( diffX < 0 )) {\n" +
+	    	        		"				$('#footer1').css( \"left\", diffX );\n" +
+	    	        		"			}\n" +
+	    	        		"		}else if(e.type == \"touchend\"){\n" +
+	    	        		"			if(diffX > 10) {		//右に10px以上移動: [戻る]\n" +
+	    	        		"				history.go(-1);\n" +
+	    	        		"			}else if(diffX < -10){	//左に10px以上移動: [進む]\n" +
+	    	        		"				history.go(1);\n" +
+	    	        		"			}else{\n" +
+	    	        		"				$( '#footer1' ).animate({ left: 0 }, 200);\n" +
+	    	        		"			} \n" +
+	    	        		"		}\n" +
+	    	        		"	}\n" +
+	    	        		"});\n");
+	    	        //rel="external"と指定されていた場合は、別ウィンドウを開く
+	    	        //（W3C target="_blank" strict対策）		//added by goto 20130518
+	    	        pw.println("\n/** rel=\"external\"と指定されていた場合は、別ウィンドウを開く **/\n" +
+							"/**（W3C target=\"_blank\" strict対策）**/\n" +
+							"$(function(){\n" +
+							"	$(\"a[rel='external']\").click(function(){\n" +
+							"		window.open($(this).attr(\"href\"));\n" +
+							"		return false;\n" +
+							"	});\n" +
+							"});\n");
 	    	        //画面サイズに応じて表示widthを変更		//added by goto 20130512
 	    	        pw.println("\n/** 画面サイズに応じて表示widthを変更 **/\n" +
 	    	        		"/** 画面width > 閾値 のとき、widthを固定して表示をセンタリング **/\n" +
-	    	        		"//閾値(windowWidthThreshold)は、HTMLファイルの<head>で指定\n" +
+	    	        		//"//閾値(windowWidthThreshold)は、HTMLファイルの<head>で指定\n" +
+	    	        		"//PC: pc-width値に固定(指定なし(-1):350)\n" +
+	    	        		"//モバイル: 縦=portrait-width値に固定(指定なし(-1):100%) ／ 縦=landscape-width値に固定(指定なし(-1):100%)\n" +
 	    	        		//"var windowWidthThreshold = 500; 	//閾値\n" +
 	    	        		"//初期load時\n" +
+	    	        		"var windowWidthThreshold = 0;\n" +
 	    	        		"$(document).ready(function(){\n" +
+	    	        		"	windowWidthThreshold = getWindowWidthThreshold();\n" +
 	    	        		"	if( $(window).width() > windowWidthThreshold ){\n" +
 	    	        		"		//$(\"table\").css(\"width\",\"auto\");\n" +
 	    	        		"		$(\"#header1\").css(\"width\",windowWidthThreshold).css(\"margin\",\"auto\");\n" +
@@ -425,6 +537,7 @@ public class HTMLEnv extends LocalEnv {
 	    	        		"});\n" +
 	    	        		"//画面サイズが変更されたとき\n" +
 	    	        		"window.onresize = function() {\n" +
+	    	        		"	windowWidthThreshold = getWindowWidthThreshold();\n" +
 	    	        		"	if( $(window).width() > windowWidthThreshold ){\n" +
 	    	        		"    	//$(\"table\").css(\"width\",\"auto\");\n" +
 	    	        		"		$(\"#header1\").css(\"width\",windowWidthThreshold).css(\"margin\",\"auto\");\n" +
@@ -437,9 +550,32 @@ public class HTMLEnv extends LocalEnv {
 	    	        		"		$(\"#header1\").css(\"width\",\"100%\");\n" +
 	    	        		"		$(\"#content1\").css(\"width\",\"100%\");\n" +
 	    	        		"		$(\"#footer1\").css(\"width\",\"100%\");\n" +
-	    	        		"		$(\"#LOGINpanel1\").css(\"width\",\"100%\");\n" +
+	    	        		"		$(\"#LOGINpanel1\").css(\"width\",\"97%\");\n" +
 	    	        		"		$(\"#LOGOUTpanel1\").css(\"width\",\"100%\");\n" +
 	    	        		"	}\n" +
+	    	        		"}\n" +
+	    	        		"//画面width閾値を返す\n" +
+	    	        		"function getWindowWidthThreshold(){\n" +
+	    	        		"	if(!isSmartphone()){\n" +
+	    	        		"		//PC\n" +
+	    	        		"		if(pcWidth < 0)	return 350;\n" +
+	    	        		"		else			return pcWidth;\n" +
+	    	        		"	}else{\n" +
+	    	        		"		//モバイル\n" +
+	    	        		"		if(isPortrait()){\n" +
+	    	        		"			//縦向き\n" +
+	    	        		"			return portraitWidth;\n" +
+	    	        		"		}else{\n" +
+	    	        		"			//横向き\n" +
+	    	        		"			return landscapeWidth;\n" +
+	    	        		"		}\n" +
+	    	        		"	}\n" +
+	    	        		"}\n" +
+	    	        		"//端末が縦向きかどうか\n" +
+	    	        		"function isPortrait(){\n" +
+	    	        		"	if($(window).width() < $(window).height())\n" +
+	    	        		"		return true;\n" +
+	    	        		"	return false;\n" +
 	    	        		"}\n\n");
 	    	        //twitter
 	              	pw.println("$(document).on(\"pagebeforecreate\",'[data-role=page]',function(e){\n" +
@@ -514,202 +650,747 @@ public class HTMLEnv extends LocalEnv {
 	            //added by goto 20121222 end
           	}//通常のみの処理（jsファイル作成）end
         	
+          	header.append("\n");
+	        header.append(cssjsFile);	//added by goto 20130703
+	        header.append(cssfile);
+			header.append(jsFile);		//added by goto 20130703
 	        header.append("</HEAD>\n");
 
 	        //header.append("<BODY class=\"body\">\n");
 	        header.append("<BODY>\n");
-	        header.append("<!-- data-role=page start -->\n<div data-role=\"page\">\n\n");
+	        header.append("<!-- data-role=page start -->\n<div data-role=\"page\" id=\"p-top1\" >\n\n");
 	        
 	        //added by goto 20130508  "Login&Logout" start
 	        //ログイン・ログアウト・新規登録
 	        if(SSQLparser.sessionFlag){
 	        	String s = SSQLparser.sessionString;
-	        	//Log.i("s:" + s);
+	        	//Log.i("sessionString:" + s);
+	        	
+	        	//置換 ( " , "  ->  " ; " )
+	    		//Log.i("Before sessionString: "+s);
+	        	boolean dqFlg = false;
+	        	for(int i=0; i<s.length();i++){
+	        		if(!dqFlg){
+	        			if(s.charAt(i)=='"')		dqFlg=true;
+	        		}else if(dqFlg){
+	        			if(s.charAt(i)==',')
+	        				s = s.substring(0,i)+";"+s.substring(i+1);	//置換
+	    	    		else if(s.charAt(i)=='"')	dqFlg=false;
+	        		}
+	        	}
+	        	//Log.i("After sessionString:  "+s);
+	        	
+	        	String sessionVariable_UniqueName = "ssql_";		//セッション変数に使用するユニークな名前（session()の最後から取ってくる）
+	        	
+	        	String s_val = s.substring("session".length(),s.indexOf("(")).trim();
+	        	if(s_val.equals(""))		s_val = "1";
+//	        	Log.i("s_val:" + s_val);
 	        	String DB = GlobalEnv.getdbname();										//DB
-	        	String c1str = "ID:";													//ID string
-	        	String c1 = s.substring(s.indexOf("(")+1,s.indexOf(",")).trim();		//ID column
-	        	if(c1.contains(":")){
-	        		c1str = c1.substring(0,c1.lastIndexOf(":")+1);
-	        		c1 = c1.substring(c1.lastIndexOf(":")+1).trim();
-	        	}
+	        	String c1str = "";
+	        	if(!s_val.equals("3"))	c1str = "ID:";									//ID string
+	        	else					c1str = "E-mail address:";						//E-mail string
+	        	String c1 = "";															//ID column
+//	        	String c1 = s.substring(s.indexOf("(")+1,s.indexOf(",")).trim();		//ID column
+//	        	if(c1.contains(":")){
+//	        		c1str = c1.substring(0,c1.lastIndexOf(":")+1);
+//	        		c1 = c1.substring(c1.lastIndexOf(":")+1).trim();
+//	        	}
 	        	String c2str = "Password";												//PW string
-	        	String c2 = s.substring(s.indexOf(",")+1,s.lastIndexOf(",")).trim();	//PW column
-	        	if(c2.contains(":")){
-	        		c2str = c2.substring(0,c2.lastIndexOf(":"));
-	        		c2 = c2.substring(c2.lastIndexOf(":")+1).trim();
+	        	String c2 = "";															//PW column
+//	        	String c2 = s.substring(s.indexOf(",")+1,s.lastIndexOf(",")).trim();	//PW column
+//	        	if(c2.contains(":")){
+//	        		c2str = c2.substring(0,c2.lastIndexOf(":"));
+//	        		c2 = c2.substring(c2.lastIndexOf(":")+1).trim();
+//	        	}
+	        	String from = "";
+	        	String expire_time = "";
+	        	String sender_name = "";
+	        	String admin_email = "";
+	        	String c3 = "";
+	        	String[] c3_array = null;
+	        	int c3_array_num = 0;
+	        	if(s_val.equals("1") || s_val.equals("2")){
+	        		//s_val:1 or 2
+	        		//Log.i("s: "+s);
+//	        		for(int i=0; i<s.length(); i++) Log.i(s.charAt(i));
+	        		String buf = s.substring(0,s.indexOf(","));
+		        	c1 = buf.substring(buf.indexOf("\"")+1,buf.indexOf(";")).trim();			//ID column,
+		        	if(c1.contains(":")){
+		        		c1str = c1.substring(0,c1.lastIndexOf(":")+1);
+		        		c1 = c1.substring(c1.lastIndexOf(":")+1).trim();
+		        	}
+		        	c2 = buf.substring(buf.indexOf(";")+1,buf.lastIndexOf("\"")).trim();		//PW column
+		        	if(c2.contains(":")){
+		        		c2str = c2.substring(0,c2.lastIndexOf(":"));
+		        		c2 = c2.substring(c2.lastIndexOf(":")+1).trim();
+		        	}
+		        	
+		        	s = s.substring(s.indexOf(",")+1);
+		        	from = s.substring(0,s.indexOf(",")).trim();		//FROM
+	        		
+	        		s = s.substring(s.indexOf(",")+1);
+	        		c3 = s.substring(0,s.indexOf(",")).replaceAll("\"","").replaceAll(";",",").trim();	//セッション変数として保存する属性
+	        		if(c3.endsWith(","))	c3 = c3.substring(0, c3.lastIndexOf(","));
+	        		//Log.i(c3.length() - c3.replaceAll(",","").length()+1);
+	        		c3_array_num = c3.length() - c3.replaceAll(",","").length()+1;
+	        		c3_array = new String[c3_array_num];
+	        		String c3_buf = c3+",";
+	        		for(int i=0; i<c3_array_num; i++){
+	        			c3_array[i] = c3_buf.substring(0,c3_buf.indexOf(",")).trim();
+	        			c3_buf = c3_buf.substring(c3_buf.indexOf(",")+1);
+	        		}
+	        		
+	        		sessionVariable_UniqueName += s.substring(s.lastIndexOf(",")+1,s.indexOf(")")).replaceAll("\"","").replaceAll(" ","").trim()+"_";	//セッション変数に使用するユニークな名前
+	        		//Log.i("sessionVariable_UniqueName: "+sessionVariable_UniqueName);
+	        	}else{
+	        		//s_val:3（E-mail登録）
+	        		c1 = s.substring(s.indexOf("(")+1,s.indexOf(",")).trim();			//ID column
+		        	if(c1.contains(":")){
+		        		c1str = c1.substring(0,c1.lastIndexOf(":")+1);
+		        		c1 = c1.substring(c1.lastIndexOf(":")+1).trim();
+		        	}
+		        	s = s.substring(s.indexOf(",")+1);
+		        	c2 = s.substring(0,s.indexOf(",")).trim();							//PW column
+		        	if(c2.contains(":")){
+		        		c2str = c2.substring(0,c2.lastIndexOf(":"));
+		        		c2 = c2.substring(c2.lastIndexOf(":")+1).trim();
+		        	}
+		        	s = s.substring(s.indexOf(",")+1);
+	        		from = s.substring(0,s.indexOf(",")).trim();						//FROM
+	        		s = s.substring(s.indexOf(",")+1);
+	        		//for(int j=0; j<3;j++)	s = s.substring(s.indexOf(",")+1);			//3つ目の,までカット
+//	        		Log.i("s: "+s);
+	        		expire_time = s.substring(0, s.indexOf(",")).replaceAll("\"","").trim();
+	        		if(expire_time.equals(""))	expire_time = "30";
+	        		s = s.substring(s.indexOf(",")+1);
+	        		sender_name = s.substring(0, s.indexOf(",")).replaceAll("\"","").trim();
+	        		s = s.substring(s.indexOf(",")+1);
+	        		admin_email = s.substring(0, s.indexOf(",")).replaceAll("\"","").trim();
+	        		s = s.substring(s.indexOf(",")+1);
+	        		sessionVariable_UniqueName += s.substring(0, s.indexOf(")")).replaceAll("\"","").replaceAll(" ","").trim()+"_";	//セッション変数に使用するユニークな名前
+	        		
+	        		Log.i("s: "+s+" expire_time:"+expire_time+" sender_name:"+sender_name+" admin_email:"+admin_email+" sessionVariable_UniqueName:"+sessionVariable_UniqueName);
 	        	}
-	        	String from = s.substring(s.lastIndexOf(",")+1,s.indexOf(")")).trim();	//FROM
 	        	String DBMS = GlobalEnv.getdbms();										//DBMS
-	        	//Log.i(c1str+c1+"   "+c2str+c2+"   from:"+from+"   DB:"+DB+"	DBMS:"+DBMS);
+	        	//Log.i(c1str+c1+"   "+c2str+c2+"      "+c3+"   from:"+from+"   DB:"+DB+"	DBMS:"+DBMS);
 	        	
 	        	//sqlite3 php
 	        	if(DBMS.equals("sqlite3")){
-	        		header.append("\n" +
-	        				"<!-- \"Login & Logout\" start -->\n" +
-	        				"<?php\n" +
-	        				"//最初にログイン中かどうか判定\n" +
-	        				"if($_SESSION[id] != \"\"){\n" +
-	        				"?>\n" +
-	        				"	<script type=\"text/javascript\">\n" +
-	        				"	$(document).ready(function(){\n" +
-	        				"		$('#login1').attr('checked', 'checked');	//load時\n" +
-	        				"		$('#LOGINpanel1').hide();\n" +
-	        				"	});\n" +
-	        				"	</script>\n" +
-	        				"<?php\n" +
-	        				"	display_html();								//display_html\n" +
-	        				"}else{\n" +
-	        				"?>\n" +
-	        				"	<script type=\"text/javascript\">\n" +
-	        				"	$(document).ready(function(){\n" +
-	        				"		$('#LOGOUTpanel1').hide();\n" +
-	        				"	});\n" +
-	        				"	</script>\n" +
-	        				"<?php\n" +
-	        				"}\n" +
-	        				"?>\n" +
-	        				"\n" +
-	        				"<!-- Login & Registration start -->\n" +
-	        				"<!-- Login Panel start -->\n" +
-	        				"<br>\n" +
-	        				"<div id=\"LOGINpanel1\" style=\"background-color:whitesmoke; width:100%; border-radius:20px; border:5px gray solid;\" data-role=\"none\">\n" +
-	        				"<div style=\"color:lightgray; font-size:30; background-color:black; border-radius:15px 15px 0px 0px;\" id=\"loginTitle1\">Log in</div>\n" +
-	        				"<br>\n" +
-	        				"<form method=\"post\" action=\"\" target=\"login_ifr1\">\n" +
-	        				"<div>\n" +
-	        				"	<div style=\"font-size:20;\">"+c1str+"&nbsp;&nbsp;</div>\n" +
-	        				"	<input type=\"text\" name=\"id\" style=\"width:100%;\" data-mini=\"true\">\n" +
-	        				"	<fieldset data-role=\"controlgroup\" data-type=\"horizontal\" data-mini=\"true\">\n" +
-	        				"		<input type=\"radio\" name=\"choose\" id=\"login1\" value=\"login1\" checked=\"checked\">\n" +
-	        				"	    <label for=\"login1\">I have an account</label>\n" +
-	        				"		<input type=\"radio\" name=\"choose\" id=\"signup1\">\n" +
-	        				"		<label for=\"signup1\"> I am new!</label>\n" +
-	        				"	</fieldset>\n" +
-	        				"</div>\n" +
-	        				"<div id=\"login_block\">\n" +
-	        				"	<div style=\"font-size:20;\">"+c2str+":&nbsp;&nbsp;&nbsp;</div>\n" +
-	        				"	<input type=\"password\" name=\"password\" id=\"password\" style=\"width:100%;\" data-mini=\"true\">\n" +
-	        				"	<input type=\"submit\" value=\" Login \" name=\"sqlite3_login1\" id=\"sqlite3_login1\" data-mini=\"false\" data-inline=\"false\">\n" +
-	        				"</div>\n" +
-	        				"<div id=\"signup_block\" style=\"display:none\" data-role=\"none\">\n" +
-	        				"	<div style=\"font-size:20;\">Choose "+c2str+":&nbsp;&nbsp;</div>\n" +
-	        				"	<input type=\"password\" name=\"newpassword\" id=\"newpassword\" style=\"width:100%;\" data-mini=\"true\">\n" +
-	        				"	<div style=\"font-size:20;\">Reinput "+c2str+":&nbsp;&nbsp;</div>\n" +
-	        				"	<input type=\"password\" name=\"re_newpassword\" id=\"re_newpassword\" style=\"width:100%;\" data-mini=\"true\">\n" +
-	        				"	<input type=\"submit\" value=\" Signup \" name=\"sqlite3_login1\" id=\"sqlite3_login1\" data-mini=\"false\" data-inline=\"false\">\n" +
-	        				"</div>\n" +
-	        				"</form>\n" +
-	        				"\n" +
-	        				"<iframe name=\"login_ifr1\" style=\"display:none;\"></iframe>\n" +
-	        				"<p id=\"Login_text1\"  data-role=\"none\"><!-- ここに表示 --></p>\n" +
-	        				"<br>\n" +
-	        				"</div>\n" +
-	        				"<!-- Login Panel end -->\n" +
-	        				"\n" +
-	        				"<?php\n" +
-	        				"//Login or Registration\n" +
-	        				"if($_POST['sqlite3_login1']){\n" +
-	        				"	//ユーザ定義\n" +
-	        				"	$sqlite3_DB = '"+DB+"';\n" +
-	        				"	$sqlite3_id = '"+c1+"';\n" +
-	        				"	$sqlite3_pw = '"+c2+"';\n" +
-	        				"	$sqlite3_table = '"+from+"';\n" +
-	        				"\n" +
-	        				"	$id = $_POST['id'];\n" +
-	        				"	$pw = $_POST['password'];\n" +
-	        				"	$newpw = $_POST['newpassword'];\n" +
-	        				"	$re_newpw = $_POST['re_newpassword'];\n" +
-	        				"\n" +
-	        				"	if($pw && $id){\n" +
-	        				"		//Login\n" +
-	        				"   		$db = new SQLite3($sqlite3_DB);\n" +
-	        				"		$sql = \"SELECT \".$sqlite3_id.\",\".$sqlite3_pw.\" FROM \".$sqlite3_table.\" where \".$sqlite3_id.\"='\".$id.\"' and \".$sqlite3_pw.\"='\".$pw.\"'\";\n" +
-	        				"	    $result = $db->query($sql);\n" +
-	        				"	    $i = 0;\n" +
-	        				"	    while($res = $result->fetchArray(SQLITE3_ASSOC)){\n" +
-	        				"	          $i++;\n" +
-	        				"	          if($i==1)	break;\n" +
-	        				"	    }\n" +
-	        				"	    if($i == 0)	p('<font color=#ff0000>Login failed.</font>');	//Login failed.\n" +
-	        				"	    else{\n" +
-	        				"	    	//Login success.\n" +
-	        				"	    	$_SESSION[id] = $id;\n" +
-	        				"			echo '<script type=\"text/javascript\">window.parent.$(\\'#Login_text1\\').text(\"\");</script>';\n" +
-	        				"			echo '<script type=\"text/javascript\">window.parent.history.go(0);</script>';	//reload\n" +
-	        				"	    }\n" +
-	        				"	}else if($newpw && $re_newpw && $id){\n" +
-	        				"		//check (pw==re_pw)?\n" +
-	        				"		if($newpw != $re_newpw){\n" +
-	        				"			p('<font color=#ff0000>Please input the same "+c2str+".</font>');	//PW is not equal\n" +
-	        				"		}else{\n" +
-	        				
-	        				"			//check & registration\n" +
-	        				"			$db = new SQLite3($sqlite3_DB);\n" +
-	        				"			\n" +
-	        				"			//check\n" +
-	        				"			$sql1 = \"SELECT \".$sqlite3_id.\" FROM \".$sqlite3_table.\" where \".$sqlite3_id.\"='\".$id.\"'\";\n" +
-	        				"		    $result1 = $db->query($sql1);\n" +
-	        				"		    $i=0;\n" +
-	        				"		    while($res = $result1->fetchArray(SQLITE3_ASSOC)){\n" +
-	        				"	   	       $i++;\n" +
-	        				"	   	       if($i==1)	break;\n" +
-	        				"		    }\n" +
-	        				"		    if($i > 0)	p('<font color=#ff0000>\\\''.$id.'\\\' has been already registered.</font>');	//already registered.\n" +
-	        				"		    else{\n" +
-	        				"	   	       //registration\n" +
-	        				"	   	       $sql2 = \"INSERT INTO \".$sqlite3_table.\" (\".$sqlite3_id.\", \".$sqlite3_pw.\") VALUES ('\".$id.\"','\".$newpw.\"')\";\n" +
-	        				"	   	       try{\n" +
-	        				"					$result2 = $db->exec($sql2);\n" +
-	        				"					p('<font color=gold>Registration Success!!</font>');\n" +
-	        				"	   	       }catch(Exception $e){\n" +
-	        				"					p('<font color=#ff0000>Registration failed.</font>'.$e->getMessage());\n" +
-	        				"	   	       }\n" +
-	        				"		    }\n" +
-	        				
-	        				"		}\n" +
-	        				"	}else{\n" +
-	        				"		p('<font color=#ff0000>Please input form.</font>');\n" +
-	        				"	}\n" +
-	        				"	unset($db);\n" +
-	        				"}\n" +
-	        				"function p($str){\n" +
-	        				"	//親ウインドウのJavaScript関数（テキストエリアへ書き込み）を呼び出す\n" +
-	        				"	echo '<script type=\"text/javascript\">window.parent.Login_echo1(\"'.$str.'\");</script>';\n" +
-	        				"}\n" +
-	        				"?>\n" +
-	        				"\n" +
-	        				"<script type=\"text/javascript\">\n" +
-	        				"$(document).ready(function(){\n" +
-	        				"	//アカウントあり or 新規登録 クリック時の処理\n" +
-	        				"	$('#signup1').click(function(){\n" +
-	        				"		$('#loginTitle1').text('Sign up');\n" +
-	        				"		$('#password').val('');\n" +
-	        				"		$('#login_block').hide();\n" +
-	        				"		$('#signup_block').show();\n" +
-	        				"		Login_echo1(\"\");\n" +
-	        				"	});\n" +
-	        				"	$('#login1').click(function(){\n" +
-	        				"		$('#loginTitle1').text('Log in');\n" +
-	        				"		$('#newpassword').val('');\n" +
-	        				"		$('#re_newpassword').val('');\n" +
-	        				"		$('#signup_block').hide();\n" +
-	        				"		$('#login_block').show();\n" +
-	        				"		Login_echo1(\"\");\n" +
-	        				"	});\n" +
-	        				"});\n" +
-	        				"\n" +
-	        				"//テキストエリアへ書き込み\n" +
-	        				"function Login_echo1(str){\n" +
-	        				"  var textArea = document.getElementById(\"Login_text1\");\n" +
-	        				"  textArea.innerHTML = \"<h2>\" + str + \"</h2>\";\n" +
-	        				"}\n" +
-	        				"</script>\n" +
-	        				"<!-- Login & Registration end -->\n" +
-	        				"\n" +
-	        				"\n");
+	        		if(s_val.equals("1") || s_val.equals("2")){
+		        		header.append("\n" +
+		        				"<!-- \"Login & Logout\" start -->\n" +
+		        				"<?php\n" +
+		        				"//最初にログイン中かどうか判定\n" +
+		        				"if($_SESSION["+sessionVariable_UniqueName+"id] != \"\"){\n" +
+		        				"?>\n" +
+		        				"	<script type=\"text/javascript\">\n" +
+		        				"	$(document).ready(function(){\n" +
+		        				"		$('#login1').attr('checked', 'checked');	//load時\n" +
+		        				"		$('#LOGINpanel1').hide();\n" +
+		        				"	});\n" +
+		        				"	</script>\n" +
+		        				"<?php\n" +
+		        				"	display_html();								//display_html\n" +
+		        				//ユーザ名
+		        				"	echo '<script type=\"text/javascript\">$(\\'#showValues\\').html(\\'<div style=\\\"text-align:right;color:gray;font-size:12;background-color:whitesmoke;\\\">ログイン日時: '.$_SESSION["+sessionVariable_UniqueName+"logintime].'<br>ようこそ '.$_SESSION["+sessionVariable_UniqueName+"id].'さん</div>\\');</script>';\n" +
+		        				"}else{\n" +
+		        				"?>\n" +
+		        				"	<script type=\"text/javascript\">\n" +
+		        				"	$(document).ready(function(){\n" +
+		        				"		$('#LOGOUTpanel1').hide();\n" +
+		        				"	});\n" +
+		        				"	</script>\n" +
+		        				"<?php\n" +
+		        				"}\n" +
+		        				"?>\n" +
+		        				"\n" +
+		        				"<!-- Login & Registration start -->\n" +
+		        				"<!-- Login Panel start -->\n" +
+		        				"<br>\n" +
+		        				"<div id=\"LOGINpanel1\" style=\"background-color:whitesmoke; border-radius:20px; border:5px gray solid;\" data-role=\"none\">\n" +
+		        				"<div style=\"color:lightgray; font-size:30; background-color:black; border-radius:15px 15px 0px 0px;\" id=\"loginTitle1\">Log in</div>\n" +
+		        				"<br>\n" +
+		        				"<form method=\"post\" action=\"\" target=\"login_ifr1\">\n" +
+		        				"<div>\n" +
+		        				"	<div style=\"font-size:20;\">"+c1str+"&nbsp;&nbsp;</div>\n" +
+		        				"	<input type=\"text\" name=\"id\" data-mini=\"true\">\n");
+		        		
+	    				if(!s_val.equals("1"))
+		        			header.append(
+		        				"	<fieldset data-role=\"controlgroup\" data-type=\"horizontal\" data-mini=\"true\">\n" +
+		        				"		<input type=\"radio\" name=\"choose\" id=\"login1\" value=\"login1\" checked=\"checked\">\n" +
+		        				"	    <label for=\"login1\">I have an account</label>\n" +
+		        				"		<input type=\"radio\" name=\"choose\" id=\"signup1\">\n" +
+		        				"		<label for=\"signup1\"> I am new!</label>\n" +
+		        				"	</fieldset>\n");
+	    				
+	    				header.append(
+		        				"</div>\n" +
+		        				"<div id=\"login_block\">\n" +
+		        				"	<div style=\"font-size:20;\">"+c2str+":&nbsp;&nbsp;&nbsp;</div>\n" +
+		        				"	<input type=\"password\" name=\"password\" id=\"password\" data-mini=\"true\">\n" +
+		        				"	<input type=\"submit\" value=\" Login \" name=\"sqlite3_login1\" id=\"sqlite3_login1\" data-mini=\"false\" data-inline=\"false\">\n" +
+		        				"</div>\n");
+		        				
+		        		if(!s_val.equals("1"))
+		        			header.append(
+		        				"<div id=\"signup_block\" style=\"display:none\" data-role=\"none\">\n" +
+		        				"	<div style=\"font-size:20;\">Choose "+c2str+":&nbsp;&nbsp;</div>\n" +
+		        				"	<input type=\"password\" name=\"newpassword\" id=\"newpassword\" data-mini=\"true\">\n" +
+		        				"	<div style=\"font-size:20;\">Reinput "+c2str+":&nbsp;&nbsp;</div>\n" +
+		        				"	<input type=\"password\" name=\"re_newpassword\" id=\"re_newpassword\" data-mini=\"true\">\n" +
+		        				"	<input type=\"submit\" value=\" Signup \" name=\"sqlite3_login1\" id=\"sqlite3_login1\" data-mini=\"false\" data-inline=\"false\">\n" +
+		        				"</div>\n");
+		        		
+		        		header.append(
+		        				"</form>\n" +
+		        				"\n" +
+		        				"<iframe name=\"login_ifr1\" style=\"display:none;\"></iframe>\n" +
+		        				"<p id=\"Login_text1\"  data-role=\"none\"><!-- ここに表示 --></p>\n" +
+		        				"<br>\n" +
+		        				"</div>\n" +
+		        				"<!-- Login Panel end -->\n" +
+		        				"\n" +
+		        				"<?php\n" +
+		        				"//Login or Registration\n" +
+		        				"if($_POST['sqlite3_login1']){\n" +
+		        				"	//ユーザ定義\n" +
+		        				"	$sqlite3_DB = '"+DB+"';\n" +
+		        				"	$sqlite3_id = '"+c1+"';\n" +
+		        				"	$sqlite3_pw = '"+c2+"';\n" +
+		        				"	$sqlite3_c3 = '"+((!c3.equals(""))?(","+c3):("") )+"';\n" +
+		        				"	$sqlite3_table = '"+from+"';\n" +
+		        				"\n" +
+		        				"	$id = checkHTMLsc($_POST['id']);\n" +
+		        				"	$pw = checkHTMLsc($_POST['password']);\n" +
+		        				"	$newpw = checkHTMLsc($_POST['newpassword']);\n" +
+		        				"	$re_newpw = checkHTMLsc($_POST['re_newpassword']);\n" +
+		        				"\n" +
+		        				"	if($pw && $id){\n" +
+		        				"		//Login\n" +
+		        				"		$db = new SQLite3($sqlite3_DB);\n" +
+		        				"		$sql = \"SELECT \".$sqlite3_id.\",\".$sqlite3_pw.\"\".$sqlite3_c3.\" FROM \".$sqlite3_table.\" where \".$sqlite3_id.\"='\".$id.\"' and \".$sqlite3_pw.\"='\".$pw.\"'\";\n" +
+		        				"	    $result = $db->query($sql);\n" +
+		        				"	    $i = 0;\n" +
+		        				//"	    while($res = $result->fetchArray(SQLITE3_ASSOC)){\n" +
+		        				"	    while($res = $result->fetchArray()){\n");
+//		        				"	          $_SESSION[name] = $res[2];\n" +
+						if(!c3.equals("")){
+			        		for(int i=0; i<c3_array_num; i++){
+								//c3_array[i];
+								header.append(
+				        				"	          $_SESSION["+c3_array[i]+"] = $res["+(i+2)+"];\n");
+							}
+						}
+						header.append(
+		        				"	          $i++;\n" +
+		        				"	          if($i==1)	break;\n" +
+		        				"	    }\n" +
+		        				"	    if($i == 0)	p('<font color=#ff0000>Login failed.</font>');	//Login failed.\n" +
+		        				"	    else{\n" +
+		        				"	    	//Login success.\n" +
+		        				"	    	$_SESSION["+sessionVariable_UniqueName+"id] = $id;\n" +
+		        				"	    	$_SESSION["+sessionVariable_UniqueName+"logintime] = date('Y/m/d(D) H:i:s', time());\n" +		//ユーザ名
+		        				"			echo '<script type=\"text/javascript\">window.parent.$(\\'#Login_text1\\').text(\"\");</script>';\n" +
+		        				"			echo '<script type=\"text/javascript\">window.parent.history.go(0);</script>';	//reload\n" +
+		        				"	    }\n" +
+		        				"	}else if($newpw && $re_newpw && $id){\n" +
+		        				"		//check (pw==re_pw)?\n" +
+		        				"		if($newpw != $re_newpw){\n" +
+		        				"			p('<font color=#ff0000>Please input the same "+c2str+".</font>');	//PW is not equal\n" +
+		        				"		}else{\n" +
+		        				
+		        				"			//check & registration\n" +
+		        				"			$db = new SQLite3($sqlite3_DB);\n" +
+		        				"			\n" +
+		        				"			//check\n" +
+		        				"			$sql1 = \"SELECT \".$sqlite3_id.\" FROM \".$sqlite3_table.\" where \".$sqlite3_id.\"='\".$id.\"'\";\n" +
+		        				"		    $result1 = $db->query($sql1);\n" +
+		        				"		    $i=0;\n" +
+		        				"		    while($res = $result1->fetchArray(SQLITE3_ASSOC)){\n" +
+		        				"	   	       $i++;\n" +
+		        				"	   	       if($i==1)	break;\n" +
+		        				"		    }\n" +
+		        				"		    if($i > 0)	p('<font color=#ff0000>\\\''.$id.'\\\' has been already registered.</font>');	//already registered.\n" +
+		        				"		    else{\n" +
+		        				"	   	       //registration\n" +
+		        				"	   	       $sql2 = \"INSERT INTO \".$sqlite3_table.\" (\".$sqlite3_id.\", \".$sqlite3_pw.\") VALUES ('\".$id.\"','\".$newpw.\"')\";\n" +
+		        				"	   	       try{\n" +
+		        				"					$result2 = $db->exec($sql2);\n" +
+		        				"					p('<font color=gold>Registration Success!!</font>');\n" +
+		        				"	   	       }catch(Exception $e){\n" +
+		        				"					p('<font color=#ff0000>Registration failed.</font>'.$e->getMessage());\n" +
+		        				"	   	       }\n" +
+		        				"		    }\n" +
+		        				
+		        				"		}\n" +
+		        				"	}else{\n" +
+		        				"		p('<font color=#ff0000>Please input form.</font>');\n" +
+		        				"	}\n" +
+		        				"	unset($db);\n" +
+		        				"}\n" +
+		        				"function p($str){\n" +
+		        				"	//親ウインドウのJavaScript関数（テキストエリアへ書き込み）を呼び出す\n" +
+		        				"	echo '<script type=\"text/javascript\">window.parent.Login_echo1(\"'.$str.'\");</script>';\n" +
+		        				"}\n" +
+		        				"?>\n" +
+		        				"\n" +
+		        				"<script type=\"text/javascript\">\n");
+		        		
+	    				if(!s_val.equals("1"))
+		        			header.append(
+		        				"$(document).ready(function(){\n" +
+		        				"	//アカウントあり or 新規登録 クリック時の処理\n" +
+		        				"	$('#signup1').click(function(){\n" +
+		        				"		$('#loginTitle1').text('Sign up');\n" +
+		        				"		$('#password').val('');\n" +
+		        				"		$('#login_block').hide();\n" +
+		        				"		$('#signup_block').show();\n" +
+		        				"		Login_echo1(\"\");\n" +
+		        				"	});\n" +
+		        				"	$('#login1').click(function(){\n" +
+		        				"		$('#loginTitle1').text('Log in');\n" +
+		        				"		$('#newpassword').val('');\n" +
+		        				"		$('#re_newpassword').val('');\n" +
+		        				"		$('#signup_block').hide();\n" +
+		        				"		$('#login_block').show();\n" +
+		        				"		Login_echo1(\"\");\n" +
+		        				"	});\n" +
+		        				"});\n" +
+		        				"\n");
+	    				
+	    				header.append(
+		        				"//テキストエリアへ書き込み\n" +
+		        				"function Login_echo1(str){\n" +
+		        				"  var textArea = document.getElementById(\"Login_text1\");\n" +
+		        				"  textArea.innerHTML = \"<h2>\" + str + \"</h2>\";\n" +
+		        				"}\n" +
+		        				"</script>\n" +
+		        				"<!-- Login & Registration end -->\n" +
+		        				"\n" +
+		        				"\n");
+	    				
+	        		}else{	//s_val:3（E-mail登録）
+	        			header.append(
+	        					"<!-- \"Login & Logout\" start -->\n" +
+    							"<?php\n" +
+    							"    //定義\n" +
+    							"    $tokendir = dirname( __FILE__ ).DIRECTORY_SEPARATOR.\"token\".DIRECTORY_SEPARATOR;\n" +
+    							"    $email = \"\";\n" +
+    							"    $expire_time = "+expire_time+"*60;						//分\n" +
+    							"    $sender_name = \""+sender_name+"\";                    //送信者名\n" +
+    							"    $admin_email = \""+admin_email+"\";	//本当は、管理者メールアドレスはconfig.phpのMAILTO_MASTERを利用した方が良い\n" +
+    							"    \n" +
+    							"    $success_page = \"http://\".$_SERVER[\"HTTP_HOST\"].$_SERVER[\"REQUEST_URI\"];	//ログインページ\n" +
+    							"    $pos = strpos($success_page, '?');		//?以下をカット\n" +
+    							"	if($pos !== false)	$success_page = substr($success_page, 0, $pos); \n" +
+    							"    $resistration_page = $success_page;											//もう一度こちらから\n" +
+    							"    \n" +
+    							"    mb_language(\"ja\");				//カレントの言語を日本語に設定する\n" +
+    							"    mb_internal_encoding(\"UTF-8\");	//内部文字エンコードを設定する\n" +
+    							"?>\n" +
+    							"\n" +
+    							"<?php\n" +
+    							"//最初にログイン中かどうか判定\n" +
+    							"if($_SESSION["+sessionVariable_UniqueName+"id] != \"\"){\n" +
+    							"?>\n" +
+    							"	<script type=\"text/javascript\">\n" +
+    							"	$(document).ready(function(){\n" +
+    							"		$('#login1').attr('checked', 'checked');	//load時\n" +
+    							"		$('#LOGINpanel1').hide();\n" +
+    							"	});\n" +
+    							"	</script>\n" +
+    							"<?php\n" +
+    							"	display_html();								//display_html\n" +
+    							"}else{\n" +
+    							"?>\n" +
+    							"	<script type=\"text/javascript\">\n" +
+    							"	$(document).ready(function(){\n" +
+    							"		$('#LOGOUTpanel1').hide();\n" +
+    							"	});\n" +
+    							"	</script>\n" +
+    							"<?php\n" +
+    							"}\n" +
+    							"?>\n" +
+    							"\n" +
+    							"<div id=\"message\"  data-role=\"none\"><!-- ここに表示 --></div>\n" +
+    							"\n" +
+    							"<script type=\"text/javascript\">\n" +
+    							"$(document).ready(function(){\n" +
+    							"<?php\n" +
+    							"    if(isset($_GET[\"key\"])){\n" +
+    							"        if(delete_old_token($_GET[\"key\"])){\n" +
+    							"            global $email,$success_page;\n" +
+    							"           \n" +
+    							"            if(mail_to_success($email)){//ユーザーにメール\n" +
+    							"            	mail_to_master($email); //管理者にメール\n" +
+    							"?>\n" +
+    							"            	$(\"#message\").html(\"<br><div>登録完了メールを送信しました。<a href=\\\"<?php echo $success_page; ?>\\\" target=\\\"_self\\\"><br>ログインページ</a>へ</div>\");\n" +
+    							"            	$(\"#LOGINpanel1\").hide();\n" +
+    							"<?php\n" +
+    							"			}\n" +
+    							"        }else{\n" +
+    							"            //document.write(\"もう一度初めからやり直してください。\");\n" +
+    							"?>\n" +
+    							"            $(\"#message\").html(\"<br><div>もう一度<a href=\\\"<?php echo $resistration_page; ?>\\\" target=\\\"_self\\\">こちら</a>からやり直してください。</div>\");\n" +
+    							"            $(\"#LOGINpanel1\").hide();\n" +
+    							"<?php\n" +
+    							"        }\n" +
+    							"    }\n" +
+    							"?>\n" +
+    							"});\n" +
+    							"</script>\n" +
+    							"\n" +
+    							"<!-- Login & Registration start -->\n" +
+    							"<!-- Login Panel start -->\n" +
+    							"<div id=\"LOGINpanel1\">\n" +
+    							"	<br>\n" +
+    							"	<div style=\"text-align:right; margin-right:20px; font-size:18px;\">\n" +
+    							"		<span id=\"login1\"><span style=\"font-weight:bold;\">ログイン</span></span>\n" +
+    							"		<span id=\"signup1\"><a href=\"\">新規登録</a></span>\n" +
+    							"		<!--<fieldset data-role=\"controlgroup\" data-type=\"horizontal\" data-mini=\"true\" data-role=\"none\">\n" +
+    							"			<input type=\"radio\" name=\"choose\" id=\"login1\" value=\"login1\" checked=\"checked\">\n" +
+    							"		    <label for=\"login1\">I have an account</label>\n" +
+    							"			<input type=\"radio\" name=\"choose\" id=\"signup1\">\n" +
+    							"			<label for=\"signup1\"> I am new!</label>\n" +
+    							"		</fieldset>-->\n" +
+    							"	</div>\n" +
+    							"	<div style=\"background-color:whitesmoke; width:97%;  border-radius:20px; border:5px gray solid;\" data-role=\"none\">\n" +
+    							"		<div style=\"color:lightgray; font-size:30; background-color:black; border-radius:15px 15px 0px 0px;\" id=\"loginTitle1\">ログイン</div>\n" +
+    							"		<br><br>\n" +
+    							"		\n" +
+    							"		<form method=\"post\" action=\"\" target=\"login_ifr1\">\n" +
+    							"			<div id=\"login_block\">\n" +
+    							"				<div style=\"font-size:20;\">"+c1str+"&nbsp;&nbsp;</div>\n" +
+    							"				<input type=\"text\" name=\"id\" data-mini=\"true\">	\n" +
+    							"				<div style=\"font-size:20;\">"+c2str+":&nbsp;&nbsp;&nbsp;</div>\n" +
+    							"				<input type=\"password\" name=\"password\" id=\"password\" data-mini=\"true\">\n" +
+    							"				<input type=\"submit\" value=\" Login \" name=\"sqlite3_login1\" id=\"sqlite3_login1\" data-mini=\"false\" data-inline=\"false\">\n" +
+    							"			</div>\n" +
+    							"			<div id=\"signup_block\" style=\"display:none\" data-role=\"none\">\n" +
+    							"			    <div style=\"font-size:20;\">"+c1str+"&nbsp;&nbsp;</div>\n" +
+    							"			    <input type=\"text\" name=\"mail1\" id=\"mail1\" data-mini=\"true\">\n" +
+    							"			    <input type=\"submit\" value=\" Send \" name=\"mail\" id=\"mail\" data-mini=\"false\" data-inline=\"false\">\n" +
+    							"			</div>\n" +
+    							"		</form>\n" +
+    							"		\n" +
+    							"		<iframe name=\"login_ifr1\" style=\"display:none;\"></iframe>\n" +
+    							"		<div id=\"Login_text1\"  data-role=\"none\"><!-- ここに表示 --></div>\n" +
+    							"		<br>\n" +
+    							"	</div>\n" +
+    							"</div>\n" +
+    							"\n" +
+    							"<form method=\"post\" action=\"\" target=\"reset_ifr1\" id=\"RESETpanel1\" name=\"RESETpanel1\">\n" +
+    							"<input type=\"hidden\" name=\"sqlite3_reset1\" value=\"\">\n" +
+    							"</form>\n" +
+    							"<iframe name=\"reset_ifr1\" style=\"display:none;\"></iframe>\n" +
+    							"<!-- Login Panel end -->\n" +
+    							"\n" +
+    							"<?php\n" +
+    							"	//ログイン処理\n" +
+    							"	if($_POST['sqlite3_login1']){\n" +
+    							"		//ユーザ定義\n" +
+    							"		$sqlite3_DB = '"+DB+"';\n" +
+    							"		$sqlite3_id = '"+c1+"';\n" +
+    							"		$sqlite3_pw = '"+c2+"';\n" +
+    							"		$sqlite3_table = '"+from+"';\n" +
+    							"	\n" +
+    							"		$id = checkHTMLsc($_POST['id']);\n" +
+    							"		$pw = checkHTMLsc($_POST['password']);\n" +
+    							"	\n" +
+    							"		if($pw && $id){\n" +
+    							"	   		$db = new SQLite3($sqlite3_DB);\n" +
+    							"			$sql = \"SELECT \".$sqlite3_id.\",\".$sqlite3_pw.\" FROM \".$sqlite3_table.\" where \".$sqlite3_id.\"='\".$id.\"' and \".$sqlite3_pw.\"='\".$pw.\"'\";\n" +
+    							"		    $result = $db->query($sql);\n" +
+    							"		    $i = 0;\n" +
+    							"		    while($res = $result->fetchArray(SQLITE3_ASSOC)){\n" +
+    							"		          $i++;\n" +
+    							"		          if($i==1)	break;\n" +
+    							"		    }\n" +
+    							"		    if($i == 0)	p('<font color=#ff0000>Login failed.</font>');	//Login failed.\n" +
+    							"		    else{\n" +
+    							"		    	//Login success.\n" +
+    							"		    	$_SESSION["+sessionVariable_UniqueName+"id] = $id;\n" +
+    							"				echo '<script type=\"text/javascript\">window.parent.$(\\'#Login_text1\\').text(\"\");</script>';\n" +
+    							"				echo '<script type=\"text/javascript\">window.parent.history.go(0);</script>';	//reload\n" +
+    							"		    }\n" +
+    							"		}else{\n" +
+    							"			p('<font color=#ff0000>Please input form.</font>');\n" +
+    							"		}\n" +
+    							"		unset($db);\n" +
+    							"	}\n" +
+    							"\n" +
+    							"	//メール送信 ＆ 新規登録\n" +
+    							"	if($_POST['mail'] || $_POST['mail1']){\n" +
+    							"	    if($_POST[\"mail1\"]==\"\"){\n" +
+    							"	        p(\"<font color=#ff0000>メールアドレスを入力してください。</font>\");\n" +
+    							"	    }elseif(mb_strlen($_POST[\"mail1\"])> 0 && !preg_match(\"/^([a-z0-9_]|\\-|\\.|\\+)+@(([a-z0-9_]|\\-)+\\.)+[a-z]{2,6}$/i\",$_POST[\"mail1\"])){\n" +
+    							"	        p(\"<font color=#ff0000>メールアドレスの書式に<br>誤りがあります。</font>\");\n" +
+    							"	    }else{\n" +
+    							"	    	//TODO: トークンが存在しているかどうかチェック\n" +
+    							"	    	//hasToken($_POST[\"mail1\"]);\n" +
+    							"	    	\n" +
+    							"			//ユーザ定義\n" +
+    							"			$sqlite3_DB = '"+DB+"';\n" +
+    							"			$sqlite3_id = '"+c1+"';\n" +
+    							"			$sqlite3_table = '"+from+"';\n" +
+    							"			\n" +
+    							"			$email = $_POST[\"mail1\"];\n" +
+    							"	        \n" +
+    							"	        //DB登録未登録のメールアドレスかどうかの判定\n" +
+    							"	        if( isResistered($email, $sqlite3_DB, $sqlite3_id, $sqlite3_table) ){\n" +
+    							"	       		//登録済み\n" +
+    							"		    	p('<font color=#ff0000>\\''.$email.'\\' は<br>既に登録済です。</font><br><span style=\\\"font-size:11px;\\\">パスワードを忘れた場合は、<a href=\\\"\\\" onclick=\\\"window.parent.document.RESETpanel1.sqlite3_reset1.value=\\''.$email.'\\';window.parent.document.RESETpanel1.submit();return false;\\\">こちら</a>をクリックしてください。</span>');\n" +
+    							"	        }else{\n" +
+    							"	        	//未登録　→　確認メール送信\n" +
+    							"	        	p(\"確認メールを送信しました。\".\"<br>\".'<span style=\\\"font-size:15px;\\\">E-mail to: '.$email.'</span>');\n" +
+    							"	        	mail_to_token($email);\n" +
+    							"	        }\n" +
+    							"	    }\n" +
+    							"	}\n" +
+    							"\n" +
+    							"	//パスワードをランダムパスワードで初期化。ユーザーへメール送信\n" +
+    							"	if($_POST['sqlite3_reset1']){ \n" +
+    							"		$mail = $_POST['sqlite3_reset1'];\n" +
+    							"	    echo '<script type=\"text/javascript\">window.parent.window.parent.Login_echo1(\"'.$mail.' 登録済みパスワードを初期化します。\");</script>';\n" +
+    							"		password_reset_and_send_mail($mail);\n" +
+    							"		//echo '<script type=\"text/javascript\">window.parent.window.parent.Login_echo1(\"テスト2\");</script>';\n" +
+    							"	}\n" +
+    							"	\n" +
+    							"	function password_reset_and_send_mail($mail){\n" +
+    							"		//8桁ランダムパスワードの発行\n" +
+    							"		$r_password = getRandomPassword(8);\n" +
+    							"		\n" +
+    							"		//ユーザ定義\n" +
+    							"		$sqlite3_DB = '"+DB+"';\n" +
+    							"		$sqlite3_id = '"+c1+"';\n" +
+    							"		$sqlite3_pw = '"+c2+"';\n" +
+    							"		$sqlite3_table = '"+from+"';\n" +
+    							"\n" +
+    							"		//$mail列のパスワードを「ランダムpassword」で初期化\n" +
+    							"		$reset_sql1 = \"UPDATE \".$sqlite3_table.\" SET \".$sqlite3_pw.\"='\".$r_password.\"' where \".$sqlite3_id.\"='\".$mail.\"'\";\n" +
+    							"		$db = new SQLite3($sqlite3_DB);\n" +
+    							"		$result1 = $db->exec($reset_sql1);\n" +
+    							"		if ($result1) {\n" +
+    							"			$changed_num = $db->changes();		//変更された行の数: $db->changes()\n" +
+    							"			\n" +
+    							"			if($changed_num > 0){\n" +
+    							"				//リセット成功　→　リセット済みパスワードの送信\n" +
+    							"				echo '<script type=\"text/javascript\">window.parent.window.parent.Login_echo1(\"パスワードを初期化して<br>ご登録先へ送信しました。\");</script>';\n" +
+    							"				mail_to_reset($mail,$r_password);\n" +
+    							"			}else{\n" +
+    							"				//リセット失敗\n" +
+    							"				echo '<script type=\"text/javascript\">window.parent.window.parent.Login_echo1(\"<span style=\\\"color:red;\\\">初期化に失敗しました。しばらく経ってからもう一度お試しください。</span>\");</script>';\n" +
+    							"			}\n" +
+    							"		}\n" +
+    							"		unset($db);\n" +
+    							"	}\n" +
+    							"\n" +
+    							"	//DB登録未登録かどうかの判定\n" +
+    							"    function isResistered($check_string, $database, $c1, $table) {\n" +
+    							"		//SQLite3\n" +
+    							"		//DB登録未登録のメールアドレスかどうかチェック\n" +
+    							"   		$db = new SQLite3($database);\n" +
+    							"		$sql = \"SELECT \".$c1.\" FROM \".$table.\" where \".$c1.\"='\".checkHTMLsc($check_string).\"'\";\n" +
+    							"	    $result = $db->query($sql);\n" +
+    							"	    $i = 0;\n" +
+    							"	    while($res = $result->fetchArray(SQLITE3_ASSOC)){\n" +
+    							"	          $i++;\n" +
+    							"	          if($i==1)	break;\n" +
+    							"	    }\n" +
+    							"	    unset($db);\n" +
+    							"	    if($i > 0)	return true;	//登録済\n" +
+    							"	    else		return false;  	//未登録\n" +
+    							"    }\n" +
+    							"    \n" +
+    							"    function mail_to_token($address) {\n" +
+    							"        global $tokendir, $sender_name, $expire_time;\n" +
+    							"      \n" +
+    							"        $limit = (time()+$expire_time);\n" +
+    							"        $token= rand(0,100).uniqid();		//トークン\n" +
+    							"        touch($tokendir.$token.\".log\");		//トークンファイル作成\n" +
+    							"    \n" +
+    							"        $url = $_SERVER[\"HTTP_REFERER\"].\"?key=\".$token;\n" +
+    							"        file_put_contents($tokendir.$token.\".log\", $address, LOCK_EX);	//期限保存\n" +
+    							"        delete_old_token($tokendir);									//古いトークンの削除\n" +
+    							"        $message=\"登録を完了するには、以下のアドレスを開いてください。\n\".($expire_time/60).\"分以内にアクセスが無かった場合は無効となります。\n\";\n" +
+    							"        $message.= $url.\"\n\n\";\n" +
+    							"\n" +
+    							"        if($sender_name != \"\")	my_send_mail($address,'['.$sender_name.'] 登録確認',$message);\n" +
+    							"        else					my_send_mail($address,'登録確認',$message);\n" +
+    							"    }\n" +
+    							"    \n" +
+    							"    function mail_to_success($mailto) {\n" +
+    							"        global $success_page, $resistration_page, $sender_name;\n" +
+    							"       \n" +
+    							"        //「メールアドレス」と「ランダムpassword」をDBへ登録\n" +
+    							"        $random_password = register_email_and_random_password($mailto);\n" +
+    							"      	if($random_password != \"\"){\n" +
+    							"	        $message=\"登録が完了しました。\n\nログイン仮パスワード：\".$random_password.\" (※ログイン後に必ず変更してください）\n\n\";\n" +
+    							"	        $message.=\"こちらからログインできます: \".$success_page.\"\n\n\";\n" +
+    							"	        if($sender_name != \"\")	my_send_mail($mailto, '['.$sender_name.'] ご登録ありがとうございます', $message);\n" +
+    							"	        else					my_send_mail($mailto, 'ご登録ありがとうございます', $message);\n" +
+    							"	        return true;\n" +
+    							"	    }else{\n" +
+    							"	    	p('<font color=#ff0000>\\''.$mailto.'\\'の登録に失敗しました。既に登録済みの可能性があります。<br>もう一度<a href=\"'.$resistration_page.'\" target=\"_self\">こちら</a>からやり直してください。</font>');	//登録失敗（レアケース）\n" +
+    							"	    	return false;\n" +
+    							"	    }\n" +
+    							"    }\n" +
+    							"    \n" +
+    							"    //「メールアドレス」と「ランダムpassword」をDBへ登録する\n" +
+    							"    function register_email_and_random_password($mail) {\n" +
+    							"		//8桁ランダムパスワードの発行\n" +
+    							"		$r_password = getRandomPassword(8);\n" +
+    							"		\n" +
+    							"		//ユーザ定義\n" +
+    							"		$sqlite3_DB = '"+DB+"';\n" +
+    							"		$sqlite3_id = '"+c1+"';\n" +
+    							"		$sqlite3_pw = '"+c2+"';\n" +
+    							"		$sqlite3_table = '"+from+"';\n" +
+    							"		\n" +
+    							"		//「メールアドレス」と「ランダムpassword」をDBへ登録\n" +
+    							"		//check & registration\n" +
+    							"		$db = new SQLite3($sqlite3_DB);\n" +
+    							"		//一応、再check\n" +
+    							"		$sql1 = \"SELECT \".$sqlite3_id.\" FROM \".$sqlite3_table.\" where \".$sqlite3_id.\"='\".$mail.\"'\";\n" +
+    							"	    $result1 = $db->query($sql1);\n" +
+    							"	    $i=0;\n" +
+    							"	    while($res = $result1->fetchArray(SQLITE3_ASSOC)){\n" +
+    							"   	       $i++;\n" +
+    							"   	       if($i==1)	break;\n" +
+    							"	    }\n" +
+    							"	    if($i > 0){\n" +
+    							"	    	unset($db);\n" +
+    							"	     	return \"\";		//既に登録済み（レアケース）\n" +
+    							"	    }else{\n" +
+    							"   	       //「メールアドレス」と「ランダムpassword」をDBへ登録\n" +
+    							"   	       $sql2 = \"INSERT INTO \".$sqlite3_table.\" (\".$sqlite3_id.\", \".$sqlite3_pw.\") VALUES ('\".$mail.\"','\".$r_password.\"')\";\n" +
+    							"   	       try{\n" +
+    							"				$result2 = $db->exec($sql2);\n" +
+    							"				unset($db);\n" +
+    							"				return $r_password;	//登録成功\n" +
+    							"   	       }catch(Exception $e){\n" +
+    							"   	       		unset($db);\n" +
+    							"   	       		return \"\";			//登録失敗\n" +
+    							"   	       }\n" +
+    							"	    }\n" +
+    							"	}\n" +
+    							"	function getRandomPassword($length){\n" +
+    							"    	return substr(str_shuffle('1234567890abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ'), 0, $length);\n" +
+    							"	}\n" +
+    							"\n" +
+    							"    function mail_to_master($mail) {\n" +
+    							"        global $admin_email, $sender_name;\n" +
+    							"        \n" +
+    							"        if($admin_email != \"\"){\n" +
+    							"	        $message =\"新しく登録されたユーザーの情報は次の通りです。\n\";\n" +
+    							"	        $message.=\"────────────────────────────────────────────────\n\";\n" +
+    							"	        $message.= $mail.\"\n\n\";\n" +
+    							"	        $message.=\"DATE: \".date(\"Y/m/d - H:i:s\").\"\n\";\n" +
+    							"	        $message.=\"IP: \".$_SERVER['REMOTE_ADDR'].\"\n\";\n" +
+    							"	        $message.=\"HOST: \".@gethostbyaddr($_SERVER['REMOTE_ADDR']).\"\n\";\n" +
+    							"	        $message.=\"USER AGENT: \".$_SERVER['HTTP_USER_AGENT'].\"\n\";\n" +
+    							"	        $message.=\"────────────────────────────────────────────────\n\";\n" +
+    							"	      \n" +
+    							"	        //my_send_mail(MAILTO_MASTER, 'ユーザー登録通知', $message);\n" +
+    							"	        if($sender_name != \"\")	my_send_mail($admin_email, '['.$sender_name.' admin] ユーザー登録通知', $message);\n" +
+    							"	        else					my_send_mail($admin_email, '[admin] ユーザー登録通知', $message);\n" +
+    							"        }\n" +
+    							"    }\n" +
+    							"    \n" +
+    							"    function mail_to_reset($mail,$random_password) {\n" +
+    							"        global $sender_name,$success_page;\n" +
+    							"       \n" +
+    							"       	$message=\"ご登録パスワードを初期化しました。\n\nログイン仮パスワード：\".$random_password.\" (※ログイン後に必ず変更してください）\n\n\";\n" +
+    							"	    $message.=\"こちらからログインできます: \".$success_page.\"\n\n\";\n" +
+    							"      \n" +
+    							"        if($sender_name != \"\")	my_send_mail($mail, '['.$sender_name.'] パスワード初期化通知', $message);\n" +
+    							"        else					my_send_mail($mail, 'パスワード初期化通知', $message);\n" +
+    							"    }\n" +
+    							"    \n" +
+    							"    function delete_old_token($token = NULL) {\n" +
+    							"        global $tokendir,$email,$expire_time;\n" +
+    							"        if (is_dir($tokendir)) {\n" +
+    							"            if ($dh = opendir($tokendir)) {\n" +
+    							"                while (($file = readdir($dh)) !== false) {\n" +
+    							"                    if(is_file($tokendir.$file) && is_null($token)){\n" +
+    							"                        $log = file_get_contents($tokendir.$file);\n" +
+    							"                        list($data,$mail) = preg_split(\"<>\",$log);\n" +
+    							"                        $email = $mail;\n" +
+    							"                        if(time()> $data) @unlink($tokendir.$file);\n" +
+    							"                      \n" +
+    							"                    }else if(basename($file,\".log\")==$token && !is_null($token)){\n" +
+    							"                        if(time() <(filemtime($tokendir.$token.\".log\")+$expire_time) ){\n" +
+    							"                            $log = file_get_contents($tokendir.$token.\".log\");\n" +
+    							"                            //p(\"log:\".$log);\n" +
+    							"                           \n" +
+    							"                            $mail = trim($log);\n" +
+    							"                            $email = $mail;\n" +
+    							"                      \n" +
+    							"                            @unlink($tokendir.$token.\".log\");\n" +
+    							"                            return true;\n" +
+    							"                        }else{\n" +
+    							"                            @unlink($tokendir.$token.\".log\");\n" +
+    							"                            return false;\n" +
+    							"                        }\n" +
+    							"                    }\n" +
+    							"                }\n" +
+    							"                closedir($dh);\n" +
+    							"            }\n" +
+    							"        }\n" +
+    							"    }\n" +
+    							"    \n" +
+    							"    function my_send_mail($mailto, $subject, $message) {\n" +
+    							"        global $sender_name;\n" +
+    							"       \n" +
+    							"        $header =\"From: \".$sender_name.\" <info@example.com>\n\";\n" +
+    							"        $mmm = mb_send_mail($mailto, $subject, $message, $header);\n" +
+    							"    }\n" +
+    							"\n" +
+    							"	function p($str){\n" +
+    							"	    //親ウインドウのJavaScript関数（テキストエリアへ書き込み）を呼び出す\n" +
+    							"	    echo '<script type=\"text/javascript\">window.parent.Login_echo1(\"'.$str.'\");</script>';\n" +
+    							"	}\n" +
+    							"?>\n" +
+    							"\n" +
+    							"<script type=\"text/javascript\">\n" +
+    							"$(document).ready(function(){\n" +
+    							"	//アカウントあり or 新規登録 クリック時の処理\n" +
+    							"	$('#signup1').click(function(){\n" +
+    							"		$('#login1').html('<a href=\"\" style=\"color:#0000CC;\">ログイン</a>');\n" +
+    							"		$('#signup1').html('<span style=\"font-weight:bold;\">新規登録</span>');\n" +
+    							"		$('#loginTitle1').text('新規登録');\n" +
+    							"		$('#password').val('');\n" +
+    							"		$('#login_block').hide();\n" +
+    							"		$('#signup_block').show();\n" +
+    							"		Login_echo1(\"\");\n" +
+    							"	});\n" +
+    							"	$('#login1').click(function(){\n" +
+    							"		$('#login1').html('<span style=\"font-weight:bold;\">ログイン</span>');\n" +
+    							"		$('#signup1').html('<a href=\"\" style=\"color:#0000CC;\">新規登録</a>');\n" +
+    							"		$('#loginTitle1').text('ログイン');\n" +
+    							"		$('#mail1').val('');\n" +
+    							"		$('#signup_block').hide();\n" +
+    							"		$('#login_block').show();\n" +
+    							"		Login_echo1(\"\");\n" +
+    							"	});\n" +
+    							"});\n" +
+    							"\n" +
+    							"//テキストエリアへ書き込み\n" +
+    							"function Login_echo1(str){\n" +
+    							"  var textArea = document.getElementById(\"Login_text1\");\n" +
+    							//"  textArea.innerHTML =  str +\"<br>\";\n" +
+		        				"  textArea.innerHTML = \"<h2>\" + str + \"</h2>\";\n" +
+    							"}\n" +
+    							"</script>\n" +
+    							"<!-- Login & Registration end -->\n" +
+    							"\n");
+	        		}
 	        				
     				//ログアウトボタンの付加
-	        		if(headerFlag==1)		//通常時のみ（Prev/Nextでは行わない）
+    				
+					//通常時のみ（Prev/Nextでは行わない）
+    				if(headerFlag==1)
     				header.append(
 	        				"<!-- Logout start -->\n" +
 	        				"<form method=\"post\" action=\"\" target=\"logout_ifr1\" id=\"LOGOUTpanel1\" name=\"LOGOUTpanel1\">\n" +
@@ -717,8 +1398,19 @@ public class HTMLEnv extends LocalEnv {
 	        				"<input type=\"hidden\" value=\" Logout \" name=\"sqlite3_logout1\">\n" +
 	        				"</form>\n" +
 	        				"<iframe name=\"logout_ifr1\" style=\"display:none;\"></iframe>\n" +
-	        				"\n" +
-	        				"<?php\n" +
+	        				"\n");
+    				//通常時のみ（Prev/Nextでは行わない）&& ( header()があるとき || button("logout")があるとき )
+    				if(headerFlag==1 && ( !HTMLFunction.headerString.equals("") || HTMLFunction.logoutButtonFlg ))
+    				header.append(
+    						"<script type=\"text/javascript\">\n" +
+							"$(document).ready(function(){\n" +
+	        				"	$('#LOGOUTpanel1').hide();\n" +
+	        				"});\n" +
+	        				"</script>\n"
+    						);
+    				//通常時のみ（Prev/Nextでは行わない）
+	        		if(headerFlag==1)
+	        		header.append("<?php\n" +
 	        				"if($_POST['sqlite3_logout1']){\n" +
 	        				"	//ログアウト処理\n" +
 	        				"	//セッション変数を全て解除\n" +
@@ -741,7 +1433,7 @@ public class HTMLEnv extends LocalEnv {
 	        				"<?php\n" +
 	        				"//<!-- display_html start -->\n" +
 	        				"function display_html(){\n" +
-	        				"	if($_SESSION[id] != \"\"){\n" +
+	        				"	if($_SESSION["+sessionVariable_UniqueName+"id] != \"\"){\n" +
 	        				"		echo <<<EOF\n" +
 	        				"		\n");
 	        	}
@@ -752,13 +1444,14 @@ public class HTMLEnv extends LocalEnv {
 	        //added by goto 20130508  "Login&Logout" end
 	        
 	        if(headerFlag==1){		//通常時のみ（Prev/Nextでは行わない）
-		        if(HTMLFunction.headerString != ""){		//data-role="header"
+		        if(!HTMLFunction.headerString.equals("")){		//data-role="header"
 		        	header.append("\n<!-- data-role=header start -->\n"
 						+HTMLFunction.headerString+"<!-- data-role=header end -->\n\n\n");
 		        }
 	        }
 	        //data-role="content"
 	        header.append("<!-- data-role=content start -->\n<div data-role=\"content\" style=\"padding:0\" id=\"content1\">\n");
+	        header.append("\n<div id=\"showValues\"><!-- ユーザ名等を表示 --></div>\n");	//ユーザ名
 
 	        //commented out by goto  201203
 //	        header.append("<div");
@@ -850,9 +1543,32 @@ public class HTMLEnv extends LocalEnv {
     	}
 
     	if(GlobalEnv.getframeworklist() == null){
+    		if(footerFlag==1){		//通常時のみ（Prev/Nextでは行わない）
+    			footer.append("<hr size=\"1\">");
+	    		if(!copyright.equals("")){	//copyrightの宣伝を付加
+	    			footer.append("<div>\n");
+	    			footer.append("Copyright &COPY; "+copyright+" All Rights Reserved.\n");
+	    			footer.append("</div>\n\n");
+	    		}
+	    		//SuperSQLの宣伝を付加
+	    		footer.append("<div style=\"font-size:11;\">\n");
+	//    		footer.append("<a href=\""+filename.substring(0,filename.lastIndexOf(".html"))+"_sql.html\" target=\"_self\">This HTML</a> was generated by <a href=\"http://ssql.db.ics.keio.ac.jp/\" target=\"_self\">SuperSQL</a>\n");
+	    		if(fff.equals(""))	footer.append("This HTML was generated by <a href=\"http://ssql.db.ics.keio.ac.jp/\" rel=\"external\">SuperSQL</a>\n");
+	    		else				footer.append("<a href=\""+ fff +"\" target=\"_self\">This HTML</a> was generated by <a href=\"http://ssql.db.ics.keio.ac.jp/\" rel=\"external\">SuperSQL</a>\n");
+				//footer.append("<a href=\""+filename+"_sql.html\" target=\"_self\">This HTML</a> was generated by <a href=\"http://ssql.db.ics.keio.ac.jp/\" target=\"_self\">SuperSQL</a>\n");
+				footer.append("</div>\n\n");
+    		}
+    		
     		footer.append("</div><!-- Close <div data-role=\"content\"> -->\n<!-- data-role=content end -->\n");		//Close <div data-role="content">
     		//data-role="footer"
-    		if(HTMLFunction.footerString != "" && footerFlag==1)	//通常時のみ（Prev/Nextでは行わない）
+    		
+    		if(footerFlag==1 && HTMLFunction.footerString.equals("") && !nobarFlg)	//通常時のみ（Prev/Nextでは行わない）
+    			HTMLFunction.footerString
+//    			+= "<div data-role=\"footer\" data-position=\"fixed\" style=\"padding:11px 0px; border:1px solid gray; background:rgba(0,0,0,0.4);\" id=\"footer1\">\n" +
+    			+= "<div data-role=\"footer\" data-position=\"fixed\" style=\"padding:11px 0px; background:gray; filter: alpha(opacity=25); -moz-opacity:0.25; opacity:0.25;\" id=\"footer1\">\n" +
+    					"<=&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Flick bar&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=>"+"\n" +
+    		    		"</div>\n";
+    		if(footerFlag==1 && !HTMLFunction.footerString.equals(""))	//通常時のみ（Prev/Nextでは行わない）
     			footer.append("\n\n<!-- data-role=footer start -->\n"+HTMLFunction.footerString+"<!-- data-role=footer end -->\n\n");
     		if(panel.length() != 0)															//20130503  Panel
     			footer.append("\n<!-- Panel start -->\n"+panel+"\n<!-- Panel end -->\n\n");	//Add panel contents.	
@@ -865,8 +1581,13 @@ public class HTMLEnv extends LocalEnv {
     					"//<!-- display_html end -->\n" +
     					"?>\n");
     		}//else
+    		footer.append("<iframe name=\"dummy_ifr\" style=\"display:none;\"><!-- dummy iframe for Form target --></iframe>\n");	//dummy iframe
+    		footer.append(HTMLEnv.PHP);			//PHPストリングを付加			//added by goto 20130515  "search"
+    		//footer.append(HTMLEnv.PHPpost+"\n?>\n");		//PHPpostストリングを付加		//added by goto 20130531
+    		//footer.append(HTMLEnv.PHPfunc);		//PHPfuncストリングを付加		//added by goto 20130531
     		if(footerFlag==1)		//通常時のみ（Prev/Nextでは行わない）
-    			footer.append("\n<BR><BR>\n");
+    			footer.append("\n\n");
+//	    		footer.append("\n<BR><BR>\n");
     		footer.append("</div><!-- Close <div data-role=\"page\"> -->\n<!-- data-role=page end -->\n");			//Close <div data-role="page">
     		footer.append("\n</BODY>\n</HTML>\n");
 	        Log.out("</body></html>");
@@ -902,30 +1623,82 @@ public class HTMLEnv extends LocalEnv {
         	Log.out("class =" + classid + decos.getStr("class"));
         }
 
-
-        if(decos.containsKey("cssfile")){
-        	cssfile.delete(0,cssfile.length());
-        	if(GlobalEnv.isServlet()){
-            	cssfile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + GlobalEnv.getFileDirectory() + decos.getStr("cssfile") + "\">\n");
-            }else{
-            	cssfile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + decos.getStr("cssfile") + "\">\n");
-            }
+		//changed by goto 20130703  ex) cssfile=" a.css; b.css "
+		if (decos.containsKey("cssfile")) {
+			String css = decos.getStr("cssfile").trim();
+			if(!css.contains(",")){
+				cssfile.delete(0, cssfile.length());
+				if (GlobalEnv.isServlet()) {
+					cssfile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\""
+							+ GlobalEnv.getFileDirectory()
+							+ css + "\">\n");
+				} else {
+					cssfile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\""
+							+ css + "\">\n");
+				}
+			}else{
+				if(!css.endsWith(","))	css+=",";
+				while(css.contains(",")){
+					cssfile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + css.substring(0,css.indexOf(",")).trim() + "\">\n");
+					css = css.substring(css.indexOf(",")+1);
+				}
+			}
         }else if(cssfile.length() == 0){
         	if(GlobalEnv.isServlet()){
-            	cssfile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + GlobalEnv.getFileDirectory() +"/default.css \">\n");
+            	cssfile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + GlobalEnv.getFileDirectory() +"/default1.css \">\n");
             }else{
             	if(getOs().contains("Windows")){
-            		cssfile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"default.css\">\n");
+            		cssfile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"default1.css\">\n");
             	}else{
             		//commented out by goto 201303
 //            		//itc
 //            		if(GlobalEnv.isOpt())
 //            			cssfile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"http://www.db.ics.keio.ac.jp/ssqljscss/default_opt.css\">\n");
 //            		else
-//            			cssfile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"http://www.db.ics.keio.ac.jp/ssqljscss/default.css\">\n");
+//            			cssfile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"http://www.db.ics.keio.ac.jp/ssqljscss/default1.css\">\n");
             	}
             }
         }
+		
+		//added by goto 20130703  ex) jsfile=" a.js; b.js "
+		if (decos.containsKey("jsfile")) {
+			String js = decos.getStr("jsfile").trim();
+			if(!js.endsWith(","))	js+=",";
+			while(js.contains(",")){
+				jsFile.append("<script type=\"text/javascript\" src=\""	+ js.substring(0,js.indexOf(",")).trim() + "\"></script>\n");
+				js = js.substring(js.indexOf(",")+1);
+			}
+		}
+		
+		//added by goto 20130703  ex) require=" a.css; a.js;  b.css; b.js "
+		if (decos.containsKey("require")) {
+			String file = decos.getStr("require").trim();
+			if(!file.endsWith(","))	file+=",";
+			String fileName = "";
+			while(file.contains(",")){
+				fileName = file.substring(0,file.indexOf(",")).trim();
+				if(fileName.endsWith(".css"))
+					cssjsFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + fileName + "\">\n");
+				else if(fileName.endsWith(".js"))
+					cssjsFile.append("<script type=\"text/javascript\" src=\"" + fileName + "\"></script>\n");
+				else{
+					//added by goto 20130710  ex) require="Folder name"
+			        try{
+			            String[] fileArray = new File(fileName).getAbsoluteFile().list();
+			            for(int i = 0; i < fileArray.length; i++) {
+			                if(fileArray[i].endsWith(".css"))
+								cssjsFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + fileName + "/" + fileArray[i] + "\">\n");
+							else if(fileArray[i].endsWith(".js"))
+								cssjsFile.append("<script type=\"text/javascript\" src=\"" + fileName + "/" + fileArray[i] + "\"></script>\n");
+			            }
+			        }catch (Exception e){
+			        	System.err.println("<Warning> require=に指定されたフォルダ「"+fileName+"」が見つかりません。");
+			        }
+				}
+				
+				file = file.substring(file.indexOf(",")+1);
+			}
+		}
 
         if (decos.containsKey("divalign") && div.length() == 0)
         	div.append(" align=" +decos.getStr("divalign"));
@@ -1091,10 +1864,20 @@ public class HTMLEnv extends LocalEnv {
         
         //added by goto 20130512  "max-width"
         try{
-	        if (decos.containsKey("max-width"))
-	        	maxWidth = Integer.parseInt(decos.getStr("max-width"));
-	        else if (decos.containsKey("maxwidth"))
-	        	maxWidth = Integer.parseInt(decos.getStr("maxwidth"));
+//	        if (decos.containsKey("max-width"))
+//	        	maxWidth = Integer.parseInt(decos.getStr("max-width"));
+//	        else if (decos.containsKey("maxwidth"))
+//	        	maxWidth = Integer.parseInt(decos.getStr("maxwidth"));
+	        if (decos.containsKey("portrait-width"))
+	        	portraitWidth = Integer.parseInt(decos.getStr("portrait-width"));
+	        else if (decos.containsKey("p-width"))
+	        	portraitWidth = Integer.parseInt(decos.getStr("p-width"));
+	        if (decos.containsKey("landscape-width"))
+	        	landscapeWidth = Integer.parseInt(decos.getStr("landscape-width"));
+	        else if (decos.containsKey("l-width"))
+	        	landscapeWidth = Integer.parseInt(decos.getStr("l-width"));
+	        if (decos.containsKey("pc-width"))
+	        	pcWidth = Integer.parseInt(decos.getStr("pc-width"));
         }catch(Exception e){ /*数値以外*/ }
         
         if (decos.containsKey("description"))
@@ -1103,14 +1886,170 @@ public class HTMLEnv extends LocalEnv {
             metabuf.append("\n<meta name=\"Keyword\" content=\"" + decos.getStr("keyword") + "\">");
         if (decos.containsKey("author"))
         	metabuf.append("\n<meta name=\"Author\" content=\"" + decos.getStr("author") + "\">");
-        if (decos.containsKey("copyright"))
-        	metabuf.append("\n<meta name=\"Copyright\" content=\"" + decos.getStr("copyright") + "\">");
+        if (decos.containsKey("copyright")){
+        	copyright = decos.getStr("copyright");		//あとでfooterにappendする
+        	metabuf.append("\n<meta name=\"Copyright\" content=\"" + copyright + "\">");
+        }
         if (decos.containsKey("pragma"))
             metabuf.append("\n<meta http-equiv=\"Pragma\" content=\"" + decos.getStr("pragma") + "\">");
         if (decos.containsKey("robot"))
             metabuf.append("\n<meta name=\"Robot\" content=\"" + decos.getStr("robot") + "\">");
-        //tk end///////////////////////////////////////////////////////////////////
+        
+        //added by goto 20130519  "moveto"
+        if (decos.containsKey("refresh")){
+        	//<meta http-equiv="refresh" content="3; URL=http://ssql.db.ics.keio.ac.jp/mdemo/list.html">
+        	metabuf.append("<meta http-equiv=\"refresh\" content=\""+decos.getStr("refresh")+"\">");
+        }else if(!HTMLFunction.movetoFlg.equals("")){
+        	metabuf.append(HTMLFunction.movetoFlg);
+        	HTMLFunction.movetoFlg = "";
+        }
+        
 
+        //20130518  "show query"
+        if (decos.containsKey("showquery") || decos.containsKey("showq") || decos.containsKey("showquery&noshow") || decos.containsKey("showq&noshow") || decos.containsKey("show")  || decos.containsKey("query")){
+        	String replaceStrings = "";
+        	if(decos.containsKey("showquery&noshow"))
+        		replaceStrings = decos.getStr("showquery&noshow");
+        	else if(decos.containsKey("showq&noshow"))
+        		replaceStrings = decos.getStr("showq&noshow");
+        	
+        	fff = filename;
+			fff = fff.substring(0,fff.lastIndexOf(".html"));	//.htmlをカット
+			//TODO: fffが相対パスだった場合、ファイルパスを取得してきてappend（相対パス → 絶対パス）
+			
+			String code = "";
+			code += "<html>\n<head>\n";
+			code += "<meta name=\"GENERATOR\" content=\" SuperSQL (Generate Mobile_HTML5) \">\n" +
+					"<meta charset=\""+charset+"\">\n" +
+					"<title>"+fff.substring(fff.lastIndexOf("/")+1)+".sql</title>\n" +
+					"\n" +
+					"<style type=\"text/css\">\n" +
+					"<!--\n" +
+					"ol {\n" +
+					"    position: absolute;\n" +
+					"    top:40px;\n" +
+					"	list-style-type: decimal-leading-zero;\n" +
+					"	font-size: 15px;\n" +
+					"	line-height: 18.03px;\n" +
+					"}\n" +
+					"li { \n" +
+					"	margin: 0 0 2 2em;\n" +
+					"}\n" +
+					"body,ol {\n" +
+					"	margin: 0px;\n" +
+					"	width: 100%;\n" +
+					"	background: #f0f0f0;						/* pngがインポートされなかったとき */\n" +
+					"	background-image: url(http://www.db.ics.keio.ac.jp/ssqljscss/code_bg/code_bg1.png);\n" +
+					"	overflow: auto;\n" +
+					"}\n" +
+					"#bgcolor { margin-left:35px; }\n" +
+					"#b0 { color:gray; font-size:12; }\n" +
+					"#b1 { color:honeydew; }\n" +
+					"#b2 { color:lightgoldenrodyellow; }\n" +
+					"#b3 { color:gray; }\n" +
+					"#t1 { color:gray; font-size:19; }\n" +
+					"-->\n" +
+					"</style>\n" +
+					"\n" +
+					"<script src=\"http://code.jquery.com/jquery-1.7.1.min.js\"></script>\n" +
+					"<script type=\"text/javascript\">\n" +
+					"<!--\n" +
+					"$(function(){\n" +
+					"    $('#b1').mouseover(function(){\n" +
+					"   		c(1,\"black\",\"gray\",\"honeydew\");\n" +
+					"    });\n" +
+					"    $('#b2').mouseover(function(){\n" +
+					"    	c(2,\"black\",\"gray\",\"lightyellow\");\n" +
+					"    });\n" +
+					"    $('#b3').mouseover(function(){\n" +
+					"    	c(3,\"white\",\"white\",\"black\");\n" +
+					"    });\n" +
+					"    function c(val,color1,color2,bg){\n" +
+					"        $(\"body,ol\").css(\"background\",bg);		//pngがインポートされなかったとき\n" +
+					"        $(\"body,ol\").css(\"background-image\",\"url(http://www.db.ics.keio.ac.jp/ssqljscss/code_bg/code_bg\"+val+\".png)\");\n" +
+					"        $(\"ol\").css(\"color\",color1);\n" +
+					"        $(\"#t1\").css(\"color\",color2);\n" +
+					"    }\n" +
+					"});\n" +
+					"-->\n" +
+					"</script>\n" +
+					"</head>\n\n";
+			code += "<body>\n" +
+					"<div id=\"bgcolor\">\n" +
+					"	<span id=\"b0\">Background-color:&nbsp;</span>\n" +
+					"	<span id=\"b1\">■</span>\n" +
+					"	<span id=\"b2\">■</span>\n" +
+					"	<span id=\"b3\">■</span>\n" +
+					"</div>\n" +
+					"\n" +
+					"<pre>\n" +
+					"<code>\n" +
+					"\n" +
+					"<ol>\n" +
+					"<span id=\"t1\">"+fff.substring(fff.lastIndexOf("/")+1)+".sql</span>";
+			//create HTML file
+			try {
+				//Log.i("create HTML file エンコードcharset:"+charset);
+	    		PrintWriter pw;
+	            if (charset != null)
+		        	pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
+		        			new FileOutputStream(fff+"_sql.html"),charset)));
+	            else
+	            	pw = new PrintWriter(new BufferedWriter(new FileWriter(
+	        	                    fff+"_sql.html")));
+	        	pw.println(code);
+	        	
+	            BufferedReader br = null;
+	            try{
+	            	  //TODO: file-encodingを取得して第二引数へ反映させる処理
+	            	  br = new BufferedReader(new InputStreamReader(new FileInputStream(fff+".sql"), "UTF-8"));		//fileを開く
+//		              br = new BufferedReader(new InputStreamReader(new FileInputStream(fff+".sql"), charset));		//fileを開く
+		              String queryString = new String();
+		              int c;
+		              while ((c = br.read()) != -1)	queryString += ((char) c);
+		              
+		              //***へ置換
+		  			  //Log.i("replaceStrings: "+replaceStrings);
+					  replaceStrings = replaceStrings.trim();
+					  if(!replaceStrings.equals("")){
+						  if(!replaceStrings.endsWith(";"))		replaceStrings += ";";
+						  while(replaceStrings.contains(";")){
+							  queryString = queryString.replaceAll(replaceStrings.substring(0,replaceStrings.indexOf(";")).trim(),"***");
+							  replaceStrings = replaceStrings.substring(replaceStrings.indexOf(";")+1);
+						  }
+					  }
+					  //書き込み
+					  pw.println( queryString.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("^", "<li>").replaceAll("\n", "\n<li>") );
+	            }finally{
+		              br.close();
+	            }
+	        	
+	            pw.println("</ol>\n\n</code>\n</pre>\n</body>\n</html>");
+	            pw.close();
+	        } catch (Exception e) { /*Log.i("Create HTML failed: "+e);*/ }
+			
+        	//HTMLfilenameを絶対パスから「相対パス形式」へ変更
+			String fileDir = new File(filename).getAbsoluteFile().getParent();
+			if(fileDir.length() < filename.length()
+			&& fileDir.equals(filename.substring(0,fileDir.length()))){
+//				String relative_path_filename = filename.substring(fileDir.length()+1);
+//				fff = relative_path_filename;
+				//code.append("<A href=\"" + relative_path + "\" ");
+				//Log.i("relative_path: "+relative_path_filename);
+				fff = filename.substring(fileDir.length()+1);
+			}else
+				fff = filename;
+				//Log.i("linkurl: " + filename);
+				//code.append("<A href=\"" + htmlEnv.linkUrl + "\" ");
+			fff = fff.substring(0,fff.lastIndexOf(".html"));	//.htmlをカット
+			fff += "_sql.html";
+        	
+        }
+        
+        //20130521  "nobar"
+        if (decos.containsKey("nobar") || decos.containsKey("noflick") || decos.containsKey("noflickbar"))
+        	nobarFlg = true;
+        
         if (cssbuf.length() > 0) {
         	haveClass = 1;
             //����?�Υ�����?����

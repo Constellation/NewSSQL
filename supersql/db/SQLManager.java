@@ -71,9 +71,10 @@ public class SQLManager {
 	    	conn = cdb.getConn();
     	}
 
+    	if(query.contains(" #"))	query = query.substring(0,query.indexOf(" #"));
         Log.out("[SQLManager ExecQuery]");
         if(!query.equals("SELECT DISTINCT  FROM ;") && !query.equals("SELECT  FROM ;")){
-	        Log.info("********** SQL is **********");
+	        Log.info("\n********** SQL is **********");
 	        Log.info(query);
         }
 

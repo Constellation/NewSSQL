@@ -8,7 +8,7 @@
 *.ssql
 *.class
 *.db
-
+.settings/org.eclipse.core.resources.prefs
 .classpath
 .settings/org.eclipse.jdt.core.prefs
 .project
