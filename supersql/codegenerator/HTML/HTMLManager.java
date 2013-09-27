@@ -46,6 +46,7 @@ public class HTMLManager extends Manager{
         Document result = htmlEnv.getHtmlEnv1();
         
         getOutfilename();
+        result.setBaseUri(htmlEnv.outFile + ".html");
 
         if (tfe_info instanceof HTMLG3) {
         	tfe_info.createNode(data_info);

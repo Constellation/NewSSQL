@@ -109,7 +109,7 @@ public class HTMLEnv extends LocalEnv {
 		// TODO Put the file name in the configuration
 		File input = new File("template.html");
 		try {
-			this.htmlEnv1 = Jsoup.parse(input, "UTF-8", "");
+			this.htmlEnv1 = Jsoup.parse(input, "UTF-8");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
