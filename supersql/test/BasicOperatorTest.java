@@ -1,7 +1,6 @@
 package supersql.test;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.jsoup.Jsoup;
@@ -11,18 +10,15 @@ import org.jsoup.select.Elements;
 import org.junit.Assert;
 import org.junit.Test;
 
-import supersql.FrontEnd;
-
 /**
  * Tests for {@link BasicOperatorTest}.
  * 
  * @author thomas@oxynum.fr (Thomas THIMOTHEE)
  */
 public class BasicOperatorTest {
-	private static final String projectFolder = "/Users/thomas/Documents/dev/ssql2/";
 	private static final String configFilename = "/Users/thomas/Documents/dev/ssql2/.ssql";
 	// This string should finish with a slash
-	private static final String testFilesFolder = "/Users/thomas/Documents/dev/ssql2/test_queries/";
+	private static final String testFilesFolder = "/Users/thomas/Documents/dev/ssql2/test_queries/basic_operators/";
 	private static final String[] testFilesNames = { "connector1.sql",
 			"connector2.sql", "connector3.sql", "grouper1.sql", "grouper2.sql",
 			"grouper3.sql" };
@@ -34,7 +30,7 @@ public class BasicOperatorTest {
 	 */
 	@Test
 	public void connector1Test() {
-		Document document = launchQueryAndGetResult(0);
+		Document document = TestUtils.launchQueryAndGetResult(configFilename, testFilesFolder, testFilesNames, 0);
 
 		Elements attributes = document.getElementsByClass("att");
 
@@ -57,7 +53,7 @@ public class BasicOperatorTest {
 	@Test
 	public void Connector2Test() {
 
-		Document document = launchQueryAndGetResult(1);
+		Document document = TestUtils.launchQueryAndGetResult(configFilename, testFilesFolder, testFilesNames, 1);
 		Assert.assertEquals(2, document.getElementsByTag("tr").size());
 		Assert.assertEquals(1, document.getElementsByTag("tr").first()
 				.getElementsByTag("td").size());
@@ -71,7 +67,7 @@ public class BasicOperatorTest {
 	 */
 	@Test
 	public void Connector3Test() {
-		Document document = launchQueryAndGetResult(2);
+		Document document = TestUtils.launchQueryAndGetResult(configFilename, testFilesFolder, testFilesNames, 2);
 		Element link = document.getElementsByTag("a").first();
 		Assert.assertNotNull("There is no link in the page", link);
 		String filename = testFilesFolder + link.attr("href");
@@ -93,7 +89,7 @@ public class BasicOperatorTest {
 	 */
 	@Test
 	public void Grouper1Test() {
-		Document document = launchQueryAndGetResult(3);
+		Document document = TestUtils.launchQueryAndGetResult(configFilename, testFilesFolder, testFilesNames, 3);
 
 		int numberOfAttributes = document.getElementsByClass("att").size();
 
@@ -115,7 +111,7 @@ public class BasicOperatorTest {
 	 */
 	@Test
 	public void Grouper2Test() {
-		Document document = launchQueryAndGetResult(4);
+		Document document = TestUtils.launchQueryAndGetResult(configFilename, testFilesFolder, testFilesNames, 4);
 
 		int numberOfAttributes = document.getElementsByClass("att").size();
 
@@ -137,7 +133,7 @@ public class BasicOperatorTest {
 	 */
 	@Test
 	public void Grouper3Test() {
-		launchQueryAndGetResult(5);
+		TestUtils.launchQueryAndGetResult(configFilename, testFilesFolder, testFilesNames, 5);
 
 		String filename = testFilesFolder + testFilesNames[5].split("\\.")[0]
 				+ "1.html";
@@ -175,25 +171,5 @@ public class BasicOperatorTest {
 
 	}
 
-	private Document launchQueryAndGetResult(int index) {
-		String[] args = new String[4];
-		args[0] = "-c";
-		args[1] = configFilename;
-		args[2] = "-f";
-		args[3] = testFilesFolder + testFilesNames[index];
-
-		new FrontEnd(args);
-
-		Document document = null;
-		try {
-			String filename = testFilesNames[index].split("\\.")[0] + ".html";
-			document = Jsoup.parse(new File(testFilesFolder + filename),
-					"UTF-8");
-		} catch (IOException e) {
-			e.printStackTrace();
-			Assert.fail("The file has not been created");
-			return null;
-		}
-		return document;
-	}
+	
 }

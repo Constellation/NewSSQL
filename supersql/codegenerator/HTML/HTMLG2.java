@@ -66,7 +66,6 @@ public class HTMLG2 extends Grouper {
             	
             }
             String classid = HTMLEnv.getClassID(tfe);
-            
             tr.children().last().appendChild((Element) this.createNextItemNode());
             
             if(!HTMLEnv.getSelectRepeat()){

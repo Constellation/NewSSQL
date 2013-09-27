@@ -1,5 +1,7 @@
 package supersql.codegenerator;
 
+import org.jsoup.nodes.Element;
+
 //import common.Log;
 import supersql.extendclass.ExtList;
 
@@ -85,6 +87,10 @@ public class FuncArg {
 	public void workAtt() {
 		tfe.work(Data);
 		return;
+	}
+	
+	public Object createNodeAtt(){
+		return tfe.createNode(Data);
 	}
 
 }

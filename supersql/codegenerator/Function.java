@@ -135,6 +135,15 @@ public class Function extends Operand {
 		}
 		return;
 	}
+	
+	public Object createNodeAtt(String key){
+		FuncArg fa = ArgHash.get(key);
+
+		if (fa != null) {
+			return fa.createNodeAtt();
+		}
+		return null;
+	}
 
 	public String getClassName() {
 
