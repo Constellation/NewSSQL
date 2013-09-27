@@ -48,7 +48,7 @@ public class HTMLManager extends Manager{
         getOutfilename();
 
         if (tfe_info instanceof HTMLG3) {
-        	result.body().appendChild((Element) tfe_info.createNode(data_info));
+        	tfe_info.createNode(data_info);
         	return result;
         }
 

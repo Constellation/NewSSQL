@@ -136,10 +136,11 @@ public class HTMLAttribute extends Attribute {
 					result.appendChild(div);
 				else
 				{
-					result.appendChild(a);
-
+					a.html(this.getStr(data_info));
+					
 					if(htmlEnv.isPanel)
 						result.appendChild(div);
+					return a;
 				}
 			}
 		}
