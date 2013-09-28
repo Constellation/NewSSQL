@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.Vector;
 
 import org.jsoup.nodes.Document;
@@ -32,7 +33,7 @@ public class HTMLManager extends Manager{
     }
     
     @Override
-    public Object generateCodeForJsoup(ITFE tfe_info, ExtList data_info){
+    public void generateCodeForJsoup(ITFE tfe_info, ExtList data_info){
     	HTMLEnv.initAllFormFlg();
 
         HTMLEnv.countFile = 0;
@@ -50,7 +51,8 @@ public class HTMLManager extends Manager{
 
         if (tfe_info instanceof HTMLG3) {
         	tfe_info.createNode(data_info);
-        	return result;
+        	createOutputFile(result);
+        	return;
         }
 
         htmlEnv.fileName = htmlEnv.outFile + ".html";
@@ -61,7 +63,7 @@ public class HTMLManager extends Manager{
            	&& !DataConstructor.SQL_string.equals("SELECT DISTINCT  FROM ;")  && !DataConstructor.SQL_string.equals("SELECT  FROM ;"))
         {
         	Log.out("no data");
-        	return new Document("").body().append("NO DATA FOUND");
+        	return;
         }
         else
         	result.body().appendChild((Element)tfe_info.createNode(data_info));
@@ -88,7 +90,22 @@ public class HTMLManager extends Manager{
             e.printStackTrace();
            	GlobalEnv.addErr("Error[HTMLManager]: File IO Error in HTMLManager");
         }
-        return result;
+        createOutputFile(result);
+    }
+    
+    private void createOutputFile(Element document){
+    	if (document != null){
+			try {
+				String filename = document.baseUri();
+				Writer out = new BufferedWriter(new OutputStreamWriter(
+					    new FileOutputStream(filename), "UTF-8"));
+				out.write(document.html());
+				out.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
     }
 
 

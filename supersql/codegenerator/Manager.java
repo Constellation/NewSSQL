@@ -68,9 +68,7 @@ public abstract class Manager {
 	//¸å½è?
 	public abstract void finish();
 
-	public Object generateCodeForJsoup(ITFE tfe_info, ExtList data_info) {
-		// TODO Auto-generated method stub
-		return null;
+	public void generateCodeForJsoup(ITFE tfe_info, ExtList data_info) {
 	}
 
 }
