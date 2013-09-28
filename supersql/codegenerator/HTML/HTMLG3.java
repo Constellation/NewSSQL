@@ -16,7 +16,6 @@ import java.io.Writer;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.nodes.Node;
 import org.jsoup.parser.Tag;
 
 import supersql.codegenerator.Grouper;
@@ -45,7 +44,6 @@ public class HTMLG3 extends Grouper {
 
     @Override
 	public Element createNode(ExtList<ExtList<String>> data_info) {
-    	Element result = new Element(Tag.valueOf("div"), "");
     	String parentfile = html_env.fileName;
         String parentnextbackfile = html_env.nextBackFile;
         StringBuffer parentcode = html_env.code;
@@ -103,7 +101,7 @@ public class HTMLG3 extends Grouper {
             }
             //TODO
 //            html_env.getFooter();
-            result.appendChild(toWrite);
+//            result.appendChild(toWrite);
             try {
 				Writer out = new BufferedWriter(new OutputStreamWriter(
 					    new FileOutputStream(html_env.fileName), "UTF-8"));
@@ -123,8 +121,7 @@ public class HTMLG3 extends Grouper {
         html_env.footer = parentfooter;
         html_env.nextBackFile = parentnextbackfile;
         html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
-		return result;
-
+        return null;
     }
 
 	//G3��work�᥽�å�

@@ -20,7 +20,8 @@ import supersql.extendclass.ExtList;
 import supersql.parser.SSQLparser;
 
 /**
- * �����ɥ�����?�����ޥ͡����㥯�饹 ���ꤵ?�����Τˤ�äƥ����ɥ�����?�����ι������ʤ�������? ��?(Factory)��������?
+ * �����ɥ�����?�����ޥ͡����㥯�饹 ���ꤵ?�����Τˤ�äƥ����ɥ�����
+ * �����ι������ʤ�������? ��?(Factory)��������?
  */
 public class CodeGenerator{
 	private Factory factory;
@@ -40,8 +41,7 @@ public class CodeGenerator{
 		TFEid = id;
 	}
 	/**
-	 * ��?����Ԥ�
-	 */
+	 * ��?����Ԥ�	 */
 	public void initiate() {
 		if (factory != null) {
 			Log.out("factory is " + factory);
@@ -51,7 +51,7 @@ public class CodeGenerator{
 	}
 
 	/**
-	 * ���ꤵ?�����Τˤ�äƺ��Ȥ�Ѿ�?����ι�?(Factory)? �����������֤�?
+	 * ���ꤵ?�����Τˤ�äƺ��Ȥ�Ѿ�?����ι�(Factory)? �����������֤�?
 	 */
 	public void setFactory(String media) {
 		this.media = media;
@@ -168,7 +168,7 @@ public class CodeGenerator{
 	public void generateCode(SSQLparser parser, ExtList data_info) {
 		ITFE tfe_info = parser.get_TFEschema();
 
-		//	ɬ�פʤ饳���ȥ����ȳ�����Manager������ѹ�
+		//	ɬ�פʤ饳���ȥ����ȳ�����Manager������ѹ�
 		//	manager.preProcess(tab,le,le1,le2,le3);
 		//	manager.createSchema(tab,le,le1,le2,le3);
 		// ?�ֳ��� Grouper�ΤȤ���data_info��Ĵ����?
@@ -176,19 +176,20 @@ public class CodeGenerator{
 			data_info = (ExtList) data_info.get(0);
 		}
 
-		manager.generateCode(tfe_info, data_info);
-//		Element result = (Element)manager.generateCodeForJsoup(tfe_info, data_info);
-//		if (result != null){
-//			try {
-//				Writer out = new BufferedWriter(new OutputStreamWriter(
-//					    new FileOutputStream("jsoup.html"), "UTF-8"));
-//				out.write(result.html());
-//				out.close();
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		}
+//		manager.generateCode(tfe_info, data_info);
+		Element result = (Element)manager.generateCodeForJsoup(tfe_info, data_info);
+		if (result != null){
+			try {
+				String filename = result.baseUri();
+				Writer out = new BufferedWriter(new OutputStreamWriter(
+					    new FileOutputStream(filename), "UTF-8"));
+				out.write(result.html());
+				out.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 
 		manager.finish();
 
@@ -199,7 +200,7 @@ public class CodeGenerator{
 	public StringBuffer generateCode2(SSQLparser parser, ExtList data_info) {
 		ITFE tfe_info = parser.get_TFEschema();
 
-		//	ɬ�פʤ饳���ȥ����ȳ�����Manager������ѹ�
+		//	ɬ�פʤ饳���ȥ����ȳ�����Manager������ѹ�
 		//	manager.preProcess(tab,le,le1,le2,le3);
 		//	manager.createSchema(tab,le,le1,le2,le3);
 
@@ -223,7 +224,7 @@ public class CodeGenerator{
 	public StringBuffer generateCode3(SSQLparser parser, ExtList data_info) {
 		ITFE tfe_info = parser.get_TFEschema();
 
-		//	ɬ�פʤ饳���ȥ����ȳ�����Manager������ѹ�
+		//	ɬ�פʤ饳���ȥ����ȳ�����Manager������ѹ�
 		//	manager.preProcess(tab,le,le1,le2,le3);
 		//	manager.createSchema(tab,le,le1,le2,le3);
 
@@ -246,7 +247,7 @@ public class CodeGenerator{
 	public StringBuffer generateCode4(SSQLparser parser, ExtList data_info) {
 		ITFE tfe_info = parser.get_TFEschema();
 
-		//	ɬ�פʤ饳���ȥ����ȳ�����Manager������ѹ�
+		//	ɬ�פʤ饳���ȥ����ȳ�����Manager������ѹ�
 		//	manager.preProcess(tab,le,le1,le2,le3);
 		//	manager.createSchema(tab,le,le1,le2,le3);
 
@@ -269,7 +270,7 @@ public class CodeGenerator{
 	public StringBuffer generateCssfile(SSQLparser parser, ExtList data_info) {
 		ITFE tfe_info = parser.get_TFEschema();
 
-		//	ɬ�פʤ饳���ȥ����ȳ�����Manager������ѹ�
+		//	ɬ�פʤ饳���ȥ����ȳ�����Manager������ѹ�
 		//	manager.preProcess(tab,le,le1,le2,le3);
 		//	manager.createSchema(tab,le,le1,le2,le3);
 

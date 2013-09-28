@@ -36,13 +36,14 @@ public class HTMLC3 extends Connector {
         this.htmlEnv2 = henv2;
     }
     
-    public Document createNode(ExtList data_info){
+    public Element createNode(ExtList data_info){
     	
     	//TODO
     	File input = new File("template.html");
-    	Document result = null;
+    	Element result = new Element(Tag.valueOf("div"), "");
+    	Document toWrite = new Document("");
 		try {
-			result = Jsoup.parse(input, "UTF-8", "");
+			toWrite = Jsoup.parse(input, "UTF-8", "");
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.err.println("Error while creating HTML document from template.");
@@ -70,7 +71,7 @@ public class HTMLC3 extends Connector {
         htmlEnv.linkFlag++;
         this.setDataList(data_info);
 
-        result.body().appendChild((Element) this.createNextItemNode(data_info));
+        result.appendChild((Element) this.createNextItemNode(data_info));
         htmlEnv.linkFlag--;
 
         for (int k = 1; k < c3items; k++) {
@@ -79,7 +80,7 @@ public class HTMLC3 extends Connector {
                     + String.valueOf(HTMLEnv.countFile) + ".html";
             if (intfe instanceof HTMLG3) {
                 HTMLEnv.countFile--;
-                result.body().appendChild((Element) this.createNextItemNode(data_info));
+                toWrite.body().appendChild((Element) this.createNextItemNode(data_info));
             } else {
                 parentcode = htmlEnv.code;
                 parentcss = htmlEnv.css;
@@ -97,7 +98,7 @@ public class HTMLC3 extends Connector {
                 }
 
                 htmlEnv.setOutlineMode();
-                result.body().appendChild((Element) this.createNextItemNode(data_info));
+                toWrite.body().appendChild((Element) this.createNextItemNode(data_info));
 
                 if (k < c3items - 1) {
                     htmlEnv.linkFlag--;
@@ -114,7 +115,7 @@ public class HTMLC3 extends Connector {
             try {
             	Writer out = new BufferedWriter(new OutputStreamWriter(
             			new FileOutputStream(htmlEnv.fileName), "UTF-8"));
-            	out.write(result.html());
+            	out.write(toWrite.html());
             	out.close();
             } catch (IOException e) {
             	e.printStackTrace();

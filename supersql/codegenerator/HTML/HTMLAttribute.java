@@ -36,7 +36,7 @@ public class HTMLAttribute extends Attribute {
 	
 	@Override
 	public Element createNode(ExtList data_info){
-		Element result = new Element(Tag.valueOf("table"), "");
+		Element result = new Element(Tag.valueOf("span"), "");
 		htmlEnv.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
 
 		if(GlobalEnv.isOpt()){
@@ -56,16 +56,9 @@ public class HTMLAttribute extends Attribute {
 					result.addClass(computeStringForDecoration(data_info));
 				}
 			}
-			Element tr = new Element(Tag.valueOf("tr"), "");
-			Element td = new Element(Tag.valueOf("td"), "");
-			tr.appendChild(td);
 			Element div = new Element(Tag.valueOf("div"), "");
 			Element a = new Element(Tag.valueOf("a"), "");
 			
-			if(!HTMLEnv.getFormItemFlg()){
-				result.appendChild(tr);
-			}
-
 			if (htmlEnv.linkFlag > 0 || htmlEnv.sinvokeFlag) {
 
 				//tk start for draggable div///////////////////////////////////////
@@ -128,7 +121,7 @@ public class HTMLAttribute extends Attribute {
 
 			if(whichForm == 0){ //normal process (not form)
 				//***APPEND DATABASE VALUE***//
-				td.html(this.getStr(data_info));
+				result.html(this.getStr(data_info));
 			}
 
 			if (htmlEnv.linkFlag > 0 || htmlEnv.sinvokeFlag) {
@@ -136,10 +129,11 @@ public class HTMLAttribute extends Attribute {
 					result.appendChild(div);
 				else
 				{
-					result.appendChild(a);
-
+					a.html(this.getStr(data_info));
+					
 					if(htmlEnv.isPanel)
 						result.appendChild(div);
+					return a;
 				}
 			}
 		}
