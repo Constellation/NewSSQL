@@ -68,8 +68,5 @@ public abstract class Manager {
 	//¸å½è?
 	public abstract void finish();
 
-	public void generateCodeForJsoup(ITFE tfe_info, ExtList data_info) {
-	}
-
 }
 

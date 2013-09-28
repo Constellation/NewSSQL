@@ -176,8 +176,7 @@ public class CodeGenerator{
 			data_info = (ExtList) data_info.get(0);
 		}
 
-		//manager.generateCode(tfe_info, data_info);
-		manager.generateCodeForJsoup(tfe_info, data_info);
+		manager.generateCode(tfe_info, data_info);
 
 		manager.finish();
 

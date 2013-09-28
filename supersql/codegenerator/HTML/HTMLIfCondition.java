@@ -37,23 +37,4 @@ public class HTMLIfCondition extends IfCondition {
 		}
 		return new Element(Tag.valueOf("span"), "");
 	}
-	
-	public void work(ExtList data_info) {
-
-		String conditionResult = (String) data_info.get(0);
-		if(conditionResult.equals("t") || conditionResult.equals("1")) {
-			if(thenTfe instanceof Connector || thenTfe instanceof Attribute
-				|| thenTfe instanceof Function || thenTfe instanceof IfCondition)
-				thenTfe.work((ExtList)data_info.ExtsubList(1, thenTfe.countconnectitem()+1));
-		}
-		else if(elseTfe != null){
-			int from = thenTfe.countconnectitem()+1;
-			if(elseTfe instanceof Connector || elseTfe instanceof Attribute
-					|| elseTfe instanceof Function || elseTfe instanceof IfCondition){
-				elseTfe.work(data_info.ExtsubList(from, data_info.size()));
-			}
-			else
-				elseTfe.work((ExtList)data_info.get(from));
-			}		
-		}
 }
