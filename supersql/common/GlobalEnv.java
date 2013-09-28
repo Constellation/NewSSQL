@@ -236,13 +236,6 @@ public class GlobalEnv {
 	}
 
 	/*
-	 * どうやら使っていない
-	 */
-	public static String getqueryfile() {
-		return seek("-q");
-	}
-
-	/*
 	 * テストデータのファイ?の指? 現在は使用していない
 	 */
 	public static String gettestdatafile() {
