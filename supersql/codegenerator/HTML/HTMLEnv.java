@@ -191,7 +191,12 @@ public class HTMLEnv extends LocalEnv {
 			headElements.add(element);
 		}
 		
+		ArrayList<Element> boxStylesheets = JsoupFactory.createStylesheetElements("styles/box.css", "styles/reset.css");
+		
 		for(Element elt : headElements){
+			htmlEnv1.head().appendChild(elt);
+		}
+		for(Element elt : boxStylesheets){
 			htmlEnv1.head().appendChild(elt);
 		}
 		return headElements;

@@ -38,11 +38,7 @@ public class BasicOperatorTest {
 		Assert.assertEquals(2, attributes.size());
 
 		// There should be only one table tag
-		Assert.assertEquals(1, document.getElementsByTag("table").size());
-
-		Assert.assertEquals(1, document.getElementsByTag("tr").size());
-		Assert.assertEquals(2, document.getElementsByTag("tr").first()
-				.getElementsByTag("td").size());
+		Assert.assertEquals(1, document.getElementsByClass("con1").size());
 	}
 
 	/**
@@ -54,9 +50,7 @@ public class BasicOperatorTest {
 	public void Connector2Test() {
 
 		Document document = TestUtils.launchQueryAndGetResult(configFilename, testFilesFolder, testFilesNames, 1);
-		Assert.assertEquals(2, document.getElementsByTag("tr").size());
-		Assert.assertEquals(1, document.getElementsByTag("tr").first()
-				.getElementsByTag("td").size());
+		Assert.assertEquals(1, document.getElementsByClass("con2").size());
 		Assert.assertEquals(2, document.getElementsByClass("att").size());
 	}
 
@@ -91,17 +85,10 @@ public class BasicOperatorTest {
 	public void Grouper1Test() {
 		Document document = TestUtils.launchQueryAndGetResult(configFilename, testFilesFolder, testFilesNames, 3);
 
-		int numberOfAttributes = document.getElementsByClass("att").size();
+		Assert.assertEquals(1, document.getElementsByClass("group1").size());
 
-		Assert.assertEquals(1, document.getElementsByTag("table").size());
+		Assert.assertEquals(1, document.getElementsByClass("horizontal").size());
 
-		Assert.assertEquals(numberOfAttributes + 1, document
-				.getElementsByClass("nest").size());
-
-		Assert.assertEquals(1, document.getElementsByTag("tr").size());
-
-		Assert.assertEquals(numberOfAttributes, document.getElementsByTag("td")
-				.size());
 	}
 
 	/**
@@ -113,17 +100,10 @@ public class BasicOperatorTest {
 	public void Grouper2Test() {
 		Document document = TestUtils.launchQueryAndGetResult(configFilename, testFilesFolder, testFilesNames, 4);
 
-		int numberOfAttributes = document.getElementsByClass("att").size();
+		Assert.assertEquals(1, document.getElementsByClass("group2").size());
+		
+		Assert.assertEquals(1, document.getElementsByClass("vertical").size());
 
-		Assert.assertEquals(1, document.getElementsByTag("table").size());
-
-		Assert.assertEquals(numberOfAttributes + 1, document
-				.getElementsByClass("nest").size());
-
-		Assert.assertEquals(numberOfAttributes, document.getElementsByTag("tr")
-				.size());
-		Assert.assertEquals(numberOfAttributes, document.getElementsByTag("td")
-				.size());
 	}
 
 	/**

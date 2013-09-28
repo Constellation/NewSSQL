@@ -37,6 +37,7 @@ public class HTMLAttribute extends Attribute {
 	@Override
 	public Element createNode(ExtList data_info){
 		Element result = new Element(Tag.valueOf("span"), "");
+		result.addClass("box").addClass("flex1");
 		htmlEnv.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
 
 		if(GlobalEnv.isOpt()){
@@ -130,9 +131,9 @@ public class HTMLAttribute extends Attribute {
 				else
 				{
 					a.html(this.getStr(data_info));
-					
+					a.addClass("box");
 					if(htmlEnv.isPanel)
-						result.appendChild(div);
+						a.appendChild(div);
 					return a;
 				}
 			}
