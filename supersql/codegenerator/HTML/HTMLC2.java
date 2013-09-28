@@ -16,7 +16,6 @@ public class HTMLC2 extends Connector {
 	private HTMLEnv htmlEnv;
 	private HTMLEnv htmlEnv2;
 
-    //���󥹥ȥ饯��
     public HTMLC2(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
         this.htmlEnv = henv;
         this.htmlEnv2 = henv2;
@@ -24,7 +23,8 @@ public class HTMLC2 extends Connector {
 
     @Override
     public Element createNode(ExtList data_info){
-    	Element result = new Element(Tag.valueOf("table"), "");
+    	Element result = new Element(Tag.valueOf("div"), "");
+    	result.addClass("vertical").addClass("con2").addClass("box");
     	this.setDataList(data_info);
 
         if(decos.containsKey("form") && decos.getStr("form").toLowerCase().equals("search")){
@@ -44,9 +44,6 @@ public class HTMLC2 extends Connector {
         htmlEnv.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
         
         if(!GlobalEnv.isOpt()){
-        	result.attr("cellSpacing", "0");
-        	result.attr("cellPadding", "0");
-        	result.attr("border", htmlEnv.tableBorder);
         	if(!htmlEnv.isOutlineModeForJsoup()){
         		result.attr("frame", "void");
         	}
@@ -68,16 +65,12 @@ public class HTMLC2 extends Connector {
     	
         while (this.hasMoreItems()) {
             ITFE tfe = (ITFE) tfes.get(i);
-            Element tr = new Element(Tag.valueOf("tr"), "");
-            Element td = new Element(Tag.valueOf("td"), "");
-            td.attr("class", HTMLEnv.getClassID(tfe) + " nest");
+            result.addClass(HTMLEnv.getClassID(tfe)).addClass("nest");
             
         	String classid = HTMLEnv.getClassID(tfe);
 
-            td.appendChild((Element)this.createNextItemNode(data_info));
+            result.appendChild((Element)this.createNextItemNode(data_info));
 
-            tr.appendChild(td);
-            result.appendChild(tr);
             i++;
         }
 

@@ -13,10 +13,8 @@ import java.io.Writer;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.nodes.Node;
 import org.jsoup.parser.Tag;
 
-import supersql.codegenerator.Attribute;
 import supersql.codegenerator.Connector;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.Manager;
@@ -30,7 +28,6 @@ public class HTMLC3 extends Connector {
 	private HTMLEnv htmlEnv;
 	private HTMLEnv htmlEnv2;
 
-    //･ｳ･�ｹ･ﾈ･鬣ｯ･ｿ
     public HTMLC3(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
         this.htmlEnv = henv;
         this.htmlEnv2 = henv2;
@@ -38,9 +35,9 @@ public class HTMLC3 extends Connector {
     
     public Element createNode(ExtList data_info){
     	
-    	//TODO
     	File input = new File("template.html");
     	Element result = new Element(Tag.valueOf("div"), "");
+    	result.addClass("con3").addClass("box");
     	Document toWrite = new Document("");
 		try {
 			toWrite = Jsoup.parse(input, "UTF-8", "");

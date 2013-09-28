@@ -1,9 +1,6 @@
 package supersql.codegenerator.HTML;
 
-import java.util.Vector;
-
 import org.jsoup.nodes.Element;
-import org.jsoup.nodes.Node;
 import org.jsoup.parser.Tag;
 
 import supersql.codegenerator.Grouper;
@@ -17,7 +14,6 @@ public class HTMLG2 extends Grouper {
 	private HTMLEnv html_env;
 	private HTMLEnv html_env2;
 
-    //コンストラクタ
     public HTMLG2(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
         this.html_env = henv;
         this.html_env2 = henv2;
@@ -26,7 +22,8 @@ public class HTMLG2 extends Grouper {
     
     @Override
     public Element createNode(ExtList data_info){
-    	Element result = new Element(Tag.valueOf("table"), "");
+    	Element result = new Element(Tag.valueOf("div"), "");
+    	result.addClass("vertical").addClass("box").addClass("group2");
         this.setDataList(data_info);
         if(HTMLEnv.getSelectFlg())
         	data_info = (ExtList) data_info.get(0);
@@ -34,9 +31,6 @@ public class HTMLG2 extends Grouper {
         html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
         
         if(!GlobalEnv.isOpt()){
-        	result.attr("cellSpacing", "0");
-        	result.attr("cellPadding", "0");
-        	result.attr("border", html_env.tableBorder);
 	        if(html_env.embedFlag)
 	        	result.addClass("embed");
 	        
@@ -58,18 +52,9 @@ public class HTMLG2 extends Grouper {
         
         while (this.hasMoreItems()) {
             html_env.gLevel++;
-            Element tr = new Element(Tag.valueOf("tr"), "");
-            if( !HTMLEnv.getSelectRepeat() ){
-            	
-            	Element td = new Element(Tag.valueOf("td"), "").addClass(HTMLEnv.getClassID(tfe)).addClass("nest");
-	            tr.appendChild(td);
-            	
-            }
             String classid = HTMLEnv.getClassID(tfe);
-            tr.children().last().appendChild((Element) this.createNextItemNode());
-            
             if(!HTMLEnv.getSelectRepeat()){
-            	result.appendChild(tr);
+            	result.appendChild((Element) this.createNextItemNode());
             }
             html_env.gLevel--;
             

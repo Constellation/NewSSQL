@@ -27,6 +27,7 @@ public class HTMLC1 extends Connector {
     public Element createNode(ExtList dataInfo){
     	this.setDataList(dataInfo);
     	Element result = new Element(Tag.valueOf("div"), "");
+    	result.addClass("con1").addClass("horizontal").addClass("box");
     	if(decos.containsKey("form") && decos.getStr("form").toLowerCase().equals("search")){
         	HTMLEnv.setSearch(true);
     	}
@@ -41,29 +42,20 @@ public class HTMLC1 extends Connector {
         }
 
         htmlEnv.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
-        Element table = new Element(Tag.valueOf("table"), "");
         if(!GlobalEnv.isOpt()){
         	
-        	table.attr("cellSpacing", "0");
-        	table.attr("cellPadding", "0");
-        	table.attr("border", htmlEnv.tableBorder);
-        	if(!htmlEnv.isOutlineModeForJsoup()){
-        		table.attr("frame", "void");
-        	}
-        	
         	if(htmlEnv.writtenClassId.contains(HTMLEnv.getClassID(this))){
-        		table.attr("class", HTMLEnv.getClassID(this));
+        		result.addClass(HTMLEnv.getClassID(this));
         	}
 
         	if(decos.containsKey("class")){
-        		table.attr("class", table.attr("class") + " " + decos.getStr("class"));
+        		result.addClass(decos.getStr("class"));
         	}
         }
-        Element tr = table.appendElement("tr");
         int i = 0;
 
         if(decos.containsKey("form")){
-        	tr.appendChild(HTMLFunction.createFormForJsoup(decos));
+        	result.appendChild(HTMLFunction.createFormForJsoup(decos));
            	HTMLEnv.setFormItemFlg(true,null);
         }
         
@@ -74,23 +66,20 @@ public class HTMLC1 extends Connector {
             td.attr("class", HTMLEnv.getClassID(tfe) + " nest");
             String classid = HTMLEnv.getClassID(tfe);
             
-            td.appendChild((Element)this.createNextItemNode(dataInfo));
-            tr.appendChild(td);
+            result.appendChild((Element)this.createNextItemNode(dataInfo));
             i++;
         }
 
         if(decos.containsKey("form")){
         	Element exForm = HTMLEnv.exFormNameCreateForJsoup();
         	if(exForm != null){
-        		tr.appendChild(exForm);
+        		result.appendChild(exForm);
         	}
            	HTMLEnv.setFormItemFlg(false,null);
            	HTMLEnv.incrementFormNumber();
            	if(decos.getStr("form").toLowerCase().equals("search"))
         		HTMLEnv.setSearch(false);
         }
-        
-        result.appendChild(table);
         
 		return result;
     }

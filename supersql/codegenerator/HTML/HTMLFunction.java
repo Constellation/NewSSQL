@@ -29,11 +29,6 @@ import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.FuncArg;
 import supersql.codegenerator.Function;
 import supersql.codegenerator.Manager;
-import supersql.codegenerator.Mobile_HTML5.HTMLC1;
-import supersql.codegenerator.Mobile_HTML5.HTMLC2;
-import supersql.codegenerator.Mobile_HTML5.HTMLG1;
-import supersql.codegenerator.Mobile_HTML5.HTMLG2;
-import supersql.codegenerator.Mobile_HTML5.HTMLManager;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.dataconstructor.DataConstructor;
@@ -1058,13 +1053,108 @@ public class HTMLFunction extends Function {
 	}
 
 	protected Element FuncInvokeForJsoup() {
-		// TODO Auto-generated method stub
-		return null;
+
+		String path = this.getAtt("path", ".");
+		if (!GlobalEnv.getFileDirectory().equals(".")) {
+			path = GlobalEnv.getFileDirectory();
+		}
+		String filename = this.getAtt("filename");
+		if (!filename.startsWith("/") && (path != null)) {
+			filename = path + "/" + filename;
+		}
+
+		htmlEnv.linkUrl = this.getAtt("server_path",
+				GlobalEnv.getInvokeServletPath())
+				+ "?"
+				+ "config="
+				+ path
+				+ "/config.ssql"
+				+ "&"
+				+ "query="
+				+ filename + "&" + "cond=" + this.getAtt("condition");
+
+		htmlEnv.linkFlag = 1;
+		Element result = (Element) this.createNodeAtt("default");
+		htmlEnv.linkFlag = 0;
+
+		return result;
 	}
 
 	protected Element FuncImagefileForJsoup() {
-		// TODO Auto-generated method stub
-		return null;
+
+		Element result = new Element(Tag.valueOf("a"), "");
+		
+		String path = this.getAtt("path", ".");
+		if (!path.startsWith("/")) {
+			String basedir = GlobalEnv.getBaseDir();
+			if (basedir != null && basedir != "") {
+				path = GlobalEnv.getBaseDir() + "/" + path;
+			}
+		}
+		if (GlobalEnv.isServlet()) {
+			path = GlobalEnv.getFileDirectory() + path;
+		}
+
+		// image//////////////////////////////////////////////////////////////////////////////////
+		if (htmlEnv.linkFlag > 0 || htmlEnv.sinvokeFlag) {
+			String fileDir = new File(htmlEnv.linkUrl).getAbsoluteFile()
+					.getParent();
+
+			if (fileDir.length() < htmlEnv.linkUrl.length()
+					&& fileDir.equals(htmlEnv.linkUrl.substring(0,
+							fileDir.length()))) {
+				String relative_path = htmlEnv.linkUrl.substring(fileDir
+						.length() + 1);
+				result.attr("href", relative_path);
+			} else
+				result.attr("href", htmlEnv.linkUrl);
+
+			// added by goto 20121222 end
+
+			if (decos.containsKey("target"))
+				result.attr("target", decos.getStr("target"));
+			if (decos.containsKey("class"))
+				result.addClass(decos.getStr("class"));
+		}
+		// tk/////////////////////////////////////////////////////////////////////////////////
+
+		if (decos.containsKey("lightbox")) {
+			Date d1 = new Date();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyymmddHHmmss");
+			String today = sdf.format(d1);
+
+			
+			Element link = JsoupFactory.createLink(path + "/" + this.getAtt("default"), "", "");
+			link.attr("rel", "lightbox[lb" + today + "]");
+			result.appendChild(link);
+
+			if (decos.getStr("lightbox").compareTo("root") == 0
+					|| decos.getStr("lightbox").compareTo("thumb") == 0) {
+				Element img = new Element(Tag.valueOf("img"), "").addClass(HTMLEnv.getClassID(this));
+				htmlEnv.code.append("<img class=\"" + HTMLEnv.getClassID(this)
+						+ " ");
+
+				if (decos.containsKey("class"))
+					img.addClass(decos.getStr("class"));
+
+				img.attr("src", path + "/" + this.getAtt("default")).attr("onLoad", "initLightBox()");
+				link.appendChild(img);
+			}
+		} else {
+			Element img = new Element(Tag.valueOf("img"), "").addClass(HTMLEnv.getClassID(this));
+			if (decos.containsKey("class"))
+				img.addClass(decos.getStr("class"));
+
+			// added 20130703
+			if (this.getAtt("default").startsWith("http://")
+					|| this.getAtt("default").startsWith("https://")) {
+				img.attr("src", this.getAtt("default"));
+			} else {
+				img.attr("src", path + "/" + this.getAtt("default"));
+			}
+			result.appendChild(img);
+		}
+		return result;
 	}
 
 	protected void Func_imagefile() {

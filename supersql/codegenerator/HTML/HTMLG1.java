@@ -14,7 +14,6 @@ public class HTMLG1 extends Grouper {
 	private HTMLEnv html_env;
 	private HTMLEnv html_env2;
 
-    //コンストラクタ
     public HTMLG1(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
         this.html_env = henv;
         this.html_env2 = henv2;
@@ -26,12 +25,10 @@ public class HTMLG1 extends Grouper {
         this.setDataList(data_info);
         html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
         
-        Element result = new Element(Tag.valueOf("table"), "");
+        Element result = new Element(Tag.valueOf("div"), "");
+        result.addClass("horizontal").addClass("box").addClass("group1");
         
         if(!GlobalEnv.isOpt()){
-        	result.attr("cellSpacing", "0");
-        	result.attr("cellPadding", "0");
-        	result.attr("border", html_env.tableBorder);
 	        
 	        if(html_env.embedFlag)
 	        	result.addClass("embed");
@@ -52,38 +49,28 @@ public class HTMLG1 extends Grouper {
         	}
         }
 
-        Element tr = new Element(Tag.valueOf("tr"), "");
-        
         while (this.hasMoreItems()) {
         	html_env.gLevel++;
             
-        	Element td = new Element(Tag.valueOf("td"), "");
-        	td.addClass(HTMLEnv.getClassID(tfe));
-        	td.addClass("nest");
-        	
             String classid = HTMLEnv.getClassID(tfe);
             	
-            td.appendChild((Element)this.createNextItemNode());
+            result.appendChild((Element)this.createNextItemNode());
             
-            tr.appendChild(td);
             html_env.gLevel--;
         }
         
         if(HTMLEnv.getFormItemFlg()){		
 	        HTMLEnv.incrementFormPartsNumber();
 		}
-        result.appendChild(tr);
         return result;
 
     }
 
-    //G1のworkメソッド
     @Override
 	public void work(ExtList data_info) {
         Log.out("------- G1 -------");
         this.setDataList(data_info);
         
-        //tk start///////////////////////////////////////////////////
         html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
         
 

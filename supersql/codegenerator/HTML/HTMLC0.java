@@ -7,13 +7,12 @@ import supersql.codegenerator.Connector;
 import supersql.codegenerator.Manager;
 import supersql.extendclass.ExtList;
 
-//import common.Log;
 
+// The Connector 0 is the interrogation point.
 public class HTMLC0 extends Connector {
 	private HTMLEnv htmlEnv;
 	private HTMLEnv htmlEnv2;
 
-	//���󥹥ȥ饯��
 	public HTMLC0(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
 		this.htmlEnv = henv;
 		this.htmlEnv2 = henv2;
