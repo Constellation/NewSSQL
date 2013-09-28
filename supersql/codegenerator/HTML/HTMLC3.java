@@ -77,7 +77,7 @@ public class HTMLC3 extends Connector {
                     + String.valueOf(HTMLEnv.countFile) + ".html";
             if (intfe instanceof HTMLG3) {
                 HTMLEnv.countFile--;
-                toWrite.body().appendChild((Element) this.createNextItemNode(data_info));
+                toWrite.body().getElementById("ssql").appendChild((Element) this.createNextItemNode(data_info));
             } else {
                 parentcode = htmlEnv.code;
                 parentcss = htmlEnv.css;
@@ -95,7 +95,7 @@ public class HTMLC3 extends Connector {
                 }
 
                 htmlEnv.setOutlineMode();
-                toWrite.body().appendChild((Element) this.createNextItemNode(data_info));
+                toWrite.body().getElementById("ssql").appendChild((Element) this.createNextItemNode(data_info));
 
                 if (k < c3items - 1) {
                     htmlEnv.linkFlag--;

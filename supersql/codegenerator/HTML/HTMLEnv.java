@@ -204,9 +204,9 @@ public class HTMLEnv extends LocalEnv {
 
 	public void createSSQLForm() {
 		if (Connector.loginFlag) {
-			htmlEnv1.body().appendChild(createLoginForm());
+			htmlEnv1.body().getElementById("ssql").appendChild(createLoginForm());
 		} else if (Connector.logoutFlag) {
-			htmlEnv1.body().appendChild(createLogoutForm());
+			htmlEnv1.body().getElementById("ssql").appendChild(createLogoutForm());
 		} else if (Connector.insertFlag || Connector.deleteFlag
 				|| Connector.updateFlag) {
 			Element form = createInsertDeleteUpdateForm();
@@ -225,7 +225,7 @@ public class HTMLEnv extends LocalEnv {
 	public void createFooter(){
 		if (Connector.updateFlag || Connector.insertFlag
 				|| Connector.deleteFlag || Connector.loginFlag) {
-			htmlEnv1.body().getElementsByTag("form").last().appendChild(JsoupFactory.createInput("submit", "login", "Let's go!"));
+			htmlEnv1.body().getElementById("ssql").getElementsByTag("form").last().appendChild(JsoupFactory.createInput("submit", "login", "Let's go!"));
 			Connector.updateFlag = false;
 			Connector.insertFlag = false;
 			Connector.deleteFlag = false;
@@ -380,7 +380,7 @@ public class HTMLEnv extends LocalEnv {
 		}
 
 		if (GlobalEnv.getframeworklist() == null) {
-			htmlEnv1.body().addClass("body");
+			htmlEnv1.body().getElementById("ssql").addClass("body");
 			header.append("<BODY class=\"body\">\n");
 			Element divElement = new Element(Tag.valueOf("div"), "");
 			divElement.append(title.toString());
@@ -397,14 +397,14 @@ public class HTMLEnv extends LocalEnv {
 			form.attr("action", GlobalEnv.getFileDirectory() + "/servlet/supersql.form.Session").attr("method", "post").attr("name", "theForm");
 			form.appendChild(JsoupFactory.createInput("hidden", "tableinfo", SSQLparser.get_from_info_st()));
 			form.appendChild(JsoupFactory.createInput("hidden", "configfile", GlobalEnv.getconfigfile()));
-			htmlEnv1.body().appendChild(form);
+			htmlEnv1.body().getElementById("ssql").appendChild(form);
 		}
 
 		if (Connector.logoutFlag) {
 			Element form = new Element(Tag.valueOf("form"), "");
 			form.attr("action", GlobalEnv.getFileDirectory() + "/servlet/supersql.form.Session").attr("method", "post").attr("name", "theForm");
 			form.appendChild(JsoupFactory.createInput("hidden", "configfile", GlobalEnv.getconfigfile()));
-			htmlEnv1.body().appendChild(form);
+			htmlEnv1.body().getElementById("ssql").appendChild(form);
 		}
 
 		if (Connector.insertFlag || Connector.deleteFlag

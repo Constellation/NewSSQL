@@ -80,18 +80,18 @@ public class HTMLG3 extends Grouper {
             }
 
             html_env.setOutlineMode();
-            toWrite.body().appendChild((Element) this.createNextItemNode());
+            toWrite.body().getElementById("ssql").appendChild((Element) this.createNextItemNode());
 
             if (!html_env.foreachFlag) {
                 String nextfile = new String();
                 nextfile = html_env.linkOutFile
                         + String.valueOf(HTMLEnv.countFile + 1) + ".html";
-                toWrite.body().appendChild(new Element(Tag.valueOf("div"), "").addClass("linkbutton").addClass(HTMLEnv.getClassID(tfe)));
+                toWrite.body().getElementById("ssql").appendChild(new Element(Tag.valueOf("div"), "").addClass("linkbutton").addClass(HTMLEnv.getClassID(tfe)));
                 if (countinstance > 1) {
-                	toWrite.body().children().last().appendChild(JsoupFactory.createLink(backfile, "", "[back]"));
+                	toWrite.body().getElementById("ssql").children().last().appendChild(JsoupFactory.createLink(backfile, "", "[back]"));
                 }
                 if (this.hasMoreItems()) {
-                	toWrite.body().children().last().appendChild(JsoupFactory.createLink(nextfile, "", "[next]"));
+                	toWrite.body().getElementById("ssql").children().last().appendChild(JsoupFactory.createLink(nextfile, "", "[next]"));
                 }
                 
             }
