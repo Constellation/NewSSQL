@@ -28,6 +28,12 @@ public class HTMLC2 extends Connector {
 
     //C2��work�᥽�å�
     public void work(ExtList data_info) {
+    	//20131001 tableDivHeader
+    	if(decos.containsKey("header") && HTMLG2.tableDivHeader_Count2<1){
+    		HTMLG2.tableDivHeader_codeBuf = html_env.code.toString();
+    		HTMLG2.tableDivHeader_Count2++;
+    	}
+    	
         int panelFlg = 0;	//20130503  Panel
     	
         Log.out("------- C2 -------");
@@ -244,7 +250,7 @@ public class HTMLC2 extends Connector {
            	html_env.code.append(HTMLFunction.createForm(decos));
            	HTMLEnv.setFormItemFlg(true,null);
         }
-    	
+        
         while (this.hasMoreItems()) {
             //Log.info("C2-1:	"+tableFlg+"	"+decos.containsKey("table")+"	"+decos.containsKey("table0"));
             if(decos.containsKey("table0") || HTMLC1.table0Flg || HTMLG1.table0Flg || HTMLG2.table0Flg)	table0Flg = true;
@@ -411,6 +417,10 @@ public class HTMLC2 extends Connector {
         Log.out("TFEId = " + HTMLEnv.getClassID(this));
         //html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
         //↑必要？不要？？ -> 不要
+        
+        //20131001 tableDivHeader
+        if(decos.containsKey("header"))
+        	html_env.code = HTMLG2.createAndCutTableDivHeader(html_env);
     }
 
     public String getSymbol() {

@@ -49,6 +49,12 @@ public class HTMLG1 extends Grouper {
     //G1��work�᥽�å�
     @Override
 	public void work(ExtList data_info) {
+    	//20131001 tableDivHeader
+    	HTMLG2.tableDivHeader = "";	
+    	HTMLG2.tableDivHeader_codeBuf = "";
+    	HTMLG2.tableDivHeader_Count1 = 0;
+    	HTMLG2.tableDivHeader_Count2 = 0;
+    	
         int panelFlg = 0;	//20130503  Panel
         
         //1行ごとのカラム数 (range: 2〜)
@@ -467,6 +473,8 @@ public class HTMLG1 extends Grouper {
 //            	//Count = 0;
 //            }
             html_env.glevel--;
+
+            HTMLG2.tableDivHeader_Count1++;	//20131001 tableDivHeader
             
             //added by goto 20130413  "row Prev/Next"
             if(rowFlg){
