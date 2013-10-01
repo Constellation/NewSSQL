@@ -19,9 +19,12 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map.Entry;
 
 import org.jsoup.nodes.Attributes;
+import org.jsoup.nodes.DataNode;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
@@ -43,7 +46,7 @@ public class HTMLFunction extends Function {
 
 	private HTMLEnv htmlEnv;
 	private HTMLEnv htmlEnv2;
-	private static int meter_id = 0;
+	private static int meterId = 0;
 	static ArrayList<Integer> seq_num = new ArrayList<Integer>(); // 20130914
 																	// "SEQ_NUM"
 	static ArrayList<String> seq_num_ClassID = new ArrayList<String>(); // 20130914
@@ -1296,68 +1299,72 @@ public class HTMLFunction extends Function {
 	}
 
 	private Element FuncMeter() {
-		meter_id++;
+		/*
+		 * <div><script type="text/javascript">addEvent(window,"load",function() {
+		 * var layout = [ 200, //width 40, //height 170, //m_width 25,
+		 * //m_height 100, //max 0, //min 30, //low 70 //high ] var color = [
+		 * "#FF0000", //max_color "#00FFFF", //low_color "#00FFFF", //high_color
+		 * "#00FF00", //mid_color "#CCCCCC" //bg_color ]
+		 * draw("meter2",layout,color,70); });</script>
+		 * 
+		 * <canvas width="200" height="40" id="meter2"></canvas></div>
+		 */
+		meterId++;
+		checkArgsNumber(1);
+		FuncArg attribute = Args.get(0);
+		checkArgType(attribute, HTMLAttribute.class, 0);
+		
 		Element result = new Element(Tag.valueOf("div"), "");
-		Element script = new Element(Tag.valueOf("script"), "").attr("type",
-				"text/javascript");
-		String scriptString = "addEvent(window,\"load\",function() { \nvar layout = [";
-
-		if (decos.containsKey("width"))
-			scriptString += decos.getStr("width");
-		scriptString += ",";
-		if (decos.containsKey("height"))
-			scriptString += decos.getStr("height");
-		scriptString += ",";
-		if (decos.containsKey("m_width"))
-			scriptString += decos.getStr("m_width");
-		scriptString += ",";
-		if (decos.containsKey("m_height"))
-			scriptString += decos.getStr("m_height");
-		scriptString += ",";
-		if (decos.containsKey("max"))
-			scriptString += decos.getStr("max");
-		scriptString += ",";
-		if (decos.containsKey("min"))
-			scriptString += decos.getStr("min");
-		scriptString += ",";
-		if (decos.containsKey("low"))
-			scriptString += decos.getStr("low");
-		scriptString += ",";
-		if (decos.containsKey("high"))
-			scriptString += decos.getStr("high");
-		scriptString += ",";
-		if (decos.containsKey("max_color"))
-			scriptString += decos.getStr("max_color");
-		scriptString += ",";
-		if (decos.containsKey("low_color"))
-			scriptString += decos.getStr("low_color");
-		scriptString += ",";
-		if (decos.containsKey("high_color"))
-			scriptString += decos.getStr("high_color");
-		scriptString += ",";
-		if (decos.containsKey("mid_color"))
-			scriptString += decos.getStr("mid_color");
-		scriptString += ",";
-		if (decos.containsKey("bg_color"))
-			scriptString += decos.getStr("bg_color");
-		scriptString += "] \ndraw(\"meter" + meter_id + "\",layout,color,"
-				+ this.getAtt("default") + ");});";
-
-		script.text(scriptString);
-
-		Element div = new Element(Tag.valueOf("div"), "");
+		Element script = new Element(Tag.valueOf("script"), "").attr("type", "text/javascript");
 		Element canvas = new Element(Tag.valueOf("canvas"), "");
-		if (decos.containsKey("width"))
-			canvas.attr("width", decos.getStr("width"));
-		else
-			canvas.attr("width", "200");
-		if (decos.containsKey("height"))
-			canvas.attr("height", decos.getStr("height"));
-		else
-			canvas.attr("height,", "40");
-		div.appendChild(canvas);
-		result.appendChild(script);
-		result.appendChild(div);
+		String scriptString = "window.onload = function() { \nvar layout = [";
+		
+		canvas.attr("id", "meter" + meterId);
+		
+		HashMap<String, String> propertiesHashMap = new HashMap<String, String>();
+		{ // The order in which we put the values here is important.
+			propertiesHashMap.put("width", "200");
+			propertiesHashMap.put("height", "40");
+			propertiesHashMap.put("m_width", "170");
+			propertiesHashMap.put("m_height", "25");
+			propertiesHashMap.put("max", "100");
+			propertiesHashMap.put("min", "0");
+			propertiesHashMap.put("low", "30");
+			propertiesHashMap.put("high", "70");
+			propertiesHashMap.put("max_color", "#FF0000");
+			propertiesHashMap.put("low_color", "#00FFFF");
+			propertiesHashMap.put("high_color", "#00FFFF");
+			propertiesHashMap.put("mid_color", "#00FF00");
+			propertiesHashMap.put("bg_color", "#CCCCCC");
+		}
+		
+		for(String deco : decos.keySet()){
+			if(propertiesHashMap.keySet().contains(deco))
+				propertiesHashMap.put(deco, decos.getStr(deco));
+		}
+		
+		for(Entry<String,String> currentProperty : propertiesHashMap.entrySet()){
+			String key = currentProperty.getKey();
+			String value = currentProperty.getValue();
+			scriptString += "\"" + value + "\"";
+			if(key.equalsIgnoreCase("high"))
+				scriptString+= "]; \nvar color = [";
+			else
+				scriptString+= ",";
+			if(key.equalsIgnoreCase("width") || key.equalsIgnoreCase("height"))
+				canvas.attr(key, value);
+		}
+		
+		scriptString += "]; \ndraw(\"meter" + meterId + "\",layout,color,";
+		scriptString += ((Element)(attribute.createNode())).text();
+		scriptString += ");}</script>";
+		script.appendChild(new DataNode(scriptString, ""));
+		
+		result.appendChild(canvas);
+		htmlEnv.getHtmlEnv1().head().appendChild(JsoupFactory.createJsElement("js/canvas.js"));
+		htmlEnv.getHtmlEnv1().head().appendChild(script);
+		
+		
 		return result;
 	}
 
