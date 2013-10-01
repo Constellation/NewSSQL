@@ -16,10 +16,14 @@ import org.junit.Test;
  * @author thomas@oxynum.fr (Thomas THIMOTHEE)
  */
 public class BasicOperatorTest {
-	private static final String configFilename = "/Users/thomas/Documents/dev/ssql2/.ssql";
+	private static final String configFilename = "/Users/goto/config.ssql";
 	// This string should finish with a slash
-	private static final String testFilesFolder = "/Users/thomas/Documents/dev/ssql2/test_queries/basic_operators/";
+	private static final String testFilesFolder = "/Users/goto/Documents/workspace/src'12/test_queries/basic_operators/";
 	private static final String[] testFilesNames = { "connector1.sql",
+//		private static final String configFilename = "/Users/goto/config.ssql";
+//	// This string should finish with a slash
+//	private static final String testFilesFolder = "/Users/goto/Documents/workspace/src'12/test_queries/basic_operators/";
+//	private static final String[] testFilesNames = { "connector1.sql",
 			"connector2.sql", "connector3.sql", "grouper1.sql", "grouper2.sql",
 			"grouper3.sql" };
 

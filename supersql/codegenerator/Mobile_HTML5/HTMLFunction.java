@@ -3008,8 +3008,11 @@ public class HTMLFunction extends Function {
 
 	//added by goto 20130914  "text"
     /*  text("#TextLabel_" + Number)  */
+//    static String text = "";
+    static boolean textFlg2 = false; //for C2
     private void Func_text() {
-    	html_env.code.delete(html_env.code.lastIndexOf("<"),html_env.code.lastIndexOf(">")+1);	//delete last <div class="">
+//    	html_env.code.delete(html_env.code.lastIndexOf("<"),html_env.code.lastIndexOf(">")+1);	//delete last <div class="">
+//    	html_env.code.delete(html_env.code.lastIndexOf("<"),html_env.code.lastIndexOf(">")+1);	//delete last <div class="">
     	//TODO: 改行コード削除
     	textFlg = true;
     	
@@ -3023,6 +3026,8 @@ public class HTMLFunction extends Function {
 			str = SSQLparser.textString.get(textNum);
 		}catch(Exception e){ }
     	
+		
+//		text = str;
     	// 各引数毎に処理した結果をHTMLに書きこむ
     	html_env.code.append(str);
     	return;

@@ -334,6 +334,13 @@ public class HTMLC1 extends Connector {
 	            //☆★
 	      		Log.info("	C1 tfeItems : " + this.tfeItems);
 	      	}
+	      	
+	      	//20130914  "text"
+//	      	Log.e("	decosC2 = "+decos);
+	        if(decos.containsKey("text")){
+	        	Log.e("	C1 in!");
+	        	HTMLFunction.textFlg2 = true;
+	        }
             
             //Log.out("<TD class=\""
             //        + HTMLEnv.getClassID(tfe) + " nest\"> decos : " + decos);
@@ -394,6 +401,12 @@ public class HTMLC1 extends Connector {
             
             if(/* !HTMLG1.G1Flg  && */ !tableFlg)	html_env.code.append("</div>\n");	//20130309
         	if(tableFlg)	html_env.code.append("</TD>\n");					//20130314  table
+//        	if(HTMLFunction.textFlg){					//20130914  "text"
+//        		Log.e("C1 text!");
+//	      		html_env.code.append(HTMLFunction.text);
+//	      		HTMLFunction.text = "";
+//	      		HTMLFunction.textFlg = false;
+//	      	}
             //Log.out("</TD>");
 
             i++;

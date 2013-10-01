@@ -90,6 +90,12 @@ public class HTMLC2 extends Connector {
         	Log.i("※C2 HTMLEnv.staticBuf: "+HTMLEnv.staticBuf);
         }
         
+//        //20130914  "text"
+//        if(decos.containsKey("text")){
+//        	Log.e("	in!");
+//        	HTMLFunction.textFlg2 = true;
+//        }
+        
         if(!GlobalEnv.isOpt()){
         	//20130503  Panel
     	    panelFlg = HTMLC1.panelProcess1(decos, html_env);
@@ -262,10 +268,18 @@ public class HTMLC2 extends Connector {
             //20130312 collapsible
 	      	if(decos.containsKey("collapse"))
 	          	html_env.code.append("<p>\n");
-	      	else if(!tableFlg) 
+	      	else if(!tableFlg && !HTMLFunction.textFlg2) 
 	            //20130309
 	            //x html_env.code.append("	<DIV Class=\"ui-grid-a\">	<div class=\"ui-block-a\">");		
 	            html_env.code.append("<div class=\""+HTMLEnv.getClassID(tfe)+" \">\n");
+	      	
+	      	//20130914  "text"
+//	      	Log.e("	decosC2 = "+decos);
+//	      	Log.e("	C2 HTMLFunction.textFlg2 = "+HTMLFunction.textFlg2);
+	        if(decos.containsKey("text")){	//TODO
+//	        	Log.e("	C2 in!");
+//	        	HTMLFunction.textFlg2 = true;
+	        }
 	        
 	      	//20130314  table
 	      	String classid = null ;
@@ -332,9 +346,16 @@ public class HTMLC2 extends Connector {
             //20130312 collapsible
 	      	if(decos.containsKey("collapse"))
 	          	html_env.code.append("</p>\n");
-	      	else if(!tableFlg && !HTMLFunction.textFlg)	//20130914  "text"
+	      	else if(!tableFlg && !HTMLFunction.textFlg && !HTMLFunction.textFlg2)	//20130914  "text"
 	        	html_env.code.append("\n</div>");
-	      	HTMLFunction.textFlg = false;				//20130914  "text"
+	      	if(HTMLFunction.textFlg){					//20130914  "text"
+//	      		Log.e("C2 text! ");
+//	      		html_env.code.append(HTMLFunction.text);
+//	      		HTMLFunction.text = "";
+	      		HTMLFunction.textFlg = false;
+	      		//HTMLFunction.textFlg2 = false;	//TODO
+	      	}
+//	      	HTMLFunction.textFlg = false;				//20130914  "text"
             
             html_env.code.append("\n");		//20130309
 

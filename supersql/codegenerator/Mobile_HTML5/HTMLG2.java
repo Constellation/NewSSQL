@@ -129,6 +129,13 @@ public class HTMLG2 extends Grouper {
         	Log.i("※G2 HTMLEnv.staticBuf: "+HTMLEnv.staticBuf);
         }
         
+        //20130914  "text"
+//      	Log.e("	decosC2 = "+decos);
+        if(decos.containsKey("text")){
+//        	Log.e("	G2 in!");
+        	HTMLFunction.textFlg2 = true;
+        }
+        
         if(!GlobalEnv.isOpt()){
         	//20130503  Panel
     	    panelFlg = HTMLC1.panelProcess1(decos, html_env);
@@ -336,9 +343,19 @@ public class HTMLG2 extends Grouper {
                 	html_env.code.append("</ul>\n</div>\n");
                 }
                 //added by goto 20130110 end
-                if(!tableFlg)	html_env.code.append("	</div>\n");		//20130309  div
-                else	html_env.code.append("</TD></TR>\n");			//20130314  table
+//                if(!tableFlg)	html_env.code.append("	</div>\n");		//20130309  div
+                if(!tableFlg){
+                	if(!HTMLFunction.textFlg2){
+                		html_env.code.append("	</div>\n");		//20130309  div	//20130914  "text"
+                	}
+                }else	html_env.code.append("</TD></TR>\n");			//20130314  table
                 Log.out("</TD></TR>");
+//                if(HTMLFunction.textFlg){					//20130914  "text"
+//    	      		Log.e("G2 text!");
+//    	      		html_env.code.append(HTMLFunction.text);
+//    	      		HTMLFunction.text = "";
+//    	      		HTMLFunction.textFlg = false;
+//    	      	}
                 
                 //20130312 collapsible
     	      	if(decos.containsKey("collapse"))
@@ -434,7 +451,12 @@ public class HTMLG2 extends Grouper {
         	rowFlg = false;
         	tableStartTag = "";
         }
-
+        
+        //20130914  "text"
+        if(HTMLFunction.textFlg2){
+        	HTMLFunction.textFlg2 = false;
+        }
+        
         Log.out("TFEId = " + HTMLEnv.getClassID(this));
         //html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
         //G2Flg = false;

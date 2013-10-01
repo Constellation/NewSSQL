@@ -133,6 +133,13 @@ public class HTMLG1 extends Grouper {
         	Log.i("※G1 HTMLEnv.staticBuf: "+HTMLEnv.staticBuf);
         }
         
+        //20130914  "text"
+//      	Log.e("	decosC2 = "+decos);
+        if(decos.containsKey("text")){
+//        	Log.e("	G2in!");
+        	HTMLFunction.textFlg2 = true;
+        }
+        
         if(!GlobalEnv.isOpt()){
         	//20130503  Panel
     	    panelFlg = HTMLC1.panelProcess1(decos, html_env);
@@ -244,7 +251,7 @@ public class HTMLG1 extends Grouper {
             }
         }
         //tk end//////////////////////////////////////////////////////
-        Log.out("<TABLE class=\""+HTMLEnv.getClassID(this) + "\"><TR>");
+//        Log.out("<TABLE class=\""+HTMLEnv.getClassID(this) + "\"><TR>");
 
         //html_env2.code.append("<tfe type=\"connect\" dimension=\"1\" >");
         int i = 0;
@@ -445,7 +452,13 @@ public class HTMLG1 extends Grouper {
             if(!tableFlg)	html_env.code.append("	</div>");	//20130309
         	else	        html_env.code.append("</TD>\n");    //20130314 table
             //Log.out("</TD>");
-
+//            if(HTMLFunction.textFlg){					//20130914  "text"
+//	      		Log.e("G1 text!");
+//	      		html_env.code.append(HTMLFunction.text);
+//	      		HTMLFunction.text = "";
+//	      		HTMLFunction.textFlg = false;
+//	      	}
+            
             i++;
             //Log.info("	html_env.glevel = "+html_env.glevel);
 //            if(html_env.glevel == 0){
