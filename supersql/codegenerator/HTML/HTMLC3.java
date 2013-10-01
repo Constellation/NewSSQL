@@ -2,12 +2,9 @@ package supersql.codegenerator.HTML;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.io.Writer;
 
 import org.jsoup.Jsoup;
@@ -19,21 +16,16 @@ import supersql.codegenerator.Connector;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
-import supersql.common.Log;
-import supersql.common.Utils;
 import supersql.extendclass.ExtList;
 
 public class HTMLC3 extends Connector {
 
 	private HTMLEnv htmlEnv;
-	private HTMLEnv htmlEnv2;
-
-    public HTMLC3(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
+	public HTMLC3(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
         this.htmlEnv = henv;
-        this.htmlEnv2 = henv2;
     }
     
-    public Element createNode(ExtList data_info){
+    public Element createNode(ExtList<ExtList<String>> data_info){
     	
     	File input = new File("template.html");
     	Element result = new Element(Tag.valueOf("div"), "");

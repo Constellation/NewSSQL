@@ -170,7 +170,6 @@ public class Attribute extends Operand {
 	}
 
 	public void work(ExtList data_info) {
-		Log.out("Attribute : " + data_info.toString());
 	}
 
 	public <T> String getStr(ExtList<T> data_info) {
@@ -179,7 +178,7 @@ public class Attribute extends Operand {
 		
 		if(conditional){
 			int stringItemsNumber = 0; 
-			Iterator iterator = Items.iterator();
+			Iterator<AttributeItem> iterator = Items.iterator();
 			while(iterator.hasNext()){
 				if(((AttributeItem)iterator.next()).IsStr)
 					stringItemsNumber++;

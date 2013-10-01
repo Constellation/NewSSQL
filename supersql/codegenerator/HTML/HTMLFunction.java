@@ -1103,34 +1103,7 @@ public class HTMLFunction extends Function {
 			seq_num.set(i, seq_num.get(i) - 1);
 		return result;
 	}
-
-	// object end
-
 	
-
-	// seq_num end
-
-	// // for practice 2012/02/09
-	// private void Func_button() {
-	// String statement ="";
-	// String button_media = this.getArgs().get(0).toString();
-	// if (button_media.equals("\"goback\"")){
-	// // 鐃緒申鐃旬ワ申鐃緒申鐃緒申鐃緒申鐃緒申鐃緒申鐃�// statement =
-	// "<form><INPUT type=\"button\" onClick='history.back();' value=\"鐃緒申鐃�"></form>";
-	// }else if(button_media.equals("\"bookmark\"")){
-	// // 鐃緒申鐃緒申鐃祝ブッワ申鐃殉￥申鐃緒申鐃緒申鐃緒申魑�劼鐃緒申鐃�// }else
-	// if(button_media.equals("\"facebook\"")){
-	// // facebook鐃塾わ申鐃緒申鐃粛￥申鐃旬ワ申鐃緒申僚鐃緒申鐃薯記述わ申鐃緒申
-	// }else{
-	// // 鐃獣に誌申鐃所が鐃淑わ申鐃緒申鐃緒申鐃緒申椒鐃緒申鐃祝わ申鐃緒申
-	// statement =
-	// "<form><INPUT type=\"button\" onClick='history.back();' value=\"鐃緒申鐃�"></form>";
-	// }
-	// // 鐃銃逸申鐃緒申鐃祝緒申鐃緒申鐃縮わ申HTML鐃祝書きわ申鐃緒申
-	// html_env.code.append(statement);
-	// return;
-	// }
-
 	private Element FuncFormCommonForJsoup(String s) {
 		Element result = new Element(Tag.valueOf("div"), "");
 

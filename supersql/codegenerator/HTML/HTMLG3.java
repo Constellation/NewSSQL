@@ -5,12 +5,9 @@ package supersql.codegenerator.HTML;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.io.Writer;
 
 import org.jsoup.Jsoup;
@@ -20,24 +17,18 @@ import org.jsoup.parser.Tag;
 
 import supersql.codegenerator.Grouper;
 import supersql.codegenerator.Manager;
-import supersql.common.GlobalEnv;
-import supersql.common.Log;
-import supersql.common.Utils;
 import supersql.extendclass.ExtList;
 
 public class HTMLG3 extends Grouper {
 
 	private HTMLEnv html_env;
-	private HTMLEnv html_env2;
-
-    private String backfile = new String();
+	private String backfile = new String();
 
     private int countinstance = 0;
 
     //���󥹥ȥ饯��
     public HTMLG3(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
         this.html_env = henv;
-        this.html_env2 = henv2;
     }
     
     
@@ -124,29 +115,7 @@ public class HTMLG3 extends Grouper {
         return null;
     }
 
-	private void setLinkButton() {
-        String nextfile = new String();
-        nextfile = html_env.linkOutFile
-                + String.valueOf(HTMLEnv.countFile + 1) + ".html";
-        html_env.code.append("<DIV class=\"linkbutton "
-                + HTMLEnv.getClassID(tfe) + "\">\n");
-        if (countinstance > 1) {
-            html_env.code.append("<A href=\"" + backfile + "\">");
-            html_env.code.append("[back]");
-            html_env.code.append("</A>\n");
-        }
-        if (this.hasMoreItems()) {
-            html_env.code.append("<A href=\"" + nextfile + "\">");
-            html_env.code.append("[next]");
-            html_env.code.append("</A>\n");
-        }
-        html_env.code.append("</div>\n");
-
-//        html_env.addLinkButtonCSS();
-
-    }
-
-    @Override
+	@Override
 	public String getSymbol() {
         return "HTMLG3";
     }

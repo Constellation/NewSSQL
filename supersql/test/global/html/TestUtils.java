@@ -1,4 +1,4 @@
-package supersql.test;
+package supersql.test.global.html;
 
 import java.io.File;
 import java.io.IOException;

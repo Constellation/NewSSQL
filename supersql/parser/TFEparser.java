@@ -29,7 +29,7 @@ public class TFEparser {
 
 	private int Level = 0;
 
-	private String dimch = "?,!%#";
+	private String dimch = "+,!%#";
 
 	private int attno;
 

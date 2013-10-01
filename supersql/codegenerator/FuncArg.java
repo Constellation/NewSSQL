@@ -1,9 +1,7 @@
 package supersql.codegenerator;
 
-import org.jsoup.nodes.Element;
-
-//import common.Log;
 import supersql.extendclass.ExtList;
+//import common.Log;
 
 
 public class FuncArg {
@@ -52,9 +50,6 @@ public class FuncArg {
 	}
 
 	public int countconnectitem() {
-		//	Log.out("FncArg le0:"+this.makele0());
-		//	Log.out("FncArg ci:"+tfe.countconnectitem());
-		
 		return tfe.countconnectitem();
 	}
 
@@ -72,8 +67,6 @@ public class FuncArg {
 
 	public void setData(ExtList data_info) {
 		Data = data_info;
-		//	Log.out("name :"+Name);
-		//	Log.out("data_info :"+data_info);
 	}
 
 	public String getStr() {

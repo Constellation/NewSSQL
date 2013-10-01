@@ -178,7 +178,6 @@ public class Function extends Operand {
 
 	@Override
 	public Object createNode(ExtList<ExtList<String>> data_info) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	

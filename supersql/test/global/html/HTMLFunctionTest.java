@@ -1,4 +1,4 @@
-package supersql.test;
+package supersql.test.global.html;
 
 import org.jsoup.nodes.Document;
 import org.junit.Assert;

@@ -7,22 +7,18 @@ import supersql.codegenerator.Connector;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
-import supersql.common.Log;
 import supersql.extendclass.ExtList;
 
 
 public class HTMLC2 extends Connector {
 
 	private HTMLEnv htmlEnv;
-	private HTMLEnv htmlEnv2;
-
-    public HTMLC2(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
+	public HTMLC2(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
         this.htmlEnv = henv;
-        this.htmlEnv2 = henv2;
     }
 
     @Override
-    public Element createNode(ExtList data_info){
+    public Element createNode(ExtList<ExtList<String>> data_info){
     	Element result = new Element(Tag.valueOf("div"), "");
     	result.addClass("vertical").addClass("con2").addClass("box");
     	this.setDataList(data_info);
@@ -67,7 +63,7 @@ public class HTMLC2 extends Connector {
             ITFE tfe = (ITFE) tfes.get(i);
             result.addClass(HTMLEnv.getClassID(tfe)).addClass("nest");
             
-        	String classid = HTMLEnv.getClassID(tfe);
+        	HTMLEnv.getClassID(tfe);
 
             result.appendChild((Element)this.createNextItemNode(data_info));
 

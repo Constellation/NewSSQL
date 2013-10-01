@@ -6,22 +6,18 @@ import org.jsoup.parser.Tag;
 import supersql.codegenerator.Grouper;
 import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
-import supersql.common.Log;
 import supersql.extendclass.ExtList;
 
 public class HTMLG1 extends Grouper {
 
 	private HTMLEnv html_env;
-	private HTMLEnv html_env2;
-
-    public HTMLG1(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
+	public HTMLG1(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
         this.html_env = henv;
-        this.html_env2 = henv2;
   
     }
     
     @Override
-    public Element createNode(ExtList data_info){
+    public Element createNode(ExtList<ExtList<String>> data_info){
         this.setDataList(data_info);
         html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
         
@@ -52,7 +48,7 @@ public class HTMLG1 extends Grouper {
         while (this.hasMoreItems()) {
         	html_env.gLevel++;
             
-            String classid = HTMLEnv.getClassID(tfe);
+            HTMLEnv.getClassID(tfe);
             	
             result.appendChild((Element)this.createNextItemNode());
             
