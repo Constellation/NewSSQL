@@ -8,7 +8,7 @@ public class HTMLFunctionTest {
 	private static final String configFilename = "/Users/thomas/Documents/dev/ssql2/.ssql";
 	// This string should finish with a slash
 	private static final String testFilesFolder = "/Users/thomas/Documents/dev/ssql2/test_queries/html_function/";
-	private static final String[] testFilesNames = { "link.sql", "image.sql" };
+	private static final String[] testFilesNames = { "link.sql", "image.sql", "youtube.sql" };
 	
 	/**
 	 * GENERATE HTML link({e.name},{ "foo" + e.id + ".html"}, bar='toto') FROM employee e
@@ -37,5 +37,21 @@ public class HTMLFunctionTest {
 		Assert.assertEquals(1, element.getElementsByTag("img").size());
 		String src = element.getElementsByTag("img").first().attr("src");
 		Assert.assertTrue(src.matches("images/employee_\\d+\\.jpg"));
+	}
+	
+	/**
+	 * GENERATE HTML youtube("foo")
+	 * 
+	 * @author thomas@oxynum.fr (Thomas THIMOTHEE)
+	 */
+	@Test
+	public void youtubeTest(){
+		Element element = TestUtils.launchQueryAndGetResult(configFilename, testFilesFolder, testFilesNames, 2);
+		Assert.assertEquals(1, element.getElementsByTag("iframe").size());
+		
+		Element iframe = element.getElementsByTag("iframe").first();
+		Assert.assertNotEquals("",iframe.attr("width"));
+		Assert.assertNotEquals("",iframe.attr("height"));
+		Assert.assertEquals("http://www.youtube.com/embed/foo",iframe.attr("src"));
 	}
 }

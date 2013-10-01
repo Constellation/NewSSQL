@@ -134,6 +134,27 @@ public class HTMLFunction extends Function {
 		return null;
 	}
 
+	private void checkArgsNumber(int expected) {
+		if (expected != Args.size()) {
+			System.err.println("Argument number error for the function "
+					+ getFuncName() + "\n This function has " + expected + " required parameters");
+			System.exit(1);
+		}
+	}
+
+	private void checkArgType(FuncArg argument, Class<? extends TFE> expectedClass, int index) {
+		if(expectedClass== HTMLC0.class && argument.getTFEClass() == HTMLAttribute.class)
+			return;
+			
+		if (!(expectedClass.isAssignableFrom(argument.getTFEClass()))) {
+			System.err.println("The argument number " + index + " of the "
+					+ getFuncName()
+					+ " function has a wrong type. It should be a "
+					+ expectedClass.getSimpleName());
+			System.exit(1);
+		}
+	}
+
 	private Element FuncEmbed(ExtList<ExtList<String>> data_info) {
 		String file = this.getAtt("file");
 		String where = this.getAtt("where");
@@ -611,24 +632,6 @@ public class HTMLFunction extends Function {
 		return new Element(Tag.valueOf("span"), "");
 	}
 
-	private void checkArgsNumber(int expected) {
-		if (expected != Args.size()) {
-			System.err.println("Argument number error for the function "
-					+ getFuncName() + "\n This function has " + expected + " required parameters");
-			System.exit(1);
-		}
-	}
-
-	private void checkArgType(FuncArg argument, Class<? extends TFE> expectedClass, int index) {
-		if (!(expectedClass.isAssignableFrom(argument.getTFEClass()))) {
-			System.err.println("The argument number " + index + " of the "
-					+ getFuncName()
-					+ " function has a wrong type. It should be a "
-					+ expectedClass.getSimpleName());
-			System.exit(1);
-		}
-	}
-	
 	private Attributes getAttributes(){
 		Attributes attributes = new Attributes();
 		for(String key : ArgHash.keySet()){
@@ -794,6 +797,7 @@ public class HTMLFunction extends Function {
 		return result;
 	}
 	
+	@SuppressWarnings("unused")
 	private String cleanPathString(String path){
 		String result = "";
 		if (!path.startsWith("/")) {
@@ -836,9 +840,6 @@ public class HTMLFunction extends Function {
 						.addClass(HTMLEnv.getClassID(this));
 				htmlEnv.code.append("<img class=\"" + HTMLEnv.getClassID(this)
 						+ " ");
-
-				if (decos.containsKey("class"))
-					img.addClass(decos.getStr("class"));
 
 				img.attr("src", srcString + "/" + this.getAtt("default")).attr(
 						"onLoad", "initLightBox()");
@@ -1242,19 +1243,28 @@ public class HTMLFunction extends Function {
 	}
 
 	private Element FuncYoutube() {
-		String path = this.getAtt("default");
-		Element object = new Element(Tag.valueOf("object"), "");
-		object.attr("width", "400").attr("height", "385");
-		String objectString = "<param name=\"movie\" value=\"http://www.youtube.com/v/"
-				+ path
-				+ "?fs=1&amp;hl=ja_JP\"></param><param name=\"allowFullScreen\" value=\"true\">"
-				+ "</param><param name=\"allowscriptaccess\" value=\"always\"></param><embed src=\"http://www.youtube.com/v/"
-				+ path
-				+ "?fs=1&amp;hl=ja_JP\" type=\"application/x-shockwave-flash\" "
-				+ "allowscriptaccess=\"always\" allowfullscreen=\"true\" width=\"480\" height=\"385\">"
-				+ "</embed>";
-		object.html(objectString);
-		return object;
+		checkArgsNumber(1);
+		FuncArg src = Args.get(0);
+		checkArgType(src, HTMLC0.class, 0);
+		String srcString = "http://www.youtube.com/embed/" + ((Element)src.createNode()).text();
+		
+		Element iframe = new Element(Tag.valueOf("iframe"), "");
+		iframe.attr("allowFullScreen");
+		iframe.attr("frameborder", "0");
+		iframe.attr("src", srcString);
+		iframe.attributes().addAll(getAttributes());
+		
+		if(decos.containsKey("width"))
+			iframe.attr("width", decos.getStr("width"));
+		else
+			iframe.attr("width", "560");
+		
+		if(decos.containsKey("height"))
+			iframe.attr("height", decos.getStr("height"));
+		else
+			iframe.attr("height", "315");
+			
+		return iframe;
 	}
 
 	private Element FuncMovieFile() {

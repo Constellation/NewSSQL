@@ -3,8 +3,6 @@ package supersql.codegenerator.HTML;
 import java.util.Iterator;
 
 import org.jsoup.nodes.Element;
-import org.jsoup.nodes.TextNode;
-import org.jsoup.parser.Tag;
 
 import supersql.codegenerator.Connector;
 import supersql.codegenerator.Manager;
