@@ -16,6 +16,7 @@ public class HTMLC1 extends Connector {
     //コンストラクタ
     public HTMLC1(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
         this.htmlEnv = henv;
+        Dimension = 1;
     }
 
     @Override
@@ -50,15 +51,14 @@ public class HTMLC1 extends Connector {
         int i = 0;
 
         if(decos.containsKey("form")){
-        	result.appendChild(HTMLFunction.createFormForJsoup(decos));
+        	result.appendChild(HTMLFunction.createForm(decos));
            	HTMLEnv.setFormItemFlg(true,null);
         }
         
         
         while (this.hasMoreItems()) {
-        	Element td = new Element(Tag.valueOf("td"), "");
             ITFE tfe = (ITFE) tfes.get(i);
-            td.attr("class", HTMLEnv.getClassID(tfe) + " nest");
+            result.addClass(HTMLEnv.getClassID(tfe)).addClass("nest");
             HTMLEnv.getClassID(tfe);
             
             result.appendChild((Element)this.createNextItemNode(dataInfo));

@@ -18,7 +18,6 @@ import supersql.codegenerator.ITFE;
 import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
-import supersql.common.Utils;
 import supersql.dataconstructor.DataConstructor;
 import supersql.extendclass.ExtList;
 

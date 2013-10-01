@@ -11,6 +11,7 @@ import supersql.codegenerator.Function;
 import supersql.codegenerator.Grouper;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.IfCondition;
+import supersql.codegenerator.Operator;
 import supersql.codegenerator.TFE;
 
 import supersql.common.GlobalEnv;
@@ -79,11 +80,6 @@ public class TFEparser {
 
 		TFE operand1;
 
-		/* next is one operand */
-		/*
-		 * if (toks.lookToken().equals("[")) { toks.nextToken(); operand1 =
-		 * this.grouper(); } else { operand1 = connector(); }
-		 */
 		operand1 = connector("]");
 
 		token = toks.nextToken();
@@ -91,7 +87,7 @@ public class TFEparser {
 		int dim = dimch.indexOf(token);
 		switch (dim) {
 		case 0:
-			Log.out("Grouping dim= ?");
+			Log.out("Grouping dim= +");
 			break;
 		case 1:
 			Log.out("Grouping dim= ,");
@@ -127,8 +123,6 @@ public class TFEparser {
 		TFE outTFE;
 
 		Log.out("---connector---");
-		// Log.out(toks.DebugTrace());
-
 		/* read first operand */
 
 		TFE operand = read_attribute();
@@ -559,7 +553,7 @@ public class TFEparser {
 
 		Log.out("[func*TFE]=" + read_tfe.makele0());
 
-		if (read_tfe instanceof Connector) {
+		if (read_tfe instanceof Connector && ((Operator) read_tfe).getDimension() == 1) {
 			// many Attribute
 			for (int i = 0; i < ((Connector) read_tfe).tfeItems; i++) {
 				fnc.setArg(makeFuncArg(((Connector) read_tfe).gettfe(i)));
@@ -588,7 +582,7 @@ public class TFEparser {
 		if (arg instanceof Attribute) {
 			out_fa = new FuncArg(((Attribute) arg).getKey(), 1, arg);
 		} else {
-			out_fa = new FuncArg("TFE", 1, arg);
+			out_fa = new FuncArg("default", 1, arg);
 		}
 
 		return out_fa;
@@ -839,28 +833,6 @@ public class TFEparser {
 		return false;
 
     }
-    //hanki end
-    /*
-     * // 鐃緒申?鐃緒申鐃緒申鐃緒申焚鐃緒申鐃緒申鐃緒申 // private Function deco_read(String fn) { private void
-     * deco_read(TFE tfe) { // 鐃叔初が@鐃叔始まってわ申鐃淑わ申?鐃緒申鐃緒申?鐃淑わ申 if
-     * (!toks.lookToken().equals("@")) return; toks.nextToken();
-     *
-     * Log.out("@@ start read decoration @@");
-     *
-     * String token; Function fnc = cg.createFunction(); fnc.setFname(fn);
-     * FunctionData fnd = new FunctionData(fn);
-     *
-     * if (!toks.nextToken().equals("{")) { Exception e = new Exception(); } //
-     * not start "{" // deco_read TFE read_tfe = connector();
-     * Log.out("[decoration]=" + read_tfe.makele0());
-     *
-     * if (read_tfe instanceof Connector) { // many Attribute for (int i = 0; i <
-     * ((Connector) read_tfe).tfeitems; i++) {
-     * fnc.setArg(makeFuncArg(((Connector) read_tfe).gettfe(i))); } } else { //
-     * only one Attribute fnc.setArg(makeFuncArg(read_tfe)); }
-     *
-     * this.setDecoration(fnc); return; // return fnc; }
-     */
 
     private void decoration_out(ITFE tfe, String name, Object value) {
 

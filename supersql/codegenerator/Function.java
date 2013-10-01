@@ -7,9 +7,9 @@ import supersql.extendclass.ExtList;
 
 public class Function extends Operand {
 
-	String Name; 
-	ExtList<FuncArg> Args;     
-	Hashtable<String, FuncArg> ArgHash = new Hashtable<String, FuncArg>();
+	protected String Name; 
+	protected ExtList<FuncArg> Args;     
+	protected Hashtable<String, FuncArg> ArgHash = new Hashtable<String, FuncArg>();
 
 	public Function() {
 		super();
@@ -84,10 +84,6 @@ public class Function extends Operand {
 		return items;
 	}
 
-	public ExtList<FuncArg> getArgs() {
-		return Args;
-	}
-
 	public void setDataList(ExtList<ExtList<String>> data) {
 		int dindex = 0;
 		int ci;
@@ -99,7 +95,12 @@ public class Function extends Operand {
 			if (Name.equalsIgnoreCase("foreach")){
 				ArgHash.put(Integer.toString(i), fa);
 			} else {
-				ArgHash.put(fa.getKey(), fa);
+				String argName = fa.getKey();
+				if(!argName.equals("default")){
+					ArgHash.put(argName, fa);
+					Args.remove(i);
+				}
+					
 			}
 			dindex += ci;
 		}
@@ -110,8 +111,9 @@ public class Function extends Operand {
 		return getAtt(Key, "");
 	}
 
-	public String getAtt(String Key, String default_str) {
-		FuncArg fa = (FuncArg) ArgHash.get(Key);
+	public String getAtt(String key, String default_str) {
+		FuncArg fa = (FuncArg) ArgHash.get(key);
+		ArgHash.remove(key);
 		if (fa == null) {
 			return default_str;
 		}
@@ -140,7 +142,7 @@ public class Function extends Operand {
 		FuncArg fa = ArgHash.get(key);
 
 		if (fa != null) {
-			return fa.createNodeAtt();
+			return fa.createNode();
 		}
 		return null;
 	}

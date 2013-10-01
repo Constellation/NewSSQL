@@ -37,7 +37,7 @@ public class HTMLAttribute extends Attribute {
 	@Override
 	public Element createNode(ExtList data_info){
 		Element result = new Element(Tag.valueOf("span"), "");
-		result.addClass("box").addClass("flex1");
+		result.addClass("box");
 		htmlEnv.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
 
 		if(GlobalEnv.isOpt()){
@@ -122,7 +122,9 @@ public class HTMLAttribute extends Attribute {
 
 			if(whichForm == 0){ //normal process (not form)
 				//***APPEND DATABASE VALUE***//
-				result.html(this.getStr(data_info));
+				String elementText = this.getStr(data_info);
+				elementText = elementText.replace(" ", "&#160;");
+				result.html(elementText);
 			}
 
 			if (htmlEnv.linkFlag > 0 || htmlEnv.sinvokeFlag) {

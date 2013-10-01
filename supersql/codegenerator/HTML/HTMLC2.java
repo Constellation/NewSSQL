@@ -15,6 +15,7 @@ public class HTMLC2 extends Connector {
 	private HTMLEnv htmlEnv;
 	public HTMLC2(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
         this.htmlEnv = henv;
+        Dimension =2;
     }
 
     @Override
@@ -55,7 +56,7 @@ public class HTMLC2 extends Connector {
         int i = 0;
         
     	if(decos.containsKey("form")){
-    		result.appendChild(HTMLFunction.createFormForJsoup(decos));
+    		result.appendChild(HTMLFunction.createForm(decos));
            	HTMLEnv.setFormItemFlg(true,null);
         }
     	

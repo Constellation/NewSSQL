@@ -14,7 +14,7 @@ public class HTMLG2 extends Grouper {
 
 	public HTMLG2(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
 		this.html_env = henv;
-
+		Dimension =2;
 	}
 
 	@Override

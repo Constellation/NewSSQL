@@ -70,5 +70,8 @@ Note : horizontal is often used as a default container.
 .att{
 	border: 1px solid;
 	padding: 3px;
-	flex:1;
+}
+
+.link{
+	align-content: flex-start;
 }

@@ -13,7 +13,7 @@ public class HTMLG1 extends Grouper {
 	private HTMLEnv html_env;
 	public HTMLG1(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
         this.html_env = henv;
-  
+        Dimension = 1;
     }
     
     @Override

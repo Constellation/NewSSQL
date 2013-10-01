@@ -23,6 +23,7 @@ public class HTMLC3 extends Connector {
 	private HTMLEnv htmlEnv;
 	public HTMLC3(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
         this.htmlEnv = henv;
+        Dimension =3;
     }
     
     public Element createNode(ExtList<ExtList<String>> data_info){

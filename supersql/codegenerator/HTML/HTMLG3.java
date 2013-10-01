@@ -29,6 +29,7 @@ public class HTMLG3 extends Grouper {
     //���󥹥ȥ饯��
     public HTMLG3(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
         this.html_env = henv;
+        Dimension =3;
     }
     
     

@@ -82,8 +82,12 @@ public class FuncArg {
 		return;
 	}
 	
-	public Object createNodeAtt(){
+	public Object createNode(){
 		return tfe.createNode(Data);
+	}
+	
+	public Class<? extends TFE> getTFEClass(){
+		return tfe.getClass();
 	}
 
 }

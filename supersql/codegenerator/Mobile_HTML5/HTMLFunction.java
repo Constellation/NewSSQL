@@ -480,12 +480,12 @@ public class HTMLFunction extends Function {
     private void Func_button() {
     	String statement = "";
 //    	Hashtable ArgHash = new Hashtable();
-//    	String button_media = this.getArgs().get(0).toString();
+//    	String button_media = this.Args.get(0).toString();
 ////    	String button_media = this.getAtt("bname");
-//    	FuncArg fa = (FuncArg) this.getArgs().get(0);		//ArgHash.get("bname");
+//    	FuncArg fa = (FuncArg) this.Args.get(0);		//ArgHash.get("bname");
 ////    	System.out.println("button_media: "+button_media.getStr());
 //    	System.out.println("fa.getStr(): "+fa.getStr());
-    	FuncArg fa = (FuncArg) this.getArgs().get(0);
+    	FuncArg fa = (FuncArg) this.Args.get(0);
     	String button_media = fa.getStr();
     	//System.out.println("button_media: "+button_media);
 
@@ -558,16 +558,16 @@ public class HTMLFunction extends Function {
     /*    mail()でも使用							        */
     private void Func_url(boolean mailFncFlg) {
     	String statement = "";
-    	FuncArg fa1 = (FuncArg) this.getArgs().get(0), fa2, fa3;
+    	FuncArg fa1 = (FuncArg) this.Args.get(0), fa2, fa3;
     	String url, name, type;
     	
     	try{					//引数2つ or 3つの場合
-    		fa2 = (FuncArg) this.getArgs().get(1);
+    		fa2 = (FuncArg) this.Args.get(1);
     		url = ((mailFncFlg)?("mailto:"):("")) + fa2.getStr();
     		name = fa1.getStr();
         	
         	try{						//引数3つの場合
-        		fa3 = (FuncArg) this.getArgs().get(2);
+        		fa3 = (FuncArg) this.Args.get(2);
         		type = fa3.getStr();
         		
         		//type=1 -> 文字
@@ -729,11 +729,11 @@ public class HTMLFunction extends Function {
     	String statement = "\n<hr";
     	try{
     		//color
-    		FuncArg fa1 = (FuncArg) this.getArgs().get(0);
+    		FuncArg fa1 = (FuncArg) this.Args.get(0);
     		if(!fa1.getStr().equals(""))
     			statement += " color=\""+fa1.getStr()+"\"";
     		//size
-    		FuncArg fa2 = (FuncArg) this.getArgs().get(1);
+    		FuncArg fa2 = (FuncArg) this.Args.get(1);
     		statement += " size=\""+fa2.getStr()+"\"";
     	}catch(Exception e){
     		statement += " size=\"1\"";
@@ -754,11 +754,11 @@ public class HTMLFunction extends Function {
     	String color = "";
     	try{
     		//color
-    		FuncArg fa1 = (FuncArg) this.getArgs().get(0);
+    		FuncArg fa1 = (FuncArg) this.Args.get(0);
     		if(!fa1.getStr().equals(""))	color = fa1.getStr();
     		else							color = "black";
     		//size
-    		FuncArg fa2 = (FuncArg) this.getArgs().get(1);
+    		FuncArg fa2 = (FuncArg) this.Args.get(1);
     		statement += fa2.getStr();
     	}catch(Exception e){
     		statement += "1";
@@ -779,11 +779,11 @@ public class HTMLFunction extends Function {
     	String color = "";
     	try{
     		//color
-    		FuncArg fa1 = (FuncArg) this.getArgs().get(0);
+    		FuncArg fa1 = (FuncArg) this.Args.get(0);
     		if(!fa1.getStr().equals(""))	color = fa1.getStr();
     		else							color = "black";
     		//size
-    		FuncArg fa2 = (FuncArg) this.getArgs().get(1);
+    		FuncArg fa2 = (FuncArg) this.Args.get(1);
     		statement += fa2.getStr();
     	}catch(Exception e){
     		statement += "1";
@@ -804,7 +804,7 @@ public class HTMLFunction extends Function {
     	String statement = "";
     	try{
     		//title
-    		FuncArg fa1 = (FuncArg) this.getArgs().get(0);
+    		FuncArg fa1 = (FuncArg) this.Args.get(0);
     		if(!fa1.getStr().equals(""))
     			statement = fa1.getStr();
     		else	return;
@@ -852,7 +852,7 @@ public class HTMLFunction extends Function {
     	String statement = "";
     	try{
     		//title
-    		FuncArg fa1 = (FuncArg) this.getArgs().get(0);
+    		FuncArg fa1 = (FuncArg) this.Args.get(0);
     		if(!fa1.getStr().equals(""))
     			statement = fa1.getStr();
     		else	return;
@@ -871,21 +871,21 @@ public class HTMLFunction extends Function {
     /*	<type:1> pop("title","detail") <=> pop("title","detail",1)	*/
     /*	<type:2> pop("title","image URL",2)		*/
     private void Func_pop() {
-        Log.i(this.getArgs());
+        Log.i(this.Args);
     	
-    	FuncArg fa1 = (FuncArg) this.getArgs().get(0), fa2, fa3;
+    	FuncArg fa1 = (FuncArg) this.Args.get(0), fa2, fa3;
     	String title, detailORurl, type;
     	int type1Flg = 0; //type1(文字)フラグ
     	
 //    	Log.info("popCount = "+popCount);
     	try{					//引数2つ or 3つの場合
-    		fa2 = (FuncArg) this.getArgs().get(1);
+    		fa2 = (FuncArg) this.Args.get(1);
     		detailORurl = fa2.getStr();
     		if(detailORurl.equals(""))	return;		//added 20130910
     		title = fa1.getStr();
         	
         	try{						//引数3つの場合
-        		fa3 = (FuncArg) this.getArgs().get(2);
+        		fa3 = (FuncArg) this.Args.get(2);
         		type = fa3.getStr();
         		
         		//type=1 -> 文字
@@ -963,14 +963,14 @@ public class HTMLFunction extends Function {
     	String after_from = "";
     	try{
     		//title（第一引数）
-    		FuncArg fa1 = (FuncArg) this.getArgs().get(0);
+    		FuncArg fa1 = (FuncArg) this.Args.get(0);
     		if(!fa1.getStr().equals(""))	title = fa1.getStr();
     		else							title = "Search";
     		//columns（第二引数）
-    		FuncArg fa2 = (FuncArg) this.getArgs().get(1);
+    		FuncArg fa2 = (FuncArg) this.Args.get(1);
     		columns += fa2.getStr();
     		//after_from（第三引数）
-    		FuncArg fa3 = (FuncArg) this.getArgs().get(2);
+    		FuncArg fa3 = (FuncArg) this.Args.get(2);
     		after_from += fa3.getStr().trim();
     	}catch(Exception e){
     		Log.info("<Warning> serach関数の引数が不足しています。 ex. search(\"title\", \"c1:column1, c2:column2, ... \", \"From以下\")");
@@ -1400,14 +1400,14 @@ public class HTMLFunction extends Function {
     	String after_from = "";
     	try{
     		//title（第一引数）
-    		FuncArg fa1 = (FuncArg) this.getArgs().get(0);
+    		FuncArg fa1 = (FuncArg) this.Args.get(0);
     		if(!fa1.getStr().equals(""))	title = fa1.getStr();
     		else							title = "Select";
     		//columns（第二引数）
-    		FuncArg fa2 = (FuncArg) this.getArgs().get(1);
+    		FuncArg fa2 = (FuncArg) this.Args.get(1);
     		columns += fa2.getStr();
     		//after_from（第三引数）
-    		FuncArg fa3 = (FuncArg) this.getArgs().get(2);
+    		FuncArg fa3 = (FuncArg) this.Args.get(2);
     		after_from += fa3.getStr().trim();
     	}catch(Exception e){
     		Log.info("<Warning> serach関数の引数が不足しています。 ex. select(\"title\", \"c1:column1, c2:column2, ... \", \"From以下\")");
@@ -1786,21 +1786,21 @@ public class HTMLFunction extends Function {
     	String insertFlag = "";
     	try{
     		//title（第一引数）
-    		FuncArg fa1 = (FuncArg) this.getArgs().get(0);
+    		FuncArg fa1 = (FuncArg) this.Args.get(0);
     		if(!fa1.getStr().equals(""))	title = fa1.getStr();
     		else{
     			if(update || insert_update)	title = "Update";
     			else						title = "Insert";
     		}
     		//columns（第二引数）
-    		FuncArg fa2 = (FuncArg) this.getArgs().get(1);
+    		FuncArg fa2 = (FuncArg) this.Args.get(1);
     		columns += fa2.getStr();
     		//after_from（第三引数）
-    		FuncArg fa3 = (FuncArg) this.getArgs().get(2);
+    		FuncArg fa3 = (FuncArg) this.Args.get(2);
     		after_from += fa3.getStr().trim();
     		if(update){
 	    		//（第四引数）
-	    		FuncArg fa4 = (FuncArg) this.getArgs().get(3);
+	    		FuncArg fa4 = (FuncArg) this.Args.get(3);
 	    		insertFlag += fa4.getStr().toLowerCase().trim();
 	    		if(insertFlag.equals(""))	insertFlag="false";
     		}
@@ -2377,11 +2377,11 @@ public class HTMLFunction extends Function {
     	String correct = "";
     	String incorrect = "";
     	try{
-			type = ((FuncArg) this.getArgs().get(0)).getStr().trim();
-    		operator = ((FuncArg) this.getArgs().get(1)).getStr();
-    		ans = ((FuncArg) this.getArgs().get(2)).getStr();
-    		correct = ((FuncArg) this.getArgs().get(3)).getStr();
-    		incorrect = ((FuncArg) this.getArgs().get(4)).getStr();
+			type = ((FuncArg) this.Args.get(0)).getStr().trim();
+    		operator = ((FuncArg) this.Args.get(1)).getStr();
+    		ans = ((FuncArg) this.Args.get(2)).getStr();
+    		correct = ((FuncArg) this.Args.get(3)).getStr();
+    		incorrect = ((FuncArg) this.Args.get(4)).getStr();
     	}catch(Exception e){
     		Log.info("<Warning> check関数の引数が不足しています。 ex. check(type, 演算子(=,!=,<,<=,>,>=,...)・識別子(\"yes|no\"など), answer, 正解ステートメント, 不正解ステートメント)");
     		return;
@@ -2579,12 +2579,12 @@ public class HTMLFunction extends Function {
     	String sec = "";
     	String title = "";
     	try{
-			url = ((FuncArg) this.getArgs().get(0)).getStr();
-    		sec = ((FuncArg) this.getArgs().get(1)).getStr();
+			url = ((FuncArg) this.Args.get(0)).getStr();
+    		sec = ((FuncArg) this.Args.get(1)).getStr();
     		
         	try{						//引数3つ　→　入れ替える
         		String buf = sec;
-        		sec = ((FuncArg) this.getArgs().get(2)).getStr();
+        		sec = ((FuncArg) this.Args.get(2)).getStr();
         		title = url;
         		url = buf;
         	}catch(Exception e){ }		//引数2つ
@@ -2619,7 +2619,7 @@ public class HTMLFunction extends Function {
 	    	String statement = "\n";
 	    	String attribute = "";
 	    	try{
-	    		attribute = ((FuncArg) this.getArgs().get(0)).getStr();
+	    		attribute = ((FuncArg) this.Args.get(0)).getStr();
 	    	}catch(Exception e){
 	    		Log.info("<Warning> $session関数の引数が不足しています。 ex. $session(\"name\")");
 	    		return;
@@ -2640,7 +2640,7 @@ public class HTMLFunction extends Function {
 		String statement = "\n";
 		String format = "";
 		try{
-			format = ((FuncArg) this.getArgs().get(0)).getStr();
+			format = ((FuncArg) this.Args.get(0)).getStr();
 		}catch(Exception e){ }
 		statement += "EOF;\n" +
 				"		echo date(\""+( (format.equals(""))? ("Y/m/d(D) H:i:s"):(format) )+"\");\n" +		//第二引数のデフォルト値:time()		//"		echo date(\"Y/m/d(D) H:i:s\", time());\n" +
@@ -2663,18 +2663,18 @@ public class HTMLFunction extends Function {
     	try{
     		if(!searchFlg){
     			//map()
-	    		geolocation = ((FuncArg) this.getArgs().get(0)).getStr().trim();
+	    		geolocation = ((FuncArg) this.Args.get(0)).getStr().trim();
 	    		try{
-	    			zoom = ((FuncArg) this.getArgs().get(1)).getStr().trim();
+	    			zoom = ((FuncArg) this.Args.get(1)).getStr().trim();
 	    			try{
-	        			icon = ((FuncArg) this.getArgs().get(2)).getStr().trim();
+	        			icon = ((FuncArg) this.Args.get(2)).getStr().trim();
 	        		}catch(Exception e){ }
 	    		}catch(Exception e){ }
     		}else{
     			//search_map()
-    			zoom = ((FuncArg) this.getArgs().get(0)).getStr().trim();
+    			zoom = ((FuncArg) this.Args.get(0)).getStr().trim();
 	    		try{
-	    			icon = ((FuncArg) this.getArgs().get(1)).getStr().trim();
+	    			icon = ((FuncArg) this.Args.get(1)).getStr().trim();
 	    		}catch(Exception e){ }
     		}
     	}catch(Exception e){
@@ -2778,11 +2778,11 @@ public class HTMLFunction extends Function {
 		String zoom = "";
 		String icon = "";
 		try{
-			type = ((FuncArg) this.getArgs().get(0)).getStr().trim();
+			type = ((FuncArg) this.Args.get(0)).getStr().trim();
 			try{
-				zoom = ((FuncArg) this.getArgs().get(1)).getStr().trim();
+				zoom = ((FuncArg) this.Args.get(1)).getStr().trim();
 				try{
-					icon = ((FuncArg) this.getArgs().get(2)).getStr().trim();
+					icon = ((FuncArg) this.Args.get(2)).getStr().trim();
 				}catch(Exception e){ }
 			}catch(Exception e){ }
 		}catch(Exception e){ }
@@ -2864,7 +2864,7 @@ public class HTMLFunction extends Function {
     	String statement = "\n";
 //		String format = "";
 //		try{
-//			format = ((FuncArg) this.getArgs().get(0)).getStr();
+//			format = ((FuncArg) this.Args.get(0)).getStr();
 //		}catch(Exception e){ }
     	statement += 
     			"		<script src=\"http://maps.google.com/maps/api/js?sensor=false&libraries=geometry\"></script>\n" +
@@ -2906,7 +2906,7 @@ public class HTMLFunction extends Function {
     	
     	String str = "";
     	try{
-    		str = ((FuncArg) this.getArgs().get(0)).getStr();
+    		str = ((FuncArg) this.Args.get(0)).getStr();
     	}catch(Exception e){ }
     	
     	// 各引数毎に処理した結果をHTMLに書きこむ
@@ -2923,7 +2923,7 @@ public class HTMLFunction extends Function {
     	
     	String str = "";
     	try{
-    		str = ((FuncArg) this.getArgs().get(0)).getStr();
+    		str = ((FuncArg) this.Args.get(0)).getStr();
     	}catch(Exception e){ }
     	
     	// 各引数毎に処理した結果をHTMLに書きこむ
@@ -2947,7 +2947,7 @@ public class HTMLFunction extends Function {
     	
     	if(path.equals("")){
 			try{
-				path = ((FuncArg) this.getArgs().get(0)).getStr().trim();
+				path = ((FuncArg) this.Args.get(0)).getStr().trim();
 			}catch(Exception e){ }
     	}
     	
@@ -3017,7 +3017,7 @@ public class HTMLFunction extends Function {
     	int textNum = -1;
 		try{
 			//第一引数
-			str = ((FuncArg) this.getArgs().get(0)).getStr();
+			str = ((FuncArg) this.Args.get(0)).getStr();
 			if(str.startsWith("#TextLabel_"))
 				textNum = Integer.parseInt( str.substring("#TextLabel_".length()) );
 			str = SSQLparser.textString.get(textNum);
@@ -3172,12 +3172,12 @@ public class HTMLFunction extends Function {
 
         html_env.code.append(form);
 
-        if(this.getArgs().get(0) instanceof FuncArg)
+        if(this.Args.get(0) instanceof FuncArg)
         {
         	//HTMLEnv.setSelectFlg(true,(String)this.decos.get("select"));
         	HTMLEnv.setFormValueString(att);
         	Log.out("ARGS are function");
-        	FuncArg fa = (FuncArg) this.getArgs().get(0);
+        	FuncArg fa = (FuncArg) this.Args.get(0);
         	fa.workAtt();
         }
         else{
@@ -3382,7 +3382,7 @@ public class HTMLFunction extends Function {
     private void Func_embed(ExtList data_info){
     	//goto 20130917
 		try{
-			Func_object( ((FuncArg) this.getArgs().get(0)).getStr().trim() );	//if embed("file name")
+			Func_object( ((FuncArg) this.Args.get(0)).getStr().trim() );	//if embed("file name")
 			return;
 		}catch(Exception e){ }
 		
@@ -4037,10 +4037,10 @@ public class HTMLFunction extends Function {
         		html_env.scriptnum++;
         	}
         }
-        if(this.getArgs().get(0) instanceof FuncArg)
+        if(this.Args.get(0) instanceof FuncArg)
         {
         	Log.out("ARGS are function");
-        	FuncArg fa = (FuncArg) this.getArgs().get(0);
+        	FuncArg fa = (FuncArg) this.Args.get(0);
         	fa.workAtt();
         }
         else
@@ -4067,7 +4067,7 @@ public class HTMLFunction extends Function {
     //20130920
     private String getValue(int x) {
 		try{
-			String str = ((FuncArg) this.getArgs().get(x-1)).getStr();	//第x引数
+			String str = ((FuncArg) this.Args.get(x-1)).getStr();	//第x引数
 			if(!str.equals(""))	return str;
 			else				return "";
 		}catch(Exception e){

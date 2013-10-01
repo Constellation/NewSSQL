@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 
+import org.jsoup.nodes.Attributes;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
@@ -31,6 +32,7 @@ import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.FuncArg;
 import supersql.codegenerator.Function;
 import supersql.codegenerator.Manager;
+import supersql.codegenerator.TFE;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.dataconstructor.DataConstructor;
@@ -42,7 +44,6 @@ public class HTMLFunction extends Function {
 	private HTMLEnv htmlEnv;
 	private HTMLEnv htmlEnv2;
 	private static int meter_id = 0;
-	private static String updateFile;
 	static ArrayList<Integer> seq_num = new ArrayList<Integer>(); // 20130914
 																	// "SEQ_NUM"
 	static ArrayList<String> seq_num_ClassID = new ArrayList<String>(); // 20130914
@@ -68,16 +69,16 @@ public class HTMLFunction extends Function {
 		if (FuncName.equalsIgnoreCase("imagefile")
 				|| FuncName.equalsIgnoreCase("image")
 				|| FuncName.equalsIgnoreCase("img")) {
-			return FuncImagefileForJsoup();
+			return FuncImagefile();
 		} else if (FuncName.equalsIgnoreCase("invoke")) {
-			return FuncInvokeForJsoup();
+			return FuncInvoke();
 		} else if (FuncName.equalsIgnoreCase("foreach")) {
-			return FuncForeachForJsoup(data_info);
+			return FuncForeach(data_info);
 		} else if (FuncName.equalsIgnoreCase("sinvoke")
 				|| FuncName.equalsIgnoreCase("link")) {
-			return FuncSinvokeForJsoup(data_info);
+			return FuncSinvoke(data_info);
 		} else if (FuncName.equalsIgnoreCase("null")) {
-			return FuncNullForJsoup();
+			return FuncNull();
 		} else if (FuncName.equalsIgnoreCase("url")
 				|| FuncName.equalsIgnoreCase("anchor")
 				|| FuncName.equalsIgnoreCase("a")) {
@@ -89,19 +90,19 @@ public class HTMLFunction extends Function {
 		} else if (FuncName.equalsIgnoreCase("seq_num")) {
 			return FuncSeqNum();
 		} else if (FuncName.equalsIgnoreCase("submit")) {
-			return FuncSubmitForJsoup();
+			return FuncSubmit();
 		} else if (FuncName.equalsIgnoreCase("select")) {
-			return FuncSelectForJsoup();
+			return FuncSelect();
 		} else if (FuncName.equalsIgnoreCase("checkbox")) {
-			return FuncCheckboxForJsoup();
+			return FuncCheckbox();
 		} else if (FuncName.equalsIgnoreCase("radio")) {
-			return FuncRadioForJsoup();
+			return FuncRadio();
 		} else if (FuncName.equalsIgnoreCase("inputtext")) {
-			return FuncInputtextForJsoup();
+			return FuncInputtext();
 		} else if (FuncName.equalsIgnoreCase("textarea")) {
-			return FuncTextareaForJsoup();
+			return FuncTextarea();
 		} else if (FuncName.equalsIgnoreCase("hidden")) {
-			return FuncHiddenForJsoup();
+			return FuncHidden();
 		} else if (FuncName.equalsIgnoreCase("session")) {
 			// Func_session(); not use
 			return new Element(Tag.valueOf(""), "");
@@ -125,7 +126,7 @@ public class HTMLFunction extends Function {
 		// tk start//////////////////////////////////
 		else if (FuncName.equalsIgnoreCase("embed")) {
 			Log.out("[enter embed]");
-			return FuncEmbedForJsoup(data_info);
+			return FuncEmbed(data_info);
 		}
 		// tk end////////////////////////////////////
 		Log.out("TFEId = " + HTMLEnv.getClassID(this));
@@ -133,7 +134,7 @@ public class HTMLFunction extends Function {
 		return null;
 	}
 
-	private Element FuncEmbedForJsoup(ExtList<ExtList<String>> data_info) {
+	private Element FuncEmbed(ExtList<ExtList<String>> data_info) {
 		String file = this.getAtt("file");
 		String where = this.getAtt("where");
 		String att = this.getAtt("att");
@@ -231,7 +232,7 @@ public class HTMLFunction extends Function {
 			condition = condition + where + "'" + att2 + "'";
 		}
 		// store original config
-		Hashtable tmphash = GlobalEnv.getEnv();
+		Hashtable<String, String> tmphash = GlobalEnv.getEnv();
 
 		String[] args;
 		if (GlobalEnv.isAjax()) {
@@ -539,27 +540,27 @@ public class HTMLFunction extends Function {
 		return result;
 	}
 
-	private Element FuncHiddenForJsoup() {
-		return FuncFormCommonForJsoup("hidden");
+	private Element FuncHidden() {
+		return FuncFormCommon("hidden");
 	}
 
-	private Element FuncTextareaForJsoup() {
-		return FuncFormCommonForJsoup("textarea");
+	private Element FuncTextarea() {
+		return FuncFormCommon("textarea");
 	}
 
-	private Element FuncInputtextForJsoup() {
-		return FuncFormCommonForJsoup("text");
+	private Element FuncInputtext() {
+		return FuncFormCommon("text");
 	}
 
-	private Element FuncRadioForJsoup() {
+	private Element FuncRadio() {
 		if (!this.getAtt("checked").equals("")) {
 			HTMLEnv.setChecked(this.getAtt("checked"));
 		}
-		return FuncFormCommonForJsoup("radio");
+		return FuncFormCommon("radio");
 	}
 
-	private Element FuncCheckboxForJsoup() {
-		Element result = FuncFormCommonForJsoup("checkbox");
+	private Element FuncCheckbox() {
+		Element result = FuncFormCommon("checkbox");
 
 		if (!this.getAtt("checked").equals("")) {
 			HTMLEnv.setChecked(this.getAtt("checked"));
@@ -568,23 +569,23 @@ public class HTMLFunction extends Function {
 		return result;
 	}
 
-	private Element FuncSelectForJsoup() {
+	private Element FuncSelect() {
 		if (!this.getAtt("selected").equals("")) {
 			HTMLEnv.setSelected(this.getAtt("selected"));
 		}
-		return FuncFormCommonForJsoup("select");
+		return FuncFormCommon("select");
 	}
 
-	private Element FuncSubmitForJsoup() {
+	private Element FuncSubmit() {
 		Element result = new Element(Tag.valueOf("form"), "");
 		boolean openFormInThis = false;
 
 		// submit only ----- no "@{form}"
 		if (!HTMLEnv.getFormItemFlg() && !decos.containsKey("form")) {
-			result = createFormForJsoup();
+			result = createForm();
 			openFormInThis = true;
 		} else if (decos.containsKey("form")) {
-			result = createFormForJsoup(decos);
+			result = createForm(decos);
 			openFormInThis = true;
 		}
 
@@ -606,70 +607,53 @@ public class HTMLFunction extends Function {
 		return result;
 	}
 
-	private Element FuncNullForJsoup() {
+	private Element FuncNull() {
 		return new Element(Tag.valueOf("span"), "");
 	}
 
-	private Element FuncSinvokeForJsoup(ExtList<ExtList<String>> data_info) {
-		Element result;
-		String file = this.getAtt("file");
-		String action = this.getAtt("action");
-		int attNo = 1;
-		String att = new String();
-		while (!this.getAtt("att" + attNo).equals("")) {
-			att = att + "_" + this.getAtt("att" + attNo);
-			attNo++;
+	private void checkArgsNumber(int expected) {
+		if (expected != Args.size()) {
+			System.err.println("Argument number error for the function "
+					+ getFuncName() + "\n This function has " + expected + " required parameters");
+			System.exit(1);
 		}
-		try {
-			att = URLEncoder.encode(att, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+	}
+
+	private void checkArgType(FuncArg argument, Class<? extends TFE> expectedClass, int index) {
+		if (!(expectedClass.isAssignableFrom(argument.getTFEClass()))) {
+			System.err.println("The argument number " + index + " of the "
+					+ getFuncName()
+					+ " function has a wrong type. It should be a "
+					+ expectedClass.getSimpleName());
+			System.exit(1);
 		}
-		if (this.getAtt("action").equals("")) {
-			try {
-				if (file.toLowerCase().contains(".sql")) {
-					file = file.substring(0, file.indexOf(".sql"));
-				} else if (file.toLowerCase().contains(".html")) {
-					file = file.substring(0, file.indexOf(".html"));
-				}
-			} catch (Exception e) {
-				GlobalEnv.addErr("Error[" + getClassName()
-						+ "]: filename is invalid.");
-				System.err.println("Error[" + getClassName()
-						+ "]: filename is invalid.");
-			}
-
-			String filename = new String();
-			if (!this.getAtt("att").equals("")) {
-				if (this.getAtt("att").toLowerCase().startsWith("http://"))
-					filename = this.getAtt("att");
-				else if (this.getAtt("att").toLowerCase().endsWith(".html"))
-					filename = this.getAtt("att");
-				else
-					filename = file + "_" + this.getAtt("att") + ".html";
-			} else {
-				filename = file + att + ".html";
-			}
-
-			filename.replace("\\\\", "\\");
-			htmlEnv.linkUrl = filename;
-			htmlEnv.sinvokeFlag = true;
-
-		} else {
-			String filename = "";
-			if (!this.getAtt("att").equals(""))
-				filename = action + "/" + this.getAtt("att");
-			else
-				filename = action + att;
-
-			filename.replace("\\\\", "\\");
-			htmlEnv.linkUrl = filename;
-			htmlEnv.sinvokeFlag = true;
+	}
+	
+	private Attributes getAttributes(){
+		Attributes attributes = new Attributes();
+		for(String key : ArgHash.keySet()){
+			attributes.put(key, getAtt(key));
 		}
+		return attributes;
+	}
+
+	private Element FuncSinvoke(ExtList<ExtList<String>> data_info) {
+		checkArgsNumber(2);
+
+		FuncArg content = this.Args.get(0);
+		FuncArg href = this.Args.get(1);
+
+		checkArgType(content, TFE.class, 0);
+		checkArgType(href, HTMLC0.class, 1);
+
+		Element result = new Element(Tag.valueOf("a"), "");
+		result.addClass("box").addClass("link");
+		result.appendChild((Element) content.createNode());
+		result.attr("href", ((Element) href.createNode()).text());
+		result.attributes().addAll(getAttributes());
+		
 
 		if (GlobalEnv.isAjax()) {
-			htmlEnv.linkUrl = file + ".html";
-			htmlEnv.ajaxQuery = file + ".sql";
 			htmlEnv.ajaxCond = this.getAtt("ajaxcond") + "="
 					+ this.getAtt("att");
 
@@ -762,22 +746,11 @@ public class HTMLFunction extends Function {
 				htmlEnv.scriptNum++;
 			}
 		}
-		if (this.getArgs().get(0) instanceof FuncArg) {
-			Log.out("ARGS are function");
-			FuncArg fa = (FuncArg) this.getArgs().get(0);
-			result = (Element) fa.createNodeAtt();
-		} else
-			result = (Element) this.createNodeAtt("default");
-		// tk//////////////////////////////////////////////////
 
-		htmlEnv.sinvokeFlag = false;
 		return result;
 	}
 
-	// tk
-	// end////////////////////////////////////////////////////////////////////////////
-
-	private Element FuncForeachForJsoup(ExtList<ExtList<String>> data_info) {
+	private Element FuncForeach(ExtList<ExtList<String>> data_info) {
 		String att = new String();
 		for (int i = 0; i < this.countconnectitem(); i++) {
 			att = att + "_" + this.getAtt(Integer.toString(i));
@@ -793,7 +766,7 @@ public class HTMLFunction extends Function {
 		return null;
 	}
 
-	private Element FuncInvokeForJsoup() {
+	private Element FuncInvoke() {
 
 		String path = this.getAtt("path", ".");
 		if (!GlobalEnv.getFileDirectory().equals(".")) {
@@ -820,44 +793,32 @@ public class HTMLFunction extends Function {
 
 		return result;
 	}
-
-	private Element FuncImagefileForJsoup() {
-
-		Element result = new Element(Tag.valueOf("a"), "");
-
-		String path = this.getAtt("path", ".");
+	
+	private String cleanPathString(String path){
+		String result = "";
 		if (!path.startsWith("/")) {
 			String basedir = GlobalEnv.getBaseDir();
 			if (basedir != null && basedir != "") {
-				path = GlobalEnv.getBaseDir() + "/" + path;
+				result = GlobalEnv.getBaseDir() + "/" + path;
 			}
 		}
 		if (GlobalEnv.isServlet()) {
-			path = GlobalEnv.getFileDirectory() + path;
+			result = GlobalEnv.getFileDirectory() + path;
 		}
+		return result;
+	}
 
-		// image//////////////////////////////////////////////////////////////////////////////////
-		if (htmlEnv.linkFlag > 0 || htmlEnv.sinvokeFlag) {
-			String fileDir = new File(htmlEnv.linkUrl).getAbsoluteFile()
-					.getParent();
+	private Element FuncImagefile() {
+		checkArgsNumber(1);
+		
+		FuncArg src = Args.get(0);
 
-			if (fileDir.length() < htmlEnv.linkUrl.length()
-					&& fileDir.equals(htmlEnv.linkUrl.substring(0,
-							fileDir.length()))) {
-				String relative_path = htmlEnv.linkUrl.substring(fileDir
-						.length() + 1);
-				result.attr("href", relative_path);
-			} else
-				result.attr("href", htmlEnv.linkUrl);
-
-			// added by goto 20121222 end
-
-			if (decos.containsKey("target"))
-				result.attr("target", decos.getStr("target"));
-			if (decos.containsKey("class"))
-				result.addClass(decos.getStr("class"));
-		}
-		// tk/////////////////////////////////////////////////////////////////////////////////
+		Element result = new Element(Tag.valueOf("img"), "");
+		result.attributes().addAll(getAttributes());
+		
+		String srcString = ((Element)src.createNode()).text();
+		result.attr("src", srcString);
+		
 
 		if (decos.containsKey("lightbox")) {
 			Date d1 = new Date();
@@ -865,7 +826,7 @@ public class HTMLFunction extends Function {
 			String today = sdf.format(d1);
 
 			Element link = JsoupFactory.createLink(
-					path + "/" + this.getAtt("default"), "", "");
+					srcString + "/" + this.getAtt("default"), "", "");
 			link.attr("rel", "lightbox[lb" + today + "]");
 			result.appendChild(link);
 
@@ -879,42 +840,30 @@ public class HTMLFunction extends Function {
 				if (decos.containsKey("class"))
 					img.addClass(decos.getStr("class"));
 
-				img.attr("src", path + "/" + this.getAtt("default")).attr(
+				img.attr("src", srcString + "/" + this.getAtt("default")).attr(
 						"onLoad", "initLightBox()");
 				link.appendChild(img);
 			}
 		} else {
-			Element img = new Element(Tag.valueOf("img"), "").addClass(HTMLEnv
+			result.addClass(HTMLEnv
 					.getClassID(this));
-			if (decos.containsKey("class"))
-				img.addClass(decos.getStr("class"));
-
-			// added 20130703
-			if (this.getAtt("default").startsWith("http://")
-					|| this.getAtt("default").startsWith("https://")) {
-				img.attr("src", this.getAtt("default"));
-			} else {
-				img.attr("src", path + "/" + this.getAtt("default"));
-			}
-			result.appendChild(img);
 		}
 		return result;
 	}
 
-	
-	private Element FuncUrl(boolean mailFncFlg){
-		Element result = null ;
-		
-		FuncArg fa1 = (FuncArg) this.getArgs().get(0), fa2, fa3;
+	private Element FuncUrl(boolean mailFncFlg) {
+		Element result = null;
+
+		FuncArg fa1 = (FuncArg) this.Args.get(0), fa2, fa3;
 		String url, name, type;
 
 		try { // 鐃緒申鐃�鐃緒申 or 3鐃縦の常申鐃�
-			fa2 = (FuncArg) this.getArgs().get(1);
+			fa2 = (FuncArg) this.Args.get(1);
 			url = ((mailFncFlg) ? ("mailto:") : ("")) + fa2.getStr();
 			name = fa1.getStr();
 
 			try { // 鐃緒申鐃�鐃縦の常申鐃�
-				fa3 = (FuncArg) this.getArgs().get(2);
+				fa3 = (FuncArg) this.Args.get(2);
 				type = fa3.getStr();
 
 				// type=1 -> 文鐃緒申
@@ -924,7 +873,8 @@ public class HTMLFunction extends Function {
 					// url鐃旬ワ申鐃緒申(鐃叔ワ申鐃緒申鐃夙ップ￥申鐃緒申丱鐃緒申覿�申鐃�
 				} else if (type.equals("3") || type.equals("button")
 						|| type.equals("bt")) {
-					result = JsoupFactory.createInput("button", "", name).attr("onClick", "location.href='" +url + "");
+					result = JsoupFactory.createInput("button", "", name).attr(
+							"onClick", "location.href='" + url + "");
 					result.addClass(className());
 
 					// url鐃旬ワ申鐃緒申 width,height鐃緒申鐃緒申鐃緒申僚鐃緒申鐃�
@@ -947,31 +897,34 @@ public class HTMLFunction extends Function {
 						|| type.equals("img")) {
 					result = JsoupFactory.createLink(url, "", "", className());
 					result.attr("data-transition", transition());
-					if (decos.containsKey("prefetch") || decos.containsKey("pref"))
+					if (decos.containsKey("prefetch")
+							|| decos.containsKey("pref"))
 						result.attr("data-prefetch", "");
-					
+
 					Element img = new Element(Tag.valueOf("img"), "");
 
 					// url鐃緒申鐃緒申 width,height鐃緒申鐃緒申鐃緒申僚鐃緒申鐃�
 					if (decos.containsKey("width"))
-						img.attr("width", decos.getStr("width").replace("\"", ""));
+						img.attr("width",
+								decos.getStr("width").replace("\"", ""));
 					else {
 						// added by goto 20130312 "Default width: 100%"
 						img.attr("width", "100%");
 					}
 					if (decos.containsKey("height"))
-						img.attr("height", decos.getStr("height").replace("\"", "")); // 100;
-					
+						img.attr("height",
+								decos.getStr("height").replace("\"", "")); // 100;
+
 					result.appendChild(img);
 				}
-				
 
 			} catch (Exception e) { // 鐃緒申鐃�鐃縦の常申鐃� statement =
 			}
 
 		} catch (Exception e) { // 鐃緒申鐃�鐃縦の常申鐃�
 			url = fa1.getStr();
-			result = JsoupFactory.createLink(((mailFncFlg) ? ("mailto:") : ("")), "", url);
+			result = JsoupFactory.createLink(
+					((mailFncFlg) ? ("mailto:") : ("")), "", url);
 			result.attr("data-transition", transition());
 			if (decos.containsKey("prefetch") || decos.containsKey("pref"))
 				result.attr("data-prefetch", "");
@@ -980,43 +933,44 @@ public class HTMLFunction extends Function {
 		// 鐃銃逸申鐃緒申鐃祝緒申鐃緒申鐃縮わ申HTML鐃祝書きわ申鐃緒申
 		return result;
 	}
-	
-	private Element getTextAnchor(String url, String name){
+
+	private Element getTextAnchor(String url, String name) {
 		// [ ]鐃叔囲わ申譴随申鐃淑�申鐃熟ワ申鐃術￥申鐃緒申鵐�砲鐃緒申鐃� //ex) a("[This] is anchor.","URL")
-				String A = "";
-				int a1 = 0, a2 = name.length() - 1;
-				try {
-					for (int i = 0; i < name.length(); i++) {
-						if (i > 0 && name.charAt(i) == '['
-								&& name.charAt(i - 1) != '\\')
-							a1 = i;
-						else if (i > 0 && name.charAt(i) == ']'
-								&& name.charAt(i - 1) != '\\')
-							a2 = i;
-					}
-					if (a1 == 0 && a2 == name.length() - 1)
-						A = name.substring(a1, a2 + 1);
-					else
-						A = name.substring(a1 + 1, a2);
-					A = A.replaceAll("\\\\\\[", "[").replaceAll("\\\\\\]", "]");
-					name.substring(0, a1).replaceAll("\\\\\\[", "[")
-							.replaceAll("\\\\\\]", "]");
-					name.substring(a2 + 1).replaceAll("\\\\\\[", "[")
-							.replaceAll("\\\\\\]", "]");
-				} catch (Exception e) {
-				}
-				Element result = JsoupFactory.createLink(url, "", A, className()).attr("data-transition", transition());
-				if (decos.containsKey("prefetch") || decos.containsKey("pref"))
-					result.attr("data-prefetch", "");
-				return result;
+		String A = "";
+		int a1 = 0, a2 = name.length() - 1;
+		try {
+			for (int i = 0; i < name.length(); i++) {
+				if (i > 0 && name.charAt(i) == '['
+						&& name.charAt(i - 1) != '\\')
+					a1 = i;
+				else if (i > 0 && name.charAt(i) == ']'
+						&& name.charAt(i - 1) != '\\')
+					a2 = i;
+			}
+			if (a1 == 0 && a2 == name.length() - 1)
+				A = name.substring(a1, a2 + 1);
+			else
+				A = name.substring(a1 + 1, a2);
+			A = A.replaceAll("\\\\\\[", "[").replaceAll("\\\\\\]", "]");
+			name.substring(0, a1).replaceAll("\\\\\\[", "[")
+					.replaceAll("\\\\\\]", "]");
+			name.substring(a2 + 1).replaceAll("\\\\\\[", "[")
+					.replaceAll("\\\\\\]", "]");
+		} catch (Exception e) {
+		}
+		Element result = JsoupFactory.createLink(url, "", A, className()).attr(
+				"data-transition", transition());
+		if (decos.containsKey("prefetch") || decos.containsKey("pref"))
+			result.attr("data-prefetch", "");
+		return result;
 	}
-	
+
 	private String className() { // added 20130703
 		if (decos.containsKey("class"))
 			return decos.getStr("class");
 		return "";
 	}
-	
+
 	private String transition() {
 		// 鐃緒申鐃緒申鐃緒申鐃旬ワ申鐃祝メー鐃緒申鐃緒申鐃�data-transition)鐃緒申鐃緒申鐃緒申僚鐃緒申鐃�
 		// //鐃緒申鐃緒申鐃緒申鐃准￥申鐃緒申鐃舜わ申鐃緒申鐃旬にわ申鐃出縁申鐃緒申鐃銃わ申鐃淑わ申
@@ -1026,14 +980,14 @@ public class HTMLFunction extends Function {
 			return decos.getStr("trans");
 		return "";
 	}
-	
-	private Node FuncObject(String path){
+
+	private Node FuncObject(String path) {
 		String classID = HTMLEnv.getClassID(this);
 		Element result = null;
 
 		if (path.equals("")) {
 			try {
-				path = ((FuncArg) this.getArgs().get(0)).getStr().trim();
+				path = ((FuncArg) this.Args.get(0)).getStr().trim();
 			} catch (Exception e) {
 			}
 		}
@@ -1051,7 +1005,7 @@ public class HTMLFunction extends Function {
 					if (line == null)
 						break;
 					else
-						phpCode+= line + "\n";
+						phpCode += line + "\n";
 				}
 				in.close();
 				return new TextNode(phpCode, "");
@@ -1061,15 +1015,15 @@ public class HTMLFunction extends Function {
 		} else if (path.endsWith(".js")) // .js file
 			result = JsoupFactory.createJsElement(path);
 		else
-			result = new Element(Tag.valueOf("object"), "").attr("data", path).addClass(classID).html("\n");
-			// .html, .pdf, .swf, .gif, .mp4, etc.
+			result = new Element(Tag.valueOf("object"), "").attr("data", path)
+					.addClass(classID).html("\n");
+		// .html, .pdf, .swf, .gif, .mp4, etc.
 		return result;
 	}
 
 	// added by goto 20130308 end
 
-	
-	private TextNode FuncSeqNum(){
+	private TextNode FuncSeqNum() {
 		String classID = HTMLEnv.getClassID(this);
 		int i;
 		for (i = 0; i < seq_num_ClassID.size() + 1; i++) {
@@ -1096,18 +1050,19 @@ public class HTMLFunction extends Function {
 
 		// 各引数毎に処理した結果をHTMLに書きこむ
 		TextNode result = new TextNode(""
-				+ ((!DESC_Flg.get(i)) ? (seq_num.get(i)) : (seq_num.get(i))), "");
+				+ ((!DESC_Flg.get(i)) ? (seq_num.get(i)) : (seq_num.get(i))),
+				"");
 		if (!DESC_Flg.get(i))
 			seq_num.set(i, seq_num.get(i) + 1);
 		else
 			seq_num.set(i, seq_num.get(i) - 1);
 		return result;
 	}
-	
-	private Element FuncFormCommonForJsoup(String s) {
+
+	private Element FuncFormCommon(String s) {
 		Element result = new Element(Tag.valueOf("div"), "");
 
-		String form = new String();
+		Node form = new TextNode("", "");
 
 		boolean openFormInThis = false;
 
@@ -1150,20 +1105,18 @@ public class HTMLFunction extends Function {
 			HTMLEnv.cond = this.getAtt("cond");
 		}
 
-		htmlEnv.code.append(form);
+		result.appendChild(form);
 
-		if (this.getArgs().get(0) instanceof FuncArg) {
-			// HTMLEnv.setSelectFlg(true,(String)this.decos.get("select"));
+		if (this.Args.get(0) instanceof FuncArg) {
 			HTMLEnv.setFormValueString(att);
 			Log.out("ARGS are function");
-			FuncArg fa = (FuncArg) this.getArgs().get(0);
-			fa.workAtt();
+			FuncArg fa = (FuncArg) this.Args.get(0);
+			result.appendChild((Node) fa.createNode());
 		} else {
-			this.workAtt("default");
+			result.appendChild((Node) this.createNodeAtt("default"));
 		}
 
 		if (openFormInThis == true) {
-			htmlEnv.code.append("</form>");
 			HTMLEnv.setFormItemFlg(false, null);
 			openFormInThis = false;
 		} else {
@@ -1172,7 +1125,7 @@ public class HTMLFunction extends Function {
 		return result;
 	}
 
-	private Element createFormForJsoup() {
+	private Element createForm() {
 		Element result = new Element(Tag.valueOf("form"), "");
 		String path = new String();
 		if (this.getAtt("path") != null && !this.getAtt("path").isEmpty()) {
@@ -1229,57 +1182,7 @@ public class HTMLFunction extends Function {
 		return result;
 	}
 
-	public static String createForm(DecorateList decos) {
-		new String();
-		String path = new String();
-		String form = new String();
-		// System.out.println(this.getAtt("label"));
-		if (decos.containsKey("path")) {
-			path = decos.getStr("path").replaceAll("\"", "");
-		} else {
-			path = ".";
-		}
-
-		form = "<form method=\"POST\" action=\"" + path
-				+ "/supersql.form.FormServlet\" " + "name=\""
-				+ HTMLEnv.getFormName() + "\" " + ">";
-
-		form += "<input type=\"hidden\" name=\"configfile\" value=\""
-				+ GlobalEnv.getFileDirectory() + "/config.ssql\" />";
-
-		if (decos.containsKey("link")) {
-			opt(decos.getStr("link"));
-			form += "<input type=\"hidden\" name=\"sqlfile\" value=\"" + path
-					+ "/" + decos.getStr("link").replaceAll("\"", "") + "\" />";
-		}
-
-		if (decos.containsKey("cond")) {
-			form += "<input type=\"hidden\" name=\"cond1\" value=\""
-					+ decos.getStr("cond").replaceAll("\"", "") + "\" />";
-		}
-
-		if (decos.containsKey("updatefile")) {
-			String tmp = opt(decos.getStr("updatefile"));
-			updateFile = "<input type=\"hidden\" name=\"updatefile\" value=\""
-					+ path + "/" + tmp + "\" />";
-			form += updateFile;
-		}
-		if (decos.containsKey("linkfile")) {
-			opt(decos.getStr("linkfile"));
-			form += "<input type=\"hidden\" name=\"linkfile\" value=\"" + path
-					+ "/" + decos.getStr("linkfile").replaceAll("\"", "")
-					+ "\" />";
-		}
-		if (decos.containsKey("cond")) {
-			form += "<input type=\"hidden\" name=\"linkcond\" value=\""
-					+ decos.getStr("cond").replaceAll("\"", "") + "\" />";
-		}
-		Log.out(form);
-		HTMLEnv.setFormDetail(form);
-		return form;
-	}
-
-	protected static Element createFormForJsoup(DecorateList decos) {
+	protected static Element createForm(DecorateList decos) {
 		Element result = new Element(Tag.valueOf("form"), "");
 		String path = new String();
 		if (decos.containsKey("path")) {
@@ -1337,13 +1240,12 @@ public class HTMLFunction extends Function {
 		}
 		return s;
 	}
-	
-	private Element FuncYoutube(){
+
+	private Element FuncYoutube() {
 		String path = this.getAtt("default");
 		Element object = new Element(Tag.valueOf("object"), "");
 		object.attr("width", "400").attr("height", "385");
-		String objectString = 
-		"<param name=\"movie\" value=\"http://www.youtube.com/v/"
+		String objectString = "<param name=\"movie\" value=\"http://www.youtube.com/v/"
 				+ path
 				+ "?fs=1&amp;hl=ja_JP\"></param><param name=\"allowFullScreen\" value=\"true\">"
 				+ "</param><param name=\"allowscriptaccess\" value=\"always\"></param><embed src=\"http://www.youtube.com/v/"
@@ -1355,10 +1257,9 @@ public class HTMLFunction extends Function {
 		return object;
 	}
 
-	private Element FuncMovieFile(){
+	private Element FuncMovieFile() {
 		Element video = new Element(Tag.valueOf("video"), "");
-		
-		
+
 		String path = this.getAtt("path", ".");
 		if (!path.startsWith("/")) {
 			String basedir = GlobalEnv.getBaseDir();
@@ -1366,7 +1267,7 @@ public class HTMLFunction extends Function {
 				path = GlobalEnv.getBaseDir() + "/" + path;
 			}
 		}
-		
+
 		video.addClass(HTMLEnv.getClassID(this));
 
 		if (decos.containsKey("class"))
@@ -1375,9 +1276,10 @@ public class HTMLFunction extends Function {
 		video.attr("src", path + "/" + this.getAtt("default"));
 		video.attr("autobuffer", "");
 		video.attr("controls", "");
-		Element p = new Element(Tag.valueOf("p"),"");
+		Element p = new Element(Tag.valueOf("p"), "");
 		p.append("Try this page in Safari 4! Or you can ");
-		p.appendChild(JsoupFactory.createLink(path + "/" + this.getAtt("default"), "", "download the video"));
+		p.appendChild(JsoupFactory.createLink(
+				path + "/" + this.getAtt("default"), "", "download the video"));
 		p.append(" instead");
 		video.appendChild(p);
 		return video;
@@ -1432,11 +1334,11 @@ public class HTMLFunction extends Function {
 				+ this.getAtt("default") + ");});";
 
 		script.text(scriptString);
-		
+
 		Element div = new Element(Tag.valueOf("div"), "");
 		Element canvas = new Element(Tag.valueOf("canvas"), "");
 		if (decos.containsKey("width"))
-			canvas.attr("width",decos.getStr("width"));
+			canvas.attr("width", decos.getStr("width"));
 		else
 			canvas.attr("width", "200");
 		if (decos.containsKey("height"))
@@ -1452,7 +1354,7 @@ public class HTMLFunction extends Function {
 	// 20130920
 	private String getValue(int x) {
 		try {
-			String str = ((FuncArg) this.getArgs().get(x - 1)).getStr(); // 第x引数
+			String str = ((FuncArg) this.Args.get(x - 1)).getStr(); // 第x引数
 			if (!str.equals(""))
 				return str;
 			else
