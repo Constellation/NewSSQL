@@ -4,7 +4,8 @@
 
 *.html
 *.xml
-*.sql
+sample_queries/*.sql
+/*.sql
 *.ssql
 *.class
 *.db

@@ -4,6 +4,11 @@ import org.jsoup.nodes.Element;
 import org.junit.Assert;
 import org.junit.Test;
 
+/**
+ * Tests for {@link HTMLFunction}.
+ * 
+ * @author thomas@oxynum.fr (Thomas THIMOTHEE)
+ */
 public class HTMLFunctionTest {
 	private static final String configFilename = "/Users/thomas/Documents/dev/ssql2/.ssql";
 	// This string should finish with a slash
