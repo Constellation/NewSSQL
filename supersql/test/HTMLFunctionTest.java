@@ -5,9 +5,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class HTMLFunctionTest {
-	private static final String configFilename = "/Users/thomas/Documents/dev/ssql2/.ssql";
+	private static final String configFilename = "/Users/goto/config.ssql";
 	// This string should finish with a slash
-	private static final String testFilesFolder = "/Users/thomas/Documents/dev/ssql2/test_queries/html_function/";
+	private static final String testFilesFolder = "/Users/goto/Documents/workspace/src'12/test_queries/html_function/";
 	private static final String[] testFilesNames = { "link.sql" };
 	
 	/**

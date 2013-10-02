@@ -1,13 +1,5 @@
 package supersql.codegenerator;
 
-import java.io.BufferedWriter;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-
-import org.jsoup.nodes.Element;
-
 import supersql.codegenerator.HTML.HTMLFactory;
 import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5Factory;
 import supersql.codegenerator.PDF.PDFFactory;
