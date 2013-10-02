@@ -14,7 +14,7 @@ public class FormTest {
 	private static final String configFilename = "/Users/thomas/Documents/dev/ssql2/.ssql";
 	// This string should finish with a slash
 	private static final String testFilesFolder = "/Users/thomas/Documents/dev/ssql2/test_queries/form/";
-	private static final String[] testFilesNames = {"insert1.sql", "insert2.sql", "delete1.sql", "delete2.sql" };
+	private static final String[] testFilesNames = {"insert1.sql", "insert2.sql", "delete1.sql", "delete2.sql", "update1.sql", "update2.sql", "grouper1Form.sql" };
 
 	/**
 	 * GENERATE HTML {e.Id, e.Name, e.salary} @ {insert} FROM employee e
@@ -83,11 +83,41 @@ public class FormTest {
 	 */
 	@Test
 	public void update1Test(){
-		
+		Element ssqlSection = TestUtils.launchQueryAndGetResult(configFilename, testFilesFolder, testFilesNames, 4);
+		checkFormInputs(ssqlSection);
+		Assert.assertEquals(3,ssqlSection.getElementsByAttributeValue("type", "text").size());
+		Assert.assertEquals(1, ssqlSection.getElementsByClass("horizontal").size());
+		Assert.assertEquals(4, ssqlSection.getElementsByClass("vertical").size());
+	}
+	
+	/**
+	 * GENERATE HTML {e.Id! e.Name! e.salary} @ {update} FROM employee e
+	 * 
+	 * @author thomas@oxynum.fr (Thomas THIMOTHEE)
+	 */
+	@Test
+	public void update2Test(){
+		Element ssqlSection = TestUtils.launchQueryAndGetResult(configFilename, testFilesFolder, testFilesNames, 5);
+		checkFormInputs(ssqlSection);
+		Assert.assertEquals(3,ssqlSection.getElementsByAttributeValue("type", "text").size());
+		Assert.assertEquals(3, ssqlSection.getElementsByClass("horizontal").size());
+		Assert.assertEquals(2, ssqlSection.getElementsByClass("vertical").size());
+	}
+	
+	/**
+	 * GENERATE HTML [{e.Id! e.Name! e.salary}], @ {insert} FROM employee e
+	 * 
+	 * @author thomas@oxynum.fr (Thomas THIMOTHEE)
+	 */
+	@Test
+	public void grouper1FormTest(){
+		Element ssqlSection = TestUtils.launchQueryAndGetResult(configFilename, testFilesFolder, testFilesNames, 6);
+		Assert.assertEquals( 1,ssqlSection.getElementsByTag("form").size());
+		Assert.assertEquals( 1,ssqlSection.getElementsByAttributeValue("type", "submit").size());
 	}
 	
 	private void checkFormInputs(Element ssqlSection){
-		Assert.assertEquals(1,ssqlSection.getElementsByTag("form").size());
+		Assert.assertEquals( 1,ssqlSection.getElementsByTag("form").size());
 		Assert.assertEquals( 4,ssqlSection.getElementsByTag("input").size());
 		Assert.assertEquals( 1,ssqlSection.getElementsByAttributeValue("type", "submit").size());
 	}

@@ -22,7 +22,7 @@ public class HTMLG1 extends Grouper {
         html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
         
         Element result = new Element(Tag.valueOf("div"), "");
-        result.attr("horizontal box group1");
+        result.attr("class", "horizontal box group1");
         
         if(!GlobalEnv.isOpt()){
 	        
