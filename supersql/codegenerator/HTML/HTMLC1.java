@@ -8,12 +8,10 @@ import supersql.codegenerator.ITFE;
 import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
 import supersql.extendclass.ExtList;
-//tk
 
 public class HTMLC1 extends Connector {
 
     private HTMLEnv htmlEnv;
-    //コンストラクタ
     public HTMLC1(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
         this.htmlEnv = henv;
         Dimension = 1;
@@ -22,20 +20,15 @@ public class HTMLC1 extends Connector {
     @Override
     public Element createNode(ExtList<ExtList<String>> dataInfo){
     	this.setDataList(dataInfo);
+    	if(decos.containsKey("insert"))
+    		return createForm(dataInfo, 0);
+    	if(decos.containsKey("delete"))
+    		return createForm(dataInfo, 1);
+    	if(decos.containsKey("update"))
+    		return createForm(dataInfo, 2);
+    	
     	Element result = new Element(Tag.valueOf("div"), "");
-    	result.addClass("con1").addClass("horizontal").addClass("box");
-    	if(decos.containsKey("form") && decos.getStr("form").toLowerCase().equals("search")){
-        	HTMLEnv.setSearch(true);
-    	}
-        if(decos.containsKey("insert")){
-        	HTMLEnv.setIDU("insert");
-        }	
-        if(decos.containsKey("update")){
-        	HTMLEnv.setIDU("update");
-        }
-        if(decos.containsKey("delete")){
-        	HTMLEnv.setIDU("delete");
-        }
+    	result.attr("class", "con1 horizontal box nest");
 
         htmlEnv.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
         if(!GlobalEnv.isOpt()){
@@ -49,34 +42,46 @@ public class HTMLC1 extends Connector {
         	}
         }
         int i = 0;
-
-        if(decos.containsKey("form")){
-        	result.appendChild(HTMLFunction.createForm(decos));
-           	HTMLEnv.setFormItemFlg(true,null);
-        }
-        
-        
         while (this.hasMoreItems()) {
             ITFE tfe = (ITFE) tfes.get(i);
-            result.addClass(HTMLEnv.getClassID(tfe)).addClass("nest");
-            HTMLEnv.getClassID(tfe);
+            result.addClass(HTMLEnv.getClassID(tfe));
             
             result.appendChild((Element)this.createNextItemNode(dataInfo));
             i++;
         }
-
-        if(decos.containsKey("form")){
-        	Element exForm = HTMLEnv.exFormNameCreateForJsoup();
-        	if(exForm != null){
-        		result.appendChild(exForm);
-        	}
-           	HTMLEnv.setFormItemFlg(false,null);
-           	HTMLEnv.incrementFormNumber();
-           	if(decos.getStr("form").toLowerCase().equals("search"))
-        		HTMLEnv.setSearch(false);
-        }
-        
 		return result;
+    }
+    
+    private Element createForm(ExtList<ExtList<String>> dataInfo, int type){
+    	String inputType;
+    	String submitText;
+    	String inputValue;
+        String formContentClass;
+        String formContentElementsClass;
+    	if(type == 0){
+    		inputType = "text";
+    		inputValue = "";
+			submitText = "insert";
+			formContentClass = "horizontal con1";
+			formContentElementsClass = "vertical";
+    	}else if(type == 1){
+    		inputType = "checkbox";
+    		inputValue = "1";
+			submitText = "delete";
+			formContentClass = "horizontal con1";
+			formContentElementsClass = "horizontal";
+    	}else if(type == 2){
+    		inputType = "text";
+    		inputValue = null;
+			submitText = "update";
+			formContentClass = "horizontal con1";
+			formContentElementsClass = "vertical";
+    	}else{
+    		throw new IllegalArgumentException();
+    	}
+		
+		return JsoupFactory.createForm(this, inputType, submitText, inputValue,
+				formContentClass, formContentElementsClass);
     }
     
     public String getSymbol() {

@@ -32,7 +32,7 @@ public class HTMLC0 extends Connector {
        return result;
 	}
 	
-	public boolean checkOperands(){
+	private boolean checkOperands(){
 		Iterator<TFE> it = tfes.iterator();
 		while(it.hasNext()){
 			if(!(it.next() instanceof HTMLAttribute))

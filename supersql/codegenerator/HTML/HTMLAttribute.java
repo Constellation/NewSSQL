@@ -44,8 +44,6 @@ public class HTMLAttribute extends Attribute {
 			work_opt(data_info);
 		}else{
 			if(!(HTMLEnv.getFormItemFlg() && HTMLEnv.getFormItemName().equals(formHtml[2]))){
-				if(htmlEnv.isOutlineModeForJsoup())
-					result.attr("outline",  "");
 				result.addClass("att");
 				if(htmlEnv.writtenClassId.contains(HTMLEnv.getClassID(this))){
 					result.addClass(HTMLEnv.getClassID(this));
@@ -60,7 +58,7 @@ public class HTMLAttribute extends Attribute {
 			Element div = new Element(Tag.valueOf("div"), "");
 			Element a = new Element(Tag.valueOf("a"), "");
 			
-			if (htmlEnv.linkFlag > 0 || htmlEnv.sinvokeFlag) {
+			if (htmlEnv.linkFlag > 0) {
 
 				//tk start for draggable div///////////////////////////////////////
 				if(htmlEnv.draggable)
@@ -117,17 +115,12 @@ public class HTMLAttribute extends Attribute {
 				}
 			}
 
-			result.appendChild(createFormForJsoup(data_info));
-			
+			//***APPEND DATABASE VALUE***//
+			String elementText = this.getStr(data_info);
+			elementText = elementText.replace(" ", "&#160;");
+			result.html(elementText);
 
-			if(whichForm == 0){ //normal process (not form)
-				//***APPEND DATABASE VALUE***//
-				String elementText = this.getStr(data_info);
-				elementText = elementText.replace(" ", "&#160;");
-				result.html(elementText);
-			}
-
-			if (htmlEnv.linkFlag > 0 || htmlEnv.sinvokeFlag) {
+			if (htmlEnv.linkFlag > 0) {
 				if(htmlEnv.draggable)
 					result.appendChild(div);
 				else
@@ -177,7 +170,7 @@ public class HTMLAttribute extends Attribute {
 		}
 
 		//link and sinvoke
-		if (htmlEnv.linkFlag > 0 || htmlEnv.sinvokeFlag) {
+		if (htmlEnv.linkFlag > 0) {
 			string_tmp.append(" href=\"" + htmlEnv.linkUrl + "\" ");
 			if(decos.containsKey("target")){
 				string_tmp.append(" target=\"" + decos.getStr("target")+"\"");
@@ -238,58 +231,7 @@ public class HTMLAttribute extends Attribute {
 		
 		
 	}
-
-	protected Element createFormForJsoup(ExtList data_info){
-		Element form = new Element(Tag.valueOf("form"), "");
-		String name = new String();		
-		String inputFormString = new String();
-
-		for(int i = 1; i < formSql.length ; i++ ){
-			if(decos.containsKey(formSql[i]) || HTMLEnv.getIDU().equals(formSql[i])){
-				switch(i){
-				case 1 : //delete
-					if(decos.containsKey(formSql[i])){
-						name = decos.getStr("delete");
-					}else{
-						name = decos.getStr("attributeName");
-					}
-					form.appendChild(new Element(Tag.valueOf("input"), "").attr("type", "checkbox").attr("name", name).attr("value", this.getStr(data_info)));
-					whichForm = i;
-					break;
-				case 2 : //update
-					if(decos.containsKey(formSql[i])){
-						name = decos.getStr("update");
-					}else{
-						name = decos.getStr("attributeName");
-					}
-					whichForm = i;
-					break;
-				case 3 : //insert
-					if(decos.containsKey(formSql[i])){
-						name = decos.getStr("insert");
-					}else{
-						name = decos.getStr("attributeName");
-					}
-					whichForm = i;
-					break;
-				case 4 : //login
-					name = decos.getStr("login");
-					if(decos.containsKey("att")){
-						form.appendChild(new Element(Tag.valueOf("input"), "").attr("type", "hidden").attr("name", "att").attr("value", decos.getStr("att")));
-					}
-					whichForm = i;
-					break;
-				case 5 : //logout
-					form.appendChild(new Element(Tag.valueOf("input"), "").attr("type", "hidden").attr("name", "sqlfile").attr("value", decos.getStr("linkfile").replace("\"", "")));
-					form.appendChild(new Element(Tag.valueOf("input"), "").attr("type", "submit").attr("name", "logout").attr("value", this.getStr(data_info)));
-					whichForm = i;
-					break;
-				}	
-			}	
-		}
-		return form;
-	}
-	
+ 	
 	protected void createForm(ExtList data_info){
 
 		String name = new String();		

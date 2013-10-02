@@ -27,11 +27,9 @@ public void doPost(HttpServletRequest req,
                       HttpServletResponse res) 
                           throws ServletException, IOException {
 
-    // ContentType��ݒ�
     res.setContentType("text/html; charset=Shift_JIS");
     req.setCharacterEncoding("Shift-JIS");
     
-    // �o�͗pPrintWriter���擾
     PrintWriter out = res.getWriter();
 
     String sqlfile = new String();
@@ -67,18 +65,6 @@ public void doPost(HttpServletRequest req,
     	if (line == null || line.equals("-1"))
             break;
 
-        //tk start/////////////////////////////////////
-		//commented out by goto 20130412
-//		if(line.startsWith("//"))
-//			line = dis.readLine();
-//        if(line.startsWith("/*"))
-//        {
-//        	while(!line.contains("*/"))
-//        		line = dis.readLine();
-//        	int t = line.indexOf("*/");
-//        	line = line.substring(t+2);
-////        	line = in.readLine();
-//        }
 		//changed by goto 20130412
 		if(line!=null && line.contains("/*"))
         {
@@ -150,7 +136,6 @@ public void doPost(HttpServletRequest req,
     		
     		int count = 0;
     		int[] position = new int[20];
-    		int join_flag = 0;
     		null_variable_num = 0;
     		
     		for(int a = 0; a <= i ; ++a)
@@ -225,8 +210,6 @@ public void doPost(HttpServletRequest req,
 	    		{
 	    	    	if(null_variable_num == 0 || ( in_flag == 1 && count > null_variable_num ) )
 	    	    	{
-//	    	    		if(part.length() != 0)
-//		    	    	{
 		    	    		if(Where_flag == 0)
 		    	   			{
 		    	   				query.append(" WHERE ");
@@ -236,7 +219,6 @@ public void doPost(HttpServletRequest req,
 		       	    		out.print(" i " + i + "<BR>");
 		       	    		for(j = 0; j <= i; ++j)
 			    	    	{
-		       	    //			out.print(" appended_flag " + appended_flag + " j : " + j + "<BR>");
 		        	    		if( (read_where[j].equalsIgnoreCase("AND") || read_where[j].equalsIgnoreCase("OR")) 
 		        	    				&& j == i)
 		        	   			{		
@@ -271,7 +253,6 @@ public void doPost(HttpServletRequest req,
 	        	    				}   			
 		        	    		}
 			    	    	}
-			    	   	//}
 		    	   	}
 		    	   	if(read_where[i].equals("AND") || read_where[i].equals("OR"))
 		    	   	{

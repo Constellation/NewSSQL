@@ -52,14 +52,6 @@ public class FormServlet extends HttpServlet {
 		this.errflg = false;
 
 		String sqlfile = new String();
-		/* comment out   chie
-    try{
-    	sqlfile = req.getParameter("sqlfile");
-    }catch(NullPointerException e){
-    	out.println("no ssql file \n");
-    	System.exit(-1);
-    }
-		 */
 		if(req.getParameter("sqlfile") != null)
 			sqlfile = req.getParameter("sqlfile");
 		if(req.getParameter("linkfile") != null)
@@ -89,29 +81,6 @@ public class FormServlet extends HttpServlet {
 			updatefile = req.getParameter("updatefile");
 			Log.out("updatefile : " + updatefile);
 		}
-
-
-		/*
-    	try{
-    		host = req.getParameter("host");
-    	}catch(NullPointerException e){
-    		out.println("no host defined \n");
-    		System.exit(-1);
-    	}
-
-    	try{
-    		user = req.getParameter("user");
-    	}catch(NullPointerException e){
-    		out.println("no user defined \n");
-    		System.exit(-1);
-    	}
-    	try{
-    		dbname = req.getParameter("dbname");
-    	}catch(NullPointerException e){
-    		out.println("no dbname id defined");
-    		System.exit(-1);
-    	}
-		 */
 
 		while(true)
 		{   
@@ -235,77 +204,6 @@ public class FormServlet extends HttpServlet {
 			
 			Log.info(sqlfile);
 			res.sendRedirect(sqlfile);
-			/*
-			String query = errMessage(sqlfile);
-
-			if(query.contains("session(")){
-				InvokeServlet2 invoke = new InvokeServlet2();
-				query = invoke.getSession(sqlfile,req,query,this);
-			}
-
-			if(req.getParameter("linkcond") != null){
-				linkcond = req.getParameter("linkcond");
-				for(int j = 1; j < att_sets.length+1; j++){
-					Log.info("ss:"+j);
-					if(att_sets[j-1][0] != null && linkcond.contains("$"+att_sets[j-1][0])){
-						linkcond = linkcond.replace("$"+att_sets[j-1][0], att_sets[j-1][1]);
-					}
-				}
-				where += linkcond;
-				Log.info("WHERE:"+where);
-			}
-			if(this.errflg == true){
-				if(where == null || where.trim().isEmpty()){
-					where = "false";
-				}else{
-					where += " AND false";
-				}
-			}
-
-			//String[] args = {"-f",sqlfile,"-cond",where,"-debug","-h",host,"-u",user,"-db",dbname};
-			//String[] args = {"-f",sqlfile,"-cond",where,"-c",configfile};
-			//String[] args = {"-f",sqlfile,"-cond",where,"-debug","-c",configfile};
-			
-			String[] args;
-			if(where.isEmpty()){
-				String[] s = {"-query",query,"-o",sqlfile,"-c",configfile,"-debug"};
-				args = s;
-			}else{
-				String[] s = {"-query",query,"-o",sqlfile,"-cond",where,"-c",configfile,"-debug"};
-				args = s;
-			}
-
-			GlobalEnv.setGlobalEnv(args);
-
-
-			SSQLparser parser = new SSQLparser("online");
-
-
-			CodeGenerator codegenerator = parser.getcodegenerator();
-
-			DataConstructor dc = new DataConstructor(parser);
-
-
-
-
-			//add chie
-			if (GlobalEnv.getErrFlag() == 0){
-				String[] headfoot = codegenerator.generateCode4(parser,dc.getData()).toString().split(" ###split### ");
-				out.println(headfoot[0]);			
-				out.println(codegenerator.generateCode2(parser, dc.getData()));
-				if (headfoot.length > 1){
-					out.println(headfoot[1]);
-				}
-			}else if(dc.getData().size() == 0){
-				out.println("NO DATA FOUND");
-			}
-
-			if (GlobalEnv.getErrFlag() == 0){
-				Log.info("// completed normally //");
-			}else{
-				out.println(GlobalEnv.getErr());
-			}
-			*/
 		}else{
 			sqlfile = req.getHeader("referer");
 			Log.info(sqlfile);
@@ -579,10 +477,6 @@ public class FormServlet extends HttpServlet {
 					if (line == null){
 						break;
 					}
-					//for comment statement
-					//commented out by goto 20130412
-//					if(line.startsWith("//"))
-//						line = in.readLine();
 					//changed by goto 20130412
 					if(line!=null && line.contains("/*"))
 		            {
@@ -611,12 +505,8 @@ public class FormServlet extends HttpServlet {
 		            if(line!=null)
 		            	tmp += " " + line.trim();
 				}
-			}else{
-				in = new BufferedReader(new FileReader(filename));
 			}
 		}catch(Exception e){}
-
-		//Log.info(tmp);
 
 		if(tmp.contains("errmessage()")){
 			if( errmessage == null ||errmessage.isEmpty()){

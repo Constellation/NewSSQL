@@ -6,6 +6,11 @@ import org.jsoup.nodes.Attributes;
 import org.jsoup.nodes.Element;
 import org.jsoup.parser.Tag;
 
+import supersql.codegenerator.Connector;
+import supersql.codegenerator.ITFE;
+import supersql.codegenerator.TFE;
+import supersql.extendclass.ExtList;
+
 public class JsoupFactory {
 
 	public static Element createJsElement(String src) {
@@ -88,4 +93,43 @@ public class JsoupFactory {
 		return element;
 	}
 	
+	
+	public static Element createForm(Connector connector, String inputType, String submitText, String inputValue, String formContentClass, String formContentElementsClass){
+		ExtList<TFE> tfes = connector.tfes;
+		ExtList<ExtList<String>> dataInfo = connector.getData();
+		
+		Element form = new Element(Tag.valueOf("form"), "");
+		form.attr("class", "form vertical box nest");
+		Element formContent = new Element(Tag.valueOf("div"), "");
+		formContent.attr("class", "box").addClass(formContentClass);
+		
+		
+		int i = 0;
+		boolean noInputValue = false;
+		
+		if(inputValue == null)
+			noInputValue = true;
+		
+        while (i < tfes.size()) {
+            ITFE tfe = (ITFE) tfes.get(i);
+            tfe.addDeco(submitText, true);
+            Element nextItem = ((Element) connector.createNextItemNode(dataInfo));
+            
+            if(tfe.getClass() == HTMLAttribute.class){
+            	if(noInputValue)
+            		inputValue = nextItem.text();
+            	String name = tfe.toString().split("\\.")[tfe.toString().split("\\.").length -1];
+                
+    			formContent.appendElement("div").attr("class", "box " + HTMLEnv.getClassID(tfe)).addClass(formContentElementsClass)
+                	.appendChild(JsoupFactory.createInput(inputType, name, inputValue));
+                
+            }else{
+            	formContent.appendChild(nextItem);
+            }
+            i++;
+        }
+        
+        form.appendChild(formContent).appendChild(JsoupFactory.createInput("submit", "", submitText));
+        return form;
+	}
 }

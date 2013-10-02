@@ -793,9 +793,7 @@ public class HTMLFunction extends Function {
 				+ "query="
 				+ filename + "&" + "cond=" + this.getAtt("condition");
 
-		htmlEnv.linkFlag = 1;
 		Element result = (Element) this.createNodeAtt("default");
-		htmlEnv.linkFlag = 0;
 
 		return result;
 	}

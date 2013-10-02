@@ -30,17 +30,11 @@ public class FormServlet3 extends HttpServlet {
 
 	long start = System.currentTimeMillis();
 		
-    // ContentType��ݒ�
-    //res.setContentType("text/html; charset=UTF-8");
-    //req.setCharacterEncoding("UTF-8");
-
     res.setContentType("text/html; charset=Shift-JIS");
     req.setCharacterEncoding("Shift-JIS");
     
-    // �o�͗pPrintWriter���擾
     PrintWriter out = res.getWriter();
 
-    //ssql�N�G���t�@�C���A�h���X�擾
     String sqlfile = new String();
     try{
     	sqlfile = req.getParameter("sqlfile");
@@ -49,7 +43,6 @@ public class FormServlet3 extends HttpServlet {
     	System.exit(-1);
     }
     
-    //�ݒ�t�@�C���A�h���X�擾
     String configfile = new String(); 
    	try{
 		configfile = req.getParameter("configfile");
@@ -101,15 +94,11 @@ public class FormServlet3 extends HttpServlet {
     	QueryBuffer.append(tmp);
     }
     
-//    out.println(" Query : " + QueryBuffer);
-
     System.err.println("Query: " + QueryBuffer);
     String[] args = {"-c",configfile, "-o",sqlfile,"-ajax","-servlet"};
     
     GlobalEnv.setGlobalEnv(args);
     
-    //GlobalEnv.setOnlineFlag();
-
     SSQLparser parser = new SSQLparser(QueryBuffer);
 
 	if(GlobalEnv.getErrFlag() == 0)
@@ -149,7 +138,6 @@ public class FormServlet3 extends HttpServlet {
   }
   
   
-  //URL����N�G���̓ǂݏo��
   public String getQuery(String sqlfile, HttpServletRequest req, 
           HttpServletResponse res) 
   			throws ServletException, IOException {
@@ -167,17 +155,6 @@ public class FormServlet3 extends HttpServlet {
 
 	    	if (line == null || line.equals("-1"))
 	            break;
-
-	    	//commented out by goto 20130412
-//	        if(line.startsWith("//"))
-//	        	line = dis.readLine();
-//	        if(line.startsWith("/*"))
-//	        {
-//	        	while(!line.contains("*/"))
-//	        		line = dis.readLine();
-//	        	int t = line.indexOf("*/");
-//	        	line = line.substring(t+2);
-//	        }
 			//changed by goto 20130412
 			if(line!=null && line.contains("/*"))
 	        {
@@ -210,14 +187,11 @@ public class FormServlet3 extends HttpServlet {
   	}
   
 
-  //QUERY �R���o�[�^�[(�n�ꁨ�s�����j
   public String QueryConverter(String where, PrintWriter out)
   {
 	  StringTokenizer st = new StringTokenizer(where,"\t{}[]!,()@= \"' ",true);
 	  StringBuffer tmpBuffer = new StringBuffer();
 	  StringBuffer QueryBuffer = new StringBuffer();
-	  
-//	  out.println("Query Converter : " + where + "<BR>");
 	  
 	  while(st.hasMoreTokens())
 	  {
@@ -242,9 +216,7 @@ public class FormServlet3 extends HttpServlet {
 					  andnum++;
 				  tmpBuffer.append(tmp);
 			  }			  
-//			  out.println("tmpBuffer : " + tmpBuffer.toString() + " <BR>");
 			  String result =  betweenconverter(tmpBuffer.toString(),out);
-//			  out.println("result : "+ result + " <BR>");
 			  QueryBuffer.append(result + " " + tmp);
 			  
 			  tmpBuffer = new StringBuffer();
@@ -253,13 +225,11 @@ public class FormServlet3 extends HttpServlet {
 		  {
 			  int string = 0;
 			  String result = new String();
-//			  out.println("IN <BR>");
 			  
 			  while(st.hasMoreTokens())
 			  {
 				 String tmp2 = st.nextToken();
 				 
-//				 out.println("tmp : " + tmp2 + "<BR>")
 				 if(tmp2.contains("'"))
 					 string = 1;
 				 
@@ -268,8 +238,6 @@ public class FormServlet3 extends HttpServlet {
 				 if(tmp2.equals(")"))
 					 break;
 			  } 
-//			  out.println("tmpBuffer : "+ tmpBuffer + "<BR>");
-			  
 			  result = inconverter(tmpBuffer.toString(),out,string);
 			  
 			  QueryBuffer.append(result + " ");
@@ -280,18 +248,13 @@ public class FormServlet3 extends HttpServlet {
 			  	tmpBuffer = new StringBuffer();  
 		  }
 	  }
-//	  out.println("Query : " + QueryBuffer.toString() + "<BR>");
-	  
 	  return QueryBuffer.toString().trim();
   }
   
   
-  //WHERE����
   public String changeQuery(String where, HttpServletRequest req, 
           HttpServletResponse res,PrintWriter out) 
 			throws ServletException, IOException {
-	  
-//	  out.println("change query phase : " + where + "<BR>");
 	  
 	  StringBuffer wherebuffer = new StringBuffer();
 	  StringTokenizer st = new StringTokenizer(where,"\t{}[]!,()@ \"' ",true);	 
@@ -324,18 +287,11 @@ public class FormServlet3 extends HttpServlet {
 				  tmp2 = tmpbuffer.toString();
 				  int rpos = tmp2.lastIndexOf(")");
 				  int lpos = tmp2.indexOf('(') + 1;
-				  
-//				  out.println("tmp2string :" + tmp2 + "<BR>");
 				  if(rpos < tmp2.length() && rpos > lpos)
 					  tmp2 = tmp2.substring(lpos, rpos);
 				  
-//				  out.println("tmp2 " + tmp2 + "<BR>");
-				  
 				  result = changeQuery(tmp2,req,res,out);
 			  }
-			  
-//			  out.println("result : " + result + "<BR>");
-			  
 			  if(BeforeOperator.length() != 0)
 			  {
 				wherebuffer.append(" "+BeforeOperator+" ");  
@@ -353,8 +309,6 @@ public class FormServlet3 extends HttpServlet {
 				  if(inner_flag != 0)
 					  wherebuffer.append(")");
 			  }
-			  
-			  // True / False �u��
 			  else
 			  {
 				  if(inner_flag != 0)
@@ -380,25 +334,18 @@ public class FormServlet3 extends HttpServlet {
 			  tmpbuffer.append(" " + tmp + " ");
 			  inner_flag = 1;
 		  }
-		  //else if(tmp.length() > 0)
-			//  tmpbuffer.append(tmp);
 		  else
 			  tmpbuffer.append(tmp);
 		  
 
 	  }
 	  String Query = wherebuffer.toString();
-//	  out.println("changeQuery return : " + Query +  "<BR>");
 	  return Query;
 	}
   
-  //�ϐ��l�擾
   public String getParameter(String where, HttpServletRequest req, 
           HttpServletResponse res, PrintWriter out) 
 	throws ServletException, IOException {
-	  
-//	  out.println("get parameter phase : " + where + "<BR>");
-	  
 	  StringTokenizer st = new StringTokenizer(where,"%\t{}[]!,()@= \"\' ",true);
 	  StringBuffer tmpBuffer = new StringBuffer();
 	  String read = new String("");
@@ -410,9 +357,7 @@ public class FormServlet3 extends HttpServlet {
 		
 		if(tmp.contains("$"))
 		{
-//			out.println("tmp : " + tmp + "<BR>");			
 			read = req.getParameter(tmp);
-//			out.println("read : " + read + "<BR>");
 			
 			if(read != null)
 				if(read.length() != 0)
@@ -434,36 +379,29 @@ public class FormServlet3 extends HttpServlet {
 		  return "undefined";
   }
   
-  //BETWEEN��ϊ�
   public String betweenconverter(String tmpwhere, PrintWriter out)
   {
-//	  out.println("BetweenConverter : " + tmpwhere +"<BR>");
-	  
 	  StringTokenizer st = new StringTokenizer(tmpwhere);
 	  
 	  String query = new String();
 	  String att = st.nextToken();
-	  String tmp = st.nextToken();
+	  st.nextToken();
 	  
 	  String lower = st.nextToken();
-	  tmp = st.nextToken();
+	  st.nextToken();
 	  String upper = st.nextToken();
 	  	  
 	  query = " ( " + att + " >= " + lower + " AND " + att + " <= " + upper + " ) ";
-//	  out.println(query + "<BR>");
 	  return query;
   }
   
-  //IN��ϊ� 
   public String inconverter(String tmpwhere, PrintWriter out,int string)
   {
-//	  out.println("InConverter: " + tmpwhere + " flag : " + string + "<BR>");
-	  
 	  StringTokenizer st = new StringTokenizer(tmpwhere,"\t{}[]!,()@= \"' ",false);
 	  StringBuffer query = new StringBuffer();
 	  
 	  String att = st.nextToken();
-	  String tmp = st.nextToken();
+	  st.nextToken();
 	  
 	  int flag = 0;
 	  
@@ -482,8 +420,6 @@ public class FormServlet3 extends HttpServlet {
 		  
 	  }
 	  query.append(" ) ");
-	  
-//	  out.println(query + "<BR>");
 	  return query.toString();
   }
   

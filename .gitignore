@@ -16,3 +16,4 @@ sample_queries/*.sql
 bin/
 .checkstyle
 js/script.js
+bg/

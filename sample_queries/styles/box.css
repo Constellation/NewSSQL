@@ -75,3 +75,7 @@ Note : horizontal is often used as a default container.
 .link{
 	align-content: flex-start;
 }
+
+input[type="submit"]{
+	align-self:flex-start;
+}

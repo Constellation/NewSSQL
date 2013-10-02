@@ -1,7 +1,6 @@
 package supersql.form;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.security.MessageDigest;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -24,6 +23,12 @@ public class Session extends HttpServlet {
 
 	private static final long serialVersionUID = 8021503235844232672L;
 
+	static String host;
+	static String db;
+	static String user;
+	static String dbms;
+	static String driver;
+
 	@Override
 	public void doPost(HttpServletRequest req, 
 			HttpServletResponse res) 
@@ -40,8 +45,7 @@ public class Session extends HttpServlet {
 		res.setContentType("text/html; charset="+enc);
 		req.setCharacterEncoding(enc);
 
-		// èoóÕópPrintWriterÇéÊìæ
-		PrintWriter out = res.getWriter();
+		res.getWriter();
 
 		String sqlfile = new String();
 		sqlfile = req.getHeader("referer");
@@ -75,21 +79,8 @@ public class Session extends HttpServlet {
 
 		Log.info(sqlfile);
 
-
-		String where = new String();
-
 		while(true)
 		{   
-			/*
-    	try{
-    		configfile = req.getParameter("configfile");
-    	}catch(NullPointerException e)
-    	{
-    		out.println("no config file defined /n");
-    		System.exit(-1);
-
-    	}
-			 */
 
 			Enumeration<String> names = req.getParameterNames();
 			String message = new String();
@@ -210,34 +201,8 @@ public class Session extends HttpServlet {
 			break;
 
 		}
-
-//		String[] args = {"-f",sqlfile,"-cond",where,"-debug","-h",host,"-u",user,"-db",dbname};
-
-		String[] args = {"-f",sqlfile,"-cond",where,"-c",configfile};
-
-//		String[] args = {"-f",sqlfile,"-cond",where,"-debug","-c",configfile};
 		res.sendRedirect(sqlfile);
-		/*
-    GlobalEnv.setGlobalEnv(args);
-	SSQLparser parser = new SSQLparser("online");
-
-	CodeGenerator codegenerator = parser.getcodegenerator();
-
-	DataConstructor dc = new DataConstructor(parser);
-
-	//add chie
-	String[] headfoot = codegenerator.generateCode4(parser,dc.getData()).toString().split(" ###split### ");
-	out.println(headfoot[0]);
-	out.println(codegenerator.generateCode2(parser, dc.getData()));
-    out.println(headfoot[1]);
-		 */
 	} 
-	
-	static String host;
-	static String db;
-	static String user;
-	static String dbms;
-	static String driver;
 	
 	public ResultSet logincheck(String sql){
 

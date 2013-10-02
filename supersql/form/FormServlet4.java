@@ -35,14 +35,11 @@ public class FormServlet4 extends HttpServlet {
 
 		long start = System.currentTimeMillis();
 
-		// ContentType��ݒ�
 		res.setContentType("text/html; charset=UTF-8");
 		req.setCharacterEncoding("UTF-8");
 
-		// �o�͗pPrintWriter���擾
 		PrintWriter out = res.getWriter();
 
-		//ssql�N�G���t�@�C���A�h���X�擾
 		String sqlfile = new String();
 		try{
 			sqlfile = req.getParameter("sqlfile");
@@ -51,7 +48,6 @@ public class FormServlet4 extends HttpServlet {
 			System.exit(-1);
 		}
 
-		//�ݒ�t�@�C���A�h���X�擾
 		String configfile = new String(); 
 		try{
 			configfile = req.getParameter("configfile");
@@ -62,7 +58,6 @@ public class FormServlet4 extends HttpServlet {
 
 		}
 
-		//�N�G���ǂݍ���
 		String tmp_query = getQuery(sqlfile,req,res);
 		String Query = new String(tmp_query.toString());
 		StringTokenizer st = new StringTokenizer(Query,"\t{}[]!,()@= \"' ",true);
@@ -450,10 +445,10 @@ public class FormServlet4 extends HttpServlet {
 
 		String query = new String();
 		String att = st.nextToken();
-		String tmp = st.nextToken();
+		st.nextToken();
 
 		String lower = st.nextToken();
-		tmp = st.nextToken();
+		st.nextToken();
 		String upper = st.nextToken();
 
 		query = " ( " + att + " >= " + lower + " AND " + att + " <= " + upper + " ) ";
@@ -470,7 +465,7 @@ public class FormServlet4 extends HttpServlet {
 		StringBuffer query = new StringBuffer();
 
 		String att = st.nextToken();
-		String tmp = st.nextToken();
+		st.nextToken();
 
 		int flag = 0;
 

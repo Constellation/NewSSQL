@@ -22,16 +22,13 @@ public class HTMLG1 extends Grouper {
         html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
         
         Element result = new Element(Tag.valueOf("div"), "");
-        result.addClass("horizontal").addClass("box").addClass("group1");
+        result.attr("horizontal box group1");
         
         if(!GlobalEnv.isOpt()){
 	        
 	        if(html_env.embedFlag)
 	        	result.addClass("embed");
 	
-	        if(decos.containsKey("outborder"))
-	        	result.addClass("noborder");
-	        
 	        if(decos.containsKey("class")){
 	        	result.addClass(decos.getStr("class"));
 	        }
@@ -39,20 +36,22 @@ public class HTMLG1 extends Grouper {
 	        	result.addClass(HTMLEnv.getClassID(this));
 	        }
         	result.addClass("nest");
-        	
-        	if(!html_env.isOutlineModeForJsoup()){
-        		result.attr("frame", "void");
-        	}
         }
 
         while (this.hasMoreItems()) {
         	html_env.gLevel++;
-            
-            HTMLEnv.getClassID(tfe);
-            	
+        	HTMLUtils.propagateDeco(tfe, decos);
             result.appendChild((Element)this.createNextItemNode());
-            
             html_env.gLevel--;
+        }
+        
+        if(result.getElementsByTag("input").size() > 0){
+        	result.getElementsByTag("form").removeClass("form").tagName("div");
+        	result.tagName("form");
+        	result.getElementsByAttributeValue("type", "submit").remove();
+        	result.attr("class", "form horizontal box");
+        	result = new Element(Tag.valueOf("div"), "").attr("class", "group1 vertical box").appendChild(result);
+        	result.appendChild(JsoupFactory.createInput("submit", "", "Let's go !"));
         }
         
         if(HTMLEnv.getFormItemFlg()){		
@@ -61,10 +60,10 @@ public class HTMLG1 extends Grouper {
         return result;
 
     }
-
+    
     @Override
 	public String getSymbol() {
         return "HTMLG1";
     }
-
+    
 }

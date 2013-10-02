@@ -64,6 +64,7 @@ public class FormEnv {
 					}
 				}
 			}
+			dis.close();
 		} catch (MalformedURLException me) {
 			System.err.println("MalformedURLException: " + me);
 		}catch (FileNotFoundException e) {

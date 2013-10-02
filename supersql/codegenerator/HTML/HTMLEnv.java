@@ -75,7 +75,6 @@ public class HTMLEnv extends LocalEnv {
 	public StringBuffer header;
 	public StringBuffer footer;
 	public boolean foreachFlag;
-	public boolean sinvokeFlag = false;
 	public int linkFlag;
 	public String linkUrl;
 
@@ -223,19 +222,6 @@ public class HTMLEnv extends LocalEnv {
 	}
 	
 	public void createFooter(){
-		if (Connector.updateFlag || Connector.insertFlag
-				|| Connector.deleteFlag || Connector.loginFlag) {
-			htmlEnv1.body().getElementById("ssql").getElementsByTag("form").last().appendChild(JsoupFactory.createInput("submit", "login", "Let's go!"));
-			Connector.updateFlag = false;
-			Connector.insertFlag = false;
-			Connector.deleteFlag = false;
-			Connector.loginFlag = false;
-		}
-
-		if (Connector.logoutFlag) {
-			Connector.logoutFlag = false;
-		}
-
 		fillHeadTag();
 	}
 
@@ -385,10 +371,6 @@ public class HTMLEnv extends LocalEnv {
 			Element divElement = new Element(Tag.valueOf("div"), "");
 			divElement.append(title.toString());
 			//TODO
-			//header.append("<div");
-			//header.append(div);
-			//header.append(titleClass);
-			//header.append(">");
 			header.append(title);
 		}
 
@@ -928,7 +910,7 @@ public class HTMLEnv extends LocalEnv {
 		OutlineMode = true;
 	}
 
-	public boolean isOutlineModeForJsoup(){
+	public boolean isOutlineMode(){
 		if(OutlineMode){
 			OutlineMode = false;
 			return true;
@@ -936,15 +918,6 @@ public class HTMLEnv extends LocalEnv {
 		return false;
 	}
 	
-	public String getOutlineMode() {
-		if (OutlineMode) {
-			OutlineMode = false;
-			return "";
-		}
-		// return " frame=void class=nest ";
-		return " frame=void ";
-	}
-
 	public String getOutlineModeAtt() {
 		if (OutlineMode) {
 			OutlineMode = false;

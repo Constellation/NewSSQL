@@ -1,7 +1,5 @@
 package supersql.codegenerator;
 
-import supersql.codegenerator.XML.XMLAttribute;
-import supersql.codegenerator.XML.XMLC0;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
 //ryuryu
@@ -164,5 +162,9 @@ public class Connector extends Operator{
 	@Override
 	public Object createNode(ExtList<ExtList<String>> data_info) {
 		return null;
+	}
+
+	public ExtList<ExtList<String>> getData() {
+		return data;
 	}
 }

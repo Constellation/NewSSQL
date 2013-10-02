@@ -1,7 +1,6 @@
 package supersql.form;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.sql.Connection;
@@ -38,24 +37,13 @@ public class Update extends HttpServlet {
 		res.setContentType("text/html; charset="+enc);
 		req.setCharacterEncoding(enc);
 
-		// èoóÕópPrintWriterÇéÊìæ
-		PrintWriter out = res.getWriter();
-
 		String sqlfile = new String();
 		sqlfile = req.getHeader("referer");
 
-		int i = 1;
-		int flag = 0;
-
-		String cond_name = new String(); 
-		String cond = new String();
-		String value = new String();
-		String value_type = new String();
 		String where = new String();
 		String message = new String();
 
 		String configfile = new String(); 
-		String updatefile = new String(); 
 		while(true)
 		{ 
 			configfile = "http://localhost:8080/invoke/config.ssql";
@@ -66,7 +54,6 @@ public class Update extends HttpServlet {
 			FormEnv.getFormEnv();
 
 			Enumeration<String> names = req.getParameterNames();
-			String sql = new String();
 			String param = new String();
 
 			//get sql param
@@ -189,14 +176,14 @@ public class Update extends HttpServlet {
 			vallist = vallist.substring(0,vallist.length()-1);
 			sql = "INSERT INTO " + tabname + " (" + attlist + ") VALUES (" + vallist + ");";
 			exec_query(sql,fs);
-			String query = fs.errMessage(sqlfile);
+			fs.errMessage(sqlfile);
 			return fs.errmessage;
 		}else{
 			if(attlist.length() == 0){
 				fs.errmessage = "NO VALUE ERROR";
 			}
 			System.err.println("SQLERROR(INSERT)"+fs.errmessage);
-			String query = fs.errMessage(sqlfile);
+			fs.errMessage(sqlfile);
 			return fs.errmessage;
 		}
 	}
@@ -227,7 +214,7 @@ public class Update extends HttpServlet {
 		}
 
 		FormServlet fs = new FormServlet();
-		String query = fs.errMessage(sqlfile);
+		fs.errMessage(sqlfile);
 		//CREATE SQL
 		if(vallist.size() != 0){
 			sql = "DELETE FROM " + tabname + " WHERE ";
@@ -387,10 +374,10 @@ public class Update extends HttpServlet {
 
 		//EXEC SQL
 		if(sql.length() != 0 && !fs.errflg){
-			String query = fs.errMessage(sqlfile);
+			fs.errMessage(sqlfile);
 			return fs.errmessage;
 		}else{
-			String query = fs.errMessage(sqlfile);
+			fs.errMessage(sqlfile);
 			return fs.errmessage;
 		}
 	}

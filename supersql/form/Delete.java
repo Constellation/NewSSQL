@@ -1,7 +1,6 @@
  package supersql.form;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
@@ -16,7 +15,11 @@ import supersql.common.Log;
 
 public class Delete extends HttpServlet {
 
-  @Override
+  /**
+	 * 
+	 */
+	private static final long serialVersionUID = -3684390462986887553L;
+@Override
 public void doPost(HttpServletRequest req, 
                       HttpServletResponse res) 
                           throws ServletException, IOException {
@@ -29,21 +32,6 @@ public void doPost(HttpServletRequest req,
     sqlfile = req.getHeader("referer");
 
 	Log.info(sqlfile);
-	/*
-	sqlfile = sqlfile.substring(sqlfile.indexOf("query=")+6);
-	sqlfile = sqlfile.substring(0,sqlfile.indexOf("&cond"));
-
-	Log.info(sqlfile);
-    */
-    //sqlfile = sqlfile.substring(sqlfile.indexOf("&query="),sqlfile.indexOf("&",sqlfile.indexOf("&query=")));
-    /*
-    try{
-    	sqlfile = req.getParameter("sqlfile");
-    }catch(NullPointerException e){
-    	out.println("no ssql file \n");
-    	System.exit(-1);
-    }
-    */
 
     while(true)
 	{   
@@ -81,49 +69,19 @@ public void doPost(HttpServletRequest req,
     	break;
     	
 	}
-    //added by chie update
-    /*
-    if(!updatefile.equals(null)){
-		update(updatefile);
-	}
-	*/
-    
-//    String[] args = {"-f",sqlfile,"-cond",where,"-debug","-h",host,"-u",user,"-db",dbname};
-    
-    
-
-// String[] args = {"-f",sqlfile,"-cond",where,"-debug","-c",configfile};
-    
     res.sendRedirect(sqlfile);
-    /*
-    GlobalEnv.setGlobalEnv(args);
-	SSQLparser parser = new SSQLparser("online");
-
-	CodeGenerator codegenerator = parser.getcodegenerator();
-
-	DataConstructor dc = new DataConstructor(parser);
-	
-	//add chie
-	String[] headfoot = codegenerator.generateCode4(parser,dc.getData()).toString().split(" ###split### ");
-	out.println(headfoot[0]);
-	out.println(codegenerator.generateCode2(parser, dc.getData()));
-    out.println(headfoot[1]);
-    */
   } 
   public void delete(String sql){
 	  
 	  //update database
 	  try {
-	      // データベースへ接続
-		  Class.forName("org.postgresql.Driver"); // PostgreSQLの場合
+		  Class.forName("org.postgresql.Driver");
 	      Connection con =
 	        DriverManager.getConnection("jdbc:postgresql:ssql",
 	                                    "chie",
-	                                    ""); // PostgreSQLの場合
-	      // ステートメントオブジェクトを生成
+	                                    "");
 	      Statement stmt = con.createStatement();
 	
-	      // クエリーを実行して結果セットを取得
 	      stmt.executeQuery(sql);
 	      
 	      return;
