@@ -576,7 +576,7 @@ public class HTMLG2 extends Grouper {
 //      		HTMLG2.tableDivHeader = "<div>"+html_env.code.toString().replace(HTMLG2.tableDivHeader_codeBuf, "");
     	}
 //    	if(HTMLG2.tableDivHeader_Count1>1){
-    	Log.e(HTMLG2.tableDivHeader_codeBuf);
+    	//Log.e(HTMLG2.tableDivHeader_codeBuf);
     	//cut tableDivHeader
   		return new StringBuffer(html_env.code.replace(HTMLG2.tableDivHeader_codeBuf.length(), 
   				html_env.code.length(), ""));

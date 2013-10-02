@@ -1,5 +1,7 @@
 package supersql.codegenerator.Mobile_HTML5;
 
+import javax.swing.text.html.CSS;
+
 import supersql.codegenerator.Connector;
 import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.ITFE;
@@ -308,17 +310,22 @@ public class HTMLC1 extends Connector {
             //gridInt %= 5;
             //html_env.code.append("\n<div class=\"ui-block-"+gridString[gridInt]+"\">\n");	//20130309
            	//if((!HTMLG1.G1Flg && !tableFlg) || divFlg)		//20130326  div
-            if(/* !HTMLG1.G1Flg  && */ !tableFlg){
+            if(/* !HTMLG1.G1Flg  && */ !tableFlg){	//div
+            	//20131002
+            	if(decos.containsKey("width")){
+            		HTMLEnv.divWidth = decos.getStr("width");
+    	    	}else{
+    	    		int tfesItemNum = tfes.contain_itemnum();
+                	float divWidth = (float)Math.floor((double)(100.0/(tfesItemNum))* 1000) / 1000;
+                	HTMLEnv.divWidth = divWidth+"%";
+    	    	}
+            	//tfe.addDeco("width", divWidth);	//☆HTMLEnvで行うように変更した
+            	
+            	html_env.code.append("\n<div class=\"ui-block "+HTMLEnv.getClassID(tfe)+"\">\n");	//20130309
+
 //            	float divWidth0 = (float)Math.floor((double)(100.0/(Count))* 1000) / 1000;
 //            	String style0 = "style=\"width:"+divWidth0+"%;\"";
-            	int tfesItemNum = tfes.contain_itemnum();
-            	float divWidth = (float)Math.floor((double)(100.0/(tfesItemNum))* 1000) / 1000;
-//            	String style = "style=\"width:"+divWidth+"%;\"";
-//	            if(Count>0){
-//	            	Log.e(style0+" "+style);
-//	            	HTMLManager.replaceCode(html_env, style0, style);
-//            	}
-            	html_env.code.append("\n<div class=\"ui-block "+HTMLEnv.getClassID(tfe)+"\" style=\"width:"+divWidth+"%;\">\n");	//20130309
+            	//html_env.code.append("\n<div class=\"ui-block "+HTMLEnv.getClassID(tfe)+"\" style=\"width:"+divWidth0+";\">\n");	//20130309
 //            	html_env.code.append("\n<div class=\"ui-block-"+gridString[Count]+" "+HTMLEnv.getClassID(tfe)+"\">\n");	//20130309
             }
             	
