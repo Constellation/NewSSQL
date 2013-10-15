@@ -14,18 +14,22 @@ public class HTMLC0 extends Connector {
 	public HTMLC0(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
 		Dimension = 0;
 	}
+	
+	public Element createTableNode(ExtList<ExtList<String>> dataInfo){
+		return createNode(dataInfo);
+	}
 
 	@Override
-	public Element createNode(ExtList<ExtList<String>> data_info){
+	public Element createNode(ExtList<ExtList<String>> dataInfo){
 		if(!checkOperands()){
 			System.err.println("Argument error for the + operator, only attributes are accepted as operands for this connector.");
 			throw new IllegalArgumentException();
 		}
-		this.setDataList(data_info);
-		Element result = (Element)this.createNextItemNode(data_info);
+		this.setDataList(dataInfo);
+		Element result = (Element)this.createNextItemNode(dataInfo);
 		
 		while (this.hasMoreItems()) {
-			String toAppend = ((Element)this.createNextItemNode(data_info)).html();
+			String toAppend = ((Element)this.createNextItemNode(dataInfo)).html();
 			result.append(toAppend);
 		}
 

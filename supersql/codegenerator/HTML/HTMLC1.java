@@ -16,6 +16,31 @@ public class HTMLC1 extends Connector {
         this.htmlEnv = henv;
         Dimension = 1;
     }
+    
+    public Element createTableNode(ExtList<ExtList<String>> dataInfo){
+    	Element result = new Element(Tag.valueOf("tr"), "");
+    	int i=0;
+    	while (this.hasMoreItems()) {
+            ITFE tfe = (ITFE) tfes.get(i);
+            result.addClass(HTMLEnv.getClassID(tfe));
+            
+            result.appendChild((Element)this.createNextItemNode(dataInfo));
+            i++;
+        }
+    	result.attr("rowspan", computeRowSpan(result));
+    	return result;
+    }
+    
+    private String computeRowSpan(Element element){
+    	int result = 1;
+    	for(Element e : element.children()){
+    		if(e.hasAttr("rowspan"))
+    			return e.attr("rowspan");
+    		else
+    			result = Math.max(result, e.getElementsByTag("td").size());
+    	}
+    	return "" + result;
+    }
 
     @Override
     public Element createNode(ExtList<ExtList<String>> dataInfo){
