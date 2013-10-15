@@ -33,7 +33,8 @@ Note : horizontal is often used as a default container.
 }
 
 .con1{
-	border: 1px solid;
+	align-items: center;
+	border: 1px dotted;
 	padding: 3px;
 }
 
@@ -59,11 +60,11 @@ Note : horizontal is often used as a default container.
 	align-items:flex-start;
 }
 
-.group1 *{
-	/*margin:5px;*/
+.group1 > *{
+	margin:5px;
 }
 
-.group2 *{
+.group2 > *{
 	margin:5px;
 }
 
