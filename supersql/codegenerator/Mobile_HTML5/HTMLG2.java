@@ -482,6 +482,9 @@ public class HTMLG2 extends Grouper {
         	HTMLFunction.textFlg2 = false;
         }
         
+        //added by goto 20130914  "SEQ_NUM"
+        HTMLFunction.Func_seq_num_initialization();
+        
         Log.out("TFEId = " + HTMLEnv.getClassID(this));
         //html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
         //G2Flg = false;
@@ -576,7 +579,8 @@ public class HTMLG2 extends Grouper {
 //      		HTMLG2.tableDivHeader = "<div>"+html_env.code.toString().replace(HTMLG2.tableDivHeader_codeBuf, "");
     	}
 //    	if(HTMLG2.tableDivHeader_Count1>1){
-    	//Log.e(HTMLG2.tableDivHeader_codeBuf);
+    	//Log.e("a="+html_env.code);
+    	//Log.e("b="+HTMLG2.tableDivHeader_codeBuf);
     	//cut tableDivHeader
   		return new StringBuffer(html_env.code.replace(HTMLG2.tableDivHeader_codeBuf.length(), 
   				html_env.code.length(), ""));

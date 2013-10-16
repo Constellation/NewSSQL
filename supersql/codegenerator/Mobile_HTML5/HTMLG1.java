@@ -596,10 +596,12 @@ public class HTMLG1 extends Grouper {
         	rowFlg = false;
         	HTMLG2.tableStartTag = "";
         }
+        
+        //added by goto 20130914  "SEQ_NUM"
+        HTMLFunction.Func_seq_num_initialization();
 
         Log.out("TFEId = " + HTMLEnv.getClassID(this));
         //html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
-
     }
 
     @Override

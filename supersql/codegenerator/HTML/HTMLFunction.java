@@ -41,12 +41,6 @@ public class HTMLFunction extends Function {
 	protected HTMLEnv htmlEnv2;
 	private static int meter_id = 0;
 	private static String updateFile;
-	static ArrayList<Integer> seq_num = new ArrayList<Integer>(); // 20130914
-																	// "SEQ_NUM"
-	static ArrayList<String> seq_num_ClassID = new ArrayList<String>(); // 20130914
-																		// "SEQ_NUM"
-	static ArrayList<Boolean> DESC_Flg = new ArrayList<Boolean>(); // 20130914
-																	// "SEQ_NUM"
 
 	public HTMLFunction() {
 
@@ -1488,47 +1482,52 @@ public class HTMLFunction extends Function {
 					+ classID + "\" >\n</object>\n");
 		return;
 	}
-
 	// object end
 
-	// added by goto 20130914 "SEQ_NUM"
-	/* SEQ_NUM( [Start number [, ASC or DESC] ] ) */
-	private void Func_seq_num() {
-		String classID = HTMLEnv.getClassID(this);
-		int i;
-		for (i = 0; i < seq_num_ClassID.size() + 1; i++) {
-			try {
-				if (classID.equals(seq_num_ClassID.get(i)))
-					break;
-			} catch (Exception e1) {
-				seq_num_ClassID.add(i, classID);
-				try {
-					// 第一引数
-					seq_num.add(i, Integer.parseInt(getValue(1)));
-					// 第二引数
-					if (getValue(2).toLowerCase().trim().equals("desc"))
-						DESC_Flg.add(i, true);
-					else
-						DESC_Flg.add(i, false);
-				} catch (Exception e2) {
-					seq_num.add(i, 1); // default
-					DESC_Flg.add(i, false); // default
-				}
-				break;
-			}
-		}
-
-		// 各引数毎に処理した結果をHTMLに書きこむ
-		htmlEnv.code.append(""
-				+ ((!DESC_Flg.get(i)) ? (seq_num.get(i)) : (seq_num.get(i))));
-		if (!DESC_Flg.get(i))
-			seq_num.set(i, seq_num.get(i) + 1);
-		else
-			seq_num.set(i, seq_num.get(i) - 1);
-		return;
-	}
-
-	// seq_num end
+    //added by goto 20130914  "SEQ_NUM"
+    static ArrayList<Integer> seq_num = new ArrayList<Integer>();
+    static ArrayList<String> seq_num_ClassID = new ArrayList<String>();
+    static ArrayList<Integer> seq_num_startNum = new ArrayList<Integer>();
+    static ArrayList<Boolean> seq_num_DESC_Flg = new ArrayList<Boolean>();
+    /*  SEQ_NUM( [Start number [, ASC or DESC] ] )  */
+    private void Func_seq_num() {
+        String classID = HTMLEnv.getClassID(this);
+        int i;
+        for(i=0; i<seq_num_ClassID.size()+1; i++){
+            try{
+                if(classID.equals(seq_num_ClassID.get(i)))
+                    break;
+            }catch(Exception e1){
+                seq_num_ClassID.add(i, classID);
+                try{
+                    //第一引数 Start number
+                    seq_num_startNum.add(i, Integer.parseInt(getValue(1)));
+                    //第二引数 ASC or DESC
+                    if(getValue(2).toLowerCase().trim().equals("desc"))    seq_num_DESC_Flg.add(i, true);
+                    else                                                seq_num_DESC_Flg.add(i, false);
+                }catch(Exception e2){
+                    seq_num_startNum.add(i, 1);        //default: 1
+                    seq_num_DESC_Flg.add(i, false);    //default: false
+                }
+                seq_num.add(i, seq_num_startNum.get(i));
+                break;
+            }
+        }
+        
+        // 各引数毎に処理した結果をHTMLに書きこむ
+        htmlEnv.code.append(""+((!seq_num_DESC_Flg.get(i))? (seq_num.get(i)):(seq_num.get(i))));
+        if(!seq_num_DESC_Flg.get(i))    seq_num.set(i,seq_num.get(i)+1);
+        else                    seq_num.set(i,seq_num.get(i)-1);
+        return;
+    }
+    //seq_num end
+    //added by goto 20130914  "SEQ_NUM"
+    static void Func_seq_num_initialization() {    //initialize seq_num
+        try{
+            int x = seq_num_ClassID.size()-1;
+            seq_num.add(x, seq_num_startNum.get(x));
+        }catch(Exception e){}
+    }
 
 	// // for practice 2012/02/09
 	// private void Func_button() {
