@@ -1,6 +1,7 @@
 package supersql.db;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -131,6 +132,20 @@ public class SQLManager {
 			      System.err.println(e);
 			      GlobalEnv.addErr("Error[SQLManager.ExecSQL]: Can't Exec Query : query = "
 			              + query);
+			      
+			      //20131016 start
+			      String error = e.toString().toLowerCase();
+			      if(error.contains("column")){
+			    	  ArrayList<String> tableName = getTableNamesFromQuery(query);
+			    	  String list = getTableAndColumnNameList(conn, tableName);
+			    	  Log.err("## Column list ##\n" + list);
+			    	  
+			      }else if(error.contains("table")){
+			    	  String list = getTableNameList(conn);
+			    	  Log.err("## Table list ##\n" + list + "\n");
+			      }
+			      //20131016 end
+
 			      return ;
         	}
         } catch (IllegalStateException e) {
@@ -140,6 +155,80 @@ public class SQLManager {
         }
     }
 
+    //20131016 start
+    //get table names from query
+    private ArrayList<String> getTableNamesFromQuery(String query){
+  	  	String tableNames = "";
+  	  	ArrayList<String> tableName = new ArrayList<String>();
+  	  	try{
+	    	  String q = query.toLowerCase();
+	    	  q = q.substring(q.lastIndexOf("from")+4);
+	    	  if(q.contains("where")){
+	    		  tableNames = q.substring(0, q.lastIndexOf("where"));
+	    	  }else if(q.contains("group by")){
+	    		  tableNames = q.substring(0, q.lastIndexOf("group by"));
+	    	  }else if(q.contains("order by")){
+	    		  tableNames = q.substring(0, q.lastIndexOf("order by"));
+	    	  }
+	    	  
+	    	  int i=0;
+	    	  tableNames += ",";
+	    	  while(tableNames.contains(",")){
+	    		  int index = tableNames.indexOf(",");
+	    		  tableName.add(i, tableNames.substring(0,index).trim());
+	    		  String tn = tableName.get(i);
+	    		  if(tn.contains(" ")){
+	    			  tableName.remove(i);
+	    			  tableName.add(i, tn.substring(0,tn.indexOf(" ")).trim());
+	    		  }
+	    		  tableNames = tableNames.substring(index+1);
+	    		  i++;
+	    	  }
+  	  	}catch(Exception e){}
+  	  	return tableName;
+    }
+    //get table and column name list
+    private String getTableAndColumnNameList(Connection conn, ArrayList<String> tableName){
+  	  	String list = "";
+  	  	try{
+				DatabaseMetaData dmd = conn.getMetaData();
+				for(int i=0;i<tableName.size();i++){
+					String tn = tableName.get(i);
+					list += tn+"(";
+					ResultSet rs = dmd.getColumns(null, null, tn, null);
+					try {
+						while(rs.next()){
+							list += rs.getString("COLUMN_NAME") + ", ";
+						}
+					} finally {
+						rs.close();
+					}
+					list = list.substring(0, list.length()-2);
+					list += ")\n";
+				}
+  	  	}catch(Exception e){}
+  	  	return list;
+    }
+    //get table name list
+    private String getTableNameList(Connection conn){
+  	  	String list = "";
+  	  	try{
+				DatabaseMetaData dmd = conn.getMetaData();
+				String types[] = { "TABLE" };
+				ResultSet rs = dmd.getTables(null, null,"%", types);
+				try {
+					while(rs.next()){
+						list += rs.getString("TABLE_NAME") + ", ";
+					}
+				} finally {
+					rs.close();
+				}
+  	  	}catch(Exception e){}
+  	  	if(!list.equals(""))  list = list.substring(0, list.length()-2);
+  	  	return list;
+    }
+    //20131016 end
+    
     //morya start
     public void ExecListToResult(String listarg, String query) {
 
