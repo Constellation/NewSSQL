@@ -178,8 +178,9 @@ public class SQLManager {
 	    		  tableName.add(i, tableNames.substring(0,index).trim());
 	    		  String tn = tableName.get(i);
 	    		  if(tn.contains(" ")){
-	    			  tableName.remove(i);
-	    			  tableName.add(i, tn.substring(0,tn.indexOf(" ")).trim());
+//	    			  tableName.remove(i);
+//	    			  tableName.add(i, tn.substring(0,tn.indexOf(" ")).trim());
+	    			  tableName.set(i, tn.substring(0,tn.indexOf(" ")).trim());
 	    		  }
 	    		  tableNames = tableNames.substring(index+1);
 	    		  i++;
