@@ -18,6 +18,8 @@ public class GlobalEnv {
 	private static Hashtable<String, String> envs;
 
 	//設定ファイルの情報
+	private static String layout = "";
+	
 	private static String host;
 
 	private static String db;
@@ -211,10 +213,13 @@ public class GlobalEnv {
 				optimizer = c_value[6];
 			}
 			if (c_value[9] != null){
-				invokeServletPath = c_value[7];
+				invokeServletPath = c_value[9];
 			}
 			if (c_value[10] != null){
-				fileDirectory = c_value[8];
+				fileDirectory = c_value[10];
+			}
+			if(c_value[11] != null){
+				setLayout(c_value[11]);
 			}
 		} catch (Exception ex) {
 		}
@@ -417,14 +422,14 @@ public class GlobalEnv {
 
 		//tk 4 -> 5
 		//chie 5->9
-		String[] c_value = new String[11];
+		String[] c_value = new String[12];
 		BufferedReader filein = null;
 		String line = new String();
 
 		//tk added embedtmp
 		//chie added driver, optimizer
 		//(invokeServletPath and fileDirectory are not used in offline)
-		String[] con = { "host", "db", "user", "outdir", "embedtmp","driver", "password", "encode", "optimizer","invokeServletPath","fileDirectory"};
+		String[] con = { "host", "db", "user", "outdir", "embedtmp","driver", "password", "encode", "optimizer","invokeServletPath","fileDirectory", "layout"};
 
 		try {
 			filein = new BufferedReader(new FileReader(config));
@@ -438,7 +443,7 @@ public class GlobalEnv {
 				line = line.trim();
 				//tk loop num 4 -> 5
 				//chie loop num 5 -> 9
-				for (int i = 0; i < 9; i++) {
+				for (int i = 0; i <= 11; i++) {
 					if (line.startsWith(con[i])) {
 						c_value[i] = line.substring(line.indexOf("=") + 1)
 								.trim();
@@ -728,5 +733,13 @@ public class GlobalEnv {
 	public static boolean isOptimizable()
 	{
 		return optimizable;
+	}
+
+	public static String getLayout() {
+		return layout;
+	}
+
+	public static void setLayout(String layout) {
+		GlobalEnv.layout = layout;
 	}
 }

@@ -16,13 +16,44 @@ public class HTMLG2 extends Grouper {
 		this.html_env = henv;
 		Dimension =2;
 	}
-
+	
+	public Element createTableNode(ExtList<ExtList<String>> dataInfo){
+		Element result = new Element(Tag.valueOf("table"), "");
+		this.setDataList(dataInfo);
+		nodeCreationPreProcess(result);
+		while (this.hasMoreItems()) {
+			html_env.gLevel++;
+			HTMLUtils.propagateDeco(tfe, decos);
+			result.appendElement("tr").appendElement("td").appendChild((Element) this.createNextItemNode());
+			html_env.gLevel--;
+		}
+		nodeCreationPostProcess(result);
+		return result;
+	}
+	
 	@Override
-	public Element createNode(ExtList<ExtList<String>> data_info) {
+	public Element createNode(ExtList<ExtList<String>> dataInfo) {
+		if(GlobalEnv.getLayout().equalsIgnoreCase("table"))
+    		return createTableNode(dataInfo);
 		Element result = new Element(Tag.valueOf("div"), "");
 		result.addClass("vertical").addClass("box").addClass("group2");
-		this.setDataList(data_info);
+		this.setDataList(dataInfo);
 
+		nodeCreationPreProcess(result);
+
+		while (this.hasMoreItems()) {
+			html_env.gLevel++;
+			HTMLUtils.propagateDeco(tfe, decos);
+			result.appendChild((Element) this.createNextItemNode());
+			html_env.gLevel--;
+		}
+		nodeCreationPostProcess(result);
+		
+		return result;
+
+	}
+	
+	private void nodeCreationPreProcess(Element result){
 		html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
 
 		if (!GlobalEnv.isOpt()) {
@@ -38,14 +69,9 @@ public class HTMLG2 extends Grouper {
 				result.attr("frame", "void");
 			}
 		}
-
-		while (this.hasMoreItems()) {
-			html_env.gLevel++;
-			HTMLUtils.propagateDeco(tfe, decos);
-			result.appendChild((Element) this.createNextItemNode());
-			html_env.gLevel--;
-
-		}
+	}
+	
+	private void nodeCreationPostProcess(Element result){
 		HTMLUtils.checkIfForm(result);
 		
 
@@ -57,8 +83,6 @@ public class HTMLG2 extends Grouper {
 				HTMLEnv.incrementFormPartsNumber();
 			}
 		}
-		return result;
-
 	}
 
 	@Override

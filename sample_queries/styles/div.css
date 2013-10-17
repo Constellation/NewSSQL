@@ -1,15 +1,3 @@
-.box {
-display: flex;
-}
-
-.flex1 {
-flex: 1;
-}
-
-.flex2 {
-flex: 2;
-}
-
 /* 
 Box direction control. By default direct children are
 displayed horizontally. (display: box default)
@@ -17,11 +5,18 @@ vertical : direct children will be displayed vertically.
 
 Note : horizontal is often used as a default container.
 */
-.horizontal {
-	flex-flow: row;
+.horizontal > *{
+	border: 1px solid;
+	display:inline-block;
 }
-.vertical {
-	flex-flow: column;
+
+.vertical > *{
+	border-bottom:1px solid;
+	display:block;
+}
+
+.vertical > *:first-child{
+	border-top: 1px solid;
 }
 
 .half_space { width: 50%; }
@@ -33,14 +28,11 @@ Note : horizontal is often used as a default container.
 }
 
 .con1{
-	align-items: center;
-	border: 1px solid;
-	padding: 3px;
+	
 }
 
 .con2{
-	border: 1px solid;
-	padding: 3px;
+	
 }
 
 .con3:first-child{
@@ -48,38 +40,39 @@ Note : horizontal is often used as a default container.
 }
 
 .con3{
-	border: 1px solid;
-	padding: 3px;
+	
 }
 
 .group1{
-	align-items:flex-start;
-	flex-wrap: wrap;
+	
 }
 .group2{
-	align-items:flex-start;
+	
 }
 
 .group1 > *{
-	margin:5px;
 }
 
 .group2 > *{
-	margin:5px;
 }
 
 .att{
-	padding: 3px;
+	padding:5px;
+	margin:3px;
 }
 
 .link{
-	align-content: flex-start;
+	
+}
+
+.nest{
+	margin:3px;
 }
 
 input[type="submit"]{
-	align-self:flex-start;
+	
 }
 
 table{
-	border: 1px solid;
+	border:1px solid;
 }

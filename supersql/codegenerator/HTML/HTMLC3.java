@@ -25,12 +25,12 @@ public class HTMLC3 extends Connector {
         this.htmlEnv = henv;
         Dimension =3;
     }
-    
-    public Element createNode(ExtList<ExtList<String>> data_info){
-    	
-    	File input = new File("template.html");
+	
+    public Element createNode(ExtList<ExtList<String>> dataInfo){
     	Element result = new Element(Tag.valueOf("div"), "");
     	result.addClass("con3").addClass("box");
+    	
+    	File input = new File("template.html");
     	Document toWrite = new Document("");
 		try {
 			toWrite = Jsoup.parse(input, "UTF-8", "");
@@ -59,9 +59,9 @@ public class HTMLC3 extends Connector {
         htmlEnv.linkUrl = htmlEnv.linkOutFile
                 + String.valueOf(HTMLEnv.countFile) + ".html";
         htmlEnv.linkFlag++;
-        this.setDataList(data_info);
+        this.setDataList(dataInfo);
 
-        result.appendChild((Element) this.createNextItemNode(data_info));
+        result.appendChild((Element) this.createNextItemNode(dataInfo));
         htmlEnv.linkFlag--;
 
         for (int k = 1; k < c3items; k++) {
@@ -70,7 +70,7 @@ public class HTMLC3 extends Connector {
                     + String.valueOf(HTMLEnv.countFile) + ".html";
             if (intfe instanceof HTMLG3) {
                 HTMLEnv.countFile--;
-                toWrite.body().getElementById("ssql").appendChild((Element) this.createNextItemNode(data_info));
+                toWrite.body().getElementById("ssql").appendChild((Element) this.createNextItemNode(dataInfo));
             } else {
                 parentcode = htmlEnv.code;
                 parentcss = htmlEnv.css;
@@ -88,7 +88,7 @@ public class HTMLC3 extends Connector {
                 }
 
                 htmlEnv.setOutlineMode();
-                toWrite.body().getElementById("ssql").appendChild((Element) this.createNextItemNode(data_info));
+                toWrite.body().getElementById("ssql").appendChild((Element) this.createNextItemNode(dataInfo));
 
                 if (k < c3items - 1) {
                     htmlEnv.linkFlag--;

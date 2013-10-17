@@ -1,5 +1,6 @@
 package supersql.codegenerator;
 
+import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
 //ryuryu

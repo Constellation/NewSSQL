@@ -15,16 +15,54 @@ public class HTMLG1 extends Grouper {
         this.html_env = henv;
         Dimension = 1;
     }
+	
+	public Element createTableNode(ExtList<ExtList<String>> dataInfo){
+		this.setDataList(dataInfo);
+        html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
+        
+        Element result = new Element(Tag.valueOf("table"), "");
+        Element tr = result.appendElement("tr");
+        
+        nodeCreationPreProcess(result);
+        
+        while (this.hasMoreItems()) {
+        	html_env.gLevel++;
+        	HTMLUtils.propagateDeco(tfe, decos);
+            tr.appendElement("td").appendChild((Element)this.createNextItemNode());
+            html_env.gLevel--;
+        }
+        
+        nodeCreationPostProcess(result);    
+        return result;
+	}
+	
+	
     
     @Override
-    public Element createNode(ExtList<ExtList<String>> data_info){
-        this.setDataList(data_info);
+    public Element createNode(ExtList<ExtList<String>> dataInfo){
+    	if(GlobalEnv.getLayout().equalsIgnoreCase("table"))
+    		return createTableNode(dataInfo);
+        this.setDataList(dataInfo);
         html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
         
         Element result = new Element(Tag.valueOf("div"), "");
         result.attr("class", "horizontal box group1");
         
-        if(!GlobalEnv.isOpt()){
+        nodeCreationPreProcess(result);
+
+        while (this.hasMoreItems()) {
+        	html_env.gLevel++;
+        	HTMLUtils.propagateDeco(tfe, decos);
+            result.appendChild((Element)this.createNextItemNode());
+            html_env.gLevel--;
+        }
+        nodeCreationPostProcess(result);        
+        return result;
+
+    }
+    
+    private void nodeCreationPreProcess(Element result){
+		if(!GlobalEnv.isOpt()){
 	        
 	        if(html_env.embedFlag)
 	        	result.addClass("embed");
@@ -37,15 +75,10 @@ public class HTMLG1 extends Grouper {
 	        }
         	result.addClass("nest");
         }
-
-        while (this.hasMoreItems()) {
-        	html_env.gLevel++;
-        	HTMLUtils.propagateDeco(tfe, decos);
-            result.appendChild((Element)this.createNextItemNode());
-            html_env.gLevel--;
-        }
-        
-        if(result.getElementsByTag("input").size() > 0){
+	}
+	
+	private void nodeCreationPostProcess(Element result){
+		if(result.getElementsByTag("input").size() > 0){
         	result.getElementsByTag("form").removeClass("form").tagName("div");
         	result.tagName("form");
         	result.getElementsByAttributeValue("type", "submit").remove();
@@ -57,9 +90,7 @@ public class HTMLG1 extends Grouper {
         if(HTMLEnv.getFormItemFlg()){		
 	        HTMLEnv.incrementFormPartsNumber();
 		}
-        return result;
-
-    }
+	}
     
     @Override
 	public String getSymbol() {

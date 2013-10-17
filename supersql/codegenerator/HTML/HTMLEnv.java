@@ -189,8 +189,13 @@ public class HTMLEnv extends LocalEnv {
 			element.text(script.toString());
 			headElements.add(element);
 		}
+		String stylesheet;
+		if(GlobalEnv.getLayout().equalsIgnoreCase("standard"))
+			stylesheet = "styles/box.css";
+		else
+			stylesheet = "styles/div.css";
 		
-		ArrayList<Element> boxStylesheets = JsoupFactory.createStylesheetElements("styles/box.css", "styles/reset.css");
+		ArrayList<Element> boxStylesheets = JsoupFactory.createStylesheetElements(stylesheet, "styles/reset.css");
 		
 		for(Element elt : headElements){
 			htmlEnv1.head().appendChild(elt);

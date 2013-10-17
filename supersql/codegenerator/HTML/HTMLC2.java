@@ -18,10 +18,38 @@ public class HTMLC2 extends Connector {
 		Dimension = 2;
 	}
 
+	public Element createTableNode(ExtList<ExtList<String>> dataInfo) {
+		this.setDataList(dataInfo);
+
+		if (decos.containsKey("insert"))
+			return createForm(dataInfo, 0);
+		if (decos.containsKey("delete"))
+			return createForm(dataInfo, 1);
+		if (decos.containsKey("update"))
+			return createForm(dataInfo, 2);
+
+		Element result = new Element(Tag.valueOf("table"), "");
+		int i = 0;
+		while (this.hasMoreItems()) {
+			ITFE tfe = (ITFE) tfes.get(i);
+			result.addClass(HTMLEnv.getClassID(tfe)).addClass("nest");
+			HTMLEnv.getClassID(tfe);
+
+			result.appendElement("tr").appendElement("td")
+					.appendChild((Element) this.createNextItemNode(dataInfo));
+
+			i++;
+		}
+		
+		return result;
+	}
+
 	@Override
 	public Element createNode(ExtList<ExtList<String>> dataInfo) {
+		if(GlobalEnv.getLayout().equalsIgnoreCase("table"))
+    		return createTableNode(dataInfo);
 		this.setDataList(dataInfo);
-		
+
 		if (decos.containsKey("insert"))
 			return createForm(dataInfo, 0);
 		if (decos.containsKey("delete"))
