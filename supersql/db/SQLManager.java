@@ -14,13 +14,12 @@ import java.io.*;
 import java.util.*;
 import java.util.regex.*;
 
+import org.apache.lucene.search.spell.LevensteinDistance;
+
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
 import supersql.parser.FromParse;
-
-
-
 
 public class SQLManager {
 
@@ -158,20 +157,6 @@ public class SQLManager {
 			    	  list = getTableNameList(conn, errorContents[1]);
 			    	  Log.err("\n## Table list ##\n" + list + "\n");
 			      }
-			      
-			      ////////////////////////////////////
-			      //String args[] = new String[10];
-			      //args[0] = "dep";
-			      //args[1] = "dept";
-			      //String filename="/Users/goto/Desktop/big.txt";
-//			      try {
-////			    	  checkTableName(new String[]{"dep"});
-//			    	  checkTableName("dep", allTables0);
-//			      } catch (IOException e1) {
-//			    	  e1.printStackTrace();
-//			      }
-			      ////////////////////////////////////
-			      
 			      //added by goto 20131016 end
 
 			      return ;
@@ -190,14 +175,16 @@ public class SQLManager {
 	private final HashMap<String, Integer> nWords = new HashMap<String, Integer>();
 	//private String[] allTables0 = {"world_heritage", "wh_prefectures", "prefectures", "dept"};
 	
-	public void checkTableName(String tName, ArrayList<String> tNames) throws IOException {
+	public boolean checkTableNameAndSuggest(String tName, ArrayList<String> tNames) throws IOException {
 		if(tName.length() > 0){
 			String ans = (new SQLManager(tNames)).correct(tName);
 			if(!ans.equals(tName)){
 				//Log.err("\nもしかして.. "+ans+" ?");
 				Log.err("\nDid you mean... '"+ans+"' ?");
+				return true;
 			}
 		}
+		return false;
 	}
 	
 	public SQLManager(ArrayList<String> t) throws IOException {
@@ -237,11 +224,7 @@ public class SQLManager {
 		return candidates.size() > 0 ? candidates.get(Collections.max(candidates.keySet())) : word;
 	}
     ////////////////////////////////////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////////////////////////////////////
-	//TODO: 類似度判定
 
-	
-	////////////////////////////////////////////////////////////////////////////////////////////////
 
     
     //get 'Error message', 'Error table name or column name', 'Error table alias' from exception message
@@ -459,7 +442,7 @@ public class SQLManager {
     //- no such table: 近い名前から表示
     private String getTableNameList(Connection conn, String tName){
   	  	String list = "";
-  	  	//String[] tNames = new String[100];
+  	  	String tn = "";
   	  	//String[] tNames = {"SHOP", "DEPT", "EMPLOYEE", "ITEM", "PARTS", "SUPPLIER", "SALE", "SUPPLY", "KIND_OF_WH", "WORLD_HERITAGE", "PREFECTURES", "WH_PREFECTURES", "PICTURES", "SQLITE_SEQUENCE", "STOCK", "QUESTION", "COMMENT", "ADMIN", "USERS", "USERS2", "TEAM", "PLAYER", "OB", "ATTENDANCE", "GPS_TEST", "RESTAURANTS", "R_PHOTO"};
   	  	ArrayList<String> tNames = new ArrayList<String>();
   	  	try{
@@ -469,28 +452,150 @@ public class SQLManager {
 				try {
 					int i = 0;
 					while(rs.next()){
-						list += rs.getString("TABLE_NAME").toLowerCase() + ", ";
-						tNames.add(i++,rs.getString("TABLE_NAME"));
-//						i++;
+						tn = rs.getString("TABLE_NAME").toLowerCase();
+						//list += tn + ", ";
+						tNames.add(i++, tn);
 					}
 				} finally {
 					rs.close();
 				}
   	  	}catch(Exception e){}
-  	  	if(!list.equals(""))  list = list.substring(0, list.length()-2);
+  	  	//if(!list.equals(""))  list = list.substring(0, list.length()-2);
   	  	
   	  	/////////////
+  	  	boolean suggested = false;
   	  	try{
-  	  		//for(int i=0; i<tNames.length; i++)
-  	  		//Log.e(tNames[i]);
-//  	  		checkTableName("det", tNames);
-  	  		checkTableName(tName, tNames);
-//  	  	checkTableName("dep", allTables0);
+  	  		suggested = checkTableNameAndSuggest(tName, tNames);
   	  	}catch(Exception e){}
+  	  	/////////////
+  	  	
+  	  	/////////////
+  	  	if(suggested)	list = checkLevensteinDistance(tName, tNames);	//提案あり: 類似度判定
+  	  	else	  		list = ascendingSort(tNames);					//提案なし: 昇順ソート
   	  	/////////////
   	  	
   	  	return list;
     }
+    //return Ascending sort Table name
+	private String ascendingSort(ArrayList<String> tNames) {
+		//アルファベット順にソート
+		String list = "";
+		Collections.sort(tNames);
+		for(String val : tNames){ 
+			list += val + ", ";
+		}
+		if(!list.equals(""))  list = list.substring(0, list.length()-2);
+		return list;
+	}
+	////////////////////////////////////////////////////////////////////////////////////////////////
+	//類似度判定
+	private String checkLevensteinDistance(String a, ArrayList<String> tNames){
+		String tn0 = "";
+		String tn = "";
+//		List <String>l = new ArrayList<String>();
+//		Map<Float, String> hashmap = new HashMap<Float, String>();
+        ArrayList<LevensteinClass> al = new ArrayList<LevensteinClass>();
+		
+		//1に近いほど似ている
+        LevensteinDistance l_algo = new LevensteinDistance();
+//        JaroWinklerDistance j_algo = new JaroWinklerDistance();
+        for(int i=0; i<tNames.size(); i++){
+        	tn0 = a.toLowerCase();
+        	tn = tNames.get(i).toLowerCase();
+        	String x = ""+l_algo.getDistance(tn0, tn);
+//        	String x = ""+j_algo.getDistance(tn0, tn);
+//        	l.add(i, x);
+//        	hashmap.put(Float.parseFloat(x),tn);
+        	al.add(new LevensteinClass(Float.parseFloat(x),tn));
+        	
+        	//Log.err("実行結果(LevensteinDistance("+tn0+", "+tn+"))：" + x);
+        }
+        //System.out.println("実行結果(JaroWinklerDistance)：" + j_algo.getDistance(one,two));
+//        Collections.sort(l, new StringComparator(StringComparator.DESC));
+//        Collections.sort(l);
+//        for (String value : l) {  
+//            System.out.println(value);  
+//        }  
+        
+        //Log.i("============================================");
+    
+//xxxxxx        
+//        // ソートする
+//        //HashMap hashmap = new HashMap();
+////        Map<String, String> hashmap = new HashMap<String, String>();
+////        hashmap.put( "15", "黄" );
+////        hashmap.put( "10", "紫" );
+////        hashmap.put( "17", "緑" );
+//        ArrayList entries = new ArrayList(hashmap.entrySet());
+//        Collections.sort(entries, new Comparator(){
+//            public int compare(Object obj1, Object obj2){
+//                Map.Entry ent1 =(Map.Entry)obj1;
+//                Map.Entry ent2 =(Map.Entry)obj2;
+//                String val1 = (String) ent1.getValue();
+//                String val2 = (String) ent2.getValue();
+//                return val1.compareTo(val2);
+//            }
+//        });
+//        for (Float key : hashmap.keySet()) {
+//        	System.out.println(key + " = " + hashmap.get(key));
+//        }
+        
+        
+        /*** descending sort ***/
+        //descending sort
+        Collections.sort(al, new LevensteinComparator());
+        Collections.reverse(al);
+        /***********************/
+        
+        String sortedList = "";
+        Iterator<LevensteinClass> it = al.iterator();
+        while (it.hasNext()) {
+        	LevensteinClass data = it.next();
+        	sortedList += data.getTableName()+", ";
+            //System.out.println(data.getLevensteinDistance() + ": " + data.getTableName());
+        }
+        if(!sortedList.equals(""))  sortedList = sortedList.substring(0, sortedList.length()-2);
+
+        
+        //TODO: 同じ値のものはアルファベット順にソート
+        
+        
+        return sortedList;
+	}
+	public class LevensteinClass {
+	    private float levensteinDistance;
+	    private String tableName;
+
+	    //Constructor
+	    public LevensteinClass(float f, String tableName) {
+	        this.levensteinDistance = f;
+	        this.tableName = tableName;
+	    }
+	    public float getLevensteinDistance(){
+	        return this.levensteinDistance;
+	    }
+	    public String getTableName(){
+	        return this.tableName;
+	    }
+	}
+	public class LevensteinComparator implements Comparator<LevensteinClass> {
+	    //比較メソッド（データクラスを比較して-1, 0, 1を返すように記述する）
+	    public int compare(LevensteinClass a, LevensteinClass b) {
+	        float f1 = a.getLevensteinDistance();
+	        float f2 = b.getLevensteinDistance();
+
+	        //ascending sort
+	        if (f1 > f2) {
+	            return 1;
+	        } else if (f1 == f2) {
+	            return 0;
+	        } else {
+	            return -1;
+	        }
+	    }
+	}
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////
     //added by goto 20131016 end
     
     //morya start
