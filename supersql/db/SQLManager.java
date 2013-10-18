@@ -59,7 +59,8 @@ public class SQLManager {
         }
     }
 
-    public void ExecSQL(String query) {
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	public void ExecSQL(String query) {
     	if(isMulti)
     	{
     		Log.out("thred name:"+cdb.getName());
@@ -133,18 +134,24 @@ public class SQLManager {
 			      GlobalEnv.addErr("Error[SQLManager.ExecSQL]: Can't Exec Query : query = "
 			              + query);
 			      
-			      //20131016 start
-			      String error = e.toString().toLowerCase();
-			      if(error.contains("column")){
-			    	  ArrayList<String> tableName = getTableNamesFromQuery(query);
-			    	  String list = getTableAndColumnNameList(conn, tableName);
-			    	  Log.err("## Column list ##\n" + list);
+			      //added by goto 20131016 start
+			      String list = "";
+			      String errorContents[] = getErrorContents(e);  //return: [0]=Error message, [1]=Error table name or column name, [2]=Error table alias
+			      if(errorContents[0].contains("column")){
+			    	  //Log.e(error_tableName_or_columnName_alias+" "+error_tableName_or_columnName);
+			    	  ArrayList<ArrayList> tableNameAndAlias = getTableNamesFromQuery(query);	//return: (0)=Table name, (1)=Table alias, (2)=From phrase
+			    	  if(errorContents[0].contains("ambiguous")){
+			    		  list = getgetAmbiguousTableAndColumnNameList(conn, tableNameAndAlias.get(0), errorContents[1]);
+			    	  }else{
+				    	  list = getTableAndColumnNameList(conn, tableNameAndAlias.get(0), tableNameAndAlias.get(1), errorContents[1], errorContents[2], tableNameAndAlias.get(2));
+			    	  }
+			    	  Log.err("\n## Column list ##\n" + list);
 			    	  
-			      }else if(error.contains("table")){
-			    	  String list = getTableNameList(conn);
-			    	  Log.err("## Table list ##\n" + list + "\n");
+			      }else if(errorContents[0].contains("table")){
+			    	  list = getTableNameList(conn);
+			    	  Log.err("\n## Table list ##\n" + list + "\n");
 			      }
-			      //20131016 end
+			      //added by goto 20131016 end
 
 			      return ;
         	}
@@ -155,11 +162,28 @@ public class SQLManager {
         }
     }
 
-    //20131016 start
+    //added by goto 20131016 start
+    //get 'Error message', 'Error table name or column name', 'Error table alias' from exception message
+    /* return: [0]=Error message, [1]=Error table name or column name, [2]=Error table alias */
+    private String[] getErrorContents(Exception e){
+    	String error = e.toString().toLowerCase();
+    	String error_tableName_or_columnName = error.substring(error.lastIndexOf(":")+1).trim();
+    	String error_tableAlias = "";
+    	if(error_tableName_or_columnName.contains(".")){
+    		error_tableAlias = error_tableName_or_columnName.substring(0,error_tableName_or_columnName.indexOf("."));
+    	  	error_tableName_or_columnName = error_tableName_or_columnName.substring(error_tableName_or_columnName.indexOf(".")+1);
+    	}
+    	return new String[]{error, error_tableName_or_columnName, error_tableAlias};
+    }
     //get table names from query
-    private ArrayList<String> getTableNamesFromQuery(String query){
+    /* return: (0)=Table name, (1)=Table alias, (2)=From phrase */
+    @SuppressWarnings({ "rawtypes", "serial" })
+	private ArrayList<ArrayList> getTableNamesFromQuery(String query){
   	  	String tableNames = "";
-  	  	ArrayList<String> tableName = new ArrayList<String>();
+//  	  	ArrayList<String[]> tableName = new ArrayList<String[]>();
+  	  	final ArrayList<String> tableName = new ArrayList<String>();
+  	  	final ArrayList<String> tableAlias = new ArrayList<String>();
+  	  	final ArrayList<String> fromPhrase = new ArrayList<String>();
   	  	try{
 	    	  String q = query.toLowerCase();
 	    	  q = q.substring(q.lastIndexOf("from")+4);
@@ -171,34 +195,101 @@ public class SQLManager {
 	    		  tableNames = q.substring(0, q.lastIndexOf("order by"));
 	    	  }
 	    	  
+	    	  //if(!tableNames.equals("")) Log.e("\n## From phrase ##\n"+tableNames.trim());
+	    	  fromPhrase.add(0,tableNames);
+	    	  
 	    	  int i=0;
 	    	  tableNames += ",";
 	    	  while(tableNames.contains(",")){
 	    		  int index = tableNames.indexOf(",");
 	    		  tableName.add(i, tableNames.substring(0,index).trim());
+	    		  tableAlias.add(i, "");
 	    		  String tn = tableName.get(i);
 	    		  if(tn.contains(" ")){
-//	    			  tableName.remove(i);
-//	    			  tableName.add(i, tn.substring(0,tn.indexOf(" ")).trim());
 	    			  tableName.set(i, tn.substring(0,tn.indexOf(" ")).trim());
+	    			  tableAlias.set(i, tn.substring(tn.lastIndexOf(" ")).trim());
 	    		  }
 	    		  tableNames = tableNames.substring(index+1);
+	    		  //Log.e(tableName.get(i)+" "+tableAlias.get(i));
 	    		  i++;
 	    	  }
   	  	}catch(Exception e){}
-  	  	return tableName;
+//  	  	ArrayList<ArrayList> array = new ArrayList<ArrayList>();
+//  	  	array.add(tableName);
+//  	  	array.add(tableAlias);
+//  	  	return array;
+  	  	return new ArrayList<ArrayList>() {{add(tableName); add(tableAlias); add(fromPhrase);}};
+//  	  	return new ArrayList<ArrayList>() {{new ArrayList<String>(tableName); add(tableAlias);}};
+//	  		return new ArrayList<ArrayList>(2) {{add("hoge"); add("piyo"); add("foo"); add("bar");}};
     }
+//    private ArrayList<String> getTableNamesFromQuery(String query){
+//    	String tableNames = "";
+//    	ArrayList<String> tableName = new ArrayList<String>();
+//    	try{
+//    		String q = query.toLowerCase();
+//    		q = q.substring(q.lastIndexOf("from")+4);
+//    		if(q.contains("where")){
+//    			tableNames = q.substring(0, q.lastIndexOf("where"));
+//    		}else if(q.contains("group by")){
+//    			tableNames = q.substring(0, q.lastIndexOf("group by"));
+//    		}else if(q.contains("order by")){
+//    			tableNames = q.substring(0, q.lastIndexOf("order by"));
+//    		}
+//    		
+//    		int i=0;
+//    		tableNames += ",";
+//    		while(tableNames.contains(",")){
+//    			int index = tableNames.indexOf(",");
+//    			tableName.add(i, tableNames.substring(0,index).trim());
+//    			String tn = tableName.get(i);
+//    			if(tn.contains(" ")){
+////	    			  tableName.remove(i);
+////	    			  tableName.add(i, tn.substring(0,tn.indexOf(" ")).trim());
+//    				tableName.set(i, tn.substring(0,tn.indexOf(" ")).trim());
+//    			}
+//    			tableNames = tableNames.substring(index+1);
+//    			i++;
+//    		}
+//    	}catch(Exception e){}
+//    	return tableName;
+//    }
     //get table and column name list
-    private String getTableAndColumnNameList(Connection conn, ArrayList<String> tableName){
+    //- no such column: エイリアスあり: それのみ表示、 エイリアス無し: From句に書かれているテーブルの一覧を表示
+    private String getTableAndColumnNameList(Connection conn, ArrayList<String> tableName, ArrayList<String> tableAlias, String errorColumnName, String errorTableNameAlias, ArrayList<String> fromPhrase){
   	  	String list = "";
+  	  	String listBuf = "";
+  	  	String tn = "";
+  	  	String ta = "";
+  	  	ResultSet rs = null;
+  	  	boolean columnNameIsWrong = true;
+  	  	String errorTn = "";
+  	  	boolean aliasIsWrong = true;
+  	  	String tableHas = "";
   	  	try{
 				DatabaseMetaData dmd = conn.getMetaData();
+//				for(int i=0;i<tableAlias.size();i++){
+//					if(tableAlias.get(i).equals(errorTableNameAlias)){
+//						aliasIsWrong = false;
+//						break;
+//					}
+//				}
+				
 				for(int i=0;i<tableName.size();i++){
-					String tn = tableName.get(i);
+					tn = tableName.get(i);
+					ta = tableAlias.get(i);
+					if((!errorTableNameAlias.isEmpty() && (ta.equals(errorTableNameAlias) || tn.equals(errorTableNameAlias)))){
+						errorTn = tn;
+						listBuf = list;
+						list = "";
+					}
 					list += tn+"(";
-					ResultSet rs = dmd.getColumns(null, null, tn, null);
+					rs = dmd.getColumns(null, null, tn, null);
 					try {
 						while(rs.next()){
+							if(!errorTn.equals("") && tn.equals(errorTn) && rs.getString("COLUMN_NAME").equals(errorColumnName)){
+								//Log.e("!!!!!!!! "+ errorTn);
+								columnNameIsWrong = false;
+							}
 							list += rs.getString("COLUMN_NAME") + ", ";
 						}
 					} finally {
@@ -206,11 +297,85 @@ public class SQLManager {
 					}
 					list = list.substring(0, list.length()-2);
 					list += ")\n";
+					if((!errorTableNameAlias.isEmpty() && (ta.equals(errorTableNameAlias) || tn.equals(errorTableNameAlias)))){
+						//System.err.print("\n## "+list.replace("(", " has ##\n("));
+						tableHas = "\n## "+list.replace("(", " has ##\n(");
+						list = listBuf+list;
+						aliasIsWrong = false;
+					}
 				}
+				if(aliasIsWrong && !errorTableNameAlias.isEmpty()){
+					Log.err("\n## Wrong alias: >>>> "+errorTableNameAlias+" <<<< ."+errorColumnName+"  ##");
+				}
+				else if(columnNameIsWrong && !errorTableNameAlias.isEmpty()){
+					Log.err("\n## Wrong column name: "+errorTableNameAlias+". >>>> "+errorColumnName+" <<<< ##");
+				}
+				if(!tableHas.isEmpty() && columnNameIsWrong){
+					System.err.print(tableHas);
+				}
+				if(!fromPhrase.get(0).isEmpty() && aliasIsWrong && !errorTableNameAlias.isEmpty()){
+					Log.err("\n## From phrase is ##\n"+fromPhrase.get(0).trim());
+				}
+					
   	  	}catch(Exception e){}
   	  	return list;
     }
+    //get ambiguous table and column name list
+    //- ambiguous column name: そのカラム名を持っているtable&column一覧を表示
+    private String getgetAmbiguousTableAndColumnNameList(Connection conn, ArrayList<String> tableName, String ambiguousColumnName){
+    	String list = "";
+    	String listBuf = "";
+    	String tn = "";
+    	String cn = "";
+    	ResultSet rs = null;
+    	try{
+    		DatabaseMetaData dmd = conn.getMetaData();
+    		for(int i=0;i<tableName.size();i++){
+    			tn = tableName.get(i);
+    			listBuf = tn+"(";
+    			rs = dmd.getColumns(null, null, tn, null);
+    			try {
+    				while(rs.next()){
+    					cn = rs.getString("COLUMN_NAME");
+    					if(!cn.equals(ambiguousColumnName))	listBuf += cn + ", ";
+    					else								listBuf += ">>>> "+cn + " <<<< , ";
+    				}
+    			} finally {
+    				rs.close();
+    			}
+    			if(listBuf.contains(" <<<< , ")){
+    				list += listBuf;
+    				listBuf = "";
+	    			list = list.substring(0, list.length()-2);
+	    			list += ")\n";
+    			}
+    		}
+    	}catch(Exception e){}
+    	return list;
+    }
+//    private String getTableAndColumnNameList(Connection conn, ArrayList<String> tableName){
+//    	String list = "";
+//    	try{
+//    		DatabaseMetaData dmd = conn.getMetaData();
+//    		for(int i=0;i<tableName.size();i++){
+//    			String tn = tableName.get(i);
+//    			list += tn+"(";
+//    			ResultSet rs = dmd.getColumns(null, null, tn, null);
+//    			try {
+//    				while(rs.next()){
+//    					list += rs.getString("COLUMN_NAME") + ", ";
+//    				}
+//    			} finally {
+//    				rs.close();
+//    			}
+//    			list = list.substring(0, list.length()-2);
+//    			list += ")\n";
+//    		}
+//    	}catch(Exception e){}
+//    	return list;
+//    }
     //get table name list
+    //- no such table: 近い名前から表示
     private String getTableNameList(Connection conn){
   	  	String list = "";
   	  	try{
@@ -228,7 +393,7 @@ public class SQLManager {
   	  	if(!list.equals(""))  list = list.substring(0, list.length()-2);
   	  	return list;
     }
-    //20131016 end
+    //added by goto 20131016 end
     
     //morya start
     public void ExecListToResult(String listarg, String query) {
