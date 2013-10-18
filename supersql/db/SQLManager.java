@@ -10,10 +10,17 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.io.*;
+import java.util.*;
+import java.util.regex.*;
+
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
 import supersql.parser.FromParse;
+
+
+
 
 public class SQLManager {
 
@@ -148,9 +155,23 @@ public class SQLManager {
 			    	  Log.err("\n## Column list ##\n" + list);
 			    	  
 			      }else if(errorContents[0].contains("table")){
-			    	  list = getTableNameList(conn);
+			    	  list = getTableNameList(conn, errorContents[1]);
 			    	  Log.err("\n## Table list ##\n" + list + "\n");
 			      }
+			      
+			      ////////////////////////////////////
+			      //String args[] = new String[10];
+			      //args[0] = "dep";
+			      //args[1] = "dept";
+			      //String filename="/Users/goto/Desktop/big.txt";
+//			      try {
+////			    	  checkTableName(new String[]{"dep"});
+//			    	  checkTableName("dep", allTables0);
+//			      } catch (IOException e1) {
+//			    	  e1.printStackTrace();
+//			      }
+			      ////////////////////////////////////
+			      
 			      //added by goto 20131016 end
 
 			      return ;
@@ -163,6 +184,66 @@ public class SQLManager {
     }
 
     //added by goto 20131016 start
+    
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    /****************  Did you mean?  ****************/
+	private final HashMap<String, Integer> nWords = new HashMap<String, Integer>();
+	//private String[] allTables0 = {"world_heritage", "wh_prefectures", "prefectures", "dept"};
+	
+	public void checkTableName(String tName, ArrayList<String> tNames) throws IOException {
+		if(tName.length() > 0){
+			String ans = (new SQLManager(tNames)).correct(tName);
+			if(!ans.equals(tName)){
+				//Log.err("\nもしかして.. "+ans+" ?");
+				Log.err("\nDid you mean... '"+ans+"' ?");
+			}
+		}
+	}
+	
+	public SQLManager(ArrayList<String> t) throws IOException {
+		//BufferedReader in = new BufferedReader(new FileReader(file));
+		Pattern p = Pattern.compile("\\w+");
+		String temp = "";
+		for(int i=0; i<t.size(); i++){
+			temp = t.get(i);
+			Matcher m = p.matcher(temp.toLowerCase());
+			while(m.find()) nWords.put((temp = m.group()), nWords.containsKey(temp) ? nWords.get(temp) + 1 : 1);
+		}
+		//in.close();
+		
+//		BufferedReader in = new BufferedReader(new FileReader(file));
+//		Pattern p = Pattern.compile("\\w+");
+//		for(String temp = ""; temp != null; temp = in.readLine()){
+//			Matcher m = p.matcher(temp.toLowerCase());
+//			while(m.find()) nWords.put((temp = m.group()), nWords.containsKey(temp) ? nWords.get(temp) + 1 : 1);
+//		}
+//		in.close();
+	}
+	private final ArrayList<String> edits(String word) {
+		ArrayList<String> result = new ArrayList<String>();
+		for(int i=0; i < word.length(); ++i) result.add(word.substring(0, i) + word.substring(i+1));
+		for(int i=0; i < word.length()-1; ++i) result.add(word.substring(0, i) + word.substring(i+1, i+2) + word.substring(i, i+1) + word.substring(i+2));
+		for(int i=0; i < word.length(); ++i) for(char c='a'; c <= 'z'; ++c) result.add(word.substring(0, i) + String.valueOf(c) + word.substring(i+1));
+		for(int i=0; i <= word.length(); ++i) for(char c='a'; c <= 'z'; ++c) result.add(word.substring(0, i) + String.valueOf(c) + word.substring(i));
+		return result;
+	}
+	public final String correct(String word) {
+		if(nWords.containsKey(word)) return word;
+		ArrayList<String> list = edits(word);
+		HashMap<Integer, String> candidates = new HashMap<Integer, String>();
+		for(String s : list) if(nWords.containsKey(s)) candidates.put(nWords.get(s),s);
+		if(candidates.size() > 0) return candidates.get(Collections.max(candidates.keySet()));
+		for(String s : list) for(String w : edits(s)) if(nWords.containsKey(w)) candidates.put(nWords.get(w),w);
+		return candidates.size() > 0 ? candidates.get(Collections.max(candidates.keySet())) : word;
+	}
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////
+	//TODO: 類似度判定
+
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////
+
+    
     //get 'Error message', 'Error table name or column name', 'Error table alias' from exception message
     /* return: [0]=Error message, [1]=Error table name or column name, [2]=Error table alias */
     private String[] getErrorContents(Exception e){
@@ -376,21 +457,38 @@ public class SQLManager {
 //    }
     //get table name list
     //- no such table: 近い名前から表示
-    private String getTableNameList(Connection conn){
+    private String getTableNameList(Connection conn, String tName){
   	  	String list = "";
+  	  	//String[] tNames = new String[100];
+  	  	//String[] tNames = {"SHOP", "DEPT", "EMPLOYEE", "ITEM", "PARTS", "SUPPLIER", "SALE", "SUPPLY", "KIND_OF_WH", "WORLD_HERITAGE", "PREFECTURES", "WH_PREFECTURES", "PICTURES", "SQLITE_SEQUENCE", "STOCK", "QUESTION", "COMMENT", "ADMIN", "USERS", "USERS2", "TEAM", "PLAYER", "OB", "ATTENDANCE", "GPS_TEST", "RESTAURANTS", "R_PHOTO"};
+  	  	ArrayList<String> tNames = new ArrayList<String>();
   	  	try{
 				DatabaseMetaData dmd = conn.getMetaData();
 				String types[] = { "TABLE" };
 				ResultSet rs = dmd.getTables(null, null,"%", types);
 				try {
+					int i = 0;
 					while(rs.next()){
-						list += rs.getString("TABLE_NAME") + ", ";
+						list += rs.getString("TABLE_NAME").toLowerCase() + ", ";
+						tNames.add(i++,rs.getString("TABLE_NAME"));
+//						i++;
 					}
 				} finally {
 					rs.close();
 				}
   	  	}catch(Exception e){}
   	  	if(!list.equals(""))  list = list.substring(0, list.length()-2);
+  	  	
+  	  	/////////////
+  	  	try{
+  	  		//for(int i=0; i<tNames.length; i++)
+  	  		//Log.e(tNames[i]);
+//  	  		checkTableName("det", tNames);
+  	  		checkTableName(tName, tNames);
+//  	  	checkTableName("dep", allTables0);
+  	  	}catch(Exception e){}
+  	  	/////////////
+  	  	
   	  	return list;
     }
     //added by goto 20131016 end
