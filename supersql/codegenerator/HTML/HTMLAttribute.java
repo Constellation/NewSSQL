@@ -35,6 +35,15 @@ public class HTMLAttribute extends Attribute {
 		this.htmlEnv2 = henv2;
 	}
 
+	public Element createTableNode(ExtList data_info){
+		Element result = new Element(Tag.valueOf("td"), "");
+		//***APPEND DATABASE VALUE***//
+		String elementText = this.getStr(data_info);
+		elementText = elementText.replace(" ", "&#160;");
+		result.html(elementText);
+		return result;
+	}
+	
 	@Override
 	public Element createNode(ExtList data_info) {
 		Element result = new Element(Tag.valueOf("span"), "");
