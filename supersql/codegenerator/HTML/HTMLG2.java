@@ -33,10 +33,13 @@ public class HTMLG2 extends Grouper {
 	
 	@Override
 	public Element createNode(ExtList<ExtList<String>> dataInfo) {
-		if(GlobalEnv.getLayout().equalsIgnoreCase("table"))
+		if ((GlobalEnv.getLayout().equalsIgnoreCase("table") && !decos
+				.containsKey("layout"))
+				|| (decos.containsKey("layout") && decos.getStr("layout")
+						.equalsIgnoreCase("table")))
     		return createTableNode(dataInfo);
 		Element result = new Element(Tag.valueOf("div"), "");
-		result.addClass("vertical").addClass("box").addClass("group2");
+		result.addClass("box").addClass("group2");
 		this.setDataList(dataInfo);
 
 		nodeCreationPreProcess(result);
@@ -54,6 +57,12 @@ public class HTMLG2 extends Grouper {
 	}
 	
 	private void nodeCreationPreProcess(Element result){
+		if (decos.containsKey("layout")
+				&& decos.getStr("layout").equalsIgnoreCase("standard")
+				|| GlobalEnv.getLayout().equalsIgnoreCase("standard"))
+    		result.addClass("vertical_display");
+    	else
+    		result.addClass("vertical");
 		html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
 
 		if (!GlobalEnv.isOpt()) {
@@ -83,6 +92,7 @@ public class HTMLG2 extends Grouper {
 				HTMLEnv.incrementFormPartsNumber();
 			}
 		}
+		HTMLUtils.processDecos(result, decos);
 	}
 
 	@Override

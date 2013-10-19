@@ -189,13 +189,7 @@ public class HTMLEnv extends LocalEnv {
 			element.text(script.toString());
 			headElements.add(element);
 		}
-		String stylesheet;
-		if(GlobalEnv.getLayout().equalsIgnoreCase("standard"))
-			stylesheet = "styles/box.css";
-		else
-			stylesheet = "styles/div.css";
-		
-		ArrayList<Element> boxStylesheets = JsoupFactory.createStylesheetElements(stylesheet, "styles/reset.css");
+		ArrayList<Element> boxStylesheets = JsoupFactory.createStylesheetElements("styles/box.css", "styles/div.css", "styles/reset.css");
 		
 		for(Element elt : headElements){
 			htmlEnv1.head().appendChild(elt);
@@ -339,15 +333,10 @@ public class HTMLEnv extends LocalEnv {
 	public void fillHeadTag(){
 		if (GlobalEnv.isAjax()) {
 			String js = GlobalEnv.getJsDirectory();
-			if (js != null) {
-				if (js.endsWith("/"))
-					js = js.substring(0, js.lastIndexOf("/"));
-				htmlEnv1.head().appendChild(JsoupFactory.createJsElement(js + "/prototype.js"));
-				htmlEnv1.head().appendChild(JsoupFactory.createJsElement(js+ "/ajax.js"));
-			} else {
-				htmlEnv1.head().appendChild(JsoupFactory.createJsElement("http://localhost:8080/tab/prototype.js"));
-				htmlEnv1.head().appendChild(JsoupFactory.createJsElement("http://localhost:8080/tab/ajax.js"));
-			}
+			if (js.endsWith("/"))
+				js = js.substring(0, js.lastIndexOf("/"));
+			htmlEnv1.head().appendChild(JsoupFactory.createJsElement(js + "/prototype.js"));
+			htmlEnv1.head().appendChild(JsoupFactory.createJsElement(js+ "/ajax.js"));
 
 			ArrayList<Element> javascripts = JsoupFactory.createJsElements("build/yahoo/yahoo-min.js", "build/event/event-min.js", "build/dom/dom-min.js",
 					"build/dragdrop/dragdrop-min.js", "ssqlajax.js", "prototype.js", "build/element/element-beta.js", "build/tabview/tabview.js",
@@ -407,7 +396,8 @@ public class HTMLEnv extends LocalEnv {
 				form.appendChild(JsoupFactory.createInput("hidden", "sql_param", "update"));
 		}
 	}
-
+	
+	@Deprecated
 	public void append_css_def_td(String classid, DecorateList decos) {
 		haveClass = 0;
 		Log.out("[HTML append_css_def_att] classid=" + classid);
@@ -434,11 +424,6 @@ public class HTMLEnv extends LocalEnv {
 		// start////////////////////////////////////////////////////////////////
 		StringBuffer metabuf = new StringBuffer();
 
-		if (decos.containsKey("class")) {
-			cssclass.put(classid, decos.getStr("class"));
-			Log.out("class =" + classid + decos.getStr("class"));
-		}
-		
 		//changed by goto 20130703  ex) cssfile=" a.css; b.css "
 		if (decos.containsKey("cssfile")) {
 			String css = decos.getStr("cssfile").trim();
@@ -516,96 +501,24 @@ public class HTMLEnv extends LocalEnv {
 			}
 		}
 
-		if (decos.containsKey("divalign") && div.length() == 0)
-			div.append(" align=" + decos.getStr("divalign"));
-
 		if (decos.containsKey("title") && title.length() == 0)
 			title.append(decos.getStr("title"));
 		if (decos.containsKey("title_class"))
 			titleClass.append(" class=\"" + decos.getStr("title_class") + "\"");
-		if (decos.containsKey("tableborder"))// && tableborder.length() == 0)
-			tableBorder = decos.getStr("tableborder");
 
 		// tk end//////////////////////////////////////////////////////////////
 
 		computeConditionalDecorations(decos, css);
 
 		// 鐃緒申??
-		if (decos.containsKey("width")) {
-			if (GlobalEnv.getframeworklist() == null)
-				cssbuf.append(" width:" + decos.getStr("width") + ";");
-			else
-				cssbuf.append(" width:" + decos.getStr("width") + "px;");
-			// } else {
-			// cssbuf.append(" width:120;");
-		}
-
-		// 鐃緒申??
-		if (decos.containsKey("height")) {
-			if (GlobalEnv.getframeworklist() == null)
-				cssbuf.append(" height:" + decos.getStr("height") + ";");
-			else
-				cssbuf.append(" height:" + decos.getStr("height") + "px;");
-		}
-
-		// margin
-		if (decos.containsKey("margin")) {
-			cssbuf.append(" margin:" + decos.getStr("margin") + ";");
-			// } else {
-			// cssbuf.append(" padding:0.3em;");
-		}
-
-		// 鐃術デワ申鐃藷グ￥申余鐃緒申鐃�		
-		if (decos.containsKey("padding")) {
-			cssbuf.append(" padding:" + decos.getStr("padding") + ";");
-			// } else {
-			// cssbuf.append(" padding:0.3em;");
-		}
-		// padding
-		if (decos.containsKey("padding-left")) {
-			cssbuf.append(" padding-left:" + decos.getStr("padding-left") + ";");
-		}
-		if (decos.containsKey("padding-top")) {
-			cssbuf.append(" padding-top:" + decos.getStr("padding-top") + ";");
-		}
-		if (decos.containsKey("padding-right")) {
-			cssbuf.append(" padding-right:" + decos.getStr("padding-right")
-					+ ";");
-		}
-		if (decos.containsKey("padding-bottom")) {
-			cssbuf.append(" padding-bottom:" + decos.getStr("padding-bottom")
-					+ ";");
-		}
-
-		// 鐃緒申鐃緒申鐃緒申
-		if (decos.containsKey("align"))
-			cssbuf.append(" text-align:" + decos.getStr("align") + ";");
-
-		// 鐃縦逸申鐃緒申
-		if (decos.containsKey("valign"))
-			cssbuf.append(" vertical-align:" + decos.getStr("valign") + ";");
-
-		// 鐃舜景随申
-		if (decos.containsKey("background-color"))
-			cssbuf.append(" background-color:"
-					+ decos.getStr("background-color") + ";");
 		if (decos.containsKey("bgcolor"))
 			cssbuf.append(" background-color:" + decos.getStr("bgcolor") + ";");
 
-		// 文鐃緒申
-		if (decos.containsKey("color"))
-			cssbuf.append(" color:" + decos.getStr("color") + ";");
 		if (decos.containsKey("font-color"))
 			cssbuf.append(" color:" + decos.getStr("font-color") + ";");
 		if (decos.containsKey("font color"))
 			cssbuf.append(" color:" + decos.getStr("font color") + ";");
 
-		// 文鐃緒申鐃緒申
-		if (decos.containsKey("font-size"))
-			if (GlobalEnv.getframeworklist() == null)
-				cssbuf.append(" font-size:" + decos.getStr("font-size") + ";");
-			else
-				cssbuf.append(" font-size:" + decos.getStr("font-size") + "px;");
 		if (decos.containsKey("font size"))
 			if (GlobalEnv.getframeworklist() == null)
 				cssbuf.append(" font-size:" + decos.getStr("font size") + ";");
@@ -617,29 +530,6 @@ public class HTMLEnv extends LocalEnv {
 			else
 				cssbuf.append(" font-size:" + decos.getStr("size") + "px;");
 
-		// 文鐃緒申鐃緒申鐃緒申鐃�
-		if (decos.containsKey("font-weight"))
-			cssbuf.append(" font-weight:" + decos.getStr("font-weight") + ";");
-
-		// 文鐃緒申鐃緒申?
-		if (decos.containsKey("font-style"))
-			cssbuf.append(" font-style:" + decos.getStr("font-style") + ";");
-		if (decos.containsKey("font-family"))
-			cssbuf.append(" font-family:" + decos.getStr("font-family") + ";");
-
-		if (decos.containsKey("border"))
-			cssbuf.append(" border:" + decos.getStr("border") + ";");
-		if (decos.containsKey("border-width"))
-			cssbuf.append(" border-width:" + decos.getStr("border-width") + ";");
-		if (decos.containsKey("border-color"))
-			cssbuf.append(" border-color:" + decos.getStr("border-color") + ";");
-		if (decos.containsKey("border-style"))
-			cssbuf.append(" border-style:" + decos.getStr("border-style") + ";");
-		if (decos.containsKey("border-collapse"))
-			cssbuf.append(" border-collapse:" + decos.getStr("border-collapse")
-					+ ";");
-		
-		
         //added by goto 20130311  "background"
         if (decos.containsKey("background"))
         	bg = decos.getStr("background");
@@ -663,16 +553,6 @@ public class HTMLEnv extends LocalEnv {
 					+ charset + "\">");
 			charsetFlg = true;
 		}
-		// if (decos.containsKey("charset")){
-		// metabuf.append("<meta http-equiv=\"Content-Type\" content=\"text/html; charset="
-		// + decos.getStr("charset") + "\">");
-		// charset=decos.getStr("charset");
-		// charsetFlg=1;
-		// }else if(charsetFlg!=1){
-		// metabuf.append("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=EUC-JP\">");
-		// charset="EUC-JP"; //default charset = EUC-JP
-		// charsetFlg=1;
-		// }
 		// added by goto 20120715 end
 
 		if (decos.containsKey("description"))

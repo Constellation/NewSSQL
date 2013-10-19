@@ -27,7 +27,7 @@ public class HTMLC1 extends Connector {
     		return createForm(dataInfo, 2);
     	
     	Element result = new Element(Tag.valueOf("table"), "");
-    	
+    	nodeCreationPreProcess(result);
     	Element tr = result.appendElement("tr");
     	int i=0;
     	while(this.hasMoreItems()){
@@ -38,21 +38,16 @@ public class HTMLC1 extends Connector {
     	}
     	return result;
     }
-
-    @Override
-    public Element createNode(ExtList<ExtList<String>> dataInfo){
-    	if(GlobalEnv.getLayout().equalsIgnoreCase("table"))
-    		return createTableNode(dataInfo);
-    	this.setDataList(dataInfo);
-    	if(decos.containsKey("insert"))
-    		return createForm(dataInfo, 0);
-    	if(decos.containsKey("delete"))
-    		return createForm(dataInfo, 1);
-    	if(decos.containsKey("update"))
-    		return createForm(dataInfo, 2);
-    	
-    	Element result = new Element(Tag.valueOf("div"), "");
-    	result.attr("class", "con1 horizontal box nest");
+    
+    private void nodeCreationPreProcess(Element result){
+    	if (decos.containsKey("layout")
+				&& decos.getStr("layout").equalsIgnoreCase("standard")
+				|| GlobalEnv.getLayout().equalsIgnoreCase("standard")){
+    		result.addClass("horizontal_display");
+    		decos.remove("layout");
+    	}
+    	else
+    		result.addClass("horizontal");
 
         htmlEnv.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
         if(!GlobalEnv.isOpt()){
@@ -65,6 +60,28 @@ public class HTMLC1 extends Connector {
         		result.addClass(decos.getStr("class"));
         	}
         }
+        HTMLUtils.processDecos(result, decos);
+    }
+
+    @Override
+    public Element createNode(ExtList<ExtList<String>> dataInfo){
+    	if ((GlobalEnv.getLayout().equalsIgnoreCase("table") && !decos
+				.containsKey("layout"))
+				|| (decos.containsKey("layout") && decos.getStr("layout")
+						.equalsIgnoreCase("table")))
+    		return createTableNode(dataInfo);
+    	this.setDataList(dataInfo);
+    	if(decos.containsKey("insert"))
+    		return createForm(dataInfo, 0);
+    	if(decos.containsKey("delete"))
+    		return createForm(dataInfo, 1);
+    	if(decos.containsKey("update"))
+    		return createForm(dataInfo, 2);
+    	
+    	Element result = new Element(Tag.valueOf("div"), "");
+    	result.attr("class", "con1 box nest");
+    	nodeCreationPreProcess(result);
+    	
         int i = 0;
         while (this.hasMoreItems()) {
             ITFE tfe = (ITFE) tfes.get(i);

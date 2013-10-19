@@ -28,4 +28,10 @@ public class HTMLUtils {
         }
 		return result;
 	}
+	
+    public static void processDecos(Element result, DecorateList decos){
+    	for(String key : decos.keySet()){
+    		result.attr(key, decos.getStr(key));
+    	}
+    }
 }

@@ -79,7 +79,3 @@ Note : horizontal is often used as a default container.
 input[type="submit"]{
 	align-self:flex-start;
 }
-
-table{
-	border: 1px solid;
-}

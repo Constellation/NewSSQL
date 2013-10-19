@@ -36,6 +36,7 @@ public class TFE implements ITFE {
 	}
 
 	@Override
+	@Deprecated
 	public void work(ExtList<ExtList<String>> data_info) {
 		// TODO Auto-generated method stub
 		

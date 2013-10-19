@@ -110,11 +110,11 @@ public class HTMLFunction extends Function {
 			// Func_session(); not use
 			return new Element(Tag.valueOf(""), "");
 		} else if (FuncName.equalsIgnoreCase("youtube")) {
-			return FuncYoutube();
-		} else if (FuncName.equalsIgnoreCase("movie")) {
-			return FuncMovieFile();
+			return funcYoutube();
+		} else if (FuncName.equalsIgnoreCase("video")) {
+			return funcVideoFile();
 		} else if (FuncName.equalsIgnoreCase("meter")) {
-			return FuncMeter();
+			return funcMeter();
 		}
 		// added by goto 20130308 "url���"
 		else if (FuncName.equalsIgnoreCase("url")
@@ -140,22 +140,27 @@ public class HTMLFunction extends Function {
 	private void checkArgsNumber(int expected) {
 		if (expected != Args.size()) {
 			System.err.println("Argument number error for the function "
-					+ getFuncName() + "\n This function has " + expected + " required parameters");
+					+ getFuncName() + "\n This function has " + expected
+					+ " required parameters");
 			System.exit(1);
 		}
 	}
 
-	private void checkArgType(FuncArg argument, Class<? extends TFE> expectedClass, int index) {
-		if(expectedClass== HTMLC0.class && argument.getTFEClass() == HTMLAttribute.class)
-			return;
-			
-		if (!(expectedClass.isAssignableFrom(argument.getTFEClass()))) {
-			System.err.println("The argument number " + index + " of the "
-					+ getFuncName()
-					+ " function has a wrong type. It should be a "
-					+ expectedClass.getSimpleName());
-			System.exit(1);
+	private void checkArgType(FuncArg argument, int index, Class<? extends TFE>... expectedClass) {
+		for (int i = 0; i < expectedClass.length; i++) {
+			if (expectedClass[i] == HTMLC0.class
+					&& argument.getTFEClass() == HTMLAttribute.class)
+				return;
+
+			if ((expectedClass[i].isAssignableFrom(argument.getTFEClass()))) {
+				return;
+			}
 		}
+		System.err.println("The argument number " + index + " of the "
+				+ getFuncName()
+				+ " function has a wrong type. It should be a "
+				+ expectedClass.toString());
+		System.exit(1);
 	}
 
 	private Element FuncEmbed(ExtList<ExtList<String>> data_info) {
@@ -635,9 +640,9 @@ public class HTMLFunction extends Function {
 		return new Element(Tag.valueOf("span"), "");
 	}
 
-	private Attributes getAttributes(){
+	private Attributes getAttributes() {
 		Attributes attributes = new Attributes();
-		for(String key : ArgHash.keySet()){
+		for (String key : ArgHash.keySet()) {
 			attributes.put(key, getAtt(key));
 		}
 		return attributes;
@@ -649,15 +654,14 @@ public class HTMLFunction extends Function {
 		FuncArg content = this.Args.get(0);
 		FuncArg href = this.Args.get(1);
 
-		checkArgType(content, TFE.class, 0);
-		checkArgType(href, HTMLC0.class, 1);
+		checkArgType(content, 0, TFE.class);
+		checkArgType(href, 1, HTMLC0.class);
 
 		Element result = new Element(Tag.valueOf("a"), "");
 		result.addClass("box").addClass("link");
 		result.appendChild((Element) content.createNode());
 		result.attr("href", ((Element) href.createNode()).text());
 		result.attributes().addAll(getAttributes());
-		
 
 		if (GlobalEnv.isAjax()) {
 			htmlEnv.ajaxCond = this.getAtt("ajaxcond") + "="
@@ -797,9 +801,9 @@ public class HTMLFunction extends Function {
 
 		return result;
 	}
-	
+
 	@SuppressWarnings("unused")
-	private String cleanPathString(String path){
+	private String cleanPathString(String path) {
 		String result = "";
 		if (!path.startsWith("/")) {
 			String basedir = GlobalEnv.getBaseDir();
@@ -815,15 +819,14 @@ public class HTMLFunction extends Function {
 
 	private Element FuncImagefile() {
 		checkArgsNumber(1);
-		
+
 		FuncArg src = Args.get(0);
 
 		Element result = new Element(Tag.valueOf("img"), "");
 		result.attributes().addAll(getAttributes());
-		
-		String srcString = ((Element)src.createNode()).text();
+
+		String srcString = ((Element) src.createNode()).text();
 		result.attr("src", srcString);
-		
 
 		if (decos.containsKey("lightbox")) {
 			Date d1 = new Date();
@@ -847,8 +850,7 @@ public class HTMLFunction extends Function {
 				link.appendChild(img);
 			}
 		} else {
-			result.addClass(HTMLEnv
-					.getClassID(this));
+			result.addClass(HTMLEnv.getClassID(this));
 		}
 		return result;
 	}
@@ -1227,9 +1229,6 @@ public class HTMLFunction extends Function {
 		return result;
 	}
 
-	// tk
-	// end////////////////////////////////////////////////////////////////////////////
-
 	public static String opt(String s) {
 		if (s.contains("\"")) {
 			s = s.replaceAll("\"", "");
@@ -1243,63 +1242,57 @@ public class HTMLFunction extends Function {
 		return s;
 	}
 
-	private Element FuncYoutube() {
+	private Element funcYoutube() {
 		checkArgsNumber(1);
 		FuncArg src = Args.get(0);
-		checkArgType(src, HTMLC0.class, 0);
-		String srcString = "http://www.youtube.com/embed/" + ((Element)src.createNode()).text();
-		
+		checkArgType(src, 0, HTMLC0.class);
+		String srcString = "http://www.youtube.com/embed/"
+				+ ((Element) src.createNode()).text();
+
 		Element iframe = new Element(Tag.valueOf("iframe"), "");
 		iframe.attr("allowFullScreen");
 		iframe.attr("frameborder", "0");
 		iframe.attr("src", srcString);
 		iframe.attributes().addAll(getAttributes());
-		
-		if(decos.containsKey("width"))
+
+		if (decos.containsKey("width"))
 			iframe.attr("width", decos.getStr("width"));
 		else
 			iframe.attr("width", "560");
-		
-		if(decos.containsKey("height"))
+
+		if (decos.containsKey("height"))
 			iframe.attr("height", decos.getStr("height"));
 		else
 			iframe.attr("height", "315");
-			
+
 		return iframe;
 	}
 
-	private Element FuncMovieFile() {
+	private Element funcVideoFile() {
+		checkArgsNumber(1);
+		FuncArg src = Args.get(0);
+		checkArgType(src, 0, HTMLC1.class, HTMLC0.class);
+
 		Element video = new Element(Tag.valueOf("video"), "");
 
-		String path = this.getAtt("path", ".");
-		if (!path.startsWith("/")) {
-			String basedir = GlobalEnv.getBaseDir();
-			if (basedir != null && basedir != "") {
-				path = GlobalEnv.getBaseDir() + "/" + path;
-			}
+		for (Element e : ((Element) src.createNode()).getElementsByClass("att")) {
+			String srcString = e.text();
+			String extension = srcString.split("\\.")[srcString.split("\\.").length - 1];
+			video.appendElement("source").attr("type", "video/" + extension)
+					.attr("src", srcString);
 		}
 
-		video.addClass(HTMLEnv.getClassID(this));
+		video.append("Your browser does not support the video tag.");
 
-		if (decos.containsKey("class"))
-			video.addClass(decos.getStr("class"));
+		video.attributes().addAll(getAttributes());
 
-		video.attr("src", path + "/" + this.getAtt("default"));
-		video.attr("autobuffer", "");
-		video.attr("controls", "");
-		Element p = new Element(Tag.valueOf("p"), "");
-		p.append("Try this page in Safari 4! Or you can ");
-		p.appendChild(JsoupFactory.createLink(
-				path + "/" + this.getAtt("default"), "", "download the video"));
-		p.append(" instead");
-		video.appendChild(p);
 		return video;
 	}
 
-	private Element FuncMeter() {
+	private Element funcMeter() {
 		/*
-		 * <div><script type="text/javascript">addEvent(window,"load",function() {
-		 * var layout = [ 200, //width 40, //height 170, //m_width 25,
+		 * <div><script type="text/javascript">addEvent(window,"load",function()
+		 * { var layout = [ 200, //width 40, //height 170, //m_width 25,
 		 * //m_height 100, //max 0, //min 30, //low 70 //high ] var color = [
 		 * "#FF0000", //max_color "#00FFFF", //low_color "#00FFFF", //high_color
 		 * "#00FF00", //mid_color "#CCCCCC" //bg_color ]
@@ -1310,15 +1303,16 @@ public class HTMLFunction extends Function {
 		meterId++;
 		checkArgsNumber(1);
 		FuncArg attribute = Args.get(0);
-		checkArgType(attribute, HTMLAttribute.class, 0);
-		
+		checkArgType(attribute, 0, HTMLAttribute.class);
+
 		Element result = new Element(Tag.valueOf("div"), "");
-		Element script = new Element(Tag.valueOf("script"), "").attr("type", "text/javascript");
+		Element script = new Element(Tag.valueOf("script"), "").attr("type",
+				"text/javascript");
 		Element canvas = new Element(Tag.valueOf("canvas"), "");
 		String scriptString = "window.onload = function() { \nvar layout = [";
-		
+
 		canvas.attr("id", "meter" + meterId);
-		
+
 		HashMap<String, String> propertiesHashMap = new HashMap<String, String>();
 		{ // The order in which we put the values here is important.
 			propertiesHashMap.put("width", "200");
@@ -1335,34 +1329,35 @@ public class HTMLFunction extends Function {
 			propertiesHashMap.put("mid_color", "#00FF00");
 			propertiesHashMap.put("bg_color", "#CCCCCC");
 		}
-		
-		for(String deco : decos.keySet()){
-			if(propertiesHashMap.keySet().contains(deco))
+
+		for (String deco : decos.keySet()) {
+			if (propertiesHashMap.keySet().contains(deco))
 				propertiesHashMap.put(deco, decos.getStr(deco));
 		}
-		
-		for(Entry<String,String> currentProperty : propertiesHashMap.entrySet()){
+
+		for (Entry<String, String> currentProperty : propertiesHashMap
+				.entrySet()) {
 			String key = currentProperty.getKey();
 			String value = currentProperty.getValue();
 			scriptString += "\"" + value + "\"";
-			if(key.equalsIgnoreCase("high"))
-				scriptString+= "]; \nvar color = [";
+			if (key.equalsIgnoreCase("high"))
+				scriptString += "]; \nvar color = [";
 			else
-				scriptString+= ",";
-			if(key.equalsIgnoreCase("width") || key.equalsIgnoreCase("height"))
+				scriptString += ",";
+			if (key.equalsIgnoreCase("width") || key.equalsIgnoreCase("height"))
 				canvas.attr(key, value);
 		}
-		
+
 		scriptString += "]; \ndraw(\"meter" + meterId + "\",layout,color,";
-		scriptString += ((Element)(attribute.createNode())).text();
+		scriptString += ((Element) (attribute.createNode())).text();
 		scriptString += ");}</script>";
 		script.appendChild(new DataNode(scriptString, ""));
-		
+
 		result.appendChild(canvas);
-		htmlEnv.getHtmlEnv1().head().appendChild(JsoupFactory.createJsElement("js/canvas.js"));
+		htmlEnv.getHtmlEnv1().head()
+				.appendChild(JsoupFactory.createJsElement("js/canvas.js"));
 		htmlEnv.getHtmlEnv1().head().appendChild(script);
-		
-		
+
 		return result;
 	}
 

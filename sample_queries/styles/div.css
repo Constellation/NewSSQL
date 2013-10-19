@@ -1,21 +1,14 @@
-/* 
-Box direction control. By default direct children are
-displayed horizontally. (display: box default)
-vertical : direct children will be displayed vertically.
-
-Note : horizontal is often used as a default container.
-*/
-.horizontal > *{
+.horizontal_display > *{
 	border: 1px solid;
 	display:inline-block;
 }
 
-.vertical > *{
+.vertical_display > *{
 	border-bottom:1px solid;
 	display:block;
 }
 
-.vertical > *:first-child{
+.vertical_display > *:first-child{
 	border-top: 1px solid;
 }
 
@@ -71,8 +64,4 @@ Note : horizontal is often used as a default container.
 
 input[type="submit"]{
 	
-}
-
-table{
-	border:1px solid;
 }

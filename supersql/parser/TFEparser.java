@@ -553,20 +553,10 @@ public class TFEparser {
 
 		Log.out("[func*TFE]=" + read_tfe.makele0());
 
-		if (read_tfe instanceof Connector && ((Operator) read_tfe).getDimension() == 1) {
-			// many Attribute
-			for (int i = 0; i < ((Connector) read_tfe).tfeItems; i++) {
-				fnc.setArg(makeFuncArg(((Connector) read_tfe).gettfe(i)));
-				if (fn.equals("select") && i == 0) {
-					fnc.addDeco("select", att_tmp);
-				}
-			}
-		} else {
-			// only one Attribute
-			fnc.setArg(makeFuncArg(read_tfe));
-			if (fn.equals("select")) {
-				fnc.addDeco("select", att_tmp);
-			}
+		// only one Attribute
+		fnc.setArg(makeFuncArg(read_tfe));
+		if (fn.equals("select")) {
+			fnc.addDeco("select", att_tmp);
 		}
 
 		this.setDecoration(fnc);

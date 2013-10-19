@@ -117,8 +117,8 @@ public class HTMLC3 extends Connector {
         // TODO
         htmlEnv.fileName = parentfile;
 
-        //result.appendChild(cssDefTd(HTMLEnv.getClassID(this), this.decos));
         htmlEnv.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
+        HTMLUtils.processDecos(result, decos);
         return result;
     }
 

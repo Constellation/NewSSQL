@@ -29,6 +29,7 @@ public class HTMLC2 extends Connector {
 			return createForm(dataInfo, 2);
 
 		Element result = new Element(Tag.valueOf("table"), "");
+		nodeCreationPreProcesss(result);
 		int i = 0;
 		while (this.hasMoreItems()) {
 			ITFE tfe = (ITFE) tfes.get(i);
@@ -43,22 +44,14 @@ public class HTMLC2 extends Connector {
 		
 		return result;
 	}
-
-	@Override
-	public Element createNode(ExtList<ExtList<String>> dataInfo) {
-		if(GlobalEnv.getLayout().equalsIgnoreCase("table"))
-    		return createTableNode(dataInfo);
-		this.setDataList(dataInfo);
-
-		if (decos.containsKey("insert"))
-			return createForm(dataInfo, 0);
-		if (decos.containsKey("delete"))
-			return createForm(dataInfo, 1);
-		if (decos.containsKey("update"))
-			return createForm(dataInfo, 2);
-
-		Element result = new Element(Tag.valueOf("div"), "");
-		result.addClass("vertical").addClass("con2").addClass("box");
+	
+	private void nodeCreationPreProcesss(Element result){
+		if (decos.containsKey("layout")
+				&& decos.getStr("layout").equalsIgnoreCase("standard")
+				|| GlobalEnv.getLayout().equalsIgnoreCase("standard"))
+    		result.addClass("vertical_display");
+    	else
+    		result.addClass("vertical");
 
 		htmlEnv.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
 
@@ -75,7 +68,28 @@ public class HTMLC2 extends Connector {
 						result.attr("class") + " " + decos.getStr("class"));
 			}
 		}
+		HTMLUtils.processDecos(result, decos);
+	}
 
+	@Override
+	public Element createNode(ExtList<ExtList<String>> dataInfo) {
+		if ((GlobalEnv.getLayout().equalsIgnoreCase("table") && !decos
+				.containsKey("layout"))
+				|| (decos.containsKey("layout") && decos.getStr("layout")
+						.equalsIgnoreCase("table")))
+    		return createTableNode(dataInfo);
+		this.setDataList(dataInfo);
+
+		if (decos.containsKey("insert"))
+			return createForm(dataInfo, 0);
+		if (decos.containsKey("delete"))
+			return createForm(dataInfo, 1);
+		if (decos.containsKey("update"))
+			return createForm(dataInfo, 2);
+
+		Element result = new Element(Tag.valueOf("div"), "");
+		result.addClass("con2").addClass("box");
+		nodeCreationPreProcesss(result);
 		int i = 0;
 
 		while (this.hasMoreItems()) {

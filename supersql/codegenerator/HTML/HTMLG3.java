@@ -91,9 +91,6 @@ public class HTMLG3 extends Grouper {
             for(Element elt : html_env.createHeader()){
             	toWrite.head().appendChild(elt);
             }
-            //TODO
-//            html_env.getFooter();
-//            result.appendChild(toWrite);
             try {
 				Writer out = new BufferedWriter(new OutputStreamWriter(
 					    new FileOutputStream(html_env.fileName), "UTF-8"));
