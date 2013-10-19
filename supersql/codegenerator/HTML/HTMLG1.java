@@ -19,7 +19,6 @@ public class HTMLG1 extends Grouper {
 
 	public Element createTableNode(ExtList<ExtList<String>> dataInfo) {
 		this.setDataList(dataInfo);
-		html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
 
 		Element result = new Element(Tag.valueOf("table"), "");
 		Element tr = result.appendElement("tr");
@@ -46,7 +45,6 @@ public class HTMLG1 extends Grouper {
 						.equalsIgnoreCase("table")))
 			return createTableNode(dataInfo);
 		this.setDataList(dataInfo);
-		html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
 
 		Element result = new Element(Tag.valueOf("div"), "");
 		result.attr("class", "box group1");

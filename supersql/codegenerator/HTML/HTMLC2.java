@@ -53,15 +53,11 @@ public class HTMLC2 extends Connector {
     	else
     		result.addClass("vertical");
 
-		htmlEnv.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
-
 		if (!GlobalEnv.isOpt()) {
 			if (!htmlEnv.isOutlineMode()) {
 				result.attr("frame", "void");
 			}
-			if (htmlEnv.writtenClassId.contains(HTMLEnv.getClassID(this))) {
 				result.attr("class", HTMLEnv.getClassID(this));
-			}
 
 			if (decos.containsKey("class")) {
 				result.attr("class",

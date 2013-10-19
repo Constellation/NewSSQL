@@ -133,7 +133,6 @@ public class HTMLFunction extends Function {
 		}
 		// tk end////////////////////////////////////
 		Log.out("TFEId = " + HTMLEnv.getClassID(this));
-		htmlEnv.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
 		return null;
 	}
 

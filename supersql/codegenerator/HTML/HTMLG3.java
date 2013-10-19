@@ -109,7 +109,6 @@ public class HTMLG3 extends Grouper {
         html_env.header = parentheader;
         html_env.footer = parentfooter;
         html_env.nextBackFile = parentnextbackfile;
-        html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
         return null;
     }
 

@@ -49,12 +49,9 @@ public class HTMLC1 extends Connector {
     	else
     		result.addClass("horizontal");
 
-        htmlEnv.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
         if(!GlobalEnv.isOpt()){
         	
-        	if(htmlEnv.writtenClassId.contains(HTMLEnv.getClassID(this))){
-        		result.addClass(HTMLEnv.getClassID(this));
-        	}
+        	result.addClass(HTMLEnv.getClassID(this));
 
         	if(decos.containsKey("class")){
         		result.addClass(decos.getStr("class"));

@@ -48,14 +48,11 @@ public class HTMLAttribute extends Attribute {
 	public Element createNode(ExtList data_info) {
 		Element result = new Element(Tag.valueOf("span"), "");
 		result.addClass("box");
-		htmlEnv.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
 
 		if (!(HTMLEnv.getFormItemFlg() && HTMLEnv.getFormItemName().equals(
 				formHtml[2]))) {
 			result.addClass("att");
-			if (htmlEnv.writtenClassId.contains(HTMLEnv.getClassID(this))) {
-				result.addClass(HTMLEnv.getClassID(this));
-			}
+			result.addClass(HTMLEnv.getClassID(this));
 			if (decos.containsKey("class")) {
 				result.addClass(decos.getStr("class"));
 			}

@@ -21,7 +21,7 @@ public class Function extends Operand {
 		Name = name;
 	}
 
-	public void setArg(FuncArg fa) {
+	public void addArg(FuncArg fa) {
 		Args.add(fa);
 	}
 

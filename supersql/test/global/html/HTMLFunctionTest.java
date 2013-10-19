@@ -16,7 +16,7 @@ public class HTMLFunctionTest {
 	private static final String[] testFilesNames = { "link.sql", "image.sql", "youtube.sql" };
 	
 	/**
-	 * GENERATE HTML link({e.name},{ "foo" + e.id + ".html"}, bar='toto') FROM employee e
+	 * GENERATE HTML link(e.name,{ "foo" + e.id + ".html"}, bar='toto') FROM employee e
 	 * 
 	 * @author thomas@oxynum.fr (Thomas THIMOTHEE)
 	 */

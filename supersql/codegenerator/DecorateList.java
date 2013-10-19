@@ -16,13 +16,13 @@ public class DecorateList extends Hashtable<String, Object> {
 	private static int classIdPointer = 1;
 	private Hashtable<String, Object> conditions = new Hashtable<String, Object>();
 	private Hashtable<String, Integer> classesIds = new Hashtable<String, Integer>();
-	
+
 	public String getStr(String s) {
 		Object o = this.get(s);
-		if (o instanceof String){
+		if (o instanceof String) {
 			String ret = (String) (this.get(s));
-			if(ret.startsWith("\"") && ret.endsWith("\"")){
-				ret = ret.substring(1,ret.length()-1);
+			if (ret.startsWith("\"") && ret.endsWith("\"")) {
+				ret = ret.substring(1, ret.length() - 1);
 			}
 			return ret;
 		}
@@ -47,29 +47,29 @@ public class DecorateList extends Hashtable<String, Object> {
 				Object val = this.get(key);
 				if (val == null) {
 					dbgout.prt(count + 1, "<Deco Key=" + key + "/>");
-				} else	if (val instanceof String) {
-					//start oka
-					if(key.equals("update")){
+				} else if (val instanceof String) {
+					// start oka
+					if (key.equals("update")) {
 						Log.out("@ update found @");
 						Connector.updateFlag = true;
-					}else if(key.equals("insert")){
+					} else if (key.equals("insert")) {
 						Log.out("@ insert found @");
 						Connector.insertFlag = true;
-					}else if(key.equals("delete")){
+					} else if (key.equals("delete")) {
 						Log.out("@ delete found @");
 						Connector.deleteFlag = true;
-					}else if(key.equals("login")){
+					} else if (key.equals("login")) {
 						Log.out("@ login found @");
 						Connector.loginFlag = true;
-					}else if(key.equals("logout")){
+					} else if (key.equals("logout")) {
 						Log.out("@ logout found @");
 						Connector.logoutFlag = true;
 					}
-					//end oka
-					
+					// end oka
+
 					dbgout.prt(count + 1, "<Deco Key=" + key
-								+ " type=value value=" + val + "/>");
-						
+							+ " type=value value=" + val + "/>");
+
 				} else if (val instanceof ITFE) {
 					dbgout.prt(count + 1, "<Deco Key=" + key + " type=TFE>");
 					((ITFE) val).debugout(count + 2);
@@ -80,52 +80,53 @@ public class DecorateList extends Hashtable<String, Object> {
 					dbgout.prt(count + 1, "</Deco>");
 				}
 			}
-			
+
 			dbgout.prt(count, "</DecorateList>");
 		}
 	}
 
 	public synchronized Object put(Object key, Object value, String condition) {
-		if(getConditions().containsKey(condition)){
+		if (getConditions().containsKey(condition)) {
 			Object cond = getConditions().get(condition);
 			ArrayList<String> conditionArray = new ArrayList<String>();
-			if(cond instanceof String){
-				conditionArray.add((String)(key));
+			if (cond instanceof String) {
+				conditionArray.add((String) (key));
 				conditionArray.add((String) cond);
-			}else{
-				((ArrayList<String>) cond).addAll((Collection<? extends String>) cond);
+			} else {
+				((ArrayList<String>) cond)
+						.addAll((Collection<? extends String>) cond);
 			}
 			getConditions().put(condition, conditionArray);
-		}else{
+		} else {
 			getConditions().put(condition, (String) key);
 		}
-		if(!getClassesIds().containsKey(condition))
+		if (!getClassesIds().containsKey(condition))
 			getClassesIds().put((String) condition, classIdPointer++);
-		
+
 		if (this.containsKey(key)) {
 			String[] valueArray = new String[2];
-			if(condition.startsWith("!")){
+			if (condition.startsWith("!")) {
 				valueArray[1] = (String) value;
 				valueArray[0] = (String) this.get(key);
-			}else{
+			} else {
 				valueArray[0] = (String) value;
 				valueArray[1] = (String) this.get(key);
 			}
-			
+
 			return super.put((String) key, valueArray);
 		} else {
-			return super.put((String) key,value);
+			return super.put((String) key, value);
 		}
 	}
 
 	public Hashtable<String, Object> getConditions() {
 		return conditions;
 	}
-	
-	public int getConditionsSize(){
-		int result=0;
+
+	public int getConditionsSize() {
+		int result = 0;
 		for (String val : conditions.keySet()) {
-			if(!val.startsWith("!"))
+			if (!val.startsWith("!"))
 				result++;
 		}
 		return result;
@@ -142,21 +143,29 @@ public class DecorateList extends Hashtable<String, Object> {
 	public void setClassesIds(Hashtable<String, Integer> classesIds) {
 		this.classesIds = classesIds;
 	}
-	
-	public String getDecorationValueFromDecorationKeyAndCondition(String decorationKey, String condition){
+
+	public String getDecorationValueFromDecorationKeyAndCondition(
+			String decorationKey, String condition) {
 		Object decorationValue = this.get(decorationKey);
-		if(decorationValue instanceof String[]){
-			if(condition.startsWith("!")){
-				this.put(decorationKey, ((String[])(decorationValue))[0]);
-				decorationValue = ((String[])(decorationValue))[1];
-			}else{
-				this.put(decorationKey, ((String[])(decorationValue))[1]);
-				decorationValue = ((String[])(decorationValue))[0];
+		if (decorationValue instanceof String[]) {
+			if (condition.startsWith("!")) {
+				this.put(decorationKey, ((String[]) (decorationValue))[0]);
+				decorationValue = ((String[]) (decorationValue))[1];
+			} else {
+				this.put(decorationKey, ((String[]) (decorationValue))[1]);
+				decorationValue = ((String[]) (decorationValue))[0];
 			}
-		}else{
+		} else {
 			this.remove(decorationKey);
 		}
-		return (String)decorationValue;
+		return (String) decorationValue;
+	}
+
+	public void alias(String oldKey, String newKey) {
+		if (containsKey(oldKey)) {
+			put(newKey, getStr(oldKey));
+			remove(oldKey);
+		}
 	}
 
 }

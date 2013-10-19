@@ -63,7 +63,6 @@ public class HTMLG2 extends Grouper {
     		result.addClass("vertical_display");
     	else
     		result.addClass("vertical");
-		html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
 
 		if (!GlobalEnv.isOpt()) {
 			if (html_env.embedFlag)

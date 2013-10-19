@@ -3,8 +3,6 @@ package supersql.codegenerator.HTML;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Map.Entry;
 import java.util.Vector;
 
 import org.jsoup.Jsoup;
@@ -21,11 +19,10 @@ import supersql.codegenerator.ITFE;
 import supersql.codegenerator.LocalEnv;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
-import supersql.common.Utils;
 import supersql.parser.SSQLparser;
 
 public class HTMLEnv extends LocalEnv {
-	private Document htmlEnv1;
+	private static Document htmlDocument;
 	public Vector<String> writtenClassId;
 	protected Connector connector;
 	public Vector<String> notWrittenClassId = new Vector<String>();
@@ -40,20 +37,19 @@ public class HTMLEnv extends LocalEnv {
 	public StringBuffer css;
 	protected static int IDCounter = 0; // add oka
 	protected static int IDOld = 0; // add oka
-	protected String charset = null; // added by goto 20120715
-	private static boolean charsetFlg = false; // added by goto 20120715
 	protected StringBuffer meta = new StringBuffer();
 	protected StringBuffer div = new StringBuffer();
 	protected StringBuffer title = new StringBuffer();
 	protected StringBuffer titleClass = new StringBuffer();
 	public StringBuffer cssFile = new StringBuffer();
-	public StringBuffer jsFile = new StringBuffer();	//added by goto 20130703
-	public StringBuffer cssjsFile = new StringBuffer();	//added by goto 20130703
+	public StringBuffer jsFile = new StringBuffer(); // added by goto 20130703
+	public StringBuffer cssjsFile = new StringBuffer(); // added by goto
+														// 20130703
 	public String tableBorder = new String("1");
 	public boolean embedFlag = false;
 	public int embedCount = 0;
 	public int haveClass = 0;
-	
+
 	// for ajax
 	public String ajaxQuery = new String();
 	public String ajaxCond = new String();
@@ -61,7 +57,7 @@ public class HTMLEnv extends LocalEnv {
 	public int inEffect = 0;
 	public int outEffect = 0;
 	public boolean hasDispDiv = false;
-	
+
 	// for drag
 	public StringBuffer script = new StringBuffer();
 	public int scriptNum = 0;
@@ -101,20 +97,19 @@ public class HTMLEnv extends LocalEnv {
 	public static int searchId = 0;
 	public static String condName = "";
 	public static String cond = "";
-	
-    public static String bg = "";			//added by goto 20130311  "background"
-	
+
+	public static String bg = ""; // added by goto 20130311 "background"
+
 	public HTMLEnv() {
 		// TODO Put the file name in the configuration
 		File input = new File("template.html");
 		try {
-			this.htmlEnv1 = Jsoup.parse(input, "UTF-8");
+			htmlDocument = Jsoup.parse(input, "UTF-8");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
+
 	public Elements createHeader() {
 		Attributes attributes = new Attributes();
 		attributes.put("type", "text/css");
@@ -147,21 +142,21 @@ public class HTMLEnv extends LocalEnv {
 			if (js != null) {
 				if (js.endsWith("/"))
 					js = js.substring(0, js.lastIndexOf("/"));
-				headElements.add(
-						JsoupFactory.createJsElement(js + "/prototype.js"));
+				headElements.add(JsoupFactory.createJsElement(js
+						+ "/prototype.js"));
 				headElements.add(JsoupFactory.createJsElement(js + "/ajax.js"));
 			} else {
 				headElements
-						.add(
-								JsoupFactory.createJsElement("http://localhost:8080/tab/prototype.js"));
-				headElements.add(
-						JsoupFactory.createJsElement("http://localhost:8080/tab/ajax.js"));
+						.add(JsoupFactory
+								.createJsElement("http://localhost:8080/tab/prototype.js"));
+				headElements.add(JsoupFactory
+						.createJsElement("http://localhost:8080/tab/ajax.js"));
 			}
 
 			// Insertion of javascript files
-			ArrayList<Element> elements = JsoupFactory.createJsElements("js/lightbox.js",
-					"js/scriptaculous.js?load=effects", "js/prototype.js",
-					"build/animation/animation.js",
+			ArrayList<Element> elements = JsoupFactory.createJsElements(
+					"js/lightbox.js", "js/scriptaculous.js?load=effects",
+					"js/prototype.js", "build/animation/animation.js",
 					"build/container/container.js", "build/tabview/tabview.js",
 					"build/element/element-beta.js", "prototype.js",
 					"ssqlajax.js", "build/yahoo/yahoo-min.js",
@@ -180,425 +175,153 @@ public class HTMLEnv extends LocalEnv {
 					"css/lightbox.css", "screen" }, new String[] {
 					"css/tabview-core.css", "screen" }, new String[] {
 					"css/panel.css", "screen" });
-			
+
 			headElements.addAll(elements);
-			
+
 			Attributes jsType = new Attributes();
 			attributes.put("type", "text/javascript");
 			Element element = new Element(Tag.valueOf("script"), "", jsType);
 			element.text(script.toString());
 			headElements.add(element);
 		}
-		ArrayList<Element> boxStylesheets = JsoupFactory.createStylesheetElements("styles/box.css", "styles/div.css", "styles/reset.css");
-		
-		for(Element elt : headElements){
-			htmlEnv1.head().appendChild(elt);
+		ArrayList<Element> boxStylesheets = JsoupFactory
+				.createStylesheetElements("styles/box.css", "styles/div.css",
+						"styles/reset.css");
+
+		for (Element elt : headElements) {
+			htmlDocument.head().appendChild(elt);
 		}
-		for(Element elt : boxStylesheets){
-			htmlEnv1.head().appendChild(elt);
+		for (Element elt : boxStylesheets) {
+			htmlDocument.head().appendChild(elt);
 		}
 		return headElements;
 	}
 
 	public void createSSQLForm() {
 		if (Connector.loginFlag) {
-			htmlEnv1.body().getElementById("ssql").appendChild(createLoginForm());
+			htmlDocument.body().getElementById("ssql")
+					.appendChild(createLoginForm());
 		} else if (Connector.logoutFlag) {
-			htmlEnv1.body().getElementById("ssql").appendChild(createLogoutForm());
+			htmlDocument.body().getElementById("ssql")
+					.appendChild(createLogoutForm());
 		} else if (Connector.insertFlag || Connector.deleteFlag
 				|| Connector.updateFlag) {
 			Element form = createInsertDeleteUpdateForm();
 			if (Connector.insertFlag)
-				form.appendChild(JsoupFactory.createInput("hidden", "sql_param", "insert"));
+				form.appendChild(JsoupFactory.createInput("hidden",
+						"sql_param", "insert"));
 			if (Connector.deleteFlag)
-				form.appendChild(JsoupFactory.createInput("hidden", "sql_param", "delete"));
+				form.appendChild(JsoupFactory.createInput("hidden",
+						"sql_param", "delete"));
 			if (Connector.updateFlag)
-				form.appendChild(JsoupFactory.createInput("hidden", "sql_param", "update"));
+				form.appendChild(JsoupFactory.createInput("hidden",
+						"sql_param", "update"));
 
-			form.appendChild(JsoupFactory.createInput("submit", "login", "Let's go!"));
-			htmlEnv1.appendChild(form);
+			form.appendChild(JsoupFactory.createInput("submit", "login",
+					"Let's go!"));
+			htmlDocument.appendChild(form);
 		}
 	}
-	
-	public void createFooter(){
+
+	public void createFooter() {
 		fillHeadTag();
 	}
 
-	public void includeDecorationProperties(String classId, DecorateList decos) {
-		haveClass = 0;
-		// TODO refactor this part
-		if (writtenClassId.contains(classId)) {
-			haveClass = 1;
-			Log.out("==> already created style");
-			return;
-		} else if (notWrittenClassId != null
-				&& notWrittenClassId.contains(classId)) {
-			Log.out("==> style is null. not created style");
-			return;
-		}
-
-		if (decos.containsKey("class")) {
-			cssclass.put(classId, decos.getStr("class"));
-			Log.out("class =" + classId + decos.getStr("class"));
-		}
-
-		if (decos.containsKey("divalign"))
-			div.append(" align=" + decos.getStr("divalign"));
-
-		if (decos.containsKey("title")) {
-			if (decos.contains("title_class")) {
-				Attributes titleAttribute = new Attributes();
-				titleAttribute.put("class", decos.getStr("title_class"));
-				Element title = new Element(Tag.valueOf("title"), "",
-						titleAttribute);
-				title.html(decos.getStr("title"));
-				htmlEnv1.head().appendChild(title);
-			} else {
-				Element title = new Element(Tag.valueOf("title"), "");
-				title.html(decos.getStr("title"));
-				htmlEnv1.appendChild(title);
-			}
-
-			// TODO something to put a h1 tag for the title
-		}
-		
-		if (decos.containsKey("tableborder"))
-			tableBorder = decos.getStr("tableborder");
-
-		computeConditionalDecorations(decos, css);
-
-		// TODO a lot of decorations should be added but in css file, we should
-		// call another method here
-
-		Attributes attributes = new Attributes();
-		
-		// added by goto 20120715 start
-		if (decos.containsKey("charset"))
-			charset = decos.getStr("charset");
-		else if (!charsetFlg)
-			charset = "UTF-8"; // default charset = UTF-8
-		if (!charsetFlg && charset != null) {
-			attributes.put("http-equiv", "Content-Type");
-			attributes.put("content", "text/html");
-			attributes.put("charset", charset);
-			htmlEnv1.head().appendChild(
-					new Element(Tag.valueOf("meta"), "", attributes));
-			charsetFlg = true;
-		}
-
-		if (decos.containsKey("description")) {
-			attributes = new Attributes();
-			attributes.put("name", "Description");
-			attributes.put("content", decos.getStr("description"));
-			htmlEnv1.head().appendChild(
-					new Element(Tag.valueOf("meta"), "", attributes));
-		}
-		if (decos.containsKey("keyword")) {
-			attributes = new Attributes();
-			attributes.put("name", "Keyword");
-			attributes.put("content", decos.getStr("keyword"));
-			htmlEnv1.head().appendChild(
-					new Element(Tag.valueOf("meta"), "", attributes));
-		}
-		if (decos.containsKey("author")) {
-			attributes = new Attributes();
-			attributes.put("name", "Author");
-			attributes.put("content", decos.getStr("author"));
-			htmlEnv1.head().appendChild(
-					new Element(Tag.valueOf("meta"), "", attributes));
-		}
-		if (decos.containsKey("pragma")) {
-			attributes = new Attributes();
-			attributes.put("name", "Pragma");
-			attributes.put("content", decos.getStr("pragma"));
-			htmlEnv1.head().appendChild(
-					new Element(Tag.valueOf("meta"), "", attributes));
-		}
-		if (decos.containsKey("robot")) {
-			attributes = new Attributes();
-			attributes.put("name", "Robot");
-			attributes.put("content", decos.getStr("robot"));
-			htmlEnv1.head().appendChild(
-					new Element(Tag.valueOf("meta"), "", attributes));
-		}
-
-		if ("".length() > 0) {
-			// TODO
-		} else {
-			Log.out("==> style is null. not created style");
-			notWrittenClassId.addElement(classId);
-		}
-	}
-	
-	public void fillHeadTag(){
+	public void fillHeadTag() {
 		if (GlobalEnv.isAjax()) {
 			String js = GlobalEnv.getJsDirectory();
 			if (js.endsWith("/"))
 				js = js.substring(0, js.lastIndexOf("/"));
-			htmlEnv1.head().appendChild(JsoupFactory.createJsElement(js + "/prototype.js"));
-			htmlEnv1.head().appendChild(JsoupFactory.createJsElement(js+ "/ajax.js"));
+			htmlDocument.head().appendChild(
+					JsoupFactory.createJsElement(js + "/prototype.js"));
+			htmlDocument.head().appendChild(
+					JsoupFactory.createJsElement(js + "/ajax.js"));
 
-			ArrayList<Element> javascripts = JsoupFactory.createJsElements("build/yahoo/yahoo-min.js", "build/event/event-min.js", "build/dom/dom-min.js",
-					"build/dragdrop/dragdrop-min.js", "ssqlajax.js", "prototype.js", "build/element/element-beta.js", "build/tabview/tabview.js",
-					"build/container/container.js", "build/animation/animation.js", "js/prototype.js", "js/scriptaculous.js?load=effects", "js/lightbox.js");
-			
-			for(Element e : javascripts){
-				htmlEnv1.head().appendChild(e);
+			ArrayList<Element> javascripts = JsoupFactory.createJsElements(
+					"build/yahoo/yahoo-min.js", "build/event/event-min.js",
+					"build/dom/dom-min.js", "build/dragdrop/dragdrop-min.js",
+					"ssqlajax.js", "prototype.js",
+					"build/element/element-beta.js",
+					"build/tabview/tabview.js", "build/container/container.js",
+					"build/animation/animation.js", "js/prototype.js",
+					"js/scriptaculous.js?load=effects", "js/lightbox.js");
+
+			for (Element e : javascripts) {
+				htmlDocument.head().appendChild(e);
 			}
-			
-			ArrayList<Element> stylesheets = JsoupFactory.createStylesheetElements("build/tabview/assets/border_tabs.css", "build/tabview/assets/tabview.css", "build/container/assets/container.css",
-					"css/lightbox.css", "css/tabview-core.css", "css/panel.css");
-			
-			for(Element e : stylesheets){
-				htmlEnv1.head().appendChild(e);
+
+			ArrayList<Element> stylesheets = JsoupFactory
+					.createStylesheetElements(
+							"build/tabview/assets/border_tabs.css",
+							"build/tabview/assets/tabview.css",
+							"build/container/assets/container.css",
+							"css/lightbox.css", "css/tabview-core.css",
+							"css/panel.css");
+
+			for (Element e : stylesheets) {
+				htmlDocument.head().appendChild(e);
 			}
 
 			Element inlineJavascript = new Element(Tag.valueOf("script"), "");
 			inlineJavascript.appendText(script.toString());
-			htmlEnv1.head().appendChild(inlineJavascript);
-			
+			htmlDocument.head().appendChild(inlineJavascript);
+
 		}
 
 		if (GlobalEnv.getframeworklist() == null) {
-			htmlEnv1.body().getElementById("ssql").addClass("body");
+			htmlDocument.body().getElementById("ssql").addClass("body");
 			header.append("<BODY class=\"body\">\n");
 			Element divElement = new Element(Tag.valueOf("div"), "");
 			divElement.append(title.toString());
-			//TODO
+			// TODO
 			header.append(title);
 		}
 
 		if (Connector.loginFlag) {
 			Element form = new Element(Tag.valueOf("form"), "");
-			form.attr("action", GlobalEnv.getFileDirectory() + "/servlet/supersql.form.Session").attr("method", "post").attr("name", "theForm");
-			form.appendChild(JsoupFactory.createInput("hidden", "tableinfo", SSQLparser.get_from_info_st()));
-			form.appendChild(JsoupFactory.createInput("hidden", "configfile", GlobalEnv.getconfigfile()));
-			htmlEnv1.body().getElementById("ssql").appendChild(form);
+			form.attr(
+					"action",
+					GlobalEnv.getFileDirectory()
+							+ "/servlet/supersql.form.Session")
+					.attr("method", "post").attr("name", "theForm");
+			form.appendChild(JsoupFactory.createInput("hidden", "tableinfo",
+					SSQLparser.get_from_info_st()));
+			form.appendChild(JsoupFactory.createInput("hidden", "configfile",
+					GlobalEnv.getconfigfile()));
+			htmlDocument.body().getElementById("ssql").appendChild(form);
 		}
 
 		if (Connector.logoutFlag) {
 			Element form = new Element(Tag.valueOf("form"), "");
-			form.attr("action", GlobalEnv.getFileDirectory() + "/servlet/supersql.form.Session").attr("method", "post").attr("name", "theForm");
-			form.appendChild(JsoupFactory.createInput("hidden", "configfile", GlobalEnv.getconfigfile()));
-			htmlEnv1.body().getElementById("ssql").appendChild(form);
+			form.attr(
+					"action",
+					GlobalEnv.getFileDirectory()
+							+ "/servlet/supersql.form.Session")
+					.attr("method", "post").attr("name", "theForm");
+			form.appendChild(JsoupFactory.createInput("hidden", "configfile",
+					GlobalEnv.getconfigfile()));
+			htmlDocument.body().getElementById("ssql").appendChild(form);
 		}
 
 		if (Connector.insertFlag || Connector.deleteFlag
 				|| Connector.updateFlag) {
-			Element form = new Element(Tag.valueOf("form"), "").attr("action", "/servlet/supersql.form.Update").attr("method", "post").attr("name", "theForm");
-			form.appendChild(JsoupFactory.createInput("hidden", "tableinfo", SSQLparser.get_from_info_st()));
-			form.appendChild(JsoupFactory.createInput("hidden", "configfile", GlobalEnv.getconfigfile()));
+			Element form = new Element(Tag.valueOf("form"), "")
+					.attr("action", "/servlet/supersql.form.Update")
+					.attr("method", "post").attr("name", "theForm");
+			form.appendChild(JsoupFactory.createInput("hidden", "tableinfo",
+					SSQLparser.get_from_info_st()));
+			form.appendChild(JsoupFactory.createInput("hidden", "configfile",
+					GlobalEnv.getconfigfile()));
 			if (Connector.insertFlag)
-				form.appendChild(JsoupFactory.createInput("hidden", "sql_param", "insert"));
+				form.appendChild(JsoupFactory.createInput("hidden",
+						"sql_param", "insert"));
 			if (Connector.deleteFlag)
-				form.appendChild(JsoupFactory.createInput("hidden", "sql_param", "delete"));
+				form.appendChild(JsoupFactory.createInput("hidden",
+						"sql_param", "delete"));
 			if (Connector.updateFlag)
-				form.appendChild(JsoupFactory.createInput("hidden", "sql_param", "update"));
+				form.appendChild(JsoupFactory.createInput("hidden",
+						"sql_param", "update"));
 		}
-	}
-	
-	@Deprecated
-	public void append_css_def_td(String classid, DecorateList decos) {
-		haveClass = 0;
-		Log.out("[HTML append_css_def_att] classid=" + classid);
-		Log.out("decos = " + decos);
-
-		// 鐃緒申classid鐃塾ワ申鐃緒申鐃緒申?鐃緒申鐃緒申鐃夙わ申鐃緒申鐃緒申鐃緒申鐃所し鐃緒申鐃緒申鐃夙わ申鐃緒申?鐃緒申
-		if (writtenClassId.contains(classid)) {
-			// 鐃緒申鐃緒申鐃緒申僂離鐃緒申鐃緒申鐃�鐃緒申鐃緒申鐃緒申
-			haveClass = 1;
-			Log.out("==> already created style");
-			return;
-		} else if (notWrittenClassId != null
-				&& notWrittenClassId.contains(classid)) {
-			Log.out("==> style is null. not created style");
-			return;
-		}
-
-		Log.out("==> new style");
-		Log.out("@@ creating style no " + classid);
-
-		StringBuffer cssbuf = new StringBuffer();
-
-		// tk
-		// start////////////////////////////////////////////////////////////////
-		StringBuffer metabuf = new StringBuffer();
-
-		//changed by goto 20130703  ex) cssfile=" a.css; b.css "
-		if (decos.containsKey("cssfile")) {
-			String css = decos.getStr("cssfile").trim();
-			if(!css.contains(",")){
-				cssFile.delete(0, cssFile.length());
-				if (GlobalEnv.isServlet()) {
-					cssFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\""
-							+ GlobalEnv.getFileDirectory()
-							+ css + "\">\n");
-				} else {
-					cssFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\""
-							+ css + "\">\n");
-				}
-			}else{
-				if(!css.endsWith(","))	css+=",";
-				while(css.contains(",")){
-					cssFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + css.substring(0,css.indexOf(",")).trim() + "\">\n");
-					css = css.substring(css.indexOf(",")+1);
-				}
-			}
-		} else if (cssFile.length() == 0) {
-			if (GlobalEnv.isServlet()) {
-				cssFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\""
-						+ GlobalEnv.getFileDirectory() + "/default1.css \">\n");
-			} else {
-				if (Utils.getOs().contains("Windows")) {
-					cssFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"default1.css\">\n");
-				} else {
-					// itc
-					if (GlobalEnv.isOpt())
-						cssFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"http://www.db.ics.keio.ac.jp/ssqlcss/default_opt.css\">\n");
-					else
-						cssFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"http://www.db.ics.keio.ac.jp/ssqlcss/default1.css\">\n");
-				}
-			}
-		}
-		
-		//added by goto 20130703  ex) jsfile=" a.js; b.js "
-		if (decos.containsKey("jsfile")) {
-			String js = decos.getStr("jsfile").trim();
-			if(!js.endsWith(","))	js+=",";
-			while(js.contains(",")){
-				jsFile.append("<script type=\"text/javascript\" src=\""	+ js.substring(0,js.indexOf(",")).trim() + "\"></script>\n");
-				js = js.substring(js.indexOf(",")+1);
-			}
-		}
-		
-		//added by goto 20130703  ex) require=" a.css; a.js;  b.css; b.js "
-		if (decos.containsKey("require")) {
-			String file = decos.getStr("require").trim();
-			if(!file.endsWith(","))	file+=",";
-			String fileName = "";
-			while(file.contains(",")){
-				fileName = file.substring(0,file.indexOf(",")).trim();
-				if(fileName.endsWith(".css"))
-					cssjsFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + fileName + "\">\n");
-				else if(fileName.endsWith(".js"))
-					cssjsFile.append("<script type=\"text/javascript\" src=\"" + fileName + "\"></script>\n");
-				else{
-					//added by goto 20130710  ex) require="Folder name"
-			        try{
-			            String[] fileArray = new File(fileName).getAbsoluteFile().list();
-			            for(int i = 0; i < fileArray.length; i++) {
-			                if(fileArray[i].endsWith(".css"))
-								cssjsFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + fileName + "/" + fileArray[i] + "\">\n");
-							else if(fileArray[i].endsWith(".js"))
-								cssjsFile.append("<script type=\"text/javascript\" src=\"" + fileName + "/" + fileArray[i] + "\"></script>\n");
-			            }
-			        }catch (Exception e){
-			        	System.err.println("<Warning> require=に指定されたフォルダ「"+fileName+"」が見つかりません。");
-			        }
-				}
-				
-				file = file.substring(file.indexOf(",")+1);
-			}
-		}
-
-		if (decos.containsKey("title") && title.length() == 0)
-			title.append(decos.getStr("title"));
-		if (decos.containsKey("title_class"))
-			titleClass.append(" class=\"" + decos.getStr("title_class") + "\"");
-
-		// tk end//////////////////////////////////////////////////////////////
-
-		computeConditionalDecorations(decos, css);
-
-		// 鐃緒申??
-		if (decos.containsKey("bgcolor"))
-			cssbuf.append(" background-color:" + decos.getStr("bgcolor") + ";");
-
-		if (decos.containsKey("font-color"))
-			cssbuf.append(" color:" + decos.getStr("font-color") + ";");
-		if (decos.containsKey("font color"))
-			cssbuf.append(" color:" + decos.getStr("font color") + ";");
-
-		if (decos.containsKey("font size"))
-			if (GlobalEnv.getframeworklist() == null)
-				cssbuf.append(" font-size:" + decos.getStr("font size") + ";");
-			else
-				cssbuf.append(" font-size:" + decos.getStr("font size") + "px;");
-		if (decos.containsKey("size"))
-			if (GlobalEnv.getframeworklist() == null)
-				cssbuf.append(" font-size:" + decos.getStr("size") + ";");
-			else
-				cssbuf.append(" font-size:" + decos.getStr("size") + "px;");
-
-        //added by goto 20130311  "background"
-        if (decos.containsKey("background"))
-        	bg = decos.getStr("background");
-		
-        //added by goto 20130501  "style"
-        if (decos.containsKey("style")){
-        	String style = decos.getStr("style");
-        	cssbuf.append(" " + style);
-        	if(!style.matches(".*;\\s*$"))	cssbuf.append(";");	//鐃叔醐申鐃�;"鐃緒申無鐃緒申鐃獣わ申鐃緒申鐃�
-        }
-
-		// tk
-		// start////////////////////////////////////////////////////////////////
-		// added by goto 20120715 start
-		if (decos.containsKey("charset"))
-			charset = decos.getStr("charset");
-		else if (!charsetFlg)
-			charset = "UTF-8"; // default charset = UTF-8
-		if (!charsetFlg && charset != null) {
-			metabuf.append("<meta http-equiv=\"Content-Type\" content=\"text/html; charset="
-					+ charset + "\">");
-			charsetFlg = true;
-		}
-		// added by goto 20120715 end
-
-		if (decos.containsKey("description"))
-			metabuf.append("<meta name=\"Description\" content=\""
-					+ decos.getStr("description") + "\">");
-		if (decos.containsKey("keyword"))
-			metabuf.append("<meta name=\"Keyword\" content=\""
-					+ decos.getStr("keyword") + "\">");
-		if (decos.containsKey("author"))
-			metabuf.append("<meta name=\"Author\" content=\""
-					+ decos.getStr("author") + "\">");
-		if (decos.containsKey("pragma"))
-			metabuf.append("<meta http-equiv=\"Pragma\" content=\""
-					+ decos.getStr("pragma") + "\">");
-		if (decos.containsKey("robot"))
-			metabuf.append("<meta name=\"Robot\" content=\""
-					+ decos.getStr("robot") + "\">");
-		// tk
-		// end///////////////////////////////////////////////////////////////////
-
-		if (cssbuf.length() > 0) {
-			haveClass = 1;
-			// 鐃緒申鐃緒申?鐃塾ワ申鐃緒申鐃緒申?鐃緒申鐃緒申
-			css.append("." + classid + "{");
-
-			css.append(cssbuf);
-			// 鐃緒申?鐃塾ワ申鐃緒申鐃緒申?鐃縦わ申
-			css.append(" }\n");
-
-			// 鐃緒申鐃緒申鐃緒申?鐃緒申?鐃術みワ申鐃初ス鐃緒申id鐃緒申鐃緒申存鐃緒申鐃銃わ申鐃緒申
-			writtenClassId.addElement(classid);
-		} else {
-			Log.out("==> style is null. not created style");
-			notWrittenClassId.addElement(classid);
-		}
-
-        //tk start//////////////////////////////////////////////////////////
-        if(metabuf.length() > 0)
-        {
-        	//meta.append(" ");		//commented out by goto 201303
-            meta.append(metabuf);
-         	meta.append("\n");
-
-        }
-		// tk end////////////////////////////////////////////////////////////
-
 	}
 
 	public void header_creation() {
@@ -668,13 +391,14 @@ public class HTMLEnv extends LocalEnv {
 		}
 
 		if (GlobalEnv.getframeworklist() == null) {
-            //added by goto 20130311  "background"
-	        if (!bg.equals("")){
-	        	header.append("<style type=\"text/css\">");
-	            header.append("<!-- body { background-image: url("+bg+"); } -->");
-	          	header.append("</style>\n");
-	        }
-			
+			// added by goto 20130311 "background"
+			if (!bg.equals("")) {
+				header.append("<style type=\"text/css\">");
+				header.append("<!-- body { background-image: url(" + bg
+						+ "); } -->");
+				header.append("</style>\n");
+			}
+
 			header.append("</HEAD>\n");
 
 			header.append("<BODY class=\"body\">\n");
@@ -734,7 +458,7 @@ public class HTMLEnv extends LocalEnv {
 				header.append("<input type=\"hidden\" name=\"sql_param\" value=\"update\" >");
 		}
 	}
-	
+
 	public void getHeader() {
 		int index = 0;
 		if (GlobalEnv.getframeworklist() == null) {
@@ -742,10 +466,10 @@ public class HTMLEnv extends LocalEnv {
 			header.insert(index, "<HTML>\n");
 			Log.out("<HTML>");
 			Log.out("<head>");
-	        header.append("<meta name=\"GENERATOR\" content=\" SuperSQL (Generate HTML) \">\n");	//Generator
-	        header.append(cssjsFile);	//added by goto 20130703
-	        header.append(cssFile);
-			header.append(jsFile);		//added by goto 20130703
+			header.append("<meta name=\"GENERATOR\" content=\" SuperSQL (Generate HTML) \">\n"); // Generator
+			header.append(cssjsFile); // added by goto 20130703
+			header.append(cssFile);
+			header.append(jsFile); // added by goto 20130703
 			header.append("<STYLE TYPE=\"text/css\">\n");
 			header.append("<!--\n");
 			commonCSS();
@@ -795,14 +519,14 @@ public class HTMLEnv extends LocalEnv {
 		OutlineMode = true;
 	}
 
-	public boolean isOutlineMode(){
-		if(OutlineMode){
+	public boolean isOutlineMode() {
+		if (OutlineMode) {
 			OutlineMode = false;
 			return true;
 		}
 		return false;
 	}
-	
+
 	public String getOutlineModeAtt() {
 		if (OutlineMode) {
 			OutlineMode = false;
@@ -954,7 +678,7 @@ public class HTMLEnv extends LocalEnv {
 		}
 	}
 
-	public static Element exFormNameCreateForJsoup(){
+	public static Element exFormNameCreateForJsoup() {
 		if (exchange_form_name != null) {
 			Element result = new Element(Tag.valueOf("input"), "");
 			result.attr("type", "hidden");
@@ -965,7 +689,7 @@ public class HTMLEnv extends LocalEnv {
 			return null;
 		}
 	}
-	
+
 	public static String exFormNameCreate() {
 		String ret = new String();
 		if (exchange_form_name != null) {
@@ -1045,49 +769,6 @@ public class HTMLEnv extends LocalEnv {
 		return search;
 	}
 
-	public static void computeConditionalDecorations(DecorateList decos,
-			StringBuffer css) {
-		Object decorationKeys;
-		Object decorationValue;
-		String decorationKey;
-		String condition;
-		String className;
-		for (Entry<String, Object> conditions : decos.getConditions()
-				.entrySet()) {
-			decorationKeys = conditions.getValue();
-			condition = conditions.getKey();
-
-			className = "C_" + decos.getClassesIds().get(condition);
-			css.append("." + className + "{");
-
-			if (decorationKeys instanceof String) {
-				decorationKey = (String) decorationKeys;
-				decorationValue = decos
-						.getDecorationValueFromDecorationKeyAndCondition(
-								decorationKey, condition);
-				css.append(decorationKey + " : " + decorationValue + ";");
-			} else {
-				Iterator<String> decorationKeysIterator = ((ArrayList<String>) (decorationKeys))
-						.iterator();
-				while (decorationKeysIterator.hasNext()) {
-					decorationKey = (String) decorationKeysIterator.next();
-					decorationValue = decos
-							.getDecorationValueFromDecorationKeyAndCondition(
-									decorationKey, condition);
-					css.append(decorationKey + " : " + decorationValue + ";");
-				}
-			}
-
-			css.append("}");
-		}
-	}
-
-
-
-
-
-
-
 	private Element createInsertDeleteUpdateForm() {
 		Attributes formAttributes = new Attributes();
 		formAttributes.put("action", GlobalEnv.getFileDirectory()
@@ -1095,17 +776,15 @@ public class HTMLEnv extends LocalEnv {
 		formAttributes.put("method", "post");
 		formAttributes.put("name", "theForm");
 		Element form = new Element(Tag.valueOf("form"), "", formAttributes);
-	
+
 		form.appendChild(JsoupFactory.createInput("hidden", "tableinfo",
 				SSQLparser.get_from_info_st()));
 		form.appendChild(JsoupFactory.createInput("hidden", "configfile",
 				GlobalEnv.getconfigfile()));
-	
+
 		return form;
-	
+
 	}
-
-
 
 	private Element createLogoutForm() {
 		Attributes formAttributes = new Attributes();
@@ -1114,18 +793,16 @@ public class HTMLEnv extends LocalEnv {
 		formAttributes.put("method", "post");
 		formAttributes.put("name", "logoutForm");
 		Element form = new Element(Tag.valueOf("form"), "", formAttributes);
-	
+
 		Attributes inputAttributes = new Attributes();
 		inputAttributes.put("type", "hidden");
 		inputAttributes.put("name", "configfile");
 		inputAttributes.put("value", GlobalEnv.getconfigfile());
 		Element input = new Element(Tag.valueOf("input"), "", inputAttributes);
-	
+
 		form.appendChild(input);
 		return form;
 	}
-
-
 
 	private Element createLoginForm() {
 		Attributes formAttributes = new Attributes();
@@ -1134,29 +811,62 @@ public class HTMLEnv extends LocalEnv {
 		formAttributes.put("method", "post");
 		formAttributes.put("name", "loginForm");
 		Element form = new Element(Tag.valueOf("form"), "", formAttributes);
-	
+
 		Attribute hidden = new Attribute("type", "hidden");
 		Tag input = Tag.valueOf("input");
-	
+
 		Attributes firstInputAttributes = new Attributes();
 		firstInputAttributes.put(hidden);
 		firstInputAttributes.put("name", "tableinfo");
 		firstInputAttributes.put("value", SSQLparser.get_from_info_st());
 		Element firstInput = new Element(input, "", firstInputAttributes);
-	
+
 		Attributes secondInputAttributes = new Attributes();
 		secondInputAttributes.put(hidden);
 		secondInputAttributes.put("name", "configfile");
 		secondInputAttributes.put("value", GlobalEnv.getconfigfile());
 		Element secondInput = new Element(input, "", secondInputAttributes);
-	
+
 		form.appendChild(firstInput);
 		form.appendChild(secondInput);
 		return form;
 	}
 
 	public Document getHtmlEnv1() {
-		return htmlEnv1;
+		return htmlDocument;
+	}
+
+	public static void setCharset(String charset) {
+		htmlDocument.head().getElementsByAttribute("charset")
+				.attr("charset", charset);
+	}
+
+	public static void addCssStylesheet(String string) {
+		htmlDocument.head().appendChild(
+				JsoupFactory.createStylesheetElement(string));
+	}
+
+	public static void addJsFile(String string) {
+		htmlDocument.head().appendChild(JsoupFactory.createJsElement(string));
+	}
+
+	public static void setTitle(String string) {
+		htmlDocument.head().getElementsByTag("title").html(string);
+	}
+
+	public static void addMeta(String name, String content) {
+		htmlDocument.head().appendElement("meta").attr("name", name)
+				.attr("content", content);
+	}
+
+	public static void setBackground(String str) {
+		htmlDocument.head().appendElement("style").attr("type", "text/css")
+				.html("body {background-image: " + str + ";}");
+	}
+
+	public static void addStyle(String str) {
+		htmlDocument.head().appendElement("style").attr("type", "text/css")
+				.html(str);
 	}
 
 }
