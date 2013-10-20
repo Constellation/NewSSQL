@@ -48,17 +48,21 @@ public class HTMLAttribute extends Attribute {
 	public Element createNode(ExtList data_info) {
 		Element result = new Element(Tag.valueOf("span"), "");
 		result.addClass("box");
-
+		
 		if (!(HTMLEnv.getFormItemFlg() && HTMLEnv.getFormItemName().equals(
 				formHtml[2]))) {
 			result.addClass("att");
 			result.addClass(HTMLEnv.getClassID(this));
-			if (decos.containsKey("class")) {
-				result.addClass(decos.getStr("class"));
-			}
 			if (decos.getConditions().size() > 0) {
 				result.addClass(computeStringForDecoration(data_info));
 			}
+		}
+		if(decos.containsKey("logout"))
+			return createLogoutForm(result, data_info);
+		if(decos.containsKey("input")){
+			if(decos.containsKey("pwd"))
+				return JsoupFactory.createInput("password", decos.getStr("attributeName"), "");
+			return JsoupFactory.createInput("text", decos.getStr("attributeName"), "");
 		}
 		Element div = new Element(Tag.valueOf("div"), "");
 		Element a = new Element(Tag.valueOf("a"), "");
@@ -86,12 +90,6 @@ public class HTMLAttribute extends Attribute {
 				} else
 					a = new Element(Tag.valueOf("a"), "").attr("href",
 							HTMLEnv.linkUrl);
-			}
-			if (decos.containsKey("target")) {
-				a.attr("target", decos.getStr("target"));
-			}
-			if (decos.containsKey("class")) {
-				a.addClass(decos.getStr("class"));
 			}
 
 			if (GlobalEnv.isAjax() && HTMLEnv.isPanel) {
@@ -516,6 +514,12 @@ public class HTMLAttribute extends Attribute {
 			}
 		}
 		return classNames;
+	}
+	
+	private Element createLogoutForm(Element result, ExtList data_info){
+		result = JsoupFactory.createSessionForm(result, "logout");
+		result.appendChild(JsoupFactory.createInput("submit", "commit", this.getStr(data_info)));
+		return result;
 	}
 
 }

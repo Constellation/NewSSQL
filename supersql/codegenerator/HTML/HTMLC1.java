@@ -23,15 +23,11 @@ public class HTMLC1 extends Connector {
     
     public Element createTableNode(ExtList<ExtList<String>> dataInfo){
     	this.setDataList(dataInfo);
-    	if(decos.containsKey("insert"))
-    		return createForm(dataInfo, 0);
-    	if(decos.containsKey("delete"))
-    		return createForm(dataInfo, 1);
-    	if(decos.containsKey("update"))
-    		return createForm(dataInfo, 2);
     	
     	Element result = new Element(Tag.valueOf("table"), "");
-    	nodeCreationPreProcess(result);
+    	nodeCreationPreProcess(result, dataInfo);
+    	if(result.tagName().equalsIgnoreCase("form"))
+    		return result;
     	Element tr = result.appendElement("tr");
     	int i=0;
     	while(this.hasMoreItems()){
@@ -43,7 +39,7 @@ public class HTMLC1 extends Connector {
     	return result;
     }
     
-    private void nodeCreationPreProcess(Element result){
+    private Element nodeCreationPreProcess(Element result, ExtList<ExtList<String>> dataInfo){
     	if (decos.containsKey("layout")
 				&& decos.getStr("layout").equalsIgnoreCase("standard")
 				|| GlobalEnv.getLayout().equalsIgnoreCase("standard")){
@@ -62,6 +58,16 @@ public class HTMLC1 extends Connector {
         	}
         }
         HTMLUtils.processDecos(result, decos);
+        
+    	if(decos.containsKey("insert"))
+    		return createForm(dataInfo, 0, result);
+    	if(decos.containsKey("delete"))
+    		return createForm(dataInfo, 1, result);
+    	if(decos.containsKey("update"))
+    		return createForm(dataInfo, 2, result);
+    	if(decos.containsKey("login"))
+    		return JsoupFactory.createLoginForm(this, result);
+		return result;
     }
 
     @Override
@@ -72,16 +78,12 @@ public class HTMLC1 extends Connector {
 						.equalsIgnoreCase("table")))
     		return createTableNode(dataInfo);
     	this.setDataList(dataInfo);
-    	if(decos.containsKey("insert"))
-    		return createForm(dataInfo, 0);
-    	if(decos.containsKey("delete"))
-    		return createForm(dataInfo, 1);
-    	if(decos.containsKey("update"))
-    		return createForm(dataInfo, 2);
     	
     	Element result = new Element(Tag.valueOf("div"), "");
     	result.attr("class", "con1 box nest");
-    	nodeCreationPreProcess(result);
+    	nodeCreationPreProcess(result, dataInfo);
+    	if(result.tagName().equalsIgnoreCase("form"))
+    		return result;
     	
         int i = 0;
         while (this.hasMoreItems()) {
@@ -94,7 +96,7 @@ public class HTMLC1 extends Connector {
 		return result;
     }
     
-    private Element createForm(ExtList<ExtList<String>> dataInfo, int type){
+    private Element createForm(ExtList<ExtList<String>> dataInfo, int type, Element result){
     	String inputType;
     	String submitText;
     	String inputValue;
@@ -123,7 +125,7 @@ public class HTMLC1 extends Connector {
     	}
 		
 		return JsoupFactory.createForm(this, inputType, submitText, inputValue,
-				formContentClass, formContentElementsClass);
+				formContentClass, formContentElementsClass, result);
     }
     
     public String getSymbol() {
