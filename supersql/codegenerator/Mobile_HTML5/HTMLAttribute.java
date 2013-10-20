@@ -4,6 +4,7 @@ import java.io.File;
 
 import supersql.codegenerator.Attribute;
 import supersql.codegenerator.Connector;
+import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
@@ -28,7 +29,6 @@ public class HTMLAttribute extends Attribute {
 	static String alias;	//add oka
 
 	int colum_num;			//add oka
-	
 
 	//���󥹥ȥ饯��
 	public HTMLAttribute(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
@@ -49,6 +49,13 @@ public class HTMLAttribute extends Attribute {
         if(GlobalEnv.getSelectFlg())
         	data_info = (ExtList) data_info.get(0);
         	*/
+//        //20131002  moved to HTMLEnv
+//		if(!decos.containsKey("width")){
+//			if(!HTMLEnv.divWidth.equals(""))
+//				decos.put("width", HTMLEnv.divWidth);
+//	  	}
+//		HTMLEnv.divWidth = "";
+		
 		html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
 
 		if(GlobalEnv.isOpt()){

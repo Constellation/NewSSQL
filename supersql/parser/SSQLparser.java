@@ -153,7 +153,7 @@ public class SSQLparser {
 				line = in.readLine();
 				if (line == null)	break;
 				
-				//goto 20130915  "<?  ?>"
+				//goto 20130915  "<?  ?>", "<$  $>"
 				if (line.startsWith("<?")){
 					String line1 = line.substring(0, line.indexOf("<?"));
 					String buf = "";
@@ -166,7 +166,20 @@ public class SSQLparser {
 					line = line1 + "text(\"#TextLabel_"+textNum+"\")!" + line.substring(line.indexOf("?>") + 2);	//add label
 					//Log.i("textString.get("+textNum+") = \n"+textString.get(textNum));
 					textNum++;
-				}
+				} 
+//				else if (line.startsWith("<$")){
+//					String line1 = line.substring(0, line.indexOf("<$"));
+//					String buf = "";
+//					while (!line.startsWith("$>")){
+//						line = in.readLine();
+//						buf += line+"\n";
+//					}
+//					buf = buf.substring(0,buf.lastIndexOf("$>"));	//substring last '?>'
+//					textString.add(textNum, buf);
+//					line = line1 + "text(\"#TextLabel_"+textNum+"\")!" + line.substring(line.indexOf("$>") + 2);	//add label
+//					//Log.i("textString.get("+textNum+") = \n"+textString.get(textNum));
+//					textNum++;
+//				}
 
 				if (line.contains("/*")){
 					String line1 = line.substring(0, line.indexOf("/*"));
@@ -188,11 +201,142 @@ public class SSQLparser {
 
 						if(dqFlg && i>0 && (line.charAt(i-1)=='\\' || line.charAt(i-1) == '"') && line.charAt(i)=='"')	//if \" or ""
 							line = line.substring(0,i-1)+"&quot;"+line.substring(i+1,line.length());
+						else if(!dqFlg && i>0 && line.charAt(i-1) == '<' && line.charAt(i)=='$'){	//if <$
+//							line = line.substring(0,i-1)+"&quot;"+line.substring(i+1,line.length());
+						
+						}
 						else if (!dqFlg && i < line.length()-1 && line.charAt(i)=='/' && line.charAt(i+1)=='/')
 							break;
 					}
 					line = line.substring(0, i);
 				}
+				
+				//goto 20130915  "<$  $>"
+				//"内は読み飛ばす
+				//TODO 下記をもっとスマートに
+				boolean onlyTextFlg = false;	//This line has only text string.
+				while (line.contains("<$") && !onlyTextFlg){
+//				while ((line.contains("<$") || line.contains("$$")) && !onlyTextFlg){
+//				if (line.contains("<$")){
+					String line1 = "";
+					String buf = "";
+					
+					int i;
+					int lineCount=0;
+					char c0,c1=' ';
+					boolean dqFlg = false;
+					boolean startFlg = false;
+					boolean endFlg = false;
+					while (true){
+						
+						boolean $$Flg = false;
+						boolean $$endFlg = false;
+						String $$Buf = "";
+//						while(true){
+						if(line.contains("$$")){
+							while(!$$endFlg){
+								//TODO: これを簡略化(このifの下のループで一度に処理する)
+								//Log.e("	In line.contains($$)!!");
+	//							boolean $$Flg = false;
+								for (i=0; i < line.length(); i++){
+									c0 = line.charAt(i);
+									if(i<line.length()-1)	c1 = line.charAt(i+1);
+									if (c0 == '"' && !dqFlg)		dqFlg = true;
+									else if (c0 == '"' && dqFlg)	dqFlg = false;
+									
+									//$$ -> ?>  or  $$ -> !<?
+									if(!dqFlg && i<line.length()-1 && c0=='$' && c1=='$'){
+										if(!$$Flg)	$$Flg = true;
+										else		$$Flg = false;
+										if($$Flg){
+											line = line.substring(0,i)+"$>"+line.substring(i+2);
+//											$$Buf += line;
+										}
+										else{
+											String s = line.substring(0,i);
+											if(!s.trim().endsWith("!") && !s.trim().endsWith(","))
+												s += "!";	//default
+	//										Log.e("		s: "+s);
+											line =  s + "<$"+line.substring(i+2);
+											//Log.e("		l: "+line);
+											$$Buf += line;
+//											tmp.append(" " + line);
+	//										line = line.substring(0,i)+"! <$"+line.substring(i+2);
+										}
+									}
+								}
+								c0 = ' ';
+								c1 = ' ';
+								//Log.e("	In line.contains($$)!!: "+line+" "+$$Flg);
+								if($$Flg){//TODO:　閉じられてないので閉じられるまで改行
+									line = in.readLine();
+								}else{
+									$$endFlg = true;
+									if(line.endsWith("!"))	line=line.substring(0,line.lastIndexOf("!"));
+//									Log.e(line);
+									line = "{ "+line+" }@{text}!";
+//									Log.e(line);
+//									line = $$Buf;
+//									$$Buf = "";
+									break;
+								}
+							}
+						}
+						
+						for (i=0; i < line.length(); i++){
+							c0 = line.charAt(i);
+							if(i<line.length()-1)	c1 = line.charAt(i+1);
+							if (c0 == '"' && !dqFlg)		dqFlg = true;
+							else if (c0 == '"' && dqFlg)	dqFlg = false;
+							
+//							//$$ -> ?>  or  $$ -> <?
+//							if(!dqFlg && i<line.length()-1 && c0=='$' && c1=='$' && startFlg){
+//								lineBuf = line.substring(0,i);
+//								for(int j=i;j<line.length();j++ )
+//									;
+//							}
+							
+							if(!dqFlg && i<line.length()-1 && c0=='<' && c1=='$')	//if <?
+								startFlg = true;
+							else if(!dqFlg && i<line.length()-1 && c0=='$' && c1=='>'){ //if ?>
+								endFlg = true;
+								break;
+							}
+//							if(!dqFlg && i<line.length()-1 && (c0=='<' || c0=='$') && c1=='$')	//if <? or $$
+//								startFlg = true;
+//							else if(!dqFlg && i<line.length()-1 && c0=='$' && (c1=='>' || c1=='$')){ //if ?> or $$
+//								endFlg = true;
+//								break;
+//							}
+							if(startFlg)	buf += c0;
+							else			line1 += c0;
+						}
+						if(endFlg)	break;
+						if(lineCount==0){
+							if(!startFlg){
+//								Log.e("	match!!!"+line1);
+								onlyTextFlg = true;
+								break;
+							}
+						}
+						line = in.readLine();
+						buf += "\n";
+						lineCount++;
+					}
+					if(!onlyTextFlg){
+//						Log.e("buf = "+buf);
+						buf = buf.substring(2);	//substring first '<?'
+						//buf = buf.substring(buf.indexOf("<$")+2);	//substring first '<?'
+						textString.add(textNum, buf);
+						line = line1 + "text(\"#TextLabel_"+textNum+"\")!" + line.substring(i+2);	//add label
+//						line = line1 + "<\"#TextLabel_"+textNum+"\">!" + line.substring(i+2);	//add label
+//						line = line1 + "'#TextLabel_"+textNum+"'!" + line.substring(i+2);	//add label
+						//Log.e("line = "+line);
+						//Log.e("textString.get("+textNum+") = "+textString.get(textNum));
+						textNum++;
+					}
+				}//End of 'if (line.contains("<$")){'
+				
 				tmp.append(" " + line);
 			}
 			in.close();
@@ -219,8 +363,13 @@ public class SSQLparser {
 			query = query.replace(media+"{", media+" {");
 		}
 		media = media.toLowerCase();
-		if(media.equals("html") || media.equals("mobile_html5"))
+		if(media.equals("html") || media.equals("mobile_html5")){
 			query = replaceQuery_For_HTML_and_MobileHTML5(query);
+//			Log.i(query);
+			while(query.contains(") ] }@{text}"))						//TODO
+				query = query.replace(") ] }@{text}", ") ]! }@{text}");	//TODO
+			
+		}
 
 		return query;
 	}
@@ -335,14 +484,16 @@ public class SSQLparser {
         //added by goto 20130422  For "!number, / ,number! / ,number!nuber, "
         //鐃緒申 鐃緒申鐃緒申}(鐃縦わ申鐃暑カ鐃獣ワ申)鐃殉でわ申0文鐃緒申幣鐃緒申任鐃春わ申文鐃緒申鐃緒申: [^\\}]*
         //For ,number!number,
-    	query = query.replaceAll("\\]\\s*\\,\\s*([0-9]+)\\s*!\\s*([0-9]+)\\s*,\\s*@\\s*\\{([^\\}]*)", "],@{$3,column=$1,row=$2");
-    	query = query.replaceAll("\\]\\s*\\,\\s*([0-9]+)\\s*!\\s*([0-9]+)\\s*,", "],@{column=$1,row=$2}");
+    	query = query.replaceAll("\\]\\s*\\,\\s*([0-9]+)\\s*!\\s*([0-9]+)\\s*%\\s*@\\s*\\{([^\\}]*)", "],@{$3,column=$1,row=$2");
+    	query = query.replaceAll("\\]\\s*\\,\\s*([0-9]+)\\s*!\\s*([0-9]+)\\s*%", "],@{column=$1,row=$2}");
     	//For ,number!
     	query = query.replaceAll("\\]\\s*\\,\\s*([0-9]+)\\s*!\\s*@\\s*\\{([^\\}]*)", "],@{$2,column=$1");
     	query = query.replaceAll("\\]\\s*\\,\\s*([0-9]+)\\s*!", "],@{column=$1}");
+    	query = query.replaceAll("\\]\\s*\\,\\s*([0-9]+)\\s*\\}\\s*@\\s*\\{([^\\}]*)", "],}@{$2,column=$1");	//TODO
+//    	query = query.replaceAll("\\]\\s*\\,\\s*([0-9]+)\\s*!", "],@{column=$1}");							//TODO
         //For !number,
-        query = query.replaceAll("\\]\\s*!\\s*([0-9]+)\\s*,\\s*@\\s*\\{([^\\}]*)", "]!@{$2,row=$1");
-    	query = query.replaceAll("\\]\\s*!\\s*([0-9]+)\\s*,", "]!@{row=$1}");
+        query = query.replaceAll("\\]\\s*!\\s*([0-9]+)\\s*%\\s*@\\s*\\{([^\\}]*)", "]!@{$2,row=$1");
+    	query = query.replaceAll("\\]\\s*!\\s*([0-9]+)\\s*%", "]!@{row=$1}");
 
 
 //    	Log.i("	query = "+query);

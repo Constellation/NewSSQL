@@ -16,7 +16,7 @@ import org.junit.Test;
  * @author thomas@oxynum.fr (Thomas THIMOTHEE)
  */
 public class BasicOperatorTest {
-	private static final String configFilename = "/Users/thomas/Documents/dev/ssql2/.ssql";
+	private static final String configFilename = "/Users/goto/config.ssql";
 	// This string should finish with a slash
 	private static final String testFilesFolder = "/Users/thomas/Documents/dev/ssql2/test_queries/basic_operators/";
 	private static final String[] testFilesNames = {"connector0.sql", "connector1.sql",

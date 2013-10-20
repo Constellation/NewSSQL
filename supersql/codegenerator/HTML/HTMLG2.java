@@ -5,6 +5,7 @@ import org.jsoup.parser.Tag;
 
 import supersql.codegenerator.Grouper;
 import supersql.codegenerator.Manager;
+import supersql.codegenerator.Mobile_HTML5.HTMLFunction;
 import supersql.common.GlobalEnv;
 import supersql.extendclass.ExtList;
 
@@ -53,7 +54,6 @@ public class HTMLG2 extends Grouper {
 		nodeCreationPostProcess(result);
 		
 		return result;
-
 	}
 	
 	private void nodeCreationPreProcess(Element result){
@@ -92,6 +92,7 @@ public class HTMLG2 extends Grouper {
 			}
 		}
 		HTMLUtils.processDecos(result, decos);
+		supersql.codegenerator.HTML.HTMLFunction.Func_seq_num_initialization();	//added by goto 20130914  "SEQ_NUM"
 	}
 
 	@Override

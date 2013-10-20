@@ -28,6 +28,12 @@ public class HTMLC2 extends Connector {
 
     //C2��work�᥽�å�
     public void work(ExtList data_info) {
+    	//20131001 tableDivHeader
+    	if(decos.containsKey("header") && HTMLG2.tableDivHeader_Count2<1){
+    		HTMLG2.tableDivHeader_codeBuf = html_env.code.toString();
+    		HTMLG2.tableDivHeader_Count2++;
+    	}
+    	
         int panelFlg = 0;	//20130503  Panel
     	
         Log.out("------- C2 -------");
@@ -89,6 +95,12 @@ public class HTMLC2 extends Connector {
         	HTMLEnv.dynamicFlg = true;
         	Log.i("※C2 HTMLEnv.staticBuf: "+HTMLEnv.staticBuf);
         }
+        
+//        //20130914  "text"
+//        if(decos.containsKey("text")){
+//        	Log.e("	in!");
+//        	HTMLFunction.textFlg2 = true;
+//        }
         
         if(!GlobalEnv.isOpt()){
         	//20130503  Panel
@@ -238,7 +250,7 @@ public class HTMLC2 extends Connector {
            	html_env.code.append(HTMLFunction.createForm(decos));
            	HTMLEnv.setFormItemFlg(true,null);
         }
-    	
+        
         while (this.hasMoreItems()) {
             //Log.info("C2-1:	"+tableFlg+"	"+decos.containsKey("table")+"	"+decos.containsKey("table0"));
             if(decos.containsKey("table0") || HTMLC1.table0Flg || HTMLG1.table0Flg || HTMLG2.table0Flg)	table0Flg = true;
@@ -262,10 +274,18 @@ public class HTMLC2 extends Connector {
             //20130312 collapsible
 	      	if(decos.containsKey("collapse"))
 	          	html_env.code.append("<p>\n");
-	      	else if(!tableFlg) 
+	      	else if(!tableFlg && !HTMLFunction.textFlg2) 
 	            //20130309
 	            //x html_env.code.append("	<DIV Class=\"ui-grid-a\">	<div class=\"ui-block-a\">");		
 	            html_env.code.append("<div class=\""+HTMLEnv.getClassID(tfe)+" \">\n");
+	      	
+	      	//20130914  "text"
+//	      	Log.e("	decosC2 = "+decos);
+//	      	Log.e("	C2 HTMLFunction.textFlg2 = "+HTMLFunction.textFlg2);
+	        if(decos.containsKey("text")){	//TODO
+//	        	Log.e("	C2 in!");
+//	        	HTMLFunction.textFlg2 = true;
+	        }
 	        
 	      	//20130314  table
 	      	String classid = null ;
@@ -332,9 +352,16 @@ public class HTMLC2 extends Connector {
             //20130312 collapsible
 	      	if(decos.containsKey("collapse"))
 	          	html_env.code.append("</p>\n");
-	      	else if(!tableFlg && !HTMLFunction.textFlg)	//20130914  "text"
+	      	else if(!tableFlg && !HTMLFunction.textFlg && !HTMLFunction.textFlg2)	//20130914  "text"
 	        	html_env.code.append("\n</div>");
-	      	HTMLFunction.textFlg = false;				//20130914  "text"
+	      	if(HTMLFunction.textFlg){					//20130914  "text"
+//	      		Log.e("C2 text! ");
+//	      		html_env.code.append(HTMLFunction.text);
+//	      		HTMLFunction.text = "";
+	      		HTMLFunction.textFlg = false;
+	      		//HTMLFunction.textFlg2 = false;	//TODO
+	      	}
+//	      	HTMLFunction.textFlg = false;				//20130914  "text"
             
             html_env.code.append("\n");		//20130309
 
@@ -390,6 +417,10 @@ public class HTMLC2 extends Connector {
         Log.out("TFEId = " + HTMLEnv.getClassID(this));
         //html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
         //↑必要？不要？？ -> 不要
+        
+        //20131001 tableDivHeader
+        if(decos.containsKey("header"))
+        	html_env.code = HTMLG2.createAndCutTableDivHeader(html_env);
     }
 
     public String getSymbol() {

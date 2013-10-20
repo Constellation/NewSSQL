@@ -97,8 +97,11 @@ public class TFEtokenizer {
         String delimitor = new String("[]{}()+,!%#@\\");
         String ch = st.nextToken("\t[]{}()+,!%#@\\'\"");
 
-        //(chie)
-        ch = ch.replaceAll(" ","");
+        //added by goto
+        if(!ch.contains(" as "))
+	        //(chie)
+	        ch = ch.replaceAll(" ","");
+        
 
         if (ch.equals(" ") || ch.equals("\t"))
             return buffer + ch;

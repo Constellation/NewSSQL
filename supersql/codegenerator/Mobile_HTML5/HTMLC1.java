@@ -1,5 +1,7 @@
 package supersql.codegenerator.Mobile_HTML5;
 
+import javax.swing.text.html.CSS;
+
 import supersql.codegenerator.Connector;
 import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.ITFE;
@@ -34,6 +36,12 @@ public class HTMLC1 extends Connector {
 
     //C1��work�᥽�å�
     public void work(ExtList data_info) {
+    	//20131001 tableDivHeader
+    	if(decos.containsKey("header") && HTMLG2.tableDivHeader_Count2<1){
+    		HTMLG2.tableDivHeader_codeBuf = html_env.code.toString();
+    		HTMLG2.tableDivHeader_Count2++;
+    	}
+    	
         int panelFlg = 0;	//20130503  Panel
 
 //    	Vector vector_local = new Vector();
@@ -270,7 +278,6 @@ public class HTMLC1 extends Connector {
            	HTMLEnv.setFormItemFlg(true,null);
         }
         
-        
         while (this.hasMoreItems()) {
             //Log.info("C1-1:	"+tableFlg+"	"+decos.containsKey("table")+"	"+decos.containsKey("table0"));
             if(decos.containsKey("table0") || HTMLC2.table0Flg || HTMLG1.table0Flg || HTMLG2.table0Flg)	table0Flg = true;
@@ -303,17 +310,22 @@ public class HTMLC1 extends Connector {
             //gridInt %= 5;
             //html_env.code.append("\n<div class=\"ui-block-"+gridString[gridInt]+"\">\n");	//20130309
            	//if((!HTMLG1.G1Flg && !tableFlg) || divFlg)		//20130326  div
-            if(/* !HTMLG1.G1Flg  && */ !tableFlg){
+            if(/* !HTMLG1.G1Flg  && */ !tableFlg){	//div
+            	//20131002
+            	if(decos.containsKey("width")){
+            		HTMLEnv.divWidth = decos.getStr("width");
+    	    	}else{
+    	    		int tfesItemNum = tfes.contain_itemnum();
+                	float divWidth = (float)Math.floor((double)(100.0/(tfesItemNum))* 1000) / 1000;
+                	HTMLEnv.divWidth = divWidth+"%";
+    	    	}
+            	//tfe.addDeco("width", divWidth);	//☆HTMLEnvで行うように変更した
+            	
+            	html_env.code.append("\n<div class=\"ui-block "+HTMLEnv.getClassID(tfe)+"\">\n");	//20130309
+
 //            	float divWidth0 = (float)Math.floor((double)(100.0/(Count))* 1000) / 1000;
 //            	String style0 = "style=\"width:"+divWidth0+"%;\"";
-            	int tfesItemNum = tfes.contain_itemnum();
-            	float divWidth = (float)Math.floor((double)(100.0/(tfesItemNum))* 1000) / 1000;
-//            	String style = "style=\"width:"+divWidth+"%;\"";
-//	            if(Count>0){
-//	            	Log.e(style0+" "+style);
-//	            	HTMLManager.replaceCode(html_env, style0, style);
-//            	}
-            	html_env.code.append("\n<div class=\"ui-block "+HTMLEnv.getClassID(tfe)+"\" style=\"width:"+divWidth+"%;\">\n");	//20130309
+            	//html_env.code.append("\n<div class=\"ui-block "+HTMLEnv.getClassID(tfe)+"\" style=\"width:"+divWidth0+";\">\n");	//20130309
 //            	html_env.code.append("\n<div class=\"ui-block-"+gridString[Count]+" "+HTMLEnv.getClassID(tfe)+"\">\n");	//20130309
             }
             	
@@ -334,7 +346,14 @@ public class HTMLC1 extends Connector {
 	            //☆★
 	      		Log.info("	C1 tfeItems : " + this.tfeItems);
 	      	}
-            
+	      	
+	      	//20130914  "text"
+//	      	Log.e("	decosC2 = "+decos);
+	        if(decos.containsKey("text")){
+	        	Log.e("	C1 in!");
+	        	HTMLFunction.textFlg2 = true;
+	        }
+    	    
             //Log.out("<TD class=\""
             //        + HTMLEnv.getClassID(tfe) + " nest\"> decos : " + decos);
 //x            html_env.code.append("	<Table border=1 align=center valign=middle text-align=center><tr><td>\n");
@@ -394,6 +413,12 @@ public class HTMLC1 extends Connector {
             
             if(/* !HTMLG1.G1Flg  && */ !tableFlg)	html_env.code.append("</div>\n");	//20130309
         	if(tableFlg)	html_env.code.append("</TD>\n");					//20130314  table
+//        	if(HTMLFunction.textFlg){					//20130914  "text"
+//        		Log.e("C1 text!");
+//	      		html_env.code.append(HTMLFunction.text);
+//	      		HTMLFunction.text = "";
+//	      		HTMLFunction.textFlg = false;
+//	      	}
             //Log.out("</TD>");
 
             i++;
@@ -473,6 +498,11 @@ public class HTMLC1 extends Connector {
         //Log.out("TFEId = " + HTMLEnv.getClassID(this));
         //html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
         //↑必要？不要？？ -> 不要
+        
+        //20131001 tableDivHeader
+//        if(decos.containsKey("header") && (HTMLG2.tableDivHeader_Count1+1)%2==0)
+    	if(decos.containsKey("header"))
+        	html_env.code = HTMLG2.createAndCutTableDivHeader(html_env);
     }
     
     //20130503  Panel

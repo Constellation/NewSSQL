@@ -47,6 +47,12 @@ public class HTMLG1 extends Grouper {
     //G1��work�᥽�å�
     @Override
 	public void work(ExtList data_info) {
+    	//20131001 tableDivHeader
+    	HTMLG2.tableDivHeader = "";	
+    	HTMLG2.tableDivHeader_codeBuf = "";
+    	HTMLG2.tableDivHeader_Count1 = 0;
+    	HTMLG2.tableDivHeader_Count2 = 0;
+    	
         int panelFlg = 0;	//20130503  Panel
         
         //1行ごとのカラム数 (range: 2〜)
@@ -129,6 +135,13 @@ public class HTMLG1 extends Grouper {
         	if(!HTMLEnv.dynamicFlg)	HTMLEnv.staticBuf = html_env.code;
         	HTMLEnv.dynamicFlg = true;
         	Log.i("※G1 HTMLEnv.staticBuf: "+HTMLEnv.staticBuf);
+        }
+        
+        //20130914  "text"
+//      	Log.e("	decosC2 = "+decos);
+        if(decos.containsKey("text")){
+//        	Log.e("	G2in!");
+        	HTMLFunction.textFlg2 = true;
         }
         
         if(!GlobalEnv.isOpt()){
@@ -242,7 +255,7 @@ public class HTMLG1 extends Grouper {
             }
         }
         //tk end//////////////////////////////////////////////////////
-        Log.out("<TABLE class=\""+HTMLEnv.getClassID(this) + "\"><TR>");
+//        Log.out("<TABLE class=\""+HTMLEnv.getClassID(this) + "\"><TR>");
 
         //html_env2.code.append("<tfe type=\"connect\" dimension=\"1\" >");
         int i = 0;
@@ -353,9 +366,21 @@ public class HTMLG1 extends Grouper {
 //        	}else{
         		//20130309
     	    if(!tableFlg){
-    	    	float divWidth = (float)Math.floor((double)(100.0/numberOfColumns)* 1000) / 1000;
-    	    	if(Count!=0)	html_env.code.append("\n	<div class=\"ui-block"+" "+HTMLEnv.getClassID(tfe)+"\" style=\"width:"+divWidth+"%;\">\n");
-    	    	else			html_env.code.append("\n	<div class=\"ui-block"+" "+HTMLEnv.getClassID(tfe)+"\" style=\"width:"+divWidth+"%; clear:left;\">\n");
+    	    	//20131002
+            	if(decos.containsKey("width")){
+            		HTMLEnv.divWidth = decos.getStr("width");
+    	    	}else{
+        	    	float divWidth = (float)Math.floor((double)(100.0/numberOfColumns)* 1000) / 1000;
+                	HTMLEnv.divWidth = divWidth+"%";
+    	    	}
+            	//tfe.addDeco("width", divWidth);	//☆HTMLEnvで行うように変更した
+            	
+            	if(Count!=0)	html_env.code.append("\n	<div class=\"ui-block"+" "+HTMLEnv.getClassID(tfe)+"\">\n");
+    	    	else			html_env.code.append("\n	<div class=\"ui-block"+" "+HTMLEnv.getClassID(tfe)+"\" style=\"clear:left;\">\n");
+            	
+//    	    	float divWidth = (float)Math.floor((double)(100.0/numberOfColumns)* 1000) / 1000;
+//    	    	if(Count!=0)	html_env.code.append("\n	<div class=\"ui-block"+" "+HTMLEnv.getClassID(tfe)+"\" style=\"width:"+divWidth+"%;\">\n");
+//    	    	else			html_env.code.append("\n	<div class=\"ui-block"+" "+HTMLEnv.getClassID(tfe)+"\" style=\"width:"+divWidth+"%; clear:left;\">\n");
     	    }
 //    	    if(!tableFlg)   html_env.code.append("\n	<div class=\"ui-block-"+gridString[Count]+" "+HTMLEnv.getClassID(tfe)+"\">\n");
     	    //20130314  table
@@ -443,7 +468,13 @@ public class HTMLG1 extends Grouper {
             if(!tableFlg)	html_env.code.append("	</div>");	//20130309
         	else	        html_env.code.append("</TD>\n");    //20130314 table
             //Log.out("</TD>");
-
+//            if(HTMLFunction.textFlg){					//20130914  "text"
+//	      		Log.e("G1 text!");
+//	      		html_env.code.append(HTMLFunction.text);
+//	      		HTMLFunction.text = "";
+//	      		HTMLFunction.textFlg = false;
+//	      	}
+            
             i++;
             //Log.info("	html_env.glevel = "+html_env.glevel);
 //            if(html_env.glevel == 0){
@@ -452,6 +483,8 @@ public class HTMLG1 extends Grouper {
 //            	//Count = 0;
 //            }
             html_env.glevel--;
+
+            HTMLG2.tableDivHeader_Count1++;	//20131001 tableDivHeader
             
             //added by goto 20130413  "row Prev/Next"
             if(rowFlg){
@@ -559,10 +592,12 @@ public class HTMLG1 extends Grouper {
         	rowFlg = false;
         	HTMLG2.tableStartTag = "";
         }
+        
+        //added by goto 20130914  "SEQ_NUM"
+        HTMLFunction.Func_seq_num_initialization();
 
         Log.out("TFEId = " + HTMLEnv.getClassID(this));
         //html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
-
     }
 
     @Override

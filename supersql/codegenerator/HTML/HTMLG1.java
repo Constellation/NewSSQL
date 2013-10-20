@@ -5,6 +5,7 @@ import org.jsoup.parser.Tag;
 
 import supersql.codegenerator.Grouper;
 import supersql.codegenerator.Manager;
+import supersql.codegenerator.Mobile_HTML5.HTMLFunction;
 import supersql.common.GlobalEnv;
 import supersql.extendclass.ExtList;
 
@@ -19,7 +20,6 @@ public class HTMLG1 extends Grouper {
 
 	public Element createTableNode(ExtList<ExtList<String>> dataInfo) {
 		this.setDataList(dataInfo);
-
 		Element result = new Element(Tag.valueOf("table"), "");
 		Element tr = result.appendElement("tr");
 

@@ -37,6 +37,11 @@ public class HTMLG2 extends Grouper {
     boolean rowFlg = false;
     StringBuffer codeBuf = new StringBuffer();
     static String tableStartTag = "";
+
+    static String tableDivHeader = "";			//20131001 tableDivHeader
+    static String tableDivHeader_codeBuf = "";	//20131001 tableDivHeader
+    static int tableDivHeader_Count1 = 0;		//20131001 tableDivHeader
+    static int tableDivHeader_Count2 = 0;		//20131001 tableDivHeader
     
 //    static int codeCount = 0;	//対策
 //    static StringBuffer[] codeArray = new StringBuffer[100];	//対策
@@ -60,6 +65,12 @@ public class HTMLG2 extends Grouper {
     //G2��work�᥽�å�
     @Override
 	public void work(ExtList data_info) {
+    	//20131001 tableDivHeader
+    	HTMLG2.tableDivHeader = "";	
+    	HTMLG2.tableDivHeader_codeBuf = "";
+    	HTMLG2.tableDivHeader_Count1 = 0;
+    	HTMLG2.tableDivHeader_Count2 = 0;
+    	
         //G2Flg = true;
         int panelFlg = 0;	//20130503  Panel
     	
@@ -122,6 +133,13 @@ public class HTMLG2 extends Grouper {
         	if(!HTMLEnv.dynamicFlg)	HTMLEnv.staticBuf = html_env.code;
         	HTMLEnv.dynamicFlg = true;
         	Log.i("※G2 HTMLEnv.staticBuf: "+HTMLEnv.staticBuf);
+        }
+        
+        //20130914  "text"
+//      	Log.e("	decosC2 = "+decos);
+        if(decos.containsKey("text")){
+//        	Log.e("	G2 in!");
+        	HTMLFunction.textFlg2 = true;
         }
         
         if(!GlobalEnv.isOpt()){
@@ -243,44 +261,45 @@ public class HTMLG2 extends Grouper {
             String classid = HTMLEnv.getClassID(tfe);
 
             
-            if(GlobalEnv.isOpt() && !HTMLEnv.getSelectRepeat()){
-	            html_env2.code.append("<tfe type=\"repeat\" dimension=\"2\"");
-	            html_env2.code.append(" border=\"" + html_env.tableborder + "\"");
-	
-	            if (decos.containsKey("tablealign") )
-	            	html_env2.code.append(" align=\"" + decos.getStr("tablealign") +"\"");
-	            if (decos.containsKey("tablevalign") )
-	            	html_env2.code.append(" valign=\"" + decos.getStr("tablevalign") +"\"");
-	            
-
-	            if(decos.containsKey("class")){
-		        	//class=menu�Ȃǂ̎w�肪��������t��
-	            	html_env2.code.append(" class=\"");
-		        	html_env2.code.append(decos.getStr("class") + " ");
-		        }
-	            if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
-		        	//TFE10000�Ȃǂ̎w�肪��������t��
-	            	if(decos.containsKey("class")){
-	            		html_env2.code.append(HTMLEnv.getClassID(this) + "\"");
-	            	}else{
-	            		html_env2.code.append(" class=\""
-	            				+ HTMLEnv.getClassID(this) + "\"");
-	            	}
-	            }else if(decos.containsKey("class")){
-	            	html_env2.code.append("\"");
-	            }
-	            
-	            if(decos.containsKey("tabletype")){
-	            	html_env2.code.append(" tabletype=\"" + decos.getStr("tabletype") + "\"");
-	            	if(decos.containsKey("cellspacing")){
-	                	html_env2.code.append(" cellspacing=\"" + decos.getStr("cellspacing") + "\"");
-	                }
-	            	if(decos.containsKey("cellpadding")){
-	                	html_env2.code.append(" cellpadding=\"" + decos.getStr("cellpadding") + "\"");
-	                }
-	            }
-	            html_env2.code.append(">");
-            }
+//            //おそらくxml
+//            if(GlobalEnv.isOpt() && !HTMLEnv.getSelectRepeat()){
+//	            html_env2.code.append("<tfe type=\"repeat\" dimension=\"2\"");
+//	            html_env2.code.append(" border=\"" + html_env.tableborder + "\"");
+//	
+//	            if (decos.containsKey("tablealign") )
+//	            	html_env2.code.append(" align=\"" + decos.getStr("tablealign") +"\"");
+//	            if (decos.containsKey("tablevalign") )
+//	            	html_env2.code.append(" valign=\"" + decos.getStr("tablevalign") +"\"");
+//	            
+//
+//	            if(decos.containsKey("class")){
+//		        	//class=menu�Ȃǂ̎w�肪��������t��
+//	            	html_env2.code.append(" class=\"");
+//		        	html_env2.code.append(decos.getStr("class") + " ");
+//		        }
+//	            if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
+//		        	//TFE10000�Ȃǂ̎w�肪��������t��
+//	            	if(decos.containsKey("class")){
+//	            		html_env2.code.append(HTMLEnv.getClassID(this) + "\"");
+//	            	}else{
+//	            		html_env2.code.append(" class=\""
+//	            				+ HTMLEnv.getClassID(this) + "\"");
+//	            	}
+//	            }else if(decos.containsKey("class")){
+//	            	html_env2.code.append("\"");
+//	            }
+//	            
+//	            if(decos.containsKey("tabletype")){
+//	            	html_env2.code.append(" tabletype=\"" + decos.getStr("tabletype") + "\"");
+//	            	if(decos.containsKey("cellspacing")){
+//	                	html_env2.code.append(" cellspacing=\"" + decos.getStr("cellspacing") + "\"");
+//	                }
+//	            	if(decos.containsKey("cellpadding")){
+//	                	html_env2.code.append(" cellpadding=\"" + decos.getStr("cellpadding") + "\"");
+//	                }
+//	            }
+//	            html_env2.code.append(">");
+//            }
             
     	    //Log.info("tfeG2 : " + tfe);
             //Log.info("tfe : " + this.tfes);
@@ -331,9 +350,19 @@ public class HTMLG2 extends Grouper {
                 	html_env.code.append("</ul>\n</div>\n");
                 }
                 //added by goto 20130110 end
-                if(!tableFlg)	html_env.code.append("	</div>\n");		//20130309  div
-                else	html_env.code.append("</TD></TR>\n");			//20130314  table
+//                if(!tableFlg)	html_env.code.append("	</div>\n");		//20130309  div
+                if(!tableFlg){
+                	if(!HTMLFunction.textFlg2){
+                		html_env.code.append("	</div>\n");		//20130309  div	//20130914  "text"
+                	}
+                }else	html_env.code.append("</TD></TR>\n");			//20130314  table
                 Log.out("</TD></TR>");
+//                if(HTMLFunction.textFlg){					//20130914  "text"
+//    	      		Log.e("G2 text!");
+//    	      		html_env.code.append(HTMLFunction.text);
+//    	      		HTMLFunction.text = "";
+//    	      		HTMLFunction.textFlg = false;
+//    	      	}
                 
                 //20130312 collapsible
     	      	if(decos.containsKey("collapse"))
@@ -343,6 +372,8 @@ public class HTMLG2 extends Grouper {
             
             i++;
             html_env.glevel--;
+            
+            HTMLG2.tableDivHeader_Count1++;	//20131001 tableDivHeader
             
             //added by goto 20130413  "row Prev/Next"
             if(rowFlg){
@@ -355,6 +386,17 @@ public class HTMLG2 extends Grouper {
                 rowNum++;
             }
         }	// /while
+        
+////        Log.e("HTMLG2.tableDivHeader_codeBuf = \n"+HTMLG2.tableDivHeader_codeBuf);	//20131001 tableDivHeader
+////        Log.i("\nHTMLG2.tableDivHeader = \n"+HTMLG2.tableDivHeader);	//20131001 tableDivHeader
+//        Log.i("\n==============================\n");	//20131001 tableDivHeader
+////        Log.i("\nHTMLG2.tableDivHeader = \n"+HTMLG2.tableDivHeader.replace(HTMLG2.tableDivHeader_codeBuf, ""));	//20131001 tableDivHeader
+//        if(!HTMLG2.tableDivHeader.equals("")){
+////        	HTMLG2.tableDivHeader = HTMLG2.tableDivHeader.replace(HTMLG2.tableDivHeader_codeBuf, "");//20131001 tableDivHeader
+//        	Log.i(HTMLG2.tableDivHeader);	//20131001 tableDivHeader
+//        }
+//        Log.i("\n==============================\n");	//20131001 tableDivHeader
+        
         
         //added by goto 20130413  "row Prev/Next"
         if(rowFlg){
@@ -429,7 +471,15 @@ public class HTMLG2 extends Grouper {
         	rowFlg = false;
         	tableStartTag = "";
         }
-
+        
+        //20130914  "text"
+        if(HTMLFunction.textFlg2){
+        	HTMLFunction.textFlg2 = false;
+        }
+        
+        //added by goto 20130914  "SEQ_NUM"
+        HTMLFunction.Func_seq_num_initialization();
+        
         Log.out("TFEId = " + HTMLEnv.getClassID(this));
         //html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
         //G2Flg = false;
@@ -457,6 +507,7 @@ public class HTMLG2 extends Grouper {
 //            	pw.println(html_env.header.delete(x,y));
 //            }else	pw.println(html_env.header);
         	pw.println(html_env.header);
+        	pw.println(HTMLG2.tableDivHeader);	//20131001 tableDivHeader
         	if(!tableStartTag.equals("")){
         		pw.println(tableStartTag+"\n"+codeBuf);
         		if(tableStartTag.endsWith("<TR>"))	pw.println("</TR>");
@@ -511,6 +562,25 @@ public class HTMLG2 extends Grouper {
         		"	<hr>\n" +
         		"	<div id=\""+divID+"2\"></div>\n" +
         		"	<hr>\n");
+    }
+    
+    //20131001 tableDivHeader
+    //for C1, C2
+    public static StringBuffer createAndCutTableDivHeader(HTMLEnv html_env) {
+//    	if(HTMLG2.tableDivHeader_Count1==1){
+		if(HTMLG2.tableDivHeader_Count1<1){
+    		//create tableDivHeader
+      		HTMLG2.tableDivHeader = html_env.code.toString().replace(HTMLG2.tableDivHeader_codeBuf, "");
+//      		HTMLG2.tableDivHeader = "<div>"+html_env.code.toString().replace(HTMLG2.tableDivHeader_codeBuf, "");
+    	}
+//    	if(HTMLG2.tableDivHeader_Count1>1){
+    	//Log.e("a="+html_env.code);
+    	//Log.e("b="+HTMLG2.tableDivHeader_codeBuf);
+    	//cut tableDivHeader
+  		return new StringBuffer(html_env.code.replace(HTMLG2.tableDivHeader_codeBuf.length(), 
+  				html_env.code.length(), ""));
+//    	}
+//  		return new StringBuffer(html_env.code.toString());
     }
 
     @Override
