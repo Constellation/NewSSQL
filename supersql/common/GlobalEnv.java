@@ -30,8 +30,6 @@ public class GlobalEnv {
 
 	private static String outdir;
 
-	private static String url;
-
 	private static String password;
 
 	private static String encode;

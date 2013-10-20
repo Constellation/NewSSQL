@@ -21,15 +21,16 @@ import supersql.extendclass.ExtList;
 
 public class HTMLG3 extends Grouper {
 
-	private HTMLEnv html_env;
 	private String backfile = new String();
 
     private int countinstance = 0;
 
-    //���󥹥ȥ饯��
+	/** @deprecated use HTMLG3() instead **/
     public HTMLG3(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
-        this.html_env = henv;
         Dimension =3;
+    }
+    public HTMLG3(){
+    	Dimension = 3;
     }
     
     
@@ -38,13 +39,6 @@ public class HTMLG3 extends Grouper {
 	public Element createNode(ExtList<ExtList<String>> data_info) {
     	String parentfile = HTMLEnv.fileName;
         String parentnextbackfile = HTMLEnv.nextBackFile;
-        StringBuffer parentcode = HTMLEnv.code;
-        StringBuffer parentcss = HTMLEnv.css;
-        StringBuffer parentheader = HTMLEnv.header;
-        StringBuffer parentfooter = HTMLEnv.footer;
-        HTMLEnv.css = new StringBuffer();
-        HTMLEnv.header = new StringBuffer();
-        HTMLEnv.footer = new StringBuffer();
         this.setDataList(data_info);
         File input = new File("template.html");
         Document template;
@@ -58,8 +52,6 @@ public class HTMLG3 extends Grouper {
         while (this.hasMoreItems()) {
         	Document toWrite = template.clone();
             HTMLEnv.gLevel++;
-
-            HTMLEnv.code = new StringBuffer();
 
             if (!HTMLEnv.foreachFlag) {
                 backfile = HTMLEnv.nextBackFile;
@@ -104,10 +96,6 @@ public class HTMLG3 extends Grouper {
         }
 
         HTMLEnv.fileName = parentfile;
-        HTMLEnv.code = parentcode;
-        HTMLEnv.css = parentcss;
-        HTMLEnv.header = parentheader;
-        HTMLEnv.footer = parentfooter;
         HTMLEnv.nextBackFile = parentnextbackfile;
         return null;
     }

@@ -12,26 +12,27 @@ import supersql.extendclass.ExtList;
 
 public class HTMLAttribute extends Attribute {
 
-	protected HTMLEnv htmlEnv;
-	protected HTMLEnv htmlEnv2;
-
 	protected String[] formSql = { "", "delete", "update", "insert", "login",
 			"logout" };
 	protected String[] formHtml = { "", "submit", "select", "checkbox",
 			"radio", "text", "textarea", "hidden" };
 	protected int whichForm;
 
-	// コンストラクタ
+	/** @deprecated use HTMLAttribute() instead **/
 	public HTMLAttribute(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
 		super();
-		this.htmlEnv = henv;
-		this.htmlEnv2 = henv2;
 	}
-
+	
+	public HTMLAttribute(){
+		super();
+	}
+	public HTMLAttribute(boolean b){
+		super(b);
+	}
+	
+	/** @deprecated use HTMLC2() instead **/
 	public HTMLAttribute(Manager manager, HTMLEnv henv, HTMLEnv henv2, boolean b) {
 		super(b);
-		this.htmlEnv = henv;
-		this.htmlEnv2 = henv2;
 	}
 
 	public Element createTableNode(ExtList data_info){

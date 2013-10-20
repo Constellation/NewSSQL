@@ -11,10 +11,13 @@ import supersql.extendclass.ExtList;
 
 public class HTMLC2 extends Connector {
 
-	private HTMLEnv htmlEnv;
-
+	/** @deprecated use HTMLC2() instead **/
+	@Deprecated
 	public HTMLC2(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
-		this.htmlEnv = henv;
+		Dimension = 2;
+	}
+	
+	public HTMLC2(){
 		Dimension = 2;
 	}
 

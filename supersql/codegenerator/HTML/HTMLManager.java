@@ -258,7 +258,7 @@ public class HTMLManager extends Manager {
 		HTMLEnv.foreachFlag = GlobalEnv.getForeachFlag();
 		HTMLEnv.writtenClassId = new Vector<String>();
 
-		HTMLEnv localenv = new HTMLEnv();
+		HTMLEnv.createHTMLDocument();
 
 		// 鐃緒申鐃熟わ申?鐃春ワ申鐃緒申?名鐃緒申鐃緒申?
 		getOutfilename();

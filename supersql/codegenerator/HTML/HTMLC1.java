@@ -11,11 +11,15 @@ import supersql.extendclass.ExtList;
 
 public class HTMLC1 extends Connector {
 
-    private HTMLEnv htmlEnv;
+	/** @deprecated use HTMLC2() instead **/
+	@Deprecated
     public HTMLC1(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
-        this.htmlEnv = henv;
         Dimension = 1;
     }
+	
+	public HTMLC1(){
+		Dimension = 1;
+	}
     
     public Element createTableNode(ExtList<ExtList<String>> dataInfo){
     	this.setDataList(dataInfo);

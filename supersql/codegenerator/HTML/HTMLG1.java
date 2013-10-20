@@ -10,10 +10,12 @@ import supersql.extendclass.ExtList;
 
 public class HTMLG1 extends Grouper {
 
-	private HTMLEnv html_env;
-
+	/** @deprecated use HTMLG1() instead **/
 	public HTMLG1(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
-		this.html_env = henv;
+		Dimension = 1;
+	}
+
+	public HTMLG1(){
 		Dimension = 1;
 	}
 
@@ -76,9 +78,7 @@ public class HTMLG1 extends Grouper {
 			if (decos.containsKey("class")) {
 				result.addClass(decos.getStr("class"));
 			}
-			if (HTMLEnv.haveClass == 1) {
-				result.addClass(HTMLEnv.getClassID(this));
-			}
+			result.addClass(HTMLEnv.getClassID(this));
 			result.addClass("nest");
 		}
 	}

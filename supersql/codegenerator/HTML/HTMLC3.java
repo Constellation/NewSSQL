@@ -20,11 +20,14 @@ import supersql.extendclass.ExtList;
 
 public class HTMLC3 extends Connector {
 
-	private HTMLEnv htmlEnv;
+	/** @deprecated use HTMLC3() instead **/
+	@Deprecated
 	public HTMLC3(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
-        this.htmlEnv = henv;
         Dimension =3;
     }
+	public HTMLC3(){
+		Dimension = 3;
+	}
 	
     public Element createNode(ExtList<ExtList<String>> dataInfo){
     	Element result = new Element(Tag.valueOf("div"), "");
@@ -41,10 +44,6 @@ public class HTMLC3 extends Connector {
 		}
     	
     	String parentfile = HTMLEnv.fileName;
-        StringBuffer parentcode = new StringBuffer();
-        StringBuffer parentcss = new StringBuffer();
-        StringBuffer parentheader = new StringBuffer();
-        StringBuffer parentfooter = new StringBuffer();
         ITFE[] tfe = new ITFE[tfeItems];
         int c3items = tfeItems;
         for (int j = 0; j < tfeItems - 1; j++) {
@@ -72,12 +71,6 @@ public class HTMLC3 extends Connector {
                 HTMLEnv.countFile--;
                 toWrite.body().getElementById("ssql").appendChild((Element) this.createNextItemNode(dataInfo));
             } else {
-                parentcss = HTMLEnv.css;
-                parentheader = HTMLEnv.header;
-                parentfooter = HTMLEnv.footer;
-                HTMLEnv.header = new StringBuffer();
-                HTMLEnv.footer = new StringBuffer();
-
                 if (k < c3items - 1) {
                     HTMLEnv.countFile++;
                     HTMLEnv.linkUrl = HTMLEnv.linkOutFile
@@ -92,9 +85,6 @@ public class HTMLC3 extends Connector {
                     HTMLEnv.linkFlag--;
                 }
                 toWrite.head().children().addAll(HTMLEnv.createHeader());
-                HTMLEnv.css = parentcss;
-                HTMLEnv.header = parentheader;
-                HTMLEnv.footer = parentfooter;
             }
             
             // Writing the file

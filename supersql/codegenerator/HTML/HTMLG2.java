@@ -10,11 +10,13 @@ import supersql.extendclass.ExtList;
 
 public class HTMLG2 extends Grouper {
 
-	private HTMLEnv html_env;
-
+	/** @deprecated use HTMLG2() instead **/
 	public HTMLG2(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
-		this.html_env = henv;
 		Dimension =2;
+	}
+	
+	public HTMLG2(){
+		Dimension = 2;
 	}
 	
 	public Element createTableNode(ExtList<ExtList<String>> dataInfo){

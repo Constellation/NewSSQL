@@ -44,25 +44,21 @@ import supersql.parser.SSQLparser;
 
 public class HTMLFunction extends Function {
 
-	private HTMLEnv htmlEnv;
-	private HTMLEnv htmlEnv2;
 	private static int meterId = 0;
 	static ArrayList<Integer> seq_num = new ArrayList<Integer>(); // 20130914
 																	// "SEQ_NUM"
 	static ArrayList<String> seq_num_ClassID = new ArrayList<String>(); // 20130914
 																		// "SEQ_NUM"
 	static ArrayList<Boolean> DESC_Flg = new ArrayList<Boolean>(); // 20130914
-																	// "SEQ_NUM"
-
-	public HTMLFunction() {
-
-	}
 
 	// 鐃緒申鐃藷ストラク鐃緒申
+	@Deprecated
+	/** use HTMLFunction() instead **/
 	public HTMLFunction(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
 		super();
-		this.htmlEnv = henv;
-		this.htmlEnv2 = henv2;
+	}
+	public HTMLFunction(){
+		super();
 	}
 
 	@Override
