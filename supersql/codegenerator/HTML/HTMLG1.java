@@ -5,6 +5,7 @@ import org.jsoup.parser.Tag;
 
 import supersql.codegenerator.Grouper;
 import supersql.codegenerator.Manager;
+import supersql.codegenerator.Mobile_HTML5.HTMLFunction;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
@@ -87,11 +88,11 @@ public class HTMLG1 extends Grouper {
 	        	html_env.code.append(" noborder ");
 	        
 	        if(decos.containsKey("class")){
-	        	//class=menu‚È‚Ç‚ÌŽw’è‚ª‚ ‚Á‚½‚ç•t‰Á
+	        	//class=menuï¿½È‚Ç‚ÌŽwï¿½è‚ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½tï¿½ï¿½
 	        	html_env.code.append(decos.getStr("class") + " ");
 	        }
 	        if(html_env.haveClass == 1){
-	        	//class=menu‚È‚Ç‚ÌŽw’è‚ª‚ ‚Á‚½‚ç•t‰Á
+	        	//class=menuï¿½È‚Ç‚ÌŽwï¿½è‚ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½tï¿½ï¿½
 	        	html_env.code.append(HTMLEnv.getClassID(this) + " ");
 	        }
 	        html_env.code.append("nest\"");
@@ -111,7 +112,7 @@ public class HTMLG1 extends Grouper {
 	            html_env2.code.append("<tfe type=\"repeat\" dimension=\"1\"");
 	            
 	            if(decos.containsKey("class")){
-		        	//class=menu‚È‚Ç‚ÌŽw’è‚ª‚ ‚Á‚½‚ç•t‰Á
+		        	//class=menuï¿½È‚Ç‚ÌŽwï¿½è‚ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½tï¿½ï¿½
 	            	html_env2.code.append(" class=\"");
 		        	html_env2.code.append(decos.getStr("class") + " ");
 		        }
@@ -176,6 +177,8 @@ public class HTMLG1 extends Grouper {
         //html_env2.code.append("</tfe>");
         html_env.code.append("</TR></TABLE>\n");
         Log.out("</TR></TABLE>");
+        
+        supersql.codegenerator.HTML.HTMLFunction.Func_seq_num_initialization();	//added by goto 20130914  "SEQ_NUM"
 
         Log.out("TFEId = " + HTMLEnv.getClassID(this));
         //html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);

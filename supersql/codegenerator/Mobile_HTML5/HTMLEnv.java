@@ -151,6 +151,8 @@ public class HTMLEnv extends LocalEnv {
     //static boolean tabFlg = false;		//20130330  tab用
     static int maxTab = 15;				//20130330  tab用
     
+	static String divWidth = "";		//20131002
+    
 
     // ��?�Ѥ�CSS CLASS����?��?
     private String KeisenMode = "";
@@ -1712,14 +1714,19 @@ public class HTMLEnv extends LocalEnv {
 
         //tk end//////////////////////////////////////////////////////////////
 
-        // ��??
+        //20131002
+		if(!decos.containsKey("width")){
+			if(!HTMLEnv.divWidth.equals(""))
+				decos.put("width", HTMLEnv.divWidth);
+	  	}
+		HTMLEnv.divWidth = "";
+		
+		// ��??
         if (decos.containsKey("width")) {
         	if(GlobalEnv.getframeworklist() == null)
         		cssbuf.append(" width:" + decos.getStr("width") + ";");
         	else
         		cssbuf.append(" width:" + decos.getStr("width") + "px;");
-            //        } else {
-            //            cssbuf.append(" width:120;");
         }
 
         // ��??

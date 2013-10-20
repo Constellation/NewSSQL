@@ -2,6 +2,8 @@ package supersql.codegenerator.Mobile_HTML5;
 
 import java.io.File;
 
+import javax.swing.text.html.CSS;
+
 import supersql.codegenerator.Grouper;
 import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
@@ -368,9 +370,21 @@ public class HTMLG1 extends Grouper {
 //        	}else{
         		//20130309
     	    if(!tableFlg){
-    	    	float divWidth = (float)Math.floor((double)(100.0/numberOfColumns)* 1000) / 1000;
-    	    	if(Count!=0)	html_env.code.append("\n	<div class=\"ui-block"+" "+HTMLEnv.getClassID(tfe)+"\" style=\"width:"+divWidth+"%;\">\n");
-    	    	else			html_env.code.append("\n	<div class=\"ui-block"+" "+HTMLEnv.getClassID(tfe)+"\" style=\"width:"+divWidth+"%; clear:left;\">\n");
+    	    	//20131002
+            	if(decos.containsKey("width")){
+            		HTMLEnv.divWidth = decos.getStr("width");
+    	    	}else{
+        	    	float divWidth = (float)Math.floor((double)(100.0/numberOfColumns)* 1000) / 1000;
+                	HTMLEnv.divWidth = divWidth+"%";
+    	    	}
+            	//tfe.addDeco("width", divWidth);	//☆HTMLEnvで行うように変更した
+            	
+            	if(Count!=0)	html_env.code.append("\n	<div class=\"ui-block"+" "+HTMLEnv.getClassID(tfe)+"\">\n");
+    	    	else			html_env.code.append("\n	<div class=\"ui-block"+" "+HTMLEnv.getClassID(tfe)+"\" style=\"clear:left;\">\n");
+            	
+//    	    	float divWidth = (float)Math.floor((double)(100.0/numberOfColumns)* 1000) / 1000;
+//    	    	if(Count!=0)	html_env.code.append("\n	<div class=\"ui-block"+" "+HTMLEnv.getClassID(tfe)+"\" style=\"width:"+divWidth+"%;\">\n");
+//    	    	else			html_env.code.append("\n	<div class=\"ui-block"+" "+HTMLEnv.getClassID(tfe)+"\" style=\"width:"+divWidth+"%; clear:left;\">\n");
     	    }
 //    	    if(!tableFlg)   html_env.code.append("\n	<div class=\"ui-block-"+gridString[Count]+" "+HTMLEnv.getClassID(tfe)+"\">\n");
     	    //20130314  table
@@ -582,10 +596,12 @@ public class HTMLG1 extends Grouper {
         	rowFlg = false;
         	HTMLG2.tableStartTag = "";
         }
+        
+        //added by goto 20130914  "SEQ_NUM"
+        HTMLFunction.Func_seq_num_initialization();
 
         Log.out("TFEId = " + HTMLEnv.getClassID(this));
         //html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
-
     }
 
     @Override

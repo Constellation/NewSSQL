@@ -69,10 +69,6 @@ public class HTMLFunction extends Function {
     static int mapFuncCount = 1;	//20130717  "map"
     static int gpsFuncCount = 1;	//20130717  "gps"
     
-	static ArrayList<Integer> seq_num = new ArrayList<Integer>();		//20130914  "SEQ_NUM"
-	static ArrayList<String> seq_num_ClassID = new ArrayList<String>();	//20130914  "SEQ_NUM"
-	static ArrayList<Boolean> DESC_Flg = new ArrayList<Boolean>();		//20130914  "SEQ_NUM"
-	
 	static boolean textFlg = false;	//20130914  "text"
     
     static String updateFile;
@@ -2974,9 +2970,14 @@ public class HTMLFunction extends Function {
     //object end
     
 	//added by goto 20130914  "SEQ_NUM"
+	static ArrayList<Integer> seq_num = new ArrayList<Integer>();
+	static ArrayList<String> seq_num_ClassID = new ArrayList<String>();
+	static ArrayList<Integer> seq_num_startNum = new ArrayList<Integer>();
+	static ArrayList<Boolean> seq_num_DESC_Flg = new ArrayList<Boolean>();
+    static String classID = "";
     /*  SEQ_NUM( [Start number [, ASC or DESC] ] )  */
     private void Func_seq_num() {
-    	String classID = HTMLEnv.getClassID(this);
+    	classID = HTMLEnv.getClassID(this);
     	int i;
     	for(i=0; i<seq_num_ClassID.size()+1; i++){
     		try{
@@ -2985,26 +2986,39 @@ public class HTMLFunction extends Function {
     		}catch(Exception e1){
 	    		seq_num_ClassID.add(i, classID);
 				try{
-					//第一引数
-					seq_num.add(i, Integer.parseInt(getValue(1)));
-					//第二引数
-					if(getValue(2).toLowerCase().trim().equals("desc"))	DESC_Flg.add(i, true);
-					else												DESC_Flg.add(i, false);
+					//第一引数 Start number
+					seq_num_startNum.add(i, Integer.parseInt(getValue(1)));
+					//第二引数 ASC or DESC
+					if(getValue(2).toLowerCase().trim().equals("desc"))	seq_num_DESC_Flg.add(i, true);
+					else												seq_num_DESC_Flg.add(i, false);
 				}catch(Exception e2){
-					seq_num.add(i, 1);			//default
-					DESC_Flg.add(i, false);		//default
+					seq_num_startNum.add(i, 1);			//default: 1
+					seq_num_DESC_Flg.add(i, false);		//default: false
 				}
+				seq_num.add(i, seq_num_startNum.get(i));
 				break;
     		}
     	}
     	
     	// 各引数毎に処理した結果をHTMLに書きこむ
-    	html_env.code.append(""+((!DESC_Flg.get(i))? (seq_num.get(i)):(seq_num.get(i))));
-    	if(!DESC_Flg.get(i))	seq_num.set(i,seq_num.get(i)+1);
+    	html_env.code.append(""+((!seq_num_DESC_Flg.get(i))? (seq_num.get(i)):(seq_num.get(i))));
+    	if(!seq_num_DESC_Flg.get(i))	seq_num.set(i,seq_num.get(i)+1);
     	else					seq_num.set(i,seq_num.get(i)-1);
     	return;
     }
     //seq_num end
+	//added by goto 20130914  "SEQ_NUM"
+    static void Func_seq_num_initialization() {		//initialize seq_num
+    	try{
+        	for(int i=0; i<seq_num_ClassID.size(); i++){
+        		if(seq_num_ClassID.get(i).equals(classID)){
+        			seq_num.set(i, seq_num_startNum.get(i));	//replace
+        			break;
+        		}
+        	}
+        }catch(Exception e){}
+    	return;
+    }
 
 	//added by goto 20130914  "text"
     /*  text("#TextLabel_" + Number)  */
