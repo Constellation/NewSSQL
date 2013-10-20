@@ -26,7 +26,7 @@ public class XMLC0 extends Connector {
 
     public XMLC0(Manager manager, XMLEnv xenv, XMLEnv xenv2) {
         this.manager = manager;
-        this.xml_env = xenv;
+        XMLC0.xml_env = xenv;
         this.xml_env2 = xenv2;
     }
 

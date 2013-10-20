@@ -8,7 +8,6 @@ import org.jsoup.parser.Tag;
 import supersql.codegenerator.Attribute;
 import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
-import supersql.common.Log;
 import supersql.extendclass.ExtList;
 
 public class HTMLAttribute extends Attribute {
@@ -63,32 +62,29 @@ public class HTMLAttribute extends Attribute {
 		Element div = new Element(Tag.valueOf("div"), "");
 		Element a = new Element(Tag.valueOf("a"), "");
 
-		if (htmlEnv.linkFlag > 0) {
+		if (HTMLEnv.linkFlag > 0) {
 
 			// tk start for draggable div///////////////////////////////////////
-			if (htmlEnv.draggable) {
-				div.addClass("draggable").attr("id", htmlEnv.dragDivId);
-				htmlEnv.code.append("<div id=\"" + htmlEnv.dragDivId
-						+ "\" class=\"draggable\"");
-				Log.out("<div id=\"" + htmlEnv.dragDivId + "\" ");
+			if (HTMLEnv.draggable) {
+				div.addClass("draggable").attr("id", HTMLEnv.dragDivId);
 			} else {
 				// tk end for draggable
 				// div/////////////////////////////////////////
-				if (htmlEnv.isPanel)
+				if (HTMLEnv.isPanel)
 					div.attr("id", "container");
 
-				String fileDir = new File(htmlEnv.linkUrl).getAbsoluteFile()
+				String fileDir = new File(HTMLEnv.linkUrl).getAbsoluteFile()
 						.getParent();
-				if (fileDir.length() < htmlEnv.linkUrl.length()
-						&& fileDir.equals(htmlEnv.linkUrl.substring(0,
+				if (fileDir.length() < HTMLEnv.linkUrl.length()
+						&& fileDir.equals(HTMLEnv.linkUrl.substring(0,
 								fileDir.length()))) {
-					String relative_path = htmlEnv.linkUrl.substring(fileDir
+					String relative_path = HTMLEnv.linkUrl.substring(fileDir
 							.length() + 1);
 					a = new Element(Tag.valueOf("a"), "").attr("href",
 							relative_path);
 				} else
 					a = new Element(Tag.valueOf("a"), "").attr("href",
-							htmlEnv.linkUrl);
+							HTMLEnv.linkUrl);
 			}
 			if (decos.containsKey("target")) {
 				a.attr("target", decos.getStr("target"));
@@ -97,27 +93,27 @@ public class HTMLAttribute extends Attribute {
 				a.addClass(decos.getStr("class"));
 			}
 
-			if (GlobalEnv.isAjax() && htmlEnv.isPanel) {
-				a.attr("onClick", "return panel('Panel','" + htmlEnv.ajaxQuery
-						+ "'," + "'" + htmlEnv.dragDivId + "','"
-						+ htmlEnv.ajaxCond + "')");
-			} else if (GlobalEnv.isAjax() && !htmlEnv.draggable) {
+			if (GlobalEnv.isAjax() && HTMLEnv.isPanel) {
+				a.attr("onClick", "return panel('Panel','" + HTMLEnv.ajaxQuery
+						+ "'," + "'" + HTMLEnv.dragDivId + "','"
+						+ HTMLEnv.ajaxCond + "')");
+			} else if (GlobalEnv.isAjax() && !HTMLEnv.draggable) {
 				String target = GlobalEnv.getAjaxTarget();
 				if (target == null) {
-					String query = htmlEnv.ajaxQuery;
+					String query = HTMLEnv.ajaxQuery;
 					if (query.contains("/")) {
 						target = query.substring(query.lastIndexOf("/") + 1,
 								query.indexOf(".sql"));
 					} else
 						target = query.substring(0, query.indexOf(".sql"));
 
-					if (htmlEnv.hasDispDiv) {
-						target = htmlEnv.ajaxtarget;
+					if (HTMLEnv.hasDispDiv) {
+						target = HTMLEnv.ajaxtarget;
 					}
 				}
-				a.attr("onClick", "return loadFile('" + htmlEnv.ajaxQuery
-						+ "','" + target + "','" + htmlEnv.ajaxCond + "',"
-						+ htmlEnv.inEffect + "," + htmlEnv.outEffect + ")");
+				a.attr("onClick", "return loadFile('" + HTMLEnv.ajaxQuery
+						+ "','" + target + "','" + HTMLEnv.ajaxCond + "',"
+						+ HTMLEnv.inEffect + "," + HTMLEnv.outEffect + ")");
 			}
 		}
 
@@ -126,13 +122,13 @@ public class HTMLAttribute extends Attribute {
 		elementText = elementText.replace(" ", "&#160;");
 		result.html(elementText);
 
-		if (htmlEnv.linkFlag > 0) {
-			if (htmlEnv.draggable)
+		if (HTMLEnv.linkFlag > 0) {
+			if (HTMLEnv.draggable)
 				result.appendChild(div);
 			else {
 				a.html(this.getStr(data_info));
 				a.addClass("box");
-				if (htmlEnv.isPanel)
+				if (HTMLEnv.isPanel)
 					a.appendChild(div);
 				return a;
 			}
@@ -267,14 +263,6 @@ public class HTMLAttribute extends Attribute {
 						inputFormString += "<input type=\"text\" name=\""
 								+ name + "\" value=\"" + s + "\"/>";
 				}
-				/*
-				 * if(s.isEmpty()){ inputFormString += "<input ref=\"" + name +
-				 * "\"><label></label></input>"; }else{ inputFormString +=
-				 * "<input ref=\"" + name + "\"><label>" + s +
-				 * "</label></input>"; }
-				 */
-				// ishizaki end(html5)
-
 			}
 
 			// add constraint
@@ -308,22 +296,7 @@ public class HTMLAttribute extends Attribute {
 					constraint += ",unique";
 			}
 
-			if (constraint != null && !constraint.isEmpty())
-				inputFormString += "<input type=\"hidden\" name=\"" + name
-						+ ":const\" value=\"" + constraint + "\" />";
-
-			if (decos.containsKey("pkey") && whichForm == 2) {// update
-				if (!htmlEnv.code.toString().contains(
-						"<input type=\"hidden\" name=\"pkey\" value=\"" + name
-								+ "\" />"))
-					inputFormString += "<input type=\"hidden\" name=\"pkey\" value=\""
-							+ name + "\" />";
-			}
 		}
-
-		htmlEnv.code.append(inputFormString);
-		htmlEnv2.code.append(inputFormString);
-		Log.out(inputFormString);
 
 		inputFormString = new String();
 
@@ -374,10 +347,6 @@ public class HTMLAttribute extends Attribute {
 				}
 			}
 		}
-
-		htmlEnv.code.append(inputFormString);
-		htmlEnv2.code.append(inputFormString);
-		Log.out(inputFormString);
 
 	}
 

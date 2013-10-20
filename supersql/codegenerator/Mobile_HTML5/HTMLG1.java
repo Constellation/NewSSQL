@@ -1,7 +1,5 @@
 package supersql.codegenerator.Mobile_HTML5;
 
-import java.io.File;
-
 import supersql.codegenerator.Grouper;
 import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;

@@ -8,9 +8,12 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 
 import org.jsoup.nodes.Element;
+import org.jsoup.parser.Tag;
 
 import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.TFE;
+import supersql.common.GlobalEnv;
+import supersql.parser.SSQLparser;
 
 public class HTMLUtils {
 
@@ -150,6 +153,23 @@ public class HTMLUtils {
 		}
 		return style;
 	}
+	
+	public static Element createSessionForm(String name) {
+		Element form = new Element(Tag.valueOf("form"), "")
+			.attr("action", GlobalEnv.getFileDirectory()
+					+ "/servlet/supersql.form.Session" )
+			.attr("method", "post").attr("name", name)
 
+			.appendElement("input")
+				.attr("type", "hidden")
+				.attr("name", "configfile")
+				.attr("value", GlobalEnv.getconfigfile());
+		if(name.contains("login"))
+			form.appendElement("input")
+				.attr("name", "tableinfo")
+				.attr("value", SSQLparser.get_from_info_st());
+
+		return form;
+	}
 
 }

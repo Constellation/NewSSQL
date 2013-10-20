@@ -11,7 +11,6 @@ import supersql.codegenerator.Function;
 import supersql.codegenerator.Grouper;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.IfCondition;
-import supersql.codegenerator.Operator;
 import supersql.codegenerator.TFE;
 
 import supersql.common.GlobalEnv;

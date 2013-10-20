@@ -54,7 +54,7 @@ public class HTMLC2 extends Connector {
     		result.addClass("vertical");
 
 		if (!GlobalEnv.isOpt()) {
-			if (!htmlEnv.isOutlineMode()) {
+			if (!HTMLEnv.isOutlineMode()) {
 				result.attr("frame", "void");
 			}
 				result.attr("class", HTMLEnv.getClassID(this));

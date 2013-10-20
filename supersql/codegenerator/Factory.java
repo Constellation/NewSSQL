@@ -3,9 +3,6 @@ package supersql.codegenerator;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-import supersql.codegenerator.HTML.HTMLEnv;
-import supersql.common.Log;
-
 /**
  * Operator, Manager を生成するクラス
  */

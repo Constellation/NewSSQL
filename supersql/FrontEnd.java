@@ -1,7 +1,5 @@
 package supersql;
 
-import org.jsoup.nodes.Element;
-
 import supersql.codegenerator.CodeGenerator;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;

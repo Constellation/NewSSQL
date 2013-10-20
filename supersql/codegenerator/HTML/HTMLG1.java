@@ -26,11 +26,11 @@ public class HTMLG1 extends Grouper {
 		nodeCreationPreProcess(result);
 
 		while (this.hasMoreItems()) {
-			html_env.gLevel++;
+			HTMLEnv.gLevel++;
 			HTMLUtils.propagateDeco(tfe, decos);
 			tr.appendElement("td").appendChild(
 					(Element) this.createNextItemNode());
-			html_env.gLevel--;
+			HTMLEnv.gLevel--;
 		}
 
 		nodeCreationPostProcess(result);
@@ -51,10 +51,10 @@ public class HTMLG1 extends Grouper {
 		nodeCreationPreProcess(result);
 
 		while (this.hasMoreItems()) {
-			html_env.gLevel++;
+			HTMLEnv.gLevel++;
 			HTMLUtils.propagateDeco(tfe, decos);
 			result.appendChild((Element) this.createNextItemNode());
-			html_env.gLevel--;
+			HTMLEnv.gLevel--;
 		}
 		nodeCreationPostProcess(result);
 		return result;
@@ -70,13 +70,13 @@ public class HTMLG1 extends Grouper {
 			result.addClass("horizontal");
 		if (!GlobalEnv.isOpt()) {
 
-			if (html_env.embedFlag)
+			if (HTMLEnv.embedFlag)
 				result.addClass("embed");
 
 			if (decos.containsKey("class")) {
 				result.addClass(decos.getStr("class"));
 			}
-			if (html_env.haveClass == 1) {
+			if (HTMLEnv.haveClass == 1) {
 				result.addClass(HTMLEnv.getClassID(this));
 			}
 			result.addClass("nest");

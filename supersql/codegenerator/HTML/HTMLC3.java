@@ -40,7 +40,7 @@ public class HTMLC3 extends Connector {
 			throw new IllegalStateException();
 		}
     	
-    	String parentfile = htmlEnv.fileName;
+    	String parentfile = HTMLEnv.fileName;
         StringBuffer parentcode = new StringBuffer();
         StringBuffer parentcss = new StringBuffer();
         StringBuffer parentheader = new StringBuffer();
@@ -56,55 +56,51 @@ public class HTMLC3 extends Connector {
         }
         HTMLEnv.countFile++;
 
-        htmlEnv.linkUrl = htmlEnv.linkOutFile
+        HTMLEnv.linkUrl = HTMLEnv.linkOutFile
                 + String.valueOf(HTMLEnv.countFile) + ".html";
-        htmlEnv.linkFlag++;
+        HTMLEnv.linkFlag++;
         this.setDataList(dataInfo);
 
         result.appendChild((Element) this.createNextItemNode(dataInfo));
-        htmlEnv.linkFlag--;
+        HTMLEnv.linkFlag--;
 
         for (int k = 1; k < c3items; k++) {
             ITFE intfe = (ITFE) tfes.get(k);
-            htmlEnv.fileName = htmlEnv.outFile
+            HTMLEnv.fileName = HTMLEnv.outFile
                     + String.valueOf(HTMLEnv.countFile) + ".html";
             if (intfe instanceof HTMLG3) {
                 HTMLEnv.countFile--;
                 toWrite.body().getElementById("ssql").appendChild((Element) this.createNextItemNode(dataInfo));
             } else {
-                parentcode = htmlEnv.code;
-                parentcss = htmlEnv.css;
-                parentheader = htmlEnv.header;
-                parentfooter = htmlEnv.footer;
-                htmlEnv.code = new StringBuffer();
-                htmlEnv.header = new StringBuffer();
-                htmlEnv.footer = new StringBuffer();
+                parentcss = HTMLEnv.css;
+                parentheader = HTMLEnv.header;
+                parentfooter = HTMLEnv.footer;
+                HTMLEnv.header = new StringBuffer();
+                HTMLEnv.footer = new StringBuffer();
 
                 if (k < c3items - 1) {
                     HTMLEnv.countFile++;
-                    htmlEnv.linkUrl = htmlEnv.linkOutFile
+                    HTMLEnv.linkUrl = HTMLEnv.linkOutFile
                             + String.valueOf(HTMLEnv.countFile) + ".html";
-                    htmlEnv.linkFlag++;
+                    HTMLEnv.linkFlag++;
                 }
 
-                htmlEnv.setOutlineMode();
+                HTMLEnv.setOutlineMode();
                 toWrite.body().getElementById("ssql").appendChild((Element) this.createNextItemNode(dataInfo));
 
                 if (k < c3items - 1) {
-                    htmlEnv.linkFlag--;
+                    HTMLEnv.linkFlag--;
                 }
-                htmlEnv.getHeader();
-                htmlEnv.getFooter();
-                htmlEnv.code = parentcode;
-                htmlEnv.css = parentcss;
-                htmlEnv.header = parentheader;
-                htmlEnv.footer = parentfooter;
+                toWrite.head().children().addAll(HTMLEnv.createHeader());
+                HTMLEnv.css = parentcss;
+                HTMLEnv.header = parentheader;
+                HTMLEnv.footer = parentfooter;
             }
             
             // Writing the file
             try {
             	Writer out = new BufferedWriter(new OutputStreamWriter(
-            			new FileOutputStream(htmlEnv.fileName), "UTF-8"));
+            			new FileOutputStream(HTMLEnv.fileName), "UTF-8"));
             	out.write(toWrite.html());
             	out.close();
             } catch (IOException e) {
@@ -115,7 +111,7 @@ public class HTMLC3 extends Connector {
         }
 
         // TODO
-        htmlEnv.fileName = parentfile;
+        HTMLEnv.fileName = parentfile;
 
         HTMLUtils.processDecos(result, decos);
         return result;

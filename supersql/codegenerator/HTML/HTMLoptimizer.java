@@ -153,43 +153,12 @@ public class HTMLoptimizer {
 			xml_str = xml_str.replace("</TR>","</TR>\n");
 
 
-			//Log.out(xml_str);
 			while(xml_str.contains("&amp;"))
 				xml_str = xml_str.replace("&amp;","&");
 			while(xml_str.contains("&lt;"))
 				xml_str = xml_str.replace("&lt;","<");
 			while(xml_str.contains("&gt;"))
 				xml_str = xml_str.replace("&gt;",">");
-			
-			
-			//add 200909 form
-			if(xml_str.contains("<form")){
-				for(int i = 1; i < HTMLEnv.getFormNumber();i++){
-					if(xml_str.contains("<form" + i + "start/>")){
-						xml_str = xml_str.replace("<form" + i + "start/>",HTMLEnv.getFormDetail(i));
-					}
-					if(xml_str.contains("<form" + i + "end/>")){
-						xml_str = xml_str.replace("<form" + i + "end/>","</form>");
-					}
-				}
-				int st = 0;
-				while(true){
-					if(xml_str.indexOf("<textarea",st) > 0){
-						st = xml_str.indexOf("<textarea",st);
-						int en = xml_str.indexOf(">",st);
-						if(xml_str.charAt(en-1) == '/'){
-							String a = xml_str.substring(0,en-1);
-							String b = xml_str.substring(en,en+1);
-							String c = xml_str.substring(en+1,xml_str.length());
-							xml_str = a + b + "</textarea>" + c;
-						}
-						st++;
-					}else{
-						break;
-					}
-				}
-			}
-			
 			
 			return xml_str;
 			

@@ -36,17 +36,17 @@ public class HTMLManager extends Manager {
 		HTMLEnv.initAllFormFlg();
 
 		HTMLEnv.countFile = 0;
-		htmlEnv.code = new StringBuffer();
-		htmlEnv.css = new StringBuffer();
-		htmlEnv.header = new StringBuffer();
-		htmlEnv.footer = new StringBuffer();
-		htmlEnv.foreachFlag = GlobalEnv.getForeachFlag();
-		htmlEnv.writtenClassId = new Vector();
-		htmlEnv.notWrittenClassId = new Vector();
-		Document result = htmlEnv.getHtmlEnv1();
+		HTMLEnv.code = new StringBuffer();
+		HTMLEnv.css = new StringBuffer();
+		HTMLEnv.header = new StringBuffer();
+		HTMLEnv.footer = new StringBuffer();
+		HTMLEnv.foreachFlag = GlobalEnv.getForeachFlag();
+		HTMLEnv.writtenClassId = new Vector();
+		HTMLEnv.notWrittenClassId = new Vector();
+		Document result = HTMLEnv.getHtmlEnv1();
 
 		getOutfilename();
-		result.setBaseUri(htmlEnv.outFile + ".html");
+		result.setBaseUri(HTMLEnv.outFile + ".html");
 
 		if (tfe_info instanceof HTMLG3) {
 			tfe_info.createNode(data_info);
@@ -54,9 +54,9 @@ public class HTMLManager extends Manager {
 			return;
 		}
 
-		htmlEnv.fileName = htmlEnv.outFile + ".html";
+		HTMLEnv.fileName = HTMLEnv.outFile + ".html";
 
-		htmlEnv.setOutlineMode();
+		HTMLEnv.setOutlineMode();
 
 		if (data_info.size() == 0
 				&& !DataConstructor.SQL_string
@@ -68,13 +68,12 @@ public class HTMLManager extends Manager {
 			result.body().getElementById("ssql")
 					.appendChild((Element) tfe_info.createNode(data_info));
 
-		htmlEnv.createHeader();
-		htmlEnv.createFooter();
+		HTMLEnv.createHeader();
 		try {
 			if (GlobalEnv.cssout() != null) {
 				PrintWriter pw3 = new PrintWriter(new BufferedWriter(
 						new FileWriter(GlobalEnv.cssout())));
-				pw3.println(htmlEnv.header);
+				pw3.println(HTMLEnv.header);
 				pw3.close();
 			}
 
@@ -82,11 +81,11 @@ public class HTMLManager extends Manager {
 		} catch (FileNotFoundException fe) {
 			fe.printStackTrace();
 			System.err.println("Error: specified outdirectory \""
-					+ htmlEnv.outDir + "\" is not found to write "
-					+ htmlEnv.fileName);
+					+ HTMLEnv.outDir + "\" is not found to write "
+					+ HTMLEnv.fileName);
 			GlobalEnv.addErr("Error: specified outdirectory \""
-					+ htmlEnv.outDir + "\" is not found to write "
-					+ htmlEnv.fileName);
+					+ HTMLEnv.outDir + "\" is not found to write "
+					+ HTMLEnv.fileName);
 		} catch (IOException e) {
 			System.err
 					.println("Error[HTMLManager]: File IO Error in HTMLManager");
@@ -128,20 +127,20 @@ public class HTMLManager extends Manager {
 	public StringBuffer generateCode2(ITFE tfe_info, ExtList data_info) {
 		HTMLEnv.initAllFormFlg();
 
-		htmlEnv.countFile = 0;
-		htmlEnv.code = new StringBuffer();
-		htmlEnv.css = new StringBuffer();
-		htmlEnv.header = new StringBuffer();
-		htmlEnv.footer = new StringBuffer();
-		htmlEnv.foreachFlag = GlobalEnv.getForeachFlag();
-		htmlEnv.writtenClassId = new Vector();
-		htmlEnv.embedFlag = true;
+		HTMLEnv.countFile = 0;
+		HTMLEnv.code = new StringBuffer();
+		HTMLEnv.css = new StringBuffer();
+		HTMLEnv.header = new StringBuffer();
+		HTMLEnv.footer = new StringBuffer();
+		HTMLEnv.foreachFlag = GlobalEnv.getForeachFlag();
+		HTMLEnv.writtenClassId = new Vector();
+		HTMLEnv.embedFlag = true;
 
-		htmlEnv2.countFile = 0;
-		htmlEnv2.code = new StringBuffer();
-		htmlEnv2.css = new StringBuffer();
-		htmlEnv2.header = new StringBuffer();
-		htmlEnv2.footer = new StringBuffer();
+		HTMLEnv.countFile = 0;
+		HTMLEnv.code = new StringBuffer();
+		HTMLEnv.css = new StringBuffer();
+		HTMLEnv.header = new StringBuffer();
+		HTMLEnv.footer = new StringBuffer();
 		String xml_str = null;
 		StringBuffer returncode = new StringBuffer();
 		// 鐃緒申鐃熟わ申?鐃春ワ申鐃緒申?名鐃緒申鐃緒申?
@@ -152,47 +151,47 @@ public class HTMLManager extends Manager {
 		// ?鐃瞬鰹申側鐃緒申G3鐃緒申??
 		if (tfe_info instanceof HTMLG3) {
 			tfe_info.work(data_info);
-			return htmlEnv.code;
+			return HTMLEnv.code;
 		}
 		// ?鐃瞬鰹申側鐃緒申G3鐃叔なわ申??
-		htmlEnv.setOutlineMode();
+		HTMLEnv.setOutlineMode();
 		tfe_info.work(data_info);
 
-		htmlEnv2.header
+		HTMLEnv.header
 				.append("<?xml version=\"1.0\" encoding=\"Shift_JIS\"?><SSQL>");
-		htmlEnv2.footer.append("</SSQL>");
+		HTMLEnv.footer.append("</SSQL>");
 
 		if (GlobalEnv.isOpt()) {
 			int i = 0;
-			while (htmlEnv2.code.indexOf("&", i) != -1) {
-				i = htmlEnv2.code.indexOf("&", i);
-				htmlEnv2.code = htmlEnv2.code.replace(i, i + 1, "&amp;");
+			while (HTMLEnv.code.indexOf("&", i) != -1) {
+				i = HTMLEnv.code.indexOf("&", i);
+				HTMLEnv.code = HTMLEnv.code.replace(i, i + 1, "&amp;");
 				i++;
 			}
 			StringBuffer xml_string = new StringBuffer();
-			xml_string.append(htmlEnv2.header);
-			xml_string.append(htmlEnv2.code);
-			xml_string.append(htmlEnv2.footer);
+			xml_string.append(HTMLEnv.header);
+			xml_string.append(HTMLEnv.code);
+			xml_string.append(HTMLEnv.footer);
 			HTMLoptimizer xml = new HTMLoptimizer();
 			// System.out.println(xml_string); //commented out by goto 20120620
 			xml_str = xml.generateHtml(xml_string);
 			returncode.append(xml_str);
 		}
-		htmlEnv.embedFlag = false;
+		HTMLEnv.embedFlag = false;
 
-		if (htmlEnv.script.length() >= 5) {
+		if (HTMLEnv.script.length() >= 5) {
 			StringBuffer result = new StringBuffer();
 
-			result.append(htmlEnv.script);
+			result.append(HTMLEnv.script);
 			result.append("<end of script>\n");
-			result.append(htmlEnv.code);
+			result.append(HTMLEnv.code);
 
 			return result;
 		} else {
 			if (GlobalEnv.isOpt())
 				return returncode;
 			else
-				return htmlEnv.code;
+				return HTMLEnv.code;
 
 		}
 	}
@@ -200,26 +199,26 @@ public class HTMLManager extends Manager {
 	@Override
 	public StringBuffer generateCodeNotuple(ITFE tfe_info) {
 		Log.out("no data found");
-		htmlEnv.code = new StringBuffer();
-		htmlEnv.code.append("<div class=\"nodata\" >");
-		htmlEnv.code.append("NO DATA FOUND");
-		htmlEnv.code.append("</div>");
+		HTMLEnv.code = new StringBuffer();
+		HTMLEnv.code.append("<div class=\"nodata\" >");
+		HTMLEnv.code.append("NO DATA FOUND");
+		HTMLEnv.code.append("</div>");
 
-		return htmlEnv.code;
+		return HTMLEnv.code;
 	}
 
 	@Override
 	public StringBuffer generateCode3(ITFE tfe_info, ExtList data_info) {
 		HTMLEnv.initAllFormFlg();
 
-		htmlEnv.countFile = 0;
-		htmlEnv.code = new StringBuffer();
-		htmlEnv.css = new StringBuffer();
-		htmlEnv.header = new StringBuffer();
-		htmlEnv.footer = new StringBuffer();
-		htmlEnv.foreachFlag = GlobalEnv.getForeachFlag();
-		htmlEnv.writtenClassId = new Vector();
-		htmlEnv.embedFlag = true;
+		HTMLEnv.countFile = 0;
+		HTMLEnv.code = new StringBuffer();
+		HTMLEnv.css = new StringBuffer();
+		HTMLEnv.header = new StringBuffer();
+		HTMLEnv.footer = new StringBuffer();
+		HTMLEnv.foreachFlag = GlobalEnv.getForeachFlag();
+		HTMLEnv.writtenClassId = new Vector();
+		HTMLEnv.embedFlag = true;
 		// 鐃緒申鐃熟わ申?鐃春ワ申鐃緒申?名鐃緒申鐃緒申?
 		getOutfilename();
 
@@ -228,36 +227,36 @@ public class HTMLManager extends Manager {
 		// ?鐃瞬鰹申側鐃緒申G3鐃緒申??
 		if (tfe_info instanceof HTMLG3) {
 			tfe_info.work(data_info);
-			return htmlEnv.code;
+			return HTMLEnv.code;
 		}
 		// ?鐃瞬鰹申側鐃緒申G3鐃叔なわ申??
 
-		htmlEnv.setOutlineMode();
+		HTMLEnv.setOutlineMode();
 		tfe_info.work(data_info);
 		// html_env.getCSS();
-		htmlEnv.embedFlag = false;
-		Log.out("header : " + htmlEnv.header);
-		return htmlEnv.css;
+		HTMLEnv.embedFlag = false;
+		Log.out("header : " + HTMLEnv.header);
+		return HTMLEnv.css;
 	}
 
 	@Override
 	public StringBuffer generateCode4(ITFE tfe_info, ExtList data_info) {
 		HTMLEnv.initAllFormFlg();
-		htmlEnv.countFile = 0;
-		htmlEnv.code = new StringBuffer();
-		htmlEnv.css = new StringBuffer();
-		htmlEnv.header = new StringBuffer();
-		htmlEnv.footer = new StringBuffer();
-		htmlEnv.foreachFlag = GlobalEnv.getForeachFlag();
-		htmlEnv.writtenClassId = new Vector();
+		HTMLEnv.countFile = 0;
+		HTMLEnv.code = new StringBuffer();
+		HTMLEnv.css = new StringBuffer();
+		HTMLEnv.header = new StringBuffer();
+		HTMLEnv.footer = new StringBuffer();
+		HTMLEnv.foreachFlag = GlobalEnv.getForeachFlag();
+		HTMLEnv.writtenClassId = new Vector();
 
-		htmlEnv2.countFile = 0;
-		htmlEnv2.code = new StringBuffer();
-		htmlEnv2.css = new StringBuffer();
-		htmlEnv2.header = new StringBuffer();
-		htmlEnv2.footer = new StringBuffer();
-		htmlEnv2.foreachFlag = GlobalEnv.getForeachFlag();
-		htmlEnv2.writtenClassId = new Vector<String>();
+		HTMLEnv.countFile = 0;
+		HTMLEnv.code = new StringBuffer();
+		HTMLEnv.css = new StringBuffer();
+		HTMLEnv.header = new StringBuffer();
+		HTMLEnv.footer = new StringBuffer();
+		HTMLEnv.foreachFlag = GlobalEnv.getForeachFlag();
+		HTMLEnv.writtenClassId = new Vector<String>();
 
 		HTMLEnv localenv = new HTMLEnv();
 
@@ -267,19 +266,18 @@ public class HTMLManager extends Manager {
 		Log.out("[HTMLManager:generateCode]");
 
 		// ?鐃瞬鰹申側鐃緒申G3鐃叔なわ申??
-		htmlEnv.fileName = htmlEnv.outFile + ".html";
-		htmlEnv2.fileName = htmlEnv.outFile + ".xml";
+		HTMLEnv.fileName = HTMLEnv.outFile + ".html";
+		HTMLEnv.fileName = HTMLEnv.outFile + ".xml";
 
-		htmlEnv.setOutlineMode();
+		HTMLEnv.setOutlineMode();
 		tfe_info.work(data_info);
 
-		htmlEnv.getHeader();
-		htmlEnv.getFooter();
-		htmlEnv.embedFlag = false;
-		Log.out("header : " + htmlEnv.header);
+		HTMLEnv.appendHeader();
+		HTMLEnv.embedFlag = false;
+		Log.out("header : " + HTMLEnv.header);
 
-		StringBuffer headfoot = new StringBuffer(htmlEnv.header
-				+ " ###split### " + htmlEnv.footer);
+		StringBuffer headfoot = new StringBuffer(HTMLEnv.header
+				+ " ###split### " + HTMLEnv.footer);
 
 		return headfoot;
 	}
@@ -287,24 +285,24 @@ public class HTMLManager extends Manager {
 	@Override
 	public StringBuffer generateCssfile(ITFE tfe_info, ExtList data_info) {
 
-		htmlEnv.countFile = 0;
-		htmlEnv.code = new StringBuffer();
-		htmlEnv.css = new StringBuffer();
-		htmlEnv.header = new StringBuffer();
-		htmlEnv.footer = new StringBuffer();
-		htmlEnv.foreachFlag = GlobalEnv.getForeachFlag();
-		htmlEnv.writtenClassId = new Vector();
-		htmlEnv.embedFlag = true;
+		HTMLEnv.countFile = 0;
+		HTMLEnv.code = new StringBuffer();
+		HTMLEnv.css = new StringBuffer();
+		HTMLEnv.header = new StringBuffer();
+		HTMLEnv.footer = new StringBuffer();
+		HTMLEnv.foreachFlag = GlobalEnv.getForeachFlag();
+		HTMLEnv.writtenClassId = new Vector();
+		HTMLEnv.embedFlag = true;
 		// 鐃緒申鐃熟わ申?鐃春ワ申鐃緒申?名鐃緒申鐃緒申?
 		getOutfilename();
 
 		Log.out("[HTMLManager:generateCode]");
 
-		htmlEnv.setOutlineMode();
+		HTMLEnv.setOutlineMode();
 		tfe_info.work(data_info);
-		htmlEnv.embedFlag = false;
-		Log.out("header : " + htmlEnv.header);
-		return htmlEnv.cssFile;
+		HTMLEnv.embedFlag = false;
+		Log.out("header : " + HTMLEnv.header);
+		return HTMLEnv.cssFile;
 	}
 
 	// tk
@@ -314,7 +312,7 @@ public class HTMLManager extends Manager {
 		String file = GlobalEnv.getfilename();
 		String outdir = GlobalEnv.getoutdirectory();
 		String outfile = GlobalEnv.getoutfilename();
-		htmlEnv.outDir = outdir;
+		HTMLEnv.outDir = outdir;
 
 		/*
 		 * 鐃緒申鐃熟フワ申鐃緒申?(outfilename)鐃緒申鐃緒申鐃所さ?鐃銃わ申???
@@ -322,25 +320,25 @@ public class HTMLManager extends Manager {
 		 * 鐃緒申?鐃淑鰹申鐃塾とわ申鐃熟ワ申鐃緒申?鐃春ワ申鐃緒申?鐃緒申名鐃緒申(filename)鐃祝わ申?
 		 */
 		if (GlobalEnv.getQuery() != null) {
-			htmlEnv.outFile = "./fromquery";
+			HTMLEnv.outFile = "./fromquery";
 
 		} else if (outfile == null) {
 			if (file.toLowerCase().indexOf(".sql") > 0) {
-				htmlEnv.outFile = file.substring(0,
+				HTMLEnv.outFile = file.substring(0,
 						file.toLowerCase().indexOf(".sql"));
 			} else if (file.toLowerCase().indexOf(".ssql") > 0) {
-				htmlEnv.outFile = file.substring(0,
+				HTMLEnv.outFile = file.substring(0,
 						file.toLowerCase().indexOf(".ssql"));
 			}
 		} else {
-			htmlEnv.outFile = getOutfile(outfile);
+			HTMLEnv.outFile = getOutfile(outfile);
 		}
 
-		if (htmlEnv.outFile.indexOf("/") > 0) {
-			htmlEnv.linkOutFile = htmlEnv.outFile.substring(htmlEnv.outFile
+		if (HTMLEnv.outFile.indexOf("/") > 0) {
+			HTMLEnv.linkOutFile = HTMLEnv.outFile.substring(HTMLEnv.outFile
 					.lastIndexOf("/") + 1);
 		} else {
-			htmlEnv.linkOutFile = htmlEnv.outFile;
+			HTMLEnv.linkOutFile = HTMLEnv.outFile;
 		}
 		/*
 		 * //tk start if(html_env.outfile.lastIndexOf("\\") != -1) {
@@ -370,33 +368,33 @@ public class HTMLManager extends Manager {
 
 	private void connectOutdir(String outdir, String outfile) {
 		// added by goto 20120627 start
-		String fileDir = new File(htmlEnv.outFile).getAbsoluteFile()
+		String fileDir = new File(HTMLEnv.outFile).getAbsoluteFile()
 				.getParent();
-		if (fileDir.length() < htmlEnv.outFile.length()
+		if (fileDir.length() < HTMLEnv.outFile.length()
 				&& fileDir
-						.equals(htmlEnv.outFile.substring(0, fileDir.length())))
-			htmlEnv.outFile = htmlEnv.outFile.substring(fileDir.length() + 1); // 鐃緒申鐃出パワ申鐃春ワ申鐃緒申鐃緒申名
+						.equals(HTMLEnv.outFile.substring(0, fileDir.length())))
+			HTMLEnv.outFile = HTMLEnv.outFile.substring(fileDir.length() + 1); // 鐃緒申鐃出パワ申鐃春ワ申鐃緒申鐃緒申名
 		// added by goto 20120627 end
 
 		String tmpqueryfile = new String();
-		if (htmlEnv.outFile.indexOf("/") > 0) {
+		if (HTMLEnv.outFile.indexOf("/") > 0) {
 			if (outfile != null) {
-				if (htmlEnv.outFile.startsWith(".")
-						|| htmlEnv.outFile.startsWith("/")) {
-					tmpqueryfile = htmlEnv.outFile.substring(htmlEnv.outFile
+				if (HTMLEnv.outFile.startsWith(".")
+						|| HTMLEnv.outFile.startsWith("/")) {
+					tmpqueryfile = HTMLEnv.outFile.substring(HTMLEnv.outFile
 							.indexOf("/") + 1);
 				}
 			} else {
-				tmpqueryfile = htmlEnv.outFile.substring(htmlEnv.outFile
+				tmpqueryfile = HTMLEnv.outFile.substring(HTMLEnv.outFile
 						.lastIndexOf("/") + 1);
 			}
 		} else {
-			tmpqueryfile = htmlEnv.outFile;
+			tmpqueryfile = HTMLEnv.outFile;
 		}
 		if (!outdir.endsWith("/")) {
 			outdir = outdir.concat("/");
 		}
-		htmlEnv.outFile = outdir.concat(tmpqueryfile);
+		HTMLEnv.outFile = outdir.concat(tmpqueryfile);
 	}
 
 	@Override

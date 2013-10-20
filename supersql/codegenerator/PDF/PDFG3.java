@@ -1,7 +1,5 @@
 package supersql.codegenerator.PDF;
 
-import java.util.Vector;
-
 import supersql.codegenerator.Attribute;
 import supersql.codegenerator.Grouper;
 import supersql.codegenerator.Manager;

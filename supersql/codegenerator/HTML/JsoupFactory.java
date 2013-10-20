@@ -9,7 +9,9 @@ import org.jsoup.parser.Tag;
 import supersql.codegenerator.Connector;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.TFE;
+import supersql.common.GlobalEnv;
 import supersql.extendclass.ExtList;
+import supersql.parser.SSQLparser;
 
 public class JsoupFactory {
 
@@ -99,7 +101,16 @@ public class JsoupFactory {
 		ExtList<ExtList<String>> dataInfo = connector.getData();
 		
 		Element form = new Element(Tag.valueOf("form"), "");
-		form.attr("class", "form vertical box nest");
+		form.attr("class", "form vertical box nest")
+		.attr("action", "/servlet/supersql.form.Update")
+		.attr("method", "post")
+		.attr("name", "theForm");
+		form.appendChild(JsoupFactory.createInput("hidden", "tableinfo",
+				SSQLparser.get_from_info_st()));
+		form.appendChild(JsoupFactory.createInput("hidden", "configfile",
+				GlobalEnv.getconfigfile()));
+		form.appendChild(JsoupFactory.createInput("hidden",
+				"sql_param", inputType));
 		Element formContent = new Element(Tag.valueOf("div"), "");
 		formContent.attr("class", "box").addClass(formContentClass);
 		

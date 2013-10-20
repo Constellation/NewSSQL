@@ -22,10 +22,10 @@ public class HTMLG2 extends Grouper {
 		this.setDataList(dataInfo);
 		nodeCreationPreProcess(result);
 		while (this.hasMoreItems()) {
-			html_env.gLevel++;
+			HTMLEnv.gLevel++;
 			HTMLUtils.propagateDeco(tfe, decos);
 			result.appendElement("tr").appendElement("td").appendChild((Element) this.createNextItemNode());
-			html_env.gLevel--;
+			HTMLEnv.gLevel--;
 		}
 		nodeCreationPostProcess(result);
 		return result;
@@ -45,10 +45,10 @@ public class HTMLG2 extends Grouper {
 		nodeCreationPreProcess(result);
 
 		while (this.hasMoreItems()) {
-			html_env.gLevel++;
+			HTMLEnv.gLevel++;
 			HTMLUtils.propagateDeco(tfe, decos);
 			result.appendChild((Element) this.createNextItemNode());
-			html_env.gLevel--;
+			HTMLEnv.gLevel--;
 		}
 		nodeCreationPostProcess(result);
 		
@@ -65,15 +65,15 @@ public class HTMLG2 extends Grouper {
     		result.addClass("vertical");
 
 		if (!GlobalEnv.isOpt()) {
-			if (html_env.embedFlag)
+			if (HTMLEnv.embedFlag)
 				result.addClass("embed");
 
-			if (html_env.writtenClassId.contains(HTMLEnv.getClassID(this))) {
+			if (HTMLEnv.writtenClassId.contains(HTMLEnv.getClassID(this))) {
 				result.addClass(HTMLEnv.getClassID(this));
 			}
 			result.addClass("nest");
 
-			if (!html_env.isOutlineMode()) {
+			if (!HTMLEnv.isOutlineMode()) {
 				result.attr("frame", "void");
 			}
 		}

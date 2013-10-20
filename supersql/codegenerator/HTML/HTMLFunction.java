@@ -194,7 +194,7 @@ public class HTMLFunction extends Function {
 
 		if (!is_hidden) {
 			result = new Element(Tag.valueOf("table"), "").addClass("att")
-					.addClass(htmlEnv.getOutlineModeAtt());
+					.addClass(HTMLEnv.getOutlineModeAtt());
 
 			if (decos.containsKey("class"))
 				result.addClass(decos.getStr("class"));
@@ -242,14 +242,14 @@ public class HTMLFunction extends Function {
 
 			result = new Element(Tag.valueOf("div"), "").attr("id", divname);
 
-			htmlEnv.code.append("<div id=\"" + divname + "\" ");
+			HTMLEnv.code.append("<div id=\"" + divname + "\" ");
 			if (script != null) {
 				result.appendChild(script);
 			}
 			if (decos.containsKey("class"))
-				htmlEnv.code.append("class=\"" + decos.getStr("class") + "\" ");
+				HTMLEnv.code.append("class=\"" + decos.getStr("class") + "\" ");
 
-			htmlEnv.code.append("></div>");
+			HTMLEnv.code.append("></div>");
 			Log.out("<div id=" + divname + "></div>");
 
 			return result;
@@ -295,7 +295,7 @@ public class HTMLFunction extends Function {
 			}
 		}
 
-		htmlEnv.embedCount++;
+		HTMLEnv.embedCount++;
 
 		if (file.contains(".sql")) {
 
@@ -327,7 +327,7 @@ public class HTMLFunction extends Function {
 							Log.out("line : " + line);
 							line = dis.readLine();
 							if (line != null)
-								htmlEnv.code.append(line);
+								HTMLEnv.code.append(line);
 						}
 					} catch (NullPointerException e) {
 						Log.out("no more lines");
@@ -346,7 +346,7 @@ public class HTMLFunction extends Function {
 				if (file.contains("http")) {
 					parser = new SSQLparser("online");
 				} else {
-					parser = new SSQLparser(10000 * (htmlEnv.embedCount + 1));
+					parser = new SSQLparser(10000 * (HTMLEnv.embedCount + 1));
 				}
 
 				CodeGenerator codegenerator = parser.getcodegenerator();
@@ -376,33 +376,33 @@ public class HTMLFunction extends Function {
 						}
 					}
 
-					htmlEnv.code.append("<div id=\"" + divname + "\" ");
+					HTMLEnv.code.append("<div id=\"" + divname + "\" ");
 
 					if (decos.containsKey("class"))
-						htmlEnv.code.append("class=\"" + decos.getStr("class")
+						HTMLEnv.code.append("class=\"" + decos.getStr("class")
 								+ "\" ");
 
-					htmlEnv.code.append(">");
+					HTMLEnv.code.append(">");
 					Log.out("<div id=" + divname + ">");
 				}
 
 				// xml�����
 				if (!is_hidden) {
-					htmlEnv2.code.append("<EMBED>");
-					htmlEnv.code.append(returnedcode);
-					htmlEnv2.code.append(returnedcode);
-					htmlEnv2.code.append("</EMBED>");
+					HTMLEnv.code.append("<EMBED>");
+					HTMLEnv.code.append(returnedcode);
+					HTMLEnv.code.append(returnedcode);
+					HTMLEnv.code.append("</EMBED>");
 				}
 
 				if (GlobalEnv.isAjax())
-					htmlEnv.code.append("</div>");
+					HTMLEnv.code.append("</div>");
 				// end ajax
 				// /////////////////////////////////////////////////////////////////
 
-				if (htmlEnv.embedCount >= 1) {
-					htmlEnv.css.append(codegenerator.generateCode3(parser,
+				if (HTMLEnv.embedCount >= 1) {
+					HTMLEnv.css.append(codegenerator.generateCode3(parser,
 							dc.getData()));
-					htmlEnv.cssFile.append(codegenerator.generateCssfile(
+					HTMLEnv.cssFile.append(codegenerator.generateCssfile(
 							parser, dc.getData()));
 				}
 
@@ -429,9 +429,9 @@ public class HTMLFunction extends Function {
 						OutputStreamWriter out = new OutputStreamWriter(bout,
 								"UTF-8");
 
-						out.write(htmlEnv.header.toString());
+						out.write(HTMLEnv.header.toString());
 						out.write(returnedcode.toString());
-						out.write(htmlEnv.footer.toString());
+						out.write(HTMLEnv.footer.toString());
 
 						out.close();
 					} catch (FileNotFoundException fe) {
@@ -441,13 +441,13 @@ public class HTMLFunction extends Function {
 								.println("Error: specified embedtmp outdirectory \""
 										+ GlobalEnv.getEmbedTmp()
 										+ "\" is not found to write "
-										+ htmlEnv.fileName);
+										+ HTMLEnv.fileName);
 
 						GlobalEnv
 								.addErr("Error: specified embedtmp outdirectory \""
 										+ GlobalEnv.getEmbedTmp()
 										+ "\" is not found to write "
-										+ htmlEnv.fileName);
+										+ HTMLEnv.fileName);
 					} catch (IOException e) {
 						System.err
 								.println("Error[HTMLManager]: File IO Error in HTMLManager at embed");
@@ -487,7 +487,7 @@ public class HTMLFunction extends Function {
 						Log.out("embed file (html):" + file);
 						dis = new BufferedReader(new FileReader(new File(file)));
 					} catch (IOException ioe) {
-						String path = htmlEnv.outFile;
+						String path = HTMLEnv.outFile;
 						if (path.contains("\\"))
 							path = path
 									.substring(0, path.lastIndexOf("\\") + 1);
@@ -519,24 +519,24 @@ public class HTMLFunction extends Function {
 				while (!line.equalsIgnoreCase("</head>")) {
 					line = dis.readLine();
 					if (!line.equalsIgnoreCase("</head>"))
-						htmlEnv.header.append(line + "\n");
+						HTMLEnv.header.append(line + "\n");
 				}
 				line = dis.readLine(); // read <body>
 
-				htmlEnv.code.append("<div id=\"" + divname + "\" ");
+				HTMLEnv.code.append("<div id=\"" + divname + "\" ");
 
 				if (decos.containsKey("class"))
-					htmlEnv.code.append("class=\"" + decos.getStr("class")
+					HTMLEnv.code.append("class=\"" + decos.getStr("class")
 							+ "\" ");
 
-				htmlEnv.code.append(">");
+				HTMLEnv.code.append(">");
 
-				htmlEnv2.code.append("<EMBED>");
+				HTMLEnv.code.append("<EMBED>");
 				while (!line.equalsIgnoreCase("</body>")) {
 					Log.out("line : " + line);
 					line = dis.readLine();
 					if (!line.equalsIgnoreCase("</body>")) {
-						htmlEnv.code.append(line);
+						HTMLEnv.code.append(line);
 						if (line.contains("&"))
 							line = line.replace("&", "&amp;");
 						if (line.contains("<"))
@@ -546,12 +546,12 @@ public class HTMLFunction extends Function {
 							line = line.replace(">", "&gt;");
 						if (line.contains("���"))
 							line = line.replace("���", "&#65374;");
-						htmlEnv2.code.append(line);
+						HTMLEnv.code.append(line);
 					}
 				}
-				htmlEnv2.code.append("</EMBED>");
+				HTMLEnv.code.append("</EMBED>");
 
-				htmlEnv.code.append("</div>");
+				HTMLEnv.code.append("</div>");
 				dis.close();
 
 			} catch (MalformedURLException me) {
@@ -562,9 +562,9 @@ public class HTMLFunction extends Function {
 
 		}
 		if (!is_hidden)
-			htmlEnv.code.append("</td></tr></table>");
+			HTMLEnv.code.append("</td></tr></table>");
 
-		htmlEnv.embedCount += 1;
+		HTMLEnv.embedCount += 1;
 		return result;
 	}
 
@@ -663,35 +663,35 @@ public class HTMLFunction extends Function {
 		result.attributes().addAll(getAttributes());
 
 		if (GlobalEnv.isAjax()) {
-			htmlEnv.ajaxCond = this.getAtt("ajaxcond") + "="
+			HTMLEnv.ajaxCond = this.getAtt("ajaxcond") + "="
 					+ this.getAtt("att");
 
 			Date d2 = new Date();
 			SimpleDateFormat sdf2 = new SimpleDateFormat("yyyymmddHHmmss");
 			String today2 = sdf2.format(d2);
 
-			htmlEnv.dragDivId = htmlEnv.ajaxQuery + "+" + htmlEnv.ajaxCond
+			HTMLEnv.dragDivId = HTMLEnv.ajaxQuery + "+" + HTMLEnv.ajaxCond
 					+ "&" + today2;
 
 			if (decos.containsKey("in")) {
 				String effect = decos.getStr("in");
 
 				if (effect.equalsIgnoreCase("blind"))
-					htmlEnv.inEffect = 1;
+					HTMLEnv.inEffect = 1;
 				if (effect.equalsIgnoreCase("fade"))
-					htmlEnv.inEffect = 2;
+					HTMLEnv.inEffect = 2;
 			}
 			if (decos.containsKey("out")) {
 				String effect = decos.getStr("out");
 
 				if (effect.equalsIgnoreCase("blind"))
-					htmlEnv.outEffect = 1;
+					HTMLEnv.outEffect = 1;
 				if (effect.equalsIgnoreCase("fade"))
-					htmlEnv.outEffect = 2;
+					HTMLEnv.outEffect = 2;
 			}
 
 			if (decos.containsKey("panel")) {
-				htmlEnv.isPanel = true;
+				HTMLEnv.isPanel = true;
 			}
 			if (decos.containsKey("dispdiv")) {
 				String dispdiv = decos.getStr("dispdiv");
@@ -702,15 +702,15 @@ public class HTMLFunction extends Function {
 							dispdiv.lastIndexOf("+") + 1, dispdiv.length());
 
 					if (tmp3.compareTo("att") == 0) {
-						htmlEnv.ajaxtarget = tmp2 + "_" + this.getAtt("att");
+						HTMLEnv.ajaxtarget = tmp2 + "_" + this.getAtt("att");
 					} else
-						htmlEnv.ajaxtarget = dispdiv;
+						HTMLEnv.ajaxtarget = dispdiv;
 				} else {
-					htmlEnv.ajaxtarget = dispdiv;
+					HTMLEnv.ajaxtarget = dispdiv;
 				}
-				htmlEnv.hasDispDiv = true;
+				HTMLEnv.hasDispDiv = true;
 			} else if (decos.containsKey("dragto")) {
-				htmlEnv.draggable = true;
+				HTMLEnv.draggable = true;
 
 				// drag to
 				String value = decos.getStr("dragto");
@@ -739,20 +739,20 @@ public class HTMLFunction extends Function {
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyymmddHHmmss");
 				String today = sdf.format(d1);
 
-				String scriptname = "drop" + today + htmlEnv.scriptNum;
-				htmlEnv.script.append(scriptname + " = new DragDrop(\""
-						+ htmlEnv.dragDivId + "\", \"" + droptarget[0]
+				String scriptname = "drop" + today + HTMLEnv.scriptNum;
+				HTMLEnv.script.append(scriptname + " = new DragDrop(\""
+						+ HTMLEnv.dragDivId + "\", \"" + droptarget[0]
 						+ "\");\n");
 
 				// for tab
-				htmlEnv.script.append(scriptname + ".addToGroup(\"myTab\");\n");
+				HTMLEnv.script.append(scriptname + ".addToGroup(\"myTab\");\n");
 
 				for (int i = 1; i < targetnum; ++i) {
-					htmlEnv.script.append(scriptname + ".addToGroup(\""
+					HTMLEnv.script.append(scriptname + ".addToGroup(\""
 							+ droptarget[i] + "\");\n");
 				}
 
-				htmlEnv.scriptNum++;
+				HTMLEnv.scriptNum++;
 			}
 		}
 
@@ -769,9 +769,9 @@ public class HTMLFunction extends Function {
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
-		String filename = htmlEnv.outFile + att + ".html";
+		String filename = HTMLEnv.outFile + att + ".html";
 
-		htmlEnv.fileName = filename;
+		HTMLEnv.fileName = filename;
 		return null;
 	}
 
@@ -786,7 +786,7 @@ public class HTMLFunction extends Function {
 			filename = path + "/" + filename;
 		}
 
-		htmlEnv.linkUrl = this.getAtt("server_path",
+		HTMLEnv.linkUrl = this.getAtt("server_path",
 				GlobalEnv.getInvokeServletPath())
 				+ "?"
 				+ "config="
@@ -841,7 +841,7 @@ public class HTMLFunction extends Function {
 					|| decos.getStr("lightbox").compareTo("thumb") == 0) {
 				Element img = new Element(Tag.valueOf("img"), "")
 						.addClass(HTMLEnv.getClassID(this));
-				htmlEnv.code.append("<img class=\"" + HTMLEnv.getClassID(this)
+				HTMLEnv.code.append("<img class=\"" + HTMLEnv.getClassID(this)
 						+ " ");
 
 				img.attr("src", srcString + "/" + this.getAtt("default")).attr(
@@ -1353,9 +1353,9 @@ public class HTMLFunction extends Function {
 		script.appendChild(new DataNode(scriptString, ""));
 
 		result.appendChild(canvas);
-		htmlEnv.getHtmlEnv1().head()
+		HTMLEnv.getHtmlEnv1().head()
 				.appendChild(JsoupFactory.createJsElement("js/canvas.js"));
-		htmlEnv.getHtmlEnv1().head().appendChild(script);
+		HTMLEnv.getHtmlEnv1().head().appendChild(script);
 
 		return result;
 	}
