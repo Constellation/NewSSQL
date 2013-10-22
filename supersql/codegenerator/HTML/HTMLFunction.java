@@ -135,6 +135,8 @@ public class HTMLFunction extends Function {
 	}
 
 	private void checkArgsNumber(int expected) {
+		if(expected == 0 && Args.size() == 1 && getValue(1).isEmpty())
+			return;
 		if (expected != Args.size()) {
 			System.err.println("Argument number error for the function "
 					+ getFuncName() + "\n This function has " + expected
@@ -1025,6 +1027,15 @@ public class HTMLFunction extends Function {
 
     /*  SEQ_NUM( [Start number [, ASC or DESC] ] )  */
     private Node Func_seq_num() {
+    	Element result = new Element(Tag.valueOf("div"), "");
+    	result.addClass("box att seqNum");
+    	int start = 1;
+    	String order = "asc";
+    	checkArgsNumber(0);
+    	if(ArgHash.containsKey("start"))
+    		start = Integer.valueOf(getAtt("start"));
+    	if(ArgHash.containsKey("order"))
+    		order = getAtt("order");
         classID = HTMLEnv.getClassID(this);
         int i;
         for(i=0; i<seq_num_ClassID.size()+1; i++){
@@ -1035,9 +1046,9 @@ public class HTMLFunction extends Function {
                 seq_num_ClassID.add(i, classID);
                 try{
                     //第一引数 Start number
-                    seq_num_startNum.add(i, Integer.parseInt(getValue(1)));
+                    seq_num_startNum.add(i, start);
                     //第二引数 ASC or DESC
-                    if(getValue(2).toLowerCase().trim().equals("desc"))	seq_num_DESC_Flg.add(i, true);
+                    if(order.toLowerCase().trim().equals("desc"))	seq_num_DESC_Flg.add(i, true);
                     else                                               	seq_num_DESC_Flg.add(i, false);
                 }catch(Exception e2){
                     seq_num_startNum.add(i, 1);        //default: 1
@@ -1049,10 +1060,10 @@ public class HTMLFunction extends Function {
         }
         
         // 各引数毎に処理した結果をHTMLに書きこむ
-//        htmlEnv.code.append(""+((!seq_num_DESC_Flg.get(i))? (seq_num.get(i)):(seq_num.get(i))));
+        result.html(""+((!seq_num_DESC_Flg.get(i))? (seq_num.get(i)):(seq_num.get(i))));
         if(!seq_num_DESC_Flg.get(i))    seq_num.set(i,seq_num.get(i)+1);
         else                    		seq_num.set(i,seq_num.get(i)-1);
-        return null;
+        return result;
     }
     //seq_num end
     //added by goto 20130914  "SEQ_NUM"
