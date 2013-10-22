@@ -10,8 +10,8 @@ public class LevenshteinDistance {
 
 		sa = target.toCharArray();
 		n = sa.length;
-		p = new int[n + 1];
-		d = new int[n + 1];
+		p = new int[n+1];
+		d = new int[n+1];
 
 		final int m = other.length();
 		if (n == 0 || m == 0) {
@@ -24,22 +24,20 @@ public class LevenshteinDistance {
 
 		int i;
 		int j;
-
 		char t_j;
-
 		int cost;
 
-		for (i = 0; i <= n; i++) {
+		for (i=0; i<=n; i++) {
 			p[i] = i;
 		}
 
-		for (j = 1; j <= m; j++) {
-			t_j = other.charAt(j - 1);
+		for (j=1; j<=m; j++) {
+			t_j = other.charAt(j-1);
 			d[0] = j;
 
-			for (i = 1; i <= n; i++) {
-				cost = sa[i - 1] == t_j ? 0 : 1;
-				d[i] = Math.min(Math.min(d[i - 1] + 1, p[i] + 1), p[i - 1] + cost);
+			for (i=1; i<=n; i++) {
+				cost = sa[i-1] == t_j ? 0 : 1;
+				d[i] = Math.min(Math.min(d[i-1] + 1, p[i] + 1), p[i-1] + cost);
 			}
 
 			_d = p;

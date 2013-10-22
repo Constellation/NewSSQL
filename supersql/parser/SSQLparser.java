@@ -859,7 +859,7 @@ public class SSQLparser {
 			else {
 				buffer.append(nt + " ");
 			}
-			supersql.codegenerator.Mobile_HTML5.HTMLFunction.after_from_string += nt+" ";	//added by goto 20130515  "search"
+			supersql.codegenerator.Mobile_HTML5.Mobile_HTML5Function.after_from_string += nt+" ";	//added by goto 20130515  "search"
 		}
 	}
 

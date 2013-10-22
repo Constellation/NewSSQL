@@ -5,7 +5,7 @@ import org.jsoup.parser.Tag;
 
 import supersql.codegenerator.Grouper;
 import supersql.codegenerator.Manager;
-import supersql.codegenerator.Mobile_HTML5.HTMLFunction;
+import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5Function;
 import supersql.common.GlobalEnv;
 import supersql.extendclass.ExtList;
 
