@@ -11,25 +11,23 @@ import supersql.extendclass.ExtList;
 
 public class HTMLC2 extends Connector {
 
-	private HTMLEnv htmlEnv;
-
+	/** @deprecated use HTMLC2() instead **/
+	@Deprecated
 	public HTMLC2(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
-		this.htmlEnv = henv;
+		Dimension = 2;
+	}
+	
+	public HTMLC2(){
 		Dimension = 2;
 	}
 
 	public Element createTableNode(ExtList<ExtList<String>> dataInfo) {
 		this.setDataList(dataInfo);
 
-		if (decos.containsKey("insert"))
-			return createForm(dataInfo, 0);
-		if (decos.containsKey("delete"))
-			return createForm(dataInfo, 1);
-		if (decos.containsKey("update"))
-			return createForm(dataInfo, 2);
-
 		Element result = new Element(Tag.valueOf("table"), "");
-		nodeCreationPreProcesss(result);
+		result = nodeCreationPreProcesss(result, dataInfo);
+		if(result.tagName().equalsIgnoreCase("form"))
+			return result;
 		int i = 0;
 		while (this.hasMoreItems()) {
 			ITFE tfe = (ITFE) tfes.get(i);
@@ -45,7 +43,7 @@ public class HTMLC2 extends Connector {
 		return result;
 	}
 	
-	private void nodeCreationPreProcesss(Element result){
+	private Element nodeCreationPreProcesss(Element result, ExtList<ExtList<String>> dataInfo){
 		if (decos.containsKey("layout")
 				&& decos.getStr("layout").equalsIgnoreCase("standard")
 				|| GlobalEnv.getLayout().equalsIgnoreCase("standard"))
@@ -65,6 +63,15 @@ public class HTMLC2 extends Connector {
 			}
 		}
 		HTMLUtils.processDecos(result, decos);
+		if (decos.containsKey("insert"))
+			return createForm(dataInfo, 0, result);
+		if (decos.containsKey("delete"))
+			return createForm(dataInfo, 1, result);
+		if (decos.containsKey("update"))
+			return createForm(dataInfo, 2, result);
+		if(decos.containsKey("login"))
+    		return JsoupFactory.createLoginForm(this, result);
+    	return result;
 	}
 
 	@Override
@@ -76,16 +83,11 @@ public class HTMLC2 extends Connector {
     		return createTableNode(dataInfo);
 		this.setDataList(dataInfo);
 
-		if (decos.containsKey("insert"))
-			return createForm(dataInfo, 0);
-		if (decos.containsKey("delete"))
-			return createForm(dataInfo, 1);
-		if (decos.containsKey("update"))
-			return createForm(dataInfo, 2);
-
 		Element result = new Element(Tag.valueOf("div"), "");
 		result.addClass("con2").addClass("box");
-		nodeCreationPreProcesss(result);
+		result = nodeCreationPreProcesss(result, dataInfo);
+		if(result.tagName().equalsIgnoreCase("form"))
+			return result;
 		int i = 0;
 
 		while (this.hasMoreItems()) {
@@ -102,7 +104,7 @@ public class HTMLC2 extends Connector {
 		return result;
 	}
 
-	private Element createForm(ExtList<ExtList<String>> dataInfo, int type) {
+	private Element createForm(ExtList<ExtList<String>> dataInfo, int type, Element result) {
 		String inputType;
 		String submitText;
 		String inputValue;
@@ -130,7 +132,7 @@ public class HTMLC2 extends Connector {
 			throw new IllegalArgumentException();
 		}
 		return JsoupFactory.createForm(this, inputType, submitText, inputValue,
-				formContentClass, formContentElementsClass);
+				formContentClass, formContentElementsClass, result);
 
 	}
 

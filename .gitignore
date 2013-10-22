@@ -17,3 +17,4 @@ bin/
 .checkstyle
 js/script.js
 bg/
+.settings/*

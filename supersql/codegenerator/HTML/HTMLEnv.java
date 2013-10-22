@@ -28,17 +28,29 @@ public class HTMLEnv extends LocalEnv {
 	public static String nextBackFile = new String();
 	public static String outDir;
 	public static int countFile;
+	/** @deprecated use the static HTMLEnv functions instead **/
+	@Deprecated
 	public static StringBuffer code;
+	/** @deprecated use the HTMLEnv.addStyle(String style) function instead**/
+	@Deprecated
 	public static StringBuffer css;
 	private static int IDCounter = 0; // add oka
 	private static int IDOld = 0; // add oka
+	@Deprecated
+	/** @deprecated use the HTMLUtils.processDecos(Element, DecorateList) instead **/
 	public static StringBuffer cssFile = new StringBuffer();
+	@Deprecated
+	/** @deprecated use the HTMLUtils.processDecos(Element, DecorateList) instead **/
 	public static StringBuffer jsFile = new StringBuffer(); // added by goto 20130703
+	@Deprecated
+	/** @deprecated use the HTMLUtils.processDecos(Element, DecorateList) instead **/
 	public static StringBuffer cssjsFile = new StringBuffer(); // added by goto
 														// 20130703
+	@Deprecated
 	public static String tableBorder = "1";
 	public static boolean embedFlag = false;
 	public static int embedCount = 0;
+	@Deprecated
 	public static int haveClass = 0;
 
 	// for ajax
@@ -59,7 +71,11 @@ public class HTMLEnv extends LocalEnv {
 	public static boolean isPanel = false;
 	// tk end//////////////////////////////////////////////////////
 
+	@Deprecated
+	/** @deprecated use the static HTMLEnv functions instead **/
 	public static StringBuffer header;
+	@Deprecated
+	/** @deprecated use the static HTMLEnv functions instead **/
 	public static StringBuffer footer;
 	public static boolean foreachFlag;
 	public static int linkFlag;
@@ -90,9 +106,13 @@ public class HTMLEnv extends LocalEnv {
 	public static String cond = "";
 	private static String exchange_form_name = "";
 
+	@Deprecated
 	public static String bg = ""; // added by goto 20130311 "background"
 
-	public HTMLEnv() {
+	private HTMLEnv() {
+	}
+	
+	public static void createHTMLDocument(){
 		// TODO Put the file name in the configuration
 		File input = new File("template.html");
 		try {

@@ -14,36 +14,35 @@ public class HTMLFactory extends Factory {
 
 	@Override
 	public void createLocalEnv() {
-		setEnv(new HTMLEnv());
-		setEnv2(new HTMLEnv());
+		HTMLEnv.createHTMLDocument();
 		setClassPrefix("supersql.codegenerator.HTML.HTML");
 	}
 
 	@Override
 	public Connector createC4(Manager manager) {
-		return new HTMLC1(manager,(HTMLEnv) getEnv(),(HTMLEnv) getEnv2());
+		return new HTMLC1();
 	}
 
 	@Override
 	public Grouper createG0(Manager manager) {
-		return new HTMLG1(manager,(HTMLEnv) getEnv(),(HTMLEnv) getEnv2());
+		return new HTMLG1();
 	}
 
 	@Override
 	public Grouper createG4(Manager manager) {
-		return new HTMLG1(manager,(HTMLEnv) getEnv(),(HTMLEnv) getEnv2());
+		return new HTMLG1();
 		//return new HTMLG4(manager, html_env);
 	}
 
 
 	@Override
 	public Attribute createConditionalAttribute(Manager manager) {
-		return new HTMLAttribute(manager,(HTMLEnv) getEnv(),(HTMLEnv) getEnv2(), true);
+		return new HTMLAttribute(true);
 	}
 
 	@Override
 	public IfCondition createIfCondition(Manager manager, supersql.codegenerator.Attribute condition, TFE thenTfe, TFE elseTfe) {
-		return new HTMLIfCondition(manager,(HTMLEnv) getEnv(),(HTMLEnv) getEnv2(), condition, thenTfe, elseTfe);
+		return new HTMLIfCondition(condition, thenTfe, elseTfe);
 	}
 
 }

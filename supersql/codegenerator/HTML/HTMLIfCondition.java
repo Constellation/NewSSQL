@@ -7,13 +7,12 @@ import supersql.codegenerator.Attribute;
 import supersql.codegenerator.Connector;
 import supersql.codegenerator.Function;
 import supersql.codegenerator.IfCondition;
-import supersql.codegenerator.Manager;
 import supersql.codegenerator.TFE;
 import supersql.extendclass.ExtList;
 
 public class HTMLIfCondition extends IfCondition {
 
-	public HTMLIfCondition(Manager manager, HTMLEnv html_env, HTMLEnv html_env2, Attribute condition, TFE thenTfe, TFE elseTfe) {
+	public HTMLIfCondition(Attribute condition, TFE thenTfe, TFE elseTfe){
 		super(condition, thenTfe, elseTfe);
 	}
 	
