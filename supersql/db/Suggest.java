@@ -23,17 +23,17 @@ public class Suggest {
 	private final HashMap<String, Integer> nWords = new HashMap<String, Integer>();
 	//private String[] allTables0 = {"world_heritage", "wh_prefectures", "prefectures", "dept"};
 	
-	public static boolean checkTableNameAndSuggest(String tName, ArrayList<String> tNames) throws IOException {
-		if(tName.length() > 0){
-			String ans = (new Suggest(tNames)).correct(tName);
-			if(!ans.equals(tName)){
-				//Log.err("\nもしかして.. "+ans+" ?");
-				Log.err("\nDid you mean... '"+ans+"' ?");
-				return true;
-			}
-		}
-		return false;
-	}
+//	public static boolean checkTableNameAndSuggest(String tName, ArrayList<String> tNames) throws IOException {
+//		if(tName.length() > 0){
+//			String ans = (new Suggest(tNames)).correct(tName);
+//			if(!ans.equals(tName)){
+//				//Log.err("\nもしかして.. "+ans+" ?");
+//				Log.err("\nDid you mean... '"+ans+"' ?");
+//				return true;
+//			}
+//		}
+//		return false;
+//	}
 	public static boolean checkAndSuggest(String tName, ArrayList<String> tNames) throws IOException {
 		if(tName.length() > 0){
 			String ans = (new Suggest(tNames)).correct(tName);
@@ -247,7 +247,7 @@ public class Suggest {
 			  	  	try{
 			  	  		suggested = checkAndSuggest(errorTableNameAlias, tableAlias);
 			  	  	}catch(Exception e){}
-			  	  	if(suggested)	list = "";
+//			  	  	if(suggested)	list = "";
 			  	  	
 				}
 				else if(columnNameIsWrong && !errorTableNameAlias.isEmpty()){
@@ -258,7 +258,7 @@ public class Suggest {
 //			  	  		Log.i(columnNames);
 			  	  		suggested = checkAndSuggest(errorColumnName, columnNames);
 			  	  	}catch(Exception e){}					
-			  	  	if(suggested)	list = "";
+//			  	  	if(suggested)	list = "";
 					
 				}
 				if(!tableHas.isEmpty() && columnNameIsWrong){
@@ -267,7 +267,10 @@ public class Suggest {
 				if(!fromPhrase.get(0).isEmpty() && aliasIsWrong && !errorTableNameAlias.isEmpty()){
 					Log.err("\n## From phrase is ##\n"+fromPhrase.get(0).trim());
 				}
-				if(suggested)	Log.err("");
+				if(suggested){
+					list = "";
+					Log.err("");
+				}
 					
   	  	}catch(Exception e){}
   	  	return list;
@@ -353,7 +356,7 @@ public class Suggest {
   	  	/////////////
   	  	boolean suggested = false;
   	  	try{
-  	  		suggested = checkTableNameAndSuggest(tName, tNames);
+  	  		suggested = checkAndSuggest(tName, tNames);
   	  	}catch(Exception e){}
   	  	/////////////
   	  	
@@ -396,7 +399,7 @@ public class Suggest {
 //        	String x = ""+j_algo.getDistance(tn0, tn);
 //        	l.add(i, x);
 //        	hashmap.put(Float.parseFloat(x),tn);
-        	al.add(new LevensteinClass(Float.parseFloat(x),tn));
+        	al.add(new LevensteinClass(Double.parseDouble(x),tn));
         	
         	//Log.err("実行結果(LevensteinDistance("+tn0+", "+tn+"))：" + x);
         }
@@ -449,7 +452,7 @@ public class Suggest {
         /*** descending sort ***/
         //descending sort
         Collections.sort(al, new LevensteinComparator());
-        Collections.reverse(al);
+        //Collections.reverse(al);
         /***********************/
         
         String sortedList = "";
@@ -457,7 +460,7 @@ public class Suggest {
         while (it.hasNext()) {
         	LevensteinClass data = it.next();
         	sortedList += data.getTableName()+", ";
-            //System.out.println(data.getLevensteinDistance() + ": " + data.getTableName());
+            System.out.println(data.getLevensteinDistance() + ": " + data.getTableName());
         }
         if(!sortedList.equals(""))  sortedList = sortedList.substring(0, sortedList.length()-2);
 
@@ -468,15 +471,15 @@ public class Suggest {
         return sortedList;
 	}
 	public static class LevensteinClass {
-	    private float levensteinDistance;
+	    private double levensteinDistance;
 	    private String tableName;
 
 	    //Constructor
-	    public LevensteinClass(float f, String tableName) {
+	    public LevensteinClass(double f, String tableName) {
 	        this.levensteinDistance = f;
 	        this.tableName = tableName;
 	    }
-	    public float getLevensteinDistance(){
+	    public double getLevensteinDistance(){
 	        return this.levensteinDistance;
 	    }
 	    public String getTableName(){
@@ -486,11 +489,13 @@ public class Suggest {
 	public static class LevensteinComparator implements Comparator<LevensteinClass> {
 	    //比較メソッド（データクラスを比較して-1, 0, 1を返すように記述する）
 	    public int compare(LevensteinClass a, LevensteinClass b) {
-	        float f1 = a.getLevensteinDistance();
-	        float f2 = b.getLevensteinDistance();
+	    	double f1 = a.getLevensteinDistance();
+	    	double f2 = b.getLevensteinDistance();
 
-	        //ascending sort
-	        if (f1 > f2) {
+	        ////ascending sort
+	        //if (f1 > f2) {
+	        //descending sort
+	        if (f1 < f2) {
 	            return 1;
 	        } else if (f1 == f2) {
 	            return 0;
