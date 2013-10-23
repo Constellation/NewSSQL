@@ -1,7 +1,6 @@
 package supersql.db;
 
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -9,10 +8,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-
-import java.io.*;
-import java.util.*;
-import java.util.regex.*;
 
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
