@@ -144,7 +144,7 @@ public class SQLManager {
 			    	  }else{
 				    	  list = Suggest.getTableAndColumnNameList(conn, tableNameAndAlias.get(0), tableNameAndAlias.get(1), errorContents[1], errorContents[2], tableNameAndAlias.get(2));
 			    	  }
-			    	  Log.err("\n## Column list ##\n" + list);
+			    	  if(!list.isEmpty())	Log.err("\n## Column list ##\n" + list);
 			    	  
 			      }else if(errorContents[0].contains("table")){
 			    	  list = Suggest.getTableNameList(conn, errorContents[1]);

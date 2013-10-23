@@ -13,8 +13,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import supersql.common.Log;
-//import supersql.db.Suggest.LevensteinClass;
-//import supersql.db.Suggest.LevensteinComparator;
 
 //added by goto 20131016 start
 public class Suggest {
@@ -26,6 +24,17 @@ public class Suggest {
 	//private String[] allTables0 = {"world_heritage", "wh_prefectures", "prefectures", "dept"};
 	
 	public static boolean checkTableNameAndSuggest(String tName, ArrayList<String> tNames) throws IOException {
+		if(tName.length() > 0){
+			String ans = (new Suggest(tNames)).correct(tName);
+			if(!ans.equals(tName)){
+				//Log.err("\nもしかして.. "+ans+" ?");
+				Log.err("\nDid you mean... '"+ans+"' ?");
+				return true;
+			}
+		}
+		return false;
+	}
+	public static boolean checkAndSuggest(String tName, ArrayList<String> tNames) throws IOException {
 		if(tName.length() > 0){
 			String ans = (new Suggest(tNames)).correct(tName);
 			if(!ans.equals(tName)){
@@ -103,11 +112,17 @@ public class Suggest {
 	    	  q = q.substring(q.lastIndexOf("from")+4);
 	    	  if(q.contains("where")){
 	    		  tableNames = q.substring(0, q.lastIndexOf("where"));
-	    	  }else if(q.contains("group by")){
-	    		  tableNames = q.substring(0, q.lastIndexOf("group by"));
-	    	  }else if(q.contains("order by")){
-	    		  tableNames = q.substring(0, q.lastIndexOf("order by"));
+	    	  }else if(q.contains("group")){
+	    		  tableNames = q.substring(0, q.lastIndexOf("group"));
+	    	  }else if(q.contains("order")){
+	    		  tableNames = q.substring(0, q.lastIndexOf("order"));
 	    	  }
+//	  	  	}else if(q.contains("group by")){
+//	  	  		tableNames = q.substring(0, q.lastIndexOf("group by"));
+//	  	  	}else if(q.contains("order by")){
+//	  	  		tableNames = q.substring(0, q.lastIndexOf("order by"));
+//	  	  	}
+	    	  
 	    	  
 	    	  //if(!tableNames.equals("")) Log.e("\n## From phrase ##\n"+tableNames.trim());
 	    	  fromPhrase.add(0,tableNames);
@@ -188,6 +203,10 @@ public class Suggest {
 //					}
 //				}
 				
+				int c = 0;
+				ArrayList<String> columnNames = new ArrayList<String>();
+				boolean suggested = false;
+				
 				for(int i=0;i<tableName.size();i++){
 					tn = tableName.get(i);
 					ta = tableAlias.get(i);
@@ -205,6 +224,10 @@ public class Suggest {
 								columnNameIsWrong = false;
 							}
 							list += rs.getString("COLUMN_NAME") + ", ";
+							
+							if((!errorTableNameAlias.isEmpty() && (ta.equals(errorTableNameAlias) || tn.equals(errorTableNameAlias)))){
+								columnNames.add(c++, rs.getString("COLUMN_NAME"));
+							}
 						}
 					} finally {
 						rs.close();
@@ -220,9 +243,23 @@ public class Suggest {
 				}
 				if(aliasIsWrong && !errorTableNameAlias.isEmpty()){
 					Log.err("\n## Wrong alias: >>>> "+errorTableNameAlias+" <<<< ."+errorColumnName+"  ##");
+					
+			  	  	try{
+			  	  		suggested = checkAndSuggest(errorTableNameAlias, tableAlias);
+			  	  	}catch(Exception e){}
+			  	  	if(suggested)	list = "";
+			  	  	
 				}
 				else if(columnNameIsWrong && !errorTableNameAlias.isEmpty()){
 					Log.err("\n## Wrong column name: "+errorTableNameAlias+". >>>> "+errorColumnName+" <<<< ##");
+					
+			  	  	try{
+//			  	  		Log.i(errorColumnName);
+//			  	  		Log.i(columnNames);
+			  	  		suggested = checkAndSuggest(errorColumnName, columnNames);
+			  	  	}catch(Exception e){}					
+			  	  	if(suggested)	list = "";
+					
 				}
 				if(!tableHas.isEmpty() && columnNameIsWrong){
 					System.err.print(tableHas);
@@ -230,6 +267,7 @@ public class Suggest {
 				if(!fromPhrase.get(0).isEmpty() && aliasIsWrong && !errorTableNameAlias.isEmpty()){
 					Log.err("\n## From phrase is ##\n"+fromPhrase.get(0).trim());
 				}
+				if(suggested)	Log.err("");
 					
   	  	}catch(Exception e){}
   	  	return list;
@@ -424,7 +462,7 @@ public class Suggest {
         if(!sortedList.equals(""))  sortedList = sortedList.substring(0, sortedList.length()-2);
 
         
-        //TODO: 同じ値のものはアルファベット順にソート
+        //TODO: 同じLevensteinDistance値のものはアルファベット順にソート
         
         
         return sortedList;
