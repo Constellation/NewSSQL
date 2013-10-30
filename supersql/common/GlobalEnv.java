@@ -14,6 +14,8 @@ import java.util.Hashtable;
 //added by goto 20120624
 
 public class GlobalEnv {
+	
+	public static final char COMMENT_OUT_LETTER = '-';	//コメントアウトに使用する文字(ex: -- )
 
 	private static Hashtable<String, String> envs;
 

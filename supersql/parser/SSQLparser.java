@@ -24,6 +24,8 @@ import supersql.db.SQLManager;
 import supersql.extendclass.ExtList;
 
 public class SSQLparser {
+
+	private String commentOutLetters = ""+GlobalEnv.COMMENT_OUT_LETTER+GlobalEnv.COMMENT_OUT_LETTER;	//="--"
     
     //added by goto 20130508  "Login&Logout"
 	public static boolean sessionFlag = false;
@@ -188,7 +190,7 @@ public class SSQLparser {
 					line = line1 + line.substring(line.indexOf("*/") + 2);
 				}
 				
-				if (line.contains("//") || line.contains("\\\"") || line.contains("\"\"")){
+				if (line.contains(commentOutLetters) || line.contains("\\\"") || line.contains("\"\"")){	//commentOutLetters = "--"
 					boolean dqFlg = false;
 					int i = 0;
 					for (i=0; i < line.length(); i++){
@@ -205,7 +207,7 @@ public class SSQLparser {
 //							line = line.substring(0,i-1)+"&quot;"+line.substring(i+1,line.length());
 						
 						}
-						else if (!dqFlg && i < line.length()-1 && line.charAt(i)=='/' && line.charAt(i+1)=='/')
+						else if (!dqFlg && i < line.length()-1 && line.charAt(i)==GlobalEnv.COMMENT_OUT_LETTER && line.charAt(i+1)==GlobalEnv.COMMENT_OUT_LETTER)
 							break;
 					}
 					line = line.substring(0, i);
@@ -548,7 +550,7 @@ public class SSQLparser {
 						line = line1 + line.substring(t + 2);
 					}
 					// added by goto 20130412
-					if (line != null && line.contains("//")) {
+					if (line != null && line.contains(commentOutLetters)) {	//commentOutLetters = "--"
 						boolean dqFlg = false;
 						int i = 0;
 
@@ -560,8 +562,8 @@ public class SSQLparser {
 
 							if (!dqFlg
 									&& i < line.length() - 1
-									&& (line.charAt(i) == '/' && line
-									.charAt(i + 1) == '/'))
+									&& (line.charAt(i) == GlobalEnv.COMMENT_OUT_LETTER && line
+									.charAt(i + 1) == GlobalEnv.COMMENT_OUT_LETTER))
 								break;
 						}
 						line = line.substring(0, i);
@@ -1369,7 +1371,7 @@ public class SSQLparser {
                 	int t = line.indexOf("*/");
                 	line = line1+line.substring(t+2);
                 }
-                if(line!=null && line.contains("--")){
+                if(line!=null && line.contains(commentOutLetters)){	//commentOutLetters = "--"
                 	boolean dqFlg=false;
                 	int i=0;
                 	
@@ -1377,7 +1379,7 @@ public class SSQLparser {
                 		if(line.charAt(i)=='"' && !dqFlg)		dqFlg=true;
                 		else if(line.charAt(i)=='"' && dqFlg)	dqFlg=false;
                 		
-                		if(!dqFlg && i<line.length()-1 && (line.charAt(i)=='/' && line.charAt(i+1)=='/'))
+                		if(!dqFlg && i<line.length()-1 && (line.charAt(i)==GlobalEnv.COMMENT_OUT_LETTER && line.charAt(i+1)==GlobalEnv.COMMENT_OUT_LETTER))
                 			break;
                 	}
                 	line = line.substring(0,i);

@@ -211,11 +211,6 @@ public class Mobile_HTML5G2 extends Grouper {
         //tk end/////////////////////////////////////////////////////
 //        Log.out("<TABLE class=\""+HTMLEnv.getClassID(this) + "\">");
 
-        int ww=0;
-//        while(this.hasMoreItems())	ww++;
-//        Log.e(ww);
-        
-        
         //html_env2.code.append("<tfe type=\"connect\" dimension=\"2\" >");
         int i = 0;
         while (this.hasMoreItems()) {
