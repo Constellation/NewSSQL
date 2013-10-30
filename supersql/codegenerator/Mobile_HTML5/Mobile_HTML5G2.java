@@ -211,6 +211,11 @@ public class Mobile_HTML5G2 extends Grouper {
         //tk end/////////////////////////////////////////////////////
 //        Log.out("<TABLE class=\""+HTMLEnv.getClassID(this) + "\">");
 
+        int ww=0;
+//        while(this.hasMoreItems())	ww++;
+//        Log.e(ww);
+        
+        
         //html_env2.code.append("<tfe type=\"connect\" dimension=\"2\" >");
         int i = 0;
         while (this.hasMoreItems()) {
@@ -308,7 +313,7 @@ public class Mobile_HTML5G2 extends Grouper {
             
 	      	if(Mobile_HTML5Env.dynamicFlg){	//20130529 dynamic
 	      		//☆★
-	      		Log.info("★★G2-1 tfe : " + tfe);
+	      		//Log.info("★★G2-1 tfe : " + tfe);
 	    		//☆★            Log.info("G2 tfe : " + tfe);
 	            //☆★            Log.info("G2 tfes : " + this.tfes);
 	            //☆★            Log.info("G2 tfeItems : " + this.tfeItems);
@@ -329,10 +334,11 @@ public class Mobile_HTML5G2 extends Grouper {
             
             if(Mobile_HTML5Env.dynamicFlg){	//20130529 dynamic
 	      		//☆★
-	      		Log.info("★★G2-2 tfe : " + tfe);
+	      		//Log.info("★★G2-2 tfe : " + tfe);
 	    		//☆★            Log.info("G2 tfe : " + tfe);
 	            //☆★            Log.info("G2 tfes : " + this.tfes);
 	            //☆★            Log.info("G2 tfeItems : " + this.tfeItems);
+            	//Log.e("data数: "+this.data.size());
 	      	}
             
             if (html_env.not_written_classid.contains(classid) && html_env.code.indexOf(classid) >= 0 ){
@@ -368,7 +374,7 @@ public class Mobile_HTML5G2 extends Grouper {
     	      	if(decos.containsKey("collapse"))
     	          	html_env.code.append("</p>\n");
             }
-            
+            //Log.e("data数: "+this.data.size());
             
             i++;
             html_env.glevel--;

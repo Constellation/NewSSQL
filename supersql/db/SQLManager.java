@@ -136,9 +136,14 @@ public class SQLManager {
 			      //added by goto 20131016 start
 			      String list = "";
 			      String errorContents[] = Suggest.getErrorContents(e);  //return: [0]=Error message, [1]=Error table name or column name, [2]=Error table alias
-			      if(errorContents[0].contains("column")){
-			    	  //Log.e(error_tableName_or_columnName_alias+" "+error_tableName_or_columnName);
-			    	  ArrayList<ArrayList> tableNameAndAlias = Suggest.getTableNamesFromQuery(query);	//return: (0)=Table name, (1)=Table alias, (2)=From phrase
+		    	  ArrayList<ArrayList> tableNameAndAlias = Suggest.getTableNamesFromQuery(query);	//return: (0)=Table name, (1)=Table alias, (2)=From phrase
+		    	  
+			      String driver = GlobalEnv.getDriver().toLowerCase();
+		    	  if( (driver.contains("postgresql") && (errorContents[0].contains("column") || errorContents[0].contains("table")) ||
+		    		  //(driver.contains("mysql") ) ||	//TODO
+		    		  //(driver.contains("db2") ) ||	//TODO
+		    		  (driver.contains("sqlite") && errorContents[0].contains("column")))
+		    		){
 			    	  if(errorContents[0].contains("ambiguous")){
 			    		  list = Suggest.getgetAmbiguousTableAndColumnNameList(conn, tableNameAndAlias.get(0), errorContents[1]);
 			    	  }else{
@@ -146,7 +151,12 @@ public class SQLManager {
 			    	  }
 			    	  if(!list.isEmpty())	Log.err("\n## Column list ##\n" + list);
 			    	  
-			      }else if(errorContents[0].contains("table")){
+			      }
+		    	  else if( (driver.contains("postgresql") && (errorContents[0].contains("relation"))) ||
+		    			   //(driver.contains("mysql") ) ||	//TODO
+		    			   //(driver.contains("db2") ) ||	//TODO
+		    			   (driver.contains("sqlite") && errorContents[0].contains("table"))
+		    			 ){
 			    	  list = Suggest.getTableNameList(conn, errorContents[1]);
 			    	  Log.err("\n## Table list ##\n" + list + "\n");
 			      }
