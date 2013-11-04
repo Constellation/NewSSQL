@@ -48,9 +48,11 @@ public class HTMLFunction extends Function {
     //added by goto 20130914  "SEQ_NUM"
     static ArrayList<Integer> seq_num = new ArrayList<Integer>();
     static ArrayList<String> seq_num_ClassID = new ArrayList<String>();
+	static ArrayList<Integer> seq_num_gl = new ArrayList<Integer>();
     static ArrayList<Integer> seq_num_startNum = new ArrayList<Integer>();
     static ArrayList<Boolean> seq_num_DESC_Flg = new ArrayList<Boolean>();
     static String classID = "";
+    static int glvl = 0;
 
 
 	// 鐃緒申鐃藷ストラク鐃緒申
@@ -1036,6 +1038,7 @@ public class HTMLFunction extends Function {
     		start = Integer.valueOf(getAtt("start"));
     	if(ArgHash.containsKey("order"))
     		order = getAtt("order");
+    	
         classID = HTMLEnv.getClassID(this);
         int i;
         for(i=0; i<seq_num_ClassID.size()+1; i++){
@@ -1044,12 +1047,13 @@ public class HTMLFunction extends Function {
                     break;
             }catch(Exception e1){
                 seq_num_ClassID.add(i, classID);
+                seq_num_gl.add(i, glvl);
                 try{
                     //第一引数 Start number
                     seq_num_startNum.add(i, start);
                     //第二引数 ASC or DESC
                     if(order.toLowerCase().trim().equals("desc"))	seq_num_DESC_Flg.add(i, true);
-                    else                                               	seq_num_DESC_Flg.add(i, false);
+                    else                                            seq_num_DESC_Flg.add(i, false);
                 }catch(Exception e2){
                     seq_num_startNum.add(i, 1);        //default: 1
                     seq_num_DESC_Flg.add(i, false);    //default: false
@@ -1059,7 +1063,6 @@ public class HTMLFunction extends Function {
             }
         }
         
-        // 各引数毎に処理した結果をHTMLに書きこむ
         result.html(""+((!seq_num_DESC_Flg.get(i))? (seq_num.get(i)):(seq_num.get(i))));
         if(!seq_num_DESC_Flg.get(i))    seq_num.set(i,seq_num.get(i)+1);
         else                    		seq_num.set(i,seq_num.get(i)-1);
@@ -1067,16 +1070,21 @@ public class HTMLFunction extends Function {
     }
     //seq_num end
     //added by goto 20130914  "SEQ_NUM"
-    static void Func_seq_num_initialization() {    //initialize seq_num
-        try{
-        	for(int i=0; i<seq_num_ClassID.size(); i++){
-        		if(seq_num_ClassID.get(i).equals(classID)){
-        			seq_num.set(i, seq_num_startNum.get(i));	//replace
-        			break;
-        		}
-        	}
-        }catch(Exception e){}
-        return;
+    static void Func_seq_num_initialization(int gl) {		//initialize seq_num
+    	try{
+    		for(int i=0; i<seq_num_ClassID.size(); i++){
+    			if(seq_num_ClassID.get(i).equals(classID) && seq_num_gl.get(i)==gl){
+    				for(int j=i; j>0; j--){
+    					if(seq_num_gl.get(j)==gl){
+    						seq_num.set(j, seq_num_startNum.get(j));	//replace
+    					}
+    					if(seq_num_gl.get(j)!=gl)	break;
+    				}
+    				break;
+    			}
+    		}
+    	}catch(Exception e){}
+    	return;
     }
 
 	// // for practice 2012/02/09

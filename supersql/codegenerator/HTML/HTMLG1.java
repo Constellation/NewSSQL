@@ -28,6 +28,7 @@ public class HTMLG1 extends Grouper {
 		nodeCreationPreProcess(result);
 
 		while (this.hasMoreItems()) {
+			HTMLFunction.glvl = HTMLEnv.gLevel;	//added by goto 20130914  "SEQ_NUM"
 			HTMLEnv.gLevel++;
 			HTMLUtils.propagateDeco(tfe, decos);
 			tr.appendElement("td").appendChild(
@@ -99,6 +100,7 @@ public class HTMLG1 extends Grouper {
 			HTMLEnv.incrementFormPartsNumber();
 		}
 		HTMLUtils.processDecos(result, decos);
+		HTMLFunction.Func_seq_num_initialization(HTMLEnv.gLevel);	//added by goto 20130914  "SEQ_NUM"
 	}
 
 	@Override

@@ -260,6 +260,8 @@ public class Mobile_HTML5G1 extends Grouper {
         //html_env2.code.append("<tfe type=\"connect\" dimension=\"1\" >");
         int i = 0;
         while (this.hasMoreItems()) {
+        	Mobile_HTML5Function.glvl = html_env.glevel;	//added by goto 20130914  "SEQ_NUM"
+        	
             if(decos.containsKey("table0") || Mobile_HTML5C1.table0Flg || Mobile_HTML5C2.table0Flg || Mobile_HTML5G2.table0Flg)	table0Flg = true;
             if(decos.containsKey("table") || Mobile_HTML5C1.tableFlg || Mobile_HTML5C2.tableFlg || Mobile_HTML5G2.tableFlg || table0Flg)	tableFlg=true;
             //if(decos.containsKey("div") || HTMLC1.divFlg || HTMLC2.divFlg || HTMLG1.divFlg || HTMLG2.divFlg){
@@ -594,7 +596,7 @@ public class Mobile_HTML5G1 extends Grouper {
         }
         
         //added by goto 20130914  "SEQ_NUM"
-        Mobile_HTML5Function.Func_seq_num_initialization();
+        Mobile_HTML5Function.Func_seq_num_initialization(html_env.glevel);
 
         Log.out("TFEId = " + Mobile_HTML5Env.getClassID(this));
         //html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);

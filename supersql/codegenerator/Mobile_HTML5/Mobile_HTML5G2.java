@@ -214,6 +214,8 @@ public class Mobile_HTML5G2 extends Grouper {
         //html_env2.code.append("<tfe type=\"connect\" dimension=\"2\" >");
         int i = 0;
         while (this.hasMoreItems()) {
+        	Mobile_HTML5Function.glvl = html_env.glevel;	//added by goto 20130914  "SEQ_NUM"
+        	
         	//[重要] For [ [], ]!        	
         	Mobile_HTML5G1.jj = 0;
         	Mobile_HTML5G1.gridInt = 0;
@@ -327,14 +329,15 @@ public class Mobile_HTML5G2 extends Grouper {
             if(decos.containsKey("dynamic"))	Mobile_HTML5Env.dynamicFlg = true;
             
             
-            if(Mobile_HTML5Env.dynamicFlg){	//20130529 dynamic
+            //if(Mobile_HTML5Env.dynamicFlg){	//20130529 dynamic
 	      		//☆★
 	      		//Log.info("★★G2-2 tfe : " + tfe);
 	    		//☆★            Log.info("G2 tfe : " + tfe);
 	            //☆★            Log.info("G2 tfes : " + this.tfes);
 	            //☆★            Log.info("G2 tfeItems : " + this.tfeItems);
             	//Log.e("data数: "+this.data.size());
-	      	}
+            //Log.e("data数: "+this.);
+//	      	}
             
             if (html_env.not_written_classid.contains(classid) && html_env.code.indexOf(classid) >= 0 ){
             	html_env.code.delete(html_env.code.indexOf(classid),html_env.code.indexOf(classid)+classid.length()+1);
@@ -370,6 +373,7 @@ public class Mobile_HTML5G2 extends Grouper {
     	          	html_env.code.append("</p>\n");
             }
             //Log.e("data数: "+this.data.size());
+            //Log.e("html_env.glevel: "+html_env.glevel);
             
             i++;
             html_env.glevel--;
@@ -479,7 +483,7 @@ public class Mobile_HTML5G2 extends Grouper {
         }
         
         //added by goto 20130914  "SEQ_NUM"
-        Mobile_HTML5Function.Func_seq_num_initialization();
+        Mobile_HTML5Function.Func_seq_num_initialization(html_env.glevel);
         
         Log.out("TFEId = " + Mobile_HTML5Env.getClassID(this));
         //html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
