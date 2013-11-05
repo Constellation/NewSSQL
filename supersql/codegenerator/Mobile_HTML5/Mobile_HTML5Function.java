@@ -210,7 +210,7 @@ public class Mobile_HTML5Function extends Function {
         	Func_object("");
         }
     	//added by goto 20130914  "SEQ_NUM"
-        else if (FuncName.equalsIgnoreCase("seq_num")) {
+        else if (FuncName.equalsIgnoreCase("seq_num") || FuncName.equalsIgnoreCase("row_number")) {
         	Func_seq_num();
         }
     	//added by goto 20130915  "text"
@@ -3016,7 +3016,7 @@ public class Mobile_HTML5Function extends Function {
     	try{
     		for(int i=0; i<seq_num_ClassID.size(); i++){
     			if(seq_num_ClassID.get(i).equals(classID) && seq_num_gl.get(i)==gl){
-    				for(int j=i; j>0; j--){
+    				for(int j=i; j>=0; j--){
     					if(seq_num_gl.get(j)==gl){
     						seq_num.set(j, seq_num_startNum.get(j));	//replace
     					}

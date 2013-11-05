@@ -90,7 +90,8 @@ public class HTMLFunction extends Function {
 			return FuncUrl(true);
 		} else if (FuncName.equalsIgnoreCase("object")) {
 			return FuncObject("");
-		} else if (FuncName.equalsIgnoreCase("seq_num")) {
+		} else if (FuncName.equalsIgnoreCase("seq_num")
+				|| FuncName.equalsIgnoreCase("row_number")) {
 			return Func_seq_num();
 		} else if (FuncName.equalsIgnoreCase("submit")) {
 			return FuncSubmit();
@@ -1074,7 +1075,7 @@ public class HTMLFunction extends Function {
     	try{
     		for(int i=0; i<seq_num_ClassID.size(); i++){
     			if(seq_num_ClassID.get(i).equals(classID) && seq_num_gl.get(i)==gl){
-    				for(int j=i; j>0; j--){
+    				for(int j=i; j>=0; j--){
     					if(seq_num_gl.get(j)==gl){
     						seq_num.set(j, seq_num_startNum.get(j));	//replace
     					}
