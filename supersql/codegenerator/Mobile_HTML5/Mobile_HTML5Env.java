@@ -302,6 +302,7 @@ public class Mobile_HTML5Env extends LocalEnv {
 //退避            header.append("<script src=\"js/jquery.mobile.dynamic.popup.js\"></script>\n");
             header.append("<script src=\"jscss/jquery-1.7.1.min.js\"></script>\n");
             header.append("<script src=\"jscss/jquery-ui.min.js\"></script>\n");
+            header.append("<script src=\"jscss/showmore.js\"></script>\n");
             header.append("<script src=\"jscss/jquery.mobile-1.3.1.min.js\"></script>\n");
             header.append("<script src=\"jscss/jquery.mobile.dynamic.popup.js\"></script>\n");
             //header.append("<script src=\"js/config.js\"></script>\n");

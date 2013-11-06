@@ -253,8 +253,9 @@ public class Mobile_HTML5G1 extends Grouper {
             	if(row>1 && tableFlg)	Mobile_HTML5G2.tableStartTag = Mobile_HTML5C1.getTableStartTag(html_env, decos, this)+"<TR>";
             	else					html_env.code.append(Mobile_HTML5C1.getTableStartTag(html_env, decos, this)+"<TR>");
             }
+            
+            Mobile_HTML5.preProcess(getSymbol(), decos, html_env);	//Pre-process (前処理)
         }
-        //tk end//////////////////////////////////////////////////////
 //        Log.out("<TABLE class=\""+HTMLEnv.getClassID(this) + "\"><TR>");
 
         //html_env2.code.append("<tfe type=\"connect\" dimension=\"1\" >");
@@ -595,6 +596,8 @@ public class Mobile_HTML5G1 extends Grouper {
         	Mobile_HTML5G2.tableStartTag = "";
         }
         
+        Mobile_HTML5.postProcess(getSymbol(), decos, html_env);	//Post-process (後処理)
+        
         //added by goto 20130914  "SEQ_NUM"
         Mobile_HTML5Function.Func_seq_num_initialization(html_env.glevel);
 
@@ -604,7 +607,7 @@ public class Mobile_HTML5G1 extends Grouper {
 
     @Override
 	public String getSymbol() {
-        return "HTMLG1";
+        return "Mobile_HTML5G1";
     }
 
 }

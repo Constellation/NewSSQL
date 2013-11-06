@@ -207,7 +207,7 @@ public class Mobile_HTML5G3 extends Grouper {
 
     @Override
 	public String getSymbol() {
-        return "HTMLG3";
+        return "Mobile_HTML5G3";
     }
 
 }

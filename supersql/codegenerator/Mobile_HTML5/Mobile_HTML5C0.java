@@ -55,7 +55,7 @@ public class Mobile_HTML5C0 extends Connector {
 
 	@Override
 	public String getSymbol() {
-		return "HTMLC0";
+		return "Mobile_HTML5C0";
 	}
 
 }

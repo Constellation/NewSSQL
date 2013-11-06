@@ -64,6 +64,11 @@ public class Mobile_HTML5Attribute extends Attribute {
 			if(Mobile_HTML5Env.getFormItemFlg() && Mobile_HTML5Env.getFormItemName().equals(formHtml[2])){
 
 			}else{
+				
+				
+				Mobile_HTML5.preProcess("Mobile_HTML5Attribute", decos, html_env);	//Pre-process (前処理)
+
+				
 				//20130309
 				//html_env.code.append("	");
 				//x html_env.code.append("	<div claSS=\"ui-grid-a\"><div claSS=\"ui-block-a\">");
@@ -246,6 +251,9 @@ public class Mobile_HTML5Attribute extends Attribute {
 			}
 
 
+			Mobile_HTML5.postProcess("Mobile_HTML5Attribute", decos, html_env);	//Post-process (後処理)
+			
+			
 			Log.out("TFEId = " + Mobile_HTML5Env.getClassID(this));
 			//html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
 		}

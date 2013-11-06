@@ -212,6 +212,8 @@ public class Mobile_HTML5C1 extends Connector {
         	if(tableFlg){
         		html_env.code.append(getTableStartTag(html_env, decos, this)+"<TR>");
         	}
+        	
+        	Mobile_HTML5.preProcess(getSymbol(), decos, html_env);	//Pre-process (前処理)
         }
 
 //        //xml
@@ -494,6 +496,8 @@ public class Mobile_HTML5C1 extends Connector {
         }
       	
         //Log.out("</TR></TABLE>");
+        
+        Mobile_HTML5.postProcess(getSymbol(), decos, html_env);	//Post-process (後処理)
 
         //Log.out("TFEId = " + HTMLEnv.getClassID(this));
         //html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
@@ -597,6 +601,6 @@ public class Mobile_HTML5C1 extends Connector {
     
     
     public String getSymbol() {
-    	return "HTMLC1";
+    	return "Mobile_HTML5C1";
     }
 }

@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+
+import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.Grouper;
 import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
@@ -207,8 +209,9 @@ public class Mobile_HTML5G2 extends Grouper {
         		if(row>1 && tableFlg)	Mobile_HTML5G2.tableStartTag = Mobile_HTML5C1.getTableStartTag(html_env, decos, this);
             	else					html_env.code.append(Mobile_HTML5C1.getTableStartTag(html_env, decos, this)+"\n");
         	}
+        	
+        	Mobile_HTML5.preProcess(getSymbol(), decos, html_env);	//Pre-process (前処理)
         }
-        //tk end/////////////////////////////////////////////////////
 //        Log.out("<TABLE class=\""+HTMLEnv.getClassID(this) + "\">");
 
         //html_env2.code.append("<tfe type=\"connect\" dimension=\"2\" >");
@@ -482,6 +485,8 @@ public class Mobile_HTML5G2 extends Grouper {
         	Mobile_HTML5Function.textFlg2 = false;
         }
         
+        Mobile_HTML5.postProcess(getSymbol(), decos, html_env);	//Post-process (後処理)
+        
         //added by goto 20130914  "SEQ_NUM"
         Mobile_HTML5Function.Func_seq_num_initialization(html_env.glevel);
         
@@ -590,7 +595,7 @@ public class Mobile_HTML5G2 extends Grouper {
 
     @Override
 	public String getSymbol() {
-        return "HTMLG2";
+        return "Mobile_HTML5G2";
     }
 
 }
