@@ -60,6 +60,9 @@ public class Mobile_HTML5 {
     		
     		String autoshowClass = "ssql_showmore_"+show_count;
     		String autoshowButtonClass = "ssql_autoshowmore_"+show_count;
+    		String loadID = "ssql_show_loading_"+show_count;
+    		String loadImage = "jscss/loading.gif";
+    		int timeout = 500;
     		html_env.code.append(
     				"\n<script>\n" +
 					"	$(function() {\n" +
@@ -68,15 +71,21 @@ public class Mobile_HTML5 {
 					"		     var current = $(window).scrollTop() + window.innerHeight;\n" +
 					"		     if (current < $(document).height() - 100) return;\n" +
 					"		     if ($(this).data('loading')) return;\n" +
-					"		    \n" +
+					"\n" +
 					"		     $(this).data('loading', true);\n" +
+					"			 var boxHeight = $(\"."+autoshowClass+"\").outerHeight();\n" +
+					//"			 //alert( $(\"."+autoshowClass+"\").height() +\"/\"+ $(\"."+autoshowClass+"\").data().boxHeight);\n" +
+					"			 if( $(\"."+autoshowClass+"\").height() < $(\"."+autoshowClass+"\").data().boxHeight )\n" +
+					"			 	$(\"#"+loadID+"\").html(\"<div id='"+loadID+"'><img src='"+loadImage+"'/></div>\");\n" +
 					"		     setTimeout(function(){\n" +
+					"			 	$(\"#"+loadID+"\").html(\"<div id='"+loadID+"'></div>\");\n" +
 					"				$(\"."+autoshowButtonClass+"\").eq(0).click();\n" +
-					"	    	 },1000);\n" +
+					"	    	 },"+timeout+");\n" +
 					"		     $(this).data('loading', false);\n" +
 					"		});\n\n" +
     				"		$('."+autoshowClass+"').showmore({\n" +
-    				"		   moreLink: '<div><input type=\"button\" class=\""+autoshowButtonClass+"\" style=\"visibility:hidden;\"></div>',\n" +
+    				//"		   moreLink: '<div><input type=\"button\" class=\""+autoshowButtonClass+"\" style=\"visibility:hidden;\"></div>',\n" +
+    				"		   moreLink: '<div id=\""+loadID+"\"></div><div><input type=\"button\" class=\""+autoshowButtonClass+"\" style=\"visibility:hidden;\"></div>',\n" +
     				"	       maxHeight: "+autoshow+",\n" +
     				"	       showEach: "+autoshowEach+"\n" +
     				"	    });\n" +
