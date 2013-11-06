@@ -395,12 +395,22 @@ public class Mobile_HTML5Function extends Function {
         	//html_env.code.append(" \" src=\"" + path + "/" + this.getAtt("default") + "\"/>");
         	if(type.matches(".") || type.matches("normal")){					//type==null
         		
+        		
+            	//TODO 20131106
+        		String url = "";
+        		//url = this.getAtt("default"); 	//TODO
+            	try{
+            		FuncArg fa1 = (FuncArg) this.Args.get(0);
+            		url = fa1.getStr();
+            	}catch(Exception e){ return; }
+            	
+        		
         		//added 20130703  For external URLs.
         		//html_env.code.append(" \" src=\"" + path + "/" + this.getAtt("default") + "\"/>");
-            	if(this.getAtt("default").startsWith("http://") || this.getAtt("default").startsWith("https://")){
-    	        	html_env.code.append(" \" src=\"" + this.getAtt("default") + "\"/>");
+            	if(url.startsWith("http://") || url.startsWith("https://")){
+    	        	html_env.code.append(" \" src=\"" + url + "\"/>");
             	}else{
-    	        	html_env.code.append(" \" src=\"" + path + "/" + this.getAtt("default") + "\"/>");
+    	        	html_env.code.append(" \" src=\"" + path + "/" + url + "\"/>");
             	}
         		
         		//20130206
@@ -712,10 +722,13 @@ public class Mobile_HTML5Function extends Function {
     private String target(String url) {
     	//新規ウィンドウで表示する場合(target="_blank")の処理　=> _blankはW3Cで禁止されているため、JS + rel=externalを使用
     	//「外部ページに飛ぶ場合( http(s)://で始まる場合)」のみ新規ウィンドウ表示
-    	if (url.matches("\\s*(http|https)://.*"))
-    		return "  rel=\"external\"";
-    		//return " target=\"_blank\"";
+    	try{
+	    	if (url.matches("\\s*(http|https)://.*"))
+	    		return "  rel=\"external\"";
+	    		//return " target=\"_blank\"";
+    	}catch(Exception e){}
 		return " target=\"_self\"";
+		
     }
     //added by goto 20130308 end
     
