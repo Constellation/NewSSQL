@@ -7,9 +7,10 @@
         maxHeight: 200,
         showEach: 0,
         //moreLink: '<a href="#">Show More</a>',
-        moreLink: '<div><input type="button" value="Show More" style="width:70%;height:35;font-size:15;"></div>',
+        moreLink: '<div><input type="button" value="Show More" style="width:80%;height:35;font-size:15;"></div>',
+        //moreLink: '<div><input type="button" value="Show More" class="ssql_showmore" style="width:80%;height:35;font-size:15;visibility: hidden;"></div>',
         //lessLink: '<a href="#">Close</a>',
-        lessLink: '<div><input type="button" value="Close" style="width:70%;height:35;font-size:15;"></div>',
+        lessLink: '<div><input type="button" value="Close" style="width:80%;height:35;font-size:15;"></div>',
         embedCSS: true,
         sectionCSS: 'display: block; width: 100%;',
 
