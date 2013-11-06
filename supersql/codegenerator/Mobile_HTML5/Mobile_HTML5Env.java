@@ -666,7 +666,7 @@ public class Mobile_HTML5Env extends LocalEnv {
 	        //added by goto 20130508  "Login&Logout" start
 	        //ログイン・ログアウト・新規登録
 	        if(SSQLparser.sessionFlag){
-	        	String s = SSQLparser.sessionString;
+	        	String s = SSQLparser.sessionString.trim();
 	        	//Log.i("sessionString:" + s);
 	        	
 	        	//置換 ( " , "  ->  " ; " )
@@ -685,7 +685,9 @@ public class Mobile_HTML5Env extends LocalEnv {
 	        	
 	        	String sessionVariable_UniqueName = "ssql_";		//セッション変数に使用するユニークな名前（session()の最後から取ってくる）
 	        	
-	        	String s_val = s.substring("session".length(),s.indexOf("(")).trim();
+	        	String s_val = "";
+	        	if(s.startsWith("login"))	s_val = s.substring("login".length(),s.indexOf("(")).trim();
+	        	else						s_val = s.substring("session".length(),s.indexOf("(")).trim();
 	        	if(s_val.equals(""))		s_val = "1";
 //	        	Log.i("s_val:" + s_val);
 	        	String DB = GlobalEnv.getdbname();										//DB

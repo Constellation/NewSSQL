@@ -1012,7 +1012,7 @@ public class SSQLparser {
 		}
 		
 		//SESSION  //added by goto 20130508  "Login&Logout"
-        if (nt.matches("SESSION.*")) {
+        if (nt.toUpperCase().matches("SESSION.*") || nt.toUpperCase().matches("LOGIN.*")) {
             while (st.hasMoreTokens()) {
             	sessionString += nt+" ";
                 nt = st.nextToken().toString();
