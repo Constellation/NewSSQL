@@ -11,6 +11,7 @@ import java.util.List;
 
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
+import supersql.common.Suggest;
 import supersql.extendclass.ExtList;
 import supersql.parser.FromParse;
 
