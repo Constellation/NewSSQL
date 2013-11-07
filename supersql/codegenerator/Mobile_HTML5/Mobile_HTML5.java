@@ -22,12 +22,13 @@ public class Mobile_HTML5 {
 	//static boolean showFlg = false;
 	//static String showSymbol = "";	//important variable
 	private static boolean showProcess(DecorateList decos, Mobile_HTML5Env html_env){
-		if(decos.containsKey("show") || decos.containsKey("show-each")){
+		if(decos.containsKey("show") || decos.containsKey("show-first") || decos.containsKey("show-next")){
 			//showSymbol = symbol;
     		String show = "";
 			String showEach = "0";
-    		if(decos.containsKey("show"))		show = decos.getStr("show").replaceAll("px", "").replaceAll(";", "");
-    		if(decos.containsKey("show-each"))	showEach = decos.getStr("show-each").replaceAll("px", "").replaceAll(";", "");
+    		if(decos.containsKey("show"))				show = decos.getStr("show").replaceAll("px", "").replaceAll(";", "");
+    		else if(decos.containsKey("show-first"))	show = decos.getStr("show-first").replaceAll("px", "").replaceAll(";", "");
+    		if(decos.containsKey("show-next"))	showEach = decos.getStr("show-next").replaceAll("px", "").replaceAll(";", "");
     		//Log.e(show+"  "+showEach);
     		if(show.isEmpty())	show = showEach;
     		//Log.e(show+"  "+showEach);
@@ -48,13 +49,16 @@ public class Mobile_HTML5 {
     		return true;
         }
 		else if(decos.containsKey("autoshow") || decos.containsKey("auto-show") || 
-				decos.containsKey("autoshow-each") || decos.containsKey("auto-show-each")){
+				decos.containsKey("autoshow-first") || decos.containsKey("auto-show-first") ||
+				decos.containsKey("autoshow-next") || decos.containsKey("auto-show-next")){
 			String autoshow = "";
 			String autoshowEach = "0";
-    		if(decos.containsKey("autoshow"))		autoshow = decos.getStr("autoshow").replaceAll("px", "").replaceAll(";", "");
-    		else if(decos.containsKey("auto-show"))	autoshow = decos.getStr("auto-show").replaceAll("px", "").replaceAll(";", "");
-    		if(decos.containsKey("autoshow-each"))			autoshowEach = decos.getStr("autoshow-each").replaceAll("px", "").replaceAll(";", "");
-    		else if(decos.containsKey("auto-show-each"))	autoshowEach = decos.getStr("auto-show-each").replaceAll("px", "").replaceAll(";", "");
+    		if(decos.containsKey("autoshow"))				autoshow = decos.getStr("autoshow").replaceAll("px", "").replaceAll(";", "");
+    		else if(decos.containsKey("autoshow-first"))	autoshow = decos.getStr("autoshow-first").replaceAll("px", "").replaceAll(";", "");
+    		else if(decos.containsKey("auto-show"))			autoshow = decos.getStr("auto-show").replaceAll("px", "").replaceAll(";", "");
+    		else if(decos.containsKey("auto-show-first"))	autoshow = decos.getStr("auto-show-first").replaceAll("px", "").replaceAll(";", "");
+    		if(decos.containsKey("autoshow-next"))			autoshowEach = decos.getStr("autoshow-next").replaceAll("px", "").replaceAll(";", "");
+    		else if(decos.containsKey("auto-show-next"))	autoshowEach = decos.getStr("auto-show-next").replaceAll("px", "").replaceAll(";", "");
     		if(autoshow.isEmpty())	autoshow = autoshowEach;
     		show_count++;
     		
@@ -97,9 +101,9 @@ public class Mobile_HTML5 {
 		return false;
 	}
 	private static boolean showCloseProcess(DecorateList decos, Mobile_HTML5Env html_env){
-		if(decos.containsKey("show") || decos.containsKey("show-each") ||
-		   decos.containsKey("autoshow") || decos.containsKey("autoshow-each")||
-		   decos.containsKey("auto-show") || decos.containsKey("auto-show-each")){
+		if(decos.containsKey("show") || decos.containsKey("show-first") || decos.containsKey("show-next") ||
+		   decos.containsKey("autoshow") || decos.containsKey("autoshow-first") || decos.containsKey("autoshow-next")||
+		   decos.containsKey("auto-show") || decos.containsKey("auto-show-first") ||  decos.containsKey("auto-show-next")){
         //if(symbol.equals(showSymbol) && showFlg){
         	html_env.code.append("</DIV><!-- End of Show More -->\n");
         	//showFlg = false;
