@@ -32,6 +32,7 @@ public class Mobile_HTML5 {
 	public static boolean postProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
 		//Post-process (後処理)
 		showCloseProcess(decos, html_env);
+		Mobile_HTML5Env.divWidth = "";
 		return true;
 	}
 	
