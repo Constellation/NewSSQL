@@ -77,12 +77,11 @@ public class CodeGenerator{
 			
 			//20131106
 			//Log.err("\nGENERATE >>>> "+m+" <<<<");
-			String XMLfile = System.getProperty("user.dir")+"/XML/ssql_medias.xml";
+			String XMLfile = GlobalEnv.MEDIA_XML;
 			ArrayList<String> medias = ParseXML.getAttributes(XMLfile, "media", "name");
 			String media_list = LevenshteinDistance.checkLevenshteinAndSuggest(m, medias);
 			if(!media_list.isEmpty())
 				Log.err("\n## Media list ##\n" + media_list);
-			
 			System.exit(1);
 		}
 	}
