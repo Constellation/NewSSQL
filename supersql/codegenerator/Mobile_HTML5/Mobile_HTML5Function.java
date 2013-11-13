@@ -249,6 +249,9 @@ public class Mobile_HTML5Function extends Function {
         	Func_embed(data_info);
         }
         //tk end////////////////////////////////////
+        else{
+        	Log.err("[Warning] no such function name: "+FuncName+"()");
+        }
 
         Log.out("TFEId = " + Mobile_HTML5Env.getClassID(this));
         html_env.append_css_def_td(Mobile_HTML5Env.getClassID(this), this.decos);

@@ -132,6 +132,9 @@ public class HTMLFunction extends Function {
 			Log.out("[enter embed]");
 			return FuncEmbed(data_info);
 		}
+        else{
+        	Log.err("[Warning] no such function name: "+FuncName+"()");
+        }
 		// tk end////////////////////////////////////
 		Log.out("TFEId = " + HTMLEnv.getClassID(this));
 		return null;

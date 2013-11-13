@@ -128,7 +128,7 @@ public class Mobile_HTML5Manager extends Manager{
 	            if (html_env.charset != null){
 		        	pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
 		        			new FileOutputStream(html_env.filename),html_env.charset)));
-		        	Log.info("File encoding: "+html_env.charset);
+		        	Log.info("\nFile encoding: "+html_env.charset);
 	            }else
 	            	pw = new PrintWriter(new BufferedWriter(new FileWriter(
 	        	                    html_env.filename)));
