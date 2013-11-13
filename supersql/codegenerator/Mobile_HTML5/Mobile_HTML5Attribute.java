@@ -198,9 +198,11 @@ public class Mobile_HTML5Attribute extends Attribute {
 
 			//Log.out("data_info: "+this.getStr(data_info));
 
+			Mobile_HTML5.whileProcess1("Mobile_HTML5Attribute", decos, html_env, null, data_info, null, null, -1);	//TODO ここでOK?
 
 			createForm(data_info);
 			
+			Mobile_HTML5.whileProcess2("Mobile_HTML5Attribute", decos, html_env, null, data_info, null, null, -1);	//TODO ここでOK?
 
 			if(whichForm == 0){ //normal process (not form)
 				//***APPEND DATABASE VALUE***//

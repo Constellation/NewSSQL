@@ -1,7 +1,10 @@
 package supersql.codegenerator.Mobile_HTML5;
 
 import supersql.codegenerator.DecorateList;
+import supersql.codegenerator.ITFE;
+import supersql.codegenerator.TFE;
 import supersql.common.Log;
+import supersql.extendclass.ExtList;
 
 public class Mobile_HTML5 {
 	
@@ -10,12 +13,40 @@ public class Mobile_HTML5 {
 		showProcess(decos, html_env);
 		return true;
 	}
+	public static boolean whileProcess1(String symbol, DecorateList decos, Mobile_HTML5Env html_env, ExtList data, ExtList data_info, ITFE tfe, ExtList<TFE> tfes, int tfeItems){
+		//while process 1 (while内の処理1)
+		//Attribute: decos, html_env, data_info
+		//C1, C2:    decos, html_env, data, data_info, tfe, tfes, tfeItems
+		//G1, G2:    decos, html_env, data, data_info, tfe
+		dynamicProcess(symbol, decos, html_env, data, data_info, tfe, tfes, tfeItems);
+		return true;
+	}
+	public static boolean whileProcess2(String symbol, DecorateList decos, Mobile_HTML5Env html_env, ExtList data, ExtList data_info, ITFE tfe, ExtList<TFE> tfes, int tfeItems){
+		//while process 2 (while内の処理2)
+		//Attribute: decos, html_env, data_info
+		//C1, C2:    decos, html_env, data, data_info, tfe, tfes, tfeItems
+		//G1, G2:    decos, html_env, data, data_info, tfe
+		dynamicProcess(symbol, decos, html_env, data, data_info, tfe, tfes, tfeItems);
+		return true;
+	}
 	public static boolean postProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
 		//Post-process (後処理)
 		showCloseProcess(decos, html_env);
 		return true;
 	}
 	
+
+	//20130529
+	private static boolean dynamicProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env, ExtList data, ExtList data_info, ITFE tfe, ExtList<TFE> tfes, int tfeItems){
+		if(decos.containsKey("dynamic")){
+			//if(symbol.contains("Attribute")){
+			//	Log.e("in dynamic: <"+symbol+"> "+data+" "+data_info+" "+tfe+" "+tfes+" "+tfeItems);
+			//}
+//			html_env.code.append("</DIV><!-- End of Show More -->\n");
+        	return true;
+        }
+		return false;
+	}
 	
 	//20131106 show
 	static int show_count = 0;		

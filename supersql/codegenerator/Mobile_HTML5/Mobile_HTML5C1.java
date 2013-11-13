@@ -355,6 +355,8 @@ public class Mobile_HTML5C1 extends Connector {
 	        	Log.e("	C1 in!");
 	        	Mobile_HTML5Function.textFlg2 = true;
 	        }
+	        
+	        Mobile_HTML5.whileProcess1(getSymbol(), decos, html_env, data, data_info, tfe, tfes, tfeItems);
     	    
             //Log.out("<TD class=\""
             //        + HTMLEnv.getClassID(tfe) + " nest\"> decos : " + decos);
@@ -363,6 +365,8 @@ public class Mobile_HTML5C1 extends Connector {
 //x            html_env.code.append("	</td></tr></Table>\n");
             //Log.info("C1-2:	"+tableFlg+"	"+decos.containsKey("table")+"	"+decos.containsKey("table0"));
            
+	        Mobile_HTML5.whileProcess2(getSymbol(), decos, html_env, data, data_info, tfe, tfes, tfeItems);
+            
             if(decos.containsKey("table0") || Mobile_HTML5C2.table0Flg || Mobile_HTML5G1.table0Flg || Mobile_HTML5G2.table0Flg)	table0Flg = true;
             //else	table0Flg=false;
 //            if(decos.containsKey("table") || HTMLC1.tableFlg || HTMLC2.tableFlg || HTMLG1.tableFlg || HTMLG2.tableFlg || table0Flg)	tableFlg=true;
