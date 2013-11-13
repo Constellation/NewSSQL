@@ -86,7 +86,7 @@ public class Mobile_HTML5Function extends Function {
     }
 
     //Function��work�᥽�å�
-    public void work(ExtList data_info) {
+    public void work(ExtList<ExtList<String>> data_info) {
         this.setDataList(data_info);
         //    	Log.out("FuncName= " + this.getFuncName());
         //    	Log.out("filename= " + this.getAtt("filename"));

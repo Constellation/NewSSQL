@@ -113,7 +113,7 @@ public class Function extends Operand {
 
 	public String getAtt(String key, String default_str) {
 		FuncArg fa = (FuncArg) ArgHash.get(key);
-		ArgHash.remove(key);
+//		ArgHash.remove(key);
 		if (fa == null) {
 			return default_str;
 		}
