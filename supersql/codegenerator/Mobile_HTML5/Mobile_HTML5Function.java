@@ -883,8 +883,6 @@ public class Mobile_HTML5Function extends Function {
     /*	<type:1> pop("title","detail") <=> pop("title","detail",1)	*/
     /*	<type:2> pop("title","image URL",2)		*/
     private void Func_pop() {
-        Log.i(this.Args);
-    	
     	FuncArg fa1 = (FuncArg) this.Args.get(0), fa2, fa3;
     	String title, detailORurl, type;
     	int type1Flg = 0; //type1(文字)フラグ

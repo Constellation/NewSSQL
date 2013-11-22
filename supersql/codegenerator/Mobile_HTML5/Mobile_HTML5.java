@@ -83,29 +83,19 @@ public class Mobile_HTML5 {
 	//20130529 dynamic
 	//20131118 dynamic
 	static String dynamicString = "";
-	static String dynamicString2 = "";
-	static String dynamicString2_buf = "";
+//	static String dynamicString2 = "";
+//	static String dynamicString2_buf = "";
 	static String dynamicHTMLbuf0 = "";
 	static String dynamicHTMLbuf = "";
-	static String dynamicHTMLbuf2 = "";
+//	static String dynamicHTMLbuf2 = "";
 	static int dynamicCount = 0;
 //	static int dynamicWhileCount = 0;
 	public static boolean dynamicDisplay = false;
 	public static ExtList<String> dynamicConnectorProcess(ITFE tfe, ExtList<String> subdata){
+		//For C1, C2, G1, G2
 		if(dynamicDisplay){
 //			Log.e("subdata = "+subdata+",	sindex = "+sindex+", dindex = "+dindex+", dindex + ci = "+dindex + ci+",	tfe = "+tfe);
-			String s = ""+tfe;
-			s = s.trim();
-			if(s.startsWith("\"")){
-				//not attribute
-				s = s.substring(0,s.length()-1).substring(1);
-			}else{
-				//attribute
-				s = "'||"+s+"||'";
-			}
-//			Log.e("s = "+s);
-			
-//			ExtList subdata2 = subdata;
+			String s = createDynamicAttribute(tfe);
 			try{
 				if(!s.isEmpty()){
 					subdata.set(0, s);
@@ -114,6 +104,22 @@ public class Mobile_HTML5 {
 //			Log.e("subdata = "+subdata);
 		}
 		return subdata;
+	}
+	public static String dynamicFuncArgProcess(ITFE tfe){
+		//For Function
+		return createDynamicAttribute(tfe);
+	}
+	private static String createDynamicAttribute(ITFE tfe){
+		String s = ""+tfe;
+		s = s.trim();
+		if(s.startsWith("\"") && s.endsWith("\"")){
+			//not attribute
+			s = s.substring(1,s.length()-1);
+		}else{
+			//attribute
+			s = "'||"+s+"||'";
+		}
+		return s;
 	}
 	private static boolean dynamicPreProcess0(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
 		if(decos.containsKey("dynamic")){
@@ -124,8 +130,6 @@ public class Mobile_HTML5 {
 	}
 	private static boolean dynamicPreProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
 		if(decos.containsKey("dynamic")){
-//		if(decos.containsKey("dynamic") && dynamicWhileCount<2){
-//			dynamicString = "";
 			dynamicHTMLbuf = html_env.code.toString();
 			dynamicDisplay = true;
 			return true;
@@ -396,7 +400,7 @@ public class Mobile_HTML5 {
 	    	dynamic_col = dynamic_col.replaceAll("a\\(","").replaceAll("anchor\\(","").replaceAll("mail\\(","").replaceAll("pop\\(","").replaceAll("popup\\(","").replaceAll("count\\(\\*\\)","count[*]").replaceAll("\\)","").replaceAll("count\\[\\*\\]","count(*)");
 	    	dynamic_col_array = dynamic_col_array.replaceAll("a\\(","").replaceAll("anchor\\(","").replaceAll("mail\\(","").replaceAll("pop\\(","").replaceAll("popup\\(","").replaceAll("count\\(\\*\\)","count[*]").replaceAll("\\)","").replaceAll("count\\[\\*\\]","count(*)");
 	    	
-	    	//TODO
+	    	//TODO 余計なコードの削除
 	    	dynamic_col = dynamicString;
 	    	dynamic_col_array = dynamicString;
 	    	
@@ -411,16 +415,16 @@ public class Mobile_HTML5 {
 	    	
 	    	String query = "";
 	    	//Log.i(after_from_string);
-	    	if(after_from.startsWith("#")){					//From以下をクエリの下(#*)から取ってくる場合	//TODO
-	    		if(!after_from_string.contains(after_from)){
-	    			Log.info("<Warning> dynamic関数の第三引数に指定されている '"+after_from+"' が見つかりません。");
-	    			return false;
-	    		}
-	    		query = after_from_string
-	    				.substring(after_from_string.indexOf(after_from)+after_from.length())
-	    				.trim().toLowerCase();
-	    		if(query.contains("#"))	query = query.substring(0,query.indexOf("#")).trim().toLowerCase();
-	    	}else
+//	    	if(after_from.startsWith("#")){					//From以下をクエリの下(#*)から取ってくる場合	//TODO
+//	    		if(!after_from_string.contains(after_from)){
+//	    			Log.info("<Warning> dynamic関数の第三引数に指定されている '"+after_from+"' が見つかりません。");
+//	    			return false;
+//	    		}
+//	    		query = after_from_string
+//	    				.substring(after_from_string.indexOf(after_from)+after_from.length())
+//	    				.trim().toLowerCase();
+//	    		if(query.contains("#"))	query = query.substring(0,query.indexOf("#")).trim().toLowerCase();
+//	    	}else
 	    		query = after_from.toLowerCase();			//From以下を第三引数へ書く場合
 	
 	    	//Log.i("\n	Query: "+query);
