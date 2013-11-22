@@ -5,7 +5,9 @@ import java.io.File;
 import supersql.codegenerator.Attribute;
 import supersql.codegenerator.Connector;
 import supersql.codegenerator.DecorateList;
+import supersql.codegenerator.ITFE;
 import supersql.codegenerator.Manager;
+import supersql.codegenerator.TFE;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
@@ -201,17 +203,22 @@ public class Mobile_HTML5Attribute extends Attribute {
 
 			createForm(data_info);
 			
-			Mobile_HTML5.whileProcess2("Mobile_HTML5Attribute", decos, html_env, null, data_info, null, null, -1);	//TODO ここでOK?
-			Mobile_HTML5.afterWhileProcess("Mobile_HTML5Attribute", decos, html_env);
 			
 			if(whichForm == 0){ //normal process (not form)
 				//***APPEND DATABASE VALUE***//
 				Log.out(data_info);
-				html_env.code.append(this.getStr(data_info));
-
-				Log.out(this.getStr(data_info));
+				if(Mobile_HTML5.dynamicDisplay){
+					//20131118 dynamic
+					html_env.code.append( Mobile_HTML5.dynamicAttributeProcess(this) );
+				}else{
+					html_env.code.append(this.getStr(data_info));
+				}
 			}
-
+			
+			Mobile_HTML5.whileProcess2("Mobile_HTML5Attribute", decos, html_env, null, data_info, null, null, -1);	//TODO ここでOK?
+			Mobile_HTML5.afterWhileProcess("Mobile_HTML5Attribute", decos, html_env);
+			
+			
 			if (html_env.link_flag > 0 || html_env.sinvoke_flag) {
 				if(html_env.draggable)
 					html_env.code.append("</div>\n");

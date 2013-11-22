@@ -123,10 +123,10 @@ public class Connector extends Operator{
 		if (tfe instanceof Connector || tfe instanceof Attribute
 				|| tfe instanceof Function || tfe instanceof IfCondition) {
 			
-			//20131118 dynamic
-			if(Mobile_HTML5.dynamicDisplay){
-				subdata = Mobile_HTML5.dynamicConnectorProcess(tfe, subdata);
-			}
+//			//20131118 dynamic
+//			if(Mobile_HTML5.dynamicDisplay){
+//				subdata = Mobile_HTML5.dynamicConnectorProcess(tfe, subdata);
+//			}
 
 			tfe.work(subdata);
 		}

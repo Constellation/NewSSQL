@@ -92,22 +92,27 @@ public class Mobile_HTML5 {
 //	static int dynamicWhileCount = 0;
 	static String dynamicFuncCountLabel = "___DynamicFunc_CountLabel___";
 	public static boolean dynamicDisplay = false;
-	public static ExtList<String> dynamicConnectorProcess(ITFE tfe, ExtList<String> subdata){
-		//For C1, C2, G1, G2
-		if(dynamicDisplay){
-//			Log.e("subdata = "+subdata+",	sindex = "+sindex+", dindex = "+dindex+", dindex + ci = "+dindex + ci+",	tfe = "+tfe);
-			String s = createDynamicAttribute(tfe);
-			try{
-				if(!s.isEmpty()){
-					subdata.set(0, s);
-				}
-			}catch(Exception e){}
-//			Log.e("subdata = "+subdata);
-		}
-		return subdata;
-	}
+//	public static ExtList<String> dynamicConnectorProcess(ITFE tfe, ExtList<String> subdata){
+//		//TODO このメソッドは不要
+//		//For C1, C2, G1, G2
+//		if(dynamicDisplay){
+////			Log.e("subdata = "+subdata+",	sindex = "+sindex+", dindex = "+dindex+", dindex + ci = "+dindex + ci+",	tfe = "+tfe);
+//			String s = createDynamicAttribute(tfe);
+//			try{
+//				if(!s.isEmpty()){
+//					subdata.set(0, s);
+//				}
+//			}catch(Exception e){}
+////			Log.e("subdata = "+subdata);
+//		}
+//		return subdata;
+//	}
 	public static String dynamicFuncArgProcess(ITFE tfe){
 		//For Function
+		return createDynamicAttribute(tfe);
+	}
+	public static String dynamicAttributeProcess(ITFE tfe){
+		//For Attribute (C1, C2, G1, G2)
 		return createDynamicAttribute(tfe);
 	}
 	private static String createDynamicAttribute(ITFE tfe){
