@@ -67,7 +67,7 @@ public class Mobile_HTML5Function extends Function {
     static int checkCount = 1;		//20130531	"check"
 
     static int mapFuncCount = 1;	//20130717  "map"
-    static int gpsFuncCount = 1;	//20130717  "gps"
+//    static int gpsFuncCount = 1;	//20130717  "gps"
     
 	static boolean textFlg = false;	//20130914  "text"
     
@@ -904,9 +904,9 @@ public class Mobile_HTML5Function extends Function {
         			
         		//type=2 -> imageFile
         		}else if(type.equals("2") || type.equals("image") || type.equals("img")){
-        			html_env.code.append("	<a href=\"#popup"+popCount+"\" data-rel=\"popup\" data-role=\"button\" data-icon=\"arrow-r\" data-inline=\"true\" class=\"ui-li-inside\">"+( (!title.equals(""))? title : "Photo" )+"</a>\n");
+        			html_env.code.append("	<a href=\"#popup"+getCount(popCount)+"\" data-rel=\"popup\" data-role=\"button\" data-icon=\"arrow-r\" data-inline=\"true\" class=\"ui-li-inside\">"+( (!title.equals(""))? title : "Photo" )+"</a>\n");
         	    	//TODO: data-transition  transition()使用可能
-        			html_env.code.append("	<div data-role=\"popup\" id=\"popup"+popCount+"\" data-transition=\"pop\" style=\"width:95%;\" data-overlay-theme=\"a\">\n");
+        			html_env.code.append("	<div data-role=\"popup\" id=\"popup"+getCount(popCount)+"\" data-transition=\"pop\" style=\"width:95%;\" data-overlay-theme=\"a\">\n");
         	    	html_env.code.append("		<a href=\"#\" data-rel=\"back\" data-role=\"button\" data-theme=\"a\" data-icon=\"delete\" data-iconpos=\"notext\" class=\"ui-btn-right\">Close</a>\n");
         	    	html_env.code.append("		<img src=\""+detailORurl+"\"");
     		        
@@ -934,9 +934,9 @@ public class Mobile_HTML5Function extends Function {
         	
         	//type=1 -> 文字
     		if(type1Flg == 1){
-    			html_env.code.append("	<a href=\"#popup"+popCount+"\" data-rel=\"popup\" data-role=\"button\" data-icon=\"arrow-r\" data-inline=\"true\">"+( (!title.equals(""))? title : "Open" )+"</a>\n");
+    			html_env.code.append("	<a href=\"#popup"+getCount(popCount)+"\" data-rel=\"popup\" data-role=\"button\" data-icon=\"arrow-r\" data-inline=\"true\">"+( (!title.equals(""))? title : "Open" )+"</a>\n");
     	    	//TODO: data-transition  transition()使用可能
-    			html_env.code.append("	<div data-role=\"popup\" id=\"popup"+popCount+"\" data-transition=\"slideup\" style=\"width:95%;\" data-overlay-theme=\"a\">\n");
+    			html_env.code.append("	<div data-role=\"popup\" id=\"popup"+getCount(popCount)+"\" data-transition=\"slideup\" style=\"width:95%;\" data-overlay-theme=\"a\">\n");
     	    	html_env.code.append("		<a href=\"#\" data-rel=\"back\" data-role=\"button\" data-theme=\"a\" data-icon=\"delete\" data-iconpos=\"notext\" class=\"ui-btn-right\">Close</a>\n");
     	    	html_env.code.append("		<p>"+detailORurl+"</p>\n");
     	    	html_env.code.append("	</div>\n");
@@ -2702,8 +2702,8 @@ public class Mobile_HTML5Function extends Function {
     	if(searchFlg){
 	    	statement += 
 	    			"		<form method=\"post\" action=\"\" target=\"dummy_ifr\">\n" +
-					"    		<input type=\"search\" id=\"search_map_words"+mapFuncCount+"\" placeholder=\"住所など\">\n" +
-					"    		<input type=\"submit\" value=\"地図を表示&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\" id=\"search_map"+mapFuncCount+"\" data-icon=\"search\" data-mini=\"false\" data-inline=\"false\">\n" +
+					"    		<input type=\"search\" id=\"search_map_words"+getCount(mapFuncCount)+"\" placeholder=\"住所など\">\n" +
+					"    		<input type=\"submit\" value=\"地図を表示&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\" id=\"search_map"+getCount(mapFuncCount)+"\" data-icon=\"search\" data-mini=\"false\" data-inline=\"false\">\n" +
 					"		</form>\n";
     	}
     	statement += 
@@ -2711,16 +2711,16 @@ public class Mobile_HTML5Function extends Function {
 				"		<script type=\"text/javascript\">\n" +
 				"		<!--\n";
     	if(!searchFlg)	statement += "$(document).on(\"pageinit\", \"#p-top1\", function(e) {\n";
-    	else			statement += "$(\"#search_map"+mapFuncCount+"\").click(function () {\n";
+    	else			statement += "$(\"#search_map"+getCount(mapFuncCount)+"\").click(function () {\n";
     	statement += 
 				"  	var map = null; // Google Map\n" +
-				"    $(\"#map"+mapFuncCount+"\").remove();	// 地図をクリア\n" +
-				//"    $(\"#map-wrapper"+mapFuncCount+"\").append('<div id=\"map"+mapFuncCount+"\" style=\"width: 100%; height: 250px;\"></div>'); // 地図を作成\n" +
-				"    $(\"#map-wrapper"+mapFuncCount+"\").append('<div id=\"map"+mapFuncCount+"\"" +
+				"    $(\"#map"+getCount(mapFuncCount)+"\").remove();	// 地図をクリア\n" +
+				//"    $(\"#map-wrapper"+getCount(mapFuncCount)+"\").append('<div id=\"map"+getCount(mapFuncCount)+"\" style=\"width: 100%; height: 250px;\"></div>'); // 地図を作成\n" +
+				"    $(\"#map-wrapper"+getCount(mapFuncCount)+"\").append('<div id=\"map"+getCount(mapFuncCount)+"\"" +
 						" style=\"width: 100%; height: "+( (!decos.containsKey("height"))? ("250px"):(decos.getStr("height")) )+";\"></div>'); // 地図を作成\n" +
 				"      \n";
     	if(!searchFlg)	statement += "    var sad = \""+geolocation+"\";\n";
-    	else			statement += "    var sad = $(\"#search_map_words"+mapFuncCount+"\").val();\n";
+    	else			statement += "    var sad = $(\"#search_map_words"+getCount(mapFuncCount)+"\").val();\n";
 		statement += 
 				"    var geocoder = new google.maps.Geocoder();\n" +
 				"    geocoder.geocode({'address': sad}, function(results, status) {\n" +
@@ -2731,19 +2731,19 @@ public class Mobile_HTML5Function extends Function {
 				"	        center: results[0].geometry.location,\n" +
 				"	        mapTypeId: google.maps.MapTypeId.ROADMAP // 地図の種類(市街地図)\n" +
 				"	      };\n" +
-				"	      map = new google.maps.Map(document.getElementById(\"map"+mapFuncCount+"\"),mapOptions);\n" +
+				"	      map = new google.maps.Map(document.getElementById(\"map"+getCount(mapFuncCount)+"\"),mapOptions);\n" +
 				"      	  new google.maps.Marker({map : map, position : results[0].geometry.location" + ((icon.equals(""))? (""):(", icon : '"+icon+"'")  ) + "}); //\n" +
 				//"	      new google.maps.Marker({map : map, position : results[0].geometry.location});\n" +
 				"      } else {\n" +
 				//"      	  alert('場所を特定できませんでした。入力内容をご確認ください。');\n" +
-				"      	  $(\"#map"+mapFuncCount+"\").text('場所を特定できませんでした。');\n" +
+				"      	  $(\"#map"+getCount(mapFuncCount)+"\").text('場所を特定できませんでした。');\n" +
 				"      }\n" +
 				"    });\n" +
 				"});\n" +
 				"		// -->\n" +
 				"		</script>\n" +
 				"		\n" +
-				"		<div id=\"map-wrapper"+mapFuncCount+"\"></div>";
+				"		<div id=\"map-wrapper"+getCount(mapFuncCount)+"\"></div>";
     	
     			mapFuncCount++;
 
@@ -4128,4 +4128,10 @@ public class Mobile_HTML5Function extends Function {
 			return Integer.MIN_VALUE;
 		}
     }
+    
+    //20131118 dynamic
+    private String getCount(int count){
+    	return count+Mobile_HTML5.getDynamicLabel();
+    }
+    
 }

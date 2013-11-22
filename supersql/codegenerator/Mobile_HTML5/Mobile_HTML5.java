@@ -90,6 +90,7 @@ public class Mobile_HTML5 {
 //	static String dynamicHTMLbuf2 = "";
 	static int dynamicCount = 0;
 //	static int dynamicWhileCount = 0;
+	static String dynamicFuncCountLabel = "___DynamicFunc_CountLabel___";
 	public static boolean dynamicDisplay = false;
 	public static ExtList<String> dynamicConnectorProcess(ITFE tfe, ExtList<String> subdata){
 		//For C1, C2, G1, G2
@@ -120,6 +121,15 @@ public class Mobile_HTML5 {
 			s = "'||"+s+"||'";
 		}
 		return s;
+	}
+	public static String getDynamicLabel(){	//+Mobile_HTML5.getDinamicLabel()
+		//For function's count
+		//※ Count付きのfunc()には、+Mobile_HTML5.getDinamicLabel()を付加する
+		//TODO dynamicFuncCountLabelがユニーク値かどうか判定
+		if(dynamicDisplay){
+			return dynamicFuncCountLabel;
+		}
+		return "";
 	}
 	private static boolean dynamicPreProcess0(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
 		if(decos.containsKey("dynamic")){
@@ -241,6 +251,8 @@ public class Mobile_HTML5 {
 			Log.e(" - Start dynamic process -");
 //			Log.e(dynamicString);
 			
+//			dynamicString = dynamicString.replaceAll("'", "\\\\\\\\\\\\\'");											//　' -> \'				//TODO これでOK?
+			
 			//TODO div, table以外の場合
 //			dynamicString = "'"+dynamicString2+"</div>'";
 			if(!symbol.contains("G1") && !symbol.contains("G2")){
@@ -262,8 +274,6 @@ public class Mobile_HTML5 {
 				//G1, G2
 				dynamicString = "'"+dynamicString+"'";
 			}
-			
-			
 			
 			dynamicString = dynamicString.replaceAll("\r\n", "").replaceAll("\r", "").replaceAll("\n", "");	//改行コードの削除
 			dynamicString = dynamicString.replaceAll("\"", "\\\\\\\\\\\\\"");								//　" -> \\\"			//TODO これでOK?
@@ -607,7 +617,8 @@ public class Mobile_HTML5 {
 //							"							.'</div>';\n" +
 //							"                    	dynamic"+dynamicCount+"_p2($pop_str, ++$k);     	//tdに結果を埋め込む\n" +
 //							"                    }else									dynamic"+dynamicCount+"_p2($row[$j], ++$k);     //tdに結果を埋め込む\n" +
-							"              		$b .= $row[$j];\n" +
+							"              		//$b .= $row[$j];\n" +
+							"              		$b .= str_replace("+dynamicFuncCountLabel+", '_'.$i, $row[$j]);\n" +	//For function's count
 							"              }\n" +
 							"        }\n" +
 //							"		 if($i>0)	echo \"<script type=\\\"text/javascript\\\">window.parent.$('#Dynamic"+dynamicCount+"_text_th').show();</script>\";    //カラム名を表示\n" +
