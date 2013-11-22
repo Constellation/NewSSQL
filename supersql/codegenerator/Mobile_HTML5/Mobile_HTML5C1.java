@@ -36,6 +36,8 @@ public class Mobile_HTML5C1 extends Connector {
 
     //C1��work�᥽�å�
     public void work(ExtList data_info) {
+    	Mobile_HTML5.preProcess(getSymbol(), decos, html_env);	//Pre-process (前処理)
+    	
     	//20131001 tableDivHeader
     	if(decos.containsKey("header") && Mobile_HTML5G2.tableDivHeader_Count2<1){
     		Mobile_HTML5G2.tableDivHeader_codeBuf = html_env.code.toString();
@@ -96,12 +98,12 @@ public class Mobile_HTML5C1 extends Connector {
     	}//else divFlg = false;
         
         
-        //20130529
-        if(decos.containsKey("dynamic")){
-        	if(!Mobile_HTML5Env.dynamicFlg)	Mobile_HTML5Env.staticBuf = html_env.code;
-        	Mobile_HTML5Env.dynamicFlg = true;
-        	Log.i("※C1 HTMLEnv.staticBuf: "+Mobile_HTML5Env.staticBuf);
-        }
+//        //20130529
+//        if(decos.containsKey("dynamic")){
+//        	if(!Mobile_HTML5Env.dynamicFlg)	Mobile_HTML5Env.staticBuf = html_env.code;
+//        	Mobile_HTML5Env.dynamicFlg = true;
+//        	Log.i("※C1 HTMLEnv.staticBuf: "+Mobile_HTML5Env.staticBuf);
+//        }
 
         if(!GlobalEnv.isOpt()){
         	//20130503  Panel
@@ -213,7 +215,6 @@ public class Mobile_HTML5C1 extends Connector {
         		html_env.code.append(getTableStartTag(html_env, decos, this)+"<TR>");
         	}
         	
-        	Mobile_HTML5.preProcess(getSymbol(), decos, html_env);	//Pre-process (前処理)
         }
 
 //        //xml
@@ -280,6 +281,7 @@ public class Mobile_HTML5C1 extends Connector {
            	Mobile_HTML5Env.setFormItemFlg(true,null);
         }
         
+        Mobile_HTML5.beforeWhileProcess(getSymbol(), decos, html_env);
         while (this.hasMoreItems()) {
             //Log.info("C1-1:	"+tableFlg+"	"+decos.containsKey("table")+"	"+decos.containsKey("table0"));
             if(decos.containsKey("table0") || Mobile_HTML5C2.table0Flg || Mobile_HTML5G1.table0Flg || Mobile_HTML5G2.table0Flg)	table0Flg = true;
@@ -339,15 +341,15 @@ public class Mobile_HTML5C1 extends Connector {
             String classid = Mobile_HTML5Env.getClassID(tfe);
             
 
-	      	if(Mobile_HTML5Env.dynamicFlg){	//20130529 dynamic
-	      		//☆★
-	      		Log.info("☆★C1 tfe : " + tfe);
-	    		//☆★            Log.info("C1 tfe : " + tfe);
-	            //☆★
-	      		Log.info("	C1 tfes : " + this.tfes);
-	            //☆★
-	      		Log.info("	C1 tfeItems : " + this.tfeItems);
-	      	}
+//	      	if(Mobile_HTML5Env.dynamicFlg){	//20130529 dynamic
+//	      		//☆★
+//	      		Log.info("☆★C1 tfe : " + tfe);
+//	    		//☆★            Log.info("C1 tfe : " + tfe);
+//	            //☆★
+//	      		Log.info("	C1 tfes : " + this.tfes);
+//	            //☆★
+//	      		Log.info("	C1 tfeItems : " + this.tfeItems);
+//	      	}
 	      	
 	      	//20130914  "text"
 //	      	Log.e("	decosC2 = "+decos);
@@ -383,8 +385,8 @@ public class Mobile_HTML5C1 extends Connector {
         		tableFlg = false;
         	}//else divFlg = false;
             
-            //20130529
-            if(decos.containsKey("dynamic"))	Mobile_HTML5Env.dynamicFlg = true;
+//            //20130529
+//            if(decos.containsKey("dynamic"))	Mobile_HTML5Env.dynamicFlg = true;
             
 //        	//TODO 必要？不要？　→　おそらく不要？
 //            //20130309
@@ -428,19 +430,21 @@ public class Mobile_HTML5C1 extends Connector {
             //Log.out("</TD>");
 
             i++;
-        }
+        }	// /while
+        Mobile_HTML5.afterWhileProcess(getSymbol(), decos, html_env);
 
-        html_env2.code.append("</tfe>");
-        if(decos.containsKey("form")){
-        	html_env2.code.append("<form"+ Mobile_HTML5Env.getFormNumber() +"end />");
-        	Log.out("<form"+ Mobile_HTML5Env.getFormNumber() +"end />");
-           	html_env.code.append(Mobile_HTML5Env.exFormNameCreate());
-           	html_env.code.append("</form>");
-           	Mobile_HTML5Env.setFormItemFlg(false,null);
-           	Mobile_HTML5Env.incrementFormNumber();
-           	if(decos.getStr("form").toLowerCase().equals("search"))
-        		Mobile_HTML5Env.setSearch(false);
-        }
+//        //XML?
+//        html_env2.code.append("</tfe>");
+//        if(decos.containsKey("form")){
+//        	html_env2.code.append("<form"+ Mobile_HTML5Env.getFormNumber() +"end />");
+//        	Log.out("<form"+ Mobile_HTML5Env.getFormNumber() +"end />");
+//           	html_env.code.append(Mobile_HTML5Env.exFormNameCreate());
+//           	html_env.code.append("</form>");
+//           	Mobile_HTML5Env.setFormItemFlg(false,null);
+//           	Mobile_HTML5Env.incrementFormNumber();
+//           	if(decos.getStr("form").toLowerCase().equals("search"))
+//        		Mobile_HTML5Env.setSearch(false);
+//        }
         
         //20130309
         if(/* !HTMLG1.G1Flg  && */ !tableFlg)	html_env.code.append("\n</DIV>\n");			//20130309
@@ -484,20 +488,20 @@ public class Mobile_HTML5C1 extends Connector {
       	
       	if(divFlg)	divFlg = false;		//20130326  div
       	
-        if(Mobile_HTML5Env.dynamicFlg){
-        	Mobile_HTML5Env.dynamicFlg = false;		//20130529 dynamic
-//        	StringBuffer buf = new StringBuffer();
-//        	buf = HTMLEnv.staticBuf;
-//        	Log.i("\nbuf = "+buf);
+//        if(Mobile_HTML5Env.dynamicFlg){
+//        	Mobile_HTML5Env.dynamicFlg = false;		//20130529 dynamic
+////        	StringBuffer buf = new StringBuffer();
+////        	buf = HTMLEnv.staticBuf;
+////        	Log.i("\nbuf = "+buf);
+//////        	HTMLEnv.dynamicBuf.append(html_env.code.delete(0, buf.length()));
+////        	HTMLEnv.dynamicBuf.insert(0,"");
+//////        	HTMLEnv.dynamicBuf=HTMLEnv.staticBuf;
 ////        	HTMLEnv.dynamicBuf.append(html_env.code.delete(0, buf.length()));
-//        	HTMLEnv.dynamicBuf.insert(0,"");
-////        	HTMLEnv.dynamicBuf=HTMLEnv.staticBuf;
-//        	HTMLEnv.dynamicBuf.append(html_env.code.delete(0, buf.length()));
-//        	
-//        	html_env.code = buf;
-//        	Log.i("\n\nHTMLEnv.dynamicBuf = "+HTMLEnv.dynamicBuf);
-//        	Log.i("\n\nhtml_env.code = "+html_env.code);
-        }
+////        	
+////        	html_env.code = buf;
+////        	Log.i("\n\nHTMLEnv.dynamicBuf = "+HTMLEnv.dynamicBuf);
+////        	Log.i("\n\nhtml_env.code = "+html_env.code);
+//        }
       	
         //Log.out("</TR></TABLE>");
         

@@ -65,9 +65,7 @@ public class Mobile_HTML5Attribute extends Attribute {
 
 			}else{
 				
-				
-				Mobile_HTML5.preProcess("Mobile_HTML5Attribute", decos, html_env);	//Pre-process (前処理)
-
+				Mobile_HTML5.preProcess("Mobile_HTML5Attribute", decos, html_env);	//Pre-process (前処理)	//TODO この位置でOK?
 				
 				//20130309
 				//html_env.code.append("	");
@@ -198,12 +196,14 @@ public class Mobile_HTML5Attribute extends Attribute {
 
 			//Log.out("data_info: "+this.getStr(data_info));
 
+			Mobile_HTML5.beforeWhileProcess("Mobile_HTML5Attribute", decos, html_env);
 			Mobile_HTML5.whileProcess1("Mobile_HTML5Attribute", decos, html_env, null, data_info, null, null, -1);	//TODO ここでOK?
 
 			createForm(data_info);
 			
 			Mobile_HTML5.whileProcess2("Mobile_HTML5Attribute", decos, html_env, null, data_info, null, null, -1);	//TODO ここでOK?
-
+			Mobile_HTML5.afterWhileProcess("Mobile_HTML5Attribute", decos, html_env);
+			
 			if(whichForm == 0){ //normal process (not form)
 				//***APPEND DATABASE VALUE***//
 				Log.out(data_info);

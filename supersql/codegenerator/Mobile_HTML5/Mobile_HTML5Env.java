@@ -51,9 +51,9 @@ public class Mobile_HTML5Env extends LocalEnv {
 //				"}\n";
 //    public static String PHPfunc = "";	//added by goto 20130531 
     
-    static boolean dynamicFlg = false;			//20130529  dynamic
-    static StringBuffer staticBuf;				//20130529  dynamic
-    static StringBuffer dynamicBuf;				//20130529  dynamic
+//    static boolean dynamicFlg = false;			//20130529  dynamic
+//    static StringBuffer staticBuf;				//20130529  dynamic
+//    static StringBuffer dynamicBuf;				//20130529  dynamic
     
     //Vector not_written_classid;
     Vector<String> not_written_classid= new Vector();

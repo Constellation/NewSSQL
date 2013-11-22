@@ -1407,6 +1407,7 @@ public class Mobile_HTML5Function extends Function {
     	 *    $limit = " LIMIT 10 ";
     	 */
     	
+    	
     	String title = "";
     	String columns = "";
     	String after_from = "";
@@ -1771,10 +1772,14 @@ public class Mobile_HTML5Function extends Function {
     		
     		
     	}
-    	//else if(DBMS.equals("postgresql")){
-    	//	;
-    	//}
-    	
+    	else if(DBMS.equals("sqlite")){
+    		Log.e("<Warning> select() for 'sqlite' is not implemented yet.");
+    		;	//TODO
+    	}
+    	else if(DBMS.equals("postgresql")){
+    		Log.e("<Warning> select() for 'postgresql' is not implemented yet.");
+    		;	//TODO
+    	}
     	
     	
     	// 各引数毎に処理した結果をHTMLに書きこむ

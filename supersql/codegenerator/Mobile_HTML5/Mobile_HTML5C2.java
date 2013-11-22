@@ -28,6 +28,8 @@ public class Mobile_HTML5C2 extends Connector {
 
     //C2��work�᥽�å�
     public void work(ExtList data_info) {
+    	Mobile_HTML5.preProcess(getSymbol(), decos, html_env);	//Pre-process (前処理)
+    	
     	//20131001 tableDivHeader
     	if(decos.containsKey("header") && Mobile_HTML5G2.tableDivHeader_Count2<1){
     		Mobile_HTML5G2.tableDivHeader_codeBuf = html_env.code.toString();
@@ -89,12 +91,12 @@ public class Mobile_HTML5C2 extends Connector {
     		tableFlg = false;
     	}//else divFlg = false;
         
-        //20130529
-        if(decos.containsKey("dynamic")){
-        	if(!Mobile_HTML5Env.dynamicFlg)	Mobile_HTML5Env.staticBuf = html_env.code;
-        	Mobile_HTML5Env.dynamicFlg = true;
-        	Log.i("※C2 HTMLEnv.staticBuf: "+Mobile_HTML5Env.staticBuf);
-        }
+//        //20130529
+//        if(decos.containsKey("dynamic")){
+//        	if(!Mobile_HTML5Env.dynamicFlg)	Mobile_HTML5Env.staticBuf = html_env.code;
+//        	Mobile_HTML5Env.dynamicFlg = true;
+//        	Log.i("※C2 HTMLEnv.staticBuf: "+Mobile_HTML5Env.staticBuf);
+//        }
         
 //        //20130914  "text"
 //        if(decos.containsKey("text")){
@@ -168,7 +170,6 @@ public class Mobile_HTML5C2 extends Connector {
         		html_env.code.append(Mobile_HTML5C1.getTableStartTag(html_env, decos, this));
         	}
         	
-        	Mobile_HTML5.preProcess(getSymbol(), decos, html_env);	//Pre-process (前処理)
         }
         
 //        //おそらくxml
@@ -253,6 +254,7 @@ public class Mobile_HTML5C2 extends Connector {
            	Mobile_HTML5Env.setFormItemFlg(true,null);
         }
         
+    	Mobile_HTML5.beforeWhileProcess(getSymbol(), decos, html_env);
         while (this.hasMoreItems()) {
             //Log.info("C2-1:	"+tableFlg+"	"+decos.containsKey("table")+"	"+decos.containsKey("table0"));
             if(decos.containsKey("table0") || Mobile_HTML5C1.table0Flg || Mobile_HTML5G1.table0Flg || Mobile_HTML5G2.table0Flg)	table0Flg = true;
@@ -304,13 +306,13 @@ public class Mobile_HTML5C2 extends Connector {
 	      	}
         	
 	      	
-	      	if(Mobile_HTML5Env.dynamicFlg){	//20130529 dynamic
-	      		//☆★
-	      		Log.info("☆★C2 tfe : " + tfe);
-	      		//☆★      		 Log.info("C2 tfe : " + tfe);
-            	//☆★            Log.info("C2 tfes : " + this.tfes);
-            	//☆★            Log.info("C2 tfeItems : " + this.tfeItems);
-	      	}
+//	      	if(Mobile_HTML5Env.dynamicFlg){	//20130529 dynamic
+//	      		//☆★
+//	      		Log.info("☆★C2 tfe : " + tfe);
+//	      		//☆★      		 Log.info("C2 tfe : " + tfe);
+//            	//☆★            Log.info("C2 tfes : " + this.tfes);
+//            	//☆★            Log.info("C2 tfeItems : " + this.tfeItems);
+//	      	}
 	      	
 	        Mobile_HTML5.whileProcess1(getSymbol(), decos, html_env, data, data_info, tfe, tfes, tfeItems);
 	      	
@@ -336,8 +338,8 @@ public class Mobile_HTML5C2 extends Connector {
         		tableFlg = false;
         	}//else divFlg = false;
             
-            //20130529
-            if(decos.containsKey("dynamic"))	Mobile_HTML5Env.dynamicFlg = true;
+//            //20130529
+//            if(decos.containsKey("dynamic"))	Mobile_HTML5Env.dynamicFlg = true;
 
             //20130306
             //20130314  table
@@ -372,8 +374,8 @@ public class Mobile_HTML5C2 extends Connector {
             html_env.code.append("\n");		//20130309
 
             i++;
-
-        }
+        }	//	/while
+        Mobile_HTML5.afterWhileProcess(getSymbol(), decos, html_env);
 
         html_env2.code.append("</tfe>");
         //Log.out("</TABLE>");
@@ -418,7 +420,7 @@ public class Mobile_HTML5C2 extends Connector {
 	    	
       	if(divFlg)	divFlg = false;		//20130326  div
       	
-        if(Mobile_HTML5Env.dynamicFlg)	Mobile_HTML5Env.dynamicFlg = false;		//20130529 dynamic
+//        if(Mobile_HTML5Env.dynamicFlg)	Mobile_HTML5Env.dynamicFlg = false;		//20130529 dynamic
         
         Mobile_HTML5.postProcess(getSymbol(), decos, html_env);	//Post-process (後処理)
 
