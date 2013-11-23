@@ -295,6 +295,7 @@ public class Mobile_HTML5Env extends LocalEnv {
 	        header.append("<link rel=\"stylesheet\" href=\"jscss/jquery-ui.css\"/>\n");
             header.append("<link rel=\"stylesheet\" href=\"jscss/jquery.mobile-1.3.1.min.css\"/>\n");
             header.append("<link rel=\"stylesheet\" href=\"jscss/jqm-icon-pack-2.0-original.css\"/>\n");
+            header.append("<link rel=\"stylesheet\" href=\"jscss/jquery.simplePagination.css\"/>\n");
             //header.append("<link rel=\"stylesheet\" href="css/custom.css\"/>\n");
             //20130206
             //※※　要注意　※※　 jquery.jsより先にjquerymobile.jsをインポートすると、ボタン等の表示がうまくいかなくなる!!
@@ -306,6 +307,7 @@ public class Mobile_HTML5Env extends LocalEnv {
             header.append("<script src=\"jscss/jquery-ui.min.js\"></script>\n");
             header.append("<script src=\"jscss/showmore.js\"></script>\n");
             header.append("<script src=\"jscss/jquery.mobile-1.3.1.min.js\"></script>\n");
+            header.append("<script src=\"jscss/jquery.simplePagination.js\"></script>\n");
             header.append("<script src=\"jscss/jquery.mobile.dynamic.popup.js\"></script>\n");
             //header.append("<script src=\"js/config.js\"></script>\n");
 
@@ -2365,6 +2367,33 @@ public class Mobile_HTML5Env extends LocalEnv {
 	}
 	public static boolean getSearch(){
 		return search;
+	}
+	
+	
+	//goto 20131123
+	public String getFileName(){
+		//absolute path filename (/home/---/XXX.html)
+		return filename;
+	}
+	public String getFileName1(){
+		//absolute path filename (/home/---/XXX.html)
+		return getFileName();
+	}
+	public String getFileName2(){
+		//absolute path filename (/home/---/XXX)
+		return getFileName().substring(0, getFileName().lastIndexOf("."));
+	}
+	public String getFileName3(){
+		//file name (XXX.html)
+		return new File(getFileName1()).getName();
+	}
+	public String getFileName4(){
+		//file name (XXX)
+		return new File(getFileName2()).getName();
+	}
+	public String getFileParent(){
+		//file path (/home/---/)
+		return new File(filename).getParent();
 	}
 
 }

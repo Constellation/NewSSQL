@@ -1,15 +1,14 @@
 package supersql.codegenerator.Mobile_HTML5;
 
-import com.ibm.db2.jcc.am.bo;
-import com.sun.org.apache.regexp.internal.recompile;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 
-import supersql.codegenerator.Attribute;
-import supersql.codegenerator.Connector;
 import supersql.codegenerator.DecorateList;
-import supersql.codegenerator.FuncArg;
-import supersql.codegenerator.Function;
 import supersql.codegenerator.ITFE;
-import supersql.codegenerator.IfCondition;
 import supersql.codegenerator.TFE;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
@@ -136,9 +135,27 @@ public class Mobile_HTML5 {
 		}
 		return "";
 	}
+	//For Dynamic paging
+	static int dynamicRow = 1;
+	static boolean dynamicRowFlg = false;
+	static int dynamicPagingCount = 1;
+	static String dynamicPagingPHPfileName =  "";
+	
 	private static boolean dynamicPreProcess0(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
 		if(decos.containsKey("dynamic")){
 			dynamicHTMLbuf0 = html_env.code.toString();
+			dynamicDisplay = true;
+			
+	        if(decos.containsKey("row")){
+	        	dynamicRow = Integer.parseInt(decos.getStr("row").replace("\"", ""));
+	        	if(dynamicRow<1){	//範囲外のとき
+	        		Log.err("<<Warning>> row指定の範囲は、1〜です。指定された「row="+dynamicRow+"」は使用できません。");
+	        	}else{
+	        		dynamicRowFlg = true;
+	        		dynamicPagingPHPfileName = html_env.getFileName2()+"_dynamicPaging_"+dynamicPagingCount+".php";
+	        	}
+	        	//Log.i("dynamicRow = "+dynamicRow);
+	        }
 			return true;
 		}
 		return false;
@@ -151,7 +168,6 @@ public class Mobile_HTML5 {
 		}
 		return false;
 	}
-//	static int w1=0, w2=0;
 	private static boolean dynamicWhileProcess1(String symbol, DecorateList decos, Mobile_HTML5Env html_env, ExtList data, ExtList data_info, ITFE tfe, ExtList<TFE> tfes, int tfeItems){
 //		if(dFlg && (symbol.contains("G1") || symbol.contains("G2"))){
 //			dynamicWhileCount++;
@@ -227,7 +243,7 @@ public class Mobile_HTML5 {
 			html_env.code = new StringBuffer(dynamicHTMLbuf);
 //			dynamicHTMLbuf = "";
 //			dynamicHTMLbuf = html_env.code.toString();
-			dynamicDisplay = false;
+			//dynamicDisplay = false;
 			return true;
 		}
 		return false;
@@ -281,7 +297,8 @@ public class Mobile_HTML5 {
 			}
 			
 			dynamicString = dynamicString.replaceAll("\r\n", "").replaceAll("\r", "").replaceAll("\n", "");	//改行コードの削除
-			dynamicString = dynamicString.replaceAll("\"", "\\\\\\\\\\\\\"");								//　" -> \\\"			//TODO これでOK?
+			if(!dynamicRowFlg)	dynamicString = dynamicString.replaceAll("\"", "\\\\\\\\\\\\\"");			//　" -> \\\"			//TODO これでOK?
+			else				dynamicString = dynamicString.replaceAll("\"", "\\\\\"");					//　" -> \"
 			Log.e(dynamicString);
 			
 			
@@ -482,47 +499,64 @@ public class Mobile_HTML5 {
 	    	
 	    	
 	    	String statement = "";
+	    	String php = "<?php\n";
 	    	//sqlite3 php
 	    	if(DBMS.equals("sqlite3")){
-	    		statement += 
-	    				"<!-- Dynamic start -->\n" +
-						"<!-- Dynamic Panel start -->\n" +
-						//"<br>\n" +
-						"<div id=\"DYNAMIC"+dynamicCount+"panel\" style=\"\" data-role=\"none\">\n" +
-//						"<hr>\n<div style=\"font-size:30;\" id=\"DynamicTitle"+dynamicCount+"\">"+title+"</div>\n<hr>\n" +
-						//"<br>\n" +
-						"\n" +
-						"<div id=\"Dynamic"+dynamicCount+"_text0\" data-role=\"none\"><!--データ --></div>\n" +
-						"\n" +
-//						"<table style=\"table-layout:fixed;\" data-role=\"table\" id=\"table-column-toggle"+dynamicCount+"\" data-mode=\"columntoggle\" class=\"ui-responsive table-stroke\">\n" +
-//						"  <thead>\n" +
-//						"    <tr id=\"Dynamic"+dynamicCount+"_text_th\">\n";
-//	    		for(int i=0; i<col_num; i++){
-//	    			statement += 
-//						"        <th data-priority=\"1\">"+s_name_array[i]+"</th>\n";
-//	    		}
-//	    		statement += 
-//	    				"    </tr>\n" +
-//						"  </thead>\n" +
-//						"  <tbody>\n" +
-//						"    <tr>\n";
-//	    		for(int i=0; i<col_num; i++){
-//	    			statement +=
-//						"        <td id=\"Dynamic"+dynamicCount+"_text"+(i+1)+"\" style=\"white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\"></td>\n";
-//	    		}
-//	    		statement += 
-//	    				"    </tr>\n" +
-//						"  </tbody>\n" +
-//						"</table>\n" +
-//						"\n" +
-						//"<br>\n" +
-						"</div>\n" +
-//						"<script type=\"text/javascript\"> $('#Dynamic"+dynamicCount+"_text_th').hide(); </script>\n" +
-						"<!-- Dynamic Panel end -->\n" +
-						"\n";
+	    		if(!dynamicRowFlg){
+		    		statement += 
+		    				"<!-- Dynamic start -->\n" +
+							"<!-- Dynamic Panel start -->\n" +
+							//"<br>\n" +
+							"<div id=\"DYNAMIC"+dynamicCount+"panel\" style=\"\" data-role=\"none\">\n" +
+	//						"<hr>\n<div style=\"font-size:30;\" id=\"DynamicTitle"+dynamicCount+"\">"+title+"</div>\n<hr>\n" +
+							//"<br>\n" +
+							"\n" +
+							"<div id=\"Dynamic"+dynamicCount+"_text0\" data-role=\"none\"><!--データ --></div>\n" +
+							"\n" +
+	//						"<table style=\"table-layout:fixed;\" data-role=\"table\" id=\"table-column-toggle"+dynamicCount+"\" data-mode=\"columntoggle\" class=\"ui-responsive table-stroke\">\n" +
+	//						"  <thead>\n" +
+	//						"    <tr id=\"Dynamic"+dynamicCount+"_text_th\">\n";
+	//	    		for(int i=0; i<col_num; i++){
+	//	    			statement += 
+	//						"        <th data-priority=\"1\">"+s_name_array[i]+"</th>\n";
+	//	    		}
+	//	    		statement += 
+	//	    				"    </tr>\n" +
+	//						"  </thead>\n" +
+	//						"  <tbody>\n" +
+	//						"    <tr>\n";
+	//	    		for(int i=0; i<col_num; i++){
+	//	    			statement +=
+	//						"        <td id=\"Dynamic"+dynamicCount+"_text"+(i+1)+"\" style=\"white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\"></td>\n";
+	//	    		}
+	//	    		statement += 
+	//	    				"    </tr>\n" +
+	//						"  </tbody>\n" +
+	//						"</table>\n" +
+	//						"\n" +
+							//"<br>\n" +
+							"</div>\n" +
+	//						"<script type=\"text/javascript\"> $('#Dynamic"+dynamicCount+"_text_th').hide(); </script>\n" +
+							"<!-- Dynamic Panel end -->\n" +
+							"\n";
+	    		}else{
+	    			statement += getDynamicPagingHTML(dynamicRow, dynamicPagingCount, dynamicPagingPHPfileName);
+	    		}
 	    		
-	    		Mobile_HTML5Env.PHP +=
-    						"<?php\n" +
+	    		
+	    		if(dynamicRowFlg){
+	    			php += 
+							"$ret = array();\n" +
+							"$ret['result'] = \"\";\n" +
+							"\n" +
+							"if ($_POST['currentPage'] != \"\") {\n" +
+							"	$cp = $_POST['currentPage'];\n" +
+							"	$r = $_POST['row'];\n" +
+							"	$end = $cp * $r;\n" +
+							"	$start = $end - $r + 1;\n" +
+							"\n";
+	    		}
+	    		php +=
 //    						"if($_POST['dynamic"+dynamicCount+"'] || $_POST['dynamic_words"+dynamicCount+"']){\n" +
 //    						"    echo '<script type=\"text/javascript\">window.parent.Dynamic"+dynamicCount+"_refresh();</script>';    //表示をリフレッシュ\n" +
 //    						"\n" +
@@ -541,6 +575,7 @@ public class Mobile_HTML5 {
 							"    $having0 = \""+having+"\";\n" +
 							"    $orderby = \""+((orderby!="")?(" ORDER BY "+orderby+" "):("")) +"\";\n" +
 							"    $limit = \""+((limit!="")?(" LIMIT "+limit+" "):("")) +"\";\n" +
+							((limit!="")?(" $limitNum = "+limit+";\n"):("")) +	//TODO dynamicPaging時にLIMITが指定されていた場合
 							"\n" +
 							//"    $dynamicWord"+dynamicCount+" = checkHTMLsc($_POST['dynamic_words"+dynamicCount+"']);\n" +
 							"    $dynamicWord"+dynamicCount+" = checkHTMLsc('%');\n" +
@@ -597,6 +632,7 @@ public class Mobile_HTML5 {
 							"            /*** HAVING句の作成 end ***/\n" +
 							"        }\n" +
 							"        $sql .= \" \".$orderby.\" \".$limit;	//order by句とlimitを結合\n" +
+							((dynamicRowFlg)? "//":"") +
 							"        dynamic"+dynamicCount+"_p1('<font color=red>SQL error: '.$sql.\";</font>\");	//エラー時\n" +
 							"\n" +
 							"        $result = $dynamic_db"+dynamicCount+"->query($sql);\n" +
@@ -606,7 +642,8 @@ public class Mobile_HTML5 {
 							"        $b = \"\";\n" +
 							"        while($row = $result->fetchArray()){\n" +
 							"              $i++;\n" +
-							"              $k=0;\n" +
+							//"              $k=0;\n" +
+							((dynamicRowFlg)? "              if($i>=$start && $i<=$end){	//New\n":"") +
 							"              for($j=0; $j<$dynamic_col_num; $j++){\n" +
 							//"                    dynamic"+dynamicCount+"_p2($row[$j], $j+1);     //tdに結果を埋め込む\n" +
 //							"					if($dynamic_a_Flg[$j]=='true' || $dynamic_mail_Flg[$j]=='true' || $dynamic_pop_Flg[$j]=='true')	;\n" +
@@ -625,24 +662,45 @@ public class Mobile_HTML5 {
 							"              		//$b .= $row[$j];\n" +
 							"              		$b .= str_replace("+dynamicFuncCountLabel+", '_'.$i, $row[$j]);\n" +	//For function's count
 							"              }\n" +
+							((dynamicRowFlg)? "              }\n":"") +
 							"        }\n" +
 //							"		 if($i>0)	echo \"<script type=\\\"text/javascript\\\">window.parent.$('#Dynamic"+dynamicCount+"_text_th').show();</script>\";    //カラム名を表示\n" +
 							//"        dynamic"+dynamicCount+"_p1($i.' result'.(($i != 1)?('s'):('')));    //件数表示\n" +
 							//"        dynamic"+dynamicCount+"_p1('"+dynamicString+"');    //件数表示\n" +
+							((dynamicRowFlg)? "//":"") +
 							"        dynamic"+dynamicCount+"_p1($b);    //データ表示\n" +
 							"    }else{\n" +
+							((dynamicRowFlg)? "//":"") +
 							"        dynamic"+dynamicCount+"_p1('0 results');\n" +
 							"    }\n" +
 							"    \n" +
 							"    unset($dynamic_db"+dynamicCount+");\n" +
-//							"}\n" +
+	    					((dynamicRowFlg)? "}\n":"") +
 							"function dynamic"+dynamicCount+"_p1($str){\n" +
+							((dynamicRowFlg)? "//":"") +
 							"    echo '<script type=\"text/javascript\">window.parent.Dynamic"+dynamicCount+"_echo1(\"'.$str.'\");</script>';\n" +
-							"}\n" +
+							"}\n";
 //							"function dynamic"+dynamicCount+"_p2($str,$num){\n" +
 //							"    echo '<script type=\"text/javascript\">window.parent.Dynamic"+dynamicCount+"_echo2(\"'.$str.'\",\"'.$num.'\");</script>';\n" +
-//							"}\n" +
-							"?>\n";
+//							"}\n";
+	    		if(dynamicRowFlg){
+	    			php += 
+	    					"$ret['result'] = $b;\n" +
+							"$ret['start'] = $start;\n" +
+							"$ret['end'] = ($end<$i)? $end:$i;\n" +
+							"$ret['all'] = $i;\n" +
+							"$ret['info'] = (($ret['start']!=$ret['end'])? ($ret['start'].\" - \") : (\"\")) .$ret['end'].\" / \".$ret['all'];\n" +
+							"$ret['currentItems'] = ceil($i/$r);\n" +
+							"\n" +
+							"header(\"Content-Type: application/json; charset=utf-8\");\n" +
+							"echo json_encode($ret);\n" +
+							"\n" +
+							"//XSS対策\n" +
+							"function checkHTMLsc($str){\n" +
+							"	return htmlspecialchars($str, ENT_QUOTES, 'UTF-8');\n" +
+							"}\n";
+	    		}
+	    		php += "?>\n";
 	    		
 	    		statement += 
     						"\n" +
@@ -670,9 +728,6 @@ public class Mobile_HTML5 {
     						"<!-- Dynamic end -->\n";
 	    		
 	    		
-	    		
-	    		
-	    		
 	    	}
 	    	else if(DBMS.equals("sqlite")){
 	    		Log.e("<Warning> dynamic() for 'sqlite' is not implemented yet.");
@@ -682,19 +737,92 @@ public class Mobile_HTML5 {
 	    		Log.e("<Warning> dynamic() for 'postgresql' is not implemented yet.");
 	    		;	//TODO
 	    	}
-	    	
+
 	    	
 	    	// 各引数毎に処理した結果をHTMLに書きこむ
 	    	html_env.code.append(statement);
 	    	
-	    	dynamicCount++;
-			
-			
+	    	if(!dynamicRowFlg){
+    			Mobile_HTML5Env.PHP += php;
+    		}else{
+				createFile(html_env, dynamicPagingPHPfileName, php);//PHPファイルの作成
+				dynamicPagingCount++;
+				dynamicRowFlg = false;
+			}
 
+	    	dynamicDisplay = false;
+	    	dynamicCount++;
+	    	
 			Log.e(" - End dynamic process -");
         	return true;
         }
 		return false;
+	}
+	private static String getDynamicPagingHTML(int row, int num, String phpFileName){
+		phpFileName = new File(phpFileName).getName();
+		return	"\n" +
+				"<!-- Dynamic Paging "+num+" start -->\n" +
+				"<!-- Dynamic Paging "+num+" DIV start -->\n" +
+				//"<div id=\"SSQL_DynamicDisplayPaging"+num+"_Buttons\"></div>\n" +
+				"\n" +
+				"<div id=\"SSQL_DynamicDisplayPaging"+num+"\" data-role=\"none\"><!-- Dynamic Display Data --></div>\n" +
+				"<script type=\"text/javascript\">\n" +
+				"function SSQL_DynamicDisplayPaging"+num+"_echo(str){\n" +
+				"  var textArea = document.getElementById(\"SSQL_DynamicDisplayPaging"+num+"\");\n" +
+				"  textArea.innerHTML = str;\n" +
+				"}\n" +
+				"</script>\n" +
+				"\n" +
+				"<div id=\"SSQL_DynamicDisplayPaging"+num+"_Buttons\"></div>\n" +
+				"<!-- Dynamic Paging "+num+" DIV end -->\n" +
+				"\n" +
+				"<!-- Dynamic Paging "+num+" JS start -->\n" +
+				"<script type=\"text/javascript\">\n" +
+				"SSQL_DynamicDisplayPaging"+num+"(1);	//初期ロード時\n" +
+				"SSQL_DynamicDisplayPaging"+num+"_setButtons();\n" +
+				"\n" +
+				"var SSQL_DynamicDisplayPaging"+num+"_currentItems = 1;		//グローバル変数\n" +
+				"function SSQL_DynamicDisplayPaging"+num+"_setButtons(){\n" +
+				"	$(function(){\n" +
+				"	    $(\"[id=SSQL_DynamicDisplayPaging"+num+"_Buttons]\").pagination({\n" +
+				"	        items: SSQL_DynamicDisplayPaging"+num+"_currentItems, //ページング数\n" +
+				"	        displayedPages: 2, 	  //表示したいページング要素数\n" +
+				"	        onPageClick: function(pageNum){ SSQL_DynamicDisplayPaging"+num+"(pageNum) }\n" +
+				"	    })\n" +
+				"	});\n" +
+				"}\n" +
+				"function SSQL_DynamicDisplayPaging"+num+"(pn){\n" +
+				"	//ajax: PHPへ値を渡して実行\n" +
+				"	$.ajax({\n" +
+				"		type: \"POST\",\n" +
+				"		url: \""+phpFileName+"\",\n" +
+				"		dataType: \"json\",\n" +
+				"		data: {\n" +
+				"			\"currentPage\": pn,\n" +
+				"			\"row\": '"+row+"',\n" +
+				"		},\n" +
+				"		success: function(data, textStatus){\n" +
+				"			if (data.result != \"\") {\n" +
+				//"				//SSQL_DynamicDisplayPaging"+num+"_echo(SSQL_DynamicDisplayPaging"+num+"_currentItems+\" \"+data.currentItems+\"<br>\"+data.info+\"<br>\"+data.result);\n" +
+				"				SSQL_DynamicDisplayPaging"+num+"_echo(data.result+data.info);\n" +
+				"				if(data.currentItems != null && data.currentItems != SSQL_DynamicDisplayPaging"+num+"_currentItems){\n" +
+				"					//ページ数が変わった場合の処理\n" +
+				"					SSQL_DynamicDisplayPaging"+num+"_currentItems = data.currentItems;\n" +
+				"					SSQL_DynamicDisplayPaging"+num+"_setButtons();\n" +
+				"				}\n" +
+				"			}\n" +
+				//"			else {\n" +
+				//"				SSQL_DynamicDisplayPaging"+num+"_echo(\"失敗\");\n" +
+				//"			}\n" +
+				"		},\n" +
+				"		error: function(XMLHttpRequest, textStatus, errorThrown) {\n" +
+				"			SSQL_DynamicDisplayPaging"+num+"_echo(textStatus+\"<br>\"+errorThrown);\n" +
+				"		}\n" +
+				"	});\n" +
+				"}\n" +
+				"</script>\n" +
+				"<!-- Dynamic Paging "+num+" JS end -->\n" +
+				"<!-- Dynamic Paging "+num+" end -->\n\n";
 	}
 	
 	
@@ -809,5 +937,23 @@ public class Mobile_HTML5 {
 	}
 
 	
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	
+	//create file
+	public static boolean createFile(Mobile_HTML5Env html_env, String fileName, String code){
+        try {
+    		PrintWriter pw;
+            if (html_env.charset != null)
+	        	pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
+	        			new FileOutputStream(fileName),html_env.charset)));
+            else
+            	pw = new PrintWriter(new BufferedWriter(new FileWriter(fileName)));
+    		pw.println(code);
+            pw.close();
+            return true;
+        } catch (Exception e) { }
+        return false;
+    }
 	
 }

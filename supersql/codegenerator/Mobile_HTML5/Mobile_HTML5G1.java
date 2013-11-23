@@ -61,7 +61,7 @@ public class Mobile_HTML5G1 extends Grouper {
         boolean columnFlg = false;
     	if(tableFlg)	numberOfColumns = -1;	//@{table}時のDefault	//20130917  [ ],10@{table}
     	else			numberOfColumns = data_info.contain_itemnum();	//div
-    	if(decos.containsKey("column")){
+    	if(decos.containsKey("column") && !Mobile_HTML5.dynamicDisplay){
         	try{
             	numberOfColumns = Integer.parseInt(decos.getStr("column").replace("\"", ""));
             	if(numberOfColumns<2){
@@ -80,7 +80,7 @@ public class Mobile_HTML5G1 extends Grouper {
         StringBuffer parentcss = null;
         StringBuffer parentheader = null;
         StringBuffer parentfooter = null;
-        if(decos.containsKey("row") && columnFlg){
+        if(decos.containsKey("row") && columnFlg && !Mobile_HTML5.dynamicDisplay){
         	row = Integer.parseInt(decos.getStr("row").replace("\"", ""));
         	if(row<1){	//範囲外のとき
         		Log.err("<<Warning>> row指定の範囲は、1〜です。指定された「row="+row+"」は使用できません。");
