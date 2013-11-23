@@ -87,7 +87,7 @@ public class Mobile_HTML5 {
 	static String dynamicHTMLbuf0 = "";
 	static String dynamicHTMLbuf = "";
 //	static String dynamicHTMLbuf2 = "";
-	static int dynamicCount = 0;
+	static int dynamicCount = 1;
 //	static int dynamicWhileCount = 0;
 	static String dynamicFuncCountLabel = "___DynamicFunc_CountLabel___";
 	public static boolean dynamicDisplay = false;
@@ -139,12 +139,13 @@ public class Mobile_HTML5 {
 	static int dynamicRow = 1;
 	static boolean dynamicRowFlg = false;
 	static int dynamicPagingCount = 1;
-	static String dynamicPagingPHPfileName =  "";
+	static String dynamicPHPfileName =  "";
 	
 	private static boolean dynamicPreProcess0(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
 		if(decos.containsKey("dynamic")){
 			dynamicHTMLbuf0 = html_env.code.toString();
 			dynamicDisplay = true;
+			dynamicPHPfileName = html_env.getFileName2()+"_dynamic_"+dynamicCount+".php";
 			
 	        if(decos.containsKey("row")){
 	        	dynamicRow = Integer.parseInt(decos.getStr("row").replace("\"", ""));
@@ -152,7 +153,7 @@ public class Mobile_HTML5 {
 	        		Log.err("<<Warning>> row指定の範囲は、1〜です。指定された「row="+dynamicRow+"」は使用できません。");
 	        	}else{
 	        		dynamicRowFlg = true;
-	        		dynamicPagingPHPfileName = html_env.getFileName2()+"_dynamicPaging_"+dynamicPagingCount+".php";
+	        		dynamicPHPfileName = html_env.getFileName2()+"_dynamicPaging_"+dynamicPagingCount+".php";
 	        	}
 	        	//Log.i("dynamicRow = "+dynamicRow);
 	        }
@@ -297,12 +298,13 @@ public class Mobile_HTML5 {
 			}
 			
 			dynamicString = dynamicString.replaceAll("\r\n", "").replaceAll("\r", "").replaceAll("\n", "");	//改行コードの削除
-			if(!dynamicRowFlg)	dynamicString = dynamicString.replaceAll("\"", "\\\\\\\\\\\\\"");			//　" -> \\\"			//TODO これでOK?
-			else				dynamicString = dynamicString.replaceAll("\"", "\\\\\"");					//　" -> \"
+//			if(!dynamicRowFlg)	dynamicString = dynamicString.replaceAll("\"", "\\\\\\\\\\\\\"");			//　" -> \\\"			//TODO これでOK?
+//			else				dynamicString = dynamicString.replaceAll("\"", "\\\\\"");					//　" -> \"
+			dynamicString = dynamicString.replaceAll("\"", "\\\\\"");										//　" -> \"
 			Log.e(dynamicString);
 			
 			
-			String after_from_string = Mobile_HTML5Function.after_from_string;	//TODO
+			//String after_from_string = Mobile_HTML5Function.after_from_string;	//TODO
 			
 			
 		    /*  //ユーザ定義
@@ -323,9 +325,9 @@ public class Mobile_HTML5 {
 	    	String columns = "";
 	    	String after_from = "";
 	    	//columns = "w.wh_id, w.name";
-	    	columns = "'<h1>'||w.wh_id||' '||w.name||'</h1>'";
+	    	//columns = "'<h1>'||w.wh_id||' '||w.name||'</h1>'";
 	    	columns = dynamicString;
-	    	after_from = "FROM world_heritage w";
+	    	//after_from = "FROM world_heritage w";
 	    	after_from = Mobile_HTML5Function.after_from_string;
 	    	
 //	    	try{
@@ -503,52 +505,52 @@ public class Mobile_HTML5 {
 	    	//sqlite3 php
 	    	if(DBMS.equals("sqlite3")){
 	    		if(!dynamicRowFlg){
-		    		statement += 
-		    				"<!-- Dynamic start -->\n" +
-							"<!-- Dynamic Panel start -->\n" +
-							//"<br>\n" +
-							"<div id=\"DYNAMIC"+dynamicCount+"panel\" style=\"\" data-role=\"none\">\n" +
-	//						"<hr>\n<div style=\"font-size:30;\" id=\"DynamicTitle"+dynamicCount+"\">"+title+"</div>\n<hr>\n" +
-							//"<br>\n" +
-							"\n" +
-							"<div id=\"Dynamic"+dynamicCount+"_text0\" data-role=\"none\"><!--データ --></div>\n" +
-							"\n" +
-	//						"<table style=\"table-layout:fixed;\" data-role=\"table\" id=\"table-column-toggle"+dynamicCount+"\" data-mode=\"columntoggle\" class=\"ui-responsive table-stroke\">\n" +
-	//						"  <thead>\n" +
-	//						"    <tr id=\"Dynamic"+dynamicCount+"_text_th\">\n";
-	//	    		for(int i=0; i<col_num; i++){
-	//	    			statement += 
-	//						"        <th data-priority=\"1\">"+s_name_array[i]+"</th>\n";
-	//	    		}
-	//	    		statement += 
-	//	    				"    </tr>\n" +
-	//						"  </thead>\n" +
-	//						"  <tbody>\n" +
-	//						"    <tr>\n";
-	//	    		for(int i=0; i<col_num; i++){
-	//	    			statement +=
-	//						"        <td id=\"Dynamic"+dynamicCount+"_text"+(i+1)+"\" style=\"white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\"></td>\n";
-	//	    		}
-	//	    		statement += 
-	//	    				"    </tr>\n" +
-	//						"  </tbody>\n" +
-	//						"</table>\n" +
-	//						"\n" +
-							//"<br>\n" +
-							"</div>\n" +
-	//						"<script type=\"text/javascript\"> $('#Dynamic"+dynamicCount+"_text_th').hide(); </script>\n" +
-							"<!-- Dynamic Panel end -->\n" +
-							"\n";
+		    		statement += getDynamicHTML(dynamicCount, dynamicPHPfileName);
+//		    				"<!-- Dynamic start -->\n" +
+//							"<!-- Dynamic Panel start -->\n" +
+//							//"<br>\n" +
+//							"<div id=\"DYNAMIC"+dynamicCount+"panel\" style=\"\" data-role=\"none\">\n" +
+//	//						"<hr>\n<div style=\"font-size:30;\" id=\"DynamicTitle"+dynamicCount+"\">"+title+"</div>\n<hr>\n" +
+//							//"<br>\n" +
+//							"\n" +
+//							"<div id=\"Dynamic"+dynamicCount+"_text0\" data-role=\"none\"><!--データ --></div>\n" +
+//							"\n" +
+//	//						"<table style=\"table-layout:fixed;\" data-role=\"table\" id=\"table-column-toggle"+dynamicCount+"\" data-mode=\"columntoggle\" class=\"ui-responsive table-stroke\">\n" +
+//	//						"  <thead>\n" +
+//	//						"    <tr id=\"Dynamic"+dynamicCount+"_text_th\">\n";
+//	//	    		for(int i=0; i<col_num; i++){
+//	//	    			statement += 
+//	//						"        <th data-priority=\"1\">"+s_name_array[i]+"</th>\n";
+//	//	    		}
+//	//	    		statement += 
+//	//	    				"    </tr>\n" +
+//	//						"  </thead>\n" +
+//	//						"  <tbody>\n" +
+//	//						"    <tr>\n";
+//	//	    		for(int i=0; i<col_num; i++){
+//	//	    			statement +=
+//	//						"        <td id=\"Dynamic"+dynamicCount+"_text"+(i+1)+"\" style=\"white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\"></td>\n";
+//	//	    		}
+//	//	    		statement += 
+//	//	    				"    </tr>\n" +
+//	//						"  </tbody>\n" +
+//	//						"</table>\n" +
+//	//						"\n" +
+//							//"<br>\n" +
+//							"</div>\n" +
+//	//						"<script type=\"text/javascript\"> $('#Dynamic"+dynamicCount+"_text_th').hide(); </script>\n" +
+//							"<!-- Dynamic Panel end -->\n" +
+//							"\n";
 	    		}else{
-	    			statement += getDynamicPagingHTML(dynamicRow, dynamicPagingCount, dynamicPagingPHPfileName);
+	    			statement += getDynamicPagingHTML(dynamicRow, dynamicPagingCount, dynamicPHPfileName);
 	    		}
 	    		
 	    		
+	    		php += 
+						"$ret = array();\n" +
+						"$ret['result'] = \"\";\n\n";
 	    		if(dynamicRowFlg){
 	    			php += 
-							"$ret = array();\n" +
-							"$ret['result'] = \"\";\n" +
-							"\n" +
 							"if ($_POST['currentPage'] != \"\") {\n" +
 							"	$cp = $_POST['currentPage'];\n" +
 							"	$r = $_POST['row'];\n" +
@@ -632,8 +634,8 @@ public class Mobile_HTML5 {
 							"            /*** HAVING句の作成 end ***/\n" +
 							"        }\n" +
 							"        $sql .= \" \".$orderby.\" \".$limit;	//order by句とlimitを結合\n" +
-							((dynamicRowFlg)? "//":"") +
-							"        dynamic"+dynamicCount+"_p1('<font color=red>SQL error: '.$sql.\";</font>\");	//エラー時\n" +
+							//((dynamicRowFlg)? "//":"") +
+							//"        dynamic"+dynamicCount+"_p1('<font color=red>SQL error: '.$sql.\";</font>\");	//エラー時\n" +
 							"\n" +
 							"        $result = $dynamic_db"+dynamicCount+"->query($sql);\n" +
 							"\n" +
@@ -667,30 +669,33 @@ public class Mobile_HTML5 {
 //							"		 if($i>0)	echo \"<script type=\\\"text/javascript\\\">window.parent.$('#Dynamic"+dynamicCount+"_text_th').show();</script>\";    //カラム名を表示\n" +
 							//"        dynamic"+dynamicCount+"_p1($i.' result'.(($i != 1)?('s'):('')));    //件数表示\n" +
 							//"        dynamic"+dynamicCount+"_p1('"+dynamicString+"');    //件数表示\n" +
-							((dynamicRowFlg)? "//":"") +
-							"        dynamic"+dynamicCount+"_p1($b);    //データ表示\n" +
-							"    }else{\n" +
-							((dynamicRowFlg)? "//":"") +
-							"        dynamic"+dynamicCount+"_p1('0 results');\n" +
+							//((dynamicRowFlg)? "//":"") +
+							//"        dynamic"+dynamicCount+"_p1($b);    //データ表示\n" +
 							"    }\n" +
+							//"	 else{\n" +
+							//((dynamicRowFlg)? "//":"") +
+							//"        dynamic"+dynamicCount+"_p1('0 results');\n" +
+							//"    }\n" +
 							"    \n" +
 							"    unset($dynamic_db"+dynamicCount+");\n" +
 	    					((dynamicRowFlg)? "}\n":"") +
-							"function dynamic"+dynamicCount+"_p1($str){\n" +
-							((dynamicRowFlg)? "//":"") +
-							"    echo '<script type=\"text/javascript\">window.parent.Dynamic"+dynamicCount+"_echo1(\"'.$str.'\");</script>';\n" +
-							"}\n";
+							//"function dynamic"+dynamicCount+"_p1($str){\n" +
+							//((dynamicRowFlg)? "//":"") +
+							//"    echo '<script type=\"text/javascript\">window.parent.Dynamic"+dynamicCount+"_echo1(\"'.$str.'\");</script>';\n" +
+							//"}\n" +
 //							"function dynamic"+dynamicCount+"_p2($str,$num){\n" +
 //							"    echo '<script type=\"text/javascript\">window.parent.Dynamic"+dynamicCount+"_echo2(\"'.$str.'\",\"'.$num.'\");</script>';\n" +
 //							"}\n";
+	    					"$ret['result'] = $b;\n";
 	    		if(dynamicRowFlg){
 	    			php += 
-	    					"$ret['result'] = $b;\n" +
 							"$ret['start'] = $start;\n" +
 							"$ret['end'] = ($end<$i)? $end:$i;\n" +
 							"$ret['all'] = $i;\n" +
 							"$ret['info'] = (($ret['start']!=$ret['end'])? ($ret['start'].\" - \") : (\"\")) .$ret['end'].\" / \".$ret['all'];\n" +
-							"$ret['currentItems'] = ceil($i/$r);\n" +
+							"$ret['currentItems'] = ceil($i/$r);\n";
+	    		}
+	    		php += 
 							"\n" +
 							"header(\"Content-Type: application/json; charset=utf-8\");\n" +
 							"echo json_encode($ret);\n" +
@@ -698,34 +703,33 @@ public class Mobile_HTML5 {
 							"//XSS対策\n" +
 							"function checkHTMLsc($str){\n" +
 							"	return htmlspecialchars($str, ENT_QUOTES, 'UTF-8');\n" +
-							"}\n";
-	    		}
-	    		php += "?>\n";
+							"}\n" +
+							"?>\n";
 	    		
-	    		statement += 
-    						"\n" +
-    						"<script type=\"text/javascript\">\n" +
-    						"function Dynamic"+dynamicCount+"_echo1(str){\n" +
-    						"  var textArea = document.getElementById(\"Dynamic"+dynamicCount+"_text0\");\n" +
-    						"  textArea.innerHTML = str;\n" +
-    						"}\n" +
-//    						"function Dynamic"+dynamicCount+"_echo2(str,num){\n" +
-//    						"  var textArea = document.getElementById(\"Dynamic"+dynamicCount+"_text\"+num);\n" +
-//    						//"  textArea.innerHTML += str+\"<br>\";\n" +
-//    						//"  $(\"#Dynamic"+dynamicCount+"_text\"+num).html(textArea.innerHTML+str+\"<br>\").trigger(\"create\");\n" +
-//    						"  $(\"#Dynamic"+dynamicCount+"_text\"+num).html(textArea.innerHTML+str+\"<br>\");\n" +
-//    						"}\n" +
+//	    		statement += 
 //    						"\n" +
-//    						"function Dynamic"+dynamicCount+"_refresh(){\n";
-//	    		
-//	    		for(int i=0; i<col_num; i++){
-//	    			statement +=
-//	    					"  document.getElementById(\"Dynamic"+dynamicCount+"_text"+(i+1)+"\").innerHTML = \"\";\n";
-//	    		}
-//	    		statement +=
-//	    					"}\n" +
-    						"</script>\n" +
-    						"<!-- Dynamic end -->\n";
+//    						"<script type=\"text/javascript\">\n" +
+//    						"function Dynamic"+dynamicCount+"_echo1(str){\n" +
+//    						"  var textArea = document.getElementById(\"Dynamic"+dynamicCount+"_text0\");\n" +
+//    						"  textArea.innerHTML = str;\n" +
+//    						"}\n" +
+////    						"function Dynamic"+dynamicCount+"_echo2(str,num){\n" +
+////    						"  var textArea = document.getElementById(\"Dynamic"+dynamicCount+"_text\"+num);\n" +
+////    						//"  textArea.innerHTML += str+\"<br>\";\n" +
+////    						//"  $(\"#Dynamic"+dynamicCount+"_text\"+num).html(textArea.innerHTML+str+\"<br>\").trigger(\"create\");\n" +
+////    						"  $(\"#Dynamic"+dynamicCount+"_text\"+num).html(textArea.innerHTML+str+\"<br>\");\n" +
+////    						"}\n" +
+////    						"\n" +
+////    						"function Dynamic"+dynamicCount+"_refresh(){\n";
+////	    		
+////	    		for(int i=0; i<col_num; i++){
+////	    			statement +=
+////	    					"  document.getElementById(\"Dynamic"+dynamicCount+"_text"+(i+1)+"\").innerHTML = \"\";\n";
+////	    		}
+////	    		statement +=
+////	    					"}\n" +
+//    						"</script>\n" +
+//    						"<!-- Dynamic end -->\n";
 	    		
 	    		
 	    	}
@@ -743,20 +747,59 @@ public class Mobile_HTML5 {
 	    	html_env.code.append(statement);
 	    	
 	    	if(!dynamicRowFlg){
-    			Mobile_HTML5Env.PHP += php;
+	    		createFile(html_env, dynamicPHPfileName, php);//PHPファイルの作成
+//    			Mobile_HTML5Env.PHP += php;
+	    		dynamicCount++;
     		}else{
-				createFile(html_env, dynamicPagingPHPfileName, php);//PHPファイルの作成
+				createFile(html_env, dynamicPHPfileName, php);//PHPファイルの作成
 				dynamicPagingCount++;
 				dynamicRowFlg = false;
 			}
-
+	    	//dynamicCount++;
 	    	dynamicDisplay = false;
-	    	dynamicCount++;
+	    	
 	    	
 			Log.e(" - End dynamic process -");
         	return true;
         }
 		return false;
+	}
+	private static String getDynamicHTML(int num, String phpFileName){
+		phpFileName = new File(phpFileName).getName();
+		return 	"\n" +
+				"<!-- Dynamic "+num+" start -->\n" +
+				"<!-- Dynamic "+num+" DIV start -->\n" +
+				"<div id=\"SSQL_DynamicDisplay"+num+"_Panel\" style=\"\" data-role=\"none\">\n" +
+				"<div id=\"SSQL_DynamicDisplay"+num+"\" data-role=\"none\"><!-- Dynamic Display Data --></div>\n" +
+				"</div>\n" +
+				"<!-- Dynamic "+num+" DIV end -->\n" +
+				"\n" +
+				"<!-- Dynamic "+num+" JS start -->\n" +
+				"<script type=\"text/javascript\">\n" +
+				"SSQL_DynamicDisplay"+num+"();	//ロード時に実行\n" +
+				"function SSQL_DynamicDisplay"+num+"_echo(str){\n" +
+				"  var textArea = document.getElementById(\"SSQL_DynamicDisplay"+num+"\");\n" +
+				"  textArea.innerHTML = str;\n" +
+				"}\n" +
+				"function SSQL_DynamicDisplay"+num+"(){\n" +
+				"	//ajax: PHPへ値を渡して実行\n" +
+				"	$.ajax({\n" +
+				"		type: \"POST\",\n" +
+				"		url: \""+phpFileName+"\",\n" +
+				"		dataType: \"json\",\n" +
+				"		success: function(data, textStatus){\n" +
+				"			if (data.result != \"\") {\n" +
+				"				SSQL_DynamicDisplay"+num+"_echo(data.result);\n" +
+				"			}\n" +
+				"		},\n" +
+				"		error: function(XMLHttpRequest, textStatus, errorThrown) {\n" +
+				"			SSQL_DynamicDisplay"+num+"_echo(textStatus+\"<br>\"+errorThrown);\n" +
+				"		}\n" +
+				"	});\n" +
+				"}\n" +
+				"</script>\n" +
+				"<!-- Dynamic "+num+" JS end -->\n" +
+				"<!-- Dynamic "+num+" end -->\n\n";
 	}
 	private static String getDynamicPagingHTML(int row, int num, String phpFileName){
 		phpFileName = new File(phpFileName).getName();
