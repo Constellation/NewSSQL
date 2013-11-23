@@ -140,6 +140,8 @@ public class Mobile_HTML5 {
 	static boolean dynamicRowFlg = false;
 	static int dynamicPagingCount = 1;
 	static String dynamicPHPfileName =  "";
+	//ajax
+	static int ajax_loadInterval = 0;
 	
 	private static boolean dynamicPreProcess0(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
 		if(decos.containsKey("dynamic")){
@@ -272,6 +274,21 @@ public class Mobile_HTML5 {
 //			Log.e("");
 			Log.e(" - Start dynamic process -");
 //			Log.e(dynamicString);
+			
+			
+			
+			//ajax load interval
+			if(decos.containsKey("ajax-load") || decos.containsKey("load") || decos.containsKey("load-interval")){
+				String s = "";
+				if(decos.containsKey("ajax-load")) 			s = decos.getStr("ajax-load");
+				else if(decos.containsKey("load")) 			s = decos.getStr("load");
+				else if(decos.containsKey("load-interval"))	s = decos.getStr("load-interval");
+				s = s.trim().toLowerCase().replaceAll("sec", "").replaceAll("s", "");
+				ajax_loadInterval = (int) (Float.parseFloat(s)*1000.0);
+				//Log.i(ajax_loadInterval);
+			}
+			 
+			
 			
 //			dynamicString = dynamicString.replaceAll("'", "\\\\\\\\\\\\\'");											//　' -> \'				//TODO これでOK?
 			
@@ -757,6 +774,7 @@ public class Mobile_HTML5 {
 			}
 	    	//dynamicCount++;
 	    	dynamicDisplay = false;
+	    	ajax_loadInterval = 0;
 	    	
 	    	
 			Log.e(" - End dynamic process -");
@@ -766,7 +784,8 @@ public class Mobile_HTML5 {
 	}
 	private static String getDynamicHTML(int num, String phpFileName){
 		phpFileName = new File(phpFileName).getName();
-		return 	"\n" +
+		String s =
+				"\n" +
 				"<!-- Dynamic "+num+" start -->\n" +
 				"<!-- Dynamic "+num+" DIV start -->\n" +
 				"<div id=\"SSQL_DynamicDisplay"+num+"_Panel\" style=\"\" data-role=\"none\">\n" +
@@ -776,8 +795,13 @@ public class Mobile_HTML5 {
 				"\n" +
 				"<!-- Dynamic "+num+" JS start -->\n" +
 				"<script type=\"text/javascript\">\n" +
-				"SSQL_DynamicDisplay"+num+"();	//ロード時に実行\n" +
-				"function SSQL_DynamicDisplay"+num+"_echo(str){\n" +
+				"SSQL_DynamicDisplay"+num+"();	//ロード時に実行\n";
+		if(ajax_loadInterval>0){
+			s += "setInterval(function(){\n" +
+				 "	SSQL_DynamicDisplay"+num+"();\n" +
+				 "},"+ajax_loadInterval+");\n";
+		}
+		s +=	"function SSQL_DynamicDisplay"+num+"_echo(str){\n" +
 				"  var textArea = document.getElementById(\"SSQL_DynamicDisplay"+num+"\");\n" +
 				"  textArea.innerHTML = str;\n" +
 				"}\n" +
@@ -800,6 +824,7 @@ public class Mobile_HTML5 {
 				"</script>\n" +
 				"<!-- Dynamic "+num+" JS end -->\n" +
 				"<!-- Dynamic "+num+" end -->\n\n";
+		return s;
 	}
 	private static String getDynamicPagingHTML(int row, int num, String phpFileName){
 		phpFileName = new File(phpFileName).getName();
