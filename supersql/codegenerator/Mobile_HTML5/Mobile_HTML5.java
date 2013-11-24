@@ -884,7 +884,7 @@ public class Mobile_HTML5 {
 				"		success: function(data, textStatus){\n" +
 				"			if (data.result != \"\") {\n" +
 				//"				//SSQL_DynamicDisplayPaging"+num+"_echo(SSQL_DynamicDisplayPaging"+num+"_currentItems+\" \"+data.currentItems+\"<br>\"+data.info+\"<br>\"+data.result);\n" +
-				"				SSQL_DynamicDisplayPaging"+num+"_echo(data.result+data.info);\n" +
+				"				SSQL_DynamicDisplayPaging"+num+"_echo(data.result+\"<span style='font-size:small; color:#808080;'>\"+data.info+\"</span>\");\n" +
 				"				if(data.currentItems != null && data.currentItems != SSQL_DynamicDisplayPaging"+num+"_currentItems){\n" +
 				"					//ページ数が変わった場合の処理\n" +
 				"					SSQL_DynamicDisplayPaging"+num+"_currentItems = data.currentItems;\n" +
