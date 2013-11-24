@@ -278,12 +278,14 @@ public class Mobile_HTML5 {
 			
 			
 			//ajax load interval
-			if(decos.containsKey("ajax-load") || decos.containsKey("load") || decos.containsKey("load-interval") || decos.containsKey("load-next")){
+			if(decos.containsKey("ajax-load") || decos.containsKey("load") || decos.containsKey("load-interval")
+					|| decos.containsKey("load-next") || decos.containsKey("load-next-page")){
 				String s = "";
-				if(decos.containsKey("ajax-load")) 			s = decos.getStr("ajax-load");
-				else if(decos.containsKey("load")) 			s = decos.getStr("load");
-				else if(decos.containsKey("load-interval"))	s = decos.getStr("load-interval");
-				else if(decos.containsKey("load-next"))		s = decos.getStr("load-next");
+				if(decos.containsKey("ajax-load")) 				s = decos.getStr("ajax-load");
+				else if(decos.containsKey("load")) 				s = decos.getStr("load");
+				else if(decos.containsKey("load-interval"))		s = decos.getStr("load-interval");
+				else if(decos.containsKey("load-next"))			s = decos.getStr("load-next");
+				else if(decos.containsKey("load-next-page"))	s = decos.getStr("load-next-page");
 				s = s.trim().toLowerCase().replaceAll("sec", "").replaceAll("s", "");
 				ajax_loadInterval = (int) (Float.parseFloat(s)*1000.0);
 				//Log.i(ajax_loadInterval);
@@ -829,7 +831,8 @@ public class Mobile_HTML5 {
 	}
 	private static String getDynamicPagingHTML(int row, int num, String phpFileName){
 		phpFileName = new File(phpFileName).getName();
-		return	"\n" +
+		String s =
+				"\n" +
 				"<!-- Dynamic Paging "+num+" start -->\n" +
 				"<!-- Dynamic Paging "+num+" DIV start -->\n" +
 				//"<div id=\"SSQL_DynamicDisplayPaging"+num+"_Buttons\"></div>\n" +
@@ -850,8 +853,14 @@ public class Mobile_HTML5 {
 				"SSQL_DynamicDisplayPaging"+num+"(1);	//初期ロード時\n" +
 				"SSQL_DynamicDisplayPaging"+num+"_setButtons();\n" +
 				"\n" +
-				"var SSQL_DynamicDisplayPaging"+num+"_currentItems = 1;		//グローバル変数\n" +
-				"function SSQL_DynamicDisplayPaging"+num+"_setButtons(){\n" +
+				"var SSQL_DynamicDisplayPaging"+num+"_currentItems = 1;		//グローバル変数\n";
+		if(ajax_loadInterval>0){
+			s += "\n" +
+				 "setInterval(function(){\n" +
+				 "	$('#SSQL_DynamicDisplayPaging"+num+"_Buttons .next').trigger(\"click\");\n" +
+				 "},"+ajax_loadInterval+");\n\n";
+		}
+		s +=	"function SSQL_DynamicDisplayPaging"+num+"_setButtons(){\n" +
 				"	$(function(){\n" +
 				"	    $(\"[id=SSQL_DynamicDisplayPaging"+num+"_Buttons]\").pagination({\n" +
 				"	        items: SSQL_DynamicDisplayPaging"+num+"_currentItems, //ページング数\n" +
@@ -892,6 +901,7 @@ public class Mobile_HTML5 {
 				"</script>\n" +
 				"<!-- Dynamic Paging "+num+" JS end -->\n" +
 				"<!-- Dynamic Paging "+num+" end -->\n\n";
+		return s;
 	}
 	
 	
