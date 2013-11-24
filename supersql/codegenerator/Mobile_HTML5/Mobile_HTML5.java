@@ -279,13 +279,15 @@ public class Mobile_HTML5 {
 			
 			//ajax load interval
 			if(decos.containsKey("ajax-load") || decos.containsKey("load") || decos.containsKey("load-interval")
-					|| decos.containsKey("load-next") || decos.containsKey("load-next-page")){
+					|| decos.containsKey("load-next") || decos.containsKey("load-next-page")
+					|| decos.containsKey("reload")){
 				String s = "";
 				if(decos.containsKey("ajax-load")) 				s = decos.getStr("ajax-load");
 				else if(decos.containsKey("load")) 				s = decos.getStr("load");
 				else if(decos.containsKey("load-interval"))		s = decos.getStr("load-interval");
 				else if(decos.containsKey("load-next"))			s = decos.getStr("load-next");
 				else if(decos.containsKey("load-next-page"))	s = decos.getStr("load-next-page");
+				else if(decos.containsKey("reload"))			s = decos.getStr("reload");
 				s = s.trim().toLowerCase().replaceAll("sec", "").replaceAll("s", "");
 				ajax_loadInterval = (int) (Float.parseFloat(s)*1000.0);
 				//Log.i(ajax_loadInterval);
