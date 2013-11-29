@@ -9,6 +9,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import supersql.common.DB;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.common.Suggest;
@@ -79,6 +80,7 @@ public class SQLManager {
 	        Log.info("\n********** SQL is **********");
 	        Log.info(query);
         }
+        GlobalEnv.query = query;
 
         header_name = new ExtList<String>();
         header_type = new ExtList<String>();
@@ -137,7 +139,7 @@ public class SQLManager {
 			      //added by goto 20131016 start
 			      String list = "";
 			      String errorContents[] = Suggest.getErrorContents(e);  //return: [0]=Error message, [1]=Error table name or column name, [2]=Error table alias
-		    	  ArrayList<ArrayList> tableNameAndAlias = Suggest.getTableNamesFromQuery(query);	//return: (0)=Table name, (1)=Table alias, (2)=From phrase
+		    	  ArrayList<ArrayList> tableNameAndAlias = DB.getTableNamesFromQuery(query);	//return: (0)=Table name, (1)=Table alias, (2)=From phrase
 		    	  
 			      String driver = GlobalEnv.getDriver().toLowerCase();
 		    	  if( (driver.contains("postgresql") && (errorContents[0].contains("column") || errorContents[0].contains("table")) ||

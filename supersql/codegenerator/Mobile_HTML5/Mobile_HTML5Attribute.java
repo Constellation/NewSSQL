@@ -207,9 +207,16 @@ public class Mobile_HTML5Attribute extends Attribute {
 			if(whichForm == 0){ //normal process (not form)
 				//***APPEND DATABASE VALUE***//
 				Log.out(data_info);
-				if(Mobile_HTML5.dynamicDisplay){
+				if(Mobile_HTML5.dynamicDisplay || Mobile_HTML5.form){
 					//20131118 dynamic
-					html_env.code.append( Mobile_HTML5.dynamicAttributeProcess(this) );
+					if(Mobile_HTML5.dynamicDisplay){
+						html_env.code.append( Mobile_HTML5.dynamicAttributeProcess(this) );
+					}
+					//20131127 form
+					if(Mobile_HTML5.form){
+						html_env.code.append( Mobile_HTML5.formAttributeProcess(this, decos) );
+					}
+					
 				}else{
 					html_env.code.append(this.getStr(data_info));
 				}

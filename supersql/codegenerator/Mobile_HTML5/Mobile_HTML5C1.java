@@ -53,11 +53,11 @@ public class Mobile_HTML5C1 extends Connector {
         Log.out("countconnetitem=" + countconnectitem());
         this.setDataList(data_info);
 
-        if(decos.containsKey("form")){
-        	html_env2.code.append("<form"+Mobile_HTML5Env.getFormNumber()+"start />");
-        	if(decos.getStr("form").toLowerCase().equals("search"))
-        		Mobile_HTML5Env.setSearch(true);
-        }	     
+//        if(decos.containsKey("form")){
+//        	html_env2.code.append("<form"+Mobile_HTML5Env.getFormNumber()+"start />");
+//        	if(decos.getStr("form").toLowerCase().equals("search"))
+//        		Mobile_HTML5Env.setSearch(true);
+//        }	     
 
         if(decos.containsKey("insert")){
         	Mobile_HTML5Env.setIDU("insert");
@@ -217,57 +217,6 @@ public class Mobile_HTML5C1 extends Connector {
         	
         }
 
-//        //xml
-//        if(GlobalEnv.isOpt()){
-//	        html_env2.code.append("<tfe type=\"connect\" dimension =\"1\"");
-//	        if (decos.containsKey("tablealign") )
-//	        	html_env2.code.append(" align=\"" + decos.getStr("tablealign") +"\"");
-//	        if (decos.containsKey("tablevalign") )
-//	        	html_env2.code.append(" valign=\"" + decos.getStr("tablevalign") +"\"");
-//	        if(decos.containsKey("tabletype")){
-//	        	html_env2.code.append(" tabletype=\"" + decos.getStr("tabletype") + "\"");
-//	        	if(decos.containsKey("cellspacing")){
-//	            	html_env2.code.append(" cellspacing=\"" + decos.getStr("cellspacing") + "\"");
-//	            }
-//	        	if(decos.containsKey("cellpadding")){
-//	            	html_env2.code.append(" cellpadding=\"" + decos.getStr("cellpadding") + "\"");
-//	            }
-//	        	if(decos.containsKey("border")){
-//        			html_env2.code.append(" border=\"" + decos.getStr("border").replace("\"", "") + "\"");
-//        		}
-//	        	if(decos.containsKey("tableborder")){
-//        			html_env2.code.append(" tableborder=\"" + decos.getStr("tableborder").replace("\"", "") + "\"");
-//        		}
-//        	}else{
-//        		if(decos.containsKey("border")){
-//        			html_env2.code.append(" border=\"" + decos.getStr("border").replace("\"", "") + "\"");
-//        		}else{
-//            		html_env2.code.append(" border=\"" + html_env.tableborder.replace("\"", "") +"\"");
-//        		}
-//	        	if(decos.containsKey("tableborder")){
-//        			html_env2.code.append(" tableborder=\"" + decos.getStr("tableborder").replace("\"", "") + "\"");
-//        		}
-//        	}
-//	        if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
-//		        html_env2.code.append(" class=\"");
-//		        html_env2.code.append(HTMLEnv.getClassID(this));
-//	        }
-//	        if(decos.containsKey("class")){
-//	        	if(!html_env.written_classid.contains(HTMLEnv.getClassID(this))){
-//	    	        html_env2.code.append(" class=\"");
-//	            }else{
-//	    	        html_env2.code.append(" ");
-//	            }
-//	        	html_env2.code.append(decos.getStr("class")+"\" ");
-//	        }else if(html_env.written_classid.contains(HTMLEnv.getClassID(this))){
-//	        		html_env2.code.append("\" "); 
-//	        }
-//	        
-//	        if(decos.containsKey("form")){
-//	        	html_env2.code.append(" form=\""+ HTMLEnv.getFormNumber() +"\" ");
-//	        }	        
-//	    	html_env2.code.append(">"); 
-//        }
         
         //tk end////////////////////////////////////////////////////////////////////
       
@@ -276,10 +225,10 @@ public class Mobile_HTML5C1 extends Connector {
         
         int i = 0;
         
-        if(decos.containsKey("form")){
-        	html_env.code.append(Mobile_HTML5Function.createForm(decos));
-           	Mobile_HTML5Env.setFormItemFlg(true,null);
-        }
+//        if(decos.containsKey("form")){
+//        	html_env.code.append(Mobile_HTML5Function.createForm(decos));
+//           	Mobile_HTML5Env.setFormItemFlg(true,null);
+//        }
         
         Mobile_HTML5.beforeWhileProcess(getSymbol(), decos, html_env);
         while (this.hasMoreItems()) {
@@ -433,18 +382,6 @@ public class Mobile_HTML5C1 extends Connector {
         }	// /while
         Mobile_HTML5.afterWhileProcess(getSymbol(), decos, html_env);
 
-//        //XML?
-//        html_env2.code.append("</tfe>");
-//        if(decos.containsKey("form")){
-//        	html_env2.code.append("<form"+ Mobile_HTML5Env.getFormNumber() +"end />");
-//        	Log.out("<form"+ Mobile_HTML5Env.getFormNumber() +"end />");
-//           	html_env.code.append(Mobile_HTML5Env.exFormNameCreate());
-//           	html_env.code.append("</form>");
-//           	Mobile_HTML5Env.setFormItemFlg(false,null);
-//           	Mobile_HTML5Env.incrementFormNumber();
-//           	if(decos.getStr("form").toLowerCase().equals("search"))
-//        		Mobile_HTML5Env.setSearch(false);
-//        }
         
         //20130309
         if(/* !HTMLG1.G1Flg  && */ !tableFlg)	html_env.code.append("\n</DIV>\n");			//20130309

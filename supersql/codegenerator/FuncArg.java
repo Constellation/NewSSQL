@@ -78,6 +78,10 @@ public class FuncArg {
 			if(Mobile_HTML5.dynamicDisplay){
 				return Mobile_HTML5.dynamicFuncArgProcess(tfe);
 			}
+//			//20131127 form
+//			if(Mobile_HTML5.form){
+//				return Mobile_HTML5.formFuncArgProcess(tfe);
+//			}
 
 			return ((Attribute) tfe).getStr(Data);
 		} else {

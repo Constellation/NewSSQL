@@ -165,6 +165,10 @@ public class Mobile_HTML5Function extends Function {
         else if(FuncName.equalsIgnoreCase("insert_update") || FuncName.equalsIgnoreCase("form")){
         	Func_insert(false,true);
         }
+    	//20131127 form
+        else if(FuncName.equalsIgnoreCase("result") || FuncName.equalsIgnoreCase("form_result")){
+        	Func_result();
+        }
         //added by goto 20130531  "check"
         else if(FuncName.equalsIgnoreCase("check")){
         	Func_check();
@@ -1762,8 +1766,8 @@ public class Mobile_HTML5Function extends Function {
     		}
     		statement +=
     				"}\n" +
-    						"</script>\n" +
-    						"<!-- Select end -->\n";
+					"</script>\n" +
+					"<!-- Select end -->\n";
     		
     		
     		
@@ -2101,7 +2105,7 @@ public class Mobile_HTML5Function extends Function {
 									""+((!textareaFlg[i])?("\">"):("</textarea>"))+"\n";
 							if(!noinsertFlg[i])
 								statement += 
-										"    <input type=\"hidden\" name=\"insert_words"+(++insertWordCount)+"\" value=\""+button_array[i]+"\">\n";
+										"    <input type=\"hidden\" name=\"insert"+insertCount+"_words"+(++insertWordCount)+"\" value=\""+button_array[i]+"\">\n";
 						
 						
 						}else if(btRcount == 2){		//ボタン ex){出席|欠席}
@@ -2111,33 +2115,33 @@ public class Mobile_HTML5Function extends Function {
 							statement += 
 									"	<div class=\"ui-grid-a\">\n" +
 									"		<div class=\"ui-block-a\">\n" +
-									"    		<input type=\"submit\" name=\"insert_words"+(insertWordCount)+"\" value=\""+bt1+"\" data-theme=\"a\">\n" +
+									"    		<input type=\"submit\" name=\"insert"+insertCount+"_words"+(insertWordCount)+"\" value=\""+bt1+"\" data-theme=\"a\">\n" +
 									"		</div>\n" +
 									"		<div class=\"ui-block-b\">\n" +
-									"    		<input type=\"submit\" name=\"insert_words"+(insertWordCount)+"\" value=\""+bt2+"\" data-theme=\"a\">\n" +
+									"    		<input type=\"submit\" name=\"insert"+insertCount+"_words"+(insertWordCount)+"\" value=\""+bt2+"\" data-theme=\"a\">\n" +
 									"		</div>\n" +
 									"	</div>\n";
-							buttonSubmit += " || $_POST['insert_words"+(insertWordCount)+"']";
+							buttonSubmit += " || $_POST['insert"+insertCount+"_words"+(insertWordCount)+"']";
 						}else{							//ラジオボタン ex){出席|欠席|その他}
 							statement += "   <div data-role=\"controlgroup\">\n";
 							insertWordCount++;
 							for(int k=1; k<=btRcount; k++){
 								String val = ss.substring(0,ss.indexOf("|")).trim();
 								statement += 
-										"		<input type=\"radio\" name=\"insert_words"+(insertWordCount)+"\" id=\"insert_words"+(insertWordCount)+"_"+k+"\" value=\""+val+"\""+( (k>1)? (""):(" checked=\"checked\"") )+">\n" +
-										"		<label for=\"insert_words"+(insertWordCount)+"_"+k+"\">"+val+"</label>\n";
+										"		<input type=\"radio\" name=\"insert"+insertCount+"_words"+(insertWordCount)+"\" id=\"insert"+insertCount+"_words"+(insertWordCount)+"_"+k+"\" value=\""+val+"\""+( (k>1)? (""):(" checked=\"checked\"") )+">\n" +
+										"		<label for=\"insert"+insertCount+"_words"+(insertWordCount)+"_"+k+"\">"+val+"</label>\n";
 								ss = ss.substring(ss.indexOf("|")+1);
 							}
 							statement += "	</div>\n";
 						}
 					}else{
 						statement += 
-								"    <"+((!textareaFlg[i])?("input"):("textarea"))+" type=\""+((!hiddenFlg[i])?("text"):("hidden"))+"\" name=\"insert_words"+(++insertWordCount)+"\" placeholder=\""+s_name_array[i]+"\">" +
+								"    <"+((!textareaFlg[i])?("input"):("textarea"))+" type=\""+((!hiddenFlg[i])?("text"):("hidden"))+"\" name=\"insert"+insertCount+"_words"+(++insertWordCount)+"\" placeholder=\""+s_name_array[i]+"\">" +
 								""+((!textareaFlg[i])?(""):("</textarea>"))+"\n";
-				    	//statement += "    <input type=\"text\" name=\"insert_words"+(insertWordCount)+"\" placeholder=\""+s_name_array[i]+"\">\n";
+				    	//statement += "    <input type=\"text\" name=\"insert"+insertCount+"_words"+(insertWordCount)+"\" placeholder=\""+s_name_array[i]+"\">\n";
 					}
 				}else{
-					//statement += "    <input type=\"text\" name=\"insert_words"+(++insertWordCount)+"\" placeholder=\""+s_name_array[i]+"\">\n";
+					//statement += "    <input type=\"text\" name=\"insert"+insertCount+"_words"+(++insertWordCount)+"\" placeholder=\""+s_name_array[i]+"\">\n";
 					String echo = "";
 					if(!$session_array[i].equals(""))	echo += "	echo $_SESSION["+$session_array[i]+"];\n";
 					else if(!$time_array[i].equals(""))	echo += "	echo "+$time_array[i]+";\n";
@@ -2159,7 +2163,7 @@ public class Mobile_HTML5Function extends Function {
 								"  	};\n" +
 								"    navigator.geolocation.getCurrentPosition(function(pos) {\n" +
 								"      	// 経度、緯度を取得 //\n" +
-								"		document.getElementsByName('insert_words"+(insertWordCount+1)+"')[0].value=pos.coords.latitude+\",\"+pos.coords.longitude;\n" +
+								"		document.getElementsByName('insert"+insertCount+"_words"+(insertWordCount+1)+"')[0].value=pos.coords.latitude+\",\"+pos.coords.longitude;\n" +
 								"    }, function(e) {\n" +
 								"		gpsInfo = \"\";\n" +
 								"    }, geolocationOptions);\n" +
@@ -2184,7 +2188,7 @@ public class Mobile_HTML5Function extends Function {
 							""+((!textareaFlg[i])?("\">"):("</textarea>"))+"\n";
 					if(!noinsertFlg[i])
 						statement += 
-								"    <input type=\"hidden\" name=\"insert_words"+(++insertWordCount)+"\" value=\"\n" +
+								"    <input type=\"hidden\" name=\"insert"+insertCount+"_words"+(++insertWordCount)+"\" value=\"\n" +
 								"EOF;\n" +
 								echo +
 								"		echo <<<EOF\n" +
@@ -2193,7 +2197,7 @@ public class Mobile_HTML5Function extends Function {
 				//insertWordCount++;
     		}
 //    			}
-//    			else				statement += "    <textarea type=\"text\" name=\"insert_words"+(insertWordCount)+"\" placeholder=\""+s_name_array[i]+"\"></textarea>\n";
+//    			else				statement += "    <textarea type=\"text\" name=\"insert"+insertCount+"_words"+(insertWordCount)+"\" placeholder=\""+s_name_array[i]+"\"></textarea>\n";
     		
     		if(buttonSubmit.equals(""))
     			statement += 
@@ -2243,7 +2247,7 @@ public class Mobile_HTML5Function extends Function {
 			Mobile_HTML5Env.PHP +=
     				"<?php\n" +
     				"if($_POST['insert"+insertCount+"'] "+buttonSubmit+"){\n" +
-    				//"if($_POST['insert"+insertCount+"'] || $_POST['insert_words"+insertCount+"']){\n" +
+    				//"if($_POST['insert"+insertCount+"'] || $_POST['insert"+insertCount+"_words"+insertCount+"']){\n" +
     				"    //ユーザ定義\n" +
     				"    $sqlite3_DB = '"+DB+"';\n" +
     				"    $insert_col = \""+insert_col+"\";\n";
@@ -2259,7 +2263,7 @@ public class Mobile_HTML5Function extends Function {
     				"\n" +
     				"	$insert_str = \"notnull\";\n" +
     				"	for($k=1; $k<=$col_num; $k++){\n" +
-    				"    	$var[$k] = checkHTMLsc($_POST['insert_words'.$k]);\n" +
+    				"    	$var[$k] = checkHTMLsc($_POST['insert"+insertCount+"_words'.$k]);\n" +
     				"    	$var[$k] = str_replace(array(\"\\r\\n\",\"\\r\",\"\\n\"), '<br>', $var[$k]);	//改行コードを<br>へ\n" +
     				//"    	//$var[$k] = mb_convert_encoding($var[$k], 'UTF-8', 'auto');					//エンコードをUTF-8へ PHP環境によってはうまく動かない？\n" +
     				//"    	$insert_str .= trim($var[$k]);\n" +
@@ -2322,12 +2326,12 @@ public class Mobile_HTML5Function extends Function {
 						"				$update_sql = \"UPDATE \".$table.\" SET \".$update_str.\" \".$update_where;\n" +
 						"				$result2 = $insert_db1->exec($update_sql);\n" +
 						"				//echo '変更された行の数: ', $db->changes();\n" +
-						"				insert1_p1(\"更新しました。\");\n" +
+						"				insert"+insertCount+"_p1(\"更新しました。\");\n" +
 						"			}else{\n";
 				//Log.i("insertFlag:"+insertFlag);
 				if(!insertFlag.equals("true"))
 						Mobile_HTML5Env.PHP +=
-							"				insert1_p1('<font color=red>更新データがありません。</font>');	//更新データなし\n";
+							"				insert"+insertCount+"_p1('<font color=red>更新データがありません。</font>');	//更新データなし\n";
 				else
 						Mobile_HTML5Env.PHP +=
 							"				//新規登録(insert)\n" +
@@ -2339,12 +2343,12 @@ public class Mobile_HTML5Function extends Function {
 							"				\n" +
 							"				$insert_sql = \"INSERT INTO \".$table.\" (\".$insert_col.\") VALUES (\".$insert_str.\")\";\n" +
 							"				$result2 = $insert_db1->exec($insert_sql);\n" +
-							"				insert1_p1(\"登録しました。\");\n";
+							"				insert"+insertCount+"_p1(\"登録しました。\");\n";
 				Mobile_HTML5Env.PHP +=
 						"			}\n" +
 						"        }catch(Exception $e){\n" +
 						"       		unset($insert_db1);\n" +
-						"       		insert1_p1('<font color=red>Update failed.</font>');	//更新失敗\n" +
+						"       		insert"+insertCount+"_p1('<font color=red>Update failed.</font>');	//更新失敗\n" +
 						"        }\n" +
 						"        unset($insert_db1);\n";
 			}
@@ -2378,6 +2382,20 @@ public class Mobile_HTML5Function extends Function {
     	return;
     }
     //insert end
+    
+    //20131127 form
+    //result start
+    private void Func_result() {
+    	int count = Mobile_HTML5.formCount;
+    	//if(!Mobile_HTML5.form)	count -= 1;
+	    String s =
+	    	"\n" +
+			"<div id=\"Form"+count+"_text0\" data-role=\"none\"><!-- Form result --></div>\n" +
+			"\n";
+			//"<br>\n";
+	    html_env.code.append(s);
+    }
+    //result end
     
     
     //added by goto 20130531  "check"

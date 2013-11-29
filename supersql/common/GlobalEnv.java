@@ -30,6 +30,7 @@ public class GlobalEnv {
 
     public final static String MEDIA_XML = System.getProperty("user.dir")+OS_FS+"XML"+OS_FS+"ssql_medias.xml";
     
+    public static String query = "";
     
 	private static Hashtable<String, String> envs;
 

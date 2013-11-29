@@ -28,28 +28,28 @@ public class Mobile_HTML5C0 extends Connector {
 		this.setDataList(data_info);
 		
 
-		 if(decos.containsKey("form")){
-	           	html_env.code.append(Mobile_HTML5Function.createForm(decos));
-	           	Mobile_HTML5Env.setFormItemFlg(true,null);
-	        	html_env2.code.append("<form"+Mobile_HTML5Env.getFormNumber()+"start />");
-	        	if(decos.getStr("form").toLowerCase().equals("search"))
-	        		Mobile_HTML5Env.setSearch(true);
-		 }	 
+//		 if(decos.containsKey("form")){
+//	           	html_env.code.append(Mobile_HTML5Function.createForm(decos));
+//	           	Mobile_HTML5Env.setFormItemFlg(true,null);
+//	        	html_env2.code.append("<form"+Mobile_HTML5Env.getFormNumber()+"start />");
+//	        	if(decos.getStr("form").toLowerCase().equals("search"))
+//	        		Mobile_HTML5Env.setSearch(true);
+//		 }	 
 		
 		while (this.hasMoreItems()) {
 			this.worknextItem();
 		}
 		
 
-        if(decos.containsKey("form")){
-        	html_env2.code.append("<form"+ Mobile_HTML5Env.getFormNumber() +"end />");
-        	html_env.code.append(Mobile_HTML5Env.exFormNameCreate());
-           	html_env.code.append("</form>");
-           	Mobile_HTML5Env.setFormItemFlg(false,null);
-           	Mobile_HTML5Env.incrementFormNumber();
-           	if(decos.getStr("form").toLowerCase().equals("search"))
-        		Mobile_HTML5Env.setSearch(false);
-        }
+//        if(decos.containsKey("form")){
+//        	html_env2.code.append("<form"+ Mobile_HTML5Env.getFormNumber() +"end />");
+//        	html_env.code.append(Mobile_HTML5Env.exFormNameCreate());
+//           	html_env.code.append("</form>");
+//           	Mobile_HTML5Env.setFormItemFlg(false,null);
+//           	Mobile_HTML5Env.incrementFormNumber();
+//           	if(decos.getStr("form").toLowerCase().equals("search"))
+//        		Mobile_HTML5Env.setSearch(false);
+//        }
 
 	}
 

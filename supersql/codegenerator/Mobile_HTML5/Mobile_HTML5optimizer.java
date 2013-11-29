@@ -1042,18 +1042,18 @@ public class Mobile_HTML5optimizer {
 					
 				}
 				
-				//add 200909
-				if(nowNode.getNodeName().contains("form")){
-					Document doc = par.getOwnerDocument();
-					Element str = doc.createElement(nowNode.getNodeName().toString());
-					Log.out(nowNode.getNodeName().toString());
-					if(nowNode.getNodeName().contains("start")){
-						h.appendChild(str);
-					}
-					if(nowNode.getNodeName().contains("end")){
-						h.getParentNode().appendChild(str);
-					}
-				}
+//				//add 200909
+//				if(nowNode.getNodeName().contains("form")){
+//					Document doc = par.getOwnerDocument();
+//					Element str = doc.createElement(nowNode.getNodeName().toString());
+//					Log.out(nowNode.getNodeName().toString());
+//					if(nowNode.getNodeName().contains("start")){
+//						h.appendChild(str);
+//					}
+//					if(nowNode.getNodeName().contains("end")){
+//						h.getParentNode().appendChild(str);
+//					}
+//				}
 				
 				
 				//saiki

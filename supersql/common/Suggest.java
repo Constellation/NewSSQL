@@ -103,58 +103,58 @@ public class Suggest {
     	return new String[]{error, error_tableName_or_columnName, error_tableAlias};
     }
     
-    //get table names from query
-    /* return: (0)=Table name, (1)=Table alias, (2)=From phrase */
-    @SuppressWarnings({ "rawtypes", "serial" })
-	public static ArrayList<ArrayList> getTableNamesFromQuery(String query){
-  	  	String tableNames = "";
-  	  	final ArrayList<String> tableName = new ArrayList<String>();
-  	  	final ArrayList<String> tableAlias = new ArrayList<String>();
-  	  	final ArrayList<String> fromPhrase = new ArrayList<String>();
-  	  	try{
-	    	  String q = query.toLowerCase();
-	    	  q = q.substring(q.lastIndexOf("from")+4).replaceAll(";", "");
-	    	  tableNames = q;
-	    	  if(q.contains("where")){
-	    		  tableNames = q.substring(0, q.lastIndexOf("where"));
-	    	  }else if(q.contains("group")){
-	    		  tableNames = q.substring(0, q.lastIndexOf("group"));
-	    	  }else if(q.contains("order")){
-	    		  tableNames = q.substring(0, q.lastIndexOf("order"));
-	    	  }
-//	  	  	}else if(q.contains("group by")){
-//	  	  		tableNames = q.substring(0, q.lastIndexOf("group by"));
-//	  	  	}else if(q.contains("order by")){
-//	  	  		tableNames = q.substring(0, q.lastIndexOf("order by"));
-//	  	  	}
-	    	  
-	    	  //if(!tableNames.equals("")) Log.e("\n## From phrase ##\n"+tableNames.trim());
-	    	  fromPhrase.add(0,tableNames);
-	    	  
-	    	  int i=0;
-	    	  tableNames += ",";
-	    	  while(tableNames.contains(",")){
-	    		  int index = tableNames.indexOf(",");
-	    		  tableName.add(i, tableNames.substring(0,index).trim());
-	    		  tableAlias.add(i, "");
-	    		  String tn = tableName.get(i);
-	    		  if(tn.contains(" ")){
-	    			  tableName.set(i, tn.substring(0,tn.indexOf(" ")).trim());
-	    			  tableAlias.set(i, tn.substring(tn.lastIndexOf(" ")).trim());
-	    		  }
-	    		  tableNames = tableNames.substring(index+1);
-	    		  //Log.e(tableName.get(i)+" "+tableAlias.get(i));
-	    		  i++;
-	    	  }
-  	  	}catch(Exception e){}
-//  	  	ArrayList<ArrayList> array = new ArrayList<ArrayList>();
-//  	  	array.add(tableName);
-//  	  	array.add(tableAlias);
-//  	  	return array;
-  	  	return new ArrayList<ArrayList>() {{add(tableName); add(tableAlias); add(fromPhrase);}};
-//  	  	return new ArrayList<ArrayList>() {{new ArrayList<String>(tableName); add(tableAlias);}};
-//	  		return new ArrayList<ArrayList>(2) {{add("hoge"); add("piyo"); add("foo"); add("bar");}};
-    }
+//    //get table names from query
+//    /* return: (0)=Table name, (1)=Table alias, (2)=From phrase */
+//    @SuppressWarnings({ "rawtypes", "serial" })
+//	public static ArrayList<ArrayList> getTableNamesFromQuery(String query){
+//  	  	String tableNames = "";
+//  	  	final ArrayList<String> tableName = new ArrayList<String>();
+//  	  	final ArrayList<String> tableAlias = new ArrayList<String>();
+//  	  	final ArrayList<String> fromPhrase = new ArrayList<String>();
+//  	  	try{
+//	    	  String q = query.toLowerCase();
+//	    	  q = q.substring(q.lastIndexOf("from")+4).replaceAll(";", "");
+//	    	  tableNames = q;
+//	    	  if(q.contains("where")){
+//	    		  tableNames = q.substring(0, q.lastIndexOf("where"));
+//	    	  }else if(q.contains("group")){
+//	    		  tableNames = q.substring(0, q.lastIndexOf("group"));
+//	    	  }else if(q.contains("order")){
+//	    		  tableNames = q.substring(0, q.lastIndexOf("order"));
+//	    	  }
+////	  	  	}else if(q.contains("group by")){
+////	  	  		tableNames = q.substring(0, q.lastIndexOf("group by"));
+////	  	  	}else if(q.contains("order by")){
+////	  	  		tableNames = q.substring(0, q.lastIndexOf("order by"));
+////	  	  	}
+//	    	  
+//	    	  //if(!tableNames.equals("")) Log.e("\n## From phrase ##\n"+tableNames.trim());
+//	    	  fromPhrase.add(0,tableNames);
+//	    	  
+//	    	  int i=0;
+//	    	  tableNames += ",";
+//	    	  while(tableNames.contains(",")){
+//	    		  int index = tableNames.indexOf(",");
+//	    		  tableName.add(i, tableNames.substring(0,index).trim());
+//	    		  tableAlias.add(i, "");
+//	    		  String tn = tableName.get(i);
+//	    		  if(tn.contains(" ")){
+//	    			  tableName.set(i, tn.substring(0,tn.indexOf(" ")).trim());
+//	    			  tableAlias.set(i, tn.substring(tn.lastIndexOf(" ")).trim());
+//	    		  }
+//	    		  tableNames = tableNames.substring(index+1);
+//	    		  //Log.e(tableName.get(i)+" "+tableAlias.get(i));
+//	    		  i++;
+//	    	  }
+//  	  	}catch(Exception e){}
+////  	  	ArrayList<ArrayList> array = new ArrayList<ArrayList>();
+////  	  	array.add(tableName);
+////  	  	array.add(tableAlias);
+////  	  	return array;
+//  	  	return new ArrayList<ArrayList>() {{add(tableName); add(tableAlias); add(fromPhrase);}};
+////  	  	return new ArrayList<ArrayList>() {{new ArrayList<String>(tableName); add(tableAlias);}};
+////	  		return new ArrayList<ArrayList>(2) {{add("hoge"); add("piyo"); add("foo"); add("bar");}};
+//    }
 
     //get table and column name list
     //- no such column: エイリアスあり: それのみ表示、 エイリアス無し: From句に書かれているテーブルの一覧を表示
