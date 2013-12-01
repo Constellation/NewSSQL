@@ -86,16 +86,19 @@ public class Mobile_HTML5Function extends Function {
     }
 
     //Function��work�᥽�å�
-    public void work(ExtList<ExtList<String>> data_info) {
+    public String work(ExtList<ExtList<String>> data_info) {
         this.setDataList(data_info);
         //    	Log.out("FuncName= " + this.getFuncName());
         //    	Log.out("filename= " + this.getAtt("filename"));
         //    	Log.out("condition= " + this.getAtt("condition"));
 
         String FuncName = this.getFuncName();
+        
+        String ret = "";	//20131201 nesting function
 
     	if (FuncName.equalsIgnoreCase("imagefile") || FuncName.equalsIgnoreCase("image") || FuncName.equalsIgnoreCase("img")) {
             Func_imagefile();
+            //ret = Func_imagefile(); //TODO
         } else if (FuncName.equalsIgnoreCase("invoke")) {
             Func_invoke();
         } else if (FuncName.equalsIgnoreCase("foreach")) {
@@ -111,27 +114,27 @@ public class Mobile_HTML5Function extends Function {
         }
         //added by goto 20121217
         else if(FuncName.equalsIgnoreCase("button")){
-        	Func_button();
+        	ret = Func_button();
         }
         //added by goto 20130308  "urlリンク"
         else if(FuncName.equalsIgnoreCase("url") || FuncName.equalsIgnoreCase("anchor") || FuncName.equalsIgnoreCase("a")){
-        	Func_url(false);
+        	ret = Func_url(false);
         }
         //added by goto 20130417  "mail"
         else if(FuncName.equalsIgnoreCase("mail")){
-        	Func_url(true);
+        	ret = Func_url(true);
         }
         //added by goto 20130312  "line"
         else if(FuncName.equalsIgnoreCase("line")){
-        	Func_line();
+        	ret = Func_line();
         }
         //added by goto 20130325  "dline"
         else if(FuncName.equalsIgnoreCase("dline")){
-        	Func_dline();
+        	ret = Func_dline();
         }
         //added by goto 20130502  "vline"
         else if(FuncName.equalsIgnoreCase("vline")){
-        	Func_vline();
+        	ret = Func_vline();
         }
         //added by goto 20130313  "header"
         else if(FuncName.equalsIgnoreCase("header")){
@@ -143,83 +146,83 @@ public class Mobile_HTML5Function extends Function {
         }
         //added by goto 20130313  "popup"
         else if(FuncName.equalsIgnoreCase("pop") || FuncName.equalsIgnoreCase("popup")){
-        	Func_pop();
+        	ret = Func_pop();
         }
         //added by goto 20130515  "search"
         else if(FuncName.equalsIgnoreCase("search")){
-        	Func_search();
+        	ret = Func_search();
         }
         //added by goto 20130529  "select"
         else if(FuncName.equalsIgnoreCase("select")){
-        	Func_select();
+        	ret = Func_select();
         }
         //added by goto 20130529  "insert"
         else if(FuncName.equalsIgnoreCase("insert")){
-        	Func_insert(false,false);
+        	ret = Func_insert(false,false);
         }
     	//added by goto 20130605  "update"
         else if(FuncName.equalsIgnoreCase("update")){
-        	Func_insert(true,false);
+        	ret = Func_insert(true,false);
         }
         //added by goto 20130721  "update"
         else if(FuncName.equalsIgnoreCase("insert_update") || FuncName.equalsIgnoreCase("form")){
-        	Func_insert(false,true);
+        	ret = Func_insert(false,true);
         }
     	//20131127 form
         else if(FuncName.equalsIgnoreCase("result") || FuncName.equalsIgnoreCase("form_result")){
-        	Func_result();
+        	ret = Func_result();
         }
         //added by goto 20130531  "check"
         else if(FuncName.equalsIgnoreCase("check")){
-        	Func_check();
+        	ret = Func_check();
         }
         //added by goto 20130519  "moveto"
         else if(FuncName.equalsIgnoreCase("moveto")){
-        	Func_moveto();
+        	ret = Func_moveto();
         }
         //added by goto 20130603  "$session"
         else if (FuncName.equalsIgnoreCase("$session")||FuncName.equalsIgnoreCase("$s")||FuncName.equalsIgnoreCase("$_session")||FuncName.equalsIgnoreCase("$_s")) {
-            Func_$session();
+        	ret = Func_$session();
         }
         //added by goto 20130607  "time,date"
         else if (FuncName.equalsIgnoreCase("time") || FuncName.equalsIgnoreCase("date")) {
-        	Func_time();
+        	ret = Func_time();
         }
     	//added by goto 20130717  "map"
         else if (FuncName.equalsIgnoreCase("map")) {
-        	Func_map(false);
+        	ret = Func_map(false);
         }
     	//added by goto 20130721  "search_map"
         else if (FuncName.equalsIgnoreCase("search_map")) {
-        	Func_map(true);
+        	ret = Func_map(true);
         }
         //added by goto 20130717  "gps,gps_map"
         else if (FuncName.equalsIgnoreCase("gps") || FuncName.equalsIgnoreCase("gps_map")) {
-        	Func_gps();
+        	ret = Func_gps();
         }
     	//added by goto 20130717  "gps_info"
         else if (FuncName.equalsIgnoreCase("gps_info")) {
-        	Func_gps_info();
+        	ret = Func_gps_info();
         }
     	//added by goto 20130914  "audio"
         else if (FuncName.equalsIgnoreCase("music") || FuncName.equalsIgnoreCase("audio")) {
-        	Func_audio();
+        	ret = Func_audio();
         }
     	//added by goto 20130914  "movie"
         else if (FuncName.equalsIgnoreCase("movie") || FuncName.equalsIgnoreCase("video")) {
-        	Func_movie();
+        	ret = Func_movie();
         }
     	//added by goto 20130914  "object"
         else if (FuncName.equalsIgnoreCase("object")) {
-        	Func_object("");
+        	ret = Func_object("");
         }
     	//added by goto 20130914  "SEQ_NUM"
         else if (FuncName.equalsIgnoreCase("seq_num") || FuncName.equalsIgnoreCase("row_number")) {
-        	Func_seq_num();
+        	ret = Func_seq_num();
         }
     	//added by goto 20130915  "text"
         else if (FuncName.equalsIgnoreCase("text")) {
-        	Func_text();
+        	ret = Func_text();
         }
         
         //chie
@@ -242,7 +245,7 @@ public class Mobile_HTML5Function extends Function {
             Func_textarea();
         }
         else if (FuncName.equalsIgnoreCase("hidden")) {
-            Func_hidden();
+        	Func_hidden();
         }
         else if (FuncName.equalsIgnoreCase("session")) {
             //Func_session(); not use
@@ -251,18 +254,113 @@ public class Mobile_HTML5Function extends Function {
         else if (FuncName.equalsIgnoreCase("embed")) {
         	Log.out("[enter embed]");
         	Func_embed(data_info);
+        	//ret = Func_embed(data_info);	//TODO
         }
         //tk end////////////////////////////////////
+        else if (FuncName.equalsIgnoreCase("add")) {
+        	ret = Func_add();
+        }
+        else if (FuncName.equalsIgnoreCase("subtract") || FuncName.equalsIgnoreCase("sub")) {
+        	ret = Func_subtract();
+        }
+        else if (FuncName.equalsIgnoreCase("multiply") || FuncName.equalsIgnoreCase("mul")) {
+        	ret = Func_multiply();
+        }
+        else if (FuncName.equalsIgnoreCase("divide") || FuncName.equalsIgnoreCase("div")) {
+        	ret = Func_divide();
+        }
         else{
         	Log.err("[Warning] no such function name: "+FuncName+"()");
         }
+    	
+//    	checkFuncReturnValue(ret);
+//    	Log.e(""+Args+" "+ArgHash+" "+data_info+" "+html_env+" "+aggregateFlag+" "+manager);
+    	html_env.code.append( Function.checkNestingLevel(ret) );//20131201 nesting function
 
         Log.out("TFEId = " + Mobile_HTML5Env.getClassID(this));
         html_env.append_css_def_td(Mobile_HTML5Env.getClassID(this), this.decos);
-
+        return ret;	//20131201 nesting function
     }
 
-    private void Func_imagefile() {
+    private String Func_add() {
+    	return createArithmeticOperation("+");
+    }
+    private String Func_subtract() {
+    	return createArithmeticOperation("-");
+    }
+	private String Func_multiply() {
+    	return createArithmeticOperation("*");
+	}
+    private String Func_divide() {
+    	return createArithmeticOperation("/");
+	}
+    static int ArithmeticOperationCount = 1;
+    private String createArithmeticOperation(String operator) {
+    	String s = "";
+    	String label = "SSQL_Func_ArithmeticOperation";
+    	if(nestingLevel < 1){
+    		s += ""
+		    	+ "<div id=\""+label+ArithmeticOperationCount+"\"><!-- Computation result --></div>\n"
+		    	+ "<SCRIPT language=\"JavaScript\">\n"
+		    	+ "val = ";
+    	}
+    	s += "(";
+    	for(int i=1; !getValue(i).isEmpty(); i++){
+    		s += getValue(i)+operator;
+    	}
+    	s = s.substring(0, s.length()-1);	//cut last 'operator'
+    	s += ")";
+    	if(nestingLevel < 1){
+    		s += ""
+		    	+ ";\n"
+		    	+ "document.getElementById(\""+label+ArithmeticOperationCount+"\").innerHTML = val;\n"
+		    	+ "</SCRIPT>\n";
+    		ArithmeticOperationCount++;
+    	}
+    	return s;
+    }
+//    //20131201 nesting function
+//    //[Important] Check whether it is 'nesting Function' or not.
+//    private String checkNestingLevel_and_Append(String ret){
+////    	Log.e(FuncArg.nestFunc+" "+FuncArg.nestingLevel+" "+ret);
+////    	if(!FuncArg.nestFunc && FuncArg.nestingLevel<1){
+//    	Log.e(Function.nestingLevel+" "+ret);
+//    	if(Function.nestingLevel < 1){
+//    		html_env.code.append(ret);
+//    	}else{
+//    		Function.nestingLevel--;
+//    	}
+//    	return ret;
+//    }
+    
+//	private String Func_cal() {
+//		String s = ""
+//    	+ "<div id=\"SSQL_Func_cal\"><!-- Computation result --></div>\n"
+//    	+ "[\n"
+//    	+ "<SCRIPT language=\"JavaScript\">\n"
+//    	+ "val = ("
+////    	FuncArg fa1 = (FuncArg) this.Args.get(0);
+////    	Log.e("get(0)="+fa1.getStr());
+////    	FuncArg fa2 = (FuncArg) this.Args.get(1);
+////    	Log.e("get(1)="+fa2.getStr());
+////    	FuncArg fa3 = (FuncArg) this.Args.get(2);
+////    	Log.e("get(2)="+fa3.getStr());
+////    	+getValue(1)+"+"+getValue(2)+"+"+getValue(3)
+//    	+createArithmeticOperation("+")
+//    	+ ");\n"
+//    	+ "document.getElementById(\"SSQL_Func_cal\").innerHTML = val;\n"
+//    	+ "</SCRIPT>\n]\n";
+//		
+////    	if(!FuncArg.nestFunc)	html_env.code.append(s);
+////    	FuncArg.nestFunc = false;
+//    	return checkFuncReturnValue(s);
+//	}
+
+
+    
+    
+    
+	private void Func_imagefile() {
 
         /*
          * ImageFile function : <td> <img src="${imgpath}/"+att /> </td>
@@ -490,7 +588,7 @@ public class Mobile_HTML5Function extends Function {
     }
 
     //added by goto 20121217 start 		    // for practice 2012/02/09 を改良
-    private void Func_button() {
+    private String Func_button() {
     	String statement = "";
 //    	Hashtable ArgHash = new Hashtable();
 //    	String button_media = this.Args.get(0).toString();
@@ -555,9 +653,9 @@ public class Mobile_HTML5Function extends Function {
             }
         }
 		
-    	// 各引数毎に処理した結果をHTMLに書きこむ
-    	html_env.code.append(statement);
-    	return;
+//    	// 各引数毎に処理した結果をHTMLに書きこむ
+//    	html_env.code.append(statement);
+    	return statement;
     }
     //added by goto 20121217 end
     
@@ -569,7 +667,7 @@ public class Mobile_HTML5Function extends Function {
     /*    <type:2> a(画像URL, リンク先URL, 2)    	   	*/
     /*    <type:3> a(ボタンの名前, リンク先URL, 3)        	*/
     /*    mail()でも使用							        */
-    private void Func_url(boolean mailFncFlg) {
+    private String Func_url(boolean mailFncFlg) {
     	String statement = "";
     	FuncArg fa1 = (FuncArg) this.Args.get(0), fa2, fa3;
     	String url, name, type;
@@ -629,9 +727,9 @@ public class Mobile_HTML5Function extends Function {
     		statement = "<a href=\""+((mailFncFlg)?("mailto:"):("")) + url+"\""+transition()+prefetch()+target(url)+">"+url+"</a>";
     	}
     	
-    	// 各引数毎に処理した結果をHTMLに書きこむ
-    	html_env.code.append(statement);
-    	return;
+//    	// 各引数毎に処理した結果をHTMLに書きこむ
+//    	html_env.code.append(statement);
+    	return statement;
     }
 //    private String getTextAnchor(String url, String name) {
 //    	//[ ]で囲われた部分をハイパーリンクにする
@@ -741,7 +839,7 @@ public class Mobile_HTML5Function extends Function {
     
     //added by goto 20130312 start  "line"
     /*  line(color, size)  */
-    private void Func_line() {
+    private String Func_line() {
     	String statement = "\n<hr";
     	try{
     		//color
@@ -756,15 +854,15 @@ public class Mobile_HTML5Function extends Function {
     	}
     	statement += ">\n";
 		
-    	// 各引数毎に処理した結果をHTMLに書きこむ
-    	html_env.code.append(statement);
-    	return;
+//    	// 各引数毎に処理した結果をHTMLに書きこむ
+//    	html_env.code.append(statement);
+    	return statement;
     }
     //added by goto 20130312 end
 
     //added by goto 20130325 start  "dline"	dotted line(点線)
     /*  dline(color, size)  */
-    private void Func_dline() {
+    private String Func_dline() {
     	//ex. <hr style="border-top: 1px dotted black;">
     	String statement = "\n<hr style=\"border-top: ";
     	String color = "";
@@ -781,16 +879,16 @@ public class Mobile_HTML5Function extends Function {
     	}
     	statement += "px dotted "+color+"\">\n";
 		
-    	// 各引数毎に処理した結果をHTMLに書きこむ
-    	html_env.code.append(statement);
-    	return;
+//    	// 各引数毎に処理した結果をHTMLに書きこむ
+//    	html_env.code.append(statement);
+    	return statement;
     }
     //added by goto 20130325 end
     
     //added by goto 20130502 start  "vline"
     /*  vline(color, size)  */
     //&thinsp;<span style="border-left:1px solid red; line-height:1.0em;"></span>&thinsp;
-    private void Func_vline() {
+    private String Func_vline() {
     	String statement = "<span style=\"border:";
     	String color = "";
     	try{
@@ -806,9 +904,9 @@ public class Mobile_HTML5Function extends Function {
     	}
     	statement += "px solid "+color+"; line-height:1.0em;\"></span>";
 		
-    	// 各引数毎に処理した結果をHTMLに書きこむ
-    	html_env.code.append(statement);
-    	return;
+//    	// 各引数毎に処理した結果をHTMLに書きこむ
+//    	html_env.code.append(statement);
+    	return statement;
     }
     //added by goto 20130502 end
     
@@ -886,7 +984,8 @@ public class Mobile_HTML5Function extends Function {
     /*	pop("title","detail/imgURL",int type), popup()	*/
     /*	<type:1> pop("title","detail") <=> pop("title","detail",1)	*/
     /*	<type:2> pop("title","image URL",2)		*/
-    private void Func_pop() {
+    private String Func_pop() {
+    	String statement = "";
     	FuncArg fa1 = (FuncArg) this.Args.get(0), fa2, fa3;
     	String title, detailORurl, type;
     	int type1Flg = 0; //type1(文字)フラグ
@@ -895,7 +994,7 @@ public class Mobile_HTML5Function extends Function {
     	try{					//引数2つ or 3つの場合
     		fa2 = (FuncArg) this.Args.get(1);
     		detailORurl = fa2.getStr();
-    		if(detailORurl.equals(""))	return;		//added 20130910
+    		if(detailORurl.equals(""))	return "";		//added 20130910
     		title = fa1.getStr();
         	
         	try{						//引数3つの場合
@@ -908,28 +1007,28 @@ public class Mobile_HTML5Function extends Function {
         			
         		//type=2 -> imageFile
         		}else if(type.equals("2") || type.equals("image") || type.equals("img")){
-        			html_env.code.append("	<a href=\"#popup"+getCount(popCount)+"\" data-rel=\"popup\" data-role=\"button\" data-icon=\"arrow-r\" data-inline=\"true\" class=\"ui-li-inside\">"+( (!title.equals(""))? title : "Photo" )+"</a>\n");
+        			statement += "	<a href=\"#popup"+getCount(popCount)+"\" data-rel=\"popup\" data-role=\"button\" data-icon=\"arrow-r\" data-inline=\"true\" class=\"ui-li-inside\">"+( (!title.equals(""))? title : "Photo" )+"</a>\n";
         	    	//TODO: data-transition  transition()使用可能
-        			html_env.code.append("	<div data-role=\"popup\" id=\"popup"+getCount(popCount)+"\" data-transition=\"pop\" style=\"width:95%;\" data-overlay-theme=\"a\">\n");
-        	    	html_env.code.append("		<a href=\"#\" data-rel=\"back\" data-role=\"button\" data-theme=\"a\" data-icon=\"delete\" data-iconpos=\"notext\" class=\"ui-btn-right\">Close</a>\n");
-        	    	html_env.code.append("		<img src=\""+detailORurl+"\"");
+        			statement += "	<div data-role=\"popup\" id=\"popup"+getCount(popCount)+"\" data-transition=\"pop\" style=\"width:95%;\" data-overlay-theme=\"a\">\n";
+        	    	statement += "		<a href=\"#\" data-rel=\"back\" data-role=\"button\" data-theme=\"a\" data-icon=\"delete\" data-iconpos=\"notext\" class=\"ui-btn-right\">Close</a>\n";
+        	    	statement += "		<img src=\""+detailORurl+"\"";
     		        
         			//type=2 width,height指定時の処理
             		if(decos.containsKey("width"))
-            			html_env.code.append(" width="+decos.getStr("width").replace("\"", ""));
+            			statement += " width="+decos.getStr("width").replace("\"", "");
             		else{
             	        //added by goto 20130312  "Default width: 100%"
-            			html_env.code.append(" width=\"100%\"");
+            			statement += " width=\"100%\"";
             		}
         			if(decos.containsKey("height"))
-        				html_env.code.append(" height="+decos.getStr("height").replace("\"", ""));
+        				statement += " height="+decos.getStr("height").replace("\"", "");
         			
-        			html_env.code.append(">\n");
+        			statement += ">\n";
         			
         			//画像下部にtitleを付加
-        			if(!title.equals(""))	html_env.code.append("		<p style=\"margin:0px;\">"+title+"</p>\n");
+        			if(!title.equals(""))	statement += "		<p style=\"margin:0px;\">"+title+"</p>\n";
         			
-        	    	html_env.code.append("	</div>\n");
+        	    	statement += "	</div>\n";
         		}
 
         	}catch(Exception e){		//引数2つの場合
@@ -938,27 +1037,27 @@ public class Mobile_HTML5Function extends Function {
         	
         	//type=1 -> 文字
     		if(type1Flg == 1){
-    			html_env.code.append("	<a href=\"#popup"+getCount(popCount)+"\" data-rel=\"popup\" data-role=\"button\" data-icon=\"arrow-r\" data-inline=\"true\">"+( (!title.equals(""))? title : "Open" )+"</a>\n");
+    			statement += "	<a href=\"#popup"+getCount(popCount)+"\" data-rel=\"popup\" data-role=\"button\" data-icon=\"arrow-r\" data-inline=\"true\">"+( (!title.equals(""))? title : "Open" )+"</a>\n";
     	    	//TODO: data-transition  transition()使用可能
-    			html_env.code.append("	<div data-role=\"popup\" id=\"popup"+getCount(popCount)+"\" data-transition=\"slideup\" style=\"width:95%;\" data-overlay-theme=\"a\">\n");
-    	    	html_env.code.append("		<a href=\"#\" data-rel=\"back\" data-role=\"button\" data-theme=\"a\" data-icon=\"delete\" data-iconpos=\"notext\" class=\"ui-btn-right\">Close</a>\n");
-    	    	html_env.code.append("		<p>"+detailORurl+"</p>\n");
-    	    	html_env.code.append("	</div>\n");
+    			statement += "	<div data-role=\"popup\" id=\"popup"+getCount(popCount)+"\" data-transition=\"slideup\" style=\"width:95%;\" data-overlay-theme=\"a\">\n";
+    	    	statement += "		<a href=\"#\" data-rel=\"back\" data-role=\"button\" data-theme=\"a\" data-icon=\"delete\" data-iconpos=\"notext\" class=\"ui-btn-right\">Close</a>\n";
+    	    	statement += "		<p>"+detailORurl+"</p>\n";
+    	    	statement += "	</div>\n";
     		}
 
     	}catch(Exception e){	//引数1つの場合
     		Log.info("<Warning> pop関数の引数が不足しています。 ex. pop(title, Detail/URL, typeValue)");
-    		return;
+    		return "";
     	}
     	
     	popCount++;
-    	return;
+    	return statement;
     }
     //added by goto 20130313 end
     
     //added by goto 20130515 start  "search"
     /*	search("title", "c1:column1, c2:column2, ... ", "From以下")	*/
-    private void Func_search() {
+    private String Func_search() {
     	/*  //ユーザ定義
 		    $sqlite3_DB = '/Users/goto/Desktop/SQLite_DB/sample2.db';
 		    $search_col = "w.name, pr.name, count(*), w.r_year, ko.kind";
@@ -988,11 +1087,11 @@ public class Mobile_HTML5Function extends Function {
     		after_from += fa3.getStr().trim();
     	}catch(Exception e){
     		Log.info("<Warning> serach関数の引数が不足しています。 ex. search(\"title\", \"c1:column1, c2:column2, ... \", \"From以下\")");
-    		return;
+    		return "";
     	}
 		if(columns.trim().equals("") || after_from.equals("")){
 			Log.info("<Warning> serach関数の引数が不足しています。 ex. search(\"title\", \"c1:column1, c2:column2, ... \", \"From以下\")");
-    		return;
+    		return "";
 		}
 		if(after_from.toLowerCase().startsWith("from "))	after_from = after_from.substring("from".length()).trim();
     	//Log.info(title);
@@ -1106,7 +1205,7 @@ public class Mobile_HTML5Function extends Function {
     	if(after_from.startsWith("#")){					//From以下をクエリの下(#*)から取ってくる場合
     		if(!after_from_string.contains(after_from)){
     			Log.info("<Warning> serach関数の第三引数に指定されている '"+after_from+"' が見つかりません。");
-    			return;
+    			return "";
     		}
     		query = after_from_string
     				.substring(after_from_string.indexOf(after_from)+after_from.length())
@@ -1384,18 +1483,18 @@ public class Mobile_HTML5Function extends Function {
     	
     	
 
-    	// 各引数毎に処理した結果をHTMLに書きこむ
-    	html_env.code.append(statement);
+//    	// 各引数毎に処理した結果をHTMLに書きこむ
+//    	html_env.code.append(statement);
     	
     	searchCount++;
-    	return;
+    	return statement;
     }
     //search end
     
     
     //added by goto 20130529 start  "select"
     /*	select("title", "c1:column1, c2:column2, ... ", "From以下")	*/
-    private void Func_select() {
+    private String Func_select() {
     	/*  //ユーザ定義
 		    $sqlite3_DB = '/Users/goto/Desktop/SQLite_DB/sample2.db';
 		    $select_col = "w.name, pr.name, count(*), w.r_year, ko.kind";
@@ -1426,11 +1525,11 @@ public class Mobile_HTML5Function extends Function {
     		after_from += fa3.getStr().trim();
     	}catch(Exception e){
     		Log.info("<Warning> serach関数の引数が不足しています。 ex. select(\"title\", \"c1:column1, c2:column2, ... \", \"From以下\")");
-    		return;
+    		return "";
     	}
     	if(columns.trim().equals("") || after_from.equals("")){
     		Log.info("<Warning> serach関数の引数が不足しています。 ex. select(\"title\", \"c1:column1, c2:column2, ... \", \"From以下\")");
-    		return;
+    		return "";
     	}
     	if(after_from.toLowerCase().startsWith("from "))	after_from = after_from.substring("from".length()).trim();
     	//Log.info(title);
@@ -1531,7 +1630,7 @@ public class Mobile_HTML5Function extends Function {
     	if(after_from.startsWith("#")){					//From以下をクエリの下(#*)から取ってくる場合
     		if(!after_from_string.contains(after_from)){
     			Log.info("<Warning> select関数の第三引数に指定されている '"+after_from+"' が見つかりません。");
-    			return;
+    			return "";
     		}
     		query = after_from_string
     				.substring(after_from_string.indexOf(after_from)+after_from.length())
@@ -1784,11 +1883,11 @@ public class Mobile_HTML5Function extends Function {
     	}
     	
     	
-    	// 各引数毎に処理した結果をHTMLに書きこむ
-    	html_env.code.append(statement);
+//    	// 各引数毎に処理した結果をHTMLに書きこむ
+//    	html_env.code.append(statement);
     	
     	selectCount++;
-    	return;
+    	return statement;
     }
     //select end
     
@@ -1797,7 +1896,7 @@ public class Mobile_HTML5Function extends Function {
     /* insert("title", "c1:column1, c2:column2, ... ", "From以下")	*/
     /* update("title", "c1:column1, c2:column2, ... ", "From以下"(, "insert Flag"))	*/
     /* insert_update("title", "c1:column1, c2:column2, ... ", "From以下")  データ無し->新規insert,データあり->update */
-    private void Func_insert(boolean update, boolean insert_update) {
+    private String Func_insert(boolean update, boolean insert_update) {
     	
     	String title = "";
     	String columns = "";
@@ -1825,11 +1924,11 @@ public class Mobile_HTML5Function extends Function {
     		}
     	}catch(Exception e){
     		Log.info("<Warning> insert関数の引数が不足しています。 ex. insert(\"title\", \"c1:column1, c2:column2, ... \", \"From以下\")");
-    		return;
+    		return "";
     	}
 		if(columns.trim().equals("") || after_from.equals("")){
 			Log.info("<Warning> insert関数の引数が不足しています。 ex. insert(\"title\", \"c1:column1, c2:column2, ... \", \"From以下\")");
-    		return;
+    		return "";
 		}
 		if(after_from.toLowerCase().startsWith("from "))	after_from = after_from.substring("from".length()).trim();
 		if(insert_update)	insertFlag = "true";	//20130721
@@ -2046,7 +2145,7 @@ public class Mobile_HTML5Function extends Function {
     	if(after_from.startsWith("#")){					//From以下をクエリの下(#*)から取ってくる場合
     		if(!after_from_string.contains(after_from)){
     			Log.info("<Warning> insert関数の第三引数に指定されている '"+after_from+"' が見つかりません。");
-    			return;
+    			return "";
     		}
     		query = after_from_string
     				.substring(after_from_string.indexOf(after_from)+after_from.length())
@@ -2375,17 +2474,17 @@ public class Mobile_HTML5Function extends Function {
     	//	;
     	//}
 
-    	// 各引数毎に処理した結果をHTMLに書きこむ
-    	html_env.code.append(statement);
+//    	// 各引数毎に処理した結果をHTMLに書きこむ
+//    	html_env.code.append(statement);
     	
     	insertCount++;
-    	return;
+    	return statement;
     }
     //insert end
     
     //20131127 form
     //result start
-    private void Func_result() {
+    private String Func_result() {
     	int count = Mobile_HTML5.formCount;
     	//if(!Mobile_HTML5.form)	count -= 1;
 	    String s =
@@ -2393,7 +2492,8 @@ public class Mobile_HTML5Function extends Function {
 			"<div id=\"Form"+count+"_text0\" data-role=\"none\"><!-- Form result --></div>\n" +
 			"\n";
 			//"<br>\n";
-	    html_env.code.append(s);
+	    //html_env.code.append(s);
+	    return s;
     }
     //result end
     
@@ -2402,7 +2502,7 @@ public class Mobile_HTML5Function extends Function {
     /*  1:check(type, 演算子(=,!=,<,<=,>,>=,...), answer, 正解ステートメント, 不正解ステートメント)  */
     /*  2:check(type, 識別子("yes|no"など), answer, 正解ステートメント, 不正解ステートメント)  */
     //check("form","=",answer,"正解","不正解")
-    private void Func_check() {
+    private String Func_check() {
     	String statement = "\n";
     	String type = "";
     	String operator = "";
@@ -2417,7 +2517,7 @@ public class Mobile_HTML5Function extends Function {
     		incorrect = ((FuncArg) this.Args.get(4)).getStr();
     	}catch(Exception e){
     		Log.info("<Warning> check関数の引数が不足しています。 ex. check(type, 演算子(=,!=,<,<=,>,>=,...)・識別子(\"yes|no\"など), answer, 正解ステートメント, 不正解ステートメント)");
-    		return;
+    		return "";
     	}
     	
     	if(operator.trim().equals("="))	operator = "==";
@@ -2594,11 +2694,11 @@ public class Mobile_HTML5Function extends Function {
     	}
     	
     	
-    	// 各引数毎に処理した結果をHTMLに書きこむ
-    	html_env.code.append(statement);
+//    	// 各引数毎に処理した結果をHTMLに書きこむ
+//    	html_env.code.append(statement);
     	
     	checkCount++;
-    	return;
+    	return statement;
     }
     //check end
     
@@ -2606,7 +2706,7 @@ public class Mobile_HTML5Function extends Function {
     //added by goto 20130519 start  "moveto"
     /*  moveto(url, sec)  */
     /*  moveto(title, url, sec)  */
-    private void Func_moveto() {
+    private String Func_moveto() {
     	String statement = "\n";
     	String url = "";
     	String sec = "";
@@ -2623,7 +2723,7 @@ public class Mobile_HTML5Function extends Function {
         	}catch(Exception e){ }		//引数2つ
     	}catch(Exception e){
     		Log.info("<Warning> moveto関数の引数が不足しています。 ex. moveto(url, sec) or moveto(title, url, sec)");
-    		return;
+    		return "";
     	}
     	
     	//movetoFlg  下記は、header()内でappendされる
@@ -2635,9 +2735,9 @@ public class Mobile_HTML5Function extends Function {
     	statement += sec+"秒後に"+((!title.equals(""))? (title+"へ"):(""))+"移動します。<br>\n";
     	statement += "自動的に移動しない場合は、<a href=\""+url+"\" target=\"_self\">こちら</a>をクリックしてください。\n";
     	
-    	// 各引数毎に処理した結果をHTMLに書きこむ
-    	html_env.code.append(statement);
-    	return;
+//    	// 各引数毎に処理した結果をHTMLに書きこむ
+//    	html_env.code.append(statement);
+    	return statement;
     }
     //added by goto 20130519 end
     
@@ -2645,9 +2745,10 @@ public class Mobile_HTML5Function extends Function {
     //added by goto 20130603 start  "$session"
     /*  $session("SESSION関数(第3引数)でセッション変数へ格納した属性")  */
     /*  $session("name")など  */
-    private void Func_$session() {
+    private String Func_$session() {
     	if(!SSQLparser.sessionFlag){
     		Log.info("<Warning> $session関数は、SESSION()使用時のみ使用可能です。");
+    		return "";
     	}else{
 	    	String statement = "\n";
 	    	String attribute = "";
@@ -2655,21 +2756,21 @@ public class Mobile_HTML5Function extends Function {
 	    		attribute = ((FuncArg) this.Args.get(0)).getStr();
 	    	}catch(Exception e){
 	    		Log.info("<Warning> $session関数の引数が不足しています。 ex. $session(\"name\")");
-	    		return;
+	    		return "";
 	    	}
 	    	statement += "EOF;\n" +
 	    			"		echo $_SESSION["+attribute+"];\n" +
 	    			"		echo <<<EOF\n";
-	    	// 各引数毎に処理した結果をHTMLに書きこむ
-	    	html_env.code.append(statement);
+//	    	// 各引数毎に処理した結果をHTMLに書きこむ
+//	    	html_env.code.append(statement);
+	    	return statement;
     	}
-    	return;
     }
     //$session end
     
     //added by goto 20130607 start  "time,date"
     /*  time(),date(),time("Y-m-d")など  */
-    private void Func_time() {
+    private String Func_time() {
 		String statement = "\n";
 		String format = "";
 		try{
@@ -2678,9 +2779,9 @@ public class Mobile_HTML5Function extends Function {
 		statement += "EOF;\n" +
 				"		echo date(\""+( (format.equals(""))? ("Y/m/d(D) H:i:s"):(format) )+"\");\n" +		//第二引数のデフォルト値:time()		//"		echo date(\"Y/m/d(D) H:i:s\", time());\n" +
 				"		echo <<<EOF\n";
-		// 各引数毎に処理した結果をHTMLに書きこむ
-		html_env.code.append(statement);
-    	return;
+//		// 各引数毎に処理した結果をHTMLに書きこむ
+//		html_env.code.append(statement);
+    	return statement;
     }
     //time end
     
@@ -2688,7 +2789,7 @@ public class Mobile_HTML5Function extends Function {
     /*  map(geolocation, zoom, icon)  */
     /*  search_map(zoom, icon)  */
     /*  geolocation: 住所(address) or 緯度,経度(latitude,longitude)  */
-    private void Func_map(boolean searchFlg) {
+    private String Func_map(boolean searchFlg) {
     	String statement = "\n";
     	String geolocation = "";
     	String zoom = "";
@@ -2713,7 +2814,7 @@ public class Mobile_HTML5Function extends Function {
     	}catch(Exception e){
     		if(!searchFlg){
     			System.err.println("<Warning> map関数の引数が不足しています。 ex. map(geolocation, zoom, icon)");
-    			return;
+    			return "";
     		}
     	}
     	
@@ -2795,9 +2896,9 @@ public class Mobile_HTML5Function extends Function {
 //				"		\n" +
 //				"		<div id=\"map-wrapper\"></div>";
     	
-    	// 各引数毎に処理した結果をHTMLに書きこむ
-    	html_env.code.append(statement);
-    	return;
+//    	// 各引数毎に処理した結果をHTMLに書きこむ
+//    	html_env.code.append(statement);
+    	return statement;
     }
     //map end
     
@@ -2805,7 +2906,7 @@ public class Mobile_HTML5Function extends Function {
     /*  gps(type,icon) or gps_map(type,icon)  */
     /*  type:1 map  */
     /*  type:2 map + button */
-    private void Func_gps() {
+    private String Func_gps() {
 		String statement = "\n";
 		String type = "";
 		String zoom = "";
@@ -2886,14 +2987,14 @@ public class Mobile_HTML5Function extends Function {
 //				"			<li>経度:&nbsp;<span id=\"gps_longitude\"></span></li>\n" +
 //				"		</ul>";
 		
-		// 各引数毎に処理した結果をHTMLに書きこむ
-		html_env.code.append(statement);
-    	return;
+//		// 各引数毎に処理した結果をHTMLに書きこむ
+//		html_env.code.append(statement);
+    	return statement;
     }
     //gps end
     //added by goto 20130717  "gps_info"
     /*  gps_info()  */
-    private void Func_gps_info() {
+    private String Func_gps_info() {
     	String statement = "\n";
 //		String format = "";
 //		try{
@@ -2925,15 +3026,15 @@ public class Mobile_HTML5Function extends Function {
 				"			<li>経度:&nbsp;<span id=\"gps_longitude\"></span></li>\n" +
 				"		</ul>";
     	
-    	// 各引数毎に処理した結果をHTMLに書きこむ
-    	html_env.code.append(statement);
-    	return;
+//    	// 各引数毎に処理した結果をHTMLに書きこむ
+//    	html_env.code.append(statement);
+    	return statement;
     }
     //gps_info end
     
     //added by goto 20130914  "audio"
     /*  audio("HTML・画像・動画ファイル等のファイル名")  */
-    private void Func_audio() {
+    private String Func_audio() {
 //    	String classID = HTMLEnv.getClassID(this);
 //    	HTMLManager.replaceCode(html_env, classID, "");		//直前の<div>に書き込まれているclassIDを削除
     	
@@ -2942,15 +3043,15 @@ public class Mobile_HTML5Function extends Function {
     		str = ((FuncArg) this.Args.get(0)).getStr();
     	}catch(Exception e){ }
     	
-    	// 各引数毎に処理した結果をHTMLに書きこむ
-    	html_env.code.append("<audio src=\""+str+"\" controls>\n");
-    	return;
+//    	// 各引数毎に処理した結果をHTMLに書きこむ
+//    	html_env.code.append("<audio src=\""+str+"\" controls>\n");
+    	return "<audio src=\""+str+"\" controls>\n";
     }
     //audio end
     
     //added by goto 20130914  "movie"
     /*  movie("HTML・画像・動画ファイル等のファイル名")  */
-    private void Func_movie() {
+    private String Func_movie() {
     	String classID = Mobile_HTML5Env.getClassID(this);
     	Mobile_HTML5Manager.replaceCode(html_env, classID, "");		//直前の<div>に書き込まれているclassIDを削除
     	
@@ -2959,19 +3060,20 @@ public class Mobile_HTML5Function extends Function {
     		str = ((FuncArg) this.Args.get(0)).getStr();
     	}catch(Exception e){ }
     	
-    	// 各引数毎に処理した結果をHTMLに書きこむ
-//    	html_env.code.append("<video src=\""+str+"\" class=\"" + classID +"\">\n</video>\n");
-//    	html_env.code.append("<video src=\""+str+"\" class=\"" + classID +"\" controls>\n</video>\n");
-    	html_env.code.append("<video src=\""+str+"\" class=\"" + classID +"\" preload=\"none\" onclick=\"this.play()\" controls>\n</video>\n");
-//    	html_env.code.append("<video src=\""+str+"\" class=\"" + classID +"\" poster=\"XXX.jpg\" preload=\"none\" onclick=\"this.play()\" controls>\n</video>\n");
-    	return;
+//    	// 各引数毎に処理した結果をHTMLに書きこむ
+////    	html_env.code.append("<video src=\""+str+"\" class=\"" + classID +"\">\n</video>\n");
+////    	html_env.code.append("<video src=\""+str+"\" class=\"" + classID +"\" controls>\n</video>\n");
+//    	html_env.code.append("<video src=\""+str+"\" class=\"" + classID +"\" preload=\"none\" onclick=\"this.play()\" controls>\n</video>\n");
+////    	html_env.code.append("<video src=\""+str+"\" class=\"" + classID +"\" poster=\"XXX.jpg\" preload=\"none\" onclick=\"this.play()\" controls>\n</video>\n");
+    	return "<video src=\""+str+"\" class=\"" + classID +"\" preload=\"none\" onclick=\"this.play()\" controls>\n</video>\n";
     }
     //movie end
     
     //added by goto 20130914  "object"
     /*  object("file name")  */
     /*  object("HTML・PDF・FLASH・画像・動画・PHP・JSファイル等のファイル名")  */
-    private void Func_object(String path) {
+    private String Func_object(String path) {
+    	String statement = "";
     	String classID = Mobile_HTML5Env.getClassID(this);
 
     	//not @{table}
@@ -2993,16 +3095,16 @@ public class Mobile_HTML5Function extends Function {
 				while (true){
 					line = in.readLine();
 					if (line == null)	break;
-					else html_env.code.append(line+"\n");
+					else statement += line+"\n";
 				}
 			}catch(Exception e){
 				System.err.println("<Warning> Can't open '"+path+"'.");
 			}
 		}else if(path.endsWith(".js"))	//.js file
-			html_env.code.append("<script type=\"text/javascript\" src=\""+path+"\">\n</script>\n");
+			statement += "<script type=\"text/javascript\" src=\""+path+"\">\n</script>\n";
 		else	//.html, .pdf, .swf, .gif, .mp4, etc.
-			html_env.code.append("<object data=\""+path+"\" class=\"" + classID +"\" >\n</object>\n");
-    	return;
+			statement += "<object data=\""+path+"\" class=\"" + classID +"\" >\n</object>\n";
+    	return statement;
     }
     //object end
     
@@ -3015,7 +3117,8 @@ public class Mobile_HTML5Function extends Function {
     static String classID = "";
     static int glvl = 0;
     /*  SEQ_NUM( [Start number [, ASC or DESC] ] )  */
-    private void Func_seq_num() {
+    private String Func_seq_num() {
+    	String s = "";
     	classID = Mobile_HTML5Env.getClassID(this);
     	
     	int i;
@@ -3041,15 +3144,18 @@ public class Mobile_HTML5Function extends Function {
     		}
     	}
     	
-    	// 各引数毎に処理した結果をHTMLに書きこむ
-    	html_env.code.append(""+((!seq_num_DESC_Flg.get(i))? (seq_num.get(i)):(seq_num.get(i))));
+    	s = ""+((!seq_num_DESC_Flg.get(i))? (seq_num.get(i)):(seq_num.get(i)));
+    	//Log.i(s);
+//    	// 各引数毎に処理した結果をHTMLに書きこむ
+//    	html_env.code.append(""+((!seq_num_DESC_Flg.get(i))? (seq_num.get(i)):(seq_num.get(i))));
     	if(!seq_num_DESC_Flg.get(i))	seq_num.set(i,seq_num.get(i)+1);
     	else							seq_num.set(i,seq_num.get(i)-1);
-    	return;
+    	return s;
     }
     //seq_num end
 	//added by goto 20130914  "SEQ_NUM"
     static void Func_seq_num_initialization(int gl) {		//initialize seq_num
+    	Log.i(" !! Func_seq_num_initialization !! ");
     	try{
     		for(int i=0; i<seq_num_ClassID.size(); i++){
     			if(seq_num_ClassID.get(i).equals(classID) && seq_num_gl.get(i)==gl){
@@ -3070,7 +3176,7 @@ public class Mobile_HTML5Function extends Function {
     /*  text("#TextLabel_" + Number)  */
 //    static String text = "";
     static boolean textFlg2 = false; //for C2
-    private void Func_text() {
+    private String Func_text() {
 //    	html_env.code.delete(html_env.code.lastIndexOf("<"),html_env.code.lastIndexOf(">")+1);	//delete last <div class="">
 //    	html_env.code.delete(html_env.code.lastIndexOf("<"),html_env.code.lastIndexOf(">")+1);	//delete last <div class="">
     	//TODO: 改行コード削除
@@ -3087,10 +3193,10 @@ public class Mobile_HTML5Function extends Function {
 		}catch(Exception e){ }
     	
 		
-//		text = str;
-    	// 各引数毎に処理した結果をHTMLに書きこむ
-    	html_env.code.append(str);
-    	return;
+////		text = str;
+//    	// 各引数毎に処理した結果をHTMLに書きこむ
+//    	html_env.code.append(str);
+    	return str;
     }
     //text end
     

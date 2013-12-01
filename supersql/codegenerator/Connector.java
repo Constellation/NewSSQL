@@ -162,7 +162,10 @@ public class Connector extends Operator{
 	}
 
 	@Override
-	public void work(ExtList data_info) {}
+	public String work(ExtList data_info) {
+		return null;
+//		return aggregate;
+	}
 
 	@Override
 	public Object createNode(ExtList<ExtList<String>> data_info) {

@@ -27,7 +27,7 @@ public class Mobile_HTML5C2 extends Connector {
     }
 
     //C2��work�᥽�å�
-    public void work(ExtList data_info) {
+    public String work(ExtList data_info) {
     	Mobile_HTML5.preProcess(getSymbol(), decos, html_env);	//Pre-process (前処理)
     	
     	//20131001 tableDivHeader
@@ -364,6 +364,7 @@ public class Mobile_HTML5C2 extends Connector {
         //20131001 tableDivHeader
         if(decos.containsKey("header"))
         	html_env.code = Mobile_HTML5G2.createAndCutTableDivHeader(html_env);
+		return null;
     }
 
     public String getSymbol() {

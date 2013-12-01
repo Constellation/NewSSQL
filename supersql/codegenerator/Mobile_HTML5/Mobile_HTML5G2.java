@@ -66,7 +66,7 @@ public class Mobile_HTML5G2 extends Grouper {
 
     //G2��work�᥽�å�
     @Override
-	public void work(ExtList data_info) {
+	public String work(ExtList data_info) {
     	Mobile_HTML5.preProcess(getSymbol(), decos, html_env);	//Pre-process (前処理)
     	
     	//20131001 tableDivHeader
@@ -502,6 +502,7 @@ public class Mobile_HTML5G2 extends Grouper {
         Log.out("TFEId = " + Mobile_HTML5Env.getClassID(this));
         //html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
         //G2Flg = false;
+		return null;
     }
     
     //added by goto 20130413  "row Prev/Next"

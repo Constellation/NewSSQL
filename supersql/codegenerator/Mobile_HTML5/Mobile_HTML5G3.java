@@ -38,7 +38,7 @@ public class Mobile_HTML5G3 extends Grouper {
 
     //G3��work�᥽�å�
     @Override
-	public void work(ExtList data_info) {
+	public String work(ExtList data_info) {
         String parentfile = html_env.filename;
         String parentnextbackfile = html_env.nextbackfile;
         StringBuffer parentcode = html_env.code;
@@ -177,7 +177,8 @@ public class Mobile_HTML5G3 extends Grouper {
 
         Log.out("TFEId = " + Mobile_HTML5Env.getClassID(this));
         html_env.append_css_def_td(Mobile_HTML5Env.getClassID(this), this.decos);
-
+		
+        return null;
     }
 
     private void setLinkButton() {

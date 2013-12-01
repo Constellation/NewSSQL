@@ -46,7 +46,7 @@ public class Mobile_HTML5Attribute extends Attribute {
 		this.html_env2 = henv2;
 	}
 	//Attribute��work�᥽�å�
-	public void work(ExtList data_info) {
+	public String work(ExtList data_info) {
 		/*
         if(GlobalEnv.getSelectFlg())
         	data_info = (ExtList) data_info.get(0);
@@ -273,7 +273,7 @@ public class Mobile_HTML5Attribute extends Attribute {
 			Log.out("TFEId = " + Mobile_HTML5Env.getClassID(this));
 			//html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
 		}
-
+		return null;
 	}
 
 	//optimizer

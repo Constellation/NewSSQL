@@ -21,7 +21,7 @@ public class Mobile_HTML5C0 extends Connector {
 
 	//C2��work�᥽�å�
 	@Override
-	public void work(ExtList data_info) {
+	public String work(ExtList data_info) {
 
 //		      Log.out("data_info =" +data_info);
 		
@@ -39,7 +39,6 @@ public class Mobile_HTML5C0 extends Connector {
 		while (this.hasMoreItems()) {
 			this.worknextItem();
 		}
-		
 
 //        if(decos.containsKey("form")){
 //        	html_env2.code.append("<form"+ Mobile_HTML5Env.getFormNumber() +"end />");
@@ -50,7 +49,7 @@ public class Mobile_HTML5C0 extends Connector {
 //           	if(decos.getStr("form").toLowerCase().equals("search"))
 //        		Mobile_HTML5Env.setSearch(false);
 //        }
-
+		return null;
 	}
 
 	@Override

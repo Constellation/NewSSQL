@@ -1,6 +1,7 @@
 package supersql.codegenerator;
 
 import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5;
+import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5Function;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
 //import common.Log;
@@ -72,7 +73,12 @@ public class FuncArg {
 	}
 
 	public String getStr() {
-		if (tfe instanceof Attribute) {
+		if (tfe instanceof Function) {
+			//20131201 nesting function
+			Function.nestingLevel++;
+			return tfe.work(Data);	//recursive call
+
+		} else if (tfe instanceof Attribute) {
 			
 			//20131118 dynamic
 			if(Mobile_HTML5.dynamicDisplay){

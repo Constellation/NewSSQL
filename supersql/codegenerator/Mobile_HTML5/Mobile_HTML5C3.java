@@ -35,7 +35,7 @@ public class Mobile_HTML5C3 extends Connector {
 
     //C3､ﾎwork･皈ｽ･ﾃ･ﾉ
     @Override
-	public void work(ExtList data_info) {
+	public String work(ExtList data_info) {
         int i = 0;
         String parentfile = html_env.filename;
         String parentfile2 = html_env2.filename;
@@ -210,7 +210,7 @@ public class Mobile_HTML5C3 extends Connector {
         //20130309
         //C3Flg=false;
         //Log.info("	[C3    end!!!]");
-
+        return null;
     }
 
     @Override

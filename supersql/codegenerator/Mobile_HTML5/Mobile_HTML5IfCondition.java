@@ -14,7 +14,7 @@ public class Mobile_HTML5IfCondition extends IfCondition {
 		super(condition, thenTfe, elseTfe);
 	}
 	
-	public void work(ExtList data_info) {
+	public String work(ExtList data_info) {
 
 		String conditionResult = (String) data_info.get(0);
 		if(conditionResult.equals("t") || conditionResult.equals("1")) {
@@ -36,6 +36,7 @@ public class Mobile_HTML5IfCondition extends IfCondition {
 				elseTfe.work(data_info.ExtsubList(2, data_info.size()));
 			else
 				elseTfe.work((ExtList)data_info.get(2));
-			}		
+			}
+		return null;		
 		}
 }
