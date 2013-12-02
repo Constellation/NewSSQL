@@ -816,8 +816,11 @@ public class Mobile_HTML5Env extends LocalEnv {
 		        				"<!-- Login & Registration start -->\n" +
 		        				"<!-- Login Panel start -->\n" +
 		        				"<br>\n" +
-		        				"<div id=\"LOGINpanel1\" style=\"background-color:whitesmoke; border-radius:20px; border:5px gray solid;\" data-role=\"none\">\n" +
-		        				"<div style=\"color:lightgray; font-size:30; background-color:black; border-radius:15px 15px 0px 0px;\" id=\"loginTitle1\">Log in</div>\n" +
+		        				//"<div id=\"LOGINpanel1\" style=\"background-color:black; width:100%;\" data-role=\"none\">\n" +
+		        				//"<div id=\"LOGINpanel1\" style=\"background-color:whitesmoke; border-radius:20px; border:5px gray solid;\" data-role=\"none\">\n" +
+		        				"<div id=\"LOGINpanel1\" style=\"background-color:whitesmoke; border-radius:10px; border:3px gray solid;\" data-role=\"none\">\n" +
+		        				//"<div style=\"color:lightgray; font-size:30; background-color:black; border-radius:15px 15px 0px 0px;\" id=\"loginTitle1\">Log in</div>\n" +
+		        				"<div style=\"color:lightgray; font-size:30; background-color:black; border-radius:5px 5px 0px 0px;\" id=\"loginTitle1\">Log in</div>\n" +
 		        				"<br>\n" +
 		        				"<form method=\"post\" action=\"\" target=\"login_ifr1\">\n" +
 		        				"<div>\n" +
