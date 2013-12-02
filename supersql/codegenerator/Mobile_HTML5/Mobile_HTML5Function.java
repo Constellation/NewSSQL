@@ -298,7 +298,8 @@ public class Mobile_HTML5Function extends Function {
     private String createArithmeticOperation(String operator) {
     	String s = "";
     	String label = "SSQL_Func_ArithmeticOperation";
-    	if(nestingLevel < 1){
+//    	if(nestingLevel < 1){
+    	if(nestingLevel < 0){
     		s += ""
 		    	+ "<div id=\""+label+ArithmeticOperationCount+"\"><!-- Computation result --></div>\n"
 		    	+ "<SCRIPT language=\"JavaScript\">\n"
@@ -310,7 +311,8 @@ public class Mobile_HTML5Function extends Function {
     	}
     	s = s.substring(0, s.length()-1);	//cut last 'operator'
     	s += ")";
-    	if(nestingLevel < 1){
+//    	if(nestingLevel < 1){
+    	if(nestingLevel < 0){
     		s += ""
 		    	+ ";\n"
 		    	+ "document.getElementById(\""+label+ArithmeticOperationCount+"\").innerHTML = val;\n"
@@ -911,50 +913,85 @@ public class Mobile_HTML5Function extends Function {
     //added by goto 20130502 end
     
     //added by goto 20130313 start  "header"
-    /*	header("title")	*/
+    /*	header(Title [, Home [, Menu] ] )	*/
+    /*	ex) header("Title1", "http://localhost/index.html", "Google:'https://www.google.co.jp/' , 'http://www.yahoo.co.jp/'")	*/
     private void Func_header() {
     	//TODO: 第2引数で画像のURL,リンク先等
     	
-    	String statement = "";
-    	try{
-    		//title
-    		FuncArg fa1 = (FuncArg) this.Args.get(0);
-    		if(!fa1.getStr().equals(""))
-    			statement = fa1.getStr();
-    		else	return;
-    	}catch(Exception e){ return; }
+    	String title = getValue(1).trim();
+    	if(title.isEmpty())	return;
+    	String home = getValue(2).trim();
+    	String menus = getValue(3).trim();
+    	
+    	ArrayList<String> menuTitle = new ArrayList<String>();
+    	ArrayList<String> url = new ArrayList<String>();
+    	if(!menus.isEmpty()){
+    		//create menu list
+    		menus += ",";
+    		int i = 0;
+    		String s = "";
+    		while(menus.contains(",")){
+    			s = menus.substring(0,menus.indexOf(",")).trim();
+    			if(s.contains(":") && !s.startsWith("'")){
+    				menuTitle.add(i, s.substring(0, s.indexOf(":")));
+    				url.add(i, s.substring(s.indexOf(":")+1).replaceAll("'", ""));
+    			}else{
+	    			menuTitle.add(i, "");
+	    			url.add(i, s.replaceAll("'", ""));
+    			}
+    			menus = menus.substring(menus.indexOf(",")+1);
+    			i++;
+    		}
+    	}
     	
     	headerString += "<div data-role=\"header\" data-position=\"fixed\" style=\"padding: 11px 0px;\" id=\"header1\">\n" +
 		    	"<a href=\"\" data-rel=\"back\" data-role=\"button\" data-icon=\"back\" data-mini=\"true\">Back</a>\n" +
 		    	"\n" +
 		    	"<div class=\"ui-btn-right\">\n" +
-		    	"	<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>\n" +
-		    	"		<a href=\"index.html\" data-role=\"button\" data-icon=\"home\" data-iconpos=\"notext\" data-mini=\"true\"></a>\n" +
-		    	"	</td><td>\n" +
+		    	"	<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>\n";
+    	if(!home.isEmpty()){
+	    	headerString += 
+			    	"	<td>\n" +
+			    	"		<a href=\""+home+"\" data-role=\"button\" data-icon=\"home\" data-iconpos=\"notext\" data-mini=\"true\" data-ajax=\"false\"></a>\n" +
+			    	"	</td>\n";
+    	}
+    	headerString += 
+		    	"	<td>\n" +
 		    	"		<form style=\"display:inline;\">\n" +
 		    	"			<input type=\"button\" data-icon=\"forward\" data-iconpos=\"notext\" data-mini=\"true\" onClick=\"history.forward()\" >\n" +
 		    	"		</form>\n" +
-		    	"	</td><td>\n" +
-		    	"		<a href=\"#popupMenu\" data-rel=\"popup\" data-role=\"button\" data-icon=\"grid\" data-iconpos=\"notext\" data-mini=\"true\"></a>\n" +
-		    	"		<div data-role=\"popup\" id=\"popupMenu\" data-transition=\"slidedown\" style=\"width:95%;\" data-overlay-theme=\"a\">\n" +
-		    	"			<a href=\"#\" data-rel=\"back\" data-role=\"button\" data-theme=\"a\" data-icon=\"delete\" data-iconpos=\"notext\" class=\"ui-btn-right\">Close</a>\n" +
-		    	"			<ul data-role=\"listview\" data-inset=\"true\" style=\"min-width:210px;\" data-theme=\"d\">\n" +
-		    	"				<li data-role=\"divider\" data-theme=\"a\">Menu</li>\n";
-    	//added by goto 20130508  "Login&Logout"
-        if(!SSQLparser.sessionFlag)
-        	headerString += "				<li><a href=\"login.html\">Log in</a></li>\n";
-        headerString += "				<li><a href=\"options.html\">Options</a></li>\n" +
-        		"				<li><a href=\"https://www.google.com/\">Search</a></li>\n";
-    	//added by goto 20130508  "Login&Logout"
-    	//Logoutボタン
-        if(SSQLparser.sessionFlag)
-        	headerString += "				<li><a href=\"\" data-rel=\"back\" onclick=\"document.LOGOUTpanel1.submit();return falese;\">Logout</a></li>\n";
-        headerString += "			</ul>\n" +
-		    	"		</div>\n" +
-		    	"	</td></tr></table>\n" +
+		    	"	</td>\n";
+    	if(SSQLparser.sessionFlag || url.size()>0){
+	    	headerString += 
+			    	"	<td>\n" +
+			    	"		<a href=\"#popupMenu\" data-rel=\"popup\" data-role=\"button\" data-icon=\"grid\" data-iconpos=\"notext\" data-mini=\"true\"></a>\n" +
+			    	"		<div data-role=\"popup\" id=\"popupMenu\" data-transition=\"slidedown\" style=\"width:95%;\" data-overlay-theme=\"a\">\n" +
+			    	"			<a href=\"#\" data-rel=\"back\" data-role=\"button\" data-theme=\"a\" data-icon=\"delete\" data-iconpos=\"notext\" class=\"ui-btn-right\">Close</a>\n" +
+			    	"			<ul data-role=\"listview\" data-inset=\"true\" style=\"min-width:210px;\" data-theme=\"d\">\n" +
+			    	"				<li data-role=\"divider\" data-theme=\"a\">Menu</li>\n";
+	    	if(url.size()>0){
+	    		for(int i=0; i<url.size(); i++){
+	    			if(menuTitle.get(i).isEmpty()){
+	    				headerString += "				<li><a href=\""+url.get(i)+"\" data-ajax=\"false\">"+url.get(i)+"</a></li>\n";
+	    			}else{
+	    				headerString += "				<li><a href=\""+url.get(i)+"\" data-ajax=\"false\">"+menuTitle.get(i)+"</a></li>\n";
+	    			}
+	    		}
+	    	}
+	    	//added by goto 20130508  "Login&Logout"
+	    	//Logoutボタン
+	        if(SSQLparser.sessionFlag){
+	        	headerString += "				<li><a href=\"\" data-rel=\"back\" onclick=\"document.LOGOUTpanel1.submit();return falese;\">Logout</a></li>\n";
+	        }
+	        headerString += 
+	        		"			</ul>\n" +
+			    	"		</div>\n" +
+			    	"	</td>\n";
+    	}
+        headerString += 
+		    	"	</tr></table>\n" +
 		    	"</div>\n\n" +
-		    	
-		    	"<div>"+statement+"</div>\n" +
+		    	"<div>"+title+"</div>\n" +
 		    	"</div>\n";
         return;
     }
@@ -3145,7 +3182,8 @@ public class Mobile_HTML5Function extends Function {
     	}
     	
     	s = ""+((!seq_num_DESC_Flg.get(i))? (seq_num.get(i)):(seq_num.get(i)));
-    	//Log.i(s);
+    	//Log.i("s = "+s+"  "+nestingLevel+"  "+adjustValue(s));
+    	s = adjustValue(s);
 //    	// 各引数毎に処理した結果をHTMLに書きこむ
 //    	html_env.code.append(""+((!seq_num_DESC_Flg.get(i))? (seq_num.get(i)):(seq_num.get(i))));
     	if(!seq_num_DESC_Flg.get(i))	seq_num.set(i,seq_num.get(i)+1);
@@ -3155,7 +3193,7 @@ public class Mobile_HTML5Function extends Function {
     //seq_num end
 	//added by goto 20130914  "SEQ_NUM"
     static void Func_seq_num_initialization(int gl) {		//initialize seq_num
-    	Log.i(" !! Func_seq_num_initialization !! ");
+    	//Log.i(" !! Func_seq_num_initialization !! ");
     	try{
     		for(int i=0; i<seq_num_ClassID.size(); i++){
     			if(seq_num_ClassID.get(i).equals(classID) && seq_num_gl.get(i)==gl){
@@ -3170,6 +3208,14 @@ public class Mobile_HTML5Function extends Function {
     		}
     	}catch(Exception e){}
     	return;
+    }
+    static String adjustValue(String s){
+    	try{
+    		if(nestingLevel > 0){
+    			s = ""+Integer.parseInt(s)/(nestingLevel*2);
+    		}
+    	}catch(Exception e){}
+		return s;
     }
 
 	//added by goto 20130914  "text"

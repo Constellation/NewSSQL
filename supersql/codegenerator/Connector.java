@@ -127,7 +127,7 @@ public class Connector extends Operator{
 //			if(Mobile_HTML5.dynamicDisplay){
 //				subdata = Mobile_HTML5.dynamicConnectorProcess(tfe, subdata);
 //			}
-
+			
 			tfe.work(subdata);
 		}
 		else {
