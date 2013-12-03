@@ -1391,7 +1391,8 @@ public class Mobile_HTML5Function extends Function {
     				"\n" +
     				"    if($searchWord"+searchCount+" != \"\"){\n" +
     				"        $db"+searchCount+" = new SQLite3($sqlite3_DB);\n" +
-    				"        $sql = \"SELECT DISTINCT \".$search_col.\" FROM \".$table;\n" +
+    				//"        $sql = \"SELECT DISTINCT \".$search_col.\" FROM \".$table;\n" +
+    				"        $sql = \"SELECT \".$search_col.\" FROM \".$table;\n" +
     				"        if($where0 != \"\")    $sql .= \" WHERE \".$where0.\" \";\n" +
     				"    \n" +
     				"    	//左辺の作成（※Java側でOK?)\n" +
@@ -1792,7 +1793,8 @@ public class Mobile_HTML5Function extends Function {
 							"\n" +
 							"    if($selectWord"+selectCount+" != \"\"){\n" +
 							"        $select_db"+selectCount+" = new SQLite3($sqlite3_DB);\n" +
-							"        $sql = \"SELECT DISTINCT \".$select_col.\" FROM \".$table;\n" +
+							//"        $sql = \"SELECT DISTINCT \".$select_col.\" FROM \".$table;\n" +
+							"        $sql = \"SELECT \".$select_col.\" FROM \".$table;\n" +
 							"        if($where0 != \"\")    $sql .= \" WHERE \".$where0.\" \";\n" +
 							"    \n" +
 							"    	//左辺の作成（※Java側でOK?)\n" +
@@ -2151,7 +2153,7 @@ public class Mobile_HTML5Function extends Function {
     		String str = "";
     		if(s_array[i].replaceAll(" ","").contains("@{")){
     			str = s_array[i].substring(s_array[i].lastIndexOf("@")+1);	//@以下の文字列
-    			Log.e(str);
+    			//Log.e(str);
 	    		if(str.contains("textarea"))
 	    			textareaFlg[i] = true;
 	    		if(str.contains("hidden"))

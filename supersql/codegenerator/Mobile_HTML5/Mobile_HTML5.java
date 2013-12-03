@@ -1314,7 +1314,8 @@ public class Mobile_HTML5 {
 							"\n" +
 							"    if($dynamicWord"+dynamicCount+" != \"\"){\n" +
 							"        $dynamic_db"+dynamicCount+" = new SQLite3($sqlite3_DB);\n" +
-							"        $sql = \"SELECT DISTINCT \".$dynamic_col.\" FROM \".$table;\n" +
+							//"        $sql = \"SELECT DISTINCT \".$dynamic_col.\" FROM \".$table;\n" +
+							"        $sql = \"SELECT \".$dynamic_col.\" FROM \".$table;\n" +
 							"        if($where0 != \"\")    $sql .= \" WHERE \".$where0.\" \";\n" +
 							"    \n" +
 							"    	//左辺の作成（※Java側でOK?)\n" +
