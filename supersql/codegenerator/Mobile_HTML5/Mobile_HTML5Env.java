@@ -294,6 +294,7 @@ public class Mobile_HTML5Env extends LocalEnv {
 //退避	        header.append("<link rel=\"stylesheet\" href=\"js/jqm-icon-pack-2.0-original.css\"/>\n");
 	        header.append("<link rel=\"stylesheet\" href=\"jscss/jquery-ui.css\"/>\n");
             header.append("<link rel=\"stylesheet\" href=\"jscss/jquery.mobile-1.3.1.min.css\"/>\n");
+            header.append("<link rel=\"stylesheet\" href=\"jscss/jqm-datebox.min.css\"/>\n");
             header.append("<link rel=\"stylesheet\" href=\"jscss/jqm-icon-pack-2.0-original.css\"/>\n");
             header.append("<link rel=\"stylesheet\" href=\"jscss/jquery.simplePagination.css\"/>\n");
             //header.append("<link rel=\"stylesheet\" href="css/custom.css\"/>\n");
@@ -307,6 +308,10 @@ public class Mobile_HTML5Env extends LocalEnv {
             header.append("<script src=\"jscss/jquery-ui.min.js\"></script>\n");
             header.append("<script src=\"jscss/showmore.js\"></script>\n");
             header.append("<script src=\"jscss/jquery.mobile-1.3.1.min.js\"></script>\n");
+            header.append("<script src=\"jscss/jqm-datebox.core.min.js\"></script>\n");
+            header.append("<script src=\"jscss/jqm-datebox.mode.calbox.min.js\"></script>\n");
+            header.append("<script src=\"jscss/jqm-datebox.mode.datebox.min.js\"></script>\n");
+            header.append("<script src=\"jscss/jqm-datebox.mode.flipbox.min.js\"></script>\n");
             header.append("<script src=\"jscss/jquery.simplePagination.js\"></script>\n");
             header.append("<script src=\"jscss/jquery.mobile.dynamic.popup.js\"></script>\n");
             //header.append("<script src=\"js/config.js\"></script>\n");

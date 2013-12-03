@@ -2030,6 +2030,7 @@ public class Mobile_HTML5Function extends Function {
     	boolean[] textareaFlg = new boolean[col_num];
     	boolean[] hiddenFlg = new boolean[col_num];
     	boolean[] noinsertFlg = new boolean[col_num];
+    	String[] validationType = new String[col_num];
     	String notnullFlg_array = "";
     	String[] $session_array = new String[col_num];
     	String[] $time_array = new String[col_num];
@@ -2128,18 +2129,20 @@ public class Mobile_HTML5Function extends Function {
     			insert_popFlg += "false\""+((i<col_num-1)?(",\""):(""));
     		
     		//Log.i(s_array[i]);
-    		//@textarea, @hidden, @noinsert, @notnullフラグチェック	//TODO:リファクタリング
+    		//Check: @textarea, @hidden, @noinsert, @notnull, @date, @date1-5, @time	//TODO:リファクタリング
     		textareaFlg[i] = false;
     		hiddenFlg[i] = false;
     		noinsertFlg[i] = false;
+    		validationType[i] = "";
     		String str = "";
     		if(s_array[i].replaceAll(" ","").contains("@{")){
     			str = s_array[i].substring(s_array[i].lastIndexOf("@")+1);	//@以下の文字列
+    			Log.e(str);
 	    		if(str.contains("textarea"))
 	    			textareaFlg[i] = true;
 	    		if(str.contains("hidden"))
 	    			hiddenFlg[i] = true;
-	    		if(str.contains("no") || str.contains("noinsert") || str.contains("noupdate")){
+	    		if(str.contains("noinsert") || str.contains("noupdate")){
 	    			noinsertFlg[i] = true;
 	    			noinsert_count++;
 	    		}else{
@@ -2151,6 +2154,8 @@ public class Mobile_HTML5Function extends Function {
 		    			else				notnullFlg_array += "FALSE,";
 		    		}
 	    		}
+	    		validationType[i] = Mobile_HTML5.checkFormValidationType(str);	//form validation
+	    		
 	    		s_array[i] = s_array[i].substring(0,s_array[i].indexOf("@"));
 	    		//Log.i(s_array[i]);
     		}else{
@@ -2271,10 +2276,14 @@ public class Mobile_HTML5Function extends Function {
 							statement += "	</div>\n";
 						}
 					}else{
-						statement += 
-								"    <"+((!textareaFlg[i])?("input"):("textarea"))+" type=\""+((!hiddenFlg[i])?("text"):("hidden"))+"\" name=\"insert"+insertCount+"_words"+(++insertWordCount)+"\" placeholder=\""+s_name_array[i]+"\">" +
-								""+((!textareaFlg[i])?(""):("</textarea>"))+"\n";
-				    	//statement += "    <input type=\"text\" name=\"insert"+insertCount+"_words"+(insertWordCount)+"\" placeholder=\""+s_name_array[i]+"\">\n";
+						if(validationType[i].isEmpty()){
+							statement += 
+									"    <"+((!textareaFlg[i])?("input 1"):("textarea"))+" type=\""+((!hiddenFlg[i])?("text"):("hidden"))+"\" name=\"insert"+insertCount+"_words"+(++insertWordCount)+"\" placeholder=\""+s_name_array[i]+"\">" +
+									""+((!textareaFlg[i])?(""):("</textarea>"))+"\n";
+							//statement += "    <input type=\"text\" name=\"insert"+insertCount+"_words"+(insertWordCount)+"\" placeholder=\""+s_name_array[i]+"\">\n";
+						}else{
+							statement += Mobile_HTML5.getFormValidationString(validationType[i], "insert"+insertCount+"_words"+(++insertWordCount), s_name_array[i]);
+						}
 					}
 				}else{
 					//statement += "    <input type=\"text\" name=\"insert"+insertCount+"_words"+(++insertWordCount)+"\" placeholder=\""+s_name_array[i]+"\">\n";
@@ -2414,7 +2423,7 @@ public class Mobile_HTML5Function extends Function {
     				"    }\n" +
     				"\n" +
     				"	if($insert_str == \"\"){\n" +
-    				"        insert"+insertCount+"_p1('<font color=\\\"red\\\">入力内容をご確認ください。</font>');\n" +
+    				"        insert"+insertCount+"_p1('<font color=\\\"red\\\">Please check the value.</font>');\n" +
     				"	}else{\n";
 			
 			if(!update){
@@ -2432,7 +2441,7 @@ public class Mobile_HTML5Function extends Function {
 	    				"        try{\n" +
 	    				"			$result2 = $insert_db"+insertCount+"->exec($insert_sql);\n" +
 	    				"			unset($insert_db"+insertCount+");\n" +
-	    				"		 	insert"+insertCount+"_p1(\"登録しました。\");\n" +
+	    				"		 	insert"+insertCount+"_p1(\"Registration completed.\");\n" +
 	    				"		 	//insert"+insertCount+"_p1($insert_sql);\n" +
 	    				"        }catch(Exception $e){\n" +
 	    				"       		unset($insert_db"+insertCount+");\n" +
@@ -2462,12 +2471,12 @@ public class Mobile_HTML5Function extends Function {
 						"				$update_sql = \"UPDATE \".$table.\" SET \".$update_str.\" \".$update_where;\n" +
 						"				$result2 = $insert_db1->exec($update_sql);\n" +
 						"				//echo '変更された行の数: ', $db->changes();\n" +
-						"				insert"+insertCount+"_p1(\"更新しました。\");\n" +
+						"				insert"+insertCount+"_p1(\"Update completed.\");\n" +
 						"			}else{\n";
 				//Log.i("insertFlag:"+insertFlag);
 				if(!insertFlag.equals("true"))
 						Mobile_HTML5Env.PHP +=
-							"				insert"+insertCount+"_p1('<font color=red>更新データがありません。</font>');	//更新データなし\n";
+							"				insert"+insertCount+"_p1('<font color=red>No data found.</font>');	//更新データなし\n";
 				else
 						Mobile_HTML5Env.PHP +=
 							"				//新規登録(insert)\n" +
@@ -2479,7 +2488,7 @@ public class Mobile_HTML5Function extends Function {
 							"				\n" +
 							"				$insert_sql = \"INSERT INTO \".$table.\" (\".$insert_col.\") VALUES (\".$insert_str.\")\";\n" +
 							"				$result2 = $insert_db1->exec($insert_sql);\n" +
-							"				insert"+insertCount+"_p1(\"登録しました。\");\n";
+							"				insert"+insertCount+"_p1(\"Registration completed.\");\n";
 				Mobile_HTML5Env.PHP +=
 						"			}\n" +
 						"        }catch(Exception $e){\n" +

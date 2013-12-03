@@ -292,6 +292,7 @@ public class Mobile_HTML5 {
 	    	boolean[] textareaFlg = new boolean[col_num];
 	    	boolean[] hiddenFlg = new boolean[col_num];
 	    	boolean[] noinsertFlg = new boolean[col_num];
+	    	String[] validationType = new String[col_num];
 	    	String notnullFlg_array = "";
 	    	String[] $session_array = new String[col_num];
 	    	String[] $time_array = new String[col_num];
@@ -390,10 +391,11 @@ public class Mobile_HTML5 {
 	    			insert_popFlg += "false\""+((i<col_num-1)?(",\""):(""));
 	    		
 	    		//Log.i(s_array[i]);
-	    		//@textarea, @hidden, @noinsert, @notnullフラグチェック	//TODO:リファクタリング
+	    		//Check: @textarea, @hidden, @noinsert, @notnull, @date, @date1-5, @time	//TODO:リファクタリング
 	    		textareaFlg[i] = false;
 	    		hiddenFlg[i] = false;
 	    		noinsertFlg[i] = false;
+	    		validationType[i] = "";
 	    		String str = "";
 	    		if(s_array[i].replaceAll(" ","").contains("@{")){
 	    			str = s_array[i].substring(s_array[i].lastIndexOf("@")+1);	//@以下の文字列
@@ -401,7 +403,7 @@ public class Mobile_HTML5 {
 		    			textareaFlg[i] = true;
 		    		if(str.contains("hidden"))
 		    			hiddenFlg[i] = true;
-		    		if(str.contains("no") || str.contains("noinsert") || str.contains("noupdate")){
+		    		if(str.contains("noinsert") || str.contains("noupdate")){
 		    			noinsertFlg[i] = true;
 		    			noinsert_count++;
 		    		}else{
@@ -413,6 +415,8 @@ public class Mobile_HTML5 {
 			    			else				notnullFlg_array += "FALSE,";
 			    		}
 		    		}
+		    		validationType[i] = Mobile_HTML5.checkFormValidationType(str);	//form validation
+		    		
 		    		s_array[i] = s_array[i].substring(0,s_array[i].indexOf("@"));
 		    		//Log.i(s_array[i]);
 	    		}else{
@@ -536,9 +540,13 @@ public class Mobile_HTML5 {
 								statement += "	</div>\n";
 							}
 						}else{
-							statement += 
-									"    <"+((!textareaFlg[i])?("input"):("textarea"))+" type=\""+((!hiddenFlg[i])?("text"):("hidden"))+"\" name=\"form"+formCount+"_words"+(++insertWordCount)+"\" placeholder=\""+s_name_array[i]+"\">" +
-									""+((!textareaFlg[i])?(""):("</textarea>"))+"\n";
+							if(validationType[i].isEmpty()){
+								statement += 
+										"    <"+((!textareaFlg[i])?("input"):("textarea"))+" type=\""+((!hiddenFlg[i])?("text"):("hidden"))+"\" name=\"form"+formCount+"_words"+(++insertWordCount)+"\" placeholder=\""+s_name_array[i]+"\">" +
+										""+((!textareaFlg[i])?(""):("</textarea>"))+"\n";
+							}else{
+								statement += Mobile_HTML5.getFormValidationString(validationType[i], "form"+formCount+"_words"+(++insertWordCount), s_name_array[i]);
+							}
 						}
 					}else{
 						//statement += "    <input type=\"text\" name=\"form"+formCount+"_words"+(++insertWordCount)+"\" placeholder=\""+s_name_array[i]+"\">\n";
@@ -658,7 +666,7 @@ public class Mobile_HTML5 {
 	    				"    }\n" +
 	    				"\n" +
 	    				"	if($insert_str == \"\"){\n" +
-	    				"        form"+formCount+"_p1('<font color=\\\"red\\\">入力内容をご確認ください。</font>');\n" +
+	    				"        form"+formCount+"_p1('<font color=\\\"red\\\">Please check the value.</font>');\n" +
 	    				"	}else{\n";
 				
 				if(!update){
@@ -676,11 +684,11 @@ public class Mobile_HTML5 {
 		    				"        try{\n" +
 		    				"			$result2 = $insert_db"+formCount+"->exec($insert_sql);\n" +
 		    				"			unset($insert_db"+formCount+");\n" +
-		    				"		 	form"+formCount+"_p1(\"登録しました。\");\n" +
+		    				"		 	form"+formCount+"_p1(\"Registration completed.\");\n" +
 		    				"		 	//form"+formCount+"_p1($insert_sql);\n" +
 		    				"        }catch(Exception $e){\n" +
 		    				"       		unset($insert_db"+formCount+");\n" +
-		    				"       		form"+formCount+"_p1('<font color=red>Insert failed.</font>');	//登録失敗\n" +
+		    				"       		form"+formCount+"_p1('<font color=red>Registration failed.</font>');	//登録失敗\n" +
 		    				"        }\n";
 				}else{
 					//update()
@@ -706,12 +714,12 @@ public class Mobile_HTML5 {
 							"				$update_sql = \"UPDATE \".$table.\" SET \".$update_str.\" \".$update_where;\n" +
 							"				$result2 = $insert_db1->exec($update_sql);\n" +
 							"				//echo '変更された行の数: ', $db->changes();\n" +
-							"				form"+formCount+"_p1(\"更新しました。\");\n" +
+							"				form"+formCount+"_p1(\"Update completed.\");\n" +
 							"			}else{\n";
 					//Log.i("formFlag:"+formFlag);
 					if(!insertFlag.equals("true"))
 							Mobile_HTML5Env.PHP +=
-								"				form"+formCount+"_p1('<font color=red>更新データがありません。</font>');	//更新データなし\n";
+								"				form"+formCount+"_p1('<font color=red>No data found.</font>');	//更新データなし\n";
 					else
 							Mobile_HTML5Env.PHP +=
 								"				//新規登録(insert)\n" +
@@ -723,7 +731,7 @@ public class Mobile_HTML5 {
 								"				\n" +
 								"				$insert_sql = \"INSERT INTO \".$table.\" (\".$insert_col.\") VALUES (\".$insert_str.\")\";\n" +
 								"				$result2 = $insert_db1->exec($insert_sql);\n" +
-								"				form"+formCount+"_p1(\"登録しました。\");\n";
+								"				form"+formCount+"_p1(\"Registration completed.\");\n";
 					Mobile_HTML5Env.PHP +=
 							"			}\n" +
 							"        }catch(Exception $e){\n" +
@@ -809,7 +817,62 @@ public class Mobile_HTML5 {
 		}
 	}
 
+	//20131201 form validation
+	public static String checkFormValidationType(String s){
+		String type = "";
+		String types[] = {"date1","date2","date3","date4","date5","date","time"};	//Order is significant!
+		for(int i=0;i<types.length;i++){
+			if(s.contains(types[i])){	//TODO: リファクタリング
+				type = types[i];
+				break;
+			}
+		}
+		//Log.e("type = "+type);
+		return type;
+	}
+	public static String getFormValidationString(String type, String name, String placeholder){
+		String s = "";
+		type = type.toLowerCase().trim();
+		
+		//date, time
+//	    ◎date <input type="text" name="insert1_words4" placeholder="Year / Month / Day" data-role="datebox" data-options='{"mode":"calbox", "useNewStyle":true, "overrideCalHeaderFormat": "%Y / %m / %d", "overrideDateFormat": "%Y/%m/%d" }' >
+//	    ◎date1<input type="text" name="insert1_words4" placeholder="Year" data-role="datebox" data-options='{"mode":"flipbox", "useNewStyle":true, "overrideHeaderFormat": "%Y", "overrideDateFormat": "%Y", "overrideDateFieldOrder":["y"] }' >
+//	    ◎date2<input type="text" name="insert1_words4" placeholder="Month" data-role="datebox" data-options='{"mode":"flipbox", "useNewStyle":true, "overrideHeaderFormat": "%m", "overrideDateFormat": "%m", "overrideDateFieldOrder":["m"] }' >
+//	    ◎date3<input type="text" name="insert1_words4" placeholder="Day" data-role="datebox" min="2016-01-01" max="2016-01-31" data-options='{"mode":"flipbox", "useNewStyle":true, "overrideHeaderFormat": "%d", "overrideDateFormat": "%d", "overrideDateFieldOrder":["d"] }' >
+//	    ◎date4<input type="text" name="insert1_words4" placeholder="Year / Month" data-role="datebox" data-options='{"mode":"calbox", "useNewStyle":true, "overrideCalHeaderFormat": "%Y / %m", "overrideDateFormat": "%Y/%m" }'}' >
+//	    ◎date5<input type="text" name="insert1_words4" placeholder="Month / Day" data-role="datebox" min="2016-01-01" max="2016-12-31" data-options='{"mode":"datebox", "useNewStyle":true, "overrideHeaderFormat": "%m / %d",  "overrideDateFormat": "%m/%d", "overrideDateFieldOrder":["m","d"] }'}' >
+//	    X date5<input type="text" name="insert1_words4" placeholder="Month / Day" data-role="datebox" data-options='{"mode":"calbox", "useNewStyle":true, "overrideCalHeaderFormat": "%m / %d", "overrideDateFormat": "%m/%d" }'}' >
+//	    ◎time <input type="text" name="insert1_words5" placeholder="Ex) 12:01" data-role="datebox" data-options='{"mode":"timebox", "overrideTimeFormat":24, "useNewStyle":true}'>
 
+		switch (type){
+		  case "date":	//Year / Month / Day
+		    s += "   	<input type=\"date\" name=\""+name+"\" placeholder=\""+( (!placeholder.isEmpty())? placeholder : "Year / Month / Day" )+"\" data-role=\"datebox\" data-options='{\"mode\":\"calbox\", \"useNewStyle\":true, \"overrideCalHeaderFormat\": \"%Y / %m / %d\", \"overrideDateFormat\": \"%Y/%m/%d\" }' >";
+		    break;
+		  case "date1":	//Year
+		    s += "	    <input type=\"date\" name=\""+name+"\" placeholder=\""+( (!placeholder.isEmpty())? placeholder : "Year" )+"\" data-role=\"datebox\" data-options='{\"mode\":\"flipbox\", \"useNewStyle\":true, \"overrideHeaderFormat\": \"%Y\", \"overrideDateFormat\": \"%Y\", \"overrideDateFieldOrder\":[\"y\"] }' >";
+		    break;
+		  case "date2":	//Month
+		    s += "	    <input type=\"date\" name=\""+name+"\" placeholder=\""+( (!placeholder.isEmpty())? placeholder : "Month" )+"\" data-role=\"datebox\" data-options='{\"mode\":\"flipbox\", \"useNewStyle\":true, \"overrideHeaderFormat\": \"%m\", \"overrideDateFormat\": \"%m\", \"overrideDateFieldOrder\":[\"m\"] }' >";
+		    break;
+		  case "date3":	//Day
+		    s += "	    <input type=\"date\" name=\""+name+"\" placeholder=\""+( (!placeholder.isEmpty())? placeholder : "Day" )+"\" data-role=\"datebox\" min=\"2016-01-01\" max=\"2016-01-31\" data-options='{\"mode\":\"flipbox\", \"useNewStyle\":true, \"overrideHeaderFormat\": \"%d\", \"overrideDateFormat\": \"%d\", \"overrideDateFieldOrder\":[\"d\"] }' >";
+		    break;
+		  case "date4":	//Year / Month
+		    s += "	    <input type=\"date\" name=\""+name+"\" placeholder=\""+( (!placeholder.isEmpty())? placeholder : "Year / Month" )+"\" data-role=\"datebox\" data-options='{\"mode\":\"calbox\", \"useNewStyle\":true, \"overrideCalHeaderFormat\": \"%Y / %m\", \"overrideDateFormat\": \"%Y/%m\" }'}' >";
+		    break;
+		  case "date5":	//Month / Day
+			s += "	    <input type=\"date\" name=\""+name+"\" placeholder=\""+( (!placeholder.isEmpty())? placeholder : "Month / Day" )+"\" data-role=\"datebox\" min=\"2016-01-01\" max=\"2016-12-31\" data-options='{\"mode\":\"datebox\", \"useNewStyle\":true, \"overrideHeaderFormat\": \"%m / %d\",  \"overrideDateFormat\": \"%m/%d\", \"overrideDateFieldOrder\":[\"m\",\"d\"] }'}' >";
+			break;
+		  case "time":	//Hour : Minute
+			s += "	    <input type=\"time\" name=\""+name+"\" placeholder=\""+( (!placeholder.isEmpty())? placeholder : "Ex) 12:01" )+"\" data-role=\"datebox\" data-options='{\"mode\":\"timebox\", \"overrideTimeFormat\":24, \"useNewStyle\":true}'>";
+			break;
+		}
+		//Log.e("formValidation = "+s);
+		return s;
+	}
+	
+	
+	
 	//20130529 dynamic
 	//20131118 dynamic
 	static String dynamicString = "";
