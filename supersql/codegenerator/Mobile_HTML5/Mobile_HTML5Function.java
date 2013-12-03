@@ -1930,23 +1930,26 @@ public class Mobile_HTML5Function extends Function {
     
     
     //added by goto 20130515 start  "insert","update"
-    /* insert("title", "c1:column1, c2:column2, ... ", "From以下")	*/
-    /* update("title", "c1:column1, c2:column2, ... ", "From以下"(, "insert Flag"))	*/
-    /* insert_update("title", "c1:column1, c2:column2, ... ", "From以下")  データ無し->新規insert,データあり->update */
+    /* insert("title", "c1:column1, c2:column2, ... ", "From以下" [,Button Name])	*/
+    /* update("title", "c1:column1, c2:column2, ... ", "From以下" [, "insert Flag" [,Button Name] ])	*/
+    /* insert_update("title", "c1:column1, c2:column2, ... ", "From以下" [,Button Name])  データ無し->新規insert,データあり->update */
+    /* Option1: @{noresult} -> not display the result */
+    /* Option2: @{noreset} ->  not init the input form after inserted or updated */
     private String Func_insert(boolean update, boolean insert_update) {
     	
     	String title = "";
     	String columns = "";
     	String after_from = "";
     	String insertFlag = "";
+    	String buttonName = "";
     	try{
     		//title（第一引数）
     		FuncArg fa1 = (FuncArg) this.Args.get(0);
-    		if(!fa1.getStr().equals(""))	title = fa1.getStr();
-    		else{
-    			if(update || insert_update)	title = "Update";
-    			else						title = "Insert";
-    		}
+    		if(!fa1.getStr().isEmpty())	title = fa1.getStr();
+//    		else{
+//    			if(update || insert_update)	title = "Update";
+//    			else						title = "Insert";
+//    		}
     		//columns（第二引数）
     		FuncArg fa2 = (FuncArg) this.Args.get(1);
     		columns += fa2.getStr();
@@ -1958,7 +1961,11 @@ public class Mobile_HTML5Function extends Function {
 	    		FuncArg fa4 = (FuncArg) this.Args.get(3);
 	    		insertFlag += fa4.getStr().toLowerCase().trim();
 	    		if(insertFlag.equals(""))	insertFlag="false";
+	    		buttonName = getValue(5).trim();
+    		}else{
+    			buttonName = getValue(4).trim();
     		}
+    		
     	}catch(Exception e){
     		Log.info("<Warning> insert関数の引数が不足しています。 ex. insert(\"title\", \"c1:column1, c2:column2, ... \", \"From以下\")");
     		return "";
@@ -1970,6 +1977,13 @@ public class Mobile_HTML5Function extends Function {
 		if(after_from.toLowerCase().startsWith("from "))	after_from = after_from.substring("from".length()).trim();
 		if(insert_update)	insertFlag = "true";	//20130721
 		//Log.info(title);
+		
+		//Check options
+		boolean noresult = false;
+		boolean noreset = false;
+		if(decos.containsKey("noresult"))	noresult = true;
+		if(decos.containsKey("noreset"))	noreset = true;
+		//Log.e(buttonName+" "+noresult+" "+noreset+" "+decos);
     	
     	
     	//置換 ( @ { , }  ->  @ { ; } )
@@ -2220,9 +2234,13 @@ public class Mobile_HTML5Function extends Function {
     				"<br>\n" +
     				//"<div id=\"INSERT"+insertCount+"panel\" style=\"background-color:whitesmoke; width:99%; border:0.1px gray solid;\" data-role=\"none\">\n" +
     				//"<div style=\"padding:3px 5px;border-color:hotpink;border-width:0 0 1px 7px;border-style:solid;background:#F8F8F8; font-size:30;\" id=\"InsertTitle"+insertCount+"\">"+title+"</div>\n" +
-    				"<div id=\"INSERT"+insertCount+"panel\" style=\"\" data-role=\"none\">\n" +
+    				"<div id=\"INSERT"+insertCount+"panel\" style=\"\" data-role=\"none\">\n";
+    		if(!title.isEmpty()){
+    			statement += 
     				"<hr>\n<div style=\"font-size:30;\" id=\"InsertTitle"+insertCount+"\">"+title+"</div>\n<hr>\n" +
-    				"<br>\n" +
+    				"<br>\n";
+    		}
+    		statement += 
     				"<form method=\"post\" action=\"\" target=\"dummy_ifr\">\n";
     				//"<form method=\"post\" action=\"\" target=\"insert"+insertCount+"_ifr\">\n";
     		
@@ -2344,18 +2362,28 @@ public class Mobile_HTML5Function extends Function {
 //    			}
 //    			else				statement += "    <textarea type=\"text\" name=\"insert"+insertCount+"_words"+(insertWordCount)+"\" placeholder=\""+s_name_array[i]+"\"></textarea>\n";
     		
-    		if(buttonSubmit.equals(""))
-    			statement += 
-    				"    <input type=\"submit\" value=\""+( (!update)? ("登録"):("更新") )+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\" name=\"insert"+insertCount+"\" id=\"insert"+insertCount+"\" data-icon=\"insert\" data-mini=\"false\" data-inline=\"false\">\n";
-			
+    		
+    		if(buttonSubmit.equals("")){
+    			if(buttonName.isEmpty()){
+					statement += 
+						"    <input type=\"submit\" value=\""+( (!update)? ("登録"):("更新") )+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\" name=\"insert"+insertCount+"\" id=\"insert"+insertCount+"\" data-icon=\"insert\" data-mini=\"false\" data-inline=\"false\">\n";
+    			}else{
+	    			statement += 
+	    					"    <input type=\"submit\" value=\""+buttonName+"\" name=\"insert"+insertCount+"\" id=\"insert"+insertCount+"\" data-mini=\"false\" data-inline=\"false\">\n";
+    			}
+    		}
     		statement += 
     				//"    <input type=\"submit\" value=\"Insert&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\" name=\"insert"+insertCount+"\" id=\"insert"+insertCount+"\" data-icon=\"insert\" data-mini=\"false\" data-inline=\"false\">\n" +
     				"</form>\n" +
     				//"<iframe name=\"insert"+insertCount+"_ifr\" style=\"display:none;\"></iframe>\n" +
-    				"\n" +
+    				"\n";
+    		if(!noresult){
+    			statement += 
     				"<div id=\"Insert"+insertCount+"_text0\" data-role=\"none\"><!-- Insertコメント --></div>\n" +
     				"\n" +
-    				"<br>\n" +
+    				"<br>\n";
+    		}
+    		statement += 
     				"</div>\n";
     		//getGPSinfo()
     		statement += gps_js;
@@ -2423,7 +2451,7 @@ public class Mobile_HTML5Function extends Function {
     				"    }\n" +
     				"\n" +
     				"	if($insert_str == \"\"){\n" +
-    				"        insert"+insertCount+"_p1('<font color=\\\"red\\\">Please check the value.</font>');\n" +
+    				"        insert"+insertCount+"_p1('<font color=\\\"red\\\">Please check the value.</font>', \"true\");\n" +
     				"	}else{\n";
 			
 			if(!update){
@@ -2441,11 +2469,11 @@ public class Mobile_HTML5Function extends Function {
 	    				"        try{\n" +
 	    				"			$result2 = $insert_db"+insertCount+"->exec($insert_sql);\n" +
 	    				"			unset($insert_db"+insertCount+");\n" +
-	    				"		 	insert"+insertCount+"_p1(\"Registration completed.\");\n" +
-	    				"		 	//insert"+insertCount+"_p1($insert_sql);\n" +
+	    				"		 	insert"+insertCount+"_p1(\"Registration completed.\", \"false\");\n" +
+	    				"		 	//insert"+insertCount+"_p1($insert_sql, \"true\");\n" +
 	    				"        }catch(Exception $e){\n" +
 	    				"       		unset($insert_db"+insertCount+");\n" +
-	    				"       		insert"+insertCount+"_p1('<font color=red>Insert failed.</font>');	//登録失敗\n" +
+	    				"       		insert"+insertCount+"_p1('<font color=red>Insert failed.</font>', \"true\");	//登録失敗\n" +
 	    				"        }\n";
 			}else{
 				//update()
@@ -2471,12 +2499,12 @@ public class Mobile_HTML5Function extends Function {
 						"				$update_sql = \"UPDATE \".$table.\" SET \".$update_str.\" \".$update_where;\n" +
 						"				$result2 = $insert_db1->exec($update_sql);\n" +
 						"				//echo '変更された行の数: ', $db->changes();\n" +
-						"				insert"+insertCount+"_p1(\"Update completed.\");\n" +
+						"				insert"+insertCount+"_p1(\"Update completed.\", \"false\");\n" +
 						"			}else{\n";
 				//Log.i("insertFlag:"+insertFlag);
 				if(!insertFlag.equals("true"))
 						Mobile_HTML5Env.PHP +=
-							"				insert"+insertCount+"_p1('<font color=red>No data found.</font>');	//更新データなし\n";
+							"				insert"+insertCount+"_p1('<font color=red>No data found.</font>', \"true\");	//更新データなし\n";
 				else
 						Mobile_HTML5Env.PHP +=
 							"				//新規登録(insert)\n" +
@@ -2488,12 +2516,12 @@ public class Mobile_HTML5Function extends Function {
 							"				\n" +
 							"				$insert_sql = \"INSERT INTO \".$table.\" (\".$insert_col.\") VALUES (\".$insert_str.\")\";\n" +
 							"				$result2 = $insert_db1->exec($insert_sql);\n" +
-							"				insert"+insertCount+"_p1(\"Registration completed.\");\n";
+							"				insert"+insertCount+"_p1(\"Registration completed.\", \"false\");\n";
 				Mobile_HTML5Env.PHP +=
 						"			}\n" +
 						"        }catch(Exception $e){\n" +
 						"       		unset($insert_db1);\n" +
-						"       		insert"+insertCount+"_p1('<font color=red>Update failed.</font>');	//更新失敗\n" +
+						"       		insert"+insertCount+"_p1('<font color=red>Update failed.</font>', \"true\");	//更新失敗\n" +
 						"        }\n" +
 						"        unset($insert_db1);\n";
 			}
@@ -2501,15 +2529,26 @@ public class Mobile_HTML5Function extends Function {
 			Mobile_HTML5Env.PHP +=
     				"    }\n" +
     				"}\n" +
-    				"function insert"+insertCount+"_p1($str){\n" +
-    				"    echo '<script type=\"text/javascript\">window.parent.Insert"+insertCount+"_echo1(\"'.$str.'\");</script>';\n" +
+    				"function insert"+insertCount+"_p1($str, $error){\n" +
+    				"    echo '<script type=\"text/javascript\">window.parent.Insert"+insertCount+"_echo1(\"'.$str.'\",\"'.$error.'\");</script>';\n" +
     				"}\n" +
     				"?>\n";
     				
 			statement += 
     				"\n" +
     				"<script type=\"text/javascript\">\n" +
-    				"function Insert"+insertCount+"_echo1(str){\n" +
+    				"function Insert"+insertCount+"_echo1(str, error){\n";
+			if(!noreset){
+				//TODO: 他の削除方法
+				statement += 
+						"  if(error=='false') {\n" +
+						"  jQuery(function ($) {\n" +
+						"  	$('input,textarea').not('input[type=\\\"radio\\\"],input[type=\\\"checkbox\\\"],:hidden, :button, :submit,:reset').val('');\n" +
+						"	$('input[type=\"radio\"], input[type=\\\"checkbox\\\"],select').removeAttr('checked').removeAttr('selected');\n" +
+						"  });\n" +
+						"  }\n";
+			}
+			statement += 
     				"  var textArea = document.getElementById(\"Insert"+insertCount+"_text0\");\n" +
     				"  textArea.innerHTML = str;\n" +
     				"}\n" +

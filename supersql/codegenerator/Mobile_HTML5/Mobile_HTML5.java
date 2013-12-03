@@ -846,29 +846,29 @@ public class Mobile_HTML5 {
 
 		switch (type){
 		  case "date":	//Year / Month / Day
-		    s += "   	<input type=\"date\" name=\""+name+"\" placeholder=\""+( (!placeholder.isEmpty())? placeholder : "Year / Month / Day" )+"\" data-role=\"datebox\" data-options='{\"mode\":\"calbox\", \"useNewStyle\":true, \"overrideCalHeaderFormat\": \"%Y / %m / %d\", \"overrideDateFormat\": \"%Y/%m/%d\" }' >";
+		    s += "    <input type=\"date\" name=\""+name+"\" placeholder=\""+( (!placeholder.isEmpty())? placeholder : "Year / Month / Day" )+"\" data-role=\"datebox\" data-options='{\"mode\":\"calbox\", \"useNewStyle\":true, \"overrideCalHeaderFormat\": \"%Y / %m / %d\", \"overrideDateFormat\": \"%Y/%m/%d\" }' >";
 		    break;
 		  case "date1":	//Year
-		    s += "	    <input type=\"date\" name=\""+name+"\" placeholder=\""+( (!placeholder.isEmpty())? placeholder : "Year" )+"\" data-role=\"datebox\" data-options='{\"mode\":\"flipbox\", \"useNewStyle\":true, \"overrideHeaderFormat\": \"%Y\", \"overrideDateFormat\": \"%Y\", \"overrideDateFieldOrder\":[\"y\"] }' >";
+		    s += "    <input type=\"date\" name=\""+name+"\" placeholder=\""+( (!placeholder.isEmpty())? placeholder : "Year" )+"\" data-role=\"datebox\" data-options='{\"mode\":\"flipbox\", \"useNewStyle\":true, \"overrideHeaderFormat\": \"%Y\", \"overrideDateFormat\": \"%Y\", \"overrideDateFieldOrder\":[\"y\"] }' >";
 		    break;
 		  case "date2":	//Month
-		    s += "	    <input type=\"date\" name=\""+name+"\" placeholder=\""+( (!placeholder.isEmpty())? placeholder : "Month" )+"\" data-role=\"datebox\" data-options='{\"mode\":\"flipbox\", \"useNewStyle\":true, \"overrideHeaderFormat\": \"%m\", \"overrideDateFormat\": \"%m\", \"overrideDateFieldOrder\":[\"m\"] }' >";
+		    s += "    <input type=\"date\" name=\""+name+"\" placeholder=\""+( (!placeholder.isEmpty())? placeholder : "Month" )+"\" data-role=\"datebox\" data-options='{\"mode\":\"flipbox\", \"useNewStyle\":true, \"overrideHeaderFormat\": \"%m\", \"overrideDateFormat\": \"%m\", \"overrideDateFieldOrder\":[\"m\"] }' >";
 		    break;
 		  case "date3":	//Day
-		    s += "	    <input type=\"date\" name=\""+name+"\" placeholder=\""+( (!placeholder.isEmpty())? placeholder : "Day" )+"\" data-role=\"datebox\" min=\"2016-01-01\" max=\"2016-01-31\" data-options='{\"mode\":\"flipbox\", \"useNewStyle\":true, \"overrideHeaderFormat\": \"%d\", \"overrideDateFormat\": \"%d\", \"overrideDateFieldOrder\":[\"d\"] }' >";
+		    s += "    <input type=\"date\" name=\""+name+"\" placeholder=\""+( (!placeholder.isEmpty())? placeholder : "Day" )+"\" data-role=\"datebox\" min=\"2016-01-01\" max=\"2016-01-31\" data-options='{\"mode\":\"flipbox\", \"useNewStyle\":true, \"overrideHeaderFormat\": \"%d\", \"overrideDateFormat\": \"%d\", \"overrideDateFieldOrder\":[\"d\"] }' >";
 		    break;
 		  case "date4":	//Year / Month
-		    s += "	    <input type=\"date\" name=\""+name+"\" placeholder=\""+( (!placeholder.isEmpty())? placeholder : "Year / Month" )+"\" data-role=\"datebox\" data-options='{\"mode\":\"calbox\", \"useNewStyle\":true, \"overrideCalHeaderFormat\": \"%Y / %m\", \"overrideDateFormat\": \"%Y/%m\" }'}' >";
+		    s += "    <input type=\"date\" name=\""+name+"\" placeholder=\""+( (!placeholder.isEmpty())? placeholder : "Year / Month" )+"\" data-role=\"datebox\" data-options='{\"mode\":\"calbox\", \"useNewStyle\":true, \"overrideCalHeaderFormat\": \"%Y / %m\", \"overrideDateFormat\": \"%Y/%m\" }' >";
 		    break;
 		  case "date5":	//Month / Day
-			s += "	    <input type=\"date\" name=\""+name+"\" placeholder=\""+( (!placeholder.isEmpty())? placeholder : "Month / Day" )+"\" data-role=\"datebox\" min=\"2016-01-01\" max=\"2016-12-31\" data-options='{\"mode\":\"datebox\", \"useNewStyle\":true, \"overrideHeaderFormat\": \"%m / %d\",  \"overrideDateFormat\": \"%m/%d\", \"overrideDateFieldOrder\":[\"m\",\"d\"] }'}' >";
+			s += "    <input type=\"date\" name=\""+name+"\" placeholder=\""+( (!placeholder.isEmpty())? placeholder : "Month / Day" )+"\" data-role=\"datebox\" min=\"2016-01-01\" max=\"2016-12-31\" data-options='{\"mode\":\"datebox\", \"useNewStyle\":true, \"overrideHeaderFormat\": \"%m / %d\",  \"overrideDateFormat\": \"%m/%d\", \"overrideDateFieldOrder\":[\"m\",\"d\"] }' >";
 			break;
 		  case "time":	//Hour : Minute
-			s += "	    <input type=\"time\" name=\""+name+"\" placeholder=\""+( (!placeholder.isEmpty())? placeholder : "Ex) 12:01" )+"\" data-role=\"datebox\" data-options='{\"mode\":\"timebox\", \"overrideTimeFormat\":24, \"useNewStyle\":true}'>";
+			s += "    <input type=\"time\" name=\""+name+"\" placeholder=\""+( (!placeholder.isEmpty())? placeholder : "Ex) 12:01" )+"\" data-role=\"datebox\" data-options='{\"mode\":\"timebox\", \"overrideTimeFormat\":24, \"useNewStyle\":true }'>";
 			break;
 		}
 		//Log.e("formValidation = "+s);
-		return s;
+		return s+"\n";
 	}
 	
 	
