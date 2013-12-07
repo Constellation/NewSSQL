@@ -1543,24 +1543,20 @@ public class Mobile_HTML5 {
 				"<!-- SSQL DynamicPaging"+num+" start -->\n" +
 				"<!-- SSQL DynamicPaging"+num+" DIV start -->\n" +
 				//"<div id=\"SSQL_DynamicDisplayPaging"+num+"_Buttons\"></div>\n" +
-				"\n" +
 				"<div id=\"SSQL_DynamicDisplayPaging"+num+"\" data-role=\"none\"><!-- SSQL Dynamic Display Data"+num+" --></div>\n" +
-				"<script type=\"text/javascript\">\n" +
-				"function SSQL_DynamicDisplayPaging"+num+"_echo(str){\n" +
-				"  var textArea = document.getElementById(\"SSQL_DynamicDisplayPaging"+num+"\");\n" +
-				"  textArea.innerHTML = str;\n" +
-				"}\n" +
-				"</script>\n" +
-				"\n" +
 				"<div id=\"SSQL_DynamicDisplayPaging"+num+"_Buttons\"></div>\n" +
 				"<!-- SSQL DynamicPaging"+num+" DIV end -->\n" +
 				"\n" +
 				"<!-- SSQL DynamicPaging"+num+" JS start -->\n" +
 				"<script type=\"text/javascript\">\n" +
-				"SSQL_DynamicDisplayPaging"+num+"(1);	//初期ロード時\n" +
+				"SSQL_DynamicDisplayPaging"+num+"(1,true);	//初期ロード時\n" +
 				"SSQL_DynamicDisplayPaging"+num+"_setButtons();\n" +
 				"\n" +
-				"var SSQL_DynamicDisplayPaging"+num+"_currentItems = 1;		//グローバル変数\n";
+				"var SSQL_DynamicDisplayPaging"+num+"_currentItems = 1;		//グローバル変数\n" +
+				"function SSQL_DynamicDisplayPaging"+num+"_echo(str){\n" +
+				"  var textArea = document.getElementById(\"SSQL_DynamicDisplayPaging"+num+"\");\n" +
+				"  textArea.innerHTML = str;\n" +
+				"}\n";
 		if(ajax_loadInterval>0){
 			s += "\n" +
 				 "setInterval(function(){\n" +
@@ -1572,11 +1568,11 @@ public class Mobile_HTML5 {
 				"	    $(\"[id=SSQL_DynamicDisplayPaging"+num+"_Buttons]\").pagination({\n" +
 				"	        items: SSQL_DynamicDisplayPaging"+num+"_currentItems, //ページング数\n" +
 				"	        displayedPages: 2, 	  //表示したいページング要素数\n" +
-				"	        onPageClick: function(pageNum){ SSQL_DynamicDisplayPaging"+num+"(pageNum) }\n" +
+				"	        onPageClick: function(pageNum){ SSQL_DynamicDisplayPaging"+num+"(pageNum,false) }\n" +
 				"	    })\n" +
 				"	});\n" +
 				"}\n" +
-				"function SSQL_DynamicDisplayPaging"+num+"(pn){\n" +
+				"function SSQL_DynamicDisplayPaging"+num+"(pn,onload){\n" +
 				"	//ajax: PHPへ値を渡して実行\n" +
 				"	$.ajax({\n" +
 				"		type: \"POST\",\n" +
@@ -1594,6 +1590,9 @@ public class Mobile_HTML5 {
 				"					//ページ数が変わった場合の処理\n" +
 				"					SSQL_DynamicDisplayPaging"+num+"_currentItems = data.currentItems;\n" +
 				"					SSQL_DynamicDisplayPaging"+num+"_setButtons();\n" +
+				"				}\n" +
+				"				if(!onload){\n" +
+				"					$('html,body').animate({ scrollTop: $('#SSQL_DynamicDisplayPaging"+num+"').position().top-50 }, 'fast');\n" +
 				"				}\n" +
 				"			}\n" +
 				//"			else {\n" +
