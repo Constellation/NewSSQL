@@ -90,7 +90,7 @@ public class Mobile_HTML5Env extends LocalEnv {
 	String copyright="";					//added by goto 20130518
 	String fff = "";						//20130518  "show query"
 
-	Boolean nobarFlg = false;				//20130521  "nobar"
+	Boolean flickBarFlg = false;				//20130521  "flickbar"
 	
     //tk start///////////////////////////////////////////////////
     StringBuffer meta = new StringBuffer();
@@ -1582,12 +1582,12 @@ public class Mobile_HTML5Env extends LocalEnv {
     		footer.append("</div><!-- Close <div data-role=\"content\"> -->\n<!-- data-role=content end -->\n");		//Close <div data-role="content">
     		//data-role="footer"
     		
-    		if(footerFlag==1 && Mobile_HTML5Function.footerString.equals("") && !nobarFlg)	//通常時のみ（Prev/Nextでは行わない）
+    		if(footerFlag==1 && Mobile_HTML5Function.footerString.equals("") && flickBarFlg)	//通常時のみ（Prev/Nextでは行わない）
     			Mobile_HTML5Function.footerString
 //    			+= "<div data-role=\"footer\" data-position=\"fixed\" style=\"padding:11px 0px; border:1px solid gray; background:rgba(0,0,0,0.4);\" id=\"footer1\">\n" +
     			+= "<div data-role=\"footer\" data-position=\"fixed\" style=\"padding:11px 0px; background:gray; filter: alpha(opacity=25); -moz-opacity:0.25; opacity:0.25;\" id=\"footer1\">\n" +
-    					"<=&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Flick bar&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=>"+"\n" +
-    		    		"</div>\n";
+    			   "<=&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Flick bar&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=>"+"\n" +
+		    	   "</div>\n";
     		if(footerFlag==1 && !Mobile_HTML5Function.footerString.equals(""))	//通常時のみ（Prev/Nextでは行わない）
     			footer.append("\n\n<!-- data-role=footer start -->\n"+Mobile_HTML5Function.footerString+"<!-- data-role=footer end -->\n\n");
     		if(panel.length() != 0)															//20130503  Panel
@@ -2071,9 +2071,10 @@ public class Mobile_HTML5Env extends LocalEnv {
         	
         }
         
-        //20130521  "nobar"
-        if (decos.containsKey("nobar") || decos.containsKey("noflick") || decos.containsKey("noflickbar"))
-        	nobarFlg = true;
+        //20130521  "flickbar"
+        //if (decos.containsKey("nobar") || decos.containsKey("noflick") || decos.containsKey("noflickbar"))
+        if (decos.containsKey("flickbar"))
+        	flickBarFlg = true;
         
         //20131106
         if (decos.containsKey("noad") || decos.containsKey("noAd"))
