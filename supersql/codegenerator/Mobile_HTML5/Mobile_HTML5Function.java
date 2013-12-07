@@ -257,8 +257,8 @@ public class Mobile_HTML5Function extends Function {
         	//ret = Func_embed(data_info);	//TODO
         }
         //tk end////////////////////////////////////
-        else if (FuncName.equalsIgnoreCase("add")) {
-        	ret = Func_add();
+        else if (FuncName.equalsIgnoreCase("addition") || FuncName.equalsIgnoreCase("add")) {
+        	ret = Func_addition();
         }
         else if (FuncName.equalsIgnoreCase("subtract") || FuncName.equalsIgnoreCase("sub")) {
         	ret = Func_subtract();
@@ -282,7 +282,9 @@ public class Mobile_HTML5Function extends Function {
         return ret;	//20131201 nesting function
     }
 
-    private String Func_add() {
+    
+    static int ArithmeticOperationCount = 1;
+    private String Func_addition() {
     	return createArithmeticOperation("+");
     }
     private String Func_subtract() {
@@ -294,12 +296,10 @@ public class Mobile_HTML5Function extends Function {
     private String Func_divide() {
     	return createArithmeticOperation("/");
 	}
-    static int ArithmeticOperationCount = 1;
     private String createArithmeticOperation(String operator) {
     	String s = "";
     	String label = "SSQL_Func_ArithmeticOperation";
-//    	if(nestingLevel < 1){
-    	if(nestingLevel < 0){
+    	if(nestingLevel < 1){
     		s += ""
 		    	+ "<div id=\""+label+ArithmeticOperationCount+"\"><!-- Computation result --></div>\n"
 		    	+ "<SCRIPT language=\"JavaScript\">\n"
@@ -311,8 +311,7 @@ public class Mobile_HTML5Function extends Function {
     	}
     	s = s.substring(0, s.length()-1);	//cut last 'operator'
     	s += ")";
-//    	if(nestingLevel < 1){
-    	if(nestingLevel < 0){
+    	if(nestingLevel < 1){
     		s += ""
 		    	+ ";\n"
 		    	+ "document.getElementById(\""+label+ArithmeticOperationCount+"\").innerHTML = val;\n"
@@ -321,44 +320,6 @@ public class Mobile_HTML5Function extends Function {
     	}
     	return s;
     }
-//    //20131201 nesting function
-//    //[Important] Check whether it is 'nesting Function' or not.
-//    private String checkNestingLevel_and_Append(String ret){
-////    	Log.e(FuncArg.nestFunc+" "+FuncArg.nestingLevel+" "+ret);
-////    	if(!FuncArg.nestFunc && FuncArg.nestingLevel<1){
-//    	Log.e(Function.nestingLevel+" "+ret);
-//    	if(Function.nestingLevel < 1){
-//    		html_env.code.append(ret);
-//    	}else{
-//    		Function.nestingLevel--;
-//    	}
-//    	return ret;
-//    }
-    
-//	private String Func_cal() {
-//		String s = ""
-//    	+ "<div id=\"SSQL_Func_cal\"><!-- Computation result --></div>\n"
-//    	+ "[\n"
-//    	+ "<SCRIPT language=\"JavaScript\">\n"
-//    	+ "val = ("
-////    	FuncArg fa1 = (FuncArg) this.Args.get(0);
-////    	Log.e("get(0)="+fa1.getStr());
-////    	FuncArg fa2 = (FuncArg) this.Args.get(1);
-////    	Log.e("get(1)="+fa2.getStr());
-////    	FuncArg fa3 = (FuncArg) this.Args.get(2);
-////    	Log.e("get(2)="+fa3.getStr());
-////    	+getValue(1)+"+"+getValue(2)+"+"+getValue(3)
-//    	+createArithmeticOperation("+")
-//    	+ ");\n"
-//    	+ "document.getElementById(\"SSQL_Func_cal\").innerHTML = val;\n"
-//    	+ "</SCRIPT>\n]\n";
-//		
-////    	if(!FuncArg.nestFunc)	html_env.code.append(s);
-////    	FuncArg.nestFunc = false;
-//    	return checkFuncReturnValue(s);
-//	}
-
-
     
     
     
@@ -1291,7 +1252,7 @@ public class Mobile_HTML5Function extends Function {
 
     	String statement = "";
     	//sqlite3 php
-    	if(DBMS.equals("sqlite3")){
+    	if(DBMS.equals("sqlite") || DBMS.equals("sqlite3")){
     		statement += 
     				"<!-- Search start -->\n" +
     				"<!-- Search Panel start -->\n" +
@@ -1718,7 +1679,7 @@ public class Mobile_HTML5Function extends Function {
     	
     	String statement = "";
     	//sqlite3 php
-    	if(DBMS.equals("sqlite3")){
+    	if(DBMS.equals("sqlite") || DBMS.equals("sqlite3")){
     		statement += 
     				"<!-- Select start -->\n" +
 					"<!-- Select Panel start -->\n" +
@@ -2228,18 +2189,21 @@ public class Mobile_HTML5Function extends Function {
 
     	String statement = "";
     	String gps_js = "";
+    	String php = "";
+    	String formPHPfileName = html_env.getFileName2()+"_SSQLform_"+insertCount+".php";
     	//sqlite3 php
-    	if(DBMS.equals("sqlite3")){
+    	if(DBMS.equals("sqlite") || DBMS.equals("sqlite3")){
     		statement += 
-    				"<!-- Insert start -->\n" +
-    				"<!-- Insert Panel start -->\n" +
+    				"\n" +
+    				"<!-- SSQL Insert"+insertCount+" start -->\n" +
+    				"<!-- SSQL Insert"+insertCount+" FORM start -->\n" +
     				"<br>\n" +
-    				//"<div id=\"INSERT"+insertCount+"panel\" style=\"background-color:whitesmoke; width:99%; border:0.1px gray solid;\" data-role=\"none\">\n" +
-    				//"<div style=\"padding:3px 5px;border-color:hotpink;border-width:0 0 1px 7px;border-style:solid;background:#F8F8F8; font-size:30;\" id=\"InsertTitle"+insertCount+"\">"+title+"</div>\n" +
-    				"<div id=\"INSERT"+insertCount+"panel\" style=\"\" data-role=\"none\">\n";
+    				//"<div id=\"SSQL_INSERT"+insertCount+"panel\" style=\"background-color:whitesmoke; width:99%; border:0.1px gray solid;\" data-role=\"none\">\n" +
+    				//"<div style=\"padding:3px 5px;border-color:hotpink;border-width:0 0 1px 7px;border-style:solid;background:#F8F8F8; font-size:30;\" id=\"SSQL_InsertTitle"+insertCount+"\">"+title+"</div>\n" +
+    				"<div id=\"SSQL_INSERT"+insertCount+"panel\" style=\"\" data-role=\"none\">\n";
     		if(!title.isEmpty()){
     			statement += 
-    				"<hr>\n<div style=\"font-size:30;\" id=\"InsertTitle"+insertCount+"\">"+title+"</div>\n<hr>\n" +
+    				"<hr>\n<div style=\"font-size:30;\" id=\"SSQL_InsertTitle"+insertCount+"\">"+title+"</div>\n<hr>\n" +
     				"<br>\n";
     		}
     		statement += 
@@ -2266,7 +2230,7 @@ public class Mobile_HTML5Function extends Function {
 									""+((!textareaFlg[i])?("\">"):("</textarea>"))+"\n";
 							if(!noinsertFlg[i])
 								statement += 
-										"    <input type=\"hidden\" name=\"insert"+insertCount+"_words"+(++insertWordCount)+"\" value=\""+button_array[i]+"\">\n";
+										"    <input type=\"hidden\" id=\"SSQL_insert"+insertCount+"_words"+(++insertWordCount)+"\" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\" value=\""+button_array[i]+"\">\n";
 						
 						
 						}else if(btRcount == 2){		//ボタン ex){出席|欠席}
@@ -2276,21 +2240,21 @@ public class Mobile_HTML5Function extends Function {
 							statement += 
 									"	<div class=\"ui-grid-a\">\n" +
 									"		<div class=\"ui-block-a\">\n" +
-									"    		<input type=\"submit\" name=\"insert"+insertCount+"_words"+(insertWordCount)+"\" value=\""+bt1+"\" data-theme=\"a\">\n" +
+									"    		<input type=\"submit\" id=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\" value=\""+bt1+"\" data-theme=\"a\">\n" +
 									"		</div>\n" +
 									"		<div class=\"ui-block-b\">\n" +
-									"    		<input type=\"submit\" name=\"insert"+insertCount+"_words"+(insertWordCount)+"\" value=\""+bt2+"\" data-theme=\"a\">\n" +
+									"    		<input type=\"submit\" id=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\" value=\""+bt2+"\" data-theme=\"a\">\n" +
 									"		</div>\n" +
 									"	</div>\n";
-							buttonSubmit += " || $_POST['insert"+insertCount+"_words"+(insertWordCount)+"']";
+							buttonSubmit += " || $_POST['SSQL_insert"+insertCount+"_words"+(insertWordCount)+"']";
 						}else{							//ラジオボタン ex){出席|欠席|その他}
 							statement += "   <div data-role=\"controlgroup\">\n";
 							insertWordCount++;
 							for(int k=1; k<=btRcount; k++){
 								String val = ss.substring(0,ss.indexOf("|")).trim();
 								statement += 
-										"		<input type=\"radio\" name=\"insert"+insertCount+"_words"+(insertWordCount)+"\" id=\"insert"+insertCount+"_words"+(insertWordCount)+"_"+k+"\" value=\""+val+"\""+( (k>1)? (""):(" checked=\"checked\"") )+">\n" +
-										"		<label for=\"insert"+insertCount+"_words"+(insertWordCount)+"_"+k+"\">"+val+"</label>\n";
+										"		<input type=\"radio\" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\" id=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"_"+k+"\" value=\""+val+"\""+( (k>1)? (""):(" checked=\"checked\"") )+">\n" +
+										"		<label for=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"_"+k+"\">"+val+"</label>\n";
 								ss = ss.substring(ss.indexOf("|")+1);
 							}
 							statement += "	</div>\n";
@@ -2298,15 +2262,14 @@ public class Mobile_HTML5Function extends Function {
 					}else{
 						if(validationType[i].isEmpty()){
 							statement += 
-									"    <"+((!textareaFlg[i])?("input 1"):("textarea"))+" type=\""+((!hiddenFlg[i])?("text"):("hidden"))+"\" name=\"insert"+insertCount+"_words"+(++insertWordCount)+"\" placeholder=\""+s_name_array[i]+"\">" +
+									"    <"+((!textareaFlg[i])?("input"):("textarea"))+" type=\""+((!hiddenFlg[i])?("text"):("hidden"))+"\" id=\"SSQL_insert"+insertCount+"_words"+(++insertWordCount)+"\" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\" placeholder=\""+s_name_array[i]+"\">" +
 									""+((!textareaFlg[i])?(""):("</textarea>"))+"\n";
-							//statement += "    <input type=\"text\" name=\"insert"+insertCount+"_words"+(insertWordCount)+"\" placeholder=\""+s_name_array[i]+"\">\n";
+							//statement += "    <input type=\"text\" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\" placeholder=\""+s_name_array[i]+"\">\n";
 						}else{
-							statement += Mobile_HTML5.getFormValidationString(validationType[i], "insert"+insertCount+"_words"+(++insertWordCount), s_name_array[i]);
+							statement += Mobile_HTML5.getFormValidationString(validationType[i], "SSQL_insert"+insertCount+"_words"+(++insertWordCount), s_name_array[i]);
 						}
 					}
 				}else{
-					//statement += "    <input type=\"text\" name=\"insert"+insertCount+"_words"+(++insertWordCount)+"\" placeholder=\""+s_name_array[i]+"\">\n";
 					String echo = "";
 					if(!$session_array[i].equals(""))	echo += "	echo $_SESSION["+$session_array[i]+"];\n";
 					else if(!$time_array[i].equals(""))	echo += "	echo "+$time_array[i]+";\n";
@@ -2328,7 +2291,7 @@ public class Mobile_HTML5Function extends Function {
 								"  	};\n" +
 								"    navigator.geolocation.getCurrentPosition(function(pos) {\n" +
 								"      	// 経度、緯度を取得 //\n" +
-								"		document.getElementsByName('insert"+insertCount+"_words"+(insertWordCount+1)+"')[0].value=pos.coords.latitude+\",\"+pos.coords.longitude;\n" +
+								"		document.getElementsByName('SSQL_insert"+insertCount+"_words"+(insertWordCount+1)+"')[0].value=pos.coords.latitude+\",\"+pos.coords.longitude;\n" +
 								"    }, function(e) {\n" +
 								"		gpsInfo = \"\";\n" +
 								"    }, geolocationOptions);\n" +
@@ -2353,25 +2316,20 @@ public class Mobile_HTML5Function extends Function {
 							""+((!textareaFlg[i])?("\">"):("</textarea>"))+"\n";
 					if(!noinsertFlg[i])
 						statement += 
-								"    <input type=\"hidden\" name=\"insert"+insertCount+"_words"+(++insertWordCount)+"\" value=\"\n" +
+								"    <input type=\"hidden\" id=\"SSQL_insert"+insertCount+"_words"+(++insertWordCount)+"\" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\" value=\"\n" +
 								"EOF;\n" +
 								echo +
 								"		echo <<<EOF\n" +
 								"\">\n";
 				}
-				//insertWordCount++;
     		}
-//    			}
-//    			else				statement += "    <textarea type=\"text\" name=\"insert"+insertCount+"_words"+(insertWordCount)+"\" placeholder=\""+s_name_array[i]+"\"></textarea>\n";
-    		
-    		
     		if(buttonSubmit.equals("")){
     			if(buttonName.isEmpty()){
 					statement += 
-						"    <input type=\"submit\" value=\""+( (!update)? ("登録"):("更新") )+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\" name=\"insert"+insertCount+"\" id=\"insert"+insertCount+"\" data-icon=\"insert\" data-mini=\"false\" data-inline=\"false\">\n";
+						"    <input type=\"submit\" value=\""+( (!update)? ("登録"):("更新") )+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\" name=\"SSQL_insert"+insertCount+"\" id=\"SSQL_insert"+insertCount+"\" data-icon=\"insert\" data-mini=\"false\" data-inline=\"false\" onClick=\"SSQL_Insert"+insertCount+"()\">\n";
     			}else{
 	    			statement += 
-	    					"    <input type=\"submit\" value=\""+buttonName+"\" name=\"insert"+insertCount+"\" id=\"insert"+insertCount+"\" data-mini=\"false\" data-inline=\"false\">\n";
+	    					"    <input type=\"submit\" value=\""+buttonName+"\" name=\"SSQL_insert"+insertCount+"\" id=\"SSQL_insert"+insertCount+"\" data-mini=\"false\" data-inline=\"false\" onClick=\"SSQL_Insert"+insertCount+"()\">\n";
     			}
     		}
     		statement += 
@@ -2381,7 +2339,7 @@ public class Mobile_HTML5Function extends Function {
     				"\n";
     		if(!noresult){
     			statement += 
-    				"<div id=\"Insert"+insertCount+"_text0\" data-role=\"none\"><!-- Insertコメント --></div>\n" +
+    				"<div id=\"SSQL_Insert"+insertCount+"_result\" data-role=\"none\"><!-- SSQL Insert"+insertCount+" Result"+insertCount+" --></div>\n" +
     				"\n" +
     				"<br>\n";
     		}
@@ -2389,56 +2347,89 @@ public class Mobile_HTML5Function extends Function {
     				"</div>\n";
     		//getGPSinfo()
     		statement += gps_js;
-//    				"\n<!-- getGPSinfo() -->\n" +
-//					"<script src=\"http://maps.google.com/maps/api/js?sensor=false&libraries=geometry\"></script>\n" +
-//					"<script type=\"text/javascript\">\n" +
-//					"<!--\n" +
-//					"function getGPSinfo() {\n" +
-//					"\n" +
-//					"var gpsInfo = \"\";\n" +
-//					"$(document).on(\"pageinit\", \"#p-top1\", function(e) {\n" +
-//					"  	// Geolocation APIのオプション設定\n" +
-//					"  	var geolocationOptions = {\n" +
-//					"    	\"enableHighAccuracy\" : true, // 高精度位置情報の取得\n" +
-//					"    	\"maximumAge\" : 0, // キャッシュの無効化\n" +
-//					"    	\"timeout\" : 30000 // タイムアウトは30秒\n" +
-//					"  	};\n" +
-//					"    navigator.geolocation.getCurrentPosition(function(pos) {\n" +
-//					"      	// 経度、緯度を取得 //\n" +
-//					"		gpsInfo += pos.coords.latitude+\",\"+pos.coords.latitude;\n" +
-//					"    }, function(e) {\n" +
-//					"		gpsInfo = \"\";\n" +
-//					"    }, geolocationOptions);\n" +
-//					"});\n" +
-//					"return gpsInfo;\n" +
-//					"\n" +
-//					"}\n" +
-//					"// -->\n" +
-//					"</script>\n";
     		statement += 
-    				"<!-- Insert Panel end -->\n" +
-    				"\n";
-			
-			Mobile_HTML5Env.PHP +=
+    				"<!-- SSQL Insert"+insertCount+" FORM end -->\n" +
+    				"\n" +
+    				"<!-- SSQL Insert"+insertCount+" JS start -->\n" +
+    				"<script type=\"text/javascript\">\n" +
+    				"function SSQL_Insert"+insertCount+"_echo(str){\n";
+			if(!noreset){
+				//TODO: 他の削除方法
+				statement += 
+						//"  if(error=='false') {\n" +
+						"  if(str.indexOf(\"completed\") !== -1) {\n" +
+						//"  jQuery(function ($) {\n" +
+						"  	$('input,textarea').not('input[type=\\\"radio\\\"],input[type=\\\"checkbox\\\"],:hidden, :button, :submit,:reset').val('');\n" +
+						"	$('input[type=\"radio\"], input[type=\\\"checkbox\\\"],select').removeAttr('checked').removeAttr('selected');\n" +
+						//"  });\n" +
+						"  }\n";
+			}
+			if(!noresult){
+				statement += 
+	    				"  var textArea = document.getElementById(\"SSQL_Insert"+insertCount+"_result\");\n" +
+	    				"  textArea.innerHTML = str;\n";
+			}
+			statement += 
+    				"}\n" +
+					"function SSQL_Insert"+insertCount+"(){\n" +
+					"	//ajax: PHPへ値を渡して実行\n" +
+					"	$.ajax({\n" +
+					"		type: \"POST\",\n" +
+					"		url: \""+new File(formPHPfileName).getName()+"\",\n" +
+//					"		data: {insert1_words1:$('#insert1_words1').val(), insert1_words2:$('#insert1_words2').val()},\n" +
+					"		data: {";
+			for(int k=1; k<=insertWordCount; k++){
+				statement += 
+						"SSQL_insert"+insertCount+"_words"+k+":$('#SSQL_insert"+insertCount+"_words"+k+"').val()"+( (k<insertWordCount)? ", " : "" );
+//						"insert1_words2:$('#insert1_words2').val()";
+			}
+			statement += 
+					"},\n" +
+					"		dataType: \"json\",\n" +
+					"        beforeSend: function(xhr, settings) {\n" +
+					"            $('#SSQL_insert"+insertCount+"').attr('disabled', true);\n" +
+					"        },\n" +
+					"        complete: function(xhr, textStatus) {\n" +
+					"            $('#SSQL_insert"+insertCount+"').attr('disabled', false);\n" +
+					"        },\n" +
+					"		success: function(data, textStatus){\n" +
+					"			if (data.result != \"\") {\n" +
+					"				SSQL_Insert"+insertCount+"_echo(data.result);\n" +
+					"			}\n" +
+					"		},\n" +
+					"		error: function(XMLHttpRequest, textStatus, errorThrown) {\n" +
+					"			SSQL_Insert"+insertCount+"_echo(textStatus+\"<br>\"+errorThrown);\n" +
+					"		}\n" +
+					"	});\n" +
+					"}\n" +
+    				"</script>\n" +
+    				"<!-- SSQL Insert"+insertCount+" JS end -->\n" +
+    				"<!-- SSQL Insert"+insertCount+" end -->\n";
+
+			//php
+			php +=
     				"<?php\n" +
-    				"if($_POST['insert"+insertCount+"'] "+buttonSubmit+"){\n" +
-    				//"if($_POST['insert"+insertCount+"'] || $_POST['insert"+insertCount+"_words"+insertCount+"']){\n" +
+//    				"if($_POST['SSQL_insert"+insertCount+"'] "+buttonSubmit+"){\n" +
+    				//"if($_POST['SSQL_insert"+insertCount+"'] || $_POST['SSQL_insert"+insertCount+"_words"+insertCount+"']){\n" +
+    				"    $ret = array();\n" +
+    				"    $ret['result'] = \"\";\n" +
+    				"    \n" +
     				"    //ユーザ定義\n" +
     				"    $sqlite3_DB = '"+DB+"';\n" +
     				"    $insert_col = \""+insert_col+"\";\n";
 			if(update){
-				Mobile_HTML5Env.PHP +=
+				php +=
 						"    $update_col_array = array("+update_col_array+");\n" +
 						"    $update_where = \""+update_where+"\";\n";
 			}
-			Mobile_HTML5Env.PHP +=
+			php +=
     				"    $notnullFlg = array("+notnullFlg_array+");\n" +
     				"    $col_num = "+(col_num - noinsert_count)+";                          //カラム数(Java側で指定)\n" +
     				"    $table = '"+from+"';\n" +
     				"\n" +
     				"	$insert_str = \"notnull\";\n" +
     				"	for($k=1; $k<=$col_num; $k++){\n" +
-    				"    	$var[$k] = checkHTMLsc($_POST['insert"+insertCount+"_words'.$k]);\n" +
+    				"    	$var[$k] = checkHTMLsc($_POST['SSQL_insert"+insertCount+"_words'.$k]);\n" +
     				"    	$var[$k] = str_replace(array(\"\\r\\n\",\"\\r\",\"\\n\"), '<br>', $var[$k]);	//改行コードを<br>へ\n" +
     				//"    	//$var[$k] = mb_convert_encoding($var[$k], 'UTF-8', 'auto');					//エンコードをUTF-8へ PHP環境によってはうまく動かない？\n" +
     				//"    	$insert_str .= trim($var[$k]);\n" +
@@ -2447,18 +2438,19 @@ public class Mobile_HTML5Function extends Function {
     				"    	}\n";
 			for(int i=0; i<col_num; i++){
 				if(!$time_array[i].equals(""))
-					Mobile_HTML5Env.PHP += "		if($k=="+i+")	$var[$k] = "+$time_array[i]+";\n";	//現在時刻
+					php += "		if($k=="+i+")	$var[$k] = "+$time_array[i]+";\n";	//現在時刻
 			}
-			Mobile_HTML5Env.PHP +=	
+			php +=	
     				"    }\n" +
     				"\n" +
+    				"	$b = \"\";\n" +
     				"	if($insert_str == \"\"){\n" +
-    				"        insert"+insertCount+"_p1('<font color=\\\"red\\\">Please check the value.</font>', \"true\");\n" +
+//    				"        insert"+insertCount+"_p1('<font color=\\\"red\\\">Please check the value.</font>', \"true\");\n" +
+    				"        $b = '<font color=\"red\">Please check the value.</font>';\n" +
     				"	}else{\n";
-			
 			if(!update){
 				//insert()
-				Mobile_HTML5Env.PHP +=
+				php +=
 	    				"		$insert_str = \"\";\n" +
 	    				"		for($k=1; $k<=$col_num; $k++){\n" +
 	    				"			if($k==1)	$insert_str .= \"'\".$var[$k].\"'\";\n" +
@@ -2471,15 +2463,18 @@ public class Mobile_HTML5Function extends Function {
 	    				"        try{\n" +
 	    				"			$result2 = $insert_db"+insertCount+"->exec($insert_sql);\n" +
 	    				"			unset($insert_db"+insertCount+");\n" +
-	    				"		 	insert"+insertCount+"_p1(\"Registration completed.\", \"false\");\n" +
-	    				"		 	//insert"+insertCount+"_p1($insert_sql, \"true\");\n" +
+//	    				"		 	insert"+insertCount+"_p1(\"Registration completed.\", \"false\");\n" +
+	    				"		 	$b = \"Registration completed.\";\n" +
+	    				//"		 	//insert"+insertCount+"_p1($insert_sql, \"true\");\n" +
+	    				"		 	//$b = $insert_sql;\n" +
 	    				"        }catch(Exception $e){\n" +
 	    				"       		unset($insert_db"+insertCount+");\n" +
-	    				"       		insert"+insertCount+"_p1('<font color=red>Insert failed.</font>', \"true\");	//登録失敗\n" +
+//	    				"       		insert"+insertCount+"_p1('<font color=red>Insert failed.</font>', \"true\");	//登録失敗\n" +
+	    				"       		$b = '<font color=red>Insert failed.</font>';	//登録失敗\n" +
 	    				"        }\n";
 			}else{
 				//update()
-				Mobile_HTML5Env.PHP +=
+				php +=
 						"		$insert_db1 = new SQLite3($sqlite3_DB);\n" +
 						"		try{\n" +
 						"			//データが存在しているかチェック\n" +
@@ -2501,14 +2496,15 @@ public class Mobile_HTML5Function extends Function {
 						"				$update_sql = \"UPDATE \".$table.\" SET \".$update_str.\" \".$update_where;\n" +
 						"				$result2 = $insert_db1->exec($update_sql);\n" +
 						"				//echo '変更された行の数: ', $db->changes();\n" +
-						"				insert"+insertCount+"_p1(\"Update completed.\", \"false\");\n" +
+//						"				insert"+insertCount+"_p1(\"Update completed.\", \"false\");\n" +
+						"				$b = \"Update completed.\";\n" +
 						"			}else{\n";
-				//Log.i("insertFlag:"+insertFlag);
 				if(!insertFlag.equals("true"))
-						Mobile_HTML5Env.PHP +=
-							"				insert"+insertCount+"_p1('<font color=red>No data found.</font>', \"true\");	//更新データなし\n";
+						php +=
+//							"				insert"+insertCount+"_p1('<font color=red>No data found.</font>', \"true\");	//更新データなし\n";
+							"				$b = '<font color=red>No data found.</font>';	//更新データなし\n";
 				else
-						Mobile_HTML5Env.PHP +=
+						php +=
 							"				//新規登録(insert)\n" +
 							"				$insert_str = \"\";\n" +
 							"				for($k=1; $k<=$col_num; $k++){\n" +
@@ -2518,44 +2514,33 @@ public class Mobile_HTML5Function extends Function {
 							"				\n" +
 							"				$insert_sql = \"INSERT INTO \".$table.\" (\".$insert_col.\") VALUES (\".$insert_str.\")\";\n" +
 							"				$result2 = $insert_db1->exec($insert_sql);\n" +
-							"				insert"+insertCount+"_p1(\"Registration completed.\", \"false\");\n";
-				Mobile_HTML5Env.PHP +=
+//							"				insert"+insertCount+"_p1(\"Registration completed.\", \"false\");\n";
+							"				$b = \"Registration completed.\";\n";
+				php +=
 						"			}\n" +
 						"        }catch(Exception $e){\n" +
 						"       		unset($insert_db1);\n" +
-						"       		insert"+insertCount+"_p1('<font color=red>Update failed.</font>', \"true\");	//更新失敗\n" +
+//						"       		insert"+insertCount+"_p1('<font color=red>Update failed.</font>', \"true\");	//更新失敗\n" +
+						"       		$b = '<font color=red>Update failed.</font>';	//更新失敗\n" +
 						"        }\n" +
 						"        unset($insert_db1);\n";
 			}
-    				
-			Mobile_HTML5Env.PHP +=
-    				"    }\n" +
-    				"}\n" +
-    				"function insert"+insertCount+"_p1($str, $error){\n" +
-    				"    echo '<script type=\"text/javascript\">window.parent.Insert"+insertCount+"_echo1(\"'.$str.'\",\"'.$error.'\");</script>';\n" +
-    				"}\n" +
+			php +=
+    				"	}\n" +
+    				"	$ret['result'] = $b;\n" +
+    				"	header(\"Content-Type: application/json; charset=utf-8\");\n" +
+					"	echo json_encode($ret);\n" +
+//    				"}\n" +
+//    				"function insert"+insertCount+"_p1($str, $error){\n" +
+//    				"    echo '<script type=\"text/javascript\">window.parent.Insert"+insertCount+"_echo(\"'.$str.'\",\"'.$error.'\");</script>';\n" +
+//    				"}\n" +
+					"\n" +
+					"//XSS対策\n" +
+					"function checkHTMLsc($str){\n" +
+					"	return htmlspecialchars($str, ENT_QUOTES, 'UTF-8');\n" +
+					"}\n" +
     				"?>\n";
     				
-			statement += 
-    				"\n" +
-    				"<script type=\"text/javascript\">\n" +
-    				"function Insert"+insertCount+"_echo1(str, error){\n";
-			if(!noreset){
-				//TODO: 他の削除方法
-				statement += 
-						"  if(error=='false') {\n" +
-						"  jQuery(function ($) {\n" +
-						"  	$('input,textarea').not('input[type=\\\"radio\\\"],input[type=\\\"checkbox\\\"],:hidden, :button, :submit,:reset').val('');\n" +
-						"	$('input[type=\"radio\"], input[type=\\\"checkbox\\\"],select').removeAttr('checked').removeAttr('selected');\n" +
-						"  });\n" +
-						"  }\n";
-			}
-			statement += 
-    				"  var textArea = document.getElementById(\"Insert"+insertCount+"_text0\");\n" +
-    				"  textArea.innerHTML = str;\n" +
-    				"}\n" +
-    				"</script>\n" +
-    				"<!-- Insert end -->\n";
     	}
     	//else if(DBMS.equals("postgresql")){
     	//	;
@@ -2564,6 +2549,7 @@ public class Mobile_HTML5Function extends Function {
 //    	// 各引数毎に処理した結果をHTMLに書きこむ
 //    	html_env.code.append(statement);
     	
+    	Mobile_HTML5.createFile(html_env, formPHPfileName, php);//PHPファイルの作成
     	insertCount++;
     	return statement;
     }
@@ -2576,7 +2562,7 @@ public class Mobile_HTML5Function extends Function {
     	//if(!Mobile_HTML5.form)	count -= 1;
 	    String s =
 	    	"\n" +
-			"<div id=\"Form"+count+"_text0\" data-role=\"none\"><!-- Form result --></div>\n" +
+			"<div id=\"Form"+count+"_result\" data-role=\"none\"><!-- Form result --></div>\n" +
 			"\n";
 			//"<br>\n";
 	    //html_env.code.append(s);

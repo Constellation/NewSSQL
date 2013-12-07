@@ -789,7 +789,7 @@ public class Mobile_HTML5Env extends LocalEnv {
 	        	//Log.i(c1str+c1+"   "+c2str+c2+"      "+c3+"   from:"+from+"   DB:"+DB+"	DBMS:"+DBMS);
 	        	
 	        	//sqlite3 php
-	        	if(DBMS.equals("sqlite3")){
+	        	if(DBMS.equals("sqlite") || DBMS.equals("sqlite3")){
 	        		if(s_val.equals("1") || s_val.equals("2")){
 		        		header.append("\n" +
 		        				"<!-- \"Login & Logout\" start -->\n" +

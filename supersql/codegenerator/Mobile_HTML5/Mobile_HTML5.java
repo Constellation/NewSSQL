@@ -474,7 +474,7 @@ public class Mobile_HTML5 {
 	    	String statement = "";
 	    	String gps_js = "";
 	    	//sqlite3 php
-	    	if(DBMS.equals("sqlite3")){
+	    	if(DBMS.equals("sqlite") || DBMS.equals("sqlite3")){
 	    		statement += 
 	    				"<!-- Form start -->\n" +
 	    				"<!-- Form Panel start -->\n" +
@@ -625,7 +625,7 @@ public class Mobile_HTML5 {
 	    				"  	$('input,textarea').not('input[type=\\\"radio\\\"],input[type=\\\"checkbox\\\"],:hidden, :button, :submit,:reset').val('');\n" +
 	    				"	$('input[type=\"radio\"], input[type=\\\"checkbox\\\"],select').removeAttr('checked').removeAttr('selected');\n" +
 	    				"  });\n" +
-	    				"  var textArea = document.getElementById(\"Form"+formCount+"_text0\");\n" +
+	    				"  var textArea = document.getElementById(\"Form"+formCount+"_result\");\n" +
 	    				"  textArea.innerHTML = str;\n" +
 	    				"}\n" +
 	    				"</script>\n" +
@@ -846,25 +846,25 @@ public class Mobile_HTML5 {
 
 		switch (type){
 		  case "date":	//Year / Month / Day
-		    s += "    <input type=\"date\" name=\""+name+"\" placeholder=\""+( (!placeholder.isEmpty())? placeholder : "Year / Month / Day" )+"\" data-role=\"datebox\" data-options='{\"mode\":\"calbox\", \"useNewStyle\":true, \"overrideCalHeaderFormat\": \"%Y / %m / %d\", \"overrideDateFormat\": \"%Y/%m/%d\" }' >";
+		    s += "    <input type=\"date\" id=\""+name+"\" name=\""+name+"\" placeholder=\""+( (!placeholder.isEmpty())? placeholder : "Year / Month / Day" )+"\" data-role=\"datebox\" data-options='{\"mode\":\"calbox\", \"useNewStyle\":true, \"overrideCalHeaderFormat\": \"%Y / %m / %d\", \"overrideDateFormat\": \"%Y/%m/%d\" }' >";
 		    break;
 		  case "date1":	//Year
-		    s += "    <input type=\"date\" name=\""+name+"\" placeholder=\""+( (!placeholder.isEmpty())? placeholder : "Year" )+"\" data-role=\"datebox\" data-options='{\"mode\":\"flipbox\", \"useNewStyle\":true, \"overrideHeaderFormat\": \"%Y\", \"overrideDateFormat\": \"%Y\", \"overrideDateFieldOrder\":[\"y\"] }' >";
+		    s += "    <input type=\"date\" id=\""+name+"\" name=\""+name+"\" placeholder=\""+( (!placeholder.isEmpty())? placeholder : "Year" )+"\" data-role=\"datebox\" data-options='{\"mode\":\"flipbox\", \"useNewStyle\":true, \"overrideHeaderFormat\": \"%Y\", \"overrideDateFormat\": \"%Y\", \"overrideDateFieldOrder\":[\"y\"] }' >";
 		    break;
 		  case "date2":	//Month
-		    s += "    <input type=\"date\" name=\""+name+"\" placeholder=\""+( (!placeholder.isEmpty())? placeholder : "Month" )+"\" data-role=\"datebox\" data-options='{\"mode\":\"flipbox\", \"useNewStyle\":true, \"overrideHeaderFormat\": \"%m\", \"overrideDateFormat\": \"%m\", \"overrideDateFieldOrder\":[\"m\"] }' >";
+		    s += "    <input type=\"date\" id=\""+name+"\" name=\""+name+"\" placeholder=\""+( (!placeholder.isEmpty())? placeholder : "Month" )+"\" data-role=\"datebox\" data-options='{\"mode\":\"flipbox\", \"useNewStyle\":true, \"overrideHeaderFormat\": \"%m\", \"overrideDateFormat\": \"%m\", \"overrideDateFieldOrder\":[\"m\"] }' >";
 		    break;
 		  case "date3":	//Day
-		    s += "    <input type=\"date\" name=\""+name+"\" placeholder=\""+( (!placeholder.isEmpty())? placeholder : "Day" )+"\" data-role=\"datebox\" min=\"2016-01-01\" max=\"2016-01-31\" data-options='{\"mode\":\"flipbox\", \"useNewStyle\":true, \"overrideHeaderFormat\": \"%d\", \"overrideDateFormat\": \"%d\", \"overrideDateFieldOrder\":[\"d\"] }' >";
+		    s += "    <input type=\"date\" id=\""+name+"\" name=\""+name+"\" placeholder=\""+( (!placeholder.isEmpty())? placeholder : "Day" )+"\" data-role=\"datebox\" min=\"2016-01-01\" max=\"2016-01-31\" data-options='{\"mode\":\"flipbox\", \"useNewStyle\":true, \"overrideHeaderFormat\": \"%d\", \"overrideDateFormat\": \"%d\", \"overrideDateFieldOrder\":[\"d\"] }' >";
 		    break;
 		  case "date4":	//Year / Month
-		    s += "    <input type=\"date\" name=\""+name+"\" placeholder=\""+( (!placeholder.isEmpty())? placeholder : "Year / Month" )+"\" data-role=\"datebox\" data-options='{\"mode\":\"calbox\", \"useNewStyle\":true, \"overrideCalHeaderFormat\": \"%Y / %m\", \"overrideDateFormat\": \"%Y/%m\" }' >";
+		    s += "    <input type=\"date\" id=\""+name+"\" name=\""+name+"\" placeholder=\""+( (!placeholder.isEmpty())? placeholder : "Year / Month" )+"\" data-role=\"datebox\" data-options='{\"mode\":\"calbox\", \"useNewStyle\":true, \"overrideCalHeaderFormat\": \"%Y / %m\", \"overrideDateFormat\": \"%Y/%m\" }' >";
 		    break;
 		  case "date5":	//Month / Day
-			s += "    <input type=\"date\" name=\""+name+"\" placeholder=\""+( (!placeholder.isEmpty())? placeholder : "Month / Day" )+"\" data-role=\"datebox\" min=\"2016-01-01\" max=\"2016-12-31\" data-options='{\"mode\":\"datebox\", \"useNewStyle\":true, \"overrideHeaderFormat\": \"%m / %d\",  \"overrideDateFormat\": \"%m/%d\", \"overrideDateFieldOrder\":[\"m\",\"d\"] }' >";
+			s += "    <input type=\"date\" id=\""+name+"\" name=\""+name+"\" placeholder=\""+( (!placeholder.isEmpty())? placeholder : "Month / Day" )+"\" data-role=\"datebox\" min=\"2016-01-01\" max=\"2016-12-31\" data-options='{\"mode\":\"datebox\", \"useNewStyle\":true, \"overrideHeaderFormat\": \"%m / %d\",  \"overrideDateFormat\": \"%m/%d\", \"overrideDateFieldOrder\":[\"m\",\"d\"] }' >";
 			break;
 		  case "time":	//Hour : Minute
-			s += "    <input type=\"time\" name=\""+name+"\" placeholder=\""+( (!placeholder.isEmpty())? placeholder : "Ex) 12:01" )+"\" data-role=\"datebox\" data-options='{\"mode\":\"timebox\", \"overrideTimeFormat\":24, \"useNewStyle\":true }'>";
+			s += "    <input type=\"time\" id=\""+name+"\" name=\""+name+"\" placeholder=\""+( (!placeholder.isEmpty())? placeholder : "Ex) 12:01" )+"\" data-role=\"datebox\" data-options='{\"mode\":\"timebox\", \"overrideTimeFormat\":24, \"useNewStyle\":true }'>";
 			break;
 		}
 		//Log.e("formValidation = "+s);
@@ -922,7 +922,7 @@ public class Mobile_HTML5 {
 		if(decos.containsKey("dynamic")){
 			dynamicHTMLbuf0 = html_env.code.toString();
 			dynamicDisplay = true;
-			dynamicPHPfileName = html_env.getFileName2()+"_dynamic_"+dynamicCount+".php";
+			dynamicPHPfileName = html_env.getFileName2()+"_SSQLdynamic_"+dynamicCount+".php";
 			
 	        if(decos.containsKey("row")){
 	        	dynamicRow = Integer.parseInt(decos.getStr("row").replace("\"", ""));
@@ -930,7 +930,7 @@ public class Mobile_HTML5 {
 	        		Log.err("<<Warning>> row指定の範囲は、1〜です。指定された「row="+dynamicRow+"」は使用できません。");
 	        	}else{
 	        		dynamicRowFlg = true;
-	        		dynamicPHPfileName = html_env.getFileName2()+"_dynamicPaging_"+dynamicPagingCount+".php";
+	        		dynamicPHPfileName = html_env.getFileName2()+"_SSQLdynamicPaging_"+dynamicPagingCount+".php";
 	        	}
 	        	//Log.i("dynamicRow = "+dynamicRow);
 	        }
@@ -1229,11 +1229,11 @@ public class Mobile_HTML5 {
 	    	String statement = "";
 	    	String php = "<?php\n";
 	    	//sqlite3 php
-	    	if(DBMS.equals("sqlite3")){
+	    	if(DBMS.equals("sqlite") || DBMS.equals("sqlite3")){
 	    		if(!dynamicRowFlg){
 		    		statement += getDynamicHTML(dynamicCount, dynamicPHPfileName);
-//		    				"<!-- Dynamic start -->\n" +
-//							"<!-- Dynamic Panel start -->\n" +
+//		    				"<!-- SSQL Dynamic start -->\n" +
+//							"<!-- SSQL Dynamic Panel start -->\n" +
 //							//"<br>\n" +
 //							"<div id=\"DYNAMIC"+dynamicCount+"panel\" style=\"\" data-role=\"none\">\n" +
 //	//						"<hr>\n<div style=\"font-size:30;\" id=\"DynamicTitle"+dynamicCount+"\">"+title+"</div>\n<hr>\n" +
@@ -1265,7 +1265,7 @@ public class Mobile_HTML5 {
 //							//"<br>\n" +
 //							"</div>\n" +
 //	//						"<script type=\"text/javascript\"> $('#Dynamic"+dynamicCount+"_text_th').hide(); </script>\n" +
-//							"<!-- Dynamic Panel end -->\n" +
+//							"<!-- SSQL Dynamic Panel end -->\n" +
 //							"\n";
 	    		}else{
 	    			statement += getDynamicPagingHTML(dynamicRow, dynamicPagingCount, dynamicPHPfileName);
@@ -1456,7 +1456,7 @@ public class Mobile_HTML5 {
 ////	    		statement +=
 ////	    					"}\n" +
 //    						"</script>\n" +
-//    						"<!-- Dynamic end -->\n";
+//    						"<!-- SSQL Dynamic end -->\n";
 	    		
 	    		
 	    	}
@@ -1496,14 +1496,14 @@ public class Mobile_HTML5 {
 		phpFileName = new File(phpFileName).getName();
 		String s =
 				"\n" +
-				"<!-- Dynamic "+num+" start -->\n" +
-				"<!-- Dynamic "+num+" DIV start -->\n" +
+				"<!-- SSQL Dynamic"+num+" start -->\n" +
+				"<!-- SSQL Dynamic"+num+" DIV start -->\n" +
 				"<div id=\"SSQL_DynamicDisplay"+num+"_Panel\" style=\"\" data-role=\"none\">\n" +
-				"<div id=\"SSQL_DynamicDisplay"+num+"\" data-role=\"none\"><!-- Dynamic Display Data --></div>\n" +
+				"<div id=\"SSQL_DynamicDisplay"+num+"\" data-role=\"none\"><!-- SSQL Dynamic Display Data"+num+" --></div>\n" +
 				"</div>\n" +
-				"<!-- Dynamic "+num+" DIV end -->\n" +
+				"<!-- SSQL Dynamic"+num+" DIV end -->\n" +
 				"\n" +
-				"<!-- Dynamic "+num+" JS start -->\n" +
+				"<!-- SSQL Dynamic"+num+" JS start -->\n" +
 				"<script type=\"text/javascript\">\n" +
 				"SSQL_DynamicDisplay"+num+"();	//ロード時に実行\n";
 		if(ajax_loadInterval>0){
@@ -1532,19 +1532,19 @@ public class Mobile_HTML5 {
 				"	});\n" +
 				"}\n" +
 				"</script>\n" +
-				"<!-- Dynamic "+num+" JS end -->\n" +
-				"<!-- Dynamic "+num+" end -->\n\n";
+				"<!-- SSQL Dynamic"+num+" JS end -->\n" +
+				"<!-- SSQL Dynamic"+num+" end -->\n\n";
 		return s;
 	}
 	private static String getDynamicPagingHTML(int row, int num, String phpFileName){
 		phpFileName = new File(phpFileName).getName();
 		String s =
 				"\n" +
-				"<!-- Dynamic Paging "+num+" start -->\n" +
-				"<!-- Dynamic Paging "+num+" DIV start -->\n" +
+				"<!-- SSQL DynamicPaging"+num+" start -->\n" +
+				"<!-- SSQL DynamicPaging"+num+" DIV start -->\n" +
 				//"<div id=\"SSQL_DynamicDisplayPaging"+num+"_Buttons\"></div>\n" +
 				"\n" +
-				"<div id=\"SSQL_DynamicDisplayPaging"+num+"\" data-role=\"none\"><!-- Dynamic Display Data --></div>\n" +
+				"<div id=\"SSQL_DynamicDisplayPaging"+num+"\" data-role=\"none\"><!-- SSQL Dynamic Display Data"+num+" --></div>\n" +
 				"<script type=\"text/javascript\">\n" +
 				"function SSQL_DynamicDisplayPaging"+num+"_echo(str){\n" +
 				"  var textArea = document.getElementById(\"SSQL_DynamicDisplayPaging"+num+"\");\n" +
@@ -1553,9 +1553,9 @@ public class Mobile_HTML5 {
 				"</script>\n" +
 				"\n" +
 				"<div id=\"SSQL_DynamicDisplayPaging"+num+"_Buttons\"></div>\n" +
-				"<!-- Dynamic Paging "+num+" DIV end -->\n" +
+				"<!-- SSQL DynamicPaging"+num+" DIV end -->\n" +
 				"\n" +
-				"<!-- Dynamic Paging "+num+" JS start -->\n" +
+				"<!-- SSQL DynamicPaging"+num+" JS start -->\n" +
 				"<script type=\"text/javascript\">\n" +
 				"SSQL_DynamicDisplayPaging"+num+"(1);	//初期ロード時\n" +
 				"SSQL_DynamicDisplayPaging"+num+"_setButtons();\n" +
@@ -1606,8 +1606,8 @@ public class Mobile_HTML5 {
 				"	});\n" +
 				"}\n" +
 				"</script>\n" +
-				"<!-- Dynamic Paging "+num+" JS end -->\n" +
-				"<!-- Dynamic Paging "+num+" end -->\n\n";
+				"<!-- SSQL DynamicPaging"+num+" JS end -->\n" +
+				"<!-- SSQL DynamicPaging"+num+" end -->\n\n";
 		return s;
 	}
 	
