@@ -2232,21 +2232,22 @@ public class Mobile_HTML5Function extends Function {
 								statement += 
 										"    <input type=\"hidden\" id=\"SSQL_insert"+insertCount+"_words"+(++insertWordCount)+"\" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\" value=\""+button_array[i]+"\">\n";
 						
-						
-						}else if(btRcount == 2){		//ボタン ex){出席|欠席}
-							String bt1=ss.substring(0,ss.indexOf("|")).trim();
-							String bt2=ss.substring(ss.indexOf("|")+1,ss.length()-1).trim();
-							insertWordCount++;
-							statement += 
-									"	<div class=\"ui-grid-a\">\n" +
-									"		<div class=\"ui-block-a\">\n" +
-									"    		<input type=\"submit\" id=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\" value=\""+bt1+"\" data-theme=\"a\">\n" +
-									"		</div>\n" +
-									"		<div class=\"ui-block-b\">\n" +
-									"    		<input type=\"submit\" id=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\" value=\""+bt2+"\" data-theme=\"a\">\n" +
-									"		</div>\n" +
-									"	</div>\n";
-							buttonSubmit += " || $_POST['SSQL_insert"+insertCount+"_words"+(insertWordCount)+"']";
+						//TODO 以下を「@button」時のみに変更
+//						}else if(btRcount == 2){		//ボタン ex){出席|欠席}
+//							String bt1=ss.substring(0,ss.indexOf("|")).trim();
+//							String bt2=ss.substring(ss.indexOf("|")+1,ss.length()-1).trim();
+//							insertWordCount++;
+//							statement += 
+//									"	<div class=\"ui-grid-a\">\n" +
+//									"		<div class=\"ui-block-a\">\n" +
+//									"    		<input type=\"submit\" id=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\" value=\""+bt1+"\" data-theme=\"a\" onClick=\"SSQL_Insert"+insertCount+"()\">\n" +
+//									"		</div>\n" +
+//									"		<div class=\"ui-block-b\">\n" +
+//									"    		<input type=\"submit\" id=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\" value=\""+bt2+"\" data-theme=\"a\" onClick=\"SSQL_Insert"+insertCount+"()\">\n" +
+//									"		</div>\n" +
+//									"	</div>\n";
+//							buttonSubmit += " || $_POST['SSQL_insert"+insertCount+"_words"+(insertWordCount)+"']";
+							
 						}else{							//ラジオボタン ex){出席|欠席|その他}
 							statement += "   <div data-role=\"controlgroup\">\n";
 							insertWordCount++;
@@ -2359,8 +2360,8 @@ public class Mobile_HTML5Function extends Function {
 						//"  if(error=='false') {\n" +
 						"  if(str.indexOf(\"completed\") !== -1) {\n" +
 						//"  jQuery(function ($) {\n" +
-						"  	$('input,textarea').not('input[type=\\\"radio\\\"],input[type=\\\"checkbox\\\"],:hidden, :button, :submit,:reset').val('');\n" +
-						"	$('input[type=\"radio\"], input[type=\\\"checkbox\\\"],select').removeAttr('checked').removeAttr('selected');\n" +
+						"  	$('#SSQL_insert"+insertCount+"panel input,textarea').not('input[type=\\\"radio\\\"],input[type=\\\"checkbox\\\"],:hidden, :button, :submit,:reset').val('');\n" +
+						//"	$('#SSQL_insert"+insertCount+"panel input[type=\"radio\"], input[type=\\\"checkbox\\\"],select').removeAttr('checked').removeAttr('selected');\n" +
 						//"  });\n" +
 						"  }\n";
 			}
@@ -2376,15 +2377,16 @@ public class Mobile_HTML5Function extends Function {
 					"	$.ajax({\n" +
 					"		type: \"POST\",\n" +
 					"		url: \""+new File(formPHPfileName).getName()+"\",\n" +
-//					"		data: {insert1_words1:$('#insert1_words1').val(), insert1_words2:$('#insert1_words2').val()},\n" +
-					"		data: {";
-			for(int k=1; k<=insertWordCount; k++){
-				statement += 
-						"SSQL_insert"+insertCount+"_words"+k+":$('#SSQL_insert"+insertCount+"_words"+k+"').val()"+( (k<insertWordCount)? ", " : "" );
-//						"insert1_words2:$('#insert1_words2').val()";
-			}
-			statement += 
-					"},\n" +
+					"		data: $(\"#SSQL_INSERT"+insertCount+"panel form\").serializeArray(),\n" +
+//					//"		data: {insert1_words1:$('#insert1_words1').val(), insert1_words2:$('#insert1_words2').val()},\n" +
+//					"		data: {";
+//			for(int k=1; k<=insertWordCount; k++){
+//				statement += 
+//						"SSQL_insert"+insertCount+"_words"+k+":$('#SSQL_insert"+insertCount+"_words"+k+"').val()"+( (k<insertWordCount)? ", " : "" );
+////						"insert1_words2:$('#insert1_words2').val()";
+//			}
+//			statement += 
+//					"},\n" +
 					"		dataType: \"json\",\n" +
 					"        beforeSend: function(xhr, settings) {\n" +
 					"            $('#SSQL_insert"+insertCount+"').attr('disabled', true);\n" +
