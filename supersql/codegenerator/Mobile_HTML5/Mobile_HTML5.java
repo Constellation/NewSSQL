@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.Map;
 
 import com.ibm.db2.jcc.am.no;
+import com.sun.org.apache.regexp.internal.recompile;
 
 import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.FuncArg;
@@ -821,17 +822,11 @@ public class Mobile_HTML5 {
 	}
 
 	//20131201 form validation
-//	static ArrayList<Boolean> formNotNullFlg = new ArrayList<Boolean>();
 	public static String checkFormValidationType(String s){
 		String type = "";
 		String types[] = {"tel","url","email","password","alphabet_number","alphabet","number","color","file",
 				"date1","date2","date3","date4","date5","date","time"};	//Order is significant!
 		for(int i=0;i<types.length;i++){
-//			if(s.contains("notnull")){
-//				formNotNullFlg.add(true);
-//			}else{
-//				formNotNullFlg.add(false);
-//			}
 			if(s.contains(types[i])){	//TODO: リファクタリング
 				type = types[i];
 				break;
@@ -855,82 +850,84 @@ public class Mobile_HTML5 {
 //	    ◎time <input type="text" name="insert1_words5" placeholder="Ex) 12:01" data-role="datebox" data-options='{"mode":"timebox", "overrideTimeFormat":24, "useNewStyle":true}'>
 
 		switch (type){
-		  case "tel":	//tel
-			  s += "    <span><input type=\"tel\" id=\""+name+"\" name=\""+name+"\""+getFormPlaceholder(placeholder, "Telephone number")+getFormClass(type,notnull)+"></span>";
+		  case "tel":	//tel (custom type)
+			  s += getFormTag("tel", name, placeholder, "Telephone number", notnull, type);
 			  break;
 		  case "url":	//url
-			  s += "    <span><input type=\"url\" id=\""+name+"\" name=\""+name+"\""+getFormPlaceholder(placeholder,"URL")+getFormNotnullClass(notnull)+"></span>";
+			  s += getFormTag("url", name, placeholder,"URL", notnull, "");
 			  break;
 		  case "email":	//email
-			  s += "    <span><input type=\"email\" id=\""+name+"\" name=\""+name+"\""+getFormPlaceholder(placeholder,"E-mail address")+getFormNotnullClass(notnull)+"></span>";
+			  s += getFormTag("email", name, placeholder,"E-mail address", notnull, "");
 			  break;
 		  case "password":	//password
-			s += "    <span><input type=\"password\" id=\""+name+"\" name=\""+name+"\""+getFormPlaceholder(placeholder,"Password")+getFormNotnullClass(notnull)+"></span>";
+			s += getFormTag("password", name, placeholder,"Password", notnull, "");
 			break;
 		  case "number"://number
-			  s += "    <span><input type=\"number\" id=\""+name+"\" name=\""+name+"\""+getFormPlaceholder(placeholder,"Number")+getFormNotnullClass(notnull)+"></span>";
+			  s += getFormTag("number", name, placeholder,"Number", notnull, "");
 			  break;
 		  case "color":	//color
-			  s += "    <span><input type=\"color\" id=\""+name+"\" name=\""+name+"\""+getFormPlaceholder(placeholder,"Color")+getFormNotnullClass(notnull)+"></span>";
+			  s += getFormTag("color", name, placeholder,"Color", notnull, "");
 			  break;
 		  case "file":	//file
-			  s += "    <span><input type=\"file\" id=\""+name+"\" name=\""+name+"\""+getFormPlaceholder(placeholder,"Choose file")+getFormNotnullClass(notnull)+"></span>";
+			  s += getFormTag("file", name, placeholder,"Choose file", notnull, "");
 			  break;
 			  
-		  case "alphabet":	//alphabet
-			  s += "    <span><input type=\"text\" id=\""+name+"\" name=\""+name+"\""+getFormPlaceholder(placeholder, "Alphabet")+getFormClass(type,notnull)+"></span>";
+		  case "alphabet":	//alphabet (custom type)
+			  s += getFormTag("text", name, placeholder, "Alphabet", notnull, type);
 			  break;
-		  case "alphabet_number":	//alphabet_number
-			  s += "    <span><input type=\"text\" id=\""+name+"\" name=\""+name+"\""+getFormPlaceholder(placeholder, "Alphabet or Number")+getFormClass(type,notnull)+"></span>";
+		  case "alphabet_number":	//alphabet_number (custom type)
+			  s += getFormTag("text", name, placeholder, "Alphabet or Number", notnull, type);
 			  break;
 			  
 		  case "date":	//Year / Month / Day
-		    s += "    <span><input type=\"date\" id=\""+name+"\" name=\""+name+"\""+getFormPlaceholder(placeholder,"Year / Month / Day")+"data-role=\"datebox\" data-options='{\"mode\":\"calbox\", \"useNewStyle\":true, \"overrideCalHeaderFormat\": \"%Y / %m / %d\", \"overrideDateFormat\": \"%Y/%m/%d\" }'"+getFormNotnullClass(notnull)+"></span>";
-		    break;
+			  s += getFormTag("date", name, placeholder, "Year / Month / Day", notnull, "") + "data-role=\"datebox\" data-options='{\"mode\":\"calbox\", \"useNewStyle\":true, \"overrideCalHeaderFormat\": \"%Y / %m / %d\", \"overrideDateFormat\": \"%Y/%m/%d\" }'";
+			  break;
 		  case "date1":	//Year
-		    s += "    <span><input type=\"date\" id=\""+name+"\" name=\""+name+"\""+getFormPlaceholder(placeholder,"Year")+"data-role=\"datebox\" data-options='{\"mode\":\"flipbox\", \"useNewStyle\":true, \"overrideHeaderFormat\": \"%Y\", \"overrideDateFormat\": \"%Y\", \"overrideDateFieldOrder\":[\"y\"] }'"+getFormNotnullClass(notnull)+"></span>";
-		    break;
+			  s += getFormTag("date", name, placeholder, "Year", notnull, "") + "data-role=\"datebox\" data-options='{\"mode\":\"flipbox\", \"useNewStyle\":true, \"overrideHeaderFormat\": \"%Y\", \"overrideDateFormat\": \"%Y\", \"overrideDateFieldOrder\":[\"y\"] }'";
+			  break;
 		  case "date2":	//Month
-		    s += "    <span><input type=\"date\" id=\""+name+"\" name=\""+name+"\""+getFormPlaceholder(placeholder,"Month")+"data-role=\"datebox\" data-options='{\"mode\":\"flipbox\", \"useNewStyle\":true, \"overrideHeaderFormat\": \"%m\", \"overrideDateFormat\": \"%m\", \"overrideDateFieldOrder\":[\"m\"] }'"+getFormNotnullClass(notnull)+"></span>";
-		    break;
+			  s += getFormTag("date", name, placeholder, "Month", notnull, "") + "data-role=\"datebox\" data-options='{\"mode\":\"flipbox\", \"useNewStyle\":true, \"overrideHeaderFormat\": \"%m\", \"overrideDateFormat\": \"%m\", \"overrideDateFieldOrder\":[\"m\"] }'";
+			  break;
 		  case "date3":	//Day
-		    s += "    <span><input type=\"date\" id=\""+name+"\" name=\""+name+"\""+getFormPlaceholder(placeholder,"Day")+"data-role=\"datebox\" min=\"2016-01-01\" max=\"2016-01-31\" data-options='{\"mode\":\"flipbox\", \"useNewStyle\":true, \"overrideHeaderFormat\": \"%d\", \"overrideDateFormat\": \"%d\", \"overrideDateFieldOrder\":[\"d\"] }'"+getFormNotnullClass(notnull)+"></span>";
-		    break;
+			  s += getFormTag("date", name, placeholder, "Day", notnull, "") + "data-role=\"datebox\" min=\"2016-01-01\" max=\"2016-01-31\" data-options='{\"mode\":\"flipbox\", \"useNewStyle\":true, \"overrideHeaderFormat\": \"%d\", \"overrideDateFormat\": \"%d\", \"overrideDateFieldOrder\":[\"d\"] }'";
+			  break;
 		  case "date4":	//Year / Month
-		    s += "    <span><input type=\"date\" id=\""+name+"\" name=\""+name+"\""+getFormPlaceholder(placeholder,"Year / Month")+"data-role=\"datebox\" data-options='{\"mode\":\"calbox\", \"useNewStyle\":true, \"overrideCalHeaderFormat\": \"%Y / %m\", \"overrideDateFormat\": \"%Y/%m\" }'"+getFormNotnullClass(notnull)+"></span>";
-		    break;
+			  s += getFormTag("date", name, placeholder, "Year / Month", notnull, "") + "data-role=\"datebox\" data-options='{\"mode\":\"calbox\", \"useNewStyle\":true, \"overrideCalHeaderFormat\": \"%Y / %m\", \"overrideDateFormat\": \"%Y/%m\" }'";
+			  break;
 		  case "date5":	//Month / Day
-			s += "    <span><input type=\"date\" id=\""+name+"\" name=\""+name+"\""+getFormPlaceholder(placeholder,"Month / Day")+"data-role=\"datebox\" min=\"2016-01-01\" max=\"2016-12-31\" data-options='{\"mode\":\"datebox\", \"useNewStyle\":true, \"overrideHeaderFormat\": \"%m / %d\",  \"overrideDateFormat\": \"%m/%d\", \"overrideDateFieldOrder\":[\"m\",\"d\"] }'"+getFormNotnullClass(notnull)+"></span>";
-			break;
+			  s += getFormTag("date", name, placeholder, "Month / Day", notnull, "") + "data-role=\"datebox\" min=\"2016-01-01\" max=\"2016-12-31\" data-options='{\"mode\":\"datebox\", \"useNewStyle\":true, \"overrideHeaderFormat\": \"%m / %d\",  \"overrideDateFormat\": \"%m/%d\", \"overrideDateFieldOrder\":[\"m\",\"d\"] }'";
+			  break;
 		  case "time":	//Hour : Minute
-			s += "    <span><input type=\"time\" id=\""+name+"\" name=\""+name+"\""+getFormPlaceholder(placeholder,"Ex) 12:01")+"data-role=\"datebox\" data-options='{\"mode\":\"timebox\", \"overrideTimeFormat\":24, \"useNewStyle\":true }'"+getFormNotnullClass(notnull)+"></span>";
-			break;
+			  s += getFormTag("time", name, placeholder, "Ex) 12:01", notnull, "") + "data-role=\"datebox\" data-options='{\"mode\":\"timebox\", \"overrideTimeFormat\":24, \"useNewStyle\":true }'";
+			  break;
 		}
-		//Log.e("formValidation = "+s);
-		return s+"\n";
+		//Log.e("formValidation = "+s+"></span>");
+		return s+"></span>\n";
 	}
-	private static String getFormPlaceholder(String placeholder, String defaultStr) {
-		return " placeholder=\""+((!placeholder.isEmpty())? placeholder : defaultStr)+"\" ";
+	private static String getFormTag(String type, String name, String placeholder, String defaultPlaceholder, Boolean notnull, String customType) {
+		return "    <span><input type=\""+type+"\" id=\""+name+"\" name=\""+name+"\"" +
+				" placeholder=\""+((!placeholder.isEmpty())? placeholder : defaultPlaceholder)+"\" " + getFormClass(notnull, customType);
 	}
-	private static String getFormClass(String type, Boolean notnull) {
+	static String getFormClass(Boolean notnull, String customType) {
+		if(!notnull && customType.isEmpty())	return "";
 		String s = " class=\"";
 		if(notnull) s += "required ";
-		switch (type){
-		  case "tel":				//tel
-			  s += "jqValidate_TelephoneNumber";
-			  break;
-		  case "alphabet":			//alphabet
-			  s += "jqValidate_Alphabet";
-			  break;
-		  case "alphabet_number":	//alphabet_number
-			  s += "jqValidate_AlphabetNumber";
-			  break;
+		if(!customType.isEmpty()){
+			switch (customType){
+			  case "tel":				//tel
+				  s += "jqValidate_TelephoneNumber";
+				  break;
+			  case "alphabet":			//alphabet
+				  s += "jqValidate_Alphabet";
+				  break;
+			  case "alphabet_number":	//alphabet_number
+				  s += "jqValidate_AlphabetNumber";
+				  break;
+			}
 		}
 		return s+"\" ";
 	}
-	public static String getFormNotnullClass(Boolean notnull) {
-		return (notnull)? " class=\"required\" " : "";
-	}
+
 	
 	
 	

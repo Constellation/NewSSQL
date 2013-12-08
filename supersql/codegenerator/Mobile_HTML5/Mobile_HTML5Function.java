@@ -2270,7 +2270,7 @@ public class Mobile_HTML5Function extends Function {
 									" type=\""+((!hiddenFlg[i])?("text"):("hidden"))+"\"" +
 									" id=\"SSQL_insert"+insertCount+"_words"+(++insertWordCount)+"\"" +
 									" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\"" +
-									" placeholder=\""+s_name_array[i]+"\""+Mobile_HTML5.getFormNotnullClass(notnullFlg[i])+">" +
+									" placeholder=\""+s_name_array[i]+"\""+Mobile_HTML5.getFormClass(notnullFlg[i], "")+">" +
 									""+((!textareaFlg[i])?(""):("</textarea>"))+"</span>\n";
 							//statement += "    <input type=\"text\" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\" placeholder=\""+s_name_array[i]+"\">\n";
 						}else{
