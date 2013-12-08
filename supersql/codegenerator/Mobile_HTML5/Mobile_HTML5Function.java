@@ -2008,6 +2008,7 @@ public class Mobile_HTML5Function extends Function {
     	boolean[] hiddenFlg = new boolean[col_num];
     	boolean[] noinsertFlg = new boolean[col_num];
     	String[] validationType = new String[col_num];
+    	boolean[] notnullFlg = new boolean[col_num];
     	String notnullFlg_array = "";
     	String[] $session_array = new String[col_num];
     	String[] $time_array = new String[col_num];
@@ -2111,6 +2112,7 @@ public class Mobile_HTML5Function extends Function {
     		hiddenFlg[i] = false;
     		noinsertFlg[i] = false;
     		validationType[i] = "";
+    		notnullFlg[i] = false;
     		String str = "";
     		if(s_array[i].replaceAll(" ","").contains("@{")){
     			str = s_array[i].substring(s_array[i].lastIndexOf("@")+1);	//@以下の文字列
@@ -2131,6 +2133,7 @@ public class Mobile_HTML5Function extends Function {
 		    			else				notnullFlg_array += "FALSE,";
 		    		}
 	    		}
+	    		if(str.contains("notnull"))	notnullFlg[i] = true;
 	    		validationType[i] = Mobile_HTML5.checkFormValidationType(str);	//form validation
 	    		
 	    		s_array[i] = s_array[i].substring(0,s_array[i].indexOf("@"));
@@ -2263,11 +2266,15 @@ public class Mobile_HTML5Function extends Function {
 					}else{
 						if(validationType[i].isEmpty()){
 							statement += 
-									"    <"+((!textareaFlg[i])?("input"):("textarea"))+" type=\""+((!hiddenFlg[i])?("text"):("hidden"))+"\" id=\"SSQL_insert"+insertCount+"_words"+(++insertWordCount)+"\" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\" placeholder=\""+s_name_array[i]+"\">" +
-									""+((!textareaFlg[i])?(""):("</textarea>"))+"\n";
+									"    <span><"+((!textareaFlg[i])?("input"):("textarea"))+"" +
+									" type=\""+((!hiddenFlg[i])?("text"):("hidden"))+"\"" +
+									" id=\"SSQL_insert"+insertCount+"_words"+(++insertWordCount)+"\"" +
+									" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\"" +
+									" placeholder=\""+s_name_array[i]+"\""+Mobile_HTML5.getFormNotnullClass(notnullFlg[i])+">" +
+									""+((!textareaFlg[i])?(""):("</textarea>"))+"</span>\n";
 							//statement += "    <input type=\"text\" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\" placeholder=\""+s_name_array[i]+"\">\n";
 						}else{
-							statement += Mobile_HTML5.getFormValidationString(validationType[i], "SSQL_insert"+insertCount+"_words"+(++insertWordCount), s_name_array[i]);
+							statement += Mobile_HTML5.getFormValidationString(validationType[i], notnullFlg[i], "SSQL_insert"+insertCount+"_words"+(++insertWordCount), s_name_array[i]);
 						}
 					}
 				}else{
@@ -2327,10 +2334,12 @@ public class Mobile_HTML5Function extends Function {
     		if(buttonSubmit.equals("")){
     			if(buttonName.isEmpty()){
 					statement += 
-						"    <input type=\"submit\" value=\""+( (!update)? ("登録"):("更新") )+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\" name=\"SSQL_insert"+insertCount+"\" id=\"SSQL_insert"+insertCount+"\" data-icon=\"insert\" data-mini=\"false\" data-inline=\"false\" onClick=\"SSQL_Insert"+insertCount+"()\">\n";
+						"    <input type=\"submit\" value=\""+( (!update)? ("登録"):("更新") )+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\" name=\"SSQL_insert"+insertCount+"\" id=\"SSQL_insert"+insertCount+"\" data-icon=\"insert\" data-mini=\"false\" data-inline=\"false\">\n";
+//						"    <input type=\"submit\" value=\""+( (!update)? ("登録"):("更新") )+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\" name=\"SSQL_insert"+insertCount+"\" id=\"SSQL_insert"+insertCount+"\" data-icon=\"insert\" data-mini=\"false\" data-inline=\"false\" onClick=\"SSQL_Insert"+insertCount+"()\">\n";
     			}else{
 	    			statement += 
-	    					"    <input type=\"submit\" value=\""+buttonName+"\" name=\"SSQL_insert"+insertCount+"\" id=\"SSQL_insert"+insertCount+"\" data-mini=\"false\" data-inline=\"false\" onClick=\"SSQL_Insert"+insertCount+"()\">\n";
+	    					"    <input type=\"submit\" value=\""+buttonName+"\" name=\"SSQL_insert"+insertCount+"\" id=\"SSQL_insert"+insertCount+"\" data-mini=\"false\" data-inline=\"false\">\n";
+//	    					"    <input type=\"submit\" value=\""+buttonName+"\" name=\"SSQL_insert"+insertCount+"\" id=\"SSQL_insert"+insertCount+"\" data-mini=\"false\" data-inline=\"false\" onClick=\"SSQL_Insert"+insertCount+"()\">\n";
     			}
     		}
     		statement += 
@@ -2372,6 +2381,18 @@ public class Mobile_HTML5Function extends Function {
 			}
 			statement += 
     				"}\n" +
+					"$(function(){\n" +
+					"	//validation\n" +
+					"	$(\"#SSQL_INSERT"+insertCount+"panel form\").validate({\n" +
+					"	 	errorPlacement: function(error, element) {\n" +
+					"        	error.appendTo(element.parent().parent().after());\n" +
+					"    	},\n" +
+					"		submitHandler: function(form) {\n" +
+					"		 	SSQL_Insert"+insertCount+"();\n" +
+					"		    return false;\n" +
+					"		}\n" +
+					"	});\n" +
+					"})\n" +
 					"function SSQL_Insert"+insertCount+"(){\n" +
 					"	//ajax: PHPへ値を渡して実行\n" +
 					"	$.ajax({\n" +

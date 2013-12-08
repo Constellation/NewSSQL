@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
 
+import com.ibm.db2.jcc.am.no;
+
 import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.FuncArg;
 import supersql.codegenerator.ITFE;
@@ -545,7 +547,8 @@ public class Mobile_HTML5 {
 										"    <"+((!textareaFlg[i])?("input"):("textarea"))+" type=\""+((!hiddenFlg[i])?("text"):("hidden"))+"\" name=\"form"+formCount+"_words"+(++insertWordCount)+"\" placeholder=\""+s_name_array[i]+"\">" +
 										""+((!textareaFlg[i])?(""):("</textarea>"))+"\n";
 							}else{
-								statement += Mobile_HTML5.getFormValidationString(validationType[i], "form"+formCount+"_words"+(++insertWordCount), s_name_array[i]);
+								//TODO 2nd引数
+								statement += Mobile_HTML5.getFormValidationString(validationType[i], false, "form"+formCount+"_words"+(++insertWordCount), s_name_array[i]);
 							}
 						}
 					}else{
@@ -818,19 +821,26 @@ public class Mobile_HTML5 {
 	}
 
 	//20131201 form validation
+//	static ArrayList<Boolean> formNotNullFlg = new ArrayList<Boolean>();
 	public static String checkFormValidationType(String s){
 		String type = "";
-		String types[] = {"date1","date2","date3","date4","date5","date","time"};	//Order is significant!
+		String types[] = {"tel","url","email","password","alphabet_number","alphabet","number","color","file",
+				"date1","date2","date3","date4","date5","date","time"};	//Order is significant!
 		for(int i=0;i<types.length;i++){
+//			if(s.contains("notnull")){
+//				formNotNullFlg.add(true);
+//			}else{
+//				formNotNullFlg.add(false);
+//			}
 			if(s.contains(types[i])){	//TODO: リファクタリング
 				type = types[i];
 				break;
 			}
 		}
-		//Log.e("type = "+type);
+		//Log.e("s = "+s+", "+"type = "+type);
 		return type;
 	}
-	public static String getFormValidationString(String type, String name, String placeholder){
+	public static String getFormValidationString(String type, Boolean notnull, String name, String placeholder){
 		String s = "";
 		type = type.toLowerCase().trim();
 		
@@ -845,30 +855,81 @@ public class Mobile_HTML5 {
 //	    ◎time <input type="text" name="insert1_words5" placeholder="Ex) 12:01" data-role="datebox" data-options='{"mode":"timebox", "overrideTimeFormat":24, "useNewStyle":true}'>
 
 		switch (type){
+		  case "tel":	//tel
+			  s += "    <span><input type=\"tel\" id=\""+name+"\" name=\""+name+"\""+getFormPlaceholder(placeholder, "Telephone number")+getFormClass(type,notnull)+"></span>";
+			  break;
+		  case "url":	//url
+			  s += "    <span><input type=\"url\" id=\""+name+"\" name=\""+name+"\""+getFormPlaceholder(placeholder,"URL")+getFormNotnullClass(notnull)+"></span>";
+			  break;
+		  case "email":	//email
+			  s += "    <span><input type=\"email\" id=\""+name+"\" name=\""+name+"\""+getFormPlaceholder(placeholder,"E-mail address")+getFormNotnullClass(notnull)+"></span>";
+			  break;
+		  case "password":	//password
+			s += "    <span><input type=\"password\" id=\""+name+"\" name=\""+name+"\""+getFormPlaceholder(placeholder,"Password")+getFormNotnullClass(notnull)+"></span>";
+			break;
+		  case "number"://number
+			  s += "    <span><input type=\"number\" id=\""+name+"\" name=\""+name+"\""+getFormPlaceholder(placeholder,"Number")+getFormNotnullClass(notnull)+"></span>";
+			  break;
+		  case "color":	//color
+			  s += "    <span><input type=\"color\" id=\""+name+"\" name=\""+name+"\""+getFormPlaceholder(placeholder,"Color")+getFormNotnullClass(notnull)+"></span>";
+			  break;
+		  case "file":	//file
+			  s += "    <span><input type=\"file\" id=\""+name+"\" name=\""+name+"\""+getFormPlaceholder(placeholder,"Choose file")+getFormNotnullClass(notnull)+"></span>";
+			  break;
+			  
+		  case "alphabet":	//alphabet
+			  s += "    <span><input type=\"text\" id=\""+name+"\" name=\""+name+"\""+getFormPlaceholder(placeholder, "Alphabet")+getFormClass(type,notnull)+"></span>";
+			  break;
+		  case "alphabet_number":	//alphabet_number
+			  s += "    <span><input type=\"text\" id=\""+name+"\" name=\""+name+"\""+getFormPlaceholder(placeholder, "Alphabet or Number")+getFormClass(type,notnull)+"></span>";
+			  break;
+			  
 		  case "date":	//Year / Month / Day
-		    s += "    <input type=\"date\" id=\""+name+"\" name=\""+name+"\" placeholder=\""+( (!placeholder.isEmpty())? placeholder : "Year / Month / Day" )+"\" data-role=\"datebox\" data-options='{\"mode\":\"calbox\", \"useNewStyle\":true, \"overrideCalHeaderFormat\": \"%Y / %m / %d\", \"overrideDateFormat\": \"%Y/%m/%d\" }' >";
+		    s += "    <span><input type=\"date\" id=\""+name+"\" name=\""+name+"\""+getFormPlaceholder(placeholder,"Year / Month / Day")+"data-role=\"datebox\" data-options='{\"mode\":\"calbox\", \"useNewStyle\":true, \"overrideCalHeaderFormat\": \"%Y / %m / %d\", \"overrideDateFormat\": \"%Y/%m/%d\" }'"+getFormNotnullClass(notnull)+"></span>";
 		    break;
 		  case "date1":	//Year
-		    s += "    <input type=\"date\" id=\""+name+"\" name=\""+name+"\" placeholder=\""+( (!placeholder.isEmpty())? placeholder : "Year" )+"\" data-role=\"datebox\" data-options='{\"mode\":\"flipbox\", \"useNewStyle\":true, \"overrideHeaderFormat\": \"%Y\", \"overrideDateFormat\": \"%Y\", \"overrideDateFieldOrder\":[\"y\"] }' >";
+		    s += "    <span><input type=\"date\" id=\""+name+"\" name=\""+name+"\""+getFormPlaceholder(placeholder,"Year")+"data-role=\"datebox\" data-options='{\"mode\":\"flipbox\", \"useNewStyle\":true, \"overrideHeaderFormat\": \"%Y\", \"overrideDateFormat\": \"%Y\", \"overrideDateFieldOrder\":[\"y\"] }'"+getFormNotnullClass(notnull)+"></span>";
 		    break;
 		  case "date2":	//Month
-		    s += "    <input type=\"date\" id=\""+name+"\" name=\""+name+"\" placeholder=\""+( (!placeholder.isEmpty())? placeholder : "Month" )+"\" data-role=\"datebox\" data-options='{\"mode\":\"flipbox\", \"useNewStyle\":true, \"overrideHeaderFormat\": \"%m\", \"overrideDateFormat\": \"%m\", \"overrideDateFieldOrder\":[\"m\"] }' >";
+		    s += "    <span><input type=\"date\" id=\""+name+"\" name=\""+name+"\""+getFormPlaceholder(placeholder,"Month")+"data-role=\"datebox\" data-options='{\"mode\":\"flipbox\", \"useNewStyle\":true, \"overrideHeaderFormat\": \"%m\", \"overrideDateFormat\": \"%m\", \"overrideDateFieldOrder\":[\"m\"] }'"+getFormNotnullClass(notnull)+"></span>";
 		    break;
 		  case "date3":	//Day
-		    s += "    <input type=\"date\" id=\""+name+"\" name=\""+name+"\" placeholder=\""+( (!placeholder.isEmpty())? placeholder : "Day" )+"\" data-role=\"datebox\" min=\"2016-01-01\" max=\"2016-01-31\" data-options='{\"mode\":\"flipbox\", \"useNewStyle\":true, \"overrideHeaderFormat\": \"%d\", \"overrideDateFormat\": \"%d\", \"overrideDateFieldOrder\":[\"d\"] }' >";
+		    s += "    <span><input type=\"date\" id=\""+name+"\" name=\""+name+"\""+getFormPlaceholder(placeholder,"Day")+"data-role=\"datebox\" min=\"2016-01-01\" max=\"2016-01-31\" data-options='{\"mode\":\"flipbox\", \"useNewStyle\":true, \"overrideHeaderFormat\": \"%d\", \"overrideDateFormat\": \"%d\", \"overrideDateFieldOrder\":[\"d\"] }'"+getFormNotnullClass(notnull)+"></span>";
 		    break;
 		  case "date4":	//Year / Month
-		    s += "    <input type=\"date\" id=\""+name+"\" name=\""+name+"\" placeholder=\""+( (!placeholder.isEmpty())? placeholder : "Year / Month" )+"\" data-role=\"datebox\" data-options='{\"mode\":\"calbox\", \"useNewStyle\":true, \"overrideCalHeaderFormat\": \"%Y / %m\", \"overrideDateFormat\": \"%Y/%m\" }' >";
+		    s += "    <span><input type=\"date\" id=\""+name+"\" name=\""+name+"\""+getFormPlaceholder(placeholder,"Year / Month")+"data-role=\"datebox\" data-options='{\"mode\":\"calbox\", \"useNewStyle\":true, \"overrideCalHeaderFormat\": \"%Y / %m\", \"overrideDateFormat\": \"%Y/%m\" }'"+getFormNotnullClass(notnull)+"></span>";
 		    break;
 		  case "date5":	//Month / Day
-			s += "    <input type=\"date\" id=\""+name+"\" name=\""+name+"\" placeholder=\""+( (!placeholder.isEmpty())? placeholder : "Month / Day" )+"\" data-role=\"datebox\" min=\"2016-01-01\" max=\"2016-12-31\" data-options='{\"mode\":\"datebox\", \"useNewStyle\":true, \"overrideHeaderFormat\": \"%m / %d\",  \"overrideDateFormat\": \"%m/%d\", \"overrideDateFieldOrder\":[\"m\",\"d\"] }' >";
+			s += "    <span><input type=\"date\" id=\""+name+"\" name=\""+name+"\""+getFormPlaceholder(placeholder,"Month / Day")+"data-role=\"datebox\" min=\"2016-01-01\" max=\"2016-12-31\" data-options='{\"mode\":\"datebox\", \"useNewStyle\":true, \"overrideHeaderFormat\": \"%m / %d\",  \"overrideDateFormat\": \"%m/%d\", \"overrideDateFieldOrder\":[\"m\",\"d\"] }'"+getFormNotnullClass(notnull)+"></span>";
 			break;
 		  case "time":	//Hour : Minute
-			s += "    <input type=\"time\" id=\""+name+"\" name=\""+name+"\" placeholder=\""+( (!placeholder.isEmpty())? placeholder : "Ex) 12:01" )+"\" data-role=\"datebox\" data-options='{\"mode\":\"timebox\", \"overrideTimeFormat\":24, \"useNewStyle\":true }'>";
+			s += "    <span><input type=\"time\" id=\""+name+"\" name=\""+name+"\""+getFormPlaceholder(placeholder,"Ex) 12:01")+"data-role=\"datebox\" data-options='{\"mode\":\"timebox\", \"overrideTimeFormat\":24, \"useNewStyle\":true }'"+getFormNotnullClass(notnull)+"></span>";
 			break;
 		}
 		//Log.e("formValidation = "+s);
 		return s+"\n";
+	}
+	private static String getFormPlaceholder(String placeholder, String defaultStr) {
+		return " placeholder=\""+((!placeholder.isEmpty())? placeholder : defaultStr)+"\" ";
+	}
+	private static String getFormClass(String type, Boolean notnull) {
+		String s = " class=\"";
+		if(notnull) s += "required ";
+		switch (type){
+		  case "tel":				//tel
+			  s += "jqValidate_TelephoneNumber";
+			  break;
+		  case "alphabet":			//alphabet
+			  s += "jqValidate_Alphabet";
+			  break;
+		  case "alphabet_number":	//alphabet_number
+			  s += "jqValidate_AlphabetNumber";
+			  break;
+		}
+		return s+"\" ";
+	}
+	public static String getFormNotnullClass(Boolean notnull) {
+		return (notnull)? " class=\"required\" " : "";
 	}
 	
 	

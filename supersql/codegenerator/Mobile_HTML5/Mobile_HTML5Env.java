@@ -334,6 +334,7 @@ public class Mobile_HTML5Env extends LocalEnv {
 //退避    		header.append("<script src=\"http://www.db.ics.keio.ac.jp/ssqljscss/jquery.iframe-auto-height.plugin.js\"></script>\n");
 //退避    		header.append("<script src=\"http://www.db.ics.keio.ac.jp/ssqljscss/script2.js\"></script>\n");
     		header.append("<script src=\"jscss/jquery.iframe-auto-height.plugin.js\"></script>\n");
+    		header.append("<script src=\"jscss/jquery.validate.min.js\"></script>\n");
     		header.append("<script src=\"jscss/script2.js\"></script>\n");
 
     		
@@ -366,6 +367,7 @@ public class Mobile_HTML5Env extends LocalEnv {
             header.append("<!-- div{ text-align:center; float:center; vertical-align:middle; } -->\n");
             //20130315	"長い文字が...と省略されるのを防ぐ (*:全てのタイプに適用) "
             header.append("<!-- * { white-space: normal; } -->\n");
+            header.append("<!-- .error{ color:red; text-align:left; display:block; } -->\n");
             header.append("<!--\n");
             header.append(".ui-grid { overflow: hidden; }\n");
             header.append(".ui-block { margin: 0; padding: 0; border: 0; float: left; min-height: 1px; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -ms-box-sizing: border-box; box-sizing: border-box; }\n");
@@ -643,6 +645,26 @@ public class Mobile_HTML5Env extends LocalEnv {
 	              	pw.println("$(document).ready(function() {\n" +
 	              			"	$( \"[id=tabs]\" ).tabs();\n" +
 	//              			"	$( \"#tabs\" ).tabs();\n" +
+	              			"});\n");
+	              	
+	              	//form validation
+	              	pw.println("\n/** <form> validation **/\n" +
+	              			"$(document).ready(function () {\n" +
+	              			"	jQuery.validator.addMethod(\n" +
+	              			"	  \"jqValidate_TelephoneNumber\", function(value, element) {\n" +
+	              			"	     return this.optional(element) || new RegExp(\"^[0-9\\-]+$\").test(value);\n" +
+	              			"	   }, \"Please enter a valid telephone number.\"\n" +
+	              			"	);\n" +
+	              			"	jQuery.validator.addMethod(\n" +
+	              			"	  \"jqValidate_Alphabet\", function(value, element) {\n" +
+	              			"	     return this.optional(element) || new RegExp(\"^[a-zA-Z]+$\").test(value);\n" +
+	              			"	   }, \"You can enter only the alphabet.\"\n" +
+	              			"	);\n" +
+	              			"	jQuery.validator.addMethod(\n" +
+	              			"	  \"jqValidate_AlphabetNumber\", function(value, element) {\n" +
+	              			"	     return this.optional(element) || new RegExp(\"^[0-9a-zA-Z]+$\").test(value);\n" +
+	              			"	   }, \"You can enter only the alphabet and a number.\"\n" +
+	              			"	);\n" +
 	              			"});\n");
 	              	
 	//              	//added by goto 20130503
