@@ -1897,7 +1897,8 @@ public class Mobile_HTML5Function extends Function {
     /* update("title", "c1:column1, c2:column2, ... ", "From以下" [, "insert Flag" [,Button Name] ])	*/
     /* insert_update("title", "c1:column1, c2:column2, ... ", "From以下" [,Button Name])  データ無し->新規insert,データあり->update */
     /* Option1: @{noresult} -> not display the result */
-    /* Option2: @{noreset} ->  not init the input form after inserted or updated */
+    /* Option2: @{noreset},@{noclear} ->  not init the input form after inserted or updated */
+    /* Option3: @{reloadafterinsert},@{reloadafterupdate} ->  reload current page after insert */
     private String Func_insert(boolean update, boolean insert_update) {
     	
     	String title = "";
@@ -1944,9 +1945,21 @@ public class Mobile_HTML5Function extends Function {
 		//Check options
 		boolean noresult = false;
 		boolean noreset = false;
-		if(decos.containsKey("noresult"))	noresult = true;
+		boolean reloadAfterInsert = false;
+		int reloadAfterInsertTime = 1;	//Default = 1sec
+		if(decos.containsKey("noresult") || decos.containsKey("noclear"))	noresult = true;
 		if(decos.containsKey("noreset"))	noreset = true;
-		//Log.e(buttonName+" "+noresult+" "+noreset+" "+decos);
+		if(decos.containsKey("reloadafterinsert") || decos.containsKey("reloadafterupdate")){
+			reloadAfterInsert = true;
+			try{
+				if(decos.containsKey("reloadafterinsert")){
+					reloadAfterInsertTime = Integer.parseInt(decos.getStr("reloadafterinsert").replace("sec","").replace("s","").trim());
+				}else if(decos.containsKey("reloadafterupdate")){
+					reloadAfterInsertTime = Integer.parseInt(decos.getStr("reloadafterupdate").replace("sec","").replace("s","").trim());
+				}
+			}catch (Exception e) { }
+		}
+		//Log.e(buttonName+" "+noresult+" "+noreset+" "+reloadAfterInsert+" "+reloadAfterInsertTime+"  "+decos);
     	
     	
     	//置換 ( @ { , }  ->  @ { ; } )
@@ -2365,21 +2378,24 @@ public class Mobile_HTML5Function extends Function {
     				"<!-- SSQL Insert"+insertCount+" JS start -->\n" +
     				"<script type=\"text/javascript\">\n" +
     				"function SSQL_Insert"+insertCount+"_echo(str){\n";
+			if(!noresult){
+				statement += 
+	    				"	var textArea = document.getElementById(\"SSQL_Insert"+insertCount+"_result\");\n" +
+	    				"	textArea.innerHTML = str;\n";
+			}
 			if(!noreset){
 				//TODO: 他の削除方法
 				statement += 
-						//"  if(error=='false') {\n" +
-						"  if(str.indexOf(\"completed\") !== -1) {\n" +
-						//"  jQuery(function ($) {\n" +
-						"  	$('#SSQL_insert"+insertCount+"panel input,textarea').not('input[type=\\\"radio\\\"],input[type=\\\"checkbox\\\"],:hidden, :button, :submit,:reset').val('');\n" +
-						//"	$('#SSQL_insert"+insertCount+"panel input[type=\"radio\"], input[type=\\\"checkbox\\\"],select').removeAttr('checked').removeAttr('selected');\n" +
-						//"  });\n" +
-						"  }\n";
+						"	if(str.indexOf(\"completed\") !== -1) {\n" +
+						"		$('#SSQL_insert"+insertCount+"panel input,textarea').not('input[type=\\\"radio\\\"],input[type=\\\"checkbox\\\"],:hidden, :button, :submit,:reset').val('');\n" +
+						//"		$('#SSQL_insert"+insertCount+"panel input[type=\"radio\"], input[type=\\\"checkbox\\\"],select').removeAttr('checked').removeAttr('selected');\n" +
+						"	}\n";
 			}
-			if(!noresult){
+			if(reloadAfterInsert){
 				statement += 
-	    				"  var textArea = document.getElementById(\"SSQL_Insert"+insertCount+"_result\");\n" +
-	    				"  textArea.innerHTML = str;\n";
+						"	setInterval(function(){\n" +
+						"		location.reload();\n" +
+						"	}, "+(reloadAfterInsertTime*1000)+");\n";
 			}
 			statement += 
     				"}\n" +
