@@ -2387,8 +2387,9 @@ public class Mobile_HTML5Function extends Function {
 				//TODO: 他の削除方法
 				statement += 
 						"	if(str.indexOf(\"completed\") !== -1) {\n" +
-						"		$('#SSQL_insert"+insertCount+"panel input,textarea').not('input[type=\\\"radio\\\"],input[type=\\\"checkbox\\\"],:hidden, :button, :submit,:reset').val('');\n" +
+						//"		$('#SSQL_insert"+insertCount+"panel input,textarea').not('input[type=\\\"radio\\\"],input[type=\\\"checkbox\\\"],:hidden, :button, :submit,:reset').val('');\n" +
 						//"		$('#SSQL_insert"+insertCount+"panel input[type=\"radio\"], input[type=\\\"checkbox\\\"],select').removeAttr('checked').removeAttr('selected');\n" +
+						"		$(\"#SSQL_insert"+insertCount+"panel form\")[0].reset();\n" +
 						"	}\n";
 			}
 			if(reloadAfterInsert){
