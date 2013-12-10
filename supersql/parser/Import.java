@@ -89,32 +89,32 @@ public class Import {
 	//replace query's #func() (ex. #func1() -> "Hello")
 	private static String replaceQuerySDefine(String query,	ArrayList<String> defileName, ArrayList<String> defileContent) {
 		try{
-		for(int j=0; j<defileName.size(); j++){
-			
-			String dn = defileName.get(j);
-			String dc = defileContent.get(j);
-			
-			String dn0 = dn.substring(0,dn.indexOf("(")).trim();
-			String dnc = dn.substring(dn.indexOf("(")+1,dn.lastIndexOf(")")) + ",";
-			//Log.e(dn0);
-			
-			ArrayList<String> rp = new ArrayList<String>();
-			int k = 0;
-			Map<String,LinkedHashSet<String>> dnMap = new LinkedHashMap<String,LinkedHashSet<String>>();
-			LinkedHashSet<String> arguments = new LinkedHashSet<String>();
-			while(dnc.contains(",")){
-				rp.add(k, dnc.substring(0,dnc.indexOf(",")).trim());
-				dnc = dnc.substring(dnc.indexOf(",")+1);
-				//Log.e(dn0+" "+rp.get(k)+" "+dc);
-				if(!rp.get(k).isEmpty()){
-					arguments.add(rp.get(k));
+			for(int j=0; j<defileName.size(); j++){
+				
+				String dn = defileName.get(j);
+				String dc = defileContent.get(j);
+				
+				String dn0 = dn.substring(0,dn.indexOf("(")).trim();
+				String dnc = dn.substring(dn.indexOf("(")+1,dn.lastIndexOf(")")) + ",";
+				//Log.e(dn0);
+				
+				ArrayList<String> rp = new ArrayList<String>();
+				int k = 0;
+				Map<String,LinkedHashSet<String>> dnMap = new LinkedHashMap<String,LinkedHashSet<String>>();
+				LinkedHashSet<String> arguments = new LinkedHashSet<String>();
+				while(dnc.contains(",")){
+					rp.add(k, dnc.substring(0,dnc.indexOf(",")).trim());
+					dnc = dnc.substring(dnc.indexOf(",")+1);
+					//Log.e(dn0+" "+rp.get(k)+" "+dc);
+					if(!rp.get(k).isEmpty()){
+						arguments.add(rp.get(k));
+					}
+					k++;
 				}
-				k++;
+		        dnMap.put(dn0, arguments);
+		        
+	        	query = replaceQuerySDefineDetail(query, dn0, dnMap, dc);
 			}
-	        dnMap.put(dn0, arguments);
-	        
-        	query = replaceQuerySDefineDetail(query, dn0, dnMap, dc);
-		}
 		}catch (Exception e) {
 			//Log.e("[replaceQuerySDefine Exception]"+e);
 		}

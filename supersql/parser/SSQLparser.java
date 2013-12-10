@@ -973,19 +973,6 @@ public class SSQLparser {
 	}
 
 	private void preProcess(StringTokenizer st, String nt) {
-//		// #import  by goto 201312
-//        if (nt.toLowerCase().matches("#import.*")) {
-//            while (st.hasMoreTokens()) {
-//            	Import.importString += nt+" ";
-//				nt = st.nextToken().toString();
-//				if (nt.equalsIgnoreCase("FOREACH")
-//					|| nt.equalsIgnoreCase("REQUEST")
-//					|| nt.toUpperCase().matches("SESSION.*")
-//					|| nt.toUpperCase().matches("LOGIN.*")
-//					|| nt.equalsIgnoreCase("GENERATE"))
-//					break;
-//            }
-//        }
 		
 		// FOREACH
 		if (nt.equalsIgnoreCase("FOREACH")) {
