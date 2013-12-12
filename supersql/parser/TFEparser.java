@@ -445,6 +445,7 @@ public class TFEparser {
 		Log.info("[Parser::tfe] If condition detected");
 		condition= find_sql_condition();
 		if_token = toks.nextToken();
+		if_token = if_token.substring(1);
 		String[] attributes = if_token.split(":");
 		return makeConditionalAttribute(condition, attributes);
 	}
@@ -747,13 +748,10 @@ public class TFEparser {
 				throw (new IllegalStateException());
 			}
 		}
-		token = toks.nextToken();
-		while (!token.equals("?")) {
-			token = toks.nextToken();
-			if (token.equals("")) {
-				System.err.println("***Syntax error in if statement ***");
-				throw (new IllegalStateException());
-			}
+		token = toks.lookToken();
+		if (!token.startsWith("?")) {
+			System.err.println("***Syntax error in if statement ***");
+			throw (new IllegalStateException());
 		}
 		return condition;
 	}
