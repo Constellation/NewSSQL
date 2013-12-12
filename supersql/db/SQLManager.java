@@ -14,7 +14,6 @@ import java.io.*;
 import java.util.*;
 import java.util.regex.*;
 
-import org.apache.lucene.search.spell.LevensteinDistance;
 
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
@@ -497,16 +496,13 @@ public class SQLManager {
         ArrayList<LevensteinClass> al = new ArrayList<LevensteinClass>();
 		
 		//1に近いほど似ている
-        LevensteinDistance l_algo = new LevensteinDistance();
 //        JaroWinklerDistance j_algo = new JaroWinklerDistance();
         for(int i=0; i<tNames.size(); i++){
         	tn0 = a.toLowerCase();
         	tn = tNames.get(i).toLowerCase();
-        	String x = ""+l_algo.getDistance(tn0, tn);
 //        	String x = ""+j_algo.getDistance(tn0, tn);
 //        	l.add(i, x);
 //        	hashmap.put(Float.parseFloat(x),tn);
-        	al.add(new LevensteinClass(Float.parseFloat(x),tn));
         	
         	//Log.err("実行結果(LevensteinDistance("+tn0+", "+tn+"))：" + x);
         }
