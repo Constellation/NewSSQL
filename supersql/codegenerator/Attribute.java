@@ -185,11 +185,11 @@ public class Attribute extends Operand {
 			}
 			String toCompare = (data_info.get(Items.size()-1-decos.getConditionsSize() - stringItemsNumber)).toString();
 			if(toCompare.equals("t") || toCompare.equals("1")){
-				str = Items.get(0).getStr(data_info, AttNo-decos.getConditionsSize());
+				str = (String) data_info.get(0);
 			}
 			else if(toCompare.equals("f") || toCompare.equals("0")){
 				if(Items.size()-decos.getConditionsSize() == 3)
-					str = Items.get(1).getStr(data_info, AttNo-decos.getConditionsSize());
+					str = (String)data_info.get(1);
 				else
 					str = "";
 			}
