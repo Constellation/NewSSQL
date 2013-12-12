@@ -3862,7 +3862,7 @@ public class Mobile_HTML5Function extends Function {
 
     	html_env.embedcount++;
 
-    	if(file.contains(".sql"))
+    	if(file.contains(".sql") || file.contains(".ssql"))
     	{
 
     		String makedfilename = file.substring(file.lastIndexOf("\\")+1, file.indexOf("."));
@@ -3932,20 +3932,27 @@ public class Mobile_HTML5Function extends Function {
 				{
 					if(!has_divid)
 					{
+						int x = 0;
+						if (file.indexOf(".sql")>0) {
+							x = file.indexOf(".sql");
+						} else if (file.indexOf(".ssql")>0) {
+							x = file.indexOf(".ssql");
+						}
+
 						//online file
 						if(file.contains("/"))
 						{
-							divname = file.substring(file.lastIndexOf("/")+1,file.indexOf(".sql"));
+							divname = file.substring(file.lastIndexOf("/")+1,x);
 						}
 						//ofline file
 						else if(file.contains("\\"))
 						{
-							divname = file.substring(file.lastIndexOf("\\")+1,file.indexOf(".sql"));
+							divname = file.substring(file.lastIndexOf("\\")+1,x);
 						}
 						//only file name
 						else
 						{
-							divname = file.substring(0,file.indexOf(".sql"));
+							divname = file.substring(0,x);
 						}
 					}
 
@@ -4183,6 +4190,8 @@ public class Mobile_HTML5Function extends Function {
 		try{
 			if(file.toLowerCase().contains(".sql")){
 				file = file.substring(0, file.indexOf(".sql"));
+			}else if(file.toLowerCase().contains(".ssql")){
+				file = file.substring(0, file.indexOf(".ssql"));
 			}else if(file.toLowerCase().contains(".html")){
 				file = file.substring(0, file.indexOf(".html"));
 			}
@@ -4224,7 +4233,7 @@ public class Mobile_HTML5Function extends Function {
         if(GlobalEnv.isAjax())
         {
         	html_env.linkurl =  file+".html";
-        	html_env.ajaxquery = file+".sql";
+        	html_env.ajaxquery = file+".ssql";
 //        	html_env.ajaxatt = this.getAtt("att");
         	html_env.ajaxcond = this.getAtt("ajaxcond")+"="+this.getAtt("att");
 

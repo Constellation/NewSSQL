@@ -171,13 +171,20 @@ public class Mobile_HTML5Attribute extends Attribute {
 					if(target == null)
 					{
 						String query = html_env.ajaxquery;
-						if(query.contains("/"))
-						{
-							target = query.substring(query.lastIndexOf("/")+1,query.indexOf(".sql"));
-						}
-						else
-							target = query.substring(0,query.indexOf(".sql"));
-
+						if (query.indexOf(".sql")>0) {
+							if (query.contains("/")) {
+								target = query.substring(query.lastIndexOf("/")+1,query.indexOf(".sql"));
+							} else {
+								target = query.substring(0,query.indexOf(".sql"));
+							}
+			        	} else if (query.indexOf(".ssql")>0) {
+							if (query.contains("/")) {
+								target = query.substring(query.lastIndexOf("/")+1,query.indexOf(".ssql"));
+							} else {
+								target = query.substring(0,query.indexOf(".ssql"));
+							}
+			        	}
+						
 						if(html_env.has_dispdiv)
 						{
 							target = html_env.ajaxtarget;

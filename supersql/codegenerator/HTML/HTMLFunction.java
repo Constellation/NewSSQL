@@ -303,7 +303,7 @@ public class HTMLFunction extends Function {
 
 		HTMLEnv.embedCount++;
 
-		if (file.contains(".sql")) {
+		if (file.contains(".sql") || file.contains(".ssql")) {
 
 			String makedfilename = file.substring(file.lastIndexOf("\\") + 1,
 					file.indexOf("."));
@@ -365,20 +365,26 @@ public class HTMLFunction extends Function {
 				// tag////////////////////////////////////////////////////////////////////
 				if (GlobalEnv.isAjax()) {
 					if (!has_divid) {
+						int x = 0;
+						if (file.indexOf(".sql")>0) {
+							x = file.indexOf(".sql");
+						} else if (file.indexOf(".ssql")>0) {
+							x = file.indexOf(".ssql");
+						}
 						// online file
 						if (file.contains("/")) {
 							divname = file.substring(file.lastIndexOf("/") + 1,
-									file.indexOf(".sql"));
+									x);
 						}
 						// ofline file
 						else if (file.contains("\\")) {
 							divname = file.substring(
 									file.lastIndexOf("\\") + 1,
-									file.indexOf(".sql"));
+									x);
 						}
 						// only file name
 						else {
-							divname = file.substring(0, file.indexOf(".sql"));
+							divname = file.substring(0, x);
 						}
 					}
 

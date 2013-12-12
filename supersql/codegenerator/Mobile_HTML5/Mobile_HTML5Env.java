@@ -439,7 +439,7 @@ public class Mobile_HTML5Env extends LocalEnv {
 	            //added by goto 20121222 start, changed by goto 20130110
 	            //js/script1.jsの生成・書き込み
 	            // TODO: 下記の場所を他へ変更（下記だと複数回生成・書き込みが行われる）
-	            // TODO: -outdir?時の処理（下記は、出力先が.sqlファイル格納場所に限定）
+	            // TODO: -outdir?時の処理（下記は、出力先が.ssqlファイル格納場所に限定）
 	//            System.out.println("GlobalEnv.getfilename()="+GlobalEnv.getfilename());
 	            String fileName=GlobalEnv.getfilename();
 	            String fileDir = "";
@@ -1968,7 +1968,7 @@ public class Mobile_HTML5Env extends LocalEnv {
 			code += "<html>\n<head>\n";
 			code += "<meta name=\"GENERATOR\" content=\" SuperSQL (Generate Mobile_HTML5) \">\n" +
 					"<meta charset=\""+charset+"\">\n" +
-					"<title>"+fff.substring(fff.lastIndexOf("/")+1)+".sql</title>\n" +
+					"<title>"+fff.substring(fff.lastIndexOf("/")+1)+".ssql</title>\n" +
 					"\n" +
 					"<style type=\"text/css\">\n" +
 					"<!--\n" +
@@ -2033,7 +2033,7 @@ public class Mobile_HTML5Env extends LocalEnv {
 					"<code>\n" +
 					"\n" +
 					"<ol>\n" +
-					"<span id=\"t1\">"+fff.substring(fff.lastIndexOf("/")+1)+".sql</span>";
+					"<span id=\"t1\">"+fff.substring(fff.lastIndexOf("/")+1)+".ssql</span>";
 			//create HTML file
 			try {
 				//Log.i("create HTML file エンコードcharset:"+charset);
@@ -2049,8 +2049,8 @@ public class Mobile_HTML5Env extends LocalEnv {
 	            BufferedReader br = null;
 	            try{
 	            	  //TODO: file-encodingを取得して第二引数へ反映させる処理
-	            	  br = new BufferedReader(new InputStreamReader(new FileInputStream(fff+".sql"), "UTF-8"));		//fileを開く
-//		              br = new BufferedReader(new InputStreamReader(new FileInputStream(fff+".sql"), charset));		//fileを開く
+	            	  br = new BufferedReader(new InputStreamReader(new FileInputStream(fff+".ssql"), "UTF-8"));		//fileを開く
+//		              br = new BufferedReader(new InputStreamReader(new FileInputStream(fff+".ssql"), charset));		//fileを開く
 		              String queryString = new String();
 		              int c;
 		              while ((c = br.read()) != -1)	queryString += ((char) c);

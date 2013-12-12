@@ -1336,7 +1336,7 @@ public class SSQLparser {
     			filename = ArgValue[position];
         }
 
-    	if(!filename.contains(".sql"))
+    	if(!filename.contains(".sql") || !filename.contains(".ssql"))
     	{
     		query.append(tmp);
     		return query;
