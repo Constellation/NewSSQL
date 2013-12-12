@@ -660,7 +660,7 @@ public class HTMLFunction extends Function {
 		result.attr("href", ((Element) href.createNode()).text());
 		result.attributes().addAll(getAttributes());
 
-		if (true || GlobalEnv.isAjax()) {
+		if (GlobalEnv.isAjax()) {
 			HTMLEnv.ajaxCond = this.getAtt("ajaxcond") + "="
 					+ this.getAtt("att");
 
