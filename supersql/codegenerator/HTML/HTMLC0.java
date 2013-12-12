@@ -26,11 +26,17 @@ public class HTMLC0 extends Connector {
 			throw new IllegalArgumentException();
 		}
 		this.setDataList(dataInfo);
-		Element result = (Element)this.createNextItemNode(dataInfo);
+		Element result = null; 
+		while(result == null){
+			result = ((Element)this.createNextItemNode(dataInfo));
+		}
 		
 		while (this.hasMoreItems()) {
-			String toAppend = ((Element)this.createNextItemNode(dataInfo)).html();
-			result.append(toAppend);
+			Element createdElement = ((Element)this.createNextItemNode(dataInfo));
+			if(createdElement != null){
+				String toAppend = createdElement.html();
+				result.append(toAppend);
+			}
 		}
 
        return result;
@@ -39,7 +45,8 @@ public class HTMLC0 extends Connector {
 	private boolean checkOperands(){
 		Iterator<TFE> it = tfes.iterator();
 		while(it.hasNext()){
-			if(!(it.next() instanceof HTMLAttribute))
+			TFE tfe = it.next();
+			if(!(tfe instanceof HTMLAttribute) && !(tfe instanceof HTMLFunction))
 				return false;
 		}
 		return true;

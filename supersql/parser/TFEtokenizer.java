@@ -15,7 +15,7 @@ public class TFEtokenizer {
 
     public TFEtokenizer(String strs) {
 
-        st = new StringTokenizer(strs, "\t[]{}()+,!%#@'\\\"", true);
+        st = new StringTokenizer(strs, "\t[]{}()+?,!%#@'\\\"", true);
 
         st_list = new ExtList();
 
@@ -94,8 +94,8 @@ public class TFEtokenizer {
             return new String();
         }
 
-        String delimitor = new String("[]{}()+,!%#@\\");
-        String ch = st.nextToken("\t[]{}()+,!%#@\\'\"");
+        String delimitor = new String("[]{}()+?,!%#@\\");
+        String ch = st.nextToken("\t[]{}()+?,!%#@\\'\"");
 
         //added by goto
         if(!ch.contains(" as "))
@@ -111,7 +111,7 @@ public class TFEtokenizer {
             return new String();
         }
         if (ch.equals("\\"))
-            return buffer + ch + st.nextToken("\t[]{}()+,!%#@\\'");
+            return buffer + ch + st.nextToken("\t[]{}()+?,!%#@\\'");
         if (ch.equals("'"))
             return buffer + this.quoted();
         if (ch.equals("\""))

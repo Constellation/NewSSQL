@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import supersql.common.DB;
+
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.common.Suggest;
@@ -174,7 +175,7 @@ public class SQLManager {
         }
     }
 
-    
+
     //morya start
     public void ExecListToResult(String listarg, String query) {
 
