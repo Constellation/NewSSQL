@@ -1624,7 +1624,10 @@ public class Mobile_HTML5Env extends LocalEnv {
     					"?>\n");
     		}//else
     		footer.append("<iframe name=\"dummy_ifr\" style=\"display:none;\"><!-- dummy iframe for Form target --></iframe>\n");	//dummy iframe
-    		footer.append(Mobile_HTML5Env.PHP);			//PHPストリングを付加			//added by goto 20130515  "search"
+    		//TODO: 下記でOK?
+    		if(SSQLparser.sessionFlag || Mobile_HTML5Function.searchCount>0 || Mobile_HTML5Function.selectCount>0){
+    			footer.append(Mobile_HTML5Env.PHP);			//PHPストリングを付加			//added by goto 20130515  "search"
+    		}
     		//footer.append(HTMLEnv.PHPpost+"\n?>\n");		//PHPpostストリングを付加		//added by goto 20130531
     		//footer.append(HTMLEnv.PHPfunc);		//PHPfuncストリングを付加		//added by goto 20130531
     		if(footerFlag==1)		//通常時のみ（Prev/Nextでは行わない）
