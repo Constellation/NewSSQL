@@ -490,7 +490,7 @@ public class Mobile_HTML5Env extends LocalEnv {
 	    	        		"$(function() {\n" +
 	    	        		"	//タップ時: [更新]\n" +
 	    	        		"	$('#footer1').bind('tap',function(){\n" +
-	    	        		"		history.go(0);\n" +
+	    	        		"		location.reload();\n" +
 	    	        		"	});\n" +
 	    	        		"\n" +
 	    	        		"	//タッチイベントの取得\n" +
@@ -931,7 +931,7 @@ public class Mobile_HTML5Env extends LocalEnv {
 		        				"	    	$_SESSION["+sessionVariable_UniqueName+"id] = $id;\n" +
 		        				"	    	$_SESSION["+sessionVariable_UniqueName+"logintime] = date('Y/m/d(D) H:i:s', time());\n" +		//ユーザ名
 		        				"			echo '<script type=\"text/javascript\">window.parent.$(\\'#Login_text1\\').text(\"\");</script>';\n" +
-		        				"			echo '<script type=\"text/javascript\">window.parent.history.go(0);</script>';	//reload\n" +
+		        				"			echo '<script type=\"text/javascript\">window.parent.location.reload(true);</script>';	//reload\n" +
 		        				"	    }\n" +
 		        				"	}else if($newpw && $re_newpw && $id){\n" +
 		        				"		//check (pw==re_pw)?\n" +
@@ -1151,7 +1151,7 @@ public class Mobile_HTML5Env extends LocalEnv {
     							"		    	//Login success.\n" +
     							"		    	$_SESSION["+sessionVariable_UniqueName+"id] = $id;\n" +
     							"				echo '<script type=\"text/javascript\">window.parent.$(\\'#Login_text1\\').text(\"\");</script>';\n" +
-    							"				echo '<script type=\"text/javascript\">window.parent.history.go(0);</script>';	//reload\n" +
+    							"				echo '<script type=\"text/javascript\">window.parent.location.reload(true);</script>';	//reload\n" +
     							"		    }\n" +
     							"		}else{\n" +
     							"			p('<font color=#ff0000>Please input form.</font>');\n" +
@@ -1460,7 +1460,7 @@ public class Mobile_HTML5Env extends LocalEnv {
 	        				"    	setcookie(session_name(), '', time()-42000, '/');\n" +
 	        				"	}\n" +
 	        				"	session_destroy();\n" +
-	        				"	echo '<script type=\"text/javascript\">window.parent.history.go(0);</script>';	//reload\n" +
+	        				"	echo '<script type=\"text/javascript\">window.parent.location.reload(true);</script>';	//reload\n" +
 	        				"}\n" +
 	        				"?>\n" +
 	        				"<!-- Logout end -->\n");
@@ -1490,8 +1490,10 @@ public class Mobile_HTML5Env extends LocalEnv {
 	        }
 	        //data-role="content"
 	        header.append("<!-- data-role=content start -->\n<div data-role=\"content\" style=\"padding:0\" id=\"content1\">\n");
-	        header.append("\n<div id=\"showValues\"><!-- ユーザ名等を表示 --></div>\n");	//ユーザ名
-
+	        if(SSQLparser.sessionFlag){
+	        	header.append("\n<div id=\"showValues\"><!-- ユーザ名等を表示 --></div>\n");	//ユーザ名
+	        }
+	        	
 	        //commented out by goto  201203
 //	        header.append("<div");
 //	        header.append(div);
@@ -1584,7 +1586,7 @@ public class Mobile_HTML5Env extends LocalEnv {
     	if(GlobalEnv.getframeworklist() == null){
     		if(footerFlag==1){		//通常時のみ（Prev/Nextでは行わない）
     			if(!noAd || !copyright.isEmpty())
-    				footer.append("<hr size=\"1\">");
+    				footer.append("<hr size=\"1\">\n");
 	    		if(!copyright.equals("")){	//copyrightを付加
 	    			footer.append("<div>\n");
 	    			footer.append("Copyright &COPY; "+copyright+" All Rights Reserved.\n");
@@ -1625,7 +1627,7 @@ public class Mobile_HTML5Env extends LocalEnv {
     		}//else
     		footer.append("<iframe name=\"dummy_ifr\" style=\"display:none;\"><!-- dummy iframe for Form target --></iframe>\n");	//dummy iframe
     		//TODO: 下記でOK?
-    		if(SSQLparser.sessionFlag || Mobile_HTML5Function.searchCount>0 || Mobile_HTML5Function.selectCount>0){
+    		if(SSQLparser.sessionFlag || Mobile_HTML5Function.searchCount>1 || Mobile_HTML5Function.selectCount>1){
     			footer.append(Mobile_HTML5Env.PHP);			//PHPストリングを付加			//added by goto 20130515  "search"
     		}
     		//footer.append(HTMLEnv.PHPpost+"\n?>\n");		//PHPpostストリングを付加		//added by goto 20130531

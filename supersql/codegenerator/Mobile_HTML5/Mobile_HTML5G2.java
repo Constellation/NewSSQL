@@ -196,7 +196,7 @@ public class Mobile_HTML5G2 extends Grouper {
         	
         	//20130312 collapsible
         	if(decos.containsKey("collapse")){
-            	html_env.code.append("<DIv data-role=\"collapsible\" data-content-theme=\"c\" style=\"padding: 0px 12px;\">\n");
+            	html_env.code.append("<DIV data-role=\"collapsible\" data-content-theme=\"c\" style=\"padding: 0px 12px;\">\n");
             	
             	//header
             	if(!decos.getStr("collapse").equals(""))
@@ -259,7 +259,7 @@ public class Mobile_HTML5G2 extends Grouper {
             	//20130309
             	//gridInt %= 5;
             	//html_env.code.append("\n	<div class=\"ui-block-"+gridString[gridInt]+"\">\n");
-            	if(!tableFlg)	html_env.code.append("\n	<div class=\""+Mobile_HTML5Env.getClassID(tfe)+" "+Mobile_HTML5.addShowCountClassName(decos)+" \">\n");	//20130309  div
+            	if(!tableFlg)	html_env.code.append("\n<div class=\""+Mobile_HTML5Env.getClassID(tfe)+" "+Mobile_HTML5.addShowCountClassName(decos)+" \">\n");	//20130309  div
                 //20130314  table
             	else{
 		            html_env.code.append("<TR><TD class=\"" + Mobile_HTML5Env.getClassID(tfe) + " "+Mobile_HTML5.addShowCountClassName(decos)+" nest\">\n");
@@ -368,7 +368,7 @@ public class Mobile_HTML5G2 extends Grouper {
 //                if(!tableFlg)	html_env.code.append("	</div>\n");		//20130309  div
                 if(!tableFlg){
                 	if(!Mobile_HTML5Function.textFlg2){
-                		html_env.code.append("	</div>\n");		//20130309  div	//20130914  "text"
+                		html_env.code.append("</div>\n");		//20130309  div	//20130914  "text"
                 	}
                 }else	html_env.code.append("</TD></TR>\n");			//20130314  table
                 Log.out("</TD></TR>");
@@ -458,7 +458,7 @@ public class Mobile_HTML5G2 extends Grouper {
         
         //20130312 collapsible
       	if(decos.containsKey("collapse")){
-          	html_env.code.append("</DIv>");
+          	html_env.code.append("</DIV>");
         }
       	
     	//20130330 tab

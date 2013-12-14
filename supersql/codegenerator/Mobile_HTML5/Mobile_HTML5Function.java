@@ -114,7 +114,11 @@ public class Mobile_HTML5Function extends Function {
         }
         //added by goto 20121217
         else if(FuncName.equalsIgnoreCase("button")){
-        	ret = Func_button();
+        	ret = Func_button("");
+        }
+    	//added by goto 20130508  "Login&Logout"
+        else if(FuncName.equalsIgnoreCase("logout")){
+        	ret = Func_button("logout");
         }
         //added by goto 20130308  "urlリンク"
         else if(FuncName.equalsIgnoreCase("url") || FuncName.equalsIgnoreCase("anchor") || FuncName.equalsIgnoreCase("a")){
@@ -551,7 +555,7 @@ public class Mobile_HTML5Function extends Function {
     }
 
     //added by goto 20121217 start 		    // for practice 2012/02/09 を改良
-    private String Func_button() {
+    private String Func_button(String key) {
     	String statement = "";
 //    	Hashtable ArgHash = new Hashtable();
 //    	String button_media = this.Args.get(0).toString();
@@ -607,7 +611,7 @@ public class Mobile_HTML5Function extends Function {
     				"<g:plusone size=\"medium\"></g:plusone>" +
     				"</td></tr></table>\n";
     		statement += "</div>\n</DIV>\n";
-    	}else if(button_media.equals("logout")){		//ex. button("logout")
+    	}else if(button_media.equals("logout") || key.contains("logout")){		//ex. button("logout") || logout()
     		//added by goto 20130508  "Login&Logout"
     		//Logoutボタンを設置
             if(SSQLparser.sessionFlag){

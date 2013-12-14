@@ -223,7 +223,7 @@ public class Mobile_HTML5G1 extends Grouper {
         	
         	//20130312 collapsible
         	if(decos.containsKey("collapse")){
-            	html_env.code.append("<DIv data-role=\"collapsible\" data-content-theme=\"c\" style=\"padding: 0px 12px;\">\n");
+            	html_env.code.append("<DIV data-role=\"collapsible\" data-content-theme=\"c\" style=\"padding: 0px 12px;\">\n");
             	
             	//header
             	if(!decos.getStr("collapse").equals(""))
@@ -381,8 +381,8 @@ public class Mobile_HTML5G1 extends Grouper {
     	    	}
             	//tfe.addDeco("width", divWidth);	//☆HTMLEnvで行うように変更した
             	
-            	if(Count!=0)	html_env.code.append("\n	<div class=\"ui-block"+" "+Mobile_HTML5Env.getClassID(tfe)+"\">\n");
-    	    	else			html_env.code.append("\n	<div class=\"ui-block"+" "+Mobile_HTML5Env.getClassID(tfe)+"\" style=\"clear:left;\">\n");
+            	if(Count!=0)	html_env.code.append("\n<div class=\"ui-block"+" "+Mobile_HTML5Env.getClassID(tfe)+"\">\n");
+    	    	else			html_env.code.append("\n<div class=\"ui-block"+" "+Mobile_HTML5Env.getClassID(tfe)+"\" style=\"clear:left;\">\n");
             	
 //    	    	float divWidth = (float)Math.floor((double)(100.0/numberOfColumns)* 1000) / 1000;
 //    	    	if(Count!=0)	html_env.code.append("\n	<div class=\"ui-block"+" "+HTMLEnv.getClassID(tfe)+"\" style=\"width:"+divWidth+"%;\">\n");
@@ -476,7 +476,7 @@ public class Mobile_HTML5G1 extends Grouper {
 //    	        html_env.code.append("	</p>\n");
 //        	}else{
 
-            if(!tableFlg)	html_env.code.append("	</div>");	//20130309
+            if(!tableFlg)	html_env.code.append("</div>");	//20130309
         	else	        html_env.code.append("</TD>\n");    //20130314 table
             //Log.out("</TD>");
 //            if(HTMLFunction.textFlg){					//20130914  "text"
@@ -579,7 +579,7 @@ public class Mobile_HTML5G1 extends Grouper {
         
         //20130312 collapsible
     	if(decos.containsKey("collapse")){
-        	html_env.code.append("</DIv>");
+        	html_env.code.append("</DIV>");
         }
         
     	//20130330 tab
