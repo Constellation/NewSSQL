@@ -151,7 +151,7 @@ public class Mobile_HTML5Env extends LocalEnv {
     //static boolean tabFlg = false;		//20130330  tab用
     static int maxTab = 15;				//20130330  tab用
     
-	static String divWidth = "";		//20131002
+//	static String divWidth = "";		//20131002
 	
 	static boolean noAd = false;		//20131106
     
@@ -1759,12 +1759,12 @@ public class Mobile_HTML5Env extends LocalEnv {
 
         //tk end//////////////////////////////////////////////////////////////
 
-        //20131002
-		if(!decos.containsKey("width")){
-			if(!Mobile_HTML5Env.divWidth.equals(""))
-				decos.put("width", Mobile_HTML5Env.divWidth);
-	  	}
-		Mobile_HTML5Env.divWidth = "";
+//        //20131002
+//		if(!decos.containsKey("width")){
+//			if(!Mobile_HTML5Env.divWidth.equals(""))
+//				decos.put("width", Mobile_HTML5Env.divWidth);
+//	  	}
+//		Mobile_HTML5Env.divWidth = "";
 		
 		// ��??
         if (decos.containsKey("width")) {

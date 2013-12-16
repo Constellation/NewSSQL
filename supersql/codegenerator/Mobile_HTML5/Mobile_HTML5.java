@@ -85,10 +85,25 @@ public class Mobile_HTML5 {
 		
 		//Post-process (後処理)
 		showCloseProcess(decos, html_env);
-		Mobile_HTML5Env.divWidth = "";
+//		Mobile_HTML5Env.divWidth = "";
 		dynamicString = "";
 		formString = "";
 		return true;
+	}
+	
+	
+	//get DIV width (C1,G1)
+	public static String getDivWidth(DecorateList decos, int numberOfColumns){
+    	//20131002
+		String divWidthStr = "";
+    	if(decos.containsKey("width")){
+    		divWidthStr = decos.getStr("width");
+    	}else{
+	    	float divWidth = (float)Math.floor((double)(100.0/numberOfColumns)* 1000) / 1000;
+        	divWidthStr = divWidth+"%";
+    	}
+//    	tfe.addDeco("width", Mobile_HTML5Env.divWidth); <= この方法は、widthが上書き？されるためNG
+		return divWidthStr;
 	}
 	
 	

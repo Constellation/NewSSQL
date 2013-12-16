@@ -57,7 +57,7 @@ public class Mobile_HTML5C1 extends Connector {
 //        	html_env2.code.append("<form"+Mobile_HTML5Env.getFormNumber()+"start />");
 //        	if(decos.getStr("form").toLowerCase().equals("search"))
 //        		Mobile_HTML5Env.setSearch(true);
-//        }	     
+//        }
 
         if(decos.containsKey("insert")){
         	Mobile_HTML5Env.setIDU("insert");
@@ -265,16 +265,14 @@ public class Mobile_HTML5C1 extends Connector {
            	//if((!HTMLG1.G1Flg && !tableFlg) || divFlg)		//20130326  div
             if(/* !HTMLG1.G1Flg  && */ !tableFlg){	//div
             	//20131002
-            	if(decos.containsKey("width")){
-            		Mobile_HTML5Env.divWidth = decos.getStr("width");
-    	    	}else{
-    	    		int tfesItemNum = tfes.contain_itemnum();
-                	float divWidth = (float)Math.floor((double)(100.0/(tfesItemNum))* 1000) / 1000;
-                	Mobile_HTML5Env.divWidth = divWidth+"%";
-    	    	}
-            	//tfe.addDeco("width", divWidth);	//☆HTMLEnvで行うように変更した
+            	int tfesItemNum = tfes.size();
+            	String divWidth = Mobile_HTML5.getDivWidth(decos, tfesItemNum);
+//            	Log.e(tfes.contain_itemnum()+" "+tfes.size()+" "+tfes);
+//            	tfe.addDeco("width", Mobile_HTML5Env.divWidth);	//☆HTMLEnvで行うように変更した <= この方法は、widthが上書き？されるためNG
             	
-            	html_env.code.append("\n<div class=\"ui-block "+Mobile_HTML5Env.getClassID(tfe)+"\">\n");	//20130309
+            	html_env.code.append("\n<div class=\"ui-block "+Mobile_HTML5Env.getClassID(tfe)+"\" style=\"width:"+divWidth+"\">\n");	//20130309
+//            	if(Count!=0)	html_env.code.append("\n<div class=\"ui-block "+Mobile_HTML5Env.getClassID(tfe)+"\" style=\"width:"+divWidth+"\">\n");	//20130309
+//            	else			html_env.code.append("\n<div class=\"ui-block "+Mobile_HTML5Env.getClassID(tfe)+"\" style=\"width:"+divWidth+" clear:left;\">\n");	//20130309
 
 //            	float divWidth0 = (float)Math.floor((double)(100.0/(Count))* 1000) / 1000;
 //            	String style0 = "style=\"width:"+divWidth0+"%;\"";
