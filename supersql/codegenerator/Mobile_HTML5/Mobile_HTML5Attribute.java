@@ -134,9 +134,9 @@ public class Mobile_HTML5Attribute extends Attribute {
 					if(fileDir.length() < html_env.linkurl.length()
 					&& fileDir.equals(html_env.linkurl.substring(0,fileDir.length()))){
 						String relative_path = html_env.linkurl.substring(fileDir.length()+1);
-						html_env.code.append("<A href=\"" + relative_path + "\" target=\"_self\" ");
+						html_env.code.append("<A href=\"" + relative_path + "\" ");
 					}else
-						html_env.code.append("<A href=\"" + html_env.linkurl + "\" target=\"_self\" ");
+						html_env.code.append("<A href=\"" + html_env.linkurl + "\" ");
 					
 					//html_env.code.append("<A href=\"" + html_env.linkurl + "\" ");
 					//added by goto 20120614 end
