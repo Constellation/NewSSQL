@@ -337,7 +337,7 @@ public class Mobile_HTML5G1 extends Grouper {
         		//20130309
     	    if(!tableFlg){
     	    	//20131002
-    	    	String divWidth = Mobile_HTML5.getDivWidth(decos, numberOfColumns);
+    	    	String divWidth = Mobile_HTML5.getDivWidth(decos, numberOfColumns - Mobile_HTML5Function.func_null_count);	//null()
 //            	tfe.addDeco("width", divWidth);	//☆HTMLEnvで行うように変更した <= この方法は、widthが上書き？されるためNG
             	
             	if(Count!=0)	html_env.code.append("\n<div class=\"ui-block"+" "+Mobile_HTML5Env.getClassID(tfe)+"\" style=\"width:"+divWidth+"\">\n");

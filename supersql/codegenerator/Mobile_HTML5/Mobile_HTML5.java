@@ -72,6 +72,8 @@ public class Mobile_HTML5 {
 //			formStringGetProcess(symbol, decos, html_env);
 //			formProcess(symbol, decos, html_env);
 		}
+		
+		Mobile_HTML5Function.func_null_count = 0;	//null()
 		return true;
 	}
 	public static boolean postProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env){

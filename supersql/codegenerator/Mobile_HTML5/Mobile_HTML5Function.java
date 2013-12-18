@@ -45,6 +45,7 @@ public class Mobile_HTML5Function extends Function {
     Mobile_HTML5Env html_env2;
 
     boolean embedflag = false;
+    public static int func_null_count = 0;
 
     static boolean slideshowFlg = false;	//added by goto 20130110
     int slideshowNum = 0;					//added by goto 20130110
@@ -3327,8 +3328,12 @@ public class Mobile_HTML5Function extends Function {
     	return str;
     }
     //text end
-    
+
+    //null()
     private void Func_null() {
+    	func_null_count++;
+    	String c = html_env.code.toString();
+    	html_env.code = new StringBuffer(c.substring(0, c.lastIndexOf("<")));	//TODO
         return;
     }
 
