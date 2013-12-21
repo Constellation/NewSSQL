@@ -2457,7 +2457,6 @@ public class Mobile_HTML5Function extends Function {
 	    				"	textArea.innerHTML = str;\n";
 			}
 			if(!noreset){
-				//TODO: 他の削除方法
 				statement += 
 						"	if(str.indexOf(\"completed\") !== -1) {\n" +
 						//"		$('#SSQL_insert"+insertCount+"panel input,textarea').not('input[type=\\\"radio\\\"],input[type=\\\"checkbox\\\"],:hidden, :button, :submit,:reset').val('');\n" +
@@ -2470,6 +2469,14 @@ public class Mobile_HTML5Function extends Function {
 						"	setInterval(function(){\n" +
 						"		location.reload();\n" +
 						"	}, "+(reloadAfterInsertTime*1000)+");\n";
+			}else{
+				//3秒後に結果をクリア
+				statement += 
+		    			"	$(function(){\n" +
+    	    			"   	setTimeout(function(){\n" +
+    	    			"			document.getElementById(\"SSQL_Insert"+insertCount+"_result\").innerHTML = '';\n" +
+    	    			"   	},3000);\n" +
+    	    			"	});\n";
 			}
 			statement += 
     				"}\n" +
@@ -2524,7 +2531,6 @@ public class Mobile_HTML5Function extends Function {
 			//php
 			String pKeyWhere = "";
 			if(update){
-				Log.e(update_where);
 				if(!update_where.isEmpty()){
 					pKeyWhere += " and ";
 				}else{
@@ -2760,16 +2766,23 @@ public class Mobile_HTML5Function extends Function {
     			"		url: \""+new File(phpFileName).getName()+"\",\n" +
     			"		success: function(data, textStatus){\n" +
     			"			if (data.result != \"\") {\n" +
-    			"				SSQL_echo(\"SSQL_UpdateForm"+num+"\", data.result);\n" +
+    			"				SSQL_echo(\"SSQL_UpdateForm"+num+"\", data.result, false);\n" +
     			"			}\n" +
     			"		},\n" +
     			"		error: function(XMLHttpRequest, textStatus, errorThrown) {\n" +
-    			"			SSQL_echo(\"SSQL_UpdateForm"+num+"\", textStatus+\"<br>\"+errorThrown);\n" +
+    			"			SSQL_echo(\"SSQL_UpdateForm"+num+"\", textStatus+\"<br>\"+errorThrown, false);\n" +
     			"		}\n" +
     			"	});\n" +
     			"}\n" +
-    			"function SSQL_echo(id, str){\n" +
+    			"function SSQL_echo(id, str, clear){\n" +
     			"	document.getElementById(id).innerHTML = str;\n" +
+    			"	if(clear){\n" +
+    			"		$(function(){\n" +
+    			"   		setTimeout(function(){\n" +
+    			"				document.getElementById(id).innerHTML = '';\n" +
+    			"   		},3000);\n" +
+    			"		});\n" +
+    			"	}\n" +
     			"}\n" +
     			"</script>\n";
     	return s;
@@ -2814,11 +2827,11 @@ public class Mobile_HTML5Function extends Function {
     			"        },\n" +
     			"		success: function(data, textStatus){\n" +
     			"			if (data.result != \"\") {\n" +
-    			"				SSQL_echo(\"\"+id+\"_result\", data.result);\n" +
+    			"				SSQL_echo(\"\"+id+\"_result\", data.result, true);\n" +
     			"			}\n" +
     			"		},\n" +
     			"		error: function(XMLHttpRequest, textStatus, errorThrown) {\n" +
-    			"			SSQL_echo(\"\"+id+\"_result\", textStatus+\"<br>\"+errorThrown);\n" +
+    			"			SSQL_echo(\"\"+id+\"_result\", textStatus+\"<br>\"+errorThrown, true);\n" +
     			"		}\n" +
     			"	});\n" +
     			"}\n" +

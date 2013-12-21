@@ -307,7 +307,7 @@ public class Mobile_HTML5Env extends LocalEnv {
             header.append("<script src=\"jscss/jquery-1.7.1.min.js\"></script>\n");
             header.append(Mobile_HTML5Function.updateFormJS);
             header.append("<script src=\"jscss/jquery-ui.min.js\"></script>\n");
-            header.append("<script src=\"jscss/showmore.js\"></script>\n");
+            header.append("<script src=\"jscss/supersql.showmore.js\"></script>\n");
             header.append("<script src=\"jscss/jquery.mobile-1.3.1.min.js\"></script>\n");
             header.append("<script src=\"jscss/jqm-datebox.core.min.js\"></script>\n");
             header.append("<script src=\"jscss/jqm-datebox.mode.calbox.min.js\"></script>\n");
@@ -334,9 +334,9 @@ public class Mobile_HTML5Env extends LocalEnv {
 //    		header.append("<script src=\"js/script2.js\"></script>\n");
 //退避    		header.append("<script src=\"http://www.db.ics.keio.ac.jp/ssqljscss/jquery.iframe-auto-height.plugin.js\"></script>\n");
 //退避    		header.append("<script src=\"http://www.db.ics.keio.ac.jp/ssqljscss/script2.js\"></script>\n");
-    		header.append("<script src=\"jscss/jquery.iframe-auto-height.plugin.js\"></script>\n");
+    		header.append("<script src=\"jscss/jquery.iframe-auto-height_re.plugin.js\"></script>\n");
     		header.append("<script src=\"jscss/jquery.validate.min.js\"></script>\n");
-    		header.append("<script src=\"jscss/script2.js\"></script>\n");
+    		header.append("<script src=\"jscss/supersql.prev-next.js\"></script>\n");
 
     		
     		//added by goto 20130512  "max-width"
@@ -351,7 +351,7 @@ public class Mobile_HTML5Env extends LocalEnv {
 					"</script>\n");
     		
 //退避    		header.append("<script src=\"js/script1.js\"></script>\n");
-    		header.append("<script src=\"jscss/script1.js\"></script>\n");
+    		header.append("<script src=\"jscss/supersql.js\"></script>\n");
             //added by goto 20121217 end
             
             header.append("\n");
