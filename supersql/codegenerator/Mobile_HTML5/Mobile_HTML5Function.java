@@ -2205,11 +2205,18 @@ public class Mobile_HTML5Function extends Function {
     			update_where = from.substring(from.indexOf(" where ")).trim();
     		}else{
     			update_where = after_from;
-    			update_where = update_where.substring(update_where.indexOf(" where ")).trim();
+    			if(update_where.indexOf(" where ") > 1){
+    				update_where = update_where.substring(update_where.indexOf(" where ")).trim();
+    			}else{
+    				update_where = "";
+    			}
     		}
-    		if(update_where.contains("$session"))
+    		if(update_where.contains("$session")){
     			update_where = update_where.replaceAll("\\$session","'\".\\$_SESSION").replaceAll("\\(","[").replaceAll("\\)","].\"'");
-    		from = from.substring(0,from.indexOf(" where ")).trim();
+    		}
+    		if(from.indexOf(" where ") > 1){
+    			from = from.substring(0,from.indexOf(" where ")).trim();
+    		}
     	}
     	//Log.i("	FROM:"+from+"	update_where:"+update_where);
     	//Log.i("	FROM: "+from+"\n	WHERE: "+where+"\n	GROUP: "+groupby+"\n	HAVING: "+having);
@@ -2517,7 +2524,13 @@ public class Mobile_HTML5Function extends Function {
 			//php
 			String pKeyWhere = "";
 			if(update){
-				pKeyWhere = " and "+pKey+"='\".$_POST['SSQL_insert"+insertCount+"_pkey'].\"'";	//New";
+				Log.e(update_where);
+				if(!update_where.isEmpty()){
+					pKeyWhere += " and ";
+				}else{
+					pKeyWhere += " WHERE ";
+				}
+				pKeyWhere += pKey+"='\".$_POST['SSQL_insert"+insertCount+"_pkey'].\"'";	//New";
 			}
 			php +=
     				"<?php\n" +
