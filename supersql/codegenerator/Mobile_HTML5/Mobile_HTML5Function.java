@@ -1909,7 +1909,8 @@ public class Mobile_HTML5Function extends Function {
     	String title = "";
     	String columns = "";
     	String after_from = "";
-    	String insertFlag = "";
+    	String insertFlag = "false";
+    	String pKey = "";	//primary key
     	String buttonName = "";
     	try{
     		//title（第一引数）
@@ -1928,19 +1929,22 @@ public class Mobile_HTML5Function extends Function {
     		if(update){
 	    		//（第四引数）
 	    		FuncArg fa4 = (FuncArg) this.Args.get(3);
-	    		insertFlag += fa4.getStr().toLowerCase().trim();
-	    		if(insertFlag.equals(""))	insertFlag="false";
+	    		pKey += fa4.getStr().toLowerCase().trim();	//TODO nullの場合のエラーチェック
 	    		buttonName = getValue(5).trim();
     		}else{
     			buttonName = getValue(4).trim();
     		}
     		
     	}catch(Exception e){
-    		Log.info("<Warning> insert関数の引数が不足しています。 ex. insert(\"title\", \"c1:column1, c2:column2, ... \", \"From以下\")");
+    		if(!update){
+    			Log.err("<Warning> insert関数の引数が不足しています。 ex. insert(\"title\", \"c1:column1, c2:column2, ... \", \"From以下\")");
+    		}else{
+    			Log.err("<Warning> update関数の引数が不足しています。 ex. insert(\"title\", \"c1:column1, c2:column2, ... \", \"From以下\")");
+    		}
     		return "";
     	}
 		if(columns.trim().equals("") || after_from.equals("")){
-			Log.info("<Warning> insert関数の引数が不足しています。 ex. insert(\"title\", \"c1:column1, c2:column2, ... \", \"From以下\")");
+			Log.err("<Warning> insert関数の引数が不足しています。 ex. insert(\"title\", \"c1:column1, c2:column2, ... \", \"From以下\")");
     		return "";
 		}
 		if(after_from.toLowerCase().startsWith("from "))	after_from = after_from.substring("from".length()).trim();
@@ -2197,7 +2201,12 @@ public class Mobile_HTML5Function extends Function {
     	String from = "";
     	from = query.toLowerCase().trim();
     	if(update){
-    		update_where = from.substring(from.indexOf(" where ")).trim();
+    		if(after_from.startsWith("#")){
+    			update_where = from.substring(from.indexOf(" where ")).trim();
+    		}else{
+    			update_where = after_from;
+    			update_where = update_where.substring(update_where.indexOf(" where ")).trim();
+    		}
     		if(update_where.contains("$session"))
     			update_where = update_where.replaceAll("\\$session","'\".\\$_SESSION").replaceAll("\\(","[").replaceAll("\\)","].\"'");
     		from = from.substring(0,from.indexOf(" where ")).trim();
@@ -2206,12 +2215,28 @@ public class Mobile_HTML5Function extends Function {
     	//Log.i("	FROM: "+from+"\n	WHERE: "+where+"\n	GROUP: "+groupby+"\n	HAVING: "+having);
     	//Log.i("	ORDER: "+orderby+"\n	LIMIT: "+limit+"\n	Query: "+query);
     	
+    	String[] cols = new String[col_num];
+    	if(update){
+    		String s = insert_col+",";
+    		for(int i=0;i<col_num;i++){
+    			cols[i] = s.substring(0,s.indexOf(","));
+    			s = s.substring(s.indexOf(",")+1);
+    			//Log.e(cols[i]);
+    		}
+    	}
+    	
     	
 
     	String statement = "";
+    	String update_statement = "";
     	String gps_js = "";
     	String php = "";
-    	String formPHPfileName = html_env.getFileName2()+"_SSQLform_"+insertCount+".php";
+    	String formPHPfileName = "";
+    	if(!update){
+    		formPHPfileName = html_env.getFileName2()+"_SSQLform_"+insertCount+".php";
+    	}else{
+    		formPHPfileName = html_env.getFileName2()+"_SSQLupdateform_"+insertCount+".php";
+    	}
     	//sqlite3 php
     	if(DBMS.equals("sqlite") || DBMS.equals("sqlite3")){
     		statement += 
@@ -2234,6 +2259,10 @@ public class Mobile_HTML5Function extends Function {
     		int insertWordCount = 0;
     		for(int i=0; i<col_num; i++){
 //    			if(!textareaFlg[i]){
+    			String updateFromValue = "";
+    			if(update){
+    				updateFromValue = "'.$row['"+cols[i]+"'].'";
+    			}
 				if($session_array[i].equals("") && $time_array[i].equals("") && $gps_array[i].equals("")){
 					if(!button_array[i].equals("")){
 						//Log.i("bt_array:"+button_array[i]);
@@ -2249,10 +2278,17 @@ public class Mobile_HTML5Function extends Function {
 									"    <"+((!textareaFlg[i])?("input"):("textarea"))+" type=\""+((!hiddenFlg[i])?("text"):("hidden"))+"\" disabled=\"disabled\" value=\""+( (!s_name_array[i].equals(""))? (s_name_array[i]+": "):("") )+"" +
 									""+( (!textareaFlg[i])? ("\n") : ((!s_name_array[i].equals(""))? ("\">"+s_name_array[i]+": "):("")) )+button_array[i]+"" +
 									""+((!textareaFlg[i])?("\">"):("</textarea>"))+"\n";
-							if(!noinsertFlg[i])
+							update_statement += 	//TODO: button
+									"    <"+((!textareaFlg[i])?("input"):("textarea"))+" type=\""+((!hiddenFlg[i])?("text"):("hidden"))+"\" disabled=\"disabled\" " +
+											"value=\""+( (!s_name_array[i].equals(""))? (s_name_array[i]+": "):("") )+"" +
+									""+( (!textareaFlg[i])? ("\n") : ((!s_name_array[i].equals(""))? ("\">"+s_name_array[i]+": "):("")) )+button_array[i]+"" +
+									""+((!textareaFlg[i])?("\">"):(updateFromValue+"</textarea>"))+"\n";
+							if(!noinsertFlg[i]){
 								statement += 
 										"    <input type=\"hidden\" id=\"SSQL_insert"+insertCount+"_words"+(++insertWordCount)+"\" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\" value=\""+button_array[i]+"\">\n";
-						
+								update_statement += //TODO: button
+										"    <input type=\"hidden\" id=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\" value=\""+button_array[i]+"\">\n";
+							}
 						//TODO 以下を「@button」時のみに変更
 //						}else if(btRcount == 2){		//ボタン ex){出席|欠席}
 //							String bt1=ss.substring(0,ss.indexOf("|")).trim();
@@ -2277,9 +2313,13 @@ public class Mobile_HTML5Function extends Function {
 								statement += 
 										"		<input type=\"radio\" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\" id=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"_"+k+"\" value=\""+val+"\""+( (k>1)? (""):(" checked=\"checked\"") )+">\n" +
 										"		<label for=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"_"+k+"\">"+val+"</label>\n";
+								update_statement += //TODO radio button
+										"		<input type=\"radio\" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\" id=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"_"+k+"\" value=\""+val+"\""+( (k>1)? (""):(" checked=\"checked\"") )+">\n" +
+												"		<label for=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"_"+k+"\">"+val+"</label>\n";
 								ss = ss.substring(ss.indexOf("|")+1);
 							}
 							statement += "	</div>\n";
+							update_statement += "	</div>\n";
 						}
 					}else{
 						if(validationType[i].isEmpty()){
@@ -2292,15 +2332,33 @@ public class Mobile_HTML5Function extends Function {
 									" placeholder=\""+s_name_array[i]+"\""+Mobile_HTML5.getFormClass(notnullFlg[i], "")+">" +
 									""+((!textareaFlg[i])?(""):("</textarea>")) +
 									"</span>"+( (!textareaFlg[i])? "" : "</span>" )+"\n";
+							update_statement += 
+									"    "+( (!textareaFlg[i])? "" : "<span>" )+"<span>" +
+									"<"+((!textareaFlg[i])?("input"):("textarea"))+"" +
+									" type=\""+((!hiddenFlg[i])?("text"):("hidden"))+"\"" +
+									" id=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\"" +
+									" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\"" +
+									" "+((!textareaFlg[i])?("value=\""+updateFromValue+"\""):(""))+
+									" placeholder=\""+s_name_array[i]+"\""+Mobile_HTML5.getFormClass(notnullFlg[i], "")+">" +
+									""+((!textareaFlg[i])?(""):(updateFromValue+"</textarea>")) +
+									"</span>"+( (!textareaFlg[i])? "" : "</span>" )+"\n";
 							//statement += "    <input type=\"text\" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\" placeholder=\""+s_name_array[i]+"\">\n";
 						}else{
-							statement += Mobile_HTML5.getFormValidationString(validationType[i], notnullFlg[i], "SSQL_insert"+insertCount+"_words"+(++insertWordCount), s_name_array[i]);
+							statement += Mobile_HTML5.getFormValidationString(validationType[i], notnullFlg[i], "SSQL_insert"+insertCount+"_words"+(++insertWordCount), s_name_array[i], updateFromValue);
+							update_statement
+							          += Mobile_HTML5.getFormValidationString(validationType[i], notnullFlg[i], "SSQL_insert"+insertCount+"_words"+(insertWordCount), s_name_array[i], updateFromValue);
 						}
 					}
 				}else{
-					String echo = "";
-					if(!$session_array[i].equals(""))	echo += "	echo $_SESSION["+$session_array[i]+"];\n";
-					else if(!$time_array[i].equals(""))	echo += "	echo "+$time_array[i]+";\n";
+					String echo = "", echo2 = "";
+					if(!$session_array[i].equals("")){
+						echo += "	echo $_SESSION["+$session_array[i]+"];\n";
+						echo2 += "'.$_SESSION["+$session_array[i]+"].'";
+					}
+					else if(!$time_array[i].equals("")){
+						echo += "	echo "+$time_array[i]+";\n";
+						echo2 += "'."+$time_array[i]+".'";
+					}
 					//else if(!$gps_array[i].equals(""))	echo += "	echo \"<script> getGPSinfo(); </script>\";\n";
 					//else if(!$gps_array[i].equals(""))	echo += "	echo\"<script> getGPSinfo(); </script>\";\n";
 					else if(!$gps_array[i].equals("")){
@@ -2330,25 +2388,28 @@ public class Mobile_HTML5Function extends Function {
 					
 					statement += 
 							"    <"+((!textareaFlg[i])?("input"):("textarea"))+" type=\""+((!hiddenFlg[i])?("text"):("hidden"))+"\" disabled=\"disabled\" value=\""+( (!s_name_array[i].equals(""))? (s_name_array[i]+": "):("") )+"" +
-							""+( (!textareaFlg[i])? ("\n") : ((!s_name_array[i].equals(""))? ("\">"+s_name_array[i]+": "):("")) )+"\n";
-					//if($gps_array[i].equals(""))
-						statement += 
-								"EOF;\n" +
-								echo +
-								"		echo <<<EOF\n";
-//					else{
-//						statement += "";
-//					}
-						
-					statement += 
+							""+( (!textareaFlg[i])? ("\n") : ((!s_name_array[i].equals(""))? ("\">"+s_name_array[i]+": "):("")) )+"\n" +
+							"EOF;\n" +
+							echo +
+							"		echo <<<EOF\n" +
 							""+((!textareaFlg[i])?("\">"):("</textarea>"))+"\n";
-					if(!noinsertFlg[i])
+					update_statement += 
+							"    <"+((!textareaFlg[i])?("input"):("textarea"))+" type=\""+((!hiddenFlg[i])?("text"):("hidden"))+"\" disabled=\"disabled\" value=\""+( (!s_name_array[i].equals(""))? (s_name_array[i]+": "):("") )+"" +
+							""+( (!textareaFlg[i])? ("\n") : ((!s_name_array[i].equals(""))? ("\">"+s_name_array[i]+": "):("")) )+"" +
+							echo2 +
+							""+((!textareaFlg[i])?("\">"):("</textarea>"))+"\n";
+					if(!noinsertFlg[i]){
 						statement += 
 								"    <input type=\"hidden\" id=\"SSQL_insert"+insertCount+"_words"+(++insertWordCount)+"\" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\" value=\"\n" +
 								"EOF;\n" +
 								echo +
 								"		echo <<<EOF\n" +
 								"\">\n";
+						update_statement += 
+								"    <input type=\"hidden\" id=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\" value=\"" +
+								echo2 +
+								"\">\n";
+					}
 				}
     		}
     		if(buttonSubmit.equals("")){
@@ -2454,6 +2515,10 @@ public class Mobile_HTML5Function extends Function {
     				"<!-- SSQL Insert"+insertCount+" end -->\n";
 
 			//php
+			String pKeyWhere = "";
+			if(update){
+				pKeyWhere = " and "+pKey+"='\".$_POST['SSQL_insert"+insertCount+"_pkey'].\"'";	//New";
+			}
 			php +=
     				"<?php\n" +
 //    				"if($_POST['SSQL_insert"+insertCount+"'] "+buttonSubmit+"){\n" +
@@ -2467,7 +2532,7 @@ public class Mobile_HTML5Function extends Function {
 			if(update){
 				php +=
 						"    $update_col_array = array("+update_col_array+");\n" +
-						"    $update_where = \""+update_where+"\";\n";
+						"    $update_where = \""+ update_where + pKeyWhere +"\";\n";
 			}
 			php +=
     				"    $notnullFlg = array("+notnullFlg_array+");\n" +
@@ -2596,11 +2661,158 @@ public class Mobile_HTML5Function extends Function {
 //    	// 各引数毎に処理した結果をHTMLに書きこむ
 //    	html_env.code.append(statement);
     	
+    	if(update){
+    		String getUpdateFormPJPFileName = html_env.getFileName2()+"_SSQLgetUpdateForm_"+insertCount+".php";
+    		updateFormJS = getSSQLgetUpdateformJS(insertCount, getUpdateFormPJPFileName);
+	    	String getUpdateFormPHP = getSSQLgetUpdateformPHP("sqlite", insertCount, DB, insert_col, update_where, from, pKey, buttonName, update_statement);
+	    	Mobile_HTML5.createFile(html_env, getUpdateFormPJPFileName, getUpdateFormPHP);//PHPファイルの作成
+	    	
+	    	statement = getSSQLUpdateformHTML(insertCount, formPHPfileName);
+    	}
+    	
     	Mobile_HTML5.createFile(html_env, formPHPfileName, php);//PHPファイルの作成
     	insertCount++;
     	return statement;
     }
     //insert end
+    /* */
+    public static String updateFormJS = "";
+    private String getSSQLgetUpdateformPHP(String dbType, int num, String DB, String insert_col, String update_where, String from, String pKey, String buttonName, String update_statement) {
+    	String s = "";
+    	//update_statement = update_statement.replace("'", "\\\'");//.replace("\n", "");
+    	if(dbType.contains("sqlite")){
+	    	s += "<?php\n" +
+	    			"    $ret = array();\n" +
+	    			"    $ret['result'] = \"\";\n" +
+	    			"    \n" +
+	    			"    //ユーザ定義\n" +
+	    			"    $sqlite3_DB = '"+DB+"';\n" +
+	    			"    $insert_col = \""+pKey+","+insert_col+"\";	//New\n" +
+	    			"    $update_where = \""+update_where+"\";\n" +
+	    			"    $table = '"+from+"';\n" +
+	    			"\n" +
+	    			"	$b = \"\";\n" +
+	    			"	$insert_db"+num+" = new SQLite3($sqlite3_DB);\n" +
+	    			"	try{\n" +
+	    			"		$select_sql = \"SELECT \".$insert_col.\" FROM \".$table.\" \".$update_where;\n" +
+	    			"		$result2 = $insert_db"+num+"->query($select_sql);\n" +
+	    			"		$j = 0;\n" +
+	    			"		while($row = $result2->fetchArray()){\n" +
+	    			"			$b .= '<div id=\"SSQL_INSERT"+num+"_'.$j.'panel\" style=\"\" data-role=\"none\">';\n" +
+	    			"			$b .= '<form method=\"post\" action=\"\" target=\"dummy_ifr\">';\n" +
+	    			"			\n" +
+	    			"			$b .= '<input type=\"hidden\" disabled=\"disabled\" value=\"'.$row['"+pKey+"'].'\">';	//New\n" +
+	    			"			$b .= '<input type=\"hidden\" id=\"SSQL_insert"+num+"_pkey\" name=\"SSQL_insert"+num+"_pkey\" value=\"'.$row['"+pKey+"'].'\">';	//New\n" +
+	    			"			\n" +
+	    			
+	    			"			$b .= '"+update_statement+"';\n" +
+//	    			"			$b .= '<input type=\"hidden\" disabled=\"disabled\" value=\"'.$_SESSION[id].'\">';\n" +
+//	    			"			$b .= '<input type=\"hidden\" id=\"SSQL_insert"+num+"_words1\" name=\"SSQL_insert"+num+"_words1\" value=\"'.$_SESSION[id].'\">';\n" +
+//	    			"			$b .= '<input type=\"hidden\" disabled=\"disabled\" value=\"2013\">';\n" +
+//	    			"			$b .= '<input type=\"hidden\" id=\"SSQL_insert"+num+"_words2\" name=\"SSQL_insert"+num+"_words2\" value=\"2013\">';\n" +
+//	    			"			$b .= '<span><input type=\"date\" id=\"SSQL_insert"+num+"_words3\" name=\"SSQL_insert"+num+"_words3\" placeholder=\"日付\" value=\"'.$row['date'].'\"  class=\"required \" data-role=\"datebox\" min=\"2016-01-01\" max=\"2016-12-31\" data-options=\\'{\"mode\":\"datebox\", \"useFocus\":true, \"useNewStyle\":true, \"overrideHeaderFormat\": \"%m / %d\",  \"overrideDateFormat\": \"%m/%d\", \"overrideDateFieldOrder\":[\"m\",\"d\"] }\\'></span>';\n" +
+//	    			"			$b .= '<span><input type=\"time\" id=\"SSQL_insert"+num+"_words4\" name=\"SSQL_insert"+num+"_words4\" placeholder=\"開始\" value=\"'.$row['start_time'].'\"  class=\"required \" data-role=\"datebox\" data-options=\\'{\"mode\":\"timebox\", \"useFocus\":true, \"overrideTimeFormat\":24, \"useNewStyle\":true }\\'></span>';\n" +
+//	    			"			$b .= '<span><input type=\"time\" id=\"SSQL_insert"+num+"_words5\" name=\"SSQL_insert"+num+"_words5\" placeholder=\"終了\" value=\"'.$row['end_time'].'\"  class=\"required \" data-role=\"datebox\" data-options=\\'{\"mode\":\"timebox\", \"useFocus\":true, \"overrideTimeFormat\":24, \"useNewStyle\":true }\\'></span>';\n" +
+//	    			"			$b .= '<span><span><textarea type=\"text\" id=\"SSQL_insert"+num+"_words6\" name=\"SSQL_insert"+num+"_words6\" placeholder=\"内容\" class=\"required \" >'.$row['text'].'</textarea></span></span>' ;\n" +
+	    			
+	    			"			\n" +
+	    			"			$b .= '<input type=\"submit\" value=\""+((buttonName.isEmpty())? "更新":buttonName )+"\" name=\"SSQL_insert"+num+"_'.$j.'\" id=\"SSQL_insert"+num+"_'.$j.'\" onclick=\"SSQL_Update"+num+"_vali(\\'SSQL_insert"+num+"_'.$j.'\\');\" data-mini=\"false\" data-inline=\"false\">';\n" +
+	    			"			\n" +
+	    			
+	    			"			$b .= '</form>';\n" +
+	    			"			$b .= '</div>';\n" +
+	    			"			$b .= '<div id=\"SSQL_insert"+num+"_'.$j.'_result\"></div>';\n" +
+	    			"			$b .= '<hr size=\"1\" color=\"silver\" width=\"99%\">';\n" +
+	    			"		    $j++;\n" +
+	    			"		}\n" +
+	    			"    }catch(Exception $e){\n" +
+	    			"   		$b = '<font color=red>Get Update Form failed.</font>';\n" +
+	    			"    }\n" +
+	    			"    unset($insert_db"+num+");\n" +
+	    			"	\n" +
+	    			"	$ret['result'] = $b;\n" +
+	    			"	header(\"Content-Type: application/json; charset=utf-8\");\n" +
+	    			"	echo json_encode($ret);\n" +
+	    			"?>\n";
+    	}
+    	return s;
+    }
+    private String getSSQLgetUpdateformJS(int num, String phpFileName) {
+    	String s = "";
+    	s += "<script>\n" +
+    			"SSQL_getUpdateForm"+num+"();\n" +
+    			"function SSQL_getUpdateForm"+num+"(){\n" +
+    			"	$.ajax({\n" +
+    			"		type: \"POST\",\n" +
+    			"		url: \""+new File(phpFileName).getName()+"\",\n" +
+    			"		success: function(data, textStatus){\n" +
+    			"			if (data.result != \"\") {\n" +
+    			"				SSQL_echo(\"SSQL_UpdateForm"+num+"\", data.result);\n" +
+    			"			}\n" +
+    			"		},\n" +
+    			"		error: function(XMLHttpRequest, textStatus, errorThrown) {\n" +
+    			"			SSQL_echo(\"SSQL_UpdateForm"+num+"\", textStatus+\"<br>\"+errorThrown);\n" +
+    			"		}\n" +
+    			"	});\n" +
+    			"}\n" +
+    			"function SSQL_echo(id, str){\n" +
+    			"	document.getElementById(id).innerHTML = str;\n" +
+    			"}\n" +
+    			"</script>\n";
+    	return s;
+    }
+    private String getSSQLUpdateformHTML(int num, String phpFileName) {
+    	String s = "";
+    	s += "<!-- SSQL Update"+num+" start -->\n" +
+    			"\n" +
+    			"<div id=\"SSQL_UpdateForm"+num+"\"></div>\n" +
+    			"\n" +
+    			"<!-- SSQL Update"+num+" JS start -->\n" +
+    			"<script type=\"text/javascript\">\n" +
+    			"function SSQL_Update"+num+"_vali(id){\n" +
+    			"	$(function(){\n" +
+    			"		$(\"#\"+id+\"panel form\").validate({\n" +
+    			"		 	errorPlacement: function(error, element) {\n" +
+    			"	        	error.appendTo(element.parent().parent().after());\n" +
+    			"	    	},\n" +
+    			"			submitHandler: function(form) {\n" +
+    			"			 	SSQL_Update"+num+"(id);\n" +
+    			"			    return false;\n" +
+    			"			}\n" +
+    			"		});\n" +
+    			"	})\n" +
+    			"}\n" +
+    			"function SSQL_Update"+num+"(id){\n" +
+    			"	$.ajax({\n" +
+    			"		type: \"POST\",\n" +
+    			"		url: \""+new File(phpFileName).getName()+"\",\n" +
+    			"		data: $(\"#\"+id+\"panel form\").serializeArray(),\n" +
+    			"		dataType: \"json\",\n" +
+    			"        beforeSend: function(xhr, settings) {\n" +
+    			"            $('#'+id).attr('disabled', true);\n" +
+    			"        },\n" +
+    			"        complete: function(xhr, textStatus) {\n" +
+    			"            $('#'+id).attr('disabled', false);\n" +
+    			"        },\n" +
+    			"		success: function(data, textStatus){\n" +
+    			"			if (data.result != \"\") {\n" +
+    			"				SSQL_echo(\"\"+id+\"_result\", data.result);\n" +
+    			"			}\n" +
+    			"		},\n" +
+    			"		error: function(XMLHttpRequest, textStatus, errorThrown) {\n" +
+    			"			SSQL_echo(\"\"+id+\"_result\", textStatus+\"<br>\"+errorThrown);\n" +
+    			"		}\n" +
+    			"	});\n" +
+    			"}\n" +
+    			"</script>\n" +
+    			"<!-- SSQL Update"+num+" JS end -->\n" +
+    			"<!-- SSQL Update"+num+" end -->\n";
+    	return s;
+    }
+    
+    
+    
+    
     
     //20131127 form
     //result start

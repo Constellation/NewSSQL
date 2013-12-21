@@ -305,6 +305,7 @@ public class Mobile_HTML5Env extends LocalEnv {
 //退避            header.append("<script src=\"http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.js\"></script>\n");
 //退避            header.append("<script src=\"js/jquery.mobile.dynamic.popup.js\"></script>\n");
             header.append("<script src=\"jscss/jquery-1.7.1.min.js\"></script>\n");
+            header.append(Mobile_HTML5Function.updateFormJS);
             header.append("<script src=\"jscss/jquery-ui.min.js\"></script>\n");
             header.append("<script src=\"jscss/showmore.js\"></script>\n");
             header.append("<script src=\"jscss/jquery.mobile-1.3.1.min.js\"></script>\n");
@@ -370,7 +371,8 @@ public class Mobile_HTML5Env extends LocalEnv {
             header.append("<!-- .error{ color:red; text-align:left; display:block; } -->\n");
             header.append("<!--\n");
             header.append(".ui-grid { overflow: hidden; }\n");
-            header.append(".ui-block { margin: 0; padding: 0; border: 0; float: left; min-height: 1px; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -ms-box-sizing: border-box; box-sizing: border-box; }\n");
+            //header.append(".ui-block { margin: 0; padding: 0; border: 0; float: left; min-height: 1px; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -ms-box-sizing: border-box; box-sizing: border-box; }\n");
+            header.append(".ui-block { margin: 0; padding: 0; float: left; min-height: 1px; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -ms-box-sizing: border-box; box-sizing: border-box; }\n");
             header.append("-->\n");
           	header.append("</style>\n");
 

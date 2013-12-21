@@ -566,7 +566,7 @@ public class Mobile_HTML5 {
 										""+((!textareaFlg[i])?(""):("</textarea>"))+"\n";
 							}else{
 								//TODO 2nd引数
-								statement += Mobile_HTML5.getFormValidationString(validationType[i], false, "form"+formCount+"_words"+(++insertWordCount), s_name_array[i]);
+								statement += Mobile_HTML5.getFormValidationString(validationType[i], false, "form"+formCount+"_words"+(++insertWordCount), s_name_array[i], null);
 							}
 						}
 					}else{
@@ -852,9 +852,11 @@ public class Mobile_HTML5 {
 		//Log.e("s = "+s+", "+"type = "+type);
 		return type;
 	}
-	public static String getFormValidationString(String type, Boolean notnull, String name, String placeholder){
+	static String upFormVal = "";
+	public static String getFormValidationString(String type, Boolean notnull, String name, String placeholder, String updateFromValue){
 		String s = "";
 		type = type.toLowerCase().trim();
+		upFormVal = updateFromValue; //TODO: 他の方法
 		
 		//date, time
 //	    ◎date <input type="text" name="insert1_words4" placeholder="Year / Month / Day" data-role="datebox" data-options='{"mode":"calbox", "useNewStyle":true, "overrideCalHeaderFormat": "%Y / %m / %d", "overrideDateFormat": "%Y/%m/%d" }' >
@@ -918,12 +920,21 @@ public class Mobile_HTML5 {
 			  s += getFormTag("time", name, placeholder, "Ex) 12:01", notnull, "") + "data-role=\"datebox\" data-options='{\"mode\":\"timebox\", \"useFocus\":true, \"overrideTimeFormat\":24, \"useNewStyle\":true }'";
 			  break;
 		}
+		if(updateFromValue != null){
+			s = s.replace("'", "\\\'");
+			s += "value=\""+upFormVal+"\"";
+		}
 		//Log.e("formValidation = "+s+"></span>");
 		return s+"></span>\n";
 	}
 	private static String getFormTag(String type, String name, String placeholder, String defaultPlaceholder, Boolean notnull, String customType) {
-		return "    <span><input type=\""+type+"\" id=\""+name+"\" name=\""+name+"\"" +
-				" placeholder=\""+((!placeholder.isEmpty())? placeholder : defaultPlaceholder)+"\" " + getFormClass(notnull, customType);
+//		if(upFormVal == null){
+			return "    <span><input type=\""+type+"\" id=\""+name+"\" name=\""+name+"\"" +
+					" placeholder=\""+((!placeholder.isEmpty())? placeholder : defaultPlaceholder)+"\" " + getFormClass(notnull, customType);
+//		}else{
+//			return "    <span><input type=\""+type+"\" id=\""+name+"\" name=\""+name+"\" value=\""+upFormVal+"\"" +
+//					" placeholder=\""+((!placeholder.isEmpty())? placeholder : defaultPlaceholder)+"\" " + getFormClass(notnull, customType);
+//		}
 	}
 	static String getFormClass(Boolean notnull, String customType) {
 		if(!notnull && customType.isEmpty())	return "";
