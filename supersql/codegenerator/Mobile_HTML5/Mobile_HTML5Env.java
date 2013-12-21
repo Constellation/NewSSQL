@@ -2097,7 +2097,7 @@ public class Mobile_HTML5Env extends LocalEnv {
 				//code.append("<A href=\"" + htmlEnv.linkUrl + "\" ");
 			fff = fff.substring(0,fff.lastIndexOf(".html"));	//.htmlをカット
 			fff += "_sql.html";
-        	
+
         }
         
         //20130521  "flickbar"

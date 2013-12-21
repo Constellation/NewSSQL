@@ -2667,7 +2667,7 @@ public class Mobile_HTML5Function extends Function {
 	    	String getUpdateFormPHP = getSSQLgetUpdateformPHP("sqlite", insertCount, DB, insert_col, update_where, from, pKey, buttonName, update_statement);
 	    	Mobile_HTML5.createFile(html_env, getUpdateFormPJPFileName, getUpdateFormPHP);//PHPファイルの作成
 	    	
-	    	statement = getSSQLUpdateformHTML(insertCount, formPHPfileName);
+	    	statement = getSSQLUpdateformHTML(insertCount, formPHPfileName, title);
     	}
     	
     	Mobile_HTML5.createFile(html_env, formPHPfileName, php);//PHPファイルの作成
@@ -2761,8 +2761,13 @@ public class Mobile_HTML5Function extends Function {
     			"</script>\n";
     	return s;
     }
-    private String getSSQLUpdateformHTML(int num, String phpFileName) {
+    private String getSSQLUpdateformHTML(int num, String phpFileName, String title) {
     	String s = "";
+    	if(!title.isEmpty()){
+			s += 
+				"<hr>\n<div style=\"font-size:30;\" id=\"SSQL_InsertTitle"+num+"\">"+title+"</div>\n<hr>\n" +
+				"<br>\n";
+		}
     	s += "<!-- SSQL Update"+num+" start -->\n" +
     			"\n" +
     			"<div id=\"SSQL_UpdateForm"+num+"\"></div>\n" +

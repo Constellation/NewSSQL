@@ -852,11 +852,11 @@ public class Mobile_HTML5 {
 		//Log.e("s = "+s+", "+"type = "+type);
 		return type;
 	}
-	static String upFormVal = "";
+//	static String upFormVal = "";
 	public static String getFormValidationString(String type, Boolean notnull, String name, String placeholder, String updateFromValue){
 		String s = "";
 		type = type.toLowerCase().trim();
-		upFormVal = updateFromValue; //TODO: 他の方法
+//		upFormVal = updateFromValue; //TODO: 他の方法
 		
 		//date, time
 //	    ◎date <input type="text" name="insert1_words4" placeholder="Year / Month / Day" data-role="datebox" data-options='{"mode":"calbox", "useNewStyle":true, "overrideCalHeaderFormat": "%Y / %m / %d", "overrideDateFormat": "%Y/%m/%d" }' >
@@ -920,9 +920,9 @@ public class Mobile_HTML5 {
 			  s += getFormTag("time", name, placeholder, "Ex) 12:01", notnull, "") + "data-role=\"datebox\" data-options='{\"mode\":\"timebox\", \"useFocus\":true, \"overrideTimeFormat\":24, \"useNewStyle\":true }'";
 			  break;
 		}
-		if(updateFromValue != null){
+		if(updateFromValue != null && !updateFromValue.isEmpty()){
 			s = s.replace("'", "\\\'");
-			s += "value=\""+upFormVal+"\"";
+			s += " value=\""+updateFromValue+"\"";
 		}
 		//Log.e("formValidation = "+s+"></span>");
 		return s+"></span>\n";
