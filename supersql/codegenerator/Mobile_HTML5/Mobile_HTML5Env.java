@@ -741,6 +741,9 @@ public class Mobile_HTML5Env extends LocalEnv {
 //	        		c2 = c2.substring(c2.lastIndexOf(":")+1).trim();
 //	        	}
 	        	String from = "";
+	        	String fromWhere = "";
+	        	String fromWhere_left = "";
+	        	String fromWhere_right = "";
 	        	String expire_time = "";
 	        	String sender_name = "";
 	        	String admin_email = "";
@@ -765,6 +768,16 @@ public class Mobile_HTML5Env extends LocalEnv {
 		        	
 		        	s = s.substring(s.indexOf(",")+1);
 		        	from = s.substring(0,s.indexOf(",")).trim();		//FROM
+		        	from = from.replace("\"", "").toLowerCase();
+		        	if(from.contains(" where ")){
+		        		fromWhere = ".\" and "+from.substring(from.indexOf(" where ")+6).trim()+"\"";
+		        		if(from.contains("=")){
+		        			fromWhere_left = ", "+from.substring(from.indexOf(" where ")+6,from.indexOf("=")).trim();
+		        			fromWhere_right = ", "+from.substring(from.indexOf("=")+1).trim();
+		        		}
+		        		from = from.substring(0,from.indexOf(" where ")).trim();
+			        	//Log.e(from+"|"+fromWhere+"|"+fromWhere_left+"|"+fromWhere_right);
+		        	}
 	        		
 	        		s = s.substring(s.indexOf(",")+1);
 	        		c3 = s.substring(0,s.indexOf(",")).replaceAll("\"","").replaceAll(";",",").trim();	//セッション変数として保存する属性
@@ -795,6 +808,16 @@ public class Mobile_HTML5Env extends LocalEnv {
 		        	}
 		        	s = s.substring(s.indexOf(",")+1);
 	        		from = s.substring(0,s.indexOf(",")).trim();						//FROM
+		        	from = from.replace("\"", "").toLowerCase();
+		        	if(from.contains(" where ")){
+		        		fromWhere = ".\" and "+from.substring(from.indexOf(" where ")+6).trim()+"\"";
+		        		if(from.contains("=")){
+		        			fromWhere_left = ", "+from.substring(from.indexOf(" where ")+6,from.indexOf("=")).trim();
+		        			fromWhere_right = ", "+from.substring(from.indexOf("=")+1).trim();
+		        		}
+		        		from = from.substring(0,from.indexOf(" where ")).trim();
+		        	}
+		        	
 	        		s = s.substring(s.indexOf(",")+1);
 	        		//for(int j=0; j<3;j++)	s = s.substring(s.indexOf(",")+1);			//3つ目の,までカット
 //	        		Log.i("s: "+s);
@@ -900,7 +923,7 @@ public class Mobile_HTML5Env extends LocalEnv {
 		        				"	$sqlite3_id = '"+c1+"';\n" +
 		        				"	$sqlite3_pw = '"+c2+"';\n" +
 		        				"	$sqlite3_c3 = '"+((!c3.equals(""))?(","+c3):("") )+"';\n" +
-		        				"	$sqlite3_table = '"+from+"';\n" +
+		        				"	$sqlite3_table = \""+from+"\";\n" +
 		        				"\n" +
 		        				"	$id = checkHTMLsc($_POST['id']);\n" +
 		        				"	$pw = checkHTMLsc($_POST['password']);\n" +
@@ -910,7 +933,7 @@ public class Mobile_HTML5Env extends LocalEnv {
 		        				"	if($pw && $id){\n" +
 		        				"		//Login\n" +
 		        				"		$db = new SQLite3($sqlite3_DB);\n" +
-		        				"		$sql = \"SELECT \".$sqlite3_id.\",\".$sqlite3_pw.\"\".$sqlite3_c3.\" FROM \".$sqlite3_table.\" where \".$sqlite3_id.\"='\".$id.\"' and \".$sqlite3_pw.\"='\".$pw.\"'\";\n" +
+		        				"		$sql = \"SELECT \".$sqlite3_id.\",\".$sqlite3_pw.\"\".$sqlite3_c3.\" FROM \".$sqlite3_table.\" WHERE \".$sqlite3_id.\"='\".$id.\"' and \".$sqlite3_pw.\"='\".$pw.\"'\""+fromWhere+";\n" +
 		        				"	    $result = $db->query($sql);\n" +
 		        				"	    $i = 0;\n" +
 		        				//"	    while($res = $result->fetchArray(SQLITE3_ASSOC)){\n" +
@@ -945,7 +968,7 @@ public class Mobile_HTML5Env extends LocalEnv {
 		        				"			$db = new SQLite3($sqlite3_DB);\n" +
 		        				"			\n" +
 		        				"			//check\n" +
-		        				"			$sql1 = \"SELECT \".$sqlite3_id.\" FROM \".$sqlite3_table.\" where \".$sqlite3_id.\"='\".$id.\"'\";\n" +
+		        				"			$sql1 = \"SELECT \".$sqlite3_id.\" FROM \".$sqlite3_table.\" where \".$sqlite3_id.\"='\".$id.\"'\""+fromWhere+";\n" +
 		        				"		    $result1 = $db->query($sql1);\n" +
 		        				"		    $i=0;\n" +
 		        				"		    while($res = $result1->fetchArray(SQLITE3_ASSOC)){\n" +
@@ -955,7 +978,7 @@ public class Mobile_HTML5Env extends LocalEnv {
 		        				"		    if($i > 0)	p('<font color=#ff0000>\\\''.$id.'\\\' has been already registered.</font>');	//already registered.\n" +
 		        				"		    else{\n" +
 		        				"	   	       //registration\n" +
-		        				"	   	       $sql2 = \"INSERT INTO \".$sqlite3_table.\" (\".$sqlite3_id.\", \".$sqlite3_pw.\") VALUES ('\".$id.\"','\".$newpw.\"')\";\n" +
+		        				"	   	       $sql2 = \"INSERT INTO \".$sqlite3_table.\" (\".$sqlite3_id.\", \".$sqlite3_pw.\""+fromWhere_left+") VALUES ('\".$id.\"','\".$newpw.\"'"+fromWhere_right+")\";\n" +
 		        				"	   	       try{\n" +
 		        				"					$result2 = $db->exec($sql2);\n" +
 		        				"					p('<font color=gold>Registration Success!!</font>');\n" +
@@ -1134,14 +1157,14 @@ public class Mobile_HTML5Env extends LocalEnv {
     							"		$sqlite3_DB = '"+DB+"';\n" +
     							"		$sqlite3_id = '"+c1+"';\n" +
     							"		$sqlite3_pw = '"+c2+"';\n" +
-    							"		$sqlite3_table = '"+from+"';\n" +
+    							"		$sqlite3_table = \""+from+"\";\n" +
     							"	\n" +
     							"		$id = checkHTMLsc($_POST['id']);\n" +
     							"		$pw = checkHTMLsc($_POST['password']);\n" +
     							"	\n" +
     							"		if($pw && $id){\n" +
     							"	   		$db = new SQLite3($sqlite3_DB);\n" +
-    							"			$sql = \"SELECT \".$sqlite3_id.\",\".$sqlite3_pw.\" FROM \".$sqlite3_table.\" where \".$sqlite3_id.\"='\".$id.\"' and \".$sqlite3_pw.\"='\".$pw.\"'\";\n" +
+    							"			$sql = \"SELECT \".$sqlite3_id.\",\".$sqlite3_pw.\" FROM \".$sqlite3_table.\" where \".$sqlite3_id.\"='\".$id.\"' and \".$sqlite3_pw.\"='\".$pw.\"'\""+fromWhere+";\n" +
     							"		    $result = $db->query($sql);\n" +
     							"		    $i = 0;\n" +
     							"		    while($res = $result->fetchArray(SQLITE3_ASSOC)){\n" +
@@ -1174,7 +1197,7 @@ public class Mobile_HTML5Env extends LocalEnv {
     							"			//ユーザ定義\n" +
     							"			$sqlite3_DB = '"+DB+"';\n" +
     							"			$sqlite3_id = '"+c1+"';\n" +
-    							"			$sqlite3_table = '"+from+"';\n" +
+    							"			$sqlite3_table = \""+from+"\";\n" +
     							"			\n" +
     							"			$email = $_POST[\"mail1\"];\n" +
     							"	        \n" +
@@ -1206,10 +1229,10 @@ public class Mobile_HTML5Env extends LocalEnv {
     							"		$sqlite3_DB = '"+DB+"';\n" +
     							"		$sqlite3_id = '"+c1+"';\n" +
     							"		$sqlite3_pw = '"+c2+"';\n" +
-    							"		$sqlite3_table = '"+from+"';\n" +
+    							"		$sqlite3_table = \""+from+"\";\n" +
     							"\n" +
     							"		//$mail列のパスワードを「ランダムpassword」で初期化\n" +
-    							"		$reset_sql1 = \"UPDATE \".$sqlite3_table.\" SET \".$sqlite3_pw.\"='\".$r_password.\"' where \".$sqlite3_id.\"='\".$mail.\"'\";\n" +
+    							"		$reset_sql1 = \"UPDATE \".$sqlite3_table.\" SET \".$sqlite3_pw.\"='\".$r_password.\"' where \".$sqlite3_id.\"='\".$mail.\"'\""+fromWhere+";\n" +
     							"		$db = new SQLite3($sqlite3_DB);\n" +
     							"		$result1 = $db->exec($reset_sql1);\n" +
     							"		if ($result1) {\n" +
@@ -1287,13 +1310,13 @@ public class Mobile_HTML5Env extends LocalEnv {
     							"		$sqlite3_DB = '"+DB+"';\n" +
     							"		$sqlite3_id = '"+c1+"';\n" +
     							"		$sqlite3_pw = '"+c2+"';\n" +
-    							"		$sqlite3_table = '"+from+"';\n" +
+    							"		$sqlite3_table = \""+from+"\";\n" +
     							"		\n" +
     							"		//「メールアドレス」と「ランダムpassword」をDBへ登録\n" +
     							"		//check & registration\n" +
     							"		$db = new SQLite3($sqlite3_DB);\n" +
     							"		//一応、再check\n" +
-    							"		$sql1 = \"SELECT \".$sqlite3_id.\" FROM \".$sqlite3_table.\" where \".$sqlite3_id.\"='\".$mail.\"'\";\n" +
+    							"		$sql1 = \"SELECT \".$sqlite3_id.\" FROM \".$sqlite3_table.\" where \".$sqlite3_id.\"='\".$mail.\"'\""+fromWhere+";\n" +
     							"	    $result1 = $db->query($sql1);\n" +
     							"	    $i=0;\n" +
     							"	    while($res = $result1->fetchArray(SQLITE3_ASSOC)){\n" +
@@ -1305,7 +1328,7 @@ public class Mobile_HTML5Env extends LocalEnv {
     							"	     	return \"\";		//既に登録済み（レアケース）\n" +
     							"	    }else{\n" +
     							"   	       //「メールアドレス」と「ランダムpassword」をDBへ登録\n" +
-    							"   	       $sql2 = \"INSERT INTO \".$sqlite3_table.\" (\".$sqlite3_id.\", \".$sqlite3_pw.\") VALUES ('\".$mail.\"','\".$r_password.\"')\";\n" +
+    							"   	       $sql2 = \"INSERT INTO \".$sqlite3_table.\" (\".$sqlite3_id.\", \".$sqlite3_pw.\""+fromWhere_left+") VALUES ('\".$mail.\"','\".$r_password.\"'"+fromWhere_right+")\";\n" +
     							"   	       try{\n" +
     							"				$result2 = $db->exec($sql2);\n" +
     							"				unset($db);\n" +
