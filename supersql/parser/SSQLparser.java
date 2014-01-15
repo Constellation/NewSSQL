@@ -18,6 +18,7 @@ import java.util.TreeSet;
 import supersql.codegenerator.AttributeItem;
 import supersql.codegenerator.CodeGenerator;
 import supersql.codegenerator.ITFE;
+import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5Function;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.db.SQLManager;
@@ -853,7 +854,7 @@ public class SSQLparser {
 			else {
 				buffer.append(nt + " ");
 			}
-			supersql.codegenerator.Mobile_HTML5.Mobile_HTML5Function.after_from_string += nt+" ";	//added by goto 20130515  "search"
+			Mobile_HTML5Function.after_from_string += nt+" ";	//added by goto 20130515  "search"
 		}
 	}
 

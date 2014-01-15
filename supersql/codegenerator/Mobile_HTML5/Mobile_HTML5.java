@@ -1300,6 +1300,10 @@ public class Mobile_HTML5 {
 	    	if(query.contains(" where ")){
 	    		where = query.substring(query.lastIndexOf(" where ")+" where ".length());
 	    		where = where.replaceAll("\\'","\\\\'");		// ' -> \'
+	    		if(where.contains("$session")){
+	    			//if WHWERE phrase contains $session(XX)
+	    			where = where.replaceAll("\\$session","'\".\\$_SESSION").replaceAll("\\(","[\"").replaceAll("\\)","\"].\"'");
+	    		}
 	    		query = query.substring(0,query.lastIndexOf(" where "));
 	    	}
 	    	from = query.trim();
@@ -1379,7 +1383,7 @@ public class Mobile_HTML5 {
 							"    $dynamic_col = \""+dynamic_col+"\";\n" +
 							"    $col_num = "+col_num+";                          //カラム数(Java側で指定)\n" +
 							"    $table = '"+from+"';\n" +
-							"    $where0 = '"+where+"';\n" +
+							"    $where0 = \""+where+"\";\n" +
 							"    $dynamic_col_array = array("+dynamic_col_array+");\n" +
 							"    $dynamic_col_num = count($dynamic_col_array);\n" +
 							"    $dynamic_a_Flg = array("+dynamic_aFlg+");\n" +
@@ -1826,5 +1830,15 @@ public class Mobile_HTML5 {
         } catch (Exception e) { }
         return false;
     }
+
+	//check query
+	public static String checkQuery(String query) {
+		//contains $session() or not
+		//ex)　WHERE s_id = $session(id)	->	WHERE s_id = id
+		//大文字小文字の区別なし：先頭に(?i)
+		query = query.replaceAll("(?i)\\$\\s*session\\s*\\(\\s*([A-Za-z0-9]+)\\s*\\)", "$1");
+		
+		return query;
+	}
 	
 }
