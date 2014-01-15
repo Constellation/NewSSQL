@@ -24,6 +24,8 @@ import supersql.extendclass.ExtList;
 
 public class Mobile_HTML5 {
 	
+	static boolean G2 = false;
+	
 	public static boolean preProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
 		//Pre-process (前処理)
 		showProcess(decos, html_env);	//TODO この位置でOKか確認
@@ -41,6 +43,9 @@ public class Mobile_HTML5 {
 			dynamicPreProcess(symbol, decos, html_env);//最終的には不要
 			
 //			formPreProcess(symbol, decos, html_env);
+		}
+		if(symbol.contains("G2")){
+			G2 = true;
 		}
 		return true;
 	}
@@ -74,6 +79,9 @@ public class Mobile_HTML5 {
 		}
 		
 		Mobile_HTML5Function.func_null_count = 0;	//null()
+		if(symbol.contains("G2")){
+			G2 = false;
+		}
 		return true;
 	}
 	public static boolean postProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
@@ -1836,7 +1844,12 @@ public class Mobile_HTML5 {
 		//contains $session() or not
 		//ex)　WHERE s_id = $session(id)	->	WHERE s_id = id
 		//大文字小文字の区別なし：先頭に(?i)
-		query = query.replaceAll("(?i)\\$\\s*session\\s*\\(\\s*([A-Za-z0-9]+)\\s*\\)", "$1");
+		if(query.contains(" FROM ") && query.contains(" WHERE ")){
+			if(query.indexOf(" FROM ") < query.indexOf(" WHERE ")){
+				//TODO " and ' の外側かどうかチェック
+				query = query.replaceAll("(?i)\\$\\s*session\\s*\\(\\s*([A-Za-z0-9]+)\\s*\\)", "$1");
+			}
+		}
 		
 		return query;
 	}
