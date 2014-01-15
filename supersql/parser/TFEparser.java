@@ -478,7 +478,6 @@ public class TFEparser {
 		if(token.contains("'")){
 			for(int i=0;i<token.length();i++){
 				if(token.charAt(i) == '\''){
-					Log.e(token);
 					break;
 				}else if(token.charAt(i)=='='){
 					equalSignOutsideSingleQuote = true;

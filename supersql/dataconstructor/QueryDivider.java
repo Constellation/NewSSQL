@@ -3,6 +3,7 @@ package supersql.dataconstructor;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
+import supersql.common.Log;
 import supersql.extendclass.ExtList;
 import supersql.parser.SSQLparser;
 import supersql.parser.WhereParse;
