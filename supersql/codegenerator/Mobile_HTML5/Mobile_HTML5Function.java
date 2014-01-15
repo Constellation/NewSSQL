@@ -1897,10 +1897,11 @@ public class Mobile_HTML5Function extends Function {
     //select end
     
     
-    //added by goto 20130515 start  "insert","update"
+    //added by goto 20130515 start  "insert","form = insert_update","update"
     /* insert("title", "c1:column1, c2:column2, ... ", "From以下" [,Button Name])	*/
-    /* update("title", "c1:column1, c2:column2, ... ", "From以下" [, "insert Flag" [,Button Name] ])	*/
-    /* insert_update("title", "c1:column1, c2:column2, ... ", "From以下" [,Button Name])  データ無し->新規insert,データあり->update */
+    /* form("title", "c1:column1, c2:column2, ... ", "From以下" [,Button Name]) = insert_update()  データ無し->新規insert,データあり->update (※ from内のwhereを基にしてupdate) */
+    /* insert_update("title", "c1:column1, c2:column2, ... ", "From以下" [,Button Name]) = form()  データ無し->新規insert,データあり->update (※ from内のwhereを基にしてupdate) */
+    /* update("title", "c1:column1, c2:column2, ... ", "From以下", "pKey" [,Button Name] ])	*/
     /* Option1: @{noresult} -> not display the result */
     /* Option2: @{noreset},@{noclear} ->  not init the input form after inserted or updated */
     /* Option3: @{reloadafterinsert},@{reloadafterupdate} ->  reload current page after insert */
@@ -1909,7 +1910,7 @@ public class Mobile_HTML5Function extends Function {
     	String title = "";
     	String columns = "";
     	String after_from = "";
-    	String insertFlag = "false";
+//    	String insertFlag = "false";
     	String pKey = "";	//primary key
     	String buttonName = "";
     	try{
@@ -1936,10 +1937,12 @@ public class Mobile_HTML5Function extends Function {
     		}
     		
     	}catch(Exception e){
-    		if(!update){
-    			Log.err("<Warning> insert関数の引数が不足しています。 ex. insert(\"title\", \"c1:column1, c2:column2, ... \", \"From以下\")");
+    		if(update){
+    			Log.err("<Warning> update関数の引数が不足しています。 ex. update(\"title\", \"c1:column1, c2:column2, ... \", \"From以下\", \"pKey\")");
+    		}else if(insert_update){
+    			Log.err("<Warning> form関数 or insert_update関数の引数が不足しています。 ex. insert_update(\"title\", \"c1:column1, c2:column2, ... \", \"From以下\")");
     		}else{
-    			Log.err("<Warning> update関数の引数が不足しています。 ex. insert(\"title\", \"c1:column1, c2:column2, ... \", \"From以下\")");
+    			Log.err("<Warning> insert関数の引数が不足しています。 ex. (\"title\", \"c1:column1, c2:column2, ... \", \"From以下\")");
     		}
     		return "";
     	}
@@ -1948,7 +1951,7 @@ public class Mobile_HTML5Function extends Function {
     		return "";
 		}
 		if(after_from.toLowerCase().startsWith("from "))	after_from = after_from.substring("from".length()).trim();
-		if(insert_update)	insertFlag = "true";	//20130721
+//		if(insert_update)	insertFlag = "true";	//20130721
 		//Log.info(title);
 		
 		//Check options
@@ -2167,7 +2170,7 @@ public class Mobile_HTML5Function extends Function {
     		
     		if(!noinsertFlg[i]){
     			insert_col += s_array[i] +((i<col_num-1)?(","):(""));
-    			if(update)	update_col_array += s_array[i] +"'"+((i<col_num-1)?(",'"):(""));
+    			if(update || insert_update)	update_col_array += s_array[i] +"'"+((i<col_num-1)?(",'"):(""));
     		}
     	}
     	col_num -= a_pop_count;
@@ -2200,7 +2203,7 @@ public class Mobile_HTML5Function extends Function {
     	//Log.i("\n	Query: "+query);
     	String from = "";
     	from = query.toLowerCase().trim();
-    	if(update){
+    	if(update || insert_update){
     		if(after_from.startsWith("#")){
     			update_where = from.substring(from.indexOf(" where ")).trim();
     		}else{
@@ -2239,10 +2242,14 @@ public class Mobile_HTML5Function extends Function {
     	String gps_js = "";
     	String php = "";
     	String formPHPfileName = "";
-    	if(!update){
-    		formPHPfileName = html_env.getFileName2()+"_SSQLform_"+insertCount+".php";
-    	}else{
+    	if(update){
+    		//update()
     		formPHPfileName = html_env.getFileName2()+"_SSQLupdateform_"+insertCount+".php";
+//    	}else if(insert_update){
+//			formPHPfileName = html_env.getFileName2()+"_SSQLinsertupdate_"+insertCount+".php";
+    	}else{
+    		//insert(), form()=insert_update()
+    		formPHPfileName = html_env.getFileName2()+"_SSQLform_"+insertCount+".php";
     	}
     	//sqlite3 php
     	if(DBMS.equals("sqlite") || DBMS.equals("sqlite3")){
@@ -2313,7 +2320,10 @@ public class Mobile_HTML5Function extends Function {
 //							buttonSubmit += " || $_POST['SSQL_insert"+insertCount+"_words"+(insertWordCount)+"']";
 							
 						}else{							//ラジオボタン ex){出席|欠席|その他}
-							statement += "   <div data-role=\"controlgroup\">\n";
+							statement += "   <div data-role=\"controlgroup\">\n" + 
+										 "		<div style=\"text-align:left; font-size:16.5px\">"+s_name_array[i]+"</div>\n";
+							update_statement += "   <div data-role=\"controlgroup\">\n" + 
+										 "		<div style=\"text-align:left; font-size:16.5px\">"+s_name_array[i]+"</div>\n";
 							insertWordCount++;
 							for(int k=1; k<=btRcount; k++){
 								String val = ss.substring(0,ss.indexOf("|")).trim();
@@ -2322,11 +2332,11 @@ public class Mobile_HTML5Function extends Function {
 										"		<label for=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"_"+k+"\">"+val+"</label>\n";
 								update_statement += //TODO radio button
 										"		<input type=\"radio\" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\" id=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"_"+k+"\" value=\""+val+"\""+( (k>1)? (""):(" checked=\"checked\"") )+">\n" +
-												"		<label for=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"_"+k+"\">"+val+"</label>\n";
+										"		<label for=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"_"+k+"\">"+val+"</label>\n";
 								ss = ss.substring(ss.indexOf("|")+1);
 							}
-							statement += "	</div>\n";
-							update_statement += "	</div>\n";
+							statement += "   </div>\n";
+							update_statement += "   </div>\n";
 						}
 					}else{
 						if(validationType[i].isEmpty()){
@@ -2426,8 +2436,8 @@ public class Mobile_HTML5Function extends Function {
 //						"    <input type=\"submit\" value=\""+( (!update)? ("登録"):("更新") )+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\" name=\"SSQL_insert"+insertCount+"\" id=\"SSQL_insert"+insertCount+"\" data-icon=\"insert\" data-mini=\"false\" data-inline=\"false\" onClick=\"SSQL_Insert"+insertCount+"()\">\n";
     			}else{
 	    			statement += 
-	    					"    <input type=\"submit\" value=\""+buttonName+"\" name=\"SSQL_insert"+insertCount+"\" id=\"SSQL_insert"+insertCount+"\" data-mini=\"false\" data-inline=\"false\">\n";
-//	    					"    <input type=\"submit\" value=\""+buttonName+"\" name=\"SSQL_insert"+insertCount+"\" id=\"SSQL_insert"+insertCount+"\" data-mini=\"false\" data-inline=\"false\" onClick=\"SSQL_Insert"+insertCount+"()\">\n";
+	    				"    <input type=\"submit\" value=\""+buttonName+"\" name=\"SSQL_insert"+insertCount+"\" id=\"SSQL_insert"+insertCount+"\" data-mini=\"false\" data-inline=\"false\">\n";
+//	    				"    <input type=\"submit\" value=\""+buttonName+"\" name=\"SSQL_insert"+insertCount+"\" id=\"SSQL_insert"+insertCount+"\" data-mini=\"false\" data-inline=\"false\" onClick=\"SSQL_Insert"+insertCount+"()\">\n";
     			}
     		}
     		statement += 
@@ -2548,10 +2558,10 @@ public class Mobile_HTML5Function extends Function {
     				"    //ユーザ定義\n" +
     				"    $sqlite3_DB = '"+DB+"';\n" +
     				"    $insert_col = \""+insert_col+"\";\n";
-			if(update){
-				php +=
-						"    $update_col_array = array("+update_col_array+");\n" +
-						"    $update_where = \""+ update_where + pKeyWhere +"\";\n";
+			if(update || (insert_update && !update_where.isEmpty()) ){
+				//form()=insert_update() with where, update()
+				php += "    $update_col_array = array("+update_col_array+");\n" +
+					   "    $update_where = \""+ update_where + pKeyWhere +"\";\n";
 			}
 			php +=
     				"    $notnullFlg = array("+notnullFlg_array+");\n" +
@@ -2579,8 +2589,8 @@ public class Mobile_HTML5Function extends Function {
 //    				"        insert"+insertCount+"_p1('<font color=\\\"red\\\">Please check the value.</font>', \"true\");\n" +
     				"        $b = '<font color=\"red\">Please check the value.</font>';\n" +
     				"	}else{\n";
-			if(!update){
-				//insert()
+			if((!update && !insert_update) || update_where.isEmpty()){
+				//insert(), form()=insert_update() with no where
 				php +=
 	    				"		$insert_str = \"\";\n" +
 	    				"		for($k=1; $k<=$col_num; $k++){\n" +
@@ -2601,10 +2611,11 @@ public class Mobile_HTML5Function extends Function {
 	    				"        }catch(Exception $e){\n" +
 	    				"       		unset($insert_db"+insertCount+");\n" +
 //	    				"       		insert"+insertCount+"_p1('<font color=red>Insert failed.</font>', \"true\");	//登録失敗\n" +
+						//"				$b = '<font color=red>No data found.</font>';	//更新データなし\n" +
 	    				"       		$b = '<font color=red>Insert failed.</font>';	//登録失敗\n" +
 	    				"        }\n";
 			}else{
-				//update()
+				//form()=insert_update() with where, update()
 				php +=
 						"		$insert_db1 = new SQLite3($sqlite3_DB);\n" +
 						"		try{\n" +
@@ -2629,25 +2640,18 @@ public class Mobile_HTML5Function extends Function {
 						"				//echo '変更された行の数: ', $db->changes();\n" +
 //						"				insert"+insertCount+"_p1(\"Update completed.\", \"false\");\n" +
 						"				$b = \"Update completed.\";\n" +
-						"			}else{\n";
-				if(!insertFlag.equals("true"))
-						php +=
-//							"				insert"+insertCount+"_p1('<font color=red>No data found.</font>', \"true\");	//更新データなし\n";
-							"				$b = '<font color=red>No data found.</font>';	//更新データなし\n";
-				else
-						php +=
-							"				//新規登録(insert)\n" +
-							"				$insert_str = \"\";\n" +
-							"				for($k=1; $k<=$col_num; $k++){\n" +
-							"					if($k==1)	$insert_str .= \"'\".$var[$k].\"'\";\n" +
-							"					else		$insert_str .= \",'\".$var[$k].\"'\";\n" +
-							"				}\n" +
-							"				\n" +
-							"				$insert_sql = \"INSERT INTO \".$table.\" (\".$insert_col.\") VALUES (\".$insert_str.\")\";\n" +
-							"				$result2 = $insert_db1->exec($insert_sql);\n" +
+						"			}else{\n" +
+						"				//新規登録(insert)\n" +
+						"				$insert_str = \"\";\n" +
+						"				for($k=1; $k<=$col_num; $k++){\n" +
+						"					if($k==1)	$insert_str .= \"'\".$var[$k].\"'\";\n" +
+						"					else		$insert_str .= \",'\".$var[$k].\"'\";\n" +
+						"				}\n" +
+						"				\n" +
+						"				$insert_sql = \"INSERT INTO \".$table.\" (\".$insert_col.\") VALUES (\".$insert_str.\")\";\n" +
+						"				$result2 = $insert_db1->exec($insert_sql);\n" +
 //							"				insert"+insertCount+"_p1(\"Registration completed.\", \"false\");\n";
-							"				$b = \"Registration completed.\";\n";
-				php +=
+						"				$b = \"Registration completed.\";\n" +
 						"			}\n" +
 						"        }catch(Exception $e){\n" +
 						"       		unset($insert_db1);\n" +
