@@ -2236,13 +2236,14 @@ public class Mobile_HTML5Function extends Function {
     	String[] cols = new String[col_num];
     	if(update){
     		String s = insert_col+",";
-    		for(int i=0;i<col_num;i++){
-    			cols[i] = s.substring(0,s.indexOf(","));
-    			s = s.substring(s.indexOf(",")+1);
-    			//Log.e(cols[i]);
-    		}
+    		try {
+        		for(int i=0;i<col_num;i++){
+        			cols[i] = s.substring(0,s.indexOf(","));
+        			s = s.substring(s.indexOf(",")+1);
+        			//Log.e(cols[i]);
+        		}
+			} catch (Exception e) {	}
     	}
-    	
     	
 
     	String statement = "";
