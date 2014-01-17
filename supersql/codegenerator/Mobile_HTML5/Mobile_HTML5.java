@@ -940,13 +940,22 @@ public class Mobile_HTML5 {
 		return s+"></span>\n";
 	}
 	private static String getFormTag(String type, String name, String placeholder, String defaultPlaceholder, Boolean notnull, String customType) {
-//		if(upFormVal == null){
-			return "    <span><input type=\""+type+"\" id=\""+name+"\" name=\""+name+"\"" +
-					" placeholder=\""+((!placeholder.isEmpty())? placeholder : defaultPlaceholder)+"\" " + getFormClass(notnull, customType);
-//		}else{
-//			return "    <span><input type=\""+type+"\" id=\""+name+"\" name=\""+name+"\" value=\""+upFormVal+"\"" +
-//					" placeholder=\""+((!placeholder.isEmpty())? placeholder : defaultPlaceholder)+"\" " + getFormClass(notnull, customType);
-//		}
+		String ret = "    <span><input type=\""+type+"\" id=\""+name+"\" name=\""+name+"\"" +
+				" placeholder=\""+((!placeholder.isEmpty())? placeholder : defaultPlaceholder)+"\" " + getFormClass(notnull, customType);
+		if(type.equals("password")){
+			//add confirm password form
+			ret += 	"></span>\n" +
+					"    <span><input type=\""+type+"\" id=\""+name+"_confirm\" name=\""+name+"_confirm\"" +
+					" placeholder=\""+((!placeholder.isEmpty())? placeholder : defaultPlaceholder)+" (re-input)\" equalTo=\"#"+name+"\"";
+		}
+		return ret;
+////		if(upFormVal == null){
+//			return "    <span><input type=\""+type+"\" id=\""+name+"\" name=\""+name+"\"" +
+//			" placeholder=\""+((!placeholder.isEmpty())? placeholder : defaultPlaceholder)+"\" " + getFormClass(notnull, customType);
+////		}else{
+////			return "    <span><input type=\""+type+"\" id=\""+name+"\" name=\""+name+"\" value=\""+upFormVal+"\"" +
+////					" placeholder=\""+((!placeholder.isEmpty())? placeholder : defaultPlaceholder)+"\" " + getFormClass(notnull, customType);
+////		}
 	}
 	static String getFormClass(Boolean notnull, String customType) {
 		if(!notnull && customType.isEmpty())	return "";
