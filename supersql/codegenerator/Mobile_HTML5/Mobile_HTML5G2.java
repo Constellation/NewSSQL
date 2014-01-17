@@ -216,11 +216,12 @@ public class Mobile_HTML5G2 extends Grouper {
 //        Log.out("<TABLE class=\""+HTMLEnv.getClassID(this) + "\">");
 
         //html_env2.code.append("<tfe type=\"connect\" dimension=\"2\" >");
-        
+        int i=0;
+        Mobile_HTML5.G2_dataQuantity = this.data.size();
         Mobile_HTML5.beforeWhileProcess(getSymbol(), decos, html_env);
-        int i = 0;
         while (this.hasMoreItems()) {
         	Mobile_HTML5Function.glvl = html_env.glevel;	//added by goto 20130914  "SEQ_NUM"
+        	
         	
         	//[重要] For [ [], ]!        	
         	Mobile_HTML5G1.jj = 0;

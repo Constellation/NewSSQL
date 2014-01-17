@@ -169,7 +169,7 @@ public class Mobile_HTML5Function extends Function {
         else if(FuncName.equalsIgnoreCase("update")){
         	ret = Func_insert(true,false);
         }
-        //added by goto 20130721  "update"
+        //added by goto 20130721  "insert_update", "form"
         else if(FuncName.equalsIgnoreCase("insert_update") || FuncName.equalsIgnoreCase("form")){
         	ret = Func_insert(false,true);
         }
@@ -1512,7 +1512,6 @@ public class Mobile_HTML5Function extends Function {
     	 *    $limit = " LIMIT 10 ";
     	 */
     	
-    	
     	String title = "";
     	String columns = "";
     	String after_from = "";
@@ -1905,7 +1904,16 @@ public class Mobile_HTML5Function extends Function {
     /* Option1: @{noresult} -> not display the result */
     /* Option2: @{noreset},@{noclear} ->  not init the input form after inserted or updated */
     /* Option3: @{reloadafterinsert},@{reloadafterupdate} ->  reload current page after insert */
+    static boolean G2_form = false;
+    static int G2_form_count = 0;
     private String Func_insert(boolean update, boolean insert_update) {
+    	
+    	if(Mobile_HTML5.G2){
+    		//for [ form() ]!
+    		G2_form = true;
+    		G2_form_count++;
+    		//Log.e(Mobile_HTML5.G2_dataQuantity+"  "+G2_form_count);
+    	}
     	
     	String title = "";
     	String columns = "";

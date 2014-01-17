@@ -25,6 +25,7 @@ import supersql.extendclass.ExtList;
 public class Mobile_HTML5 {
 	
 	static boolean G2 = false;
+	static int G2_dataQuantity = 0;
 	
 	public static boolean preProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
 		//Pre-process (前処理)
@@ -46,6 +47,7 @@ public class Mobile_HTML5 {
 		}
 		if(symbol.contains("G2")){
 			G2 = true;
+			//Log.e(G2_dataQuantity);
 		}
 		return true;
 	}
@@ -81,6 +83,8 @@ public class Mobile_HTML5 {
 		Mobile_HTML5Function.func_null_count = 0;	//null()
 		if(symbol.contains("G2")){
 			G2 = false;
+			G2_dataQuantity = 0;
+			Mobile_HTML5Function.G2_form_count = 0;
 		}
 		return true;
 	}
