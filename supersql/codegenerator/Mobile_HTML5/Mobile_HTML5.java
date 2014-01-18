@@ -21,6 +21,7 @@ import supersql.common.DB;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
+import supersql.parser.SSQLparser;
 
 public class Mobile_HTML5 {
 	
@@ -1338,7 +1339,8 @@ public class Mobile_HTML5 {
 	    	
 	    	
 	    	String statement = "";
-	    	String php = "<?php\n";
+	    	String php = getSessionStartString()
+	    			     +"<?php\n";
 	    	//sqlite3 php
 	    	if(DBMS.equals("sqlite") || DBMS.equals("sqlite3")){
 	    		if(!dynamicRowFlg){
@@ -1832,6 +1834,19 @@ public class Mobile_HTML5 {
 		return false;
 	}
 
+	
+	
+	//////////////////////////////////////////////////////////////////////////////////////////
+	//return session_start string
+	public static String getSessionStartString(){
+		if(SSQLparser.sessionFlag){
+			return "<?php\n" +
+					"	session_start();\n" +
+					//"	session_regenerate_id(TRUE);\n" +	//これがあると、phpファイルへのアクセスごとにセッションが切れる？
+					"?>\n\n";
+		}
+		return "";
+	}
 	
 	
 	//////////////////////////////////////////////////////////////////////////////////////////

@@ -2557,7 +2557,7 @@ public class Mobile_HTML5Function extends Function {
 				}
 				pKeyWhere += pKey+"='\".$_POST['SSQL_insert"+insertCount+"_pkey'].\"'";	//New";
 			}
-			php +=
+			php +=	Mobile_HTML5.getSessionStartString() +
     				"<?php\n" +
 //    				"if($_POST['SSQL_insert"+insertCount+"'] "+buttonSubmit+"){\n" +
     				//"if($_POST['SSQL_insert"+insertCount+"'] || $_POST['SSQL_insert"+insertCount+"_words"+insertCount+"']){\n" +
@@ -2713,7 +2713,8 @@ public class Mobile_HTML5Function extends Function {
     	String s = "";
     	//update_statement = update_statement.replace("'", "\\\'");//.replace("\n", "");
     	if(dbType.contains("sqlite")){
-	    	s += "<?php\n" +
+	    	s += 	Mobile_HTML5.getSessionStartString() +
+	    			"<?php\n" +
 	    			"    $ret = array();\n" +
 	    			"    $ret['result'] = \"\";\n" +
 	    			"    \n" +
