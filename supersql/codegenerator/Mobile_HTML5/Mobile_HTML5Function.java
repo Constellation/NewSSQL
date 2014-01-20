@@ -2793,7 +2793,8 @@ public class Mobile_HTML5Function extends Function {
     			"}\n" +
     			"function SSQL_echo(id, str, clear){\n" +
     			//"	document.getElementById(id).innerHTML = str;\n" +
-    			"	$(\"#\"+id).append(str).trigger(\"create\");\n" +
+    			//"	$(\"#\"+id).append(str).trigger(\"create\");\n" +
+    			"	$(\"#\"+id).html(str).trigger(\"create\");\n" +
     			"	if(clear){\n" +
     			"		$(function(){\n" +
     			"			setTimeout(function(){\n" +
