@@ -921,13 +921,17 @@ public class Mobile_HTML5 {
 			  s += getFormTag("date", name, placeholder, "Month", notnull, "") + "data-role=\"datebox\" data-options='{\"mode\":\"flipbox\", \"useFocus\":true, \"useNewStyle\":true, \"overrideHeaderFormat\": \"%m\", \"overrideDateFormat\": \"%m\", \"overrideDateFieldOrder\":[\"m\"] }'";
 			  break;
 		  case "date3":	//Day
+			  //TODO getUpdate時
 			  s += getFormTag("date", name, placeholder, "Day", notnull, "") + "data-role=\"datebox\" min=\"2016-01-01\" max=\"2016-01-31\" data-options='{\"mode\":\"flipbox\", \"useFocus\":true, \"useNewStyle\":true, \"overrideHeaderFormat\": \"%d\", \"overrideDateFormat\": \"%d\", \"overrideDateFieldOrder\":[\"d\"] }'";
+			  //s += getFormTag("date", name, placeholder, "Day", notnull, "") + "data-role=\"datebox\" data-options='{\"mode\":\"flipbox\", \"useFocus\":true, \"useNewStyle\":true, \"overrideHeaderFormat\": \"%d\", \"overrideDateFormat\": \"%d\", \"overrideDateFieldOrder\":[\"d\"] }'";
 			  break;
 		  case "date4":	//Year / Month
 			  s += getFormTag("date", name, placeholder, "Year / Month", notnull, "") + "data-role=\"datebox\" data-options='{\"mode\":\"calbox\", \"useFocus\":true, \"useNewStyle\":true, \"overrideCalHeaderFormat\": \"%Y / %m\", \"overrideDateFormat\": \"%Y/%m\" }'";
 			  break;
 		  case "date5":	//Month / Day
+			  //TODO getUpdate時
 			  s += getFormTag("date", name, placeholder, "Month / Day", notnull, "") + "data-role=\"datebox\" min=\"2016-01-01\" max=\"2016-12-31\" data-options='{\"mode\":\"datebox\", \"useFocus\":true, \"useNewStyle\":true, \"overrideHeaderFormat\": \"%m / %d\",  \"overrideDateFormat\": \"%m/%d\", \"overrideDateFieldOrder\":[\"m\",\"d\"] }'";
+			  //s += getFormTag("date", name, placeholder, "Month / Day", notnull, "") + "data-role=\"datebox\" data-options='{\"mode\":\"datebox\", \"useFocus\":true, \"useNewStyle\":true, \"overrideHeaderFormat\": \"%m / %d\",  \"overrideDateFormat\": \"%m/%d\", \"overrideDateFieldOrder\":[\"m\",\"d\"] }'";
 			  break;
 		  case "time":	//Hour : Minute
 			  s += getFormTag("time", name, placeholder, "Ex) 12:01", notnull, "") + "data-role=\"datebox\" data-options='{\"mode\":\"timebox\", \"useFocus\":true, \"overrideTimeFormat\":24, \"useNewStyle\":true }'";
