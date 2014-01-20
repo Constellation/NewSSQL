@@ -991,7 +991,7 @@ public class Mobile_HTML5 {
 	static String dynamicHTMLbuf0 = "";
 	static String dynamicHTMLbuf = "";
 	static int dynamicCount = 1;
-	static String dynamicFuncCountLabel = "___DynamicFunc_CountLabel___";
+	static String dynamicFuncCountLabel = "___SSQL_DynamicFunc_CountLabel___";
 	public static boolean dynamicDisplay = false;
 	public static String dynamicFuncArgProcess(ITFE tfe){
 		//For Function
@@ -1005,8 +1005,10 @@ public class Mobile_HTML5 {
 		String s = ""+tfe;
 		s = s.trim();
 		if(s.startsWith("\"") && s.endsWith("\"")){
-			//not attribute
+			//not attribute, not number
 			s = s.substring(1,s.length()-1);
+		}else if(isNumber(s)){
+			//number
 		}else{
 			//attribute
 			s = "'||"+s+"||'";
@@ -1887,5 +1889,14 @@ public class Mobile_HTML5 {
 		
 		return query;
 	}
+	
+	private static boolean isNumber(String s) {
+        try {
+            Double.parseDouble(s);
+            return true;
+        } catch(NumberFormatException e) {
+            return false;
+        }
+    }
 	
 }
