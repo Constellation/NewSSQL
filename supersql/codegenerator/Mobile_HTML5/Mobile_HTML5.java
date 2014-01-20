@@ -1325,9 +1325,9 @@ public class Mobile_HTML5 {
 	    	}
 	    	if(query.contains(" where ")){
 	    		where = query.substring(query.lastIndexOf(" where ")+" where ".length());
-	    		where = where.replaceAll("\\'","\\\\'");		// ' -> \'
+	    		//where = where.replaceAll("\\'","\\\\'");		// ' -> \'
 	    		if(where.contains("$session")){
-	    			//if WHWERE phrase contains $session(XX)
+	    			//if WHERE phrase contains $session(XX)
 	    			where = where.replaceAll("\\$session","'\".\\$_SESSION").replaceAll("\\(","[\"").replaceAll("\\)","\"].\"'");
 	    		}
 	    		query = query.substring(0,query.lastIndexOf(" where "));
@@ -1629,8 +1629,9 @@ public class Mobile_HTML5 {
 				 "},"+ajax_loadInterval+");\n";
 		}
 		s +=	"function SSQL_DynamicDisplay"+num+"_echo(str){\n" +
-				"  var textArea = document.getElementById(\"SSQL_DynamicDisplay"+num+"\");\n" +
-				"  textArea.innerHTML = str;\n" +
+				//"  var textArea = document.getElementById(\"SSQL_DynamicDisplay"+num+"\");\n" +
+				//"  textArea.innerHTML = str;\n" +
+				"  $(\"#SSQL_DynamicDisplay"+num+"\").html(str).trigger(\"create\");\n" +
 				"}\n" +
 				"function SSQL_DynamicDisplay"+num+"(){\n" +
 				"	//ajax: PHPへ値を渡して実行\n" +
@@ -1671,8 +1672,9 @@ public class Mobile_HTML5 {
 				"\n" +
 				"var SSQL_DynamicDisplayPaging"+num+"_currentItems = 1;		//グローバル変数\n" +
 				"function SSQL_DynamicDisplayPaging"+num+"_echo(str){\n" +
-				"  var textArea = document.getElementById(\"SSQL_DynamicDisplayPaging"+num+"\");\n" +
-				"  textArea.innerHTML = str;\n" +
+				//"  var textArea = document.getElementById(\"SSQL_DynamicDisplayPaging"+num+"\");\n" +
+				//"  textArea.innerHTML = str;\n" +
+				"  $(\"#SSQL_DynamicDisplayPaging"+num+"\").html(str).trigger(\"create\");\n" +
 				"}\n";
 		if(ajax_loadInterval>0){
 			s += "\n" +
