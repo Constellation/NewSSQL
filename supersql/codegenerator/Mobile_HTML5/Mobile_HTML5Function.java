@@ -2695,11 +2695,12 @@ public class Mobile_HTML5Function extends Function {
     	
     	if(update){
     		String getUpdateFormPJPFileName = html_env.getFileName2()+"_SSQLgetUpdateForm_"+insertCount+".php";
-    		updateFormJS = getSSQLgetUpdateformJS(insertCount, getUpdateFormPJPFileName);
+    		//updateFormJS = getSSQLgetUpdateformJS(insertCount, getUpdateFormPJPFileName);
 	    	String getUpdateFormPHP = getSSQLgetUpdateformPHP("sqlite", insertCount, DB, insert_col, update_where, from, pKey, buttonName, update_statement);
 	    	Mobile_HTML5.createFile(html_env, getUpdateFormPJPFileName, getUpdateFormPHP);//PHPファイルの作成
 	    	
-	    	statement = getSSQLUpdateformHTML(insertCount, formPHPfileName, title);
+	    	statement = getSSQLgetUpdateformJS(insertCount, getUpdateFormPJPFileName)+"\n";
+	    	statement += getSSQLUpdateformHTML(insertCount, formPHPfileName, title);
     	}
     	
     	Mobile_HTML5.createFile(html_env, formPHPfileName, php);//PHPファイルの作成
@@ -2708,7 +2709,7 @@ public class Mobile_HTML5Function extends Function {
     }
     //insert end
     /* */
-    public static String updateFormJS = "";
+    public static String updateFormJS = "";	//not use?
     private String getSSQLgetUpdateformPHP(String dbType, int num, String DB, String insert_col, String update_where, String from, String pKey, String buttonName, String update_statement) {
     	String s = "";
     	//update_statement = update_statement.replace("'", "\\\'");//.replace("\n", "");
@@ -2772,7 +2773,9 @@ public class Mobile_HTML5Function extends Function {
     }
     private String getSSQLgetUpdateformJS(int num, String phpFileName) {
     	String s = "";
-    	s += "<script>\n" +
+    	//s += "<script>\n" +
+		s +=    "<!-- SSQL get Update Form"+num+" start -->\n" +
+				"<script type=\"text/javascript\">\n" +
     			"SSQL_getUpdateForm"+num+"();\n" +
     			"function SSQL_getUpdateForm"+num+"(){\n" +
     			"	$.ajax({\n" +
@@ -2789,16 +2792,18 @@ public class Mobile_HTML5Function extends Function {
     			"	});\n" +
     			"}\n" +
     			"function SSQL_echo(id, str, clear){\n" +
-    			"	document.getElementById(id).innerHTML = str;\n" +
+    			//"	document.getElementById(id).innerHTML = str;\n" +
+    			"	$(\"#\"+id).append(str).trigger(\"create\");\n" +
     			"	if(clear){\n" +
     			"		$(function(){\n" +
-    			"   		setTimeout(function(){\n" +
+    			"			setTimeout(function(){\n" +
     			"				document.getElementById(id).innerHTML = '';\n" +
-    			"   		},3000);\n" +
+    			"			},3000);\n" +
     			"		});\n" +
     			"	}\n" +
     			"}\n" +
-    			"</script>\n";
+    			"</script>\n" +
+    			"<!-- SSQL get Update Form"+num+" end -->\n";
     	return s;
     }
     private String getSSQLUpdateformHTML(int num, String phpFileName, String title) {
@@ -2809,9 +2814,9 @@ public class Mobile_HTML5Function extends Function {
 				"<br>\n";
 		}
     	s += "<!-- SSQL Update"+num+" start -->\n" +
-    			"\n" +
+    			//"\n" +
     			"<div id=\"SSQL_UpdateForm"+num+"\"></div>\n" +
-    			"\n" +
+    			//"\n" +
     			"<!-- SSQL Update"+num+" JS start -->\n" +
     			"<script type=\"text/javascript\">\n" +
     			"function SSQL_Update"+num+"_vali(id){\n" +
