@@ -188,6 +188,7 @@ public class Import {
 			                	//Log.i(a);
 			                }
 			                
+			                dc = dc0;
 							int l = 0;
 							while(ss.contains(",")){
 								if(l>=a.size()){
