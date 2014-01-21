@@ -2525,7 +2525,7 @@ public class Mobile_HTML5Function extends Function {
 					"	$.ajax({\n" +
 					"		type: \"POST\",\n" +
 					"		url: \""+new File(formPHPfileName).getName()+"\",\n" +
-					getFormFileUploadHTML2() +
+					getFormFileUploadHTML2("#SSQL_INSERT"+insertCount) +
 					"		dataType: \"json\",\n" +
 					"		beforeSend: function(xhr, settings) {\n" +
 					"			$('#SSQL_insert"+insertCount+"').attr('disabled', true);\n" +
@@ -2703,13 +2703,13 @@ public class Mobile_HTML5Function extends Function {
     	return "";
     }
     //getFormFileUploadHTML2
-    private String getFormFileUploadHTML2(){
+    private String getFormFileUploadHTML2(String label){
     	if(formFileUpload){
 			return  "		contentType: false,\n" +
 					"		processData: false,\n" +
-					"		data: new FormData($(\"#SSQL_INSERT"+insertCount+"panel form\")[0]),\n";
+					"		data: new FormData($(\""+label+"panel form\")[0]),\n";
 		}
-		return "		data: $(\"#SSQL_INSERT"+insertCount+"panel form\").serializeArray(),\n";
+		return "		data: $(\""+label+"panel form\").serializeArray(),\n";
     }
     //getFormFileUploadPHP1
     private String getFormFileUploadPHP0(String[] dirS){
@@ -2902,7 +2902,8 @@ public class Mobile_HTML5Function extends Function {
     			"	$.ajax({\n" +
     			"		type: \"POST\",\n" +
     			"		url: \""+new File(phpFileName).getName()+"\",\n" +
-    			"		data: $(\"#\"+id+\"panel form\").serializeArray(),\n" +
+    			//"		data: $(\"#\"+id+\"panel form\").serializeArray(),\n" +
+    			getFormFileUploadHTML2("#\"+id+\"") +
     			"		dataType: \"json\",\n" +
     			"        beforeSend: function(xhr, settings) {\n" +
     			"            $('#'+id).attr('disabled', true);\n" +
