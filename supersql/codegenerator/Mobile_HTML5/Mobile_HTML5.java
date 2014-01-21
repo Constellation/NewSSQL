@@ -854,7 +854,8 @@ public class Mobile_HTML5 {
 	//20131201 form validation
 	public static String checkFormValidationType(String s){
 		String type = "";
-		String types[] = {"tel","url","email","password","alphabet_number","alphabet","number","color","file",
+		String types[] = {"tel","url","email","password","alphabet_number","alphabet","number","color",
+				"file","image","img","audio","video",
 				"date1","date2","date3","date4","date5","date","time"};	//Order is significant!
 		for(int i=0;i<types.length;i++){
 			if(s.contains(types[i])){	//TODO: リファクタリング
@@ -901,7 +902,13 @@ public class Mobile_HTML5 {
 			  s += getFormTag("color", name, placeholder,"Color", notnull, "");
 			  break;
 		  case "file":	//file
-			  s += getFormTag("file", name, placeholder,"Choose file", notnull, "");
+		  case "audio":	//audio
+		  case "video":	//video
+			  s += getFormTag(type, name, placeholder,"Choose file", notnull, "");
+			  break;
+		  case "image":	//image
+		  case "img":	//img
+			  s += getFormTag("image", name, placeholder,"Choose file", notnull, "");
 			  break;
 			  
 		  case "alphabet":	//alphabet (custom type)
@@ -945,7 +952,12 @@ public class Mobile_HTML5 {
 		return s+"></span>\n";
 	}
 	private static String getFormTag(String type, String name, String placeholder, String defaultPlaceholder, Boolean notnull, String customType) {
-		String ret = "    <span><input type=\""+type+"\" id=\""+name+"\" name=\""+name+"\"" +
+		String add = "";
+		if(type.equals("image")||type.equals("audio")||type.equals("video")){
+			add = " accept=\""+type+"/*\"";
+			type = "file";
+		}
+		String ret = "    <span><input type=\""+type+"\""+add+" id=\""+name+"\" name=\""+name+"\"" +
 				" placeholder=\""+((!placeholder.isEmpty())? placeholder : defaultPlaceholder)+"\" " + getFormClass(notnull, customType);
 		if(type.equals("password")){
 			//add confirm password form

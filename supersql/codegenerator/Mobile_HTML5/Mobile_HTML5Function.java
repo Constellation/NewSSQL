@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 
+import com.sun.org.apache.regexp.internal.recompile;
+
 import supersql.codegenerator.CodeGenerator;
 import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.FuncArg;
@@ -1906,6 +1908,7 @@ public class Mobile_HTML5Function extends Function {
     /* Option3: @{reloadafterinsert},@{reloadafterupdate} ->  reload current page after insert */
     static boolean G2_form = false;
     static int G2_form_count = 0;
+    static boolean formFileUpload = false;
     private String Func_insert(boolean update, boolean insert_update) {
     	
     	if(Mobile_HTML5.G2){
@@ -2042,6 +2045,7 @@ public class Mobile_HTML5Function extends Function {
     	boolean[] noinsertFlg = new boolean[col_num];
     	String[] validationType = new String[col_num];
     	boolean[] notnullFlg = new boolean[col_num];
+    	String[] uploadFile = new String[col_num];
     	String notnullFlg_array = "";
     	String[] $session_array = new String[col_num];
     	String[] $time_array = new String[col_num];
@@ -2053,9 +2057,58 @@ public class Mobile_HTML5Function extends Function {
     	int noinsert_count = 0;
     	int a_pop_count = 0;
     	for(int i=0; i<col_num; i++){
+    		
+    		//Log.i(s_array[i]);
+    		//Check: @textarea, @hidden, @noinsert, @notnull, @date, @date1-5, @time	//TODO:リファクタリング
+    		textareaFlg[i] = false;
+    		hiddenFlg[i] = false;
+    		noinsertFlg[i] = false;
+    		validationType[i] = "";
+    		notnullFlg[i] = false;
+    		uploadFile[i] = "";
+    		String str = "";
+    		if(s_array[i].replaceAll(" ","").contains("@{")){
+    			str = s_array[i].substring(s_array[i].lastIndexOf("@")+1);	//@以下の文字列
+    			//Log.e(str);
+	    		if(str.contains("='")){
+	    			//image='', file=''
+	    			String l = str.substring(str.indexOf("='")+2);
+	    			uploadFile[i] = l.substring(0,l.indexOf("'"));
+	    			str = str.substring(0,str.indexOf("='"));
+	    			if(l.contains(";")){
+	    				str += l.substring(l.indexOf(";"));
+	    			}
+	    			formFileUpload = true;
+	    			//Log.e(str+" "+uploadFile[i]);
+	    		}
+	    		if(str.contains("textarea"))
+	    			textareaFlg[i] = true;
+	    		if(str.contains("hidden"))
+	    			hiddenFlg[i] = true;
+	    		if(str.contains("noinsert") || str.contains("noupdate")){
+	    			noinsertFlg[i] = true;
+	    			noinsert_count++;
+	    		}else{
+		    		if(str.contains("notnull")){
+		    			if(i==(col_num-1))	notnullFlg_array += "TRUE";
+		    			else				notnullFlg_array += "TRUE,";
+		    		}else{
+		    			if(i==(col_num-1))	notnullFlg_array += "FALSE";
+		    			else				notnullFlg_array += "FALSE,";
+		    		}
+	    		}
+	    		if(str.contains("notnull"))	notnullFlg[i] = true;
+	    		validationType[i] = Mobile_HTML5.checkFormValidationType(str);	//form validation
+	    		
+	    		s_array[i] = s_array[i].substring(0,s_array[i].indexOf("@"));
+	    		//Log.i(s_array[i]);
+    		}else{
+    			if(i==(col_num-1))	notnullFlg_array += "FALSE";
+    			else				notnullFlg_array += "FALSE,";
+    		}
+    		
     		a = s_array[i].replaceAll(" ","");
     		//Log.i(a);
-    		
     		//$session()あり
     		if(a.contains("=")){
     			String a_right = a.substring(a.indexOf("=")+1).trim();
@@ -2139,42 +2192,6 @@ public class Mobile_HTML5Function extends Function {
     		}else
     			insert_popFlg += "false\""+((i<col_num-1)?(",\""):(""));
     		
-    		//Log.i(s_array[i]);
-    		//Check: @textarea, @hidden, @noinsert, @notnull, @date, @date1-5, @time	//TODO:リファクタリング
-    		textareaFlg[i] = false;
-    		hiddenFlg[i] = false;
-    		noinsertFlg[i] = false;
-    		validationType[i] = "";
-    		notnullFlg[i] = false;
-    		String str = "";
-    		if(s_array[i].replaceAll(" ","").contains("@{")){
-    			str = s_array[i].substring(s_array[i].lastIndexOf("@")+1);	//@以下の文字列
-    			//Log.e(str);
-	    		if(str.contains("textarea"))
-	    			textareaFlg[i] = true;
-	    		if(str.contains("hidden"))
-	    			hiddenFlg[i] = true;
-	    		if(str.contains("noinsert") || str.contains("noupdate")){
-	    			noinsertFlg[i] = true;
-	    			noinsert_count++;
-	    		}else{
-		    		if(str.contains("notnull")){
-		    			if(i==(col_num-1))	notnullFlg_array += "TRUE";
-		    			else				notnullFlg_array += "TRUE,";
-		    		}else{
-		    			if(i==(col_num-1))	notnullFlg_array += "FALSE";
-		    			else				notnullFlg_array += "FALSE,";
-		    		}
-	    		}
-	    		if(str.contains("notnull"))	notnullFlg[i] = true;
-	    		validationType[i] = Mobile_HTML5.checkFormValidationType(str);	//form validation
-	    		
-	    		s_array[i] = s_array[i].substring(0,s_array[i].indexOf("@"));
-	    		//Log.i(s_array[i]);
-    		}else{
-    			if(i==(col_num-1))	notnullFlg_array += "FALSE";
-    			else				notnullFlg_array += "FALSE,";
-    		}
     		
     		if(!noinsertFlg[i]){
     			insert_col += s_array[i] +((i<col_num-1)?(","):(""));
@@ -2275,9 +2292,7 @@ public class Mobile_HTML5Function extends Function {
     				"<hr>\n<div style=\"font-size:30;\" id=\"SSQL_InsertTitle"+insertCount+"\">"+title+"</div>\n<hr>\n" +
     				"<br>\n";
     		}
-    		statement += 
-    				"<form method=\"post\" action=\"\" target=\"dummy_ifr\">\n";
-    				//"<form method=\"post\" action=\"\" target=\"insert"+insertCount+"_ifr\">\n";
+			statement += "<form 1 method=\"post\" action=\"\" target=\"dummy_ifr\""+getFormFileUploadHTML1()+">\n";
     		
     		int insertWordCount = 0;
     		for(int i=0; i<col_num; i++){
@@ -2442,17 +2457,13 @@ public class Mobile_HTML5Function extends Function {
     			if(buttonName.isEmpty()){
 					statement += 
 						"    <input type=\"submit\" value=\""+( (!update)? ("登録"):("更新") )+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\" name=\"SSQL_insert"+insertCount+"\" id=\"SSQL_insert"+insertCount+"\" data-icon=\"insert\" data-mini=\"false\" data-inline=\"false\">\n";
-//						"    <input type=\"submit\" value=\""+( (!update)? ("登録"):("更新") )+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\" name=\"SSQL_insert"+insertCount+"\" id=\"SSQL_insert"+insertCount+"\" data-icon=\"insert\" data-mini=\"false\" data-inline=\"false\" onClick=\"SSQL_Insert"+insertCount+"()\">\n";
     			}else{
 	    			statement += 
 	    				"    <input type=\"submit\" value=\""+buttonName+"\" name=\"SSQL_insert"+insertCount+"\" id=\"SSQL_insert"+insertCount+"\" data-mini=\"false\" data-inline=\"false\">\n";
-//	    				"    <input type=\"submit\" value=\""+buttonName+"\" name=\"SSQL_insert"+insertCount+"\" id=\"SSQL_insert"+insertCount+"\" data-mini=\"false\" data-inline=\"false\" onClick=\"SSQL_Insert"+insertCount+"()\">\n";
     			}
     		}
     		statement += 
-    				//"    <input type=\"submit\" value=\"Insert&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\" name=\"insert"+insertCount+"\" id=\"insert"+insertCount+"\" data-icon=\"insert\" data-mini=\"false\" data-inline=\"false\">\n" +
     				"</form>\n" +
-    				//"<iframe name=\"insert"+insertCount+"_ifr\" style=\"display:none;\"></iframe>\n" +
     				"\n";
     		if(!noresult){
     			statement += 
@@ -2478,8 +2489,6 @@ public class Mobile_HTML5Function extends Function {
 			if(!noreset){
 				statement += 
 						"	if(str.indexOf(\"completed\") !== -1) {\n" +
-						//"		$('#SSQL_insert"+insertCount+"panel input,textarea').not('input[type=\\\"radio\\\"],input[type=\\\"checkbox\\\"],:hidden, :button, :submit,:reset').val('');\n" +
-						//"		$('#SSQL_insert"+insertCount+"panel input[type=\"radio\"], input[type=\\\"checkbox\\\"],select').removeAttr('checked').removeAttr('selected');\n" +
 						"		$(\"#SSQL_insert"+insertCount+"panel form\")[0].reset();\n" +
 						"	}\n";
 			}
@@ -2492,9 +2501,9 @@ public class Mobile_HTML5Function extends Function {
 				//3秒後に結果をクリア
 				statement += 
 		    			"	$(function(){\n" +
-    	    			"   	setTimeout(function(){\n" +
+    	    			"		setTimeout(function(){\n" +
     	    			"			document.getElementById(\"SSQL_Insert"+insertCount+"_result\").innerHTML = '';\n" +
-    	    			"   	},3000);\n" +
+    	    			"		},3000);\n" +
     	    			"	});\n";
 			}
 			statement += 
@@ -2512,27 +2521,18 @@ public class Mobile_HTML5Function extends Function {
 					"	});\n" +
 					"})\n" +
 					"function SSQL_Insert"+insertCount+"(){\n" +
-					"	//ajax: PHPへ値を渡して実行\n" +
+					//"	//ajax: PHPへ値を渡して実行\n" +
 					"	$.ajax({\n" +
 					"		type: \"POST\",\n" +
 					"		url: \""+new File(formPHPfileName).getName()+"\",\n" +
-					"		data: $(\"#SSQL_INSERT"+insertCount+"panel form\").serializeArray(),\n" +
-//					//"		data: {insert1_words1:$('#insert1_words1').val(), insert1_words2:$('#insert1_words2').val()},\n" +
-//					"		data: {";
-//			for(int k=1; k<=insertWordCount; k++){
-//				statement += 
-//						"SSQL_insert"+insertCount+"_words"+k+":$('#SSQL_insert"+insertCount+"_words"+k+"').val()"+( (k<insertWordCount)? ", " : "" );
-////						"insert1_words2:$('#insert1_words2').val()";
-//			}
-//			statement += 
-//					"},\n" +
+					getFormFileUploadHTML2() +
 					"		dataType: \"json\",\n" +
-					"        beforeSend: function(xhr, settings) {\n" +
-					"            $('#SSQL_insert"+insertCount+"').attr('disabled', true);\n" +
-					"        },\n" +
-					"        complete: function(xhr, textStatus) {\n" +
-					"            $('#SSQL_insert"+insertCount+"').attr('disabled', false);\n" +
-					"        },\n" +
+					"		beforeSend: function(xhr, settings) {\n" +
+					"			$('#SSQL_insert"+insertCount+"').attr('disabled', true);\n" +
+					"		},\n" +
+					"		complete: function(xhr, textStatus) {\n" +
+					"			$('#SSQL_insert"+insertCount+"').attr('disabled', false);\n" +
+					"		},\n" +
 					"		success: function(data, textStatus){\n" +
 					"			if (data.result != \"\") {\n" +
 					"				SSQL_Insert"+insertCount+"_echo(data.result);\n" +
@@ -2559,14 +2559,13 @@ public class Mobile_HTML5Function extends Function {
 			}
 			php +=	Mobile_HTML5.getSessionStartString() +
     				"<?php\n" +
-//    				"if($_POST['SSQL_insert"+insertCount+"'] "+buttonSubmit+"){\n" +
-    				//"if($_POST['SSQL_insert"+insertCount+"'] || $_POST['SSQL_insert"+insertCount+"_words"+insertCount+"']){\n" +
     				"    $ret = array();\n" +
     				"    $ret['result'] = \"\";\n" +
     				"    \n" +
     				"    //ユーザ定義\n" +
     				"    $sqlite3_DB = '"+DB+"';\n" +
-    				"    $insert_col = \""+insert_col+"\";\n";
+    				"    $insert_col = \""+insert_col+"\";\n" +
+    				getFormFileUploadPHP0(uploadFile);
 			if(update || (insert_update && !update_where.isEmpty()) ){
 				//form()=insert_update() with where, update()
 				php += "    $update_col_array = array("+update_col_array+");\n" +
@@ -2579,10 +2578,10 @@ public class Mobile_HTML5Function extends Function {
     				"\n" +
     				"	$insert_str = \"notnull\";\n" +
     				"	for($k=1; $k<=$col_num; $k++){\n" +
-    				"    	$var[$k] = checkHTMLsc($_POST['SSQL_insert"+insertCount+"_words'.$k]);\n" +
+    				getFormFileUploadPHP1() +
+    				//"    	$var[$k] = checkHTMLsc($_POST['SSQL_insert"+insertCount+"_words'.$k]);\n" +
     				"    	$var[$k] = str_replace(array(\"\\r\\n\",\"\\r\",\"\\n\"), '<br>', $var[$k]);	//改行コードを<br>へ\n" +
     				//"    	//$var[$k] = mb_convert_encoding($var[$k], 'UTF-8', 'auto');					//エンコードをUTF-8へ PHP環境によってはうまく動かない？\n" +
-    				//"    	$insert_str .= trim($var[$k]);\n" +
     				"    	if($notnullFlg[$k-1]){\n" +
     				"    		if(trim($var[$k]) == \"\")	$insert_str = \"\";\n" +
     				"    	}\n";
@@ -2595,7 +2594,6 @@ public class Mobile_HTML5Function extends Function {
     				"\n" +
     				"	$b = \"\";\n" +
     				"	if($insert_str == \"\"){\n" +
-//    				"        insert"+insertCount+"_p1('<font color=\\\"red\\\">Please check the value.</font>', \"true\");\n" +
     				"        $b = '<font color=\"red\">Please check the value.</font>';\n" +
     				"	}else{\n";
 			if((!update && !insert_update) || update_where.isEmpty()){
@@ -2613,14 +2611,10 @@ public class Mobile_HTML5Function extends Function {
 	    				"        try{\n" +
 	    				"			$result2 = $insert_db"+insertCount+"->exec($insert_sql);\n" +
 	    				"			unset($insert_db"+insertCount+");\n" +
-//	    				"		 	insert"+insertCount+"_p1(\"Registration completed.\", \"false\");\n" +
 	    				"		 	$b = \"Registration completed.\";\n" +
-	    				//"		 	//insert"+insertCount+"_p1($insert_sql, \"true\");\n" +
 	    				"		 	//$b = $insert_sql;\n" +
 	    				"        }catch(Exception $e){\n" +
 	    				"       		unset($insert_db"+insertCount+");\n" +
-//	    				"       		insert"+insertCount+"_p1('<font color=red>Insert failed.</font>', \"true\");	//登録失敗\n" +
-						//"				$b = '<font color=red>No data found.</font>';	//更新データなし\n" +
 	    				"       		$b = '<font color=red>Insert failed.</font>';	//登録失敗\n" +
 	    				"        }\n";
 			}else{
@@ -2647,7 +2641,6 @@ public class Mobile_HTML5Function extends Function {
 						"				$update_sql = \"UPDATE \".$table.\" SET \".$update_str.\" \".$update_where;\n" +
 						"				$result2 = $insert_db1->exec($update_sql);\n" +
 						"				//echo '変更された行の数: ', $db->changes();\n" +
-//						"				insert"+insertCount+"_p1(\"Update completed.\", \"false\");\n" +
 						"				$b = \"Update completed.\";\n" +
 						"			}else{\n" +
 						"				//新規登録(insert)\n" +
@@ -2659,12 +2652,10 @@ public class Mobile_HTML5Function extends Function {
 						"				\n" +
 						"				$insert_sql = \"INSERT INTO \".$table.\" (\".$insert_col.\") VALUES (\".$insert_str.\")\";\n" +
 						"				$result2 = $insert_db1->exec($insert_sql);\n" +
-//							"				insert"+insertCount+"_p1(\"Registration completed.\", \"false\");\n";
 						"				$b = \"Registration completed.\";\n" +
 						"			}\n" +
 						"        }catch(Exception $e){\n" +
 						"       		unset($insert_db1);\n" +
-//						"       		insert"+insertCount+"_p1('<font color=red>Update failed.</font>', \"true\");	//更新失敗\n" +
 						"       		$b = '<font color=red>Update failed.</font>';	//更新失敗\n" +
 						"        }\n" +
 						"        unset($insert_db1);\n";
@@ -2674,11 +2665,8 @@ public class Mobile_HTML5Function extends Function {
     				"	$ret['result'] = $b;\n" +
     				"	header(\"Content-Type: application/json; charset=utf-8\");\n" +
 					"	echo json_encode($ret);\n" +
-//    				"}\n" +
-//    				"function insert"+insertCount+"_p1($str, $error){\n" +
-//    				"    echo '<script type=\"text/javascript\">window.parent.Insert"+insertCount+"_echo(\"'.$str.'\",\"'.$error.'\");</script>';\n" +
-//    				"}\n" +
 					"\n" +
+					getFormFileUploadPHP2() +
 					"//XSS対策\n" +
 					"function checkHTMLsc($str){\n" +
 					"	return htmlspecialchars($str, ENT_QUOTES, 'UTF-8');\n" +
@@ -2690,12 +2678,9 @@ public class Mobile_HTML5Function extends Function {
     	//	;
     	//}
 
-//    	// 各引数毎に処理した結果をHTMLに書きこむ
-//    	html_env.code.append(statement);
     	
     	if(update){
     		String getUpdateFormPJPFileName = html_env.getFileName2()+"_SSQLgetUpdateForm_"+insertCount+".php";
-    		//updateFormJS = getSSQLgetUpdateformJS(insertCount, getUpdateFormPJPFileName);
 	    	String getUpdateFormPHP = getSSQLgetUpdateformPHP("sqlite", insertCount, DB, insert_col, update_where, from, pKey, buttonName, update_statement);
 	    	Mobile_HTML5.createFile(html_env, getUpdateFormPJPFileName, getUpdateFormPHP);//PHPファイルの作成
 	    	
@@ -2705,9 +2690,89 @@ public class Mobile_HTML5Function extends Function {
     	
     	Mobile_HTML5.createFile(html_env, formPHPfileName, php);//PHPファイルの作成
     	insertCount++;
+    	formFileUpload = false;
     	return statement;
     }
     //insert end
+    
+    //getFormFileUploadHTML1
+    private String getFormFileUploadHTML1(){
+    	if(formFileUpload){
+    		return " enctype=\"multipart/form-data\" data-ajax=\"false\"";
+    	}
+    	return "";
+    }
+    //getFormFileUploadHTML2
+    private String getFormFileUploadHTML2(){
+    	if(formFileUpload){
+			return  "		contentType: false,\n" +
+					"		processData: false,\n" +
+					"		data: new FormData($(\"#SSQL_INSERT"+insertCount+"panel form\")[0]),\n";
+		}
+		return "		data: $(\"#SSQL_INSERT"+insertCount+"panel form\").serializeArray(),\n";
+    }
+    //getFormFileUploadPHP1
+    private String getFormFileUploadPHP0(String[] dirS){
+    	if(formFileUpload){
+    		String dir = "";
+    		for(int i=0; i<dirS.length; i++){
+    			if(dirS[i].isEmpty()){
+    				dir += "'',";
+    			}else{
+    				dir += "'"+dirS[i]+"',";
+    			}
+    		}
+    		dir = dir.substring(0,dir.length()-1);
+    		//Log.e(dir);
+    		return "    $fileDir = array("+dir+");\n";
+    	}
+    	return "";
+    }
+    //getFormFileUploadPHP1
+    private String getFormFileUploadPHP1(){
+    	if(formFileUpload){
+    		//return  "		if(!$fileFlg[$k-1]){\n" +
+    		return  "		if(empty($fileDir[$k-1])){\n" +
+    				"			$var[$k] = checkHTMLsc($_POST['SSQL_insert"+insertCount+"_words'.$k]);\n" +
+    				//"	    	$t .= $var[$k];\n" +
+    				"    	}else{\n" +
+    				"    		//file\n" +
+    				"    		$dir = $fileDir[$k-1];\n" +
+    				"    		$file1 = $_FILES['SSQL_insert"+insertCount+"_words'.$k]['tmp_name'];\n" +
+    				"    		$file2 = $_FILES['SSQL_insert"+insertCount+"_words'.$k]['name'];\n" +
+    				"    		$filename = $dir.$file2;\n" +
+    				"    		$var[$k] = fileUpload($dir, $file1, $file2, $filename);\n" +
+    				"    		$var[$k] = checkHTMLsc($var[$k]);\n" +
+    				//"    		$t .= $filename;\n" +
+    				"    	}\n\n";
+    	}
+    	return "		$var[$k] = checkHTMLsc($_POST['SSQL_insert"+insertCount+"_words'.$k]);\n";
+    }
+    //getFormFileUploadPHP2
+    private String getFormFileUploadPHP2(){
+    	if(formFileUpload){
+    		return  "//file upload\n" +
+    				"function fileUpload($dir, $file1, $file2, $filename){\n" +
+    				"  if(is_uploaded_file($file1)){\n" +
+    				//"    //if(exif_imagetype($file1)){   //image file or not\n" +
+    				"	  while(file_exists($filename)){\n" +
+    				"	    //change filename\n" +
+    				"	    $filename = $dir.date('YmdHis').'_'.mt_rand().'_'.$file2;\n" +
+    				"	  }\n" +
+    				"\n" +
+    				//"	  //$filename = mb_convert_encoding($filename, \"UTF-8\", \"AUTO\");	<- サーバでエラーが出る\n" +
+    				"	  if(move_uploaded_file($file1, $filename)){\n" +
+    				"	    chmod($filename, 0644);\n" +
+    				"	    return $filename;\n" +
+    				"	  }\n" +
+    				//"    //}\n" +
+    				"  }\n" +
+    				"  return \"\";\n" +
+					"}\n\n";
+    	}
+    	return "";
+    }
+    
     /* */
     public static String updateFormJS = "";	//not use?
     private String getSSQLgetUpdateformPHP(String dbType, int num, String DB, String insert_col, String update_where, String from, String pKey, String buttonName, String update_statement) {
@@ -2721,7 +2786,7 @@ public class Mobile_HTML5Function extends Function {
 	    			"    \n" +
 	    			"    //ユーザ定義\n" +
 	    			"    $sqlite3_DB = '"+DB+"';\n" +
-	    			"    $insert_col = \""+pKey+","+insert_col+"\";	//New\n" +
+	    			"    $insert_col = \""+pKey+","+insert_col+"\";\n" +
 	    			"    $update_where = \""+update_where+"\";\n" +
 	    			"    $table = '"+from+"';\n" +
 	    			"\n" +
