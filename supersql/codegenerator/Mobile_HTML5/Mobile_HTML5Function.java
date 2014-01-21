@@ -2596,7 +2596,7 @@ public class Mobile_HTML5Function extends Function {
     				"	if($insert_str == \"\"){\n" +
     				"        $b = '<font color=\"red\">Please check the value.</font>';\n" +
     				"	}else{\n";
-			if((!update && !insert_update) || update_where.isEmpty()){
+			if(!update && (insert_update && update_where.isEmpty())){
 				//insert(), form()=insert_update() with no where
 				php +=
 	    				"		$insert_str = \"\";\n" +
