@@ -20,7 +20,9 @@ public class Embed {
 			if(!buf2.contains("$$")){
 				//<$  $>
 				//buf2 = buf2.replace("\"", "\\\"");	//TODO check
-				q = q.substring(0,index1) + "! {\""+buf2+"\"}@{"+EMBED_LABEL+", div}!" + q.substring(index1+index2);
+				String x = q.substring(0,index1);
+				if(!x.trim().endsWith("!"))	x += "!";
+				q = x + " {\""+buf2+"\"}@{"+EMBED_LABEL+", div}!" + q.substring(index1+index2);
 			}else{
 				//<$  $$  $$  $>
 				// <h1> $$'aaa h1'$$ </h1> 
