@@ -11,6 +11,7 @@ import supersql.codegenerator.TFE;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
+import supersql.parser.Embed;
 //added by goto
 
 public class Mobile_HTML5Attribute extends Attribute {
@@ -57,6 +58,8 @@ public class Mobile_HTML5Attribute extends Attribute {
 //				decos.put("width", HTMLEnv.divWidth);
 //	  	}
 //		HTMLEnv.divWidth = "";
+		
+		html_env.code = Embed.preProcess(html_env.code, decos);	//goto 20130915-2  "<$  $>"
 		
 		html_env.append_css_def_td(Mobile_HTML5Env.getClassID(this), this.decos);
 

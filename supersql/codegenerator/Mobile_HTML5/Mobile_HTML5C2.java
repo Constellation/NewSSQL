@@ -6,6 +6,7 @@ import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
+import supersql.parser.Embed;
 
 
 public class Mobile_HTML5C2 extends Connector {
@@ -306,6 +307,8 @@ public class Mobile_HTML5C2 extends Connector {
 //	      	HTMLFunction.textFlg = false;				//20130914  "text"
             
             html_env.code.append("\n");		//20130309
+            
+            html_env.code = Embed.postProcess(html_env.code);	//goto 20130915-2  "<$  $>"
 
             i++;
         }	//	/while
