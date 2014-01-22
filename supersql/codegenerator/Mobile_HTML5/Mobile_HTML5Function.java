@@ -152,8 +152,27 @@ public class Mobile_HTML5Function extends Function {
         	Func_footer();
         }
         //added by goto 20130313  "popup"
-        else if(FuncName.equalsIgnoreCase("pop") || FuncName.equalsIgnoreCase("popup")){
-        	ret = Func_pop();
+        else if(FuncName.equalsIgnoreCase("pop")
+        		|| FuncName.equalsIgnoreCase("pop_anchor")
+        		|| FuncName.equalsIgnoreCase("pop_a")
+        		|| FuncName.equalsIgnoreCase("popup")
+        		|| FuncName.equalsIgnoreCase("popup_anchor")
+        		|| FuncName.equalsIgnoreCase("popup_a")){
+        	ret = Func_pop(1);
+        }
+    	//added by goto 20140120  "popup_button"
+        else if(FuncName.equalsIgnoreCase("pop_button")
+        		|| FuncName.equalsIgnoreCase("pop_bt")
+        		|| FuncName.equalsIgnoreCase("popup_button")
+        		|| FuncName.equalsIgnoreCase("popup_bt")){
+        	ret = Func_pop(2);
+        }
+    	//added by goto 20140120  "popup_image"
+        else if(FuncName.equalsIgnoreCase("pop_image")
+        		|| FuncName.equalsIgnoreCase("pop_img")
+        		|| FuncName.equalsIgnoreCase("popup_image")
+        		|| FuncName.equalsIgnoreCase("popup_img")){
+        	ret = Func_pop(3);
         }
         //added by goto 20130515  "search"
         else if(FuncName.equalsIgnoreCase("search")){
@@ -989,7 +1008,12 @@ public class Mobile_HTML5Function extends Function {
     /*	pop("title","detail/imgURL",int type), popup()	*/
     /*	<type:1> pop("title","detail") <=> pop("title","detail",1)	*/
     /*	<type:2> pop("title","image URL",2)		*/
-    private String Func_pop() {
+    private String Func_pop(int popupType) {	//popupType: 1=anchor, 2=button, 3=image
+    	String btHTML = "";
+    	if(popupType==2){	//popup button
+    		btHTML = " data-role=\"button\" data-icon=\"arrow-r\"";
+    	}
+    	
     	String statement = "";
     	FuncArg fa1 = (FuncArg) this.Args.get(0), fa2, fa3;
     	String title, detailORurl, type;
@@ -1012,26 +1036,26 @@ public class Mobile_HTML5Function extends Function {
         			
         		//type=2 -> imageFile
         		}else if(type.equals("2") || type.equals("image") || type.equals("img")){
-        			statement += "	<a href=\"#popup"+getCount(popCount)+"\" data-rel=\"popup\" data-role=\"button\" data-icon=\"arrow-r\" data-inline=\"true\" class=\"ui-li-inside\">"+( (!title.equals(""))? title : "Photo" )+"</a>\n";
-        	    	//TODO: data-transition  transition()使用可能
-        			statement += "	<div data-role=\"popup\" id=\"popup"+getCount(popCount)+"\" data-transition=\"pop\" style=\"width:95%;\" data-overlay-theme=\"a\">\n";
-        	    	statement += "		<a href=\"#\" data-rel=\"back\" data-role=\"button\" data-theme=\"a\" data-icon=\"delete\" data-iconpos=\"notext\" class=\"ui-btn-right\">Close</a>\n";
-        	    	statement += "		<img src=\""+detailORurl+"\"";
+        			statement += "	<a href=\"#popup"+getCount(popCount)+"\" data-rel=\"popup\""+btHTML+" data-inline=\"true\" class=\"ui-li-inside\">"+getPopupTitle(title, "Photo", popupType)+"</a>\n" +
+        						 //TODO: data-transition  transition()使用可能
+        						 "	<div data-role=\"popup\" id=\"popup"+getCount(popCount)+"\" data-transition=\"pop\" style=\"width:95%;\" data-overlay-theme=\"a\">\n" +
+        						 "		<a href=\"#\" data-rel=\"back\" data-role=\"button\" data-theme=\"a\" data-icon=\"delete\" data-iconpos=\"notext\" class=\"ui-btn-right\">Close</a>\n" +
+        						 "		<img src=\""+detailORurl+"\"";
     		        
-        			//type=2 width,height指定時の処理
-            		if(decos.containsKey("width"))
-            			statement += " width="+decos.getStr("width").replace("\"", "");
-            		else{
-            	        //added by goto 20130312  "Default width: 100%"
-            			statement += " width=\"100%\"";
-            		}
-        			if(decos.containsKey("height"))
-        				statement += " height="+decos.getStr("height").replace("\"", "");
+//        			//type=2 width,height指定時の処理
+//            		if(decos.containsKey("width"))
+//            			statement += " width="+decos.getStr("width").replace("\"", "");
+//            		else{
+//            	        //added by goto 20130312  "Default width: 100%"
+//            			statement += " width=\"100%\"";
+//            		}
+//        			if(decos.containsKey("height"))
+//        				statement += " height="+decos.getStr("height").replace("\"", "");
         			
         			statement += ">\n";
         			
-        			//画像下部にtitleを付加
-        			if(!title.equals(""))	statement += "		<p style=\"margin:0px;\">"+title+"</p>\n";
+        			////画像下部にtitleを付加
+        			//if(!title.equals(""))	statement += "		<p style=\"margin:0px;\">"+title+"</p>\n";
         			
         	    	statement += "	</div>\n";
         		}
@@ -1042,7 +1066,7 @@ public class Mobile_HTML5Function extends Function {
         	
         	//type=1 -> 文字
     		if(type1Flg == 1){
-    			statement += "	<a href=\"#popup"+getCount(popCount)+"\" data-rel=\"popup\" data-role=\"button\" data-icon=\"arrow-r\" data-inline=\"true\">"+( (!title.equals(""))? title : "Open" )+"</a>\n";
+    			statement += "	<a href=\"#popup"+getCount(popCount)+"\" data-rel=\"popup\""+btHTML+" data-inline=\"true\">"+getPopupTitle(title, "Open", popupType)+"</a>\n";
     	    	//TODO: data-transition  transition()使用可能
     			statement += "	<div data-role=\"popup\" id=\"popup"+getCount(popCount)+"\" data-transition=\"slideup\" style=\"width:95%;\" data-overlay-theme=\"a\">\n";
     	    	statement += "		<a href=\"#\" data-rel=\"back\" data-role=\"button\" data-theme=\"a\" data-icon=\"delete\" data-iconpos=\"notext\" class=\"ui-btn-right\">Close</a>\n";
@@ -1051,13 +1075,25 @@ public class Mobile_HTML5Function extends Function {
     		}
 
     	}catch(Exception e){	//引数1つの場合
-    		Log.info("<Warning> pop関数の引数が不足しています。 ex. pop(title, Detail/URL, typeValue)");
+    		Log.info("<Warning> pop関数の引数が不足しています。 ex. pop(title, Detail/URL[, typeValue])");
     		return "";
     	}
     	
     	popCount++;
     	return statement;
     }
+    private String getPopupTitle(String title, String defaultTitle, int popupType) {
+    	title = (!title.equals(""))? title : defaultTitle ;
+    	if(popupType==3){	//popup image
+			//title = "<img src=\""+title+"\" alt=\""+title+"\">";
+			title = "<img src=\""+title+"\"";
+    		if(decos.containsKey("width"))	title += " width="+decos.getStr("width").replace("\"", "");
+    		else			    			title += " width=\"100%\"";
+			if(decos.containsKey("height"))	title += " height="+decos.getStr("height").replace("\"", "");
+			title += ">";
+		}
+		return title;
+	}
     //added by goto 20130313 end
     
     //added by goto 20130515 start  "search"
