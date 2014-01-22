@@ -1129,6 +1129,7 @@ public class Mobile_HTML5 {
 			
 			//TODO div, table以外の場合
 //			dynamicString = "'"+dynamicString2+"</div>'";
+			int numberOfColumns = 1;
 			String php_str1 = "", php_str2 = "", php_str3 = "", php_str4 = "";
 			if(!symbol.contains("G1") && !symbol.contains("G2")){
 				if(decos.containsKey("table")){
@@ -1162,11 +1163,11 @@ public class Mobile_HTML5 {
 
 				//decos contains Key("column")
 				if(decos.containsKey("column")){
-					int numberOfColumns = 0;
 					try{
 						numberOfColumns = Integer.parseInt(decos.getStr("column"));
 					}catch(Exception e){}
 					if(numberOfColumns<2){
+						numberOfColumns = 1;
 	            		Log.err("<<Warning>> column指定の範囲は、2〜です。指定された「column="+numberOfColumns+"」は使用できません。");
 					}else{
 						if(decos.containsKey("table") || decos.containsKey("table0")){
@@ -1453,7 +1454,8 @@ public class Mobile_HTML5 {
 	    			php += 
 							"if ($_POST['currentPage'] != \"\") {\n" +
 							"	$cp = $_POST['currentPage'];\n" +
-							"	$r = $_POST['row'];\n" +
+							"	$col = "+numberOfColumns+";\n" +
+							"	$r = $_POST['row'] * $col;\n" +
 							"	$end = $cp * $r;\n" +
 							"	$start = $end - $r + 1;\n" +
 							"\n";
@@ -1547,8 +1549,8 @@ public class Mobile_HTML5 {
 							"        while($row = $result->fetchArray()){\n" +
 							"              $i++;\n" +
 							//"              $k=0;\n" +
-							php_str2 +
 							((dynamicRowFlg)? "              if($i>=$start && $i<=$end){	//New\n":"") +
+							php_str2 +
 							"              for($j=0; $j<$dynamic_col_num; $j++){\n" +
 							//"                    dynamic"+dynamicCount+"_p2($row[$j], $j+1);     //tdに結果を埋め込む\n" +
 //							"					if($dynamic_a_Flg[$j]=='true' || $dynamic_mail_Flg[$j]=='true' || $dynamic_pop_Flg[$j]=='true')	;\n" +
@@ -1567,8 +1569,8 @@ public class Mobile_HTML5 {
 							"              		//$b .= $row[$j];\n" +
 							"              		$b .= str_replace("+dynamicFuncCountLabel+", '_'.$i, $row[$j]);\n" +	//For function's count
 							"              }\n" +
-							((dynamicRowFlg)? "              }\n":"") +
 							php_str3 +
+							((dynamicRowFlg)? "              }\n":"") +
 							"        }\n" +
 							php_str4 +
 //							"		 if($i>0)	echo \"<script type=\\\"text/javascript\\\">window.parent.$('#Dynamic"+dynamicCount+"_text_th').show();</script>\";    //カラム名を表示\n" +
