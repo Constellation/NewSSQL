@@ -13,6 +13,7 @@ import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
+import supersql.parser.Embed;
 
 public class Mobile_HTML5G2 extends Grouper {
 
@@ -379,6 +380,8 @@ public class Mobile_HTML5G2 extends Grouper {
 //    	      		HTMLFunction.text = "";
 //    	      		HTMLFunction.textFlg = false;
 //    	      	}
+
+                html_env.code = Embed.postProcess(html_env.code);	//goto 20130915-2  "<$  $>"
                 
                 //20130312 collapsible
     	      	if(decos.containsKey("collapse"))

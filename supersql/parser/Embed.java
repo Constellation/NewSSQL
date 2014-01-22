@@ -21,7 +21,9 @@ public class Embed {
 				//<$  $>
 				//buf2 = buf2.replace("\"", "\\\"");	//TODO check
 				String x = q.substring(0,index1);
-				if(!x.trim().endsWith("!"))	x += "!";
+				if(!x.trim().endsWith("!") && !x.trim().endsWith("[") && !x.trim().endsWith("{")){
+					x += "!";
+				}
 				q = x + " {\""+buf2+"\"}@{"+EMBED_LABEL+", div}!" + q.substring(index1+index2);
 			}else{
 				//<$  $$  $$  $>
@@ -57,7 +59,8 @@ public class Embed {
 					}
 				}
 				buf2 = c;
-				q = q.substring(0,index1) + " {'"+buf2+"'}@{"+EMBED_LABEL+", div}!" + q.substring(index1+index2);
+				//q = q.substring(0,index1) + " {'"+buf2+"'}@{"+EMBED_LABEL+", div}!" + q.substring(index1+index2);
+				q = q.substring(0,index1) + " {'"+buf2+"'}!" + q.substring(index1+index2);
 			}
 			//Log.e(buf2);
 		}
@@ -69,7 +72,7 @@ public class Embed {
 	public static StringBuffer preProcess(StringBuffer code, DecorateList decos) {
 		if(isEmbed(decos)){
 			//Log.e(decos);
-			code = code.delete(code.lastIndexOf("<"), code.lastIndexOf(">")+1);	//TODO
+			code = code.delete(code.lastIndexOf("<"), code.lastIndexOf(">")+1);	//TODO case @table
 			embed = true;
 			return code;
 		}
@@ -78,7 +81,7 @@ public class Embed {
 	
 	public static StringBuffer postProcess(StringBuffer code) {
 		if(embed){
-			code = code.delete(code.lastIndexOf("<"), code.lastIndexOf(">")+1);	//TODO
+			code = code.delete(code.lastIndexOf("<"), code.lastIndexOf(">")+1);	//TODO case @table
 			embed = false;
 			return code;
 		}
