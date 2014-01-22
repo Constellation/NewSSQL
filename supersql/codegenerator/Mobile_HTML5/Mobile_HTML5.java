@@ -1129,9 +1129,10 @@ public class Mobile_HTML5 {
 			
 			//TODO div, table以外の場合
 //			dynamicString = "'"+dynamicString2+"</div>'";
+			String php_str1 = "", php_str2 = "", php_str3 = "", php_str4 = "";
 			if(!symbol.contains("G1") && !symbol.contains("G2")){
 				if(decos.containsKey("table")){
-					dynamicString = "'<table border=1><tr>"+dynamicString+"</tr></table>'";
+					dynamicString = "'<table border=\"1\"><tr>"+dynamicString+"</tr></table>'";
 				}else if(decos.containsKey("table0")){
 					dynamicString = "'<table><tr>"+dynamicString+"</tr></table>'";
 	//				String close = "";
@@ -1147,7 +1148,49 @@ public class Mobile_HTML5 {
 			}else{
 				//G1, G2
 				dynamicString = "'"+dynamicString+"'";
+				
+				//table
+				if(decos.containsKey("table") || decos.containsKey("table0")){
+					int border = 1;
+					if(decos.containsKey("table0"))	border = 0;
+					//table
+					php_str1 = "        $b .= '<table border=\""+border+"\">';\n";
+					php_str2 = "              $b .= '<tr><td>';\n";
+					php_str3 = "              $b .= '</td></tr>';\n";
+					php_str4 = "        $b .= '</table>';\n";
+				}
+
+				//decos contains Key("column")
+				if(decos.containsKey("column")){
+					int numberOfColumns = 0;
+					try{
+						numberOfColumns = Integer.parseInt(decos.getStr("column"));
+					}catch(Exception e){}
+					if(numberOfColumns<2){
+	            		Log.err("<<Warning>> column指定の範囲は、2〜です。指定された「column="+numberOfColumns+"」は使用できません。");
+					}else{
+						if(decos.containsKey("table") || decos.containsKey("table0")){
+							//table
+							int border = 1;
+							if(decos.containsKey("table0"))	border = 0;
+							php_str1 = "        $b .= '<table border=\""+border+"\"><tr>';\n";
+							php_str2 = "              $b .= '<td>';\n";
+							php_str3 = "              $b .= '</td>';\n" +
+									   "              if($i%"+numberOfColumns+"==0) $b .= '</tr><tr>';\n";
+							php_str4 = "        $b .= '</tr></table>';\n";
+						}else{
+							//div
+							php_str1 = "        $b .= '<div Class=\"ui-grid\">';\n";
+							php_str2 = "              $clear = '';\n" +
+								       "              if($i%"+numberOfColumns+"==1) $clear = ' clear:left;';\n" +
+									   "              $b .= '<div class=\"ui-block\" style=\"width:"+(1.0/numberOfColumns*100.0)+"%;'.$clear.'\">';\n";
+							php_str3 = "              $b .= '</div>';\n";
+							php_str4 = "        $b .= '</div>';\n";
+						}
+					}
+				}
 			}
+			
 			
 			dynamicString = dynamicString.replaceAll("\r\n", "").replaceAll("\r", "").replaceAll("\n", "");	//改行コードの削除
 //			if(!dynamicRowFlg)	dynamicString = dynamicString.replaceAll("\"", "\\\\\\\\\\\\\"");			//　" -> \\\"			//TODO これでOK?
@@ -1500,9 +1543,11 @@ public class Mobile_HTML5 {
 							"        $i = 0;\n" +
 							"        $pop_num = 0;\n" +
 							"        $b = \"\";\n" +
+							php_str1 +
 							"        while($row = $result->fetchArray()){\n" +
 							"              $i++;\n" +
 							//"              $k=0;\n" +
+							php_str2 +
 							((dynamicRowFlg)? "              if($i>=$start && $i<=$end){	//New\n":"") +
 							"              for($j=0; $j<$dynamic_col_num; $j++){\n" +
 							//"                    dynamic"+dynamicCount+"_p2($row[$j], $j+1);     //tdに結果を埋め込む\n" +
@@ -1523,7 +1568,9 @@ public class Mobile_HTML5 {
 							"              		$b .= str_replace("+dynamicFuncCountLabel+", '_'.$i, $row[$j]);\n" +	//For function's count
 							"              }\n" +
 							((dynamicRowFlg)? "              }\n":"") +
+							php_str3 +
 							"        }\n" +
+							php_str4 +
 //							"		 if($i>0)	echo \"<script type=\\\"text/javascript\\\">window.parent.$('#Dynamic"+dynamicCount+"_text_th').show();</script>\";    //カラム名を表示\n" +
 							//"        dynamic"+dynamicCount+"_p1($i.' result'.(($i != 1)?('s'):('')));    //件数表示\n" +
 							//"        dynamic"+dynamicCount+"_p1('"+dynamicString+"');    //件数表示\n" +
