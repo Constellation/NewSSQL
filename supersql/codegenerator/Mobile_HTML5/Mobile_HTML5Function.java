@@ -627,11 +627,11 @@ public class Mobile_HTML5Function extends Function {
 
     		statement += "</div>\n<div class=\"ui-block-c\">\n";
     		statement += "<table><tr><td>" +
-    				"<script type=\"text/javascript\" src=\"https://apis.google.com/js/plusone.js\">" +
-    				"  {lang: 'ja'}" +
-    				"</script>" +
-    				"<g:plusone size=\"medium\"></g:plusone>" +
-    				"</td></tr></table>\n";
+	    				"<script type=\"text/javascript\" src=\"https://apis.google.com/js/plusone.js\">" +
+	    				"  {lang: \"ja\"}" +
+	    				"</script>" +
+	    				"<g:plusone size=\"medium\"></g:plusone>" +
+	    				"</td></tr></table>\n";
     		statement += "</div>\n</DIV>\n";
     	}else if(button_media.equals("logout") || key.contains("logout")){		//ex. button("logout") || logout()
     		//added by goto 20130508  "Login&Logout"
