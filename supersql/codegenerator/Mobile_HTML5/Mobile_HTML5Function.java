@@ -1070,7 +1070,7 @@ public class Mobile_HTML5Function extends Function {
     	    	//TODO: data-transition  transition()使用可能
     			statement += "	<div data-role=\"popup\" id=\"popup"+getCount(popCount)+"\" data-transition=\"slideup\" style=\"width:95%;\" data-overlay-theme=\"a\">\n";
     	    	statement += "		<a href=\"#\" data-rel=\"back\" data-role=\"button\" data-theme=\"a\" data-icon=\"delete\" data-iconpos=\"notext\" class=\"ui-btn-right\">Close</a>\n";
-    	    	statement += "		<p>"+detailORurl+"</p>\n";
+    	    	statement += "		<p><div width=200>"+detailORurl+"</div></p>\n";
     	    	statement += "	</div>\n";
     		}
 
@@ -1087,13 +1087,21 @@ public class Mobile_HTML5Function extends Function {
     	if(popupType==3){	//popup image
 			//title = "<img src=\""+title+"\" alt=\""+title+"\">";
 			title = "<img src=\""+title+"\"";
-    		if(decos.containsKey("width"))	title += " width="+decos.getStr("width").replace("\"", "");
-    		else			    			title += " width=\"100%\"";
-			if(decos.containsKey("height"))	title += " height="+decos.getStr("height").replace("\"", "");
+			title += getWidthHeight();
+//    		if(decos.containsKey("width"))	title += " width="+decos.getStr("width").replace("\"", "");
+//    		else			    			title += " width=\"100%\"";
+//			if(decos.containsKey("height"))	title += " height="+decos.getStr("height").replace("\"", "");
 			title += ">";
 		}
 		return title;
 	}
+    private String getWidthHeight() {
+    	String s = "";
+    	if(decos.containsKey("width"))	s += " width="+decos.getStr("width").replace("\"", "");
+		else			    			s += " width=\"100%\"";
+    	if(decos.containsKey("height"))	s += " height="+decos.getStr("height").replace("\"", "");
+    	return s;
+    }
     //added by goto 20130313 end
     
     //added by goto 20130515 start  "search"
@@ -3332,7 +3340,7 @@ public class Mobile_HTML5Function extends Function {
 				//"    $(\"#map-wrapper"+getCount(mapFuncCount)+"\").append('<div id=\"map"+getCount(mapFuncCount)+"\" style=\"width: 100%; height: 250px;\"></div>'); // 地図を作成\n" +
 				"    $(\"#map-wrapper"+getCount(mapFuncCount)+"\").append(\"<div id=\\\\\"map"+getCount(mapFuncCount)+"\\\\\"" +
 //				" style=\"width: 100%; height: "+( (!decos.containsKey("height"))? ("250px"):(decos.getStr("height")) )+";\"></div>'); // 地図を作成\n" +
-				" style=\\\\\"width: 100%; height: "+( (!decos.containsKey("height"))? ("250px"):(decos.getStr("height")) )+";\\\\\"></div>\");\n" +
+				" style=\\\\\"width: 95%; height: "+( (!decos.containsKey("height"))? ("250px"):(decos.getStr("height")) )+";\\\\\"></div>\");\n" +
 				"      \n";
     	if(!searchFlg)	statement += "    var sad = \""+geolocation+"\";\n";
     	else			statement += "    var sad = $(\"#search_map_words"+getCount(mapFuncCount)+"\").val();\n";
@@ -3361,7 +3369,7 @@ public class Mobile_HTML5Function extends Function {
 				//"		// -->\n" +
 				"		</script>\n" +
 				"		\n" +
-				"		<div id=\"map-wrapper"+getCount(mapFuncCount)+"\"></div>";
+				"		<div id=\"map-wrapper"+getCount(mapFuncCount)+"\" style=\"width:260;\"></div>";
     	
     			mapFuncCount++;
 
