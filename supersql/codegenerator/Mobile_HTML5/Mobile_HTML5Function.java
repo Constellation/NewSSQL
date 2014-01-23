@@ -2328,7 +2328,7 @@ public class Mobile_HTML5Function extends Function {
     				"<hr>\n<div style=\"font-size:30;\" id=\"SSQL_InsertTitle"+insertCount+"\">"+title+"</div>\n<hr>\n" +
     				"<br>\n";
     		}
-			statement += "<form 1 method=\"post\" action=\"\" target=\"dummy_ifr\""+getFormFileUploadHTML1()+">\n";
+			statement += "<form method=\"post\" action=\"\" target=\"dummy_ifr\""+getFormFileUploadHTML1()+">\n";
     		
     		int insertWordCount = 0;
     		for(int i=0; i<col_num; i++){
@@ -2439,13 +2439,16 @@ public class Mobile_HTML5Function extends Function {
 					//else if(!$gps_array[i].equals(""))	echo += "	echo \"<script> getGPSinfo(); </script>\";\n";
 					//else if(!$gps_array[i].equals(""))	echo += "	echo\"<script> getGPSinfo(); </script>\";\n";
 					else if(!$gps_array[i].equals("")){
+						Mobile_HTML5Env.addJsCss("jscss/googleMap.js");
 						echo += "	echo \"位置情報(緯度・経度)\";\n";
 						gps_js +=
 								"\n<!-- getGPSinfo() -->\n" +
-								"<script src=\"http://maps.google.com/maps/api/js?sensor=false&libraries=geometry\"></script>\n" +
+//								"<script src=\"http://maps.google.com/maps/api/js?sensor=false&libraries=geometry\"></script>\n" +
+								//"<script src=\"jscss/googleMap.js\"></script>\n" +
 								"<script type=\"text/javascript\">\n" +
 								"<!--\n" +
-								"$(document).on(\"pageinit\", \"#p-top1\", function(e) {\n" +
+								//"$(document).on(\"pageinit\", \"#p-top1\", function(e) {\n" +	//←　$(function(){の方が良いかも
+								"$(function(){\n" +
 								"  	// Geolocation APIのオプション設定\n" +
 								"  	var geolocationOptions = {\n" +
 								"    	\"enableHighAccuracy\" : true, // 高精度位置情報の取得\n" +
@@ -3303,6 +3306,8 @@ public class Mobile_HTML5Function extends Function {
     		}
     	}
     	
+    	Mobile_HTML5Env.addJsCss("jscss/googleMap.js");
+    	
     	if(searchFlg){
 	    	statement += 
 	    			"		<form method=\"post\" action=\"\" target=\"dummy_ifr\">\n" +
@@ -3311,40 +3316,49 @@ public class Mobile_HTML5Function extends Function {
 					"		</form>\n";
     	}
     	statement += 
-    			"		<script src=\"http://maps.google.com/maps/api/js?sensor=false&libraries=geometry\"></script>\n" +
-				"		<script type=\"text/javascript\">\n" +
-				"		<!--\n";
-    	if(!searchFlg)	statement += "$(document).on(\"pageinit\", \"#p-top1\", function(e) {\n";
+    			//"		<script src=\"http://maps.google.com/maps/api/js?sensor=false&libraries=geometry\"></script>\n" +
+				//"		<script src=\"jscss/googleMap.js\"></script>\n" +
+				"		<script type=\"text/javascript\">\n";
+				//"		<!--\n";
+    	//if(!searchFlg)	statement += "$(document).on(\"pageinit\", \"#p-top1\", function(e) {\n";	//←　dynamic時に動かないため、$(function(){へ変更
+    	if(!searchFlg)	statement += "$(function(){\n";
+
     	else			statement += "$(\"#search_map"+getCount(mapFuncCount)+"\").click(function () {\n";
     	statement += 
-				"  	var map = null; // Google Map\n" +
-				"    $(\"#map"+getCount(mapFuncCount)+"\").remove();	// 地図をクリア\n" +
+//				"  	var map = null; // Google Map\n" +
+				"  	var map = null;\n" +
+				//"    $(\"#map"+getCount(mapFuncCount)+"\").remove();	// 地図をクリア\n" +
+				"    $(\"#map"+getCount(mapFuncCount)+"\").remove();\n" +
 				//"    $(\"#map-wrapper"+getCount(mapFuncCount)+"\").append('<div id=\"map"+getCount(mapFuncCount)+"\" style=\"width: 100%; height: 250px;\"></div>'); // 地図を作成\n" +
-				"    $(\"#map-wrapper"+getCount(mapFuncCount)+"\").append('<div id=\"map"+getCount(mapFuncCount)+"\"" +
-						" style=\"width: 100%; height: "+( (!decos.containsKey("height"))? ("250px"):(decos.getStr("height")) )+";\"></div>'); // 地図を作成\n" +
+				"    $(\"#map-wrapper"+getCount(mapFuncCount)+"\").append(\"<div id=\\\\\"map"+getCount(mapFuncCount)+"\\\\\"" +
+//				" style=\"width: 100%; height: "+( (!decos.containsKey("height"))? ("250px"):(decos.getStr("height")) )+";\"></div>'); // 地図を作成\n" +
+				" style=\\\\\"width: 100%; height: "+( (!decos.containsKey("height"))? ("250px"):(decos.getStr("height")) )+";\\\\\"></div>\");\n" +
 				"      \n";
     	if(!searchFlg)	statement += "    var sad = \""+geolocation+"\";\n";
     	else			statement += "    var sad = $(\"#search_map_words"+getCount(mapFuncCount)+"\").val();\n";
 		statement += 
 				"    var geocoder = new google.maps.Geocoder();\n" +
-				"    geocoder.geocode({'address': sad}, function(results, status) {\n" +
+				"    geocoder.geocode({\"address\": sad}, function(results, status) {\n" +
 				"      if (status == google.maps.GeocoderStatus.OK) {\n" +
 				"	      var mapOptions = {\n" +
 				//"	        zoom: 17, // ズーム倍率\n" +
-				"        	zoom: " + ((zoom.equals(""))? ("17"):(zoom)  ) + ", // ズーム倍率\n" +
+				//"        	zoom: " + ((zoom.equals(""))? ("17"):(zoom)  ) + ", // ズーム倍率\n" +
+				"        	zoom: " + ((zoom.equals(""))? ("17"):(zoom)  ) + ",\n" +
 				"	        center: results[0].geometry.location,\n" +
-				"	        mapTypeId: google.maps.MapTypeId.ROADMAP // 地図の種類(市街地図)\n" +
+				//"	        mapTypeId: google.maps.MapTypeId.ROADMAP // 地図の種類(市街地図)\n" +
+				"	        mapTypeId: google.maps.MapTypeId.ROADMAP\n" +
 				"	      };\n" +
 				"	      map = new google.maps.Map(document.getElementById(\"map"+getCount(mapFuncCount)+"\"),mapOptions);\n" +
-				"      	  new google.maps.Marker({map : map, position : results[0].geometry.location" + ((icon.equals(""))? (""):(", icon : '"+icon+"'")  ) + "}); //\n" +
+//				"      	  new google.maps.Marker({map : map, position : results[0].geometry.location" + ((icon.equals(""))? (""):(", icon : '"+icon+"'")  ) + "}); //\n" +
+				"      	  new google.maps.Marker({map : map, position : results[0].geometry.location" + ((icon.equals(""))? (""):(", icon : \""+icon+"\"")  ) + "});\n" +
 				//"	      new google.maps.Marker({map : map, position : results[0].geometry.location});\n" +
 				"      } else {\n" +
 				//"      	  alert('場所を特定できませんでした。入力内容をご確認ください。');\n" +
-				"      	  $(\"#map"+getCount(mapFuncCount)+"\").text('場所を特定できませんでした。');\n" +
+				"      	  $(\"#map"+getCount(mapFuncCount)+"\").text(\"場所を特定できませんでした。\");\n" +
 				"      }\n" +
 				"    });\n" +
 				"});\n" +
-				"		// -->\n" +
+				//"		// -->\n" +
 				"		</script>\n" +
 				"		\n" +
 				"		<div id=\"map-wrapper"+getCount(mapFuncCount)+"\"></div>";
@@ -3388,7 +3402,7 @@ public class Mobile_HTML5Function extends Function {
     //map end
     
     //added by goto 20130717  "gps,gps_map"
-    /*  gps(type,icon) or gps_map(type,icon)  */
+    /*  gps(type[,icon]) or gps_map(type[,icon])  */
     /*  type:1 map  */
     /*  type:2 map + button */
     private String Func_gps() {
@@ -3405,12 +3419,16 @@ public class Mobile_HTML5Function extends Function {
 				}catch(Exception e){ }
 			}catch(Exception e){ }
 		}catch(Exception e){ }
+		
+		Mobile_HTML5Env.addJsCss("jscss/googleMap.js");
 
 		statement += 
-				"		<script src=\"http://maps.google.com/maps/api/js?sensor=false&libraries=geometry\"></script>\n" +
+				//"		<script src=\"http://maps.google.com/maps/api/js?sensor=false&libraries=geometry\"></script>\n" +
+				//"		<script src=\"jscss/googleMap.js\"></script>\n" +
 				"		<script type=\"text/javascript\">\n" +
 				"		<!--\n" +
-				"$(document).on(\"pageinit\", \"#p-top1\", function(e) {\n" +
+				//"$(document).on(\"pageinit\", \"#p-top1\", function(e) {\n" +	//←　$(function(){の方が良いかも
+				"$(function(){\n" +
 				"  // Geolocation APIのオプション設定\n" +
 				"  var geolocationOptions = {\n" +
 				"    \"enableHighAccuracy\" : true, // 高精度位置情報の取得\n" +
@@ -3485,11 +3503,14 @@ public class Mobile_HTML5Function extends Function {
 //		try{
 //			format = ((FuncArg) this.Args.get(0)).getStr();
 //		}catch(Exception e){ }
+    	Mobile_HTML5Env.addJsCss("jscss/googleMap.js");
     	statement += 
-    			"		<script src=\"http://maps.google.com/maps/api/js?sensor=false&libraries=geometry\"></script>\n" +
+    			//"		<script src=\"http://maps.google.com/maps/api/js?sensor=false&libraries=geometry\"></script>\n" +
+				//"		<script src=\"jscss/googleMap.js\"></script>\n" +
 				"		<script type=\"text/javascript\">\n" +
 				"		<!--\n" +
-				"$(document).on(\"pageinit\", \"#p-top1\", function(e) {\n" +
+				//"$(document).on(\"pageinit\", \"#p-top1\", function(e) {\n" +	//←　$(function(){の方が良いかも
+				"$(function(){\n" +
 				"  	// Geolocation APIのオプション設定\n" +
 				"  	var geolocationOptions = {\n" +
 				"    	\"enableHighAccuracy\" : true, // 高精度位置情報の取得\n" +
@@ -3505,7 +3526,7 @@ public class Mobile_HTML5Function extends Function {
 				"    }, geolocationOptions);\n" +
 				"});\n" +
 				"		// -->\n" +
-				"		</script>" +
+				"		</script>\n" +
 				"		<ul data-role=\"listview\" data-inset=\"true\">\n" +
 				"			<li>緯度:&nbsp;<span id=\"gps_latitude\"></span></li>\n" +
 				"			<li>経度:&nbsp;<span id=\"gps_longitude\"></span></li>\n" +

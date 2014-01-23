@@ -596,7 +596,8 @@ public class Mobile_HTML5 {
 									"<script src=\"http://maps.google.com/maps/api/js?sensor=false&libraries=geometry\"></script>\n" +
 									"<script type=\"text/javascript\">\n" +
 									"<!--\n" +
-									"$(document).on(\"pageinit\", \"#p-top1\", function(e) {\n" +
+									//"$(document).on(\"pageinit\", \"#p-top1\", function(e) {\n" +
+									"$(function(){\n" +
 									"  	// Geolocation APIのオプション設定\n" +
 									"  	var geolocationOptions = {\n" +
 									"    	\"enableHighAccuracy\" : true, // 高精度位置情報の取得\n" +

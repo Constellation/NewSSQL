@@ -97,6 +97,7 @@ public class Mobile_HTML5Env extends LocalEnv {
     StringBuffer div = new StringBuffer();
     //StringBuffer title = new StringBuffer();		//disuse
     StringBuffer titleclass = new StringBuffer();
+    public static String jscss = new String();		//js and css file names that using in the Mobile_HTML5
     StringBuffer cssfile = new StringBuffer();
 	StringBuffer jsFile = new StringBuffer();		//added by goto 20130703
 	StringBuffer cssjsFile = new StringBuffer();	//added by goto 20130703
@@ -687,7 +688,8 @@ public class Mobile_HTML5Env extends LocalEnv {
           	}//通常のみの処理（jsファイル作成）end
         	
           	header.append("\n");
-	        header.append(cssjsFile);	//added by goto 20130703
+	        header.append(jscss);
+          	header.append(cssjsFile);	//added by goto 20130703
 	        header.append(cssfile);
 			header.append(jsFile);		//added by goto 20130703
 	        header.append("</HEAD>\n");
@@ -2353,6 +2355,13 @@ public class Mobile_HTML5Env extends LocalEnv {
 	}
 
 
+	//add js or css file names that using in the Mobile_HTML5 to the header
+	public static void addJsCss(String filename){
+		if(!jscss.contains(filename)){
+    		jscss += "<script src=\""+filename+"\"></script>\n";
+    	}
+	}
+	
 
 	//global form number : 1,2,3...
 	static int form_number = 1;
