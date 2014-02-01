@@ -1004,10 +1004,86 @@ public class Mobile_HTML5Function extends Function {
     //added by goto 20130313 end
     
     
+//    //added by goto 20130313 start  "popup"
+//    /*	pop("title","detail/imgURL",int type), popup()	*/
+//    /*	<type:1> pop("title","detail") <=> pop("title","detail",1)	*/
+//    /*	<type:2> pop("title","image URL",2)		*/
+//    private String Func_pop(int popupType) {	//popupType: 1=anchor, 2=button, 3=image
+//    	String btHTML = "";
+//    	if(popupType==2){	//popup button
+//    		btHTML = " data-role=\"button\" data-icon=\"arrow-r\"";
+//    	}
+//    	
+//    	String statement = "";
+//    	FuncArg fa1 = (FuncArg) this.Args.get(0), fa2, fa3;
+//    	String title, detailORurl, type;
+//    	int type1Flg = 0; //type1(文字)フラグ
+//    	
+////    	Log.info("popCount = "+popCount);
+//    	try{					//引数2つ or 3つの場合
+//    		fa2 = (FuncArg) this.Args.get(1);
+//    		detailORurl = fa2.getStr();
+//    		if(detailORurl.equals(""))	return "";		//added 20130910
+//    		title = fa1.getStr();
+//    		
+//    		try{						//引数3つの場合
+//    			fa3 = (FuncArg) this.Args.get(2);
+//    			type = fa3.getStr();
+//    			
+//    			//type=1 -> 文字
+//    			if(type.equals("1") || type.equals("text") || type.equals("")){
+//    				type1Flg = 1;
+//    				
+//    				//type=2 -> imageFile
+//    			}else if(type.equals("2") || type.equals("image") || type.equals("img")){
+//    				statement += "	<a href=\"#popup"+getCount(popCount)+"\" data-rel=\"popup\""+btHTML+" data-inline=\"true\" class=\"ui-li-inside\">"+getPopupTitle(title, "Photo", popupType)+"</a>\n" +
+//    						//TODO: data-transition  transition()使用可能
+//    						"	<div data-role=\"popup\" id=\"popup"+getCount(popCount)+"\" data-transition=\"pop\" style=\"width:95%;\" data-overlay-theme=\"a\">\n" +
+//    						"		<a href=\"#\" data-rel=\"back\" data-role=\"button\" data-theme=\"a\" data-icon=\"delete\" data-iconpos=\"notext\" class=\"ui-btn-right\">Close</a>\n" +
+//    						"		<img src=\""+detailORurl+"\"";
+//    				
+////        			//type=2 width,height指定時の処理
+////            		if(decos.containsKey("width"))
+////            			statement += " width="+decos.getStr("width").replace("\"", "");
+////            		else{
+////            	        //added by goto 20130312  "Default width: 100%"
+////            			statement += " width=\"100%\"";
+////            		}
+////        			if(decos.containsKey("height"))
+////        				statement += " height="+decos.getStr("height").replace("\"", "");
+//    				
+//    				statement += ">\n";
+//    				
+//    				////画像下部にtitleを付加
+//    				//if(!title.equals(""))	statement += "		<p style=\"margin:0px;\">"+title+"</p>\n";
+//    				
+//    				statement += "	</div>\n";
+//    			}
+//    			
+//    		}catch(Exception e){		//引数2つの場合
+//    			type1Flg = 1;	//type=1 -> 文字
+//    		}
+//    		
+//    		//type=1 -> 文字
+//    		if(type1Flg == 1){
+//    			statement += "	<a href=\"#popup"+getCount(popCount)+"\" data-rel=\"popup\""+btHTML+" data-inline=\"true\">"+getPopupTitle(title, "Open", popupType)+"</a>\n";
+//    			//TODO: data-transition  transition()使用可能
+//    			statement += "	<div data-role=\"popup\" id=\"popup"+getCount(popCount)+"\" data-transition=\"slideup\" style=\"width:95%;\" data-overlay-theme=\"a\">\n";
+//    			statement += "		<a href=\"#\" data-rel=\"back\" data-role=\"button\" data-theme=\"a\" data-icon=\"delete\" data-iconpos=\"notext\" class=\"ui-btn-right\">Close</a>\n";
+//    			statement += "		<p>"+detailORurl+"</p>\n";
+//    			statement += "	</div>\n";
+//    		}
+//    		
+//    	}catch(Exception e){	//引数1つの場合
+//    		Log.info("<Warning> pop関数の引数が不足しています。 ex. pop(title, Detail/URL[, typeValue])");
+//    		return "";
+//    	}
+//    	
+//    	popCount++;
+//    	return statement;
+//    }
     //added by goto 20130313 start  "popup"
-    /*	pop("title","detail/imgURL",int type), popup()	*/
-    /*	<type:1> pop("title","detail") <=> pop("title","detail",1)	*/
-    /*	<type:2> pop("title","image URL",2)		*/
+    /*	popup("title", "Detail / Image URL")	*/
     private String Func_pop(int popupType) {	//popupType: 1=anchor, 2=button, 3=image
     	String btHTML = "";
     	if(popupType==2){	//popup button
@@ -1015,33 +1091,33 @@ public class Mobile_HTML5Function extends Function {
     	}
     	
     	String statement = "";
-    	FuncArg fa1 = (FuncArg) this.Args.get(0), fa2, fa3;
-    	String title, detailORurl, type;
-    	int type1Flg = 0; //type1(文字)フラグ
-    	
-//    	Log.info("popCount = "+popCount);
-    	try{					//引数2つ or 3つの場合
-    		fa2 = (FuncArg) this.Args.get(1);
-    		detailORurl = fa2.getStr();
-    		if(detailORurl.equals(""))	return "";		//added 20130910
-    		title = fa1.getStr();
-        	
-        	try{						//引数3つの場合
-        		fa3 = (FuncArg) this.Args.get(2);
-        		type = fa3.getStr();
-        		
-        		//type=1 -> 文字
-        		if(type.equals("1") || type.equals("text") || type.equals("")){
-        			type1Flg = 1;
-        			
-        		//type=2 -> imageFile
-        		}else if(type.equals("2") || type.equals("image") || type.equals("img")){
-        			statement += "	<a href=\"#popup"+getCount(popCount)+"\" data-rel=\"popup\""+btHTML+" data-inline=\"true\" class=\"ui-li-inside\">"+getPopupTitle(title, "Photo", popupType)+"</a>\n" +
-        						 //TODO: data-transition  transition()使用可能
-        						 "	<div data-role=\"popup\" id=\"popup"+getCount(popCount)+"\" data-transition=\"pop\" style=\"width:95%;\" data-overlay-theme=\"a\">\n" +
-        						 "		<a href=\"#\" data-rel=\"back\" data-role=\"button\" data-theme=\"a\" data-icon=\"delete\" data-iconpos=\"notext\" class=\"ui-btn-right\">Close</a>\n" +
-        						 "		<img src=\""+detailORurl+"\"";
-    		        
+    	String title = getValue(1);
+		String detailORurl = getValue(2);
+		if(detailORurl.equals("")){
+			if(title.isEmpty()){
+				Log.info("<Warning> popup関数の引数が不足しています。 ex. popup(title, Detail/URL)");
+				return "";
+			}else{
+				detailORurl = title;
+			}
+		}
+
+		if(!isImage(detailORurl)){
+			//string
+			statement += "	<a href=\"#popup"+getCount(popCount)+"\" data-rel=\"popup\""+btHTML+" data-inline=\"true\">"+getPopupTitle(title, "Open", popupType)+"</a>\n" +
+						 //TODO: data-transition  transition()使用可能
+						 "	<div data-role=\"popup\" id=\"popup"+getCount(popCount)+"\" data-transition=\"slideup\" style=\"width:95%;\" data-overlay-theme=\"a\">\n" +
+				    	 "		<a href=\"#\" data-rel=\"back\" data-role=\"button\" data-theme=\"a\" data-icon=\"delete\" data-iconpos=\"notext\" class=\"ui-btn-right\">Close</a>\n" +
+				    	 "		<p>"+detailORurl+"</p>\n" +
+				    	 "	</div>\n";
+
+		}else{
+			//imageFile
+			statement += "	<a href=\"#popup"+getCount(popCount)+"\" data-rel=\"popup\""+btHTML+" data-inline=\"true\" class=\"ui-li-inside\">"+getPopupTitle(title, "Photo", popupType)+"</a>\n" +
+						 //TODO: data-transition  transition()使用可能
+						 "	<div data-role=\"popup\" id=\"popup"+getCount(popCount)+"\" data-transition=\"pop\" style=\"width:95%;\" data-overlay-theme=\"a\">\n" +
+						 "		<a href=\"#\" data-rel=\"back\" data-role=\"button\" data-theme=\"a\" data-icon=\"delete\" data-iconpos=\"notext\" class=\"ui-btn-right\">Close</a>\n" +
+						 "		<img src=\""+detailORurl+"\"";
 //        			//type=2 width,height指定時の処理
 //            		if(decos.containsKey("width"))
 //            			statement += " width="+decos.getStr("width").replace("\"", "");
@@ -1051,38 +1127,16 @@ public class Mobile_HTML5Function extends Function {
 //            		}
 //        			if(decos.containsKey("height"))
 //        				statement += " height="+decos.getStr("height").replace("\"", "");
-        			
-        			statement += ">\n";
-        			
-        			////画像下部にtitleを付加
-        			//if(!title.equals(""))	statement += "		<p style=\"margin:0px;\">"+title+"</p>\n";
-        			
-        	    	statement += "	</div>\n";
-        		}
+			statement += ">\n";
+			////画像下部にtitleを付加
+			//if(!title.equals(""))	statement += "		<p style=\"margin:0px;\">"+title+"</p>\n";
+	    	statement += "	</div>\n";
+		}
 
-        	}catch(Exception e){		//引数2つの場合
-        		type1Flg = 1;	//type=1 -> 文字
-        	}
-        	
-        	//type=1 -> 文字
-    		if(type1Flg == 1){
-    			statement += "	<a href=\"#popup"+getCount(popCount)+"\" data-rel=\"popup\""+btHTML+" data-inline=\"true\">"+getPopupTitle(title, "Open", popupType)+"</a>\n";
-    	    	//TODO: data-transition  transition()使用可能
-    			statement += "	<div data-role=\"popup\" id=\"popup"+getCount(popCount)+"\" data-transition=\"slideup\" style=\"width:95%;\" data-overlay-theme=\"a\">\n";
-    	    	statement += "		<a href=\"#\" data-rel=\"back\" data-role=\"button\" data-theme=\"a\" data-icon=\"delete\" data-iconpos=\"notext\" class=\"ui-btn-right\">Close</a>\n";
-    	    	statement += "		<p>"+detailORurl+"</p>\n";
-    	    	statement += "	</div>\n";
-    		}
-
-    	}catch(Exception e){	//引数1つの場合
-    		Log.info("<Warning> pop関数の引数が不足しています。 ex. pop(title, Detail/URL[, typeValue])");
-    		return "";
-    	}
-    	
     	popCount++;
     	return statement;
     }
-    private String getPopupTitle(String title, String defaultTitle, int popupType) {
+	private String getPopupTitle(String title, String defaultTitle, int popupType) {
     	title = (!title.equals(""))? title : defaultTitle ;
     	if(popupType==3){	//popup image
 			//title = "<img src=\""+title+"\" alt=\""+title+"\">";
@@ -4788,6 +4842,18 @@ public class Mobile_HTML5Function extends Function {
 			return Integer.MIN_VALUE;
 		}
     }
+    
+    private boolean isImage(String detailORurl) {
+    	detailORurl = detailORurl.toLowerCase().trim();
+    	if(detailORurl.endsWith(".gif")
+    	|| detailORurl.endsWith(".jpg")
+    	|| detailORurl.endsWith(".jpeg")
+    	|| detailORurl.endsWith(".png")
+    	|| detailORurl.endsWith(".tif")
+    	|| detailORurl.endsWith(".tiff")
+    	)	return true;
+		return false;
+	}
     
     //20131118 dynamic
     private String getCount(int count){
