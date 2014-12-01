@@ -1,8 +1,7 @@
 *.DS_Store
 */*.DS_Store
-
+bin/
 *.db
-
 .project
 .settings/org.eclipse.core.resources.prefs
 .settings/org.eclipse.jdt.core.prefs
