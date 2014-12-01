@@ -10,6 +10,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.Vector;
 
+import supersql.codegenerator.CopyJscss;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
@@ -180,6 +181,7 @@ public class Mobile_HTML5Manager extends Manager{
 	        }
 
             Mobile_HTML5Env.initAllFormFlg();
+            CopyJscss.copyJSCSS_to_outputDir();	//goto 20141201
         } catch (FileNotFoundException fe) {
         	fe.printStackTrace();
         	System.err.println("Error: specified outdirectory \""

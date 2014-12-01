@@ -3,6 +3,7 @@ package supersql.parser;
 import java.util.StringTokenizer;
 
 import supersql.common.GlobalEnv;
+import supersql.common.Log;
 import supersql.extendclass.ExtList;
 
 public class TFEtokenizer {
@@ -26,7 +27,7 @@ public class TFEtokenizer {
                 buffer = this.next(buffer);
             }
         } catch (IllegalStateException e) {
-            System.err.println("Error[TFEtokenizer]: Syntax Error in TFE");
+        	Log.err("Error[TFEtokenizer]: Syntax Error in TFE");
             //tk////////////////////////////////////////////////////
             GlobalEnv.addErr("Error[TFEparser]: Syntax Error in TFE");
  //           return ;
@@ -64,12 +65,22 @@ public class TFEtokenizer {
 
     public String nextToken() {
         if (ind < st_list.size()) {
-            return (String) (st_list.get(ind++));
+        	String ret = (String) (st_list.get(ind++));
+        	TFEmatcher.tokenCounter(ret, ind);	//halken TFEmatcher
+            return ret;
         } else {
             ind++;
             return "";
         }
     }
+//    public String nextToken() {
+//    	if (ind < st_list.size()) {
+//    		return (String) (st_list.get(ind++));
+//    	} else {
+//    		ind++;
+//    		return "";
+//    	}
+//    }
 
     public String lookToken() {
         if (ind < st_list.size()) {
@@ -139,7 +150,7 @@ public class TFEtokenizer {
             
             ret_token = ret_token + ch;
         }
-        System.err.println("*** No corresponding quote \"'\" Found ***");
+        Log.err("*** No corresponding quote \"'\" Found ***");
         throw (new IllegalStateException());
     }
 
@@ -160,7 +171,7 @@ public class TFEtokenizer {
                 ret_token = ret_token + ch + st.nextToken();
             ret_token = ret_token + ch;
         }
-        System.err.println("*** No corresponding quote '\"' Found ***");
+        Log.err("*** No corresponding quote '\"' Found ***");
         throw (new IllegalStateException());
     }
 

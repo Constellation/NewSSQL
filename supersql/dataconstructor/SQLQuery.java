@@ -55,9 +55,9 @@ public class SQLQuery extends ArrayList {
         
         //System.out.println(where);
 		//by goto
-		System.out.println("where:"+where);
-		System.out.println("atts:"+atts);
-		System.out.println("tbls:"+tbls);
+//		System.out.println("where:"+where);
+//		System.out.println("atts:"+atts);
+//		System.out.println("tbls:"+tbls);
 		//if(atts!="")	atts = atts.substring(2).trim();
 		atts = atts.substring(2).trim();
 		tbls = tbls.substring(2).trim();

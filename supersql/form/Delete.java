@@ -21,7 +21,7 @@ public class Delete extends HttpServlet {
 	public void doPost(HttpServletRequest req, HttpServletResponse res)
 			throws ServletException, IOException {
 
-		// ContentType‚ğİ’è
+		// ContentTypeï¿½ï¿½İ’ï¿½
 		res.setContentType("text/html; charset=Shift_JIS");
 		req.setCharacterEncoding("Shift-JIS");
 
@@ -85,7 +85,7 @@ public class Delete extends HttpServlet {
 
 			return;
 		} catch (Exception e) {
-			System.err.println("sqlerr" + e);
+			Log.err("sqlerr" + e);
 		}
 	}
 }

@@ -75,6 +75,8 @@ public class Import {
 			in.close();
 		} catch (FileNotFoundException e) {
 			Log.err("Error[SSQLparser]: Import File(" + file	+ ") Is Not Found.");
+			// 20140624_masato
+//			GlobalEnv.errorText += "Error[SSQLparser]: Import File(" + file	+ ") Is Not Found.";
 			GlobalEnv.addErr("Error[SSQLparser]: Impoert File(" + file + ") Is Not Found." + e);
 		} catch (IOException e) {
 			GlobalEnv.addErr("Error[SSQLparser]:" + e);
@@ -196,6 +198,10 @@ public class Import {
 									Log.err("[Parser:Import] Argument Error in "+dn0+"() : wrong number of arguments (more than "+l+" for "+a.size()+")");
 									Log.err("\n### "+dn0+"() is ###");
 									Log.err("#define "+dn0.substring(1)+a.toString().replace("[","(").replace("]",") {")+"\n"+dc0+"\n}\n");
+									// 20140624_masato
+//									GlobalEnv.errorText += "[Parser:Import] Argument Error in "+dn0+"() : wrong number of arguments (more than "+l+" for "+a.size()+")";
+//									GlobalEnv.errorText += "\n### "+dn0+"() is ###";
+//									GlobalEnv.errorText += "#define "+dn0.substring(1)+a.toString().replace("[","(").replace("]",") {")+"\n"+dc0+"\n}\n";
 									break;
 								}
 								rp2.add(l, ss.substring(0,ss.indexOf(",")).trim());
@@ -215,6 +221,10 @@ public class Import {
 								Log.err("[Parser:Import] Argument Error in "+dn0+"() : wrong number of arguments ("+l+" for "+a.size()+")");
 								Log.err("\n### "+dn0+"() is ###");
 								Log.err("#define "+dn0.substring(1)+a.toString().replace("[","(").replace("]",") {")+"\n"+dc0+"\n}\n");
+								// 20140624_masato
+//								GlobalEnv.errorText += "[Parser:Import] Argument Error in "+dn0+"() : wrong number of arguments ("+l+" for "+a.size()+")";
+//								GlobalEnv.errorText += "\n### "+dn0+"() is ###";
+//								GlobalEnv.errorText += "#define "+dn0.substring(1)+a.toString().replace("[","(").replace("]",") {")+"\n"+dc0+"\n}\n";
 								s = s1+s2;
 							}
 						}

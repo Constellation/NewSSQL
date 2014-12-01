@@ -2,152 +2,73 @@ package supersql.codegenerator.HTML;
 
 import java.io.File;
 
-import org.jsoup.nodes.Element;
-import org.jsoup.parser.Tag;
-
 import supersql.codegenerator.Attribute;
 import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
+import supersql.common.Log;
 import supersql.extendclass.ExtList;
+
+//added by goto
 
 public class HTMLAttribute extends Attribute {
 
-	protected String[] formSql = { "", "delete", "update", "insert", "login",
+	private String[] formHtml = { "", "submit", "select", "checkbox", "radio",
+			"text", "textarea", "hidden" };
+	private String[] formSql = { "", "delete", "update", "insert", "login",
 			"logout" };
-	protected String[] formHtml = { "", "submit", "select", "checkbox",
-			"radio", "text", "textarea", "hidden" };
-	protected int whichForm;
 
-	/** @deprecated use HTMLAttribute() instead **/
+	private HTMLEnv htmlEnv;
+	private HTMLEnv htmlEnv2;
+	private int whichForm;
+
+	// ���󥹥ȥ饯��
 	public HTMLAttribute(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
 		super();
+		this.htmlEnv = henv;
+		this.htmlEnv2 = henv2;
 	}
-	
-	public HTMLAttribute(){
-		super();
-	}
-	public HTMLAttribute(boolean b){
-		super(b);
-	}
-	
-	/** @deprecated use HTMLC2() instead **/
+
 	public HTMLAttribute(Manager manager, HTMLEnv henv, HTMLEnv henv2, boolean b) {
 		super(b);
+		this.htmlEnv = henv;
+		this.htmlEnv2 = henv2;
 	}
 
-	public Element createTableNode(ExtList data_info){
-		Element result = new Element(Tag.valueOf("td"), "");
-		//***APPEND DATABASE VALUE***//
-		String elementText = this.getStr(data_info);
-		elementText = elementText.replace(" ", "&#160;");
-		result.html(elementText);
-		return result;
-	}
-	
-	@Override
-	public Element createNode(ExtList data_info) {
-		Element result = new Element(Tag.valueOf("span"), "");
-		result.addClass("box");
-		
-		if (!(HTMLEnv.getFormItemFlg() && HTMLEnv.getFormItemName().equals(
-				formHtml[2]))) {
-			result.addClass("att");
-			result.addClass(HTMLEnv.getClassID(this));
-			if (decos.getConditions().size() > 0) {
-				result.addClass(computeStringForDecoration(data_info));
-			}
-		}
-		if(decos.containsKey("logout"))
-			return createLogoutForm(result, data_info);
-		if(decos.containsKey("input")){
-			if(decos.containsKey("pwd"))
-				return JsoupFactory.createInput("password", decos.getStr("attributeName"), "");
-			return JsoupFactory.createInput("text", decos.getStr("attributeName"), "");
-		}
-		Element div = new Element(Tag.valueOf("div"), "");
-		Element a = new Element(Tag.valueOf("a"), "");
-
-		if (HTMLEnv.linkFlag > 0) {
-
-			// tk start for draggable div///////////////////////////////////////
-			if (HTMLEnv.draggable) {
-				div.addClass("draggable").attr("id", HTMLEnv.dragDivId);
+	private <T> String computeStringForDecoration(ExtList<T> data_info) {
+		String classNames = "";
+		for (int i = 1; i < this.AttNames.size(); i++) {
+			if (((data_info.get(i))).toString().equals("t")) {
+				if (decos.getClassesIds().get(AttNames.get(i)) != null)
+					classNames += " C_"
+							+ decos.getClassesIds().get(AttNames.get(i));
 			} else {
-				// tk end for draggable
-				// div/////////////////////////////////////////
-				if (HTMLEnv.isPanel)
-					div.attr("id", "container");
-
-				String fileDir = new File(HTMLEnv.linkUrl).getAbsoluteFile()
-						.getParent();
-				if (fileDir.length() < HTMLEnv.linkUrl.length()
-						&& fileDir.equals(HTMLEnv.linkUrl.substring(0,
-								fileDir.length()))) {
-					String relative_path = HTMLEnv.linkUrl.substring(fileDir
-							.length() + 1);
-					a = new Element(Tag.valueOf("a"), "").attr("href",
-							relative_path);
-				} else
-					a = new Element(Tag.valueOf("a"), "").attr("href",
-							HTMLEnv.linkUrl);
-			}
-
-			if (GlobalEnv.isAjax() && HTMLEnv.isPanel) {
-				a.attr("onClick", "return panel('Panel','" + HTMLEnv.ajaxQuery
-						+ "'," + "'" + HTMLEnv.dragDivId + "','"
-						+ HTMLEnv.ajaxCond + "')");
-			} else if (GlobalEnv.isAjax() && !HTMLEnv.draggable) {
-				String target = GlobalEnv.getAjaxTarget();
-				if (target == null) {
-					String query = HTMLEnv.ajaxQuery;
-					if (query.indexOf(".sql")>0) {
-						if (query.contains("/")) {
-							target = query.substring(query.lastIndexOf("/") + 1,
-									query.indexOf(".sql"));
-						} else{
-							target = query.substring(0, query.indexOf(".sql"));
-						}
-		        	} else if (query.indexOf(".ssql")>0) {
-		        		if (query.contains("/")) {
-							target = query.substring(query.lastIndexOf("/") + 1,
-									query.indexOf(".ssql"));
-						} else{
-							target = query.substring(0, query.indexOf(".ssql"));
-						}
-		        	}
-
-					if (HTMLEnv.hasDispDiv) {
-						target = HTMLEnv.ajaxtarget;
-					}
-				}
-				a.attr("onClick", "return loadFile('" + HTMLEnv.ajaxQuery
-						+ "','" + target + "','" + HTMLEnv.ajaxCond + "',"
-						+ HTMLEnv.inEffect + "," + HTMLEnv.outEffect + ")");
+				if (decos.getClassesIds().get("!" + AttNames.get(i)) != null)
+					classNames += " C_"
+							+ decos.getClassesIds().get("!" + AttNames.get(i));
 			}
 		}
-
-		// ***APPEND DATABASE VALUE***//
-		String elementText = this.getStr(data_info);
-		elementText = elementText.replace(" ", "&#160;");
-		result.html(elementText);
-
-		if (HTMLEnv.linkFlag > 0) {
-			if (HTMLEnv.draggable)
-				result.appendChild(div);
-			else {
-				a.html(this.getStr(data_info));
-				a.addClass("box");
-				if (HTMLEnv.isPanel)
-					a.appendChild(div);
-				return a;
-			}
-		}
-		decos.remove("attributeName");
-		HTMLUtils.processDecos(result, decos);
-		return result;
+		return classNames;
 	}
 
-	protected void createForm(ExtList data_info) {
+	private String cond() {
+		String ret = "";
+		if (HTMLEnv.formPartsNumber != HTMLEnv.searchId) {
+			HTMLEnv.searchId = HTMLEnv.formPartsNumber;
+			if (!HTMLEnv.condName.isEmpty() && !HTMLEnv.cond.isEmpty()) {
+				ret += "<input type=\"hidden\" name=\"cond_name"
+						+ HTMLEnv.formPartsNumber + "\" value=\""
+						+ HTMLEnv.condName + "\" />";
+				ret += "<input type=\"hidden\" name=\"cond"
+						+ HTMLEnv.formPartsNumber + "\" value=\""
+						+ HTMLEnv.cond + "\" />";
+				ret += "<input type=\"hidden\" name=\"value_type"
+						+ HTMLEnv.formPartsNumber + "\" value=\"String\" />";
+			}
+		}
+		return ret;
+	}
+
+	private void createForm(ExtList data_info) {
 
 		String name = new String();
 		String inputFormString = new String();
@@ -217,60 +138,14 @@ public class HTMLAttribute extends Attribute {
 					inputFormString += "<input type=\"hidden\" name=\"" + name
 							+ ":pwd\" value=\"md5\" />";
 				}
-			}
-			if (decos.containsKey("img")) {
-				inputFormString += "<input type=\"file\" name=\"" + name
-						+ "\" value=\"" + s + "\" >";
+
 			} else {
-				// ishizaki start (html5)
 				if (s.isEmpty()) {
-					// inputFormString += "<input type=\"text\" name=\"" + name
-					// + "\" />";
-					if (decos.containsKey("type")) {
-						if (decos.getStr("type").equals("tel"))
-							inputFormString += "<input type=\"tel\" name=\""
-									+ name
-									+ "\" pattern=\"\\d{2,4}-\\d{2,4}-\\d{4}\"/>";
-						if (decos.getStr("type").equals("mail"))
-							inputFormString += "<input type=\"email\" name=\""
-									+ name
-									+ "\" pattern=\"[\\w\\.\\-]+@(?:[\\w\\-]+\\.)+[\\w\\-]+\"/>";
-						if (decos.getStr("type").equals("age"))
-							inputFormString += "<input type=\"text\" name=\""
-									+ name + "\" pattern=\"\\d{1,3}\" >";
-						if (decos.getStr("type").equals("url"))
-							inputFormString += "<input type=\"url\" name=\""
-									+ name + "\" >";
-					} else
-						inputFormString += "<input type=\"text\" name=\""
-								+ name + "\" />";
+					inputFormString += "<input type=\"text\" name=\"" + name
+							+ "\" />";
 				} else {
-					// inputFormString += "<input type=\"text\" name=\"" + name
-					// + "\" value=\"" + s + "\" />";
-					if (decos.containsKey("type")) {
-						if (decos.getStr("type").equals("tel")) {
-							inputFormString += "<input type=\"tel\" name=\""
-									+ name
-									+ "\" pattern=\"\\d{2,4}-\\d{2,4}-\\d{4}\"/ value=\""
-									+ s + "\">";
-						} else if (decos.getStr("type").equals("mail")) {
-							inputFormString += "<input type=\"email\" name=\""
-									+ name
-									+ "\" pattern=\"[\\w\\.\\-]+@(?:[\\w\\-]+\\.)+[\\w\\-]+\"/ value=\""
-									+ s + "\">";
-						} else if (decos.getStr("type").equals("age")) {
-							inputFormString += "<input type=\"text\" name=\""
-									+ name + "\" pattern=\"\\d{1,3}\" value=\""
-									+ s + "\">";
-						} else if (decos.getStr("type").equals("url")) {
-							inputFormString += "<input type=\"url\" name=\""
-									+ name + "\" value=\"" + s + "\">";
-						} else
-							inputFormString += "<input type=\"text\" name=\""
-									+ name + "\" value=\"" + s + "\"/>";
-					} else
-						inputFormString += "<input type=\"text\" name=\""
-								+ name + "\" value=\"" + s + "\"/>";
+					inputFormString += "<input type=\"text\" name=\"" + name
+							+ "\" value=\"" + s + "\" />";
 				}
 			}
 
@@ -305,7 +180,23 @@ public class HTMLAttribute extends Attribute {
 					constraint += ",unique";
 			}
 
+			if (constraint != null && !constraint.isEmpty())
+				inputFormString += "<input type=\"hidden\" name=\"" + name
+						+ ":const\" value=\"" + constraint + "\" />";
+
+			Log.out("pppppp" + decos.containsKey("pkey"));
+			if (decos.containsKey("pkey") && whichForm == 2) {// update
+				if (!htmlEnv.code.toString().contains(
+						"<input type=\"hidden\" name=\"pkey\" value=\"" + name
+								+ "\" />"))
+					inputFormString += "<input type=\"hidden\" name=\"pkey\" value=\""
+							+ name + "\" />";
+			}
 		}
+
+		htmlEnv.code.append(inputFormString);
+		htmlEnv2.code.append(inputFormString);
+		Log.out(inputFormString);
 
 		inputFormString = new String();
 
@@ -357,9 +248,20 @@ public class HTMLAttribute extends Attribute {
 			}
 		}
 
+		htmlEnv.code.append(inputFormString);
+		htmlEnv2.code.append(inputFormString);
+		Log.out(inputFormString);
+
 	}
 
-	protected String inputFormItems(ExtList data_info, String itemType,
+	/*
+	 * private String closeFormItems(String itemType){ String ret = new
+	 * String(); tuple_count = 0; if(itemType.equals("select")){
+	 * HTMLEnv.setSelectRepeat(false); ret = "</select>"; }
+	 * HTMLEnv.incrementFormName(); return ret; }
+	 */
+
+	private String inputFormItems(ExtList data_info, String itemType,
 			String real_value) {
 		String ret = "";
 		String formname = HTMLEnv.getFormPartsName();
@@ -492,44 +394,284 @@ public class HTMLAttribute extends Attribute {
 		return ret;
 	}
 
-	protected String cond() {
-		String ret = "";
-		if (HTMLEnv.formPartsNumber != HTMLEnv.searchId) {
-			HTMLEnv.searchId = HTMLEnv.formPartsNumber;
-			if (!HTMLEnv.condName.isEmpty() && !HTMLEnv.cond.isEmpty()) {
-				ret += "<input type=\"hidden\" name=\"cond_name"
-						+ HTMLEnv.formPartsNumber + "\" value=\""
-						+ HTMLEnv.condName + "\" />";
-				ret += "<input type=\"hidden\" name=\"cond"
-						+ HTMLEnv.formPartsNumber + "\" value=\""
-						+ HTMLEnv.cond + "\" />";
-				ret += "<input type=\"hidden\" name=\"value_type"
-						+ HTMLEnv.formPartsNumber + "\" value=\"String\" />";
+	// Attribute��work�᥽�å�
+	@Override
+	public String work(ExtList data_info) {
+		/*
+		 * if(GlobalEnv.getSelectFlg()) data_info = (ExtList) data_info.get(0);
+		 */
+		htmlEnv.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
+
+		if (GlobalEnv.isOpt()) {
+			work_opt(data_info);
+		} else {
+			if (HTMLEnv.getFormItemFlg()
+					&& HTMLEnv.getFormItemName().equals(formHtml[2])) {
+
+			} else {
+				htmlEnv.code.append("<table" + htmlEnv.getOutlineModeAtt()
+						+ " ");
+				htmlEnv.code.append("class=\"att");
+				// tk
+				// start/////////////////////////////////////////////////////////
+				if (htmlEnv.writtenClassId.contains(HTMLEnv.getClassID(this))) {
+					// class���äƤ���Ȥ�ex.TFE10000)�Τ߻���
+					htmlEnv.code.append(" " + HTMLEnv.getClassID(this));
+				}
+				if (decos.containsKey("class")) {
+					// class����(ex.class=menu)������Ȥ�
+					htmlEnv.code.append(" " + decos.getStr("class"));// added by masato 20140711　属性が一つのときにclassを指定しても機能しなかった問題を解決
+				}
+				if (decos.getConditions().size() > 0) {
+					htmlEnv.code.append(" "
+							+ computeStringForDecoration(data_info));
+				}
+				htmlEnv.code.append("\"");
+				htmlEnv.code.append(">");
 			}
+
+			if (HTMLEnv.getFormItemFlg()) {
+
+			} else {
+				htmlEnv.code.append("<tr><td>\n");
+				Log.out("<table class=\"att\"><tr><td>");
+			}
+
+			if (htmlEnv.linkFlag > 0 || htmlEnv.sinvokeFlag) {
+
+				// tk start for draggable
+				// div///////////////////////////////////////
+				if (htmlEnv.draggable) {
+					htmlEnv.code.append("<div id=\"" + htmlEnv.dragDivId
+							+ "\" class=\"draggable\"");
+					Log.out("<div id=\"" + htmlEnv.dragDivId + "\" ");
+				} else {
+					// tk end for draggable
+					// div/////////////////////////////////////////
+					if (htmlEnv.isPanel)
+						htmlEnv.code.append("<div id=\"container\">");
+
+					// added by goto 20120614 start
+					// [%Ϣ���
+					// ������2�Ĥ����꤬���ä����ᡢhref�λ�������Хѥ���������Хѥ������פ��ѹ�
+					// 1.���Хѥ�����Firefox�Ǥϥ����
+					// ������ʤ�
+					// 2.ITC�μ½��Ķ��Ǥϥ����
+					// ������ʤ�
+					String fileDir = new File(htmlEnv.linkUrl)
+							.getAbsoluteFile().getParent();
+					if (fileDir.length() < htmlEnv.linkUrl.length()
+							&& fileDir.equals(htmlEnv.linkUrl.substring(0,
+									fileDir.length()))) {
+						String relative_path = htmlEnv.linkUrl
+								.substring(fileDir.length() + 1);
+						htmlEnv.code.append("<A href=\"" + relative_path
+								+ "\" ");
+					} else
+						htmlEnv.code.append("<A href=\"" + htmlEnv.linkUrl
+								+ "\" ");
+
+					// html_env.code.append("<A href=\"" + html_env.linkurl +
+					// "\" ");
+					// added by goto 20120614 end
+
+				}
+				// tk
+				// start//////////////////////////////////////////////////////////
+				if (decos.containsKey("target")) {
+					htmlEnv.code.append(" target=\"" + decos.getStr("target")
+							+ "\"");
+				}
+				if (decos.containsKey("class")) {
+					htmlEnv.code.append(" class=\"" + decos.getStr("class")
+							+ "\"");
+				}
+
+				if (GlobalEnv.isAjax() && htmlEnv.isPanel) {
+					htmlEnv.code.append(" onClick =\"return panel('Panel','"
+							+ htmlEnv.ajaxQuery + "'," + "'"
+							+ htmlEnv.dragDivId + "','" + htmlEnv.ajaxCond
+							+ "')\"");
+				} else if (GlobalEnv.isAjax() && !htmlEnv.draggable) {
+					String target = GlobalEnv.getAjaxTarget();
+					if (target == null) {
+						String query = htmlEnv.ajaxQuery;
+						if (query.indexOf(".sql")>0) {
+							if (query.contains("/")) {
+								target = query.substring(query.lastIndexOf("/") + 1,
+										query.indexOf(".sql"));
+							} else{
+								target = query.substring(0, query.indexOf(".sql"));
+							}
+			        	} else if (query.indexOf(".ssql")>0) {
+			        		if (query.contains("/")) {
+								target = query.substring(query.lastIndexOf("/") + 1,
+										query.indexOf(".ssql"));
+							} else{
+								target = query.substring(0, query.indexOf(".ssql"));
+							}
+			        	}
+
+						if (htmlEnv.hasDispDiv) {
+							target = htmlEnv.ajaxtarget;
+						}
+						Log.out("a target:" + target);
+					}
+					htmlEnv.code.append(" onClick =\"return loadFile('"
+							+ htmlEnv.ajaxQuery + "','" + target + "','"
+							+ htmlEnv.ajaxCond + "'," + htmlEnv.inEffect + ","
+							+ htmlEnv.outEffect + ")\"");
+
+				}
+
+				htmlEnv.code.append(">\n");
+				// tk
+				// end////////////////////////////////////////////////////////////
+
+				Log.out("<A href=\"" + htmlEnv.linkUrl + "\">");
+			}
+
+			// Log.out("data_info: "+this.getStr(data_info));
+
+			createForm(data_info);
+
+			if (whichForm == 0) { // normal process (not form)
+				// ***APPEND DATABASE VALUE***//
+				Log.out(data_info);
+				htmlEnv.code.append(this.getStr(data_info));
+
+				Log.out(this.getStr(data_info));
+			}
+
+			if (htmlEnv.linkFlag > 0 || htmlEnv.sinvokeFlag) {
+				if (htmlEnv.draggable)
+					htmlEnv.code.append("</div>\n");
+				else {
+					htmlEnv.code.append("</A>\n");
+
+					if (htmlEnv.isPanel)
+						htmlEnv.code.append("</div>\n");
+				}
+				Log.out("</A>");
+			}
+
+			/*
+			 * if(whichForm > 0){ html_env.code.append("\" />\n");
+			 * Log.out("\" \\>\n"); }
+			 */
+
+			// Log.out("tuple: " + tuple_count + "/"+GlobalEnv.getTuplesNum() );
+
+			if (HTMLEnv.getFormItemFlg()
+					&& HTMLEnv.getFormItemName().equals(formHtml[2])) {
+
+			} else {
+				htmlEnv.code.append("</td></tr></table>\n");
+				Log.out("</td></tr></table>");
+			}
+
+			Log.out("TFEId = " + HTMLEnv.getClassID(this));
+			// html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
 		}
-		return ret;
+		return null;
 	}
 
-	protected <T> String computeStringForDecoration(ExtList<T> data_info) {
-		String classNames = "";
-		for (int i = 1; i < this.AttNames.size(); i++) {
-			if (((data_info.get(i))).toString().equals("t")) {
-				if (decos.getClassesIds().get(AttNames.get(i)) != null)
-					classNames += " C_"
-							+ decos.getClassesIds().get(AttNames.get(i));
+	// optimizer
+	public void work_opt(ExtList data_info) {
+		StringBuffer string_tmp = new StringBuffer();
+		string_tmp.append("<VALUE");
+		if (htmlEnv.writtenClassId.contains(HTMLEnv.getClassID(this))) {
+			// class���äƤ���Ȥ�
+			// ex.TFE10000)�Τ߻���
+			string_tmp.append(" class=\"");
+			string_tmp.append(HTMLEnv.getClassID(this));
+		}
+
+		if (decos.containsKey("class")) {
+			// class����(ex.class=menu)������Ȥ�
+			if (!htmlEnv.writtenClassId.contains(HTMLEnv.getClassID(this))) {
+				string_tmp.append(" class=\"");
 			} else {
-				if (decos.getClassesIds().get("!" + AttNames.get(i)) != null)
-					classNames += " C_"
-							+ decos.getClassesIds().get("!" + AttNames.get(i));
+				string_tmp.append(" ");
+			}
+			string_tmp.append(decos.getStr("class") + "\"");
+		} else if (htmlEnv.writtenClassId.contains(HTMLEnv.getClassID(this))) {
+			string_tmp.append("\"");
+		}
+
+		if (decos.containsKey("update") || decos.containsKey("insert")
+				|| decos.containsKey("delete") || decos.containsKey("login")
+				|| decos.containsKey("logout") || HTMLEnv.getFormItemFlg()
+				|| (HTMLEnv.getIDU() != null && !HTMLEnv.getIDU().isEmpty())) {
+			string_tmp.append(" type=\"form\"");
+		}
+
+		if (decos.containsKey("tabletype")) {
+			string_tmp.append(" tabletype=\"" + decos.getStr("tabletype")
+					+ "\"");
+		}
+
+		// link and sinvoke
+		if (htmlEnv.linkFlag > 0 || htmlEnv.sinvokeFlag) {
+			string_tmp.append(" href=\"" + htmlEnv.linkUrl + "\" ");
+			if (decos.containsKey("target")) {
+				string_tmp.append(" target=\"" + decos.getStr("target") + "\"");
+			}
+			if (decos.containsKey("class")) {
+				string_tmp.append("class=\"" + decos.getStr("class") + "\"");
 			}
 		}
-		return classNames;
-	}
-	
-	private Element createLogoutForm(Element result, ExtList data_info){
-		result = JsoupFactory.createSessionForm(result, "logout");
-		result.appendChild(JsoupFactory.createInput("submit", "commit", this.getStr(data_info)));
-		return result;
+
+		string_tmp.append(">");
+
+		if (HTMLEnv.getFormItemFlg()
+				&& HTMLEnv.getFormItemName().equals(formHtml[2])
+				&& HTMLEnv.getSelectRepeat()) {
+
+		} else {
+			htmlEnv2.code.append(string_tmp);
+			Log.out(string_tmp);
+		}
+
+		createForm(data_info);
+
+		if (whichForm == 0) {
+			// ***APPEND DATABASE VALUE***//
+			String s = this.getStr(data_info);
+			if (s.contains("&"))
+				s = s.replace("&", "&amp;");
+			if (s.contains("<"))
+				s = s.replaceAll("<", "&lt;");
+			if (s.contains(">"))
+				s = s.replaceAll(">", "&gt;");
+			if (s.contains("���"))
+				s = s.replaceAll("���", "&#65374;");
+			if (s.isEmpty())
+				s = "��";
+			htmlEnv2.code.append(s);
+			Log.out(this.getStr(data_info));
+		}
+
+		/*
+		 * if(decos.containsKey("update") || decos.containsKey("insert")||
+		 * decos.containsKey("delete") || decos.containsKey("login")){
+		 * html_env2.code.append("\" />"); Log.out("\" \\>\n"); }
+		 */
+
+		// Log.out("tuple: " + tuple_count + "/"+GlobalEnv.getTuplesNum() );
+
+		if (HTMLEnv.getFormItemFlg()
+				&& HTMLEnv.getFormItemName().equals(formHtml[2])) {
+			// select
+		} else {
+			htmlEnv2.code.append("</VALUE>");
+			Log.out("</VALUE>");
+			if (HTMLEnv.getFormItemFlg()
+					&& HTMLEnv.getFormItemName().equals(formHtml[5])) {
+				HTMLEnv.incrementFormPartsNumber();
+			}
+		}
+
 	}
 
 }

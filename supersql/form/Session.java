@@ -41,7 +41,7 @@ public class Session extends HttpServlet {
 			enc =  "Shift_JIS";
 		}
 
-		// ContentType‚ğİ’è
+		// ContentTypeï¿½ï¿½İ’ï¿½
 		res.setContentType("text/html; charset="+enc);
 		req.setCharacterEncoding(enc);
 
@@ -164,7 +164,7 @@ public class Session extends HttpServlet {
 						rs.beforeFirst();
 						while(rs.next()){
 							for( int i = 0; i < att.size(); i++){
-								// æ“¾
+								// ï¿½æ“¾
 								String tmp = rs.getString(att.get(i));
 								session.setAttribute( att.get(i) , tmp);
 								Log.info("SESSION  " + att.get(i) + " : " + tmp + "," + session.getAttribute(att.get(i)));
@@ -231,7 +231,7 @@ public class Session extends HttpServlet {
 			}
 
 		} catch (Exception e) {
-			System.err.println("sqlerr:"+ e);
+			Log.err("sqlerr:"+ e);
 			return null;
 		}
 	}

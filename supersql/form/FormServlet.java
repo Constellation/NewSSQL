@@ -406,13 +406,13 @@ public class FormServlet extends HttpServlet {
 			}
 			return;
 		} catch (FileNotFoundException e) {
-			System.err.println("UpdateFileIsNotFound:"+filename);
+			Log.err("UpdateFileIsNotFound:"+filename);
 		} catch (NullPointerException e) {
-			System.err.println(e);
+			Log.err(e);
 		} catch (SQLException e) {
-			System.err.println(e);
+			Log.err(e);
 		} catch (Exception e) {
-			System.err.println(e);
+			Log.err(e);
 		}
 	}
 

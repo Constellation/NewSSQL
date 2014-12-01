@@ -28,7 +28,7 @@ public class Log {
 			break;
 		case 2:
 			// 標準エラーへ出力
-			System.err.println(o.toString());
+			Log.err(o.toString());
 			break;
 		case 3:
 			// 標準出力にドットを出力
@@ -77,7 +77,7 @@ public class Log {
 			break;
 		case 2:
 			// 標準エラーへ出力
-			System.err.println(o.toString());
+			Log.err(o.toString());
 			break;
 		case 10:
 			// bufferに格納
@@ -97,6 +97,7 @@ public class Log {
 	
 	public static void err(Object o) {
 		System.err.println(o.toString());
+		GlobalEnv.errorText += o.toString();
 	}
 	public static void e(Object o) {
 		err(o);

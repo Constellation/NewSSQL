@@ -45,10 +45,12 @@ public class SQLManager {
         	}
 
         } catch (SQLException e) {
-            System.err
-                    .println("Error[SQLManager]: Can't Connect DB : jdbc path = "
+            Log.err("Error[SQLManager]: Can't Connect DB : jdbc path = "
                             + url + " , user = " + user);
-            System.err.println(e);
+//            GlobalEnv.errorText += "Error[SQLManager]: Can't Connect DB : jdbc path = "
+//                    + url + " , user = " + user;
+            Log.err(e);
+//            GlobalEnv.errorText += e;
             GlobalEnv.addErr("Error[SQLManager]: Can't Connect DB : jdbc path = "
                     + url + " , user = " + user);
             return ;
@@ -62,8 +64,12 @@ public class SQLManager {
         }
     }
 
+    public void ExecSQL(String query) {
+		ExecSQL(query, null, null);
+	}
+    
     @SuppressWarnings({ "rawtypes", "unchecked" })
-	public void ExecSQL(String query) {
+	public void ExecSQL(String query, String create, String update) {
     	if(isMulti)
     	{
     		Log.out("thred name:"+cdb.getName());
@@ -91,6 +97,17 @@ public class SQLManager {
 
         try {
             Statement stat = conn.createStatement();
+            if(create != null && update != null){
+            	String[] creates = create.split("\n");
+            	for (int j = 0; j < creates.length; j++) {
+					stat.addBatch(creates[j]);
+				}
+            	String[] updates = update.split("\n");
+            	for(int k = 0; k < updates.length; k++){
+            		stat.addBatch(updates[k]);
+            	}
+            	stat.executeBatch();
+            }
             ResultSet rs = stat.executeQuery(query);
             ResultSetMetaData rsmd = rs.getMetaData();
             int columnCount = rsmd.getColumnCount();
@@ -132,10 +149,12 @@ public class SQLManager {
 
         } catch (SQLException e) {
         	if(!query.equals("SELECT DISTINCT  FROM ;") && !query.equals("SELECT  FROM ;")){
-	              System.err
-	              .println("Error[SQLManager.ExecSQL]: Can't Exec Query : query = "
+	              Log.err("Error[SQLManager.ExecSQL]: Can't Exec Query : query = "
 			                      + query);
-			      System.err.println(e);
+//	              GlobalEnv.errorText += "Error[SQLManager.ExecSQL]: Can't Exec Query : query = "
+//	                      + query;
+			      Log.err(e);
+//			      GlobalEnv.errorText += e;
 			      GlobalEnv.addErr("Error[SQLManager.ExecSQL]: Can't Exec Query : query = "
 			              + query);
 			      
@@ -155,7 +174,11 @@ public class SQLManager {
 			    	  }else{
 				    	  list = Suggest.getTableAndColumnNameList(conn, tableNameAndAlias.get(0), tableNameAndAlias.get(1), errorContents[1], errorContents[2], tableNameAndAlias.get(2));
 			    	  }
-			    	  if(!list.isEmpty())	Log.err("\n## Column list ##\n" + list);
+			    	  if(!list.isEmpty()){
+			    		  Log.err("\n## Column list ##\n" + list);
+			    		  // 20140624_masato
+//			    		  GlobalEnv.errorText += "\n## Column list ##\n" + list;
+			    	  }
 			    	  
 			      }
 		    	  else if( (driver.contains("postgresql") && (errorContents[0].contains("relation"))) ||
@@ -165,6 +188,8 @@ public class SQLManager {
 		    			 ){
 			    	  list = Suggest.getTableNameList(conn, errorContents[1]);
 			    	  Log.err("\n## Table list ##\n" + list + "\n");
+			    	  // 20140624_masato
+//		    		  GlobalEnv.errorText += "\n## Table list ##\n" + list + "\n";
 			      }
 			      //added by goto 20131016 end
 
@@ -288,7 +313,8 @@ public class SQLManager {
 	                conn.close();
 	            }
 	        } catch (SQLException e) {
-	            System.err.println("Error[SQLManager]: Can't Close DB :");
+	            Log.err("Error[SQLManager]: Can't Close DB :");
+//	            GlobalEnv.errorText += "Error[SQLManager]: Can't Close DB :";
 	            GlobalEnv.addErr("Error[SQLManager]: Can't Close DB :");
 	            return ;
 	        }
@@ -318,7 +344,7 @@ public class SQLManager {
     		}
     		columnList = columnList.substring(0,columnList.length()-1);
     	}catch(Exception e){
-    		System.err.println(e);
+    		Log.err(e);
     	}
     	return columnList;
     }

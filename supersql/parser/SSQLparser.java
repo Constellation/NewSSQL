@@ -36,6 +36,7 @@ public class SSQLparser {
 	public static ArrayList<String> textString = new ArrayList<String>();
 	public static int textNum = 0;
 	
+	private static boolean jsonQuery = false;
 	private static boolean dbpediaQuery = false;
 	private static String fromInfoString;
 	public static String DB2_XQUERY = new String();
@@ -132,12 +133,14 @@ public class SSQLparser {
 
 		String filename = GlobalEnv.getfilename();
 		if (filename == null || filename.isEmpty()) {
-			System.err.println("Error[SQLparser]: File Is Not Specified.");
+			Log.err("Error[SQLparser]: File Is Not Specified.");
 			GlobalEnv.addErr("Error[SQLparser]: File Is Not Specified.");
 			return "";
 		}
 
 		Log.info("[Parser:Parser] filename = " + filename);
+		// 20140624_masato
+		GlobalEnv.queryName = "[Parser:Parser] filename = " + filename;
 		BufferedReader in;
 		StringBuffer tmp = new StringBuffer();
 		try{
@@ -335,7 +338,7 @@ public class SSQLparser {
 			in.close();
 			query = tmp.toString().trim();
 		} catch (FileNotFoundException e) {
-			System.err.println("Error[SQLparser]: File(" + filename	+ ") Is Not Found.");
+			Log.err("Error[SQLparser]: File(" + filename	+ ") Is Not Found.");
 			GlobalEnv.addErr("Error[SQLparser]: File(" + filename + ") Is Not Found." + e);
 			return "";
 		} catch (IOException e) {
@@ -347,6 +350,8 @@ public class SSQLparser {
 		}
 
 		Log.info("[Parser:Parser] ssql statement = " + query);
+		// 20140624_masato
+		GlobalEnv.queryLog = "\n[Parser:Parser] ssql statement = " + query;
 		
 		// #import  by goto 201312
 		query = Import.importProcess(query);
@@ -362,11 +367,12 @@ public class SSQLparser {
 			query = query.replace(media+"{", media+" {");
 		}
 		media = media.toLowerCase();
-		if(media.equals("html") || media.equals("mobile_html5")){
+		if(
+				media.equals("html") || media.equals("mobile_html5") || 
+				media.equals("html_flexbox")){		//TODO masato
 			query = replaceQuery_For_HTML_and_MobileHTML5(query);
 			while(query.contains(") ] }@{text}"))						//TODO
 				query = query.replace(") ] }@{text}", ") ]! }@{text}");	//TODO
-			
 		}
 		//Log.e("query = "+query);
 		return query;
@@ -478,21 +484,31 @@ public class SSQLparser {
 						"$0]! ");
 			}
 		}
-		//TODO
+		//TODO masato
         //added by goto 20130422  For "!number, / ,number! / ,number!nuber, "
         //鐃緒申 鐃緒申鐃緒申}(鐃縦わ申鐃暑カ鐃獣ワ申)鐃殉でわ申0文鐃緒申幣鐃緒申任鐃春わ申文鐃緒申鐃緒申: [^\\}]*
-        //For ,number!number,
+		// 20140611__masato For !number,number%
+		query = query.replaceAll("\\]\\s*\\!\\s*([0-9]+)\\s*,\\s*([0-9]+)\\s*%\\s*@\\s*\\{([^\\}]*)", "]!@{$3,row=$1,column=$2");
+		query = query.replaceAll("\\]\\s*\\!\\s*([0-9]+)\\s*,\\s*([0-9]+)\\s*%", "]!@{row=$1,column=$2}");
+        //For ,number!number%
     	query = query.replaceAll("\\]\\s*\\,\\s*([0-9]+)\\s*!\\s*([0-9]+)\\s*%\\s*@\\s*\\{([^\\}]*)", "],@{$3,column=$1,row=$2");
     	query = query.replaceAll("\\]\\s*\\,\\s*([0-9]+)\\s*!\\s*([0-9]+)\\s*%", "],@{column=$1,row=$2}");
     	//For ,number!
     	query = query.replaceAll("\\]\\s*\\,\\s*([0-9]+)\\s*!\\s*@\\s*\\{([^\\}]*)", "],@{$2,column=$1");
     	query = query.replaceAll("\\]\\s*\\,\\s*([0-9]+)\\s*!", "],@{column=$1}");
-    	query = query.replaceAll("\\]\\s*\\,\\s*([0-9]+)\\s*\\}\\s*@\\s*\\{([^\\}]*)", "],}@{$2,column=$1");	//TODO
+//    	query = query.replaceAll("\\]\\s*\\,\\s*([0-9]+)\\s*\\}\\s*@\\s*\\{([^\\}]*)", "],}@{$2,column=$1");	//TODO
 //    	query = query.replaceAll("\\]\\s*\\,\\s*([0-9]+)\\s*!", "],@{column=$1}");							//TODO
         //For !number,
-        query = query.replaceAll("\\]\\s*!\\s*([0-9]+)\\s*%\\s*@\\s*\\{([^\\}]*)", "]!@{$2,row=$1");
-    	query = query.replaceAll("\\]\\s*!\\s*([0-9]+)\\s*%", "]!@{row=$1}");
+        query = query.replaceAll("\\]\\s*!\\s*([0-9]+)\\s*\\,s*@\\s*\\{([^\\}]*)", "]!@{$2,row=$1");
+    	query = query.replaceAll("\\]\\s*!\\s*([0-9]+)\\s*\\,", "]!@{row=$1}");						//masato "%" -> "\\,"
 
+    	// 20140613_masato For !number%
+		query = query.replaceAll("\\]\\s*\\!\\s*([0-9]+)\\s*%\\s*@\\s*\\{([^\\}]*)", "]!@{$2,row=$1,column=1");
+		query = query.replaceAll("\\]\\s*\\!\\s*([0-9]+)\\s*%", "]!@{row=$1,column=1}");
+    	// 20140613_masato For ,number%
+		query = query.replaceAll("\\]\\s*\\,\\s*([0-9]+)\\s*%\\s*@\\s*\\{([^\\}]*)", "],@{$2,column=$1,row=1");
+    	query = query.replaceAll("\\]\\s*\\,\\s*([0-9]+)\\s*%", "],@{column=$1,row=1}");
+    	
 
 //    	Log.i("	query = "+query);
 		return query;
@@ -916,7 +932,7 @@ public class SSQLparser {
 
 		try {
 			if (!st.hasMoreTokens()) {
-				System.err.println("*** No Query Specified ***");
+				Log.err("*** No Query Specified ***");
 				throw (new IllegalStateException());
 			}
 
@@ -1021,12 +1037,12 @@ public class SSQLparser {
 
 		// GENERATE medium
 		if (!nt.equalsIgnoreCase("GENERATE")) {
-			System.err.println("*** The Query should start by GENERATE ***");
+			Log.err("*** The Query should start by GENERATE ***");
 			throw (new IllegalStateException());
 		}
         
 		if (!st.hasMoreTokens()) {
-			System.err.println("*** No medium/tfe Specified ***");
+			Log.err("*** No medium/tfe Specified ***");
 			throw (new IllegalStateException());
 		}
 	}
@@ -1660,6 +1676,14 @@ public class SSQLparser {
 
 	public static void setDistinct(boolean distinct) {
 		SSQLparser.distinct = distinct;
+	}
+
+	public static boolean isJsonQuery() {
+		return jsonQuery;
+	}
+
+	public static void setJsonQuery(boolean jsonQuery) {
+		SSQLparser.jsonQuery = jsonQuery;
 	}
 
 }

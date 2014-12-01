@@ -12,7 +12,6 @@ import supersql.codegenerator.Grouper;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.IfCondition;
 import supersql.codegenerator.TFE;
-
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
@@ -51,16 +50,17 @@ public class TFEparser {
 		toks = new TFEtokenizer(str);
 		cg = cgenerator;
 		
-
+		TFEmatcher.startTokenCount();		//halken TFEmatcher
+		
 		try {
 			schemaTop = connector("");
 			if (toks.hasMoreTokens()) {
-				System.err.println("*** Token remained after parsing TFE ***");
+				Log.err("*** Token remained after parsing TFE ***");
 				throw (new IllegalStateException());
 			}
 		} catch (IllegalStateException e) {
-			System.err.println("Error[TFEparser]: Syntax Error in TFE");
-			System.err.println(toks.DebugTrace());
+			Log.err("Error[TFEparser]: Syntax Error in TFE");
+			Log.err(toks.DebugTrace());
 			GlobalEnv.addErr("Error[TFEparser]: Syntax Error in TFE");
 		}
 		try {
@@ -68,6 +68,8 @@ public class TFEparser {
 			Log.out("Schema is " + sch);
 			Log.out("le0 is " + schemaTop.makele0());;
 		} catch (Exception e) {	}
+
+		TFEmatcher.endTokenCount();			//halken TFEmatcher
 	}
 
 	private Grouper grouper() {
@@ -82,7 +84,7 @@ public class TFEparser {
 		operand1 = connector("]");
 
 		token = toks.nextToken();
-
+		
 		int dim = dimch.indexOf(token);
 		switch (dim) {
 		case 0:
@@ -101,7 +103,7 @@ public class TFEparser {
 			Log.out("Grouping dim= #");
 			break;
 		default:
-			System.err.println("*** Grouper Operator Not Found after ']' ***");
+			Log.err("*** Grouper Operator Not Found after ']' ***");
 			throw (new IllegalStateException());
 		}
 
@@ -120,7 +122,7 @@ public class TFEparser {
 	private TFE connector(String closeparen) {
 
 		TFE outTFE;
-
+		
 		Log.out("---connector---");
 		/* read first operand */
 
@@ -129,7 +131,7 @@ public class TFEparser {
 		if (!toks.hasMoreTokens()) {
 			Log.out("* not connected *");
 			if (!closeparen.equals("")) {
-				System.err.println("*** Can't close paren '" + closeparen
+				Log.err("*** Can't close paren '" + closeparen
 						+ "' ***");
 				throw (new IllegalStateException());
 			}
@@ -137,7 +139,7 @@ public class TFEparser {
 		} else if (toks.lookToken().equals("]")) {
 			Log.out("* not connected *");
 			if (!closeparen.equals("]")) {
-				System.err.println("*** mismatch paren at ']' ***");
+				Log.err("*** mismatch paren at ']' ***");
 				throw (new IllegalStateException());
 			}
 			toks.nextToken();
@@ -145,7 +147,7 @@ public class TFEparser {
 		} else if (toks.lookToken().equals(")")) {
 			Log.out("* not connected *");
 			if (!closeparen.equals(")")) {
-				System.err.println("*** mismatch paren at ')' ***");
+				Log.err("*** mismatch paren at ')' ***");
 				throw (new IllegalStateException());
 			}
 			toks.nextToken();
@@ -153,7 +155,7 @@ public class TFEparser {
 		} else if (toks.lookToken().equals("}")) {
 			Log.out("* not connected *");
 			if (!closeparen.equals("}")) {
-				System.err.println("*** mismatch paren at '}' ***");
+				Log.err("*** mismatch paren at '}' ***");
 				throw (new IllegalStateException());
 			}
 			toks.nextToken();
@@ -170,7 +172,7 @@ public class TFEparser {
 		return outTFE;
 
 	}
-
+	
 	private Connector connector_main(int dim, ITFE operand1, String closeparen) {
 
 		Log.out("connector_main: dim=" + dim);
@@ -181,11 +183,10 @@ public class TFEparser {
 		tfes.add(operand1);
 
 		while (true) {
-
 			if (!toks.hasMoreTokens()) {
 				if (!closeparen.equals("")) {
 					toks.nextToken();
-					System.err.println("*** Detect end of TFE before paren '"
+					Log.err("*** Detect end of TFE before paren '"
 							+ closeparen + "' ***");
 					throw (new IllegalStateException());
 				}
@@ -195,15 +196,15 @@ public class TFEparser {
 			/* read next oprator */
 			token = toks.nextToken();
 			Log.out("connector_operator*token=" + token);
-
+			
 			if (token.equals("[")) {
 				/* error for operand */
-				System.err.println("*** Found '[' after Operand ***");
+				Log.err("*** Found '[' after Operand ***");
 				throw (new IllegalStateException());
 
 			} else if (token.equals("]")) {
 				if (!closeparen.equals("]")) {
-					System.err.println("*** mismatch paren at ']' ***");
+					Log.err("*** mismatch paren at ']' ***");
 					throw (new IllegalStateException());
 				}
 				/* close group */
@@ -211,7 +212,7 @@ public class TFEparser {
 
 			} else if (token.equals("}")) {
 				if (!closeparen.equals("}")) {
-					System.err.println("*** mismatch paren at '}' ***");
+					Log.err("*** mismatch paren at '}' ***");
 					throw (new IllegalStateException());
 				}
 				/* close paren */
@@ -219,7 +220,7 @@ public class TFEparser {
 
 			} else if (token.equals(")")) {
 				if (!closeparen.equals(")")) {
-					System.err.println("*** mismatch paren at ')' ***");
+					Log.err("*** mismatch paren at ')' ***");
 					throw (new IllegalStateException());
 				}
 				/* close paren (func) */
@@ -227,7 +228,7 @@ public class TFEparser {
 
 			} else if (dimch.indexOf(token) == -1) {
 				/* error for operand */
-				System.err.println("*** Found Illegal Token after Operand ***");
+				Log.err("*** Found Illegal Token after Operand ***");
 				throw (new IllegalStateException());
 
 			}
@@ -255,6 +256,7 @@ public class TFEparser {
 
 			/* read next operand */
 
+			
 			tfes.add(read_attribute());
 
 		}
@@ -290,7 +292,7 @@ public class TFEparser {
 
 		token = toks.nextToken();
 		Log.out("attribute*token=" + token);
-
+		
 		if (token.equals("[")) {
 
 			/* grouping operand */
@@ -299,7 +301,7 @@ public class TFEparser {
 		} else if (token.equals("]")) {
 
 			/* error for first ']' */
-			System.err.println("*** Found ']' after Operator or Paren ***");
+			Log.err("*** Found ']' after Operator or Paren ***");
 			throw (new IllegalStateException());
 
 		} else if (token.equals("{")) {
@@ -346,7 +348,8 @@ public class TFEparser {
 		String firstTFE="";
 		String secondTFE="";
 		if(!toks.nextToken().equals("(")){
-			System.err.println("*** Syntax error in the if... then... else... condition ***");
+			System.err.println("e");
+			Log.err("*** Syntax error in the if... then... else... condition ***");
 			throw new IllegalStateException();
 		}
 		token+=toks.nextToken();
@@ -359,20 +362,24 @@ public class TFEparser {
 			token+=toks.nextToken();
 		}
 		if(toks.lookToken().equals("")){
-			System.err.println("*** Syntax error in the if... then... else... condition ***");
+			System.err.println("f");
+			Log.err("*** Syntax error in the if... then... else... condition ***");
 			throw new IllegalStateException();
 		}
 		toks.nextToken();
 		Attribute condition = makeAttribute(token, true);
 		if(!toks.nextToken().equalsIgnoreCase("then")){
-			System.err.println("*** Syntax error in the if... then... else... condition ***");
+			System.err.println("a");
+			Log.err("*** Syntax error in the if... then... else... condition ***");
 			throw new IllegalStateException();
 		}
 		if(!toks.nextToken().equals("(")){
-			System.err.println("*** Syntax error in the if... then... else... condition ***");
+			System.err.println("b");
+			Log.err("*** Syntax error in the if... then... else... condition ***");
 			throw new IllegalStateException();
 		}
 		token = toks.nextToken();
+		//haknen ?
 		inParenthesis=false;
 		while(!token.equalsIgnoreCase(")") || inParenthesis){
 			firstTFE+=token;
@@ -381,21 +388,37 @@ public class TFEparser {
 			if(token.equals(")"))
 				inParenthesis=false;
 			token = toks.nextToken();
-
+			//haknen ?
+			
+			//20140716 入れ子if内に関数があった場合でも通るように修正
+			if (inParenthesis && token.equals("(")) {
+				while(!token.equalsIgnoreCase(")")){
+					firstTFE += token;
+					token= toks.nextToken();
+					//haknen ?
+				}
+				firstTFE += token;
+				token= toks.nextToken();
+				//haknen ?
+			}
 			
 			if(token.equals("")){
-				System.err.println("*** Syntax error in the if... then... else... condition ***");
+				System.err.println("c");
+				Log.err("*** Syntax error in the if... then... else... condition ***");
 				throw new IllegalStateException();
 			}
 		}
 		token = toks.lookToken();
 		if(token.equals("else")){
 			toks.nextToken();
+			//haknen ?
 			if(!toks.nextToken().equals("(")){
-				System.err.println("*** Syntax error in the if... then... else... condition ***");
+				System.err.println("d");
+				Log.err("*** Syntax error in the if... then... else... condition ***");
 				throw new IllegalStateException();
 			}
 			token = toks.nextToken();
+			//haknen ?
 			boolean in_parenthesis = false;
 			while(!token.equalsIgnoreCase(")") || in_parenthesis){
 				secondTFE += token;
@@ -404,6 +427,19 @@ public class TFEparser {
 				else if(token.equals(")"))
 					in_parenthesis = false;
 				token= toks.nextToken();
+				//haknen ?
+				
+				//20140716 入れ子if内に関数があった場合でも通るように修正
+				if (in_parenthesis && token.equals("(")) {
+					while(!token.equalsIgnoreCase(")")){
+						secondTFE += token;
+						token= toks.nextToken();
+						//haknen ?
+					}
+					secondTFE += token;
+					token= toks.nextToken();
+					//haknen ?
+				}
 			}
 		}
 		
@@ -445,6 +481,7 @@ public class TFEparser {
 		Log.info("[Parser::tfe] If condition detected");
 		condition= find_sql_condition();
 		if_token = toks.nextToken();
+		//haknen ?
 		String[] attributes = if_token.split(":");
 		return makeConditionalAttribute(condition, attributes);
 	}
@@ -585,9 +622,9 @@ public class TFEparser {
 		Log.out("argsaregs: " + arg);
 
 		if (arg instanceof Attribute) {
-			out_fa = new FuncArg(((Attribute) arg).getKey(), 1, arg);
+			out_fa = new FuncArg(((Attribute) arg).getKey(), arg);
 		} else {
-			out_fa = new FuncArg("default", 1, arg);
+			out_fa = new FuncArg("default", arg);
 		}
 
 		return out_fa;
@@ -629,9 +666,7 @@ public class TFEparser {
 
 			// read name
 			token = toks.nextToken();
-			
 			Log.out("decoration*token=" + token);
-			
 
 			if(token.equals("(")){
 				read_conditional_decoration(tfe);
@@ -695,7 +730,7 @@ public class TFEparser {
 				toks.nextToken();
 				while(!toks.lookToken().equals(")")){
 					if(toks.lookToken().equals("")){
-						System.err.println("*** Syntax error in decoration condition of "+condition+" ***");
+						Log.err("*** Syntax error in decoration condition of "+condition+" ***");
 						throw new IllegalStateException();
 					}
 					token+=toks.nextToken();
@@ -722,12 +757,12 @@ public class TFEparser {
 				
 			}
 			catch(ArrayIndexOutOfBoundsException e){
-					System.err.println("*** Found Illegal Token after Decoration condition ***");
+					Log.err("*** Found Illegal Token after Decoration condition ***");
 					throw new IllegalStateException();
 				}
 		}
 		else{
-			System.err.println("*** Found Illegal Token after Decoration condition ***"	);
+			Log.err("*** Found Illegal Token after Decoration condition ***"	);
 			throw new IllegalStateException();
 		}
 		
@@ -755,7 +790,7 @@ public class TFEparser {
 
 
 			if (token.equals("")) {
-				System.err.println("***End of if statement not found ***");
+				Log.err("***End of if statement not found ***");
 				throw (new IllegalStateException());
 			}
 		}
@@ -763,7 +798,7 @@ public class TFEparser {
 		while (!token.equals("?")) {
 			token = toks.nextToken();
 			if (token.equals("")) {
-				System.err.println("***Syntax error in if statement ***");
+				Log.err("***Syntax error in if statement ***");
 				throw (new IllegalStateException());
 			}
 		}

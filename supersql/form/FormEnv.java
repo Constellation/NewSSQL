@@ -10,6 +10,7 @@ import java.net.URL;
 import java.net.URLConnection;
 
 import supersql.common.GlobalEnv;
+import supersql.common.Log;
 
 public class FormEnv {
 
@@ -66,12 +67,12 @@ public class FormEnv {
 			}
 			dis.close();
 		} catch (MalformedURLException me) {
-			System.err.println("MalformedURLException: " + me);
+			Log.err("MalformedURLException: " + me);
 		}catch (FileNotFoundException e) {
-			System.err.println("ErrorFileIsNotFound: " + e);
+			Log.err("ErrorFileIsNotFound: " + e);
 			return;
 		} catch (IOException ioe) {
-			System.err.println("IOException: " + ioe);
+			Log.err("IOException: " + ioe);
 		}
 		return;
 	}

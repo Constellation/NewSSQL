@@ -436,256 +436,249 @@ public class Mobile_HTML5Env extends LocalEnv {
 //            		".fisheyeContainter{height: 200px;	width: 700px;	position: absolute;}" +
 //            		"</style>\n");
             
-
-            
-          	if(headerFlag==1){		//通常時のみ（Prev/Nextでは行わない）
-	            //added by goto 20121222 start, changed by goto 20130110
-	            //js/script1.jsの生成・書き込み
-	            // TODO: 下記の場所を他へ変更（下記だと複数回生成・書き込みが行われる）
-	            // TODO: -outdir?時の処理（下記は、出力先が.ssqlファイル格納場所に限定）
-	//            System.out.println("GlobalEnv.getfilename()="+GlobalEnv.getfilename());
-	            String fileName=GlobalEnv.getfilename();
-	            String fileDir = "";
-	            if(fileName.contains("/")){
-	            	//TODO: filename.substring(ファイル名)へ変更
-	            	fileDir = fileName.substring(0,fileName.lastIndexOf("/"));
-	            }else{
-	            	//TODO: fileNameのカレントディレクトリの絶対パスを取得
-	            	//fileDir = fileNameのカレントディレクトリの絶対パス
-	            }
-	            //		下記は、linkを使うときのみ有効 (commentted out by goto 20130110)
-	            //      String fileDir = new File(linkurl).getAbsoluteFile().getParent();	//htm_env.~をcut
-	//            System.out.println("fileDir= "+fileDir);
-	//            String relative_path = linkurl.substring(fileDir.length()+1);
-	            // 書き込むファイルの名前
-	            //String outputFileName = "/Applications/XAMPP/htdocs/ssql/js/c2.js";
-	            String outputFileName = fileDir + "/jscss/script1.js";
-	//            System.out.println("outputFileName="+outputFileName);
-	            // ファイルオブジェクトの生成
-	            File outputFile = new File(outputFileName);
-	            
-	            File dir = outputFile.getParentFile();  
-	            if (!dir.exists()) {
-	                dir.mkdirs();   //make folders
-	            }
-	
-	            try {
-	              // 出力ストリームの生成
-	//              FileOutputStream fos = new FileOutputStream(outputFile);
-	//              OutputStreamWriter osw = new OutputStreamWriter(fos);
-	//              PrintWriter pw = new PrintWriter(osw);
-	              
-	    	  		PrintWriter pw;
-	    	        if (charset != null){
-	    	        	pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
-	    	        			new FileOutputStream(outputFile),charset)));
-	    	        	//Log.info("File encoding: "+html_env.charset);
-	    	        }else
-	    	        	pw = new PrintWriter(new BufferedWriter(new FileWriter(
-	    	        			outputFile)));
-	    	        
-	    	        //ファイルへの書き込み
-	    	        //フッタ(id=\"footer1\")の処理
-	    	        //左右フリック・タップすることにより、[進む]・[戻る]・[更新]を行う		//added by goto 20130520
-	    	        pw.println("\n" +
-	    	        		"/** フッタ(id=\"footer1\")の処理 **/\n" +
-	    	        		"//左フリック: [進む]、右フリック: [戻る]、タップ: [更新]\n" +
-	    	        		"$(function() {\n" +
-	    	        		"	//タップ時: [更新]\n" +
-	    	        		"	$('#footer1').bind('tap',function(){\n" +
-	    	        		"		location.reload();\n" +
-	    	        		"	});\n" +
-	    	        		"\n" +
-	    	        		"	//タッチイベントの取得\n" +
-	    	        		"	$(\"#footer1\").bind(\"touchstart touchmove touchend\", touchHandler);\n" +
-	    	        		"	function touchHandler(e) {  \n" +
-	    	        		"		e.preventDefault();  \n" +
-	    	        		"		var touch = e.originalEvent.touches[0];  \n" +
-	    	        		"\n" +
-	    	        		"		if(e.type == \"touchstart\"){\n" +
-	    	        		"			//タッチ開始時のX座標(startX)\n" +
-	    	        		"			startX = touch.pageX; \n" +
-	    	        		"		}else if(e.type == \"touchmove\"){\n" +
-	    	        		"			//移動距離(diffX) = スライド時のX座標 - 開始時のX座標\n" +
-	    	        		"			diffX = touch.pageX - startX;\n" +
-	    	        		"			if(( diffX > 0 ) || ( diffX < 0 )) {\n" +
-	    	        		"				$('#footer1').css( \"left\", diffX );\n" +
-	    	        		"			}\n" +
-	    	        		"		}else if(e.type == \"touchend\"){\n" +
-	    	        		"			if(diffX > 10) {		//右に10px以上移動: [戻る]\n" +
-	    	        		"				history.go(-1);\n" +
-	    	        		"			}else if(diffX < -10){	//左に10px以上移動: [進む]\n" +
-	    	        		"				history.go(1);\n" +
-	    	        		"			}else{\n" +
-	    	        		"				$( '#footer1' ).animate({ left: 0 }, 200);\n" +
-	    	        		"			} \n" +
-	    	        		"		}\n" +
-	    	        		"	}\n" +
-	    	        		"});\n");
-	    	        //rel="external"と指定されていた場合は、別ウィンドウを開く
-	    	        //（W3C target="_blank" strict対策）		//added by goto 20130518
-	    	        pw.println("\n/** rel=\"external\"と指定されていた場合は、別ウィンドウを開く **/\n" +
-							"/**（W3C target=\"_blank\" strict対策）**/\n" +
-							"$(function(){\n" +
-							"	$(\"a[rel='external']\").click(function(){\n" +
-							"		window.open($(this).attr(\"href\"));\n" +
-							"		return false;\n" +
-							"	});\n" +
-							"});\n");
-	    	        //画面サイズに応じて表示widthを変更		//added by goto 20130512
-	    	        pw.println("\n/** 画面サイズに応じて表示widthを変更 **/\n" +
-	    	        		"/** 画面width > 閾値 のとき、widthを固定して表示をセンタリング **/\n" +
-	    	        		//"//閾値(windowWidthThreshold)は、HTMLファイルの<head>で指定\n" +
-	    	        		"//PC: pc-width値に固定(指定なし(-1):350)\n" +
-	    	        		"//モバイル: 縦=portrait-width値に固定(指定なし(-1):100%) ／ 縦=landscape-width値に固定(指定なし(-1):100%)\n" +
-	    	        		//"var windowWidthThreshold = 500; 	//閾値\n" +
-	    	        		"//初期load時\n" +
-	    	        		"var windowWidthThreshold = 0;\n" +
-	    	        		"$(document).ready(function(){\n" +
-	    	        		"	windowWidthThreshold = getWindowWidthThreshold();\n" +
-	    	        		"	if( $(window).width() > windowWidthThreshold ){\n" +
-	    	        		"		//$(\"table\").css(\"width\",\"auto\");\n" +
-	    	        		"		$(\"#header1\").css(\"width\",windowWidthThreshold).css(\"margin\",\"auto\");\n" +
-	    	        		"		$(\"#content1\").css(\"width\",windowWidthThreshold).css(\"margin\",\"auto\");\n" +
-	    	        		"		$(\"#footer1\").css(\"width\",windowWidthThreshold).css(\"margin\",\"auto\");\n" +
-	    	        		"		$(\"#LOGINpanel1\").css(\"width\",windowWidthThreshold).css(\"margin\",\"auto\");\n" +
-	    	        		"		$(\"#LOGOUTpanel1\").css(\"width\",windowWidthThreshold).css(\"margin\",\"auto\");\n" +
-	    	        		"	}\n" +
-	    	        		"});\n" +
-	    	        		"//画面サイズが変更されたとき\n" +
-	    	        		"window.onresize = function() {\n" +
-	    	        		"	windowWidthThreshold = getWindowWidthThreshold();\n" +
-	    	        		"	if( $(window).width() > windowWidthThreshold ){\n" +
-	    	        		"    	//$(\"table\").css(\"width\",\"auto\");\n" +
-	    	        		"		$(\"#header1\").css(\"width\",windowWidthThreshold).css(\"margin\",\"auto\");\n" +
-	    	        		"		$(\"#content1\").css(\"width\",windowWidthThreshold).css(\"margin\",\"auto\");\n" +
-	    	        		"		$(\"#footer1\").css(\"width\",windowWidthThreshold).css(\"margin\",\"auto\");\n" +
-	    	        		"		$(\"#LOGINpanel1\").css(\"width\",windowWidthThreshold).css(\"margin\",\"auto\");\n" +
-	    	        		"		$(\"#LOGOUTpanel1\").css(\"width\",windowWidthThreshold).css(\"margin\",\"auto\");\n" +
-	    	        		"	}else{\n" +
-	    	        		"		//$(\"table\").css(\"width\",\"100%\");\n" +
-	    	        		"		$(\"#header1\").css(\"width\",\"100%\");\n" +
-	    	        		"		$(\"#content1\").css(\"width\",\"100%\");\n" +
-	    	        		"		$(\"#footer1\").css(\"width\",\"100%\");\n" +
-	    	        		"		$(\"#LOGINpanel1\").css(\"width\",\"97%\");\n" +
-	    	        		"		$(\"#LOGOUTpanel1\").css(\"width\",\"100%\");\n" +
-	    	        		"	}\n" +
-	    	        		"}\n" +
-	    	        		"//画面width閾値を返す\n" +
-	    	        		"function getWindowWidthThreshold(){\n" +
-	    	        		"	if(!isSmartphone()){\n" +
-	    	        		"		//PC\n" +
-	    	        		"		if(pcWidth < 0)	return 350;\n" +
-	    	        		"		else			return pcWidth;\n" +
-	    	        		"	}else{\n" +
-	    	        		"		//モバイル\n" +
-	    	        		"		if(isPortrait()){\n" +
-	    	        		"			//縦向き\n" +
-	    	        		"			return portraitWidth;\n" +
-	    	        		"		}else{\n" +
-	    	        		"			//横向き\n" +
-	    	        		"			return landscapeWidth;\n" +
-	    	        		"		}\n" +
-	    	        		"	}\n" +
-	    	        		"}\n" +
-	    	        		"//端末が縦向きかどうか\n" +
-	    	        		"function isPortrait(){\n" +
-	    	        		"	if($(window).width() < $(window).height())\n" +
-	    	        		"		return true;\n" +
-	    	        		"	return false;\n" +
-	    	        		"}\n\n");
-	    	        //twitter
-	              	pw.println("$(document).on(\"pagebeforecreate\",'[data-role=page]',function(e){\n" +
-	              			"  $.ajaxSetup({cache : true});\n" +
-	              			"  $.getScript('http://platform.twitter.com/widgets.js');\n" +
-	              			"  $.ajaxSetup({cache : false});\n" +
-	              			"});\n\n");
-	              	//facebook
-	              	pw.println("$(document).on('pageshow', '[data-role=page]', function(e) {\n" +
-	              			"  var src = '//www.facebook.com/plugins/like.php?href=';\n" +
-	              			"  src += encodeURIComponent(location.href);\n" +
-	              			"  src += '&send=false&layout=button_count&width=200&show_faces=true&action=like&colorscheme=light&height=21';\n" +
-	              			"  $('.like-btn').attr('src', src);\n" +
-	              			"});\n\n");
-	              	//bookmark
-	              	pw.println("function addBookmark(title,url) {\n" +
-	              			"	//IE\n" +
-	              			"	if(navigator.userAgent.indexOf(\"MSIE\") > -1){\n" +
-							"		window.external.AddFavorite(url, title);\n" +
-							"	}\n" +
-							"	//Firefox\n" +
-							"	else if(navigator.userAgent.indexOf(\"Firefox\") > -1){\n" +
-							"		window.sidebar.addPanel(title, url, \"\");\n" +
-							"	}\n" +
-							"	//Opera\n" +
-							"	else if(navigator.userAgent.indexOf(\"Opera\") > -1){\n" +
-							"		document.write('<div style=\"text-align:center\"><a href=\"'+url+'\" rel=\"sidebar\" title=\"'+title+'\">ブックマークに追加</a></div><br>');\n" +
-							"	}\n" +
-							"	//Netscape\n" +
-							"	else if(navigator.userAgent.indexOf(\"Netscape\") > -1){\n" +
-							"		document.write('<div style=\"text-align:center\"><input type=\"button\" value=\"ブックマークに追加\"');\n" +
-							"		document.write(' onclick=\"window.sidebar.addPanel(\\''+title+'\\',\\''+url+'\\',\\'\\');\"></div><br>');\n" +
-							"	}\n" +
-							"	else{\n" +
-							"    	alert(\"このブラウザへのお気に入り追加ボタンは、Chrome/Safari等には対応しておりません。\\nChrome/Safariの場合、CtrlキーとDキーを同時に押してください。\\nその他の場合はご自身のブラウザからお気に入りへ追加下さい。\");\n" +
-							"  	}\n" +
-							"}\n");
-	              	//added by goto 20130110
-	              	//slideshow
-	              	pw.println("$(document).on('pageshow', '#p-gallery', function(e){\n" +
-	              			"	var currentPage = $(e.target);\n" +
-	              			"	photoSwipeInstance = $(\"ul.gallery a\", e.target).photoSwipe({},  currentPage.attr('id'));\n" +
-	              			"}).on('pagehide', '#p-gallery', function(e){\n" +
-	              			"	var currentPage = $(e.target),\n" +
-	              			"	photoSwipeInstance = window.Code.PhotoSwipe.getInstance(currentPage.attr('id'));\n" +
-	              			"	if (typeof photoSwipeInstance != \"undefined\" && photoSwipeInstance != null) {\n" +
-	              			"		window.Code.PhotoSwipe.detatch(photoSwipeInstance);\n" +
-	              			"	}\n" +
-	              			"});\n");
-	              	
-	              	//added by goto 20130330
-	              	//tab
-	              	pw.println("$(document).ready(function() {\n" +
-	              			"	$( \"[id=tabs]\" ).tabs();\n" +
-	//              			"	$( \"#tabs\" ).tabs();\n" +
-	              			"});\n");
-	              	
-	              	//form validation
-	              	pw.println("\n/** <form> validation **/\n" +
-	              			"$(document).ready(function () {\n" +
-	              			"	jQuery.validator.addMethod(\n" +
-	              			"	  \"jqValidate_TelephoneNumber\", function(value, element) {\n" +
-	              			"	     return this.optional(element) || new RegExp(\"^[0-9\\-]+$\").test(value);\n" +
-	              			"	   }, \"Please enter a valid telephone number.\"\n" +
-	              			"	);\n" +
-	              			"	jQuery.validator.addMethod(\n" +
-	              			"	  \"jqValidate_Alphabet\", function(value, element) {\n" +
-	              			"	     return this.optional(element) || new RegExp(\"^[a-zA-Z]+$\").test(value);\n" +
-	              			"	   }, \"You can enter only the alphabet.\"\n" +
-	              			"	);\n" +
-	              			"	jQuery.validator.addMethod(\n" +
-	              			"	  \"jqValidate_AlphabetNumber\", function(value, element) {\n" +
-	              			"	     return this.optional(element) || new RegExp(\"^[0-9a-zA-Z]+$\").test(value);\n" +
-	              			"	   }, \"You can enter only the alphabet and a number.\"\n" +
-	              			"	);\n" +
-	              			"});\n");
-	              	
-	//              	//added by goto 20130503
-	//              	//panel
-	//              	pw.println("$(document).on('click',\"button.open\",function(){\n" +
-	//              			"	$(\"[id=ssqlpanel]\").panel(\"open\")\n" +
-	//      					"}).on('click',\"button.close\",function(){\n" +
-	//						"	$(\"[id=ssqlpanel]\").panel(\"close\")\n" +
-	//						"});\n");
-	              
-	              	// 後始末
-	              	pw.close();
-	            // エラーがあった場合は、スタックトレースを出力
-	            } catch(Exception e) {
-	            	e.printStackTrace();
-	            }
-	            //added by goto 20121222 end
-          	}//通常のみの処理（jsファイル作成）end
+//          	if(headerFlag==1){		//通常時のみ（Prev/Nextでは行わない）
+//	            //added by goto 20121222 start, changed by goto 20130110
+//	            //js/script1.jsの生成・書き込み
+//	            // TODO: 下記の場所を他へ変更（下記だと複数回生成・書き込みが行われる）
+//	            // TODO: -outdir?時の処理（下記は、出力先が.ssqlファイル格納場所に限定）
+//	            String fileName=GlobalEnv.getfilename();
+//	            String fileDir = "";
+//	            if(fileName.contains("/")){
+//	            	//TODO: filename.substring(ファイル名)へ変更
+//	            	fileDir = fileName.substring(0,fileName.lastIndexOf("/"));
+//	            }else{
+//	            	//TODO: fileNameのカレントディレクトリの絶対パスを取得
+//	            	//fileDir = fileNameのカレントディレクトリの絶対パス
+//	            }
+//	            //		下記は、linkを使うときのみ有効 (commentted out by goto 20130110)
+//	            //      String fileDir = new File(linkurl).getAbsoluteFile().getParent();	//htm_env.~をcut
+//	            // 書き込むファイルの名前
+//	            String outputFileName = fileDir + "/jscss/script1.js";
+//	            // ファイルオブジェクトの生成
+//	            File outputFile = new File(outputFileName);
+//	            
+//	            File dir = outputFile.getParentFile();  
+//	            if (!dir.exists()) {
+//	                dir.mkdirs();   //make folders
+//	            }
+//	            
+//	            try {
+//	              // 出力ストリームの生成
+//	//              FileOutputStream fos = new FileOutputStream(outputFile);
+//	//              OutputStreamWriter osw = new OutputStreamWriter(fos);
+//	//              PrintWriter pw = new PrintWriter(osw);
+//	              
+//	    	  		PrintWriter pw;
+//	    	        if (charset != null){
+//	    	        	pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
+//	    	        			new FileOutputStream(outputFile),charset)));
+//	    	        	//Log.info("File encoding: "+html_env.charset);
+//	    	        }else
+//	    	        	pw = new PrintWriter(new BufferedWriter(new FileWriter(
+//	    	        			outputFile)));
+//	    	        
+//	    	        //ファイルへの書き込み
+//	    	        //フッタ(id=\"footer1\")の処理
+//	    	        //左右フリック・タップすることにより、[進む]・[戻る]・[更新]を行う		//added by goto 20130520
+//	    	        pw.println("\n" +
+//	    	        		"/** フッタ(id=\"footer1\")の処理 **/\n" +
+//	    	        		"//左フリック: [進む]、右フリック: [戻る]、タップ: [更新]\n" +
+//	    	        		"$(function() {\n" +
+//	    	        		"	//タップ時: [更新]\n" +
+//	    	        		"	$('#footer1').bind('tap',function(){\n" +
+//	    	        		"		location.reload();\n" +
+//	    	        		"	});\n" +
+//	    	        		"\n" +
+//	    	        		"	//タッチイベントの取得\n" +
+//	    	        		"	$(\"#footer1\").bind(\"touchstart touchmove touchend\", touchHandler);\n" +
+//	    	        		"	function touchHandler(e) {  \n" +
+//	    	        		"		e.preventDefault();  \n" +
+//	    	        		"		var touch = e.originalEvent.touches[0];  \n" +
+//	    	        		"\n" +
+//	    	        		"		if(e.type == \"touchstart\"){\n" +
+//	    	        		"			//タッチ開始時のX座標(startX)\n" +
+//	    	        		"			startX = touch.pageX; \n" +
+//	    	        		"		}else if(e.type == \"touchmove\"){\n" +
+//	    	        		"			//移動距離(diffX) = スライド時のX座標 - 開始時のX座標\n" +
+//	    	        		"			diffX = touch.pageX - startX;\n" +
+//	    	        		"			if(( diffX > 0 ) || ( diffX < 0 )) {\n" +
+//	    	        		"				$('#footer1').css( \"left\", diffX );\n" +
+//	    	        		"			}\n" +
+//	    	        		"		}else if(e.type == \"touchend\"){\n" +
+//	    	        		"			if(diffX > 10) {		//右に10px以上移動: [戻る]\n" +
+//	    	        		"				history.go(-1);\n" +
+//	    	        		"			}else if(diffX < -10){	//左に10px以上移動: [進む]\n" +
+//	    	        		"				history.go(1);\n" +
+//	    	        		"			}else{\n" +
+//	    	        		"				$( '#footer1' ).animate({ left: 0 }, 200);\n" +
+//	    	        		"			} \n" +
+//	    	        		"		}\n" +
+//	    	        		"	}\n" +
+//	    	        		"});\n");
+//	    	        //rel="external"と指定されていた場合は、別ウィンドウを開く
+//	    	        //（W3C target="_blank" strict対策）		//added by goto 20130518
+//	    	        pw.println("\n/** rel=\"external\"と指定されていた場合は、別ウィンドウを開く **/\n" +
+//							"/**（W3C target=\"_blank\" strict対策）**/\n" +
+//							"$(function(){\n" +
+//							"	$(\"a[rel='external']\").click(function(){\n" +
+//							"		window.open($(this).attr(\"href\"));\n" +
+//							"		return false;\n" +
+//							"	});\n" +
+//							"});\n");
+//	    	        //画面サイズに応じて表示widthを変更		//added by goto 20130512
+//	    	        pw.println("\n/** 画面サイズに応じて表示widthを変更 **/\n" +
+//	    	        		"/** 画面width > 閾値 のとき、widthを固定して表示をセンタリング **/\n" +
+//	    	        		//"//閾値(windowWidthThreshold)は、HTMLファイルの<head>で指定\n" +
+//	    	        		"//PC: pc-width値に固定(指定なし(-1):350)\n" +
+//	    	        		"//モバイル: 縦=portrait-width値に固定(指定なし(-1):100%) ／ 縦=landscape-width値に固定(指定なし(-1):100%)\n" +
+//	    	        		//"var windowWidthThreshold = 500; 	//閾値\n" +
+//	    	        		"//初期load時\n" +
+//	    	        		"var windowWidthThreshold = 0;\n" +
+//	    	        		"$(document).ready(function(){\n" +
+//	    	        		"	windowWidthThreshold = getWindowWidthThreshold();\n" +
+//	    	        		"	if( $(window).width() > windowWidthThreshold ){\n" +
+//	    	        		"		//$(\"table\").css(\"width\",\"auto\");\n" +
+//	    	        		"		$(\"#header1\").css(\"width\",windowWidthThreshold).css(\"margin\",\"auto\");\n" +
+//	    	        		"		$(\"#content1\").css(\"width\",windowWidthThreshold).css(\"margin\",\"auto\");\n" +
+//	    	        		"		$(\"#footer1\").css(\"width\",windowWidthThreshold).css(\"margin\",\"auto\");\n" +
+//	    	        		"		$(\"#LOGINpanel1\").css(\"width\",windowWidthThreshold).css(\"margin\",\"auto\");\n" +
+//	    	        		"		$(\"#LOGOUTpanel1\").css(\"width\",windowWidthThreshold).css(\"margin\",\"auto\");\n" +
+//	    	        		"	}\n" +
+//	    	        		"});\n" +
+//	    	        		"//画面サイズが変更されたとき\n" +
+//	    	        		"window.onresize = function() {\n" +
+//	    	        		"	windowWidthThreshold = getWindowWidthThreshold();\n" +
+//	    	        		"	if( $(window).width() > windowWidthThreshold ){\n" +
+//	    	        		"    	//$(\"table\").css(\"width\",\"auto\");\n" +
+//	    	        		"		$(\"#header1\").css(\"width\",windowWidthThreshold).css(\"margin\",\"auto\");\n" +
+//	    	        		"		$(\"#content1\").css(\"width\",windowWidthThreshold).css(\"margin\",\"auto\");\n" +
+//	    	        		"		$(\"#footer1\").css(\"width\",windowWidthThreshold).css(\"margin\",\"auto\");\n" +
+//	    	        		"		$(\"#LOGINpanel1\").css(\"width\",windowWidthThreshold).css(\"margin\",\"auto\");\n" +
+//	    	        		"		$(\"#LOGOUTpanel1\").css(\"width\",windowWidthThreshold).css(\"margin\",\"auto\");\n" +
+//	    	        		"	}else{\n" +
+//	    	        		"		//$(\"table\").css(\"width\",\"100%\");\n" +
+//	    	        		"		$(\"#header1\").css(\"width\",\"100%\");\n" +
+//	    	        		"		$(\"#content1\").css(\"width\",\"100%\");\n" +
+//	    	        		"		$(\"#footer1\").css(\"width\",\"100%\");\n" +
+//	    	        		"		$(\"#LOGINpanel1\").css(\"width\",\"97%\");\n" +
+//	    	        		"		$(\"#LOGOUTpanel1\").css(\"width\",\"100%\");\n" +
+//	    	        		"	}\n" +
+//	    	        		"}\n" +
+//	    	        		"//画面width閾値を返す\n" +
+//	    	        		"function getWindowWidthThreshold(){\n" +
+//	    	        		"	if(!isSmartphone()){\n" +
+//	    	        		"		//PC\n" +
+//	    	        		"		if(pcWidth < 0)	return 350;\n" +
+//	    	        		"		else			return pcWidth;\n" +
+//	    	        		"	}else{\n" +
+//	    	        		"		//モバイル\n" +
+//	    	        		"		if(isPortrait()){\n" +
+//	    	        		"			//縦向き\n" +
+//	    	        		"			return portraitWidth;\n" +
+//	    	        		"		}else{\n" +
+//	    	        		"			//横向き\n" +
+//	    	        		"			return landscapeWidth;\n" +
+//	    	        		"		}\n" +
+//	    	        		"	}\n" +
+//	    	        		"}\n" +
+//	    	        		"//端末が縦向きかどうか\n" +
+//	    	        		"function isPortrait(){\n" +
+//	    	        		"	if($(window).width() < $(window).height())\n" +
+//	    	        		"		return true;\n" +
+//	    	        		"	return false;\n" +
+//	    	        		"}\n\n");
+//	    	        //twitter
+//	              	pw.println("$(document).on(\"pagebeforecreate\",'[data-role=page]',function(e){\n" +
+//	              			"  $.ajaxSetup({cache : true});\n" +
+//	              			"  $.getScript('http://platform.twitter.com/widgets.js');\n" +
+//	              			"  $.ajaxSetup({cache : false});\n" +
+//	              			"});\n\n");
+//	              	//facebook
+//	              	pw.println("$(document).on('pageshow', '[data-role=page]', function(e) {\n" +
+//	              			"  var src = '//www.facebook.com/plugins/like.php?href=';\n" +
+//	              			"  src += encodeURIComponent(location.href);\n" +
+//	              			"  src += '&send=false&layout=button_count&width=200&show_faces=true&action=like&colorscheme=light&height=21';\n" +
+//	              			"  $('.like-btn').attr('src', src);\n" +
+//	              			"});\n\n");
+//	              	//bookmark
+//	              	pw.println("function addBookmark(title,url) {\n" +
+//	              			"	//IE\n" +
+//	              			"	if(navigator.userAgent.indexOf(\"MSIE\") > -1){\n" +
+//							"		window.external.AddFavorite(url, title);\n" +
+//							"	}\n" +
+//							"	//Firefox\n" +
+//							"	else if(navigator.userAgent.indexOf(\"Firefox\") > -1){\n" +
+//							"		window.sidebar.addPanel(title, url, \"\");\n" +
+//							"	}\n" +
+//							"	//Opera\n" +
+//							"	else if(navigator.userAgent.indexOf(\"Opera\") > -1){\n" +
+//							"		document.write('<div style=\"text-align:center\"><a href=\"'+url+'\" rel=\"sidebar\" title=\"'+title+'\">ブックマークに追加</a></div><br>');\n" +
+//							"	}\n" +
+//							"	//Netscape\n" +
+//							"	else if(navigator.userAgent.indexOf(\"Netscape\") > -1){\n" +
+//							"		document.write('<div style=\"text-align:center\"><input type=\"button\" value=\"ブックマークに追加\"');\n" +
+//							"		document.write(' onclick=\"window.sidebar.addPanel(\\''+title+'\\',\\''+url+'\\',\\'\\');\"></div><br>');\n" +
+//							"	}\n" +
+//							"	else{\n" +
+//							"    	alert(\"このブラウザへのお気に入り追加ボタンは、Chrome/Safari等には対応しておりません。\\nChrome/Safariの場合、CtrlキーとDキーを同時に押してください。\\nその他の場合はご自身のブラウザからお気に入りへ追加下さい。\");\n" +
+//							"  	}\n" +
+//							"}\n");
+//	              	//added by goto 20130110
+//	              	//slideshow
+//	              	pw.println("$(document).on('pageshow', '#p-gallery', function(e){\n" +
+//	              			"	var currentPage = $(e.target);\n" +
+//	              			"	photoSwipeInstance = $(\"ul.gallery a\", e.target).photoSwipe({},  currentPage.attr('id'));\n" +
+//	              			"}).on('pagehide', '#p-gallery', function(e){\n" +
+//	              			"	var currentPage = $(e.target),\n" +
+//	              			"	photoSwipeInstance = window.Code.PhotoSwipe.getInstance(currentPage.attr('id'));\n" +
+//	              			"	if (typeof photoSwipeInstance != \"undefined\" && photoSwipeInstance != null) {\n" +
+//	              			"		window.Code.PhotoSwipe.detatch(photoSwipeInstance);\n" +
+//	              			"	}\n" +
+//	              			"});\n");
+//	              	
+//	              	//added by goto 20130330
+//	              	//tab
+//	              	pw.println("$(document).ready(function() {\n" +
+//	              			"	$( \"[id=tabs]\" ).tabs();\n" +
+//	//              			"	$( \"#tabs\" ).tabs();\n" +
+//	              			"});\n");
+//	              	
+//	              	//form validation
+//	              	pw.println("\n/** <form> validation **/\n" +
+//	              			"$(document).ready(function () {\n" +
+//	              			"	jQuery.validator.addMethod(\n" +
+//	              			"	  \"jqValidate_TelephoneNumber\", function(value, element) {\n" +
+//	              			"	     return this.optional(element) || new RegExp(\"^[0-9\\-]+$\").test(value);\n" +
+//	              			"	   }, \"Please enter a valid telephone number.\"\n" +
+//	              			"	);\n" +
+//	              			"	jQuery.validator.addMethod(\n" +
+//	              			"	  \"jqValidate_Alphabet\", function(value, element) {\n" +
+//	              			"	     return this.optional(element) || new RegExp(\"^[a-zA-Z]+$\").test(value);\n" +
+//	              			"	   }, \"You can enter only the alphabet.\"\n" +
+//	              			"	);\n" +
+//	              			"	jQuery.validator.addMethod(\n" +
+//	              			"	  \"jqValidate_AlphabetNumber\", function(value, element) {\n" +
+//	              			"	     return this.optional(element) || new RegExp(\"^[0-9a-zA-Z]+$\").test(value);\n" +
+//	              			"	   }, \"You can enter only the alphabet and a number.\"\n" +
+//	              			"	);\n" +
+//	              			"});\n");
+//	              	
+//	//              	//added by goto 20130503
+//	//              	//panel
+//	//              	pw.println("$(document).on('click',\"button.open\",function(){\n" +
+//	//              			"	$(\"[id=ssqlpanel]\").panel(\"open\")\n" +
+//	//      					"}).on('click',\"button.close\",function(){\n" +
+//	//						"	$(\"[id=ssqlpanel]\").panel(\"close\")\n" +
+//	//						"});\n");
+//	              
+//	              	// 後始末
+//	              	pw.close();
+//	            // エラーがあった場合は、スタックトレースを出力
+//	            } catch(Exception e) {
+//	            	e.printStackTrace();
+//	            }
+//	            //added by goto 20121222 end
+//          	}//通常のみの処理（jsファイル作成）end
         	
           	header.append("\n");
 	        header.append(jscss);
@@ -844,7 +837,8 @@ public class Mobile_HTML5Env extends LocalEnv {
 		        				"<!-- \"Login & Logout\" start -->\n" +
 		        				"<?php\n" +
 		        				"//最初にログイン中かどうか判定\n" +
-		        				"if($_SESSION["+sessionVariable_UniqueName+"id] != \"\"){\n" +
+//		        				"if($_SESSION["+sessionVariable_UniqueName+"id] != \"\"){\n" +
+		        				"if(isset($_SESSION['"+sessionVariable_UniqueName+"id'])){\n" +
 		        				"?>\n" +
 		        				"	<script type=\"text/javascript\">\n" +
 		        				"	$(document).ready(function(){\n" +
@@ -855,7 +849,7 @@ public class Mobile_HTML5Env extends LocalEnv {
 		        				"<?php\n" +
 		        				"	display_html();								//display_html\n" +
 		        				//ユーザ名
-		        				"	echo '<script type=\"text/javascript\">$(\\'#showValues\\').html(\\'<div style=\\\"text-align:right;color:gray;font-size:12;background-color:whitesmoke;\\\">ログイン日時: '.$_SESSION["+sessionVariable_UniqueName+"logintime].'<br>ようこそ '.$_SESSION["+sessionVariable_UniqueName+"id].'さん</div>\\');</script>';\n" +
+		        				"	echo '<script type=\"text/javascript\">$(\\'#showValues\\').html(\\'<div style=\\\"text-align:right;color:gray;font-size:12;background-color:whitesmoke;\\\">ログイン日時: '.$_SESSION['"+sessionVariable_UniqueName+"logintime'].'<br>ようこそ '.$_SESSION['"+sessionVariable_UniqueName+"id'].'さん</div>\\');</script>';\n" +
 		        				"}else{\n" +
 		        				"?>\n" +
 		        				"	<script type=\"text/javascript\">\n" +
@@ -919,7 +913,8 @@ public class Mobile_HTML5Env extends LocalEnv {
 		        				"\n" +
 		        				"<?php\n" +
 		        				"//Login or Registration\n" +
-		        				"if($_POST['sqlite3_login1']){\n" +
+//		        				"if($_POST['sqlite3_login1']){\n" +
+		        				"if(isset($_POST['sqlite3_login1'])){\n" +
 		        				"	//ユーザ定義\n" +
 		        				"	$sqlite3_DB = '"+DB+"';\n" +
 		        				"	$sqlite3_id = '"+c1+"';\n" +
@@ -945,7 +940,7 @@ public class Mobile_HTML5Env extends LocalEnv {
 			        		for(int i=0; i<c3_array_num; i++){
 								//c3_array[i];
 								header.append(
-				        				"	          $_SESSION["+c3_array[i]+"] = $res["+(i+2)+"];\n");
+				        				"	          $_SESSION['"+c3_array[i]+"'] = $res["+(i+2)+"];\n");
 							}
 						}
 						header.append(
@@ -955,8 +950,8 @@ public class Mobile_HTML5Env extends LocalEnv {
 		        				"	    if($i == 0)	p('<font color=#ff0000>Login failed.</font>');	//Login failed.\n" +
 		        				"	    else{\n" +
 		        				"	    	//Login success.\n" +
-		        				"	    	$_SESSION["+sessionVariable_UniqueName+"id] = $id;\n" +
-		        				"	    	$_SESSION["+sessionVariable_UniqueName+"logintime] = date('Y/m/d(D) H:i:s', time());\n" +		//ユーザ名
+		        				"	    	$_SESSION['"+sessionVariable_UniqueName+"id'] = $id;\n" +
+		        				"	    	$_SESSION['"+sessionVariable_UniqueName+"logintime'] = date('Y/m/d(D) H:i:s', time());\n" +		//ユーザ名
 		        				"			echo '<script type=\"text/javascript\">window.parent.$(\\'#Login_text1\\').text(\"\");</script>';\n" +
 		        				"			echo '<script type=\"text/javascript\">window.parent.location.reload(true);</script>';	//reload\n" +
 		        				"	    }\n" +
@@ -1058,7 +1053,7 @@ public class Mobile_HTML5Env extends LocalEnv {
     							"\n" +
     							"<?php\n" +
     							"//最初にログイン中かどうか判定\n" +
-    							"if($_SESSION["+sessionVariable_UniqueName+"id] != \"\"){\n" +
+    							"if(isset($_SESSION['"+sessionVariable_UniqueName+"id'])){\n" +
     							"?>\n" +
     							"	<script type=\"text/javascript\">\n" +
     							"	$(document).ready(function(){\n" +
@@ -1154,7 +1149,8 @@ public class Mobile_HTML5Env extends LocalEnv {
     							"\n" +
     							"<?php\n" +
     							"	//ログイン処理\n" +
-    							"	if($_POST['sqlite3_login1']){\n" +
+//    							"	if($_POST['sqlite3_login1']){\n" +
+    							"	if(isset($_POST['sqlite3_login1'])){\n" +
     							"		//ユーザ定義\n" +
     							"		$sqlite3_DB = '"+DB+"';\n" +
     							"		$sqlite3_id = '"+c1+"';\n" +
@@ -1176,7 +1172,7 @@ public class Mobile_HTML5Env extends LocalEnv {
     							"		    if($i == 0)	p('<font color=#ff0000>Login failed.</font>');	//Login failed.\n" +
     							"		    else{\n" +
     							"		    	//Login success.\n" +
-    							"		    	$_SESSION["+sessionVariable_UniqueName+"id] = $id;\n" +
+    							"		    	$_SESSION['"+sessionVariable_UniqueName+"id'] = $id;\n" +
     							"				echo '<script type=\"text/javascript\">window.parent.$(\\'#Login_text1\\').text(\"\");</script>';\n" +
     							"				echo '<script type=\"text/javascript\">window.parent.location.reload(true);</script>';	//reload\n" +
     							"		    }\n" +
@@ -1187,8 +1183,10 @@ public class Mobile_HTML5Env extends LocalEnv {
     							"	}\n" +
     							"\n" +
     							"	//メール送信 ＆ 新規登録\n" +
-    							"	if($_POST['mail'] || $_POST['mail1']){\n" +
-    							"	    if($_POST[\"mail1\"]==\"\"){\n" +
+//    							"	if($_POST['mail'] || $_POST['mail1']){\n" +
+    							"	if(isset($_POST['mail']) || isset($_POST['mail1'])){\n" +
+//    							"	    if($_POST[\"mail1\"]==\"\"){\n" +
+    							"	    if(!isset($_POST[\"mail1\"])){\n" +
     							"	        p(\"<font color=#ff0000>メールアドレスを入力してください。</font>\");\n" +
     							"	    }elseif(mb_strlen($_POST[\"mail1\"])> 0 && !preg_match(\"/^([a-z0-9_]|\\-|\\.|\\+)+@(([a-z0-9_]|\\-)+\\.)+[a-z]{2,6}$/i\",$_POST[\"mail1\"])){\n" +
     							"	        p(\"<font color=#ff0000>メールアドレスの書式に<br>誤りがあります。</font>\");\n" +
@@ -1216,7 +1214,8 @@ public class Mobile_HTML5Env extends LocalEnv {
     							"	}\n" +
     							"\n" +
     							"	//パスワードをランダムパスワードで初期化。ユーザーへメール送信\n" +
-    							"	if($_POST['sqlite3_reset1']){ \n" +
+//    							"	if($_POST['sqlite3_reset1']){ \n" +
+    							"	if(isset($_POST['sqlite3_reset1'])){ \n" +
     							"		$mail = $_POST['sqlite3_reset1'];\n" +
     							"	    echo '<script type=\"text/javascript\">window.parent.window.parent.Login_echo1(\"'.$mail.' 登録済みパスワードを初期化します。\");</script>';\n" +
     							"		password_reset_and_send_mail($mail);\n" +
@@ -1477,7 +1476,8 @@ public class Mobile_HTML5Env extends LocalEnv {
     				//通常時のみ（Prev/Nextでは行わない）
 	        		if(headerFlag==1)
 	        		header.append("<?php\n" +
-	        				"if($_POST['sqlite3_logout1']){\n" +
+//	        				"if($_POST['sqlite3_logout1']){\n" +
+	        				"if(isset($_POST['sqlite3_logout1'])){\n" +
 	        				"	//ログアウト処理\n" +
 	        				"	//セッション変数を全て解除\n" +
 	        				"	$_SESSION = array();\n" +
@@ -1499,7 +1499,7 @@ public class Mobile_HTML5Env extends LocalEnv {
 	        				"<?php\n" +
 	        				"//<!-- display_html start -->\n" +
 	        				"function display_html(){\n" +
-	        				"	if($_SESSION["+sessionVariable_UniqueName+"id] != \"\"){\n" +
+	        				"	if(isset($_SESSION['"+sessionVariable_UniqueName+"id'])){\n" +
 	        				"		echo <<<EOF\n" +
 	        				"		\n");
 	        	}

@@ -100,7 +100,7 @@ public class FormServlet4 extends HttpServlet {
 
 		//    out.println(" Query : " + QueryBuffer);
 
-		System.err.println("Query: " + QueryBuffer);
+		Log.err("Query: " + QueryBuffer);
 		String[] args = {"-c",configfile, "-o",sqlfile,"-ajax","-servlet"};
 
 		GlobalEnv.setGlobalEnv(args);

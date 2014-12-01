@@ -94,7 +94,7 @@ public class FormServlet3 extends HttpServlet {
     	QueryBuffer.append(tmp);
     }
     
-    System.err.println("Query: " + QueryBuffer);
+    Log.err("Query: " + QueryBuffer);
     String[] args = {"-c",configfile, "-o",sqlfile,"-ajax","-servlet"};
     
     GlobalEnv.setGlobalEnv(args);

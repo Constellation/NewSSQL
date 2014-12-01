@@ -124,6 +124,7 @@ public class Mobile_HTML5C1 extends Connector {
 //    				j++;
 //    			}
         		
+        		
             	html_env.code.append("<div data-role=\"content\"> <div id=\"tabs\">\n<ul>\n");
             	html_env.code.append("	<li><a href=\"#tabs-"+Mobile_HTML5Env.tabCount+"\">");
             	if(!decos.getStr("tab1").equals(""))	html_env.code.append(decos.getStr("tab1"));

@@ -289,7 +289,7 @@ public class InvokeServlet2 extends HttpServlet {
 			String session = new String();
 			while(true){
 				if (!st.hasMoreTokens()) {
-					System.err.println("*** No Query Specified ***");
+					Log.err("*** No Query Specified ***");
 					throw (new IllegalStateException());
 				}
 				String nt = st.nextToken();
@@ -306,7 +306,7 @@ public class InvokeServlet2 extends HttpServlet {
 				if(session.indexOf("(") > 0 && session.indexOf(")") >0){
 					session = session.substring(session.indexOf("(")+1,session.indexOf(")"));
 				}else{
-					System.err.println("Error[InvokeServlet2] : Syntax Err");
+					Log.err("Error[InvokeServlet2] : Syntax Err");
 				}
 				return session;
 			}else{
@@ -392,7 +392,7 @@ public class InvokeServlet2 extends HttpServlet {
 						}
 					}
 					if(flg == 0){
-						System.err.println("Err[InvokeServ2]: session variable " + sptmp + " does not exist");
+						Log.err("Err[InvokeServ2]: session variable " + sptmp + " does not exist");
 						break;
 					}
 				}

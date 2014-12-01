@@ -16,8 +16,11 @@ public class LevenshteinDistance {
 		else
 			firstString = checkdStrings;
 		
-		if(!firstString.isEmpty())
+		if(!firstString.isEmpty()){
 			Log.err("\nDid you mean... '"+firstString+"' ?");
+			// 20140624_masato
+//			GlobalEnv.errorText += "\nDid you mean... '"+firstString+"' ?";
+		}
 		
 		return checkdStrings;
 	}

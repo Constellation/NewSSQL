@@ -15,26 +15,35 @@ import java.util.Hashtable;
 
 public class GlobalEnv {
 	
-	public static final char COMMENT_OUT_LETTER = '-';	//¥³¥á¥ó¥È¥¢¥¦¥È¤Ë»ÈÍÑ¤¹¤ëÊ¸»ú(ex: -- )
+	public static final char COMMENT_OUT_LETTER = '-';	//ï¿½ï¿½ï¿½ï¿½ï¿½È¥ï¿½ï¿½ï¿½ï¿½È¤Ë»ï¿½ï¿½Ñ¤ï¿½ï¿½ï¿½Ê¸ï¿½ï¿½(ex: -- )
 	
-    /* [½ÅÍ×] getProperty¥á¥½¥Ã¥É¤Ë¤è¤Ã¤Æ¡¢¥·¥¹¥Æ¥à¥×¥í¥Ñ¥Æ¥£¤ÎÃÍ(OS¡¢¥Õ¥¡¥¤¥ë¶èÀÚ¤êÊ¸»ú¡¢¥Û¡¼¥à¡¢¸À¸ì¤Ê¤É)¤ò¼èÆÀ */
-    /* ¥·¥¹¥Æ¥à¥×¥í¥Ñ¥Æ¥£ÃÍ°ìÍ÷¤Î¼èÆÀ: System.getProperties().list(System.out); */
-    public final static String USER_HOME = System.getProperty("user.home");				//¥æ¡¼¥¶¤Î¥Û¡¼¥à¥Ç¥£¥ì¥¯¥È¥ê
-    public final static String OS = System.getProperty("os.name");						//OS¤ÎÌ¾Á°("Mac OS X" Åù)
-    public final static String OS_LS = System.getProperty("line.separator");			//OS¤´¤È¤Î²þ¹Ô¥³¡¼¥É(Windows:"\r\n",Mac:"\r",UNIX:"\n" Åù)
-    public final static String OS_FS = System.getProperty("file.separator");			//OS¤´¤È¤Î¥Õ¥¡¥¤¥ë¶èÀÚ¤êÊ¸»ú(Windows:"\" , Mac¤ÈLinux:"/" Åù)
-    public final static String OS_PS = System.getProperty("path.separator");			//OS¤´¤È¤Î¥Ñ¥¹¶èÀÚ¤êÊ¸»ú(Windows";" , Mac¤ÈLinux":" Åù)
-    public final static String EXE_FILE_PATH = System.getProperty("java.class.path");	//¼Â¹Ô¥Õ¥¡¥¤¥ë¤Î¥Ñ¥¹(¼Â¹Ôjar¥Õ¥¡¥¤¥ëÅù¤¬¤É¤³¤Ë¤¢¤ë¤«)¤ò¼èÆÀ (¢¨Ãí°Õ:ÁêÂÐ¥Ñ¥¹¤ÇÊÖ¤Ã¤Æ¤¯¤ë¾ì¹ç¤¢¤ê)
-    public final static String USER_LANGUAGE = System.getProperty("user.language");		//¥æ¡¼¥¶¤Î¸À¸ì(ÆüËÜ¸ì:ja)  ÆüËÜ¸ì¡¦±Ñ¸ìÀÚ¤êÂØ¤¨µ¡Ç½¤òÉÕ¤±¤ë¤È¤­¤Ë»ÈÍÑ¡©
-    public final static String USER_COUNTRY = System.getProperty("user.country");		//¥æ¡¼¥¶¤Î¹ñÌ¾(ÆüËÜ:JP)   ÆüËÜ¸ì¡¦±Ñ¸ìÀÚ¤êÂØ¤¨µ¡Ç½¤òÉÕ¤±¤ë¤È¤­¤Ë»ÈÍÑ¡©
+    /* [ï¿½ï¿½ï¿½ï¿½] getPropertyï¿½á¥½ï¿½Ã¥É¤Ë¤ï¿½Ã¤Æ¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¥ï¿½×¥ï¿½Ñ¥Æ¥ï¿½ï¿½ï¿½ï¿½ï¿½(OSï¿½ï¿½ï¿½Õ¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú¤ï¿½Ê¸ï¿½ï¿½Û¡ï¿½ï¿½à¡¢ï¿½ï¿½ï¿½ï¿½Ê¤ï¿½)ï¿½ï¿½ï¿½ï¿½ï¿½ */
+    /* ï¿½ï¿½ï¿½ï¿½ï¿½Æ¥ï¿½×¥ï¿½Ñ¥Æ¥ï¿½ï¿½Í°ï¿½ï¿½ï¿½ï¿½Î¼ï¿½ï¿½ï¿½: System.getProperties().list(System.out); */
+    public final static String USER_HOME = System.getProperty("user.home");				//ï¿½æ¡¼ï¿½ï¿½ï¿½Î¥Û¡ï¿½ï¿½ï¿½Ç¥ï¿½ï¿½ì¥¯ï¿½È¥ï¿½
+    public final static String OS = System.getProperty("os.name");						//OSï¿½ï¿½Ì¾ï¿½ï¿½("Mac OS X" ï¿½ï¿½)
+    public final static String OS_LS = System.getProperty("line.separator");			//OSï¿½ï¿½ï¿½È¤Î²ï¿½ï¿½Ô¥ï¿½ï¿½ï¿½ï¿½ï¿½(Windows:"\r\n",Mac:"\r",UNIX:"\n" ï¿½ï¿½)
+    public final static String OS_FS = System.getProperty("file.separator");			//OSï¿½ï¿½ï¿½È¤Î¥Õ¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú¤ï¿½Ê¸ï¿½ï¿½(Windows:"\" , Macï¿½ï¿½Linux:"/" ï¿½ï¿½)
+    public final static String OS_PS = System.getProperty("path.separator");			//OSï¿½ï¿½ï¿½È¤Î¥Ñ¥ï¿½ï¿½ï¿½ï¿½Ú¤ï¿½Ê¸ï¿½ï¿½(Windows";" , Macï¿½ï¿½Linux":" ï¿½ï¿½)
+    public final static String EXE_FILE_PATH = getCurrentPath();	//ï¿½Â¹Ô¥Õ¥ï¿½ï¿½ï¿½ï¿½ï¿½Î¥Ñ¥ï¿½(ï¿½Â¹ï¿½jarï¿½Õ¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É¤ï¿½ï¿½Ë¤ï¿½ï¿½ë¤«)ï¿½ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½:ï¿½ï¿½ï¿½Ð¥Ñ¥ï¿½ï¿½ï¿½ï¿½Ö¤Ã¤Æ¤ï¿½ï¿½ï¿½ï¿½ç¤¢ï¿½ï¿½)
+    public final static String USER_LANGUAGE = System.getProperty("user.language");		//ï¿½æ¡¼ï¿½ï¿½ï¿½Î¸ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½Ü¸ï¿½:ja)  ï¿½ï¿½ï¿½Ü¸ì¡¦ï¿½Ñ¸ï¿½ï¿½Ú¤ï¿½ï¿½Ø¤ï¿½ï¿½ï¿½Ç½ï¿½ï¿½ï¿½Õ¤ï¿½ï¿½ï¿½È¤ï¿½ï¿½Ë»ï¿½ï¿½Ñ¡ï¿½
+    public final static String USER_COUNTRY = System.getProperty("user.country");		//ï¿½æ¡¼ï¿½ï¿½ï¿½Î¹ï¿½Ì¾(ï¿½ï¿½ï¿½ï¿½:JP)   ï¿½ï¿½ï¿½Ü¸ì¡¦ï¿½Ñ¸ï¿½ï¿½Ú¤ï¿½ï¿½Ø¤ï¿½ï¿½ï¿½Ç½ï¿½ï¿½ï¿½Õ¤ï¿½ï¿½ï¿½È¤ï¿½ï¿½Ë»ï¿½ï¿½Ñ¡ï¿½
 
     public final static String MEDIA_XML = System.getProperty("user.dir")+OS_FS+"XML"+OS_FS+"ssql_medias.xml";
+
+	public static final String DEFAULT_CHARACTER_CODE = "UTF-8";
     
     public static String query = "";
     
 	private static Hashtable<String, String> envs;
+	
+	// 20140624_masato
+	public static String errorText = "";
+	public static String errorText_main = "";
+	public static String queryInfo = "";
+	public static String queryLog = "";
+	public static String queryName = "";
 
-	//ÀßÄê¥Õ¥¡¥¤¥ë¤Î¾ðÊó
+	//ï¿½ï¿½ï¿½ï¿½Õ¥ï¿½ï¿½ï¿½ï¿½ï¿½Î¾ï¿½ï¿½ï¿½
 	private static String layout = "";
 	
 	private static String host;
@@ -50,6 +59,8 @@ public class GlobalEnv {
 	private static String password;
 
 	private static String encode;
+	
+	private static String apiServerUrl;
 
 	//chie start
 	private static String driver;
@@ -64,18 +75,18 @@ public class GlobalEnv {
 
 	//chie end
 
-	//swfÍÑ
+	//swfï¿½ï¿½
 	public static String table_name;
 	public static String where_line;
 
-	//foreachÍÑ
+	//foreachï¿½ï¿½
 	public static boolean foreach_flag;
 
 	//added by ria 20110704 start
 	private static boolean optimizable = true;
 	//added by ria 20110704 end
 
-	//tk embedÍÑ
+	//tk embedï¿½ï¿½
 	public static StringBuffer err = new StringBuffer();
 	public static int online_flag = 0;
 	public static int err_flag = 0;
@@ -110,7 +121,7 @@ public class GlobalEnv {
 		}
 		
 		//added by goto 20120707 start
-		//optimize levelÀßÄê¥ª¥×¥·¥ç¥ó"-O0,-O1,-O2,-O3"¤ò»ÈÍÑ²ÄÇ½¤Ë
+		//optimize levelï¿½ï¿½ï¿½ê¥ªï¿½×¥ï¿½ï¿½ï¿½ï¿½"-O0,-O1,-O2,-O3"ï¿½ï¿½ï¿½ï¿½Ñ²ï¿½Ç½ï¿½ï¿½
 		for (int i = 0; i <= 3; i++)
 			if(envs.containsKey("-O"+i)){
 				envs.remove("-O"+i);
@@ -177,17 +188,7 @@ public class GlobalEnv {
 		}
 		else {
 			Log.out("[GlobalEnv:getConfig] config file =" + config);
-
-			if(config.contains("http"))
-			{
-				Log.out("online config");
-				c_value = getConfigValue2(config);
-			}
-			else
-			{
-				Log.out("offline config");
-				c_value = getConfigValue(config);
-			}
+			c_value = getConfigValue(config);
 		}
 		//tk
 
@@ -236,6 +237,9 @@ public class GlobalEnv {
 			if(c_value[11] != null){
 				setLayout(c_value[11]);
 			}
+			if(c_value[12] != null){
+				setApiServerUrl(c_value[12]);
+			}
 		} catch (Exception ex) {
 		}
 
@@ -256,19 +260,23 @@ public class GlobalEnv {
 	}
 
 	/*
-	 * ¥Æ¥¹¥È¥Ç¡¼¥¿¤Î¥Õ¥¡¥¤?¤Î»Ø? ¸½ºß¤Ï»ÈÍÑ¤·¤Æ¤¤¤Ê¤¤
+	 * ï¿½Æ¥ï¿½ï¿½È¥Ç¡ï¿½ï¿½ï¿½ï¿½Î¥Õ¥ï¿½ï¿½ï¿½?ï¿½Î»ï¿½? ï¿½ï¿½ï¿½ß¤Ï»ï¿½ï¿½Ñ¤ï¿½ï¿½Æ¤ï¿½ï¿½Ê¤ï¿½
 	 */
 	public static String gettestdatafile() {
 		return seek("-t");
 	}
 
 	/**
-	 * SuperSQL¼ÁÌäÊ¸¤¬³ÊÇ¼¤µ¤ì¤Æ¤¤¤ë¥Õ¥¡¥¤¥ëÌ¾
+	 * SuperSQLï¿½ï¿½ï¿½ï¿½Ê¸ï¿½ï¿½ï¿½ï¿½Ç¼ï¿½ï¿½ï¿½ï¿½Æ¤ï¿½ï¿½ï¿½Õ¥ï¿½ï¿½ï¿½ï¿½ï¿½Ì¾
 	 */
 	public static String getfilename() {
 		return seek("-f");
 	}
-
+	
+	//added by goto 20141130
+	public static String getfileparent() {
+		return new File(seek("-f")).getParent();
+	}
 
 	public static String getoutdirectory() {
 		String ret = seek("-d");
@@ -291,7 +299,7 @@ public class GlobalEnv {
 	}
 
 	/**
-	 * ½ÐÎÏ¥Õ¥¡¥¤¥ëÌ¾
+	 * ï¿½ï¿½ï¿½Ï¥Õ¥ï¿½ï¿½ï¿½ï¿½ï¿½Ì¾
 	 */
 	public static String getoutfilename() {
 		return seek("-o");
@@ -299,7 +307,7 @@ public class GlobalEnv {
 
 
 	/**
-	 * ¥Ç¡¼¥¿¥Ù¡¼¥¹¤ËÀÜÂ³¤¹¤ë¥æ¡¼¥¶Ì¾
+	 * ï¿½Ç¡ï¿½ï¿½ï¿½ï¿½Ù¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â³ï¿½ï¿½ï¿½ï¿½æ¡¼ï¿½ï¿½Ì¾
 	 */
 	public static String getusername() {
 		String ret = seek("-u");
@@ -310,7 +318,7 @@ public class GlobalEnv {
 	}
 
 	/*
-	 * ÀÜÂ³¤¹¤ë¥Ç¡¼¥¿¥Ù¡¼¥¹ ¾ÊÎ¬¤µ¤ì¤¿¾ì¹ç¥æ¡¼¥¶Ì¾¤ÈÆ±¤¸¤È¤¹¤ë
+	 * ï¿½ï¿½Â³ï¿½ï¿½ï¿½ï¿½Ç¡ï¿½ï¿½ï¿½ï¿½Ù¡ï¿½ï¿½ï¿½ ï¿½ï¿½Î¬ï¿½ï¿½ï¿½ì¤¿ï¿½ï¿½ï¿½æ¡¼ï¿½ï¿½Ì¾ï¿½ï¿½Æ±ï¿½ï¿½ï¿½È¤ï¿½ï¿½ï¿½
 	 */
 	public static String getdbname() {
 		String ret = seek("-db");
@@ -325,7 +333,7 @@ public class GlobalEnv {
 	}
 
 	/*
-	 * ÀÜÂ³¤¹¤ëDB¥Û¥¹¥ÈÌ¾
+	 * ï¿½ï¿½Â³ï¿½ï¿½ï¿½ï¿½DBï¿½Û¥ï¿½ï¿½ï¿½Ì¾
 	 */
 	public static String gethost() {
 		String ret = seek("-h");
@@ -351,7 +359,7 @@ public class GlobalEnv {
 		return ret;
 	}
 
-	//ÀÜÂ³¤¹¤ëDB¤Îurl
+	//ï¿½ï¿½Â³ï¿½ï¿½ï¿½ï¿½DBï¿½ï¿½url
 	public static String geturl() {
 		String ret = "jdbc:postgresql://" + host + "/" + db;;
 		if (driver != null) {
@@ -363,7 +371,18 @@ public class GlobalEnv {
 				ret = "jdbc:db2:" + db;	
 			//added by goto 20120518 start
 			}else if (driver.equals("sqlite") || driver.equals("sqlite3")) {
-				ret = "jdbc:sqlite:" + db;
+//				ret = "jdbc:sqlite:" + db;
+				//added by goto 20141130 start
+				ret = "jdbc:sqlite:";
+			    if (!new File(db).isAbsolute()) {
+			    	if(GlobalEnv.getoutdirectory() != null)
+			    		ret += GlobalEnv.getoutdirectory();
+			    	else
+			    		ret += GlobalEnv.getfileparent();
+			    	ret += GlobalEnv.OS_FS;
+			    }
+			    ret += db;
+				//added by goto 20141130 end
 			}
 			//added by goto 20120518 end
 		} else {
@@ -373,7 +392,7 @@ public class GlobalEnv {
 		return ret;
 	}
 
-	//ÀÜÂ³¤¹¤ë¥É¥é¥¤¥Ð¤Î¥Ñ¥¹¥ï¡¼¥É
+	//ï¿½ï¿½Â³ï¿½ï¿½ï¿½ï¿½É¥é¥¤ï¿½Ð¤Î¥Ñ¥ï¿½ï¿½ï¡¼ï¿½ï¿½
 	public static String getpassword() {
 		String ret = seek("-p");
 		if (ret == null) {
@@ -386,7 +405,7 @@ public class GlobalEnv {
 		return ret;
 	}
 
-	//½ÐÎÏ¥Õ¥¡¥¤¥ë¤Îencode
+	//ï¿½ï¿½ï¿½Ï¥Õ¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½encode
 	public static String getencode() {
 		String ret;
 		if (encode != null) {
@@ -399,7 +418,7 @@ public class GlobalEnv {
 
 
 	/*
-	 * -debug¤¬¤¢¤ë¤È¤­¤À¤±¡¤Log.out¤ò½ÐÎÏ¤¹¤ë
+	 * -debugï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Log.outï¿½ï¿½ï¿½ï¿½Ï¤ï¿½ï¿½ï¿½
 	 */
 	public static void setQuietLog() {
 		if (seek("-debug") == null) {
@@ -416,15 +435,10 @@ public class GlobalEnv {
 	}
 
 	/*
-	 * ¤³¤ÎÊ¸»úÎó¤ò¼ÁÌäÊ¸¤È¤¹¤ë(-f¤ÎÂå¤ï¤ê)
+	 * ï¿½ï¿½ï¿½ï¿½Ê¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¸ï¿½È¤ï¿½ï¿½ï¿½(-fï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
 	 */
 	public static String getQuery() {
 		return seek("-query");
-	}
-
-	//morya start
-	public static String getframeworklist() {
-		return seek("-fwlist");
 	}
 
 	public static String cssout() {
@@ -444,7 +458,7 @@ public class GlobalEnv {
 		//tk added embedtmp
 		//chie added driver, optimizer
 		//(invokeServletPath and fileDirectory are not used in offline)
-		String[] con = { "host", "db", "user", "outdir", "embedtmp","driver", "password", "encode", "optimizer","invokeServletPath","fileDirectory", "layout"};
+		String[] con = { "host", "db", "user", "outdir", "embedtmp","driver", "password", "encode", "optimizer","invokeServletPath","fileDirectory", "layout", "api_server_url"};
 
 		try {
 			filein = new BufferedReader(new FileReader(config));
@@ -511,21 +525,21 @@ public class GlobalEnv {
                 		}
                 	}
                 } catch (MalformedURLException me) {
-                    System.err.println("MalformedURLException: " + me);
+                    Log.err("MalformedURLException: " + me);
                 } catch (IOException ioe) {
-                    System.err.println("IOException: " + ioe);
+                    Log.err("IOException: " + ioe);
                 }
      			}
 		} catch (MalformedURLException me) {
-            System.err.println("MalformedURLException: " + me);
+            Log.err("MalformedURLException: " + me);
         } catch (IOException ioe) {
-            System.err.println("IOException: " + ioe);
+        	Log.err("IOException: " + ioe);
         }
 
 		return c_value;
 	}
 	/**
-	 * ¤³¤ÎÊ¸»úÎó¤ò¼ÁÌäÊ¸¤ÎWHEREÀá¤Ë²Ã¤¨¤ë
+	 * ï¿½ï¿½ï¿½ï¿½Ê¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¸ï¿½ï¿½WHEREï¿½ï¿½Ë²Ã¤ï¿½ï¿½ï¿½
 	 */
 	public static String getCondition() {
 		return seek("-cond");
@@ -539,7 +553,7 @@ public class GlobalEnv {
 	}
 
 	/**
-	 * ImagefileÅù¤Ç¡¤ÁêÂÐ¥Ñ¥¹¤òµ­½Ò¤·¤¿¤È¤­¤Ë ÉÕ²Ã¤¹¤ë¥Ç¥£¥ì¥¯¥È¥ê
+	 * Imagefileï¿½ï¿½Ç¡ï¿½ï¿½ï¿½ï¿½Ð¥Ñ¥ï¿½ï¿½òµ­½Ò¤ï¿½ï¿½ï¿½ï¿½È¤ï¿½ï¿½ï¿½ ï¿½Õ²Ã¤ï¿½ï¿½ï¿½Ç¥ï¿½ï¿½ì¥¯ï¿½È¥ï¿½
 	 */
 	public static String getBaseDir() {
 		return seek("-basedir");
@@ -553,7 +567,7 @@ public class GlobalEnv {
 	}
 
 	/**
-	 * Invoke¤Î¥µ¡¼¥Ö¥ì¥Ã¥È¤Îpath
+	 * Invokeï¿½Î¥ï¿½ï¿½ï¿½ï¿½Ö¥ï¿½Ã¥È¤ï¿½path
 	 */
 	public static String getInvokeServletPath() {
 		String is = seek("-invokeservletpath");
@@ -756,5 +770,41 @@ public class GlobalEnv {
 
 	public static void setLayout(String layout) {
 		GlobalEnv.layout = layout;
+	}
+
+	public static String getApiServerUrl() {
+		return apiServerUrl;
+	}
+
+	public static void setApiServerUrl(String apiServerUrl) {
+		GlobalEnv.apiServerUrl = apiServerUrl;
+	}
+	public static String getframeworklist() {
+		return seek("-fwlist");
+	}
+	
+	//added by goto 20141130
+	//halken TFEmatcher
+    public static boolean isTFEmatcher() {
+    	if(seek("-tfematcher") != null)
+    		return true;
+		return false;
+	}
+    
+    //added by goto 20141201
+    public static boolean isLogger() {
+    	if(seek("-logger") != null)
+    		return true;
+    	return false;
+    }
+    
+    //added by goto 20141201
+	private static String getCurrentPath(){
+		String cp = System.getProperty("java.class.path");
+		if(cp.contains(":"))
+			cp = cp.substring(0,cp.indexOf(":"));
+		if(cp.endsWith(".jar"))
+			cp = new File(cp).getAbsolutePath();
+		return cp;
 	}
 }

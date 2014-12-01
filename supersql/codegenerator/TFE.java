@@ -1,6 +1,7 @@
 package supersql.codegenerator;
 
 import supersql.extendclass.ExtList;
+import supersql.parser.TFEmatcher;
 
 public class TFE implements ITFE {
 
@@ -52,6 +53,7 @@ public class TFE implements ITFE {
 
 	@Override
 	public void setId(int id) {
+		TFEmatcher.addTFEid_and_TokenPlace(id);	//halken TFEmatcher
 		this.id = id;
 	}
 

@@ -5,7 +5,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Tests for {@link HTMLFunction}.
+ * Tests for {@link HTML_FlexboxFunction}.
  * 
  * @author thomas@oxynum.fr (Thomas THIMOTHEE)
  */

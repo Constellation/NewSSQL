@@ -1,143 +1,215 @@
 package supersql.codegenerator.HTML;
 
-import org.jsoup.nodes.Element;
-import org.jsoup.parser.Tag;
-
 import supersql.codegenerator.Connector;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
+import supersql.common.Log;
 import supersql.extendclass.ExtList;
 
 public class HTMLC2 extends Connector {
 
-	/** @deprecated use HTMLC2() instead **/
-	@Deprecated
+	private HTMLEnv htmlEnv;
+	private HTMLEnv htmlEnv2;
+
+	// ���󥹥ȥ饯��
 	public HTMLC2(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
-		Dimension = 2;
-	}
-	
-	public HTMLC2(){
-		Dimension = 2;
-	}
-
-	public Element createTableNode(ExtList<ExtList<String>> dataInfo) {
-		this.setDataList(dataInfo);
-
-		Element result = new Element(Tag.valueOf("table"), "");
-		result = nodeCreationPreProcesss(result, dataInfo);
-		if(result.tagName().equalsIgnoreCase("form"))
-			return result;
-		int i = 0;
-		while (this.hasMoreItems()) {
-			ITFE tfe = (ITFE) tfes.get(i);
-			result.addClass(HTMLEnv.getClassID(tfe)).addClass("nest");
-			HTMLEnv.getClassID(tfe);
-
-			result.appendElement("tr").appendElement("td")
-					.appendChild((Element) this.createNextItemNode(dataInfo));
-
-			i++;
-		}
-		
-		return result;
-	}
-	
-	private Element nodeCreationPreProcesss(Element result, ExtList<ExtList<String>> dataInfo){
-		if (decos.containsKey("layout")
-				&& decos.getStr("layout").equalsIgnoreCase("standard")
-				|| GlobalEnv.getLayout().equalsIgnoreCase("standard"))
-    		result.addClass("vertical_display");
-    	else
-    		result.addClass("vertical");
-
-		if (!GlobalEnv.isOpt()) {
-			if (!HTMLEnv.isOutlineMode()) {
-				result.attr("frame", "void");
-			}
-				result.attr("class", HTMLEnv.getClassID(this));
-
-			if (decos.containsKey("class")) {
-				result.attr("class",
-						result.attr("class") + " " + decos.getStr("class"));
-			}
-		}
-		HTMLUtils.processDecos(result, decos);
-		if (decos.containsKey("insert"))
-			return createForm(dataInfo, 0, result);
-		if (decos.containsKey("delete"))
-			return createForm(dataInfo, 1, result);
-		if (decos.containsKey("update"))
-			return createForm(dataInfo, 2, result);
-		if(decos.containsKey("login"))
-    		return JsoupFactory.createLoginForm(this, result);
-    	return result;
+		this.htmlEnv = henv;
+		this.htmlEnv2 = henv2;
 	}
 
 	@Override
-	public Element createNode(ExtList<ExtList<String>> dataInfo) {
-		if ((GlobalEnv.getLayout().equalsIgnoreCase("table") && !decos
-				.containsKey("layout"))
-				|| (decos.containsKey("layout") && decos.getStr("layout")
-						.equalsIgnoreCase("table")))
-    		return createTableNode(dataInfo);
-		this.setDataList(dataInfo);
-
-		Element result = new Element(Tag.valueOf("div"), "");
-		result.addClass("con2").addClass("box");
-		result = nodeCreationPreProcesss(result, dataInfo);
-		if(result.tagName().equalsIgnoreCase("form"))
-			return result;
-		int i = 0;
-
-		while (this.hasMoreItems()) {
-			ITFE tfe = (ITFE) tfes.get(i);
-			result.addClass(HTMLEnv.getClassID(tfe)).addClass("nest");
-
-			HTMLEnv.getClassID(tfe);
-
-			result.appendChild((Element) this.createNextItemNode(dataInfo));
-
-			i++;
-		}
-
-		return result;
-	}
-
-	private Element createForm(ExtList<ExtList<String>> dataInfo, int type, Element result) {
-		String inputType;
-		String submitText;
-		String inputValue;
-		String formContentClass;
-		String formContentElementsClass;
-		if (type == 0) {
-			inputType = "text";
-			inputValue = "";
-			submitText = "insert";
-			formContentClass = "vertical con2";
-			formContentElementsClass = "horizontal";
-		} else if (type == 1) {
-			inputType = "checkbox";
-			inputValue = "1";
-			submitText = "delete";
-			formContentClass = "vertical con2";
-			formContentElementsClass = "horizontal";
-		} else if (type == 2) {
-			inputType = "text";
-			inputValue = null;
-			submitText = "update";
-			formContentClass = "vertical con2";
-			formContentElementsClass = "horizontal";
-		} else {
-			throw new IllegalArgumentException();
-		}
-		return JsoupFactory.createForm(this, inputType, submitText, inputValue,
-				formContentClass, formContentElementsClass, result);
-
-	}
-
 	public String getSymbol() {
 		return "HTMLC2";
+	}
+
+	// C2��work�᥽�å�
+	@Override
+	public String work(ExtList data_info) {
+		Log.out("------- C2 -------");
+		Log.out("tfes.contain_itemnum=" + tfes.contain_itemnum());
+		Log.out("tfessize=" + tfes.size());
+		Log.out("countconnetitem=" + countconnectitem());
+
+		this.setDataList(data_info);
+
+		if (decos.containsKey("form")) {
+			htmlEnv2.code
+					.append("<form" + HTMLEnv.getFormNumber() + "start />");
+			if (decos.getStr("form").toLowerCase().equals("search")) {
+				HTMLEnv.setSearch(true);
+			}
+		}
+
+		if (decos.containsKey("insert")) {
+			HTMLEnv.setIDU("insert");
+		}
+		if (decos.containsKey("update")) {
+			HTMLEnv.setIDU("update");
+		}
+		if (decos.containsKey("delete")) {
+			HTMLEnv.setIDU("delete");
+		}
+
+		// tk
+		// start////////////////////////////////////////////////////////////////
+		htmlEnv.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
+
+		if (!GlobalEnv.isOpt()) {
+			htmlEnv.code
+					.append("<TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
+			htmlEnv.code.append(htmlEnv.tableBorder + "\" ");
+			htmlEnv.code.append(htmlEnv.getOutlineMode());
+			if (htmlEnv.writtenClassId.contains(HTMLEnv.getClassID(this))) {
+				htmlEnv.code.append(" class=\"");
+				htmlEnv.code.append(HTMLEnv.getClassID(this));
+			}
+
+			if (decos.containsKey("class")) {
+				if (!htmlEnv.writtenClassId.contains(HTMLEnv.getClassID(this))) {
+					htmlEnv.code.append(" class=\"");
+				} else {
+					htmlEnv.code.append(" ");
+				}
+				htmlEnv.code.append(decos.getStr("class") + "\" ");
+			} else if (htmlEnv.writtenClassId
+					.contains(HTMLEnv.getClassID(this))) {
+				htmlEnv.code.append("\" ");
+			}
+			htmlEnv.code.append(">");
+		}
+		if (GlobalEnv.isOpt()) {
+			htmlEnv2.code.append("<tfe type=\"connect\" dimension=\"2\"");
+			if (decos.containsKey("tablealign"))
+				htmlEnv2.code.append(" align=\"" + decos.getStr("tablealign")
+						+ "\"");
+			if (decos.containsKey("tablevalign"))
+				htmlEnv2.code.append(" valign=\"" + decos.getStr("tablevalign")
+						+ "\"");
+			if (decos.containsKey("height"))
+				htmlEnv2.code.append(" height=\"" + decos.getStr("height")
+						+ "\"");
+			if (decos.containsKey("tabletype")) {
+				htmlEnv2.code.append(" tabletype=\""
+						+ decos.getStr("tabletype") + "\"");
+				if (decos.containsKey("cellspacing")) {
+					htmlEnv2.code.append(" cellspacing=\""
+							+ decos.getStr("cellspacing") + "\"");
+				}
+				if (decos.containsKey("cellpadding")) {
+					htmlEnv2.code.append(" cellpadding=\""
+							+ decos.getStr("cellpadding") + "\"");
+				}
+				if (decos.containsKey("border")) {
+					htmlEnv2.code.append(" border=\""
+							+ decos.getStr("border").replace("\"", "") + "\"");
+				}
+
+				if (decos.containsKey("tableborder")) {
+					htmlEnv2.code.append(" tableborder=\""
+							+ decos.getStr("tableborder").replace("\"", "")
+							+ "\"");
+				}
+			} else {
+				if (decos.containsKey("border")) {
+					htmlEnv2.code.append(" border=\""
+							+ decos.getStr("border").replace("\"", "") + "\"");
+				} else {
+					htmlEnv2.code.append(" border=\""
+							+ htmlEnv.tableBorder.replace("\"", "") + "\"");
+				}
+				if (decos.containsKey("tableborder")) {
+					htmlEnv2.code.append(" tableborder=\""
+							+ decos.getStr("tableborder").replace("\"", "")
+							+ "\"");
+				}
+			}
+			if (htmlEnv.writtenClassId.contains(HTMLEnv.getClassID(this))) {
+				htmlEnv2.code.append(" class=\"");
+				htmlEnv2.code.append(HTMLEnv.getClassID(this));
+			}
+
+			if (decos.containsKey("class")) {
+				if (!htmlEnv.writtenClassId.contains(HTMLEnv.getClassID(this))) {
+					htmlEnv2.code.append(" class=\"");
+				} else {
+					htmlEnv2.code.append(" ");
+				}
+				htmlEnv2.code.append(decos.getStr("class"));
+			} else if (htmlEnv.writtenClassId
+					.contains(HTMLEnv.getClassID(this))) {
+				htmlEnv2.code.append("\" ");
+			}
+
+			if (decos.containsKey("form")) {
+				htmlEnv2.code.append(" form=\"" + HTMLEnv.getFormNumber()
+						+ "\" ");
+			}
+
+			htmlEnv2.code.append(">");
+		}
+		/*
+		 * if(decos.containsKey("outborder"))
+		 * html_env.code.append(" noborder ");
+		 */
+
+		// html_env2.code.append(">");
+
+		// System.out.println(html_env.code);
+
+		// tk
+		// end//////////////////////////////////////////////////////////////////
+
+		// Log.out("<TABLE class=\""+HTMLEnv.getClassID(this) + "\">");
+
+		int i = 0;
+
+		if (decos.containsKey("form")) {
+			htmlEnv.code.append(HTMLFunction.createForm(decos));
+			HTMLEnv.setFormItemFlg(true, null);
+		}
+
+		while (this.hasMoreItems()) {
+			ITFE tfe = tfes.get(i);
+
+			htmlEnv.code.append("<TR><TD class=\"" + HTMLEnv.getClassID(tfe)
+					+ " nest\">\n");
+			String classid = HTMLEnv.getClassID(tfe);
+			// Log.out("<TR><TD class=\"nest "
+			// + HTMLEnv.getClassID(tfe) + " nest\"> decos:" + decos);
+
+			this.worknextItem();
+
+			if (htmlEnv.notWrittenClassId.contains(classid)) {
+				htmlEnv.code.delete(htmlEnv.code.indexOf(classid),
+						htmlEnv.code.indexOf(classid) + classid.length() + 1);
+			}
+
+			htmlEnv.code.append("</TD></TR>\n");
+			// Log.out("</TD></TR>");
+
+			i++;
+
+		}
+
+		htmlEnv2.code.append("</tfe>");
+		// Log.out("</TABLE>");
+		if (decos.containsKey("form")) {
+			htmlEnv2.code.append("<form" + HTMLEnv.getFormNumber() + "end />");
+			htmlEnv.code.append(HTMLEnv.exFormNameCreate());
+			htmlEnv.code.append("</form>");
+			HTMLEnv.setFormItemFlg(false, null);
+			HTMLEnv.incrementFormNumber();
+			if (decos.getStr("form").toLowerCase().equals("search"))
+				HTMLEnv.setSearch(false);
+		}
+
+		htmlEnv.code.append("</TABLE>\n");
+
+		Log.out("TFEId = " + HTMLEnv.getClassID(this));
+		// html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
+		return null;
+
 	}
 
 }

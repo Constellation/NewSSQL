@@ -10,6 +10,7 @@ import supersql.cache.CacheData;
 import supersql.cache.CacheDataFileIO;
 import supersql.codegenerator.CodeGenerator;
 import supersql.common.GlobalEnv;
+import supersql.common.Log;
 import supersql.dataconstructor.DataConstructor;
 import supersql.parser.SSQLparser;
 
@@ -30,9 +31,9 @@ public class InvokeSSQL {
 				"-invokeservletpath", ienv.getInvokeServletPath(),
 				"-quiet"};
 
-		System.err.println("filename :"+filename);
+		Log.err("filename :"+filename);
 		
-		System.err.println(args);
+		Log.err(args);
 
 		this.invoke_frontend(args);
 		
@@ -49,10 +50,10 @@ public class InvokeSSQL {
 				}
 				myReader.close();
 			} catch (FileNotFoundException e) {
-				System.err.println("file not found:"+e);
+				Log.err("file not found:"+e);
 				print.close();
 			} catch (IOException e) {
-				System.err.println("ioerror:"+e);
+				Log.err("ioerror:"+e);
 				print.close();
 			}
 		}

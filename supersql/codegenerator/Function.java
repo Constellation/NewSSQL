@@ -2,7 +2,7 @@ package supersql.codegenerator;
 
 import java.util.Hashtable;
 
-import supersql.codegenerator.HTML.HTMLEnv;
+import supersql.codegenerator.HTML_Flexbox.HTML_FlexboxEnv;
 import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5Env;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
@@ -92,23 +92,23 @@ public class Function extends Operand {
 		int dindex = 0;
 		int ci;
 		FuncArg fa;
+
 		for (int i = 0; i < Args.size(); i++) {
 			fa = Args.get(i);
 			ci = fa.countconnectitem();
 			fa.setData(data.ExtsubList(dindex, dindex + ci));
 			if (Name.equalsIgnoreCase("foreach")){
 				ArgHash.put(Integer.toString(i), fa);
-			} else {
-				String argName = fa.getKey();
-				if(!argName.equals("default")){
-					ArgHash.put(argName, fa);
-					Args.remove(i);
-				}
-					
 			}
 			dindex += ci;
 		}
-
+		for (int i = 0; i < Args.size(); i++) {
+			fa = Args.get(i);
+			String argName = fa.getKey();
+			if(!argName.equals("default")){
+				ArgHash.put(argName, fa);
+			}
+		}
 	}
 
 	public String getAtt(String Key) {

@@ -33,7 +33,7 @@ public class Update extends HttpServlet {
 			enc =  "Shift_JIS";
 		}
 
-		// ContentType‚ğİ’è
+		// ContentTypeï¿½ï¿½İ’ï¿½
 		res.setContentType("text/html; charset="+enc);
 		req.setCharacterEncoding(enc);
 
@@ -182,7 +182,7 @@ public class Update extends HttpServlet {
 			if(attlist.length() == 0){
 				fs.errmessage = "NO VALUE ERROR";
 			}
-			System.err.println("SQLERROR(INSERT)"+fs.errmessage);
+			Log.err("SQLERROR(INSERT)"+fs.errmessage);
 			fs.errMessage(sqlfile);
 			return fs.errmessage;
 		}
@@ -407,7 +407,7 @@ public class Update extends HttpServlet {
 
 			return;
 		} catch (Exception e) {
-			System.err.println("sqlerr : "+ e);
+			Log.err("sqlerr : "+ e);
 			if(e.toString().contains("No results were returned by the query.")){
 			}else if(e.toString().contains("duplicate key violates unique constraint")){
 				fs.errmessage += FormEnv.getUnique();

@@ -112,7 +112,7 @@ public class Preprocessor {
     				close = st.nextToken();
 
 					if (!close.equals(")")) {
-    					System.err.println("*** Can't close '" + order + "' ***");
+    					Log.err("*** Can't close '" + order + "' ***");
     					throw (new IllegalStateException());
     				}
 
@@ -159,7 +159,7 @@ public class Preprocessor {
 
     			/* check "[" */
     			if (!token.equals("[")) {
-    				System.err.println("*** Can't open '" + agg + "' ***");
+    				Log.err("*** Can't open '" + agg + "' ***");
     				throw (new IllegalStateException());
     			} else {
     				token = st.nextToken();
@@ -167,7 +167,7 @@ public class Preprocessor {
 
     			/* check "]" */
     			if (!st.lookToken().equals("]")) {
-    				System.err.println("*** Can't close '" + agg + "' ***");
+    				Log.err("*** Can't close '" + agg + "' ***");
 					throw (new IllegalStateException());
     			} else {
     				st.nextToken();
@@ -186,7 +186,7 @@ public class Preprocessor {
 
     				/* check "{" */
     				if (!st.lookToken().equals("{")) {
-    			           System.err.println("*** Illegal Token Found after Decoration token '@' ***");
+    			           Log.err("*** Illegal Token Found after Decoration token '@' ***");
     			           throw (new IllegalStateException());
     				} else {
     					st.nextToken();

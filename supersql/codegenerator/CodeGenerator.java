@@ -3,6 +3,7 @@ package supersql.codegenerator;
 import java.util.ArrayList;
 
 import supersql.codegenerator.HTML.HTMLFactory;
+import supersql.codegenerator.HTML_Flexbox.HTML_FlexboxFactory;
 import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5Factory;
 import supersql.codegenerator.PDF.PDFFactory;
 import supersql.codegenerator.SWF.SWFFactory;
@@ -16,7 +17,7 @@ import supersql.extendclass.ExtList;
 import supersql.parser.SSQLparser;
 
 /**
- * �����ɥ�����?�����ޥ͡����㥯�饹 ���ꤵ?�����Τˤ�äƥ����ɥ�����
+ * �����ɥ�����?�����ޥ͡����㥯�饹 ���ꤵ?�����Τˤ�äƥ����ɥ�����
  * �����ι������ʤ�������? ��?(Factory)��������?
  */
 public class CodeGenerator{
@@ -26,7 +27,7 @@ public class CodeGenerator{
 
 	public Manager manager;
 	
-	private String media;
+	private static String media;
 	/**
 	 * ���󥹥ȥ饯��
 	 */
@@ -37,7 +38,7 @@ public class CodeGenerator{
 		TFEid = id;
 	}
 	/**
-	 * ��?����Ԥ�	 */
+	 * ��?����Ԥ�	 */
 	public void initiate() {
 		if (factory != null) {
 			Log.out("factory is " + factory);
@@ -47,14 +48,14 @@ public class CodeGenerator{
 	}
 
 	/**
-	 * ���ꤵ?�����Τˤ�äƺ��Ȥ�Ѿ�?����ι�(Factory)? �����������֤�?
+	 * ���ꤵ?�����Τˤ�äƺ��Ȥ�Ѿ�?����ι�(Factory)? �����������֤�?
 	 */
 	public void setFactory(String media) {
 		this.media = media;
 		if (media.toLowerCase().equals("pdf")) {
 			factory = new PDFFactory();
 		} else if (media.toLowerCase().equals("html")) {
-			factory = new HTMLFactory();
+			factory = new HTMLFactory();			
 		} else if (media.toLowerCase().equals("x3d")) {
 			factory = new X3DFactory();
 		} else if(media.toLowerCase().equals("xml")){
@@ -65,6 +66,8 @@ public class CodeGenerator{
 		 	factory = new Mobile_HTML5Factory();
 		}  else if (media.toLowerCase().equals("csv")) {
 			factory = new SWFFactory();
+		}  else if (media.toLowerCase().equals("html_flexbox")) {
+			factory = new HTML_FlexboxFactory();
 		}
 		/*
 		 * else if(media.toLowerCase().equals("xml")){ factory = new
@@ -72,7 +75,8 @@ public class CodeGenerator{
 		 */
 		else {
 			String m = media.toLowerCase();
-			System.err.println("Error[Media]: valid medium '"+m+"' not found");
+			Log.err("Error[Media]: valid medium '"+m+"' not found");
+//			GlobalEnv.errorText += "Error[Media]: valid medium '"+m+"' not found";
 			GlobalEnv.addErr("Error[Media]: valid medium '"+m+"' not found");
 			
 			//20131106
@@ -80,8 +84,11 @@ public class CodeGenerator{
 			String XMLfile = GlobalEnv.MEDIA_XML;
 			ArrayList<String> medias = ParseXML.getAttributes(XMLfile, "media", "name");
 			String media_list = LevenshteinDistance.checkLevenshteinAndSuggest(m, medias);
-			if(!media_list.isEmpty())
+			if(!media_list.isEmpty()){
 				Log.err("\n## Media list ##\n" + media_list);
+				// 20140624_masato
+//				GlobalEnv.errorText += "\n## Media list ##\n" + media_list;
+			}
 			System.exit(1);
 		}
 	}
@@ -103,7 +110,8 @@ public class CodeGenerator{
 			connector = factory.createC4(manager);
 		else {
 		    /* undefine Operator */
-		    System.err.println("*** Illegal Operator for Connector ***");
+		    Log.err("*** Illegal Operator for Connector ***");
+//		    GlobalEnv.errorText += "*** Illegal Operator for Connector ***";
 		    throw (new IllegalStateException());
 
 		}
@@ -128,7 +136,8 @@ public class CodeGenerator{
 			grouper = factory.createG4(manager);
 		else {
 		    /* undefine Operator */
-		    System.err.println("*** Illegal Operator for Grouper ***");
+		    Log.err("*** Illegal Operator for Grouper ***");
+//		    GlobalEnv.errorText += "*** Illegal Operator for Grouper ***";
 		    throw (new IllegalStateException());
 		}
 		grouper.setId(TFEid++);
@@ -172,7 +181,7 @@ public class CodeGenerator{
 	public void generateCode(SSQLparser parser, ExtList data_info) {
 		ITFE tfe_info = parser.get_TFEschema();
 
-		//	ɬ�פʤ饳���ȥ����ȳ�����Manager������ѹ�
+		//	ɬ�פʤ饳���ȥ����ȳ�����Manager������ѹ�
 		//	manager.preProcess(tab,le,le1,le2,le3);
 		//	manager.createSchema(tab,le,le1,le2,le3);
 		// ?�ֳ��� Grouper�ΤȤ���data_info��Ĵ����?
@@ -191,7 +200,7 @@ public class CodeGenerator{
 	public StringBuffer generateCode2(SSQLparser parser, ExtList data_info) {
 		ITFE tfe_info = parser.get_TFEschema();
 
-		//	ɬ�פʤ饳���ȥ����ȳ�����Manager������ѹ�
+		//	ɬ�פʤ饳���ȥ����ȳ�����Manager������ѹ�
 		//	manager.preProcess(tab,le,le1,le2,le3);
 		//	manager.createSchema(tab,le,le1,le2,le3);
 
@@ -215,7 +224,7 @@ public class CodeGenerator{
 	public StringBuffer generateCode3(SSQLparser parser, ExtList data_info) {
 		ITFE tfe_info = parser.get_TFEschema();
 
-		//	ɬ�פʤ饳���ȥ����ȳ�����Manager������ѹ�
+		//	ɬ�פʤ饳���ȥ����ȳ�����Manager������ѹ�
 		//	manager.preProcess(tab,le,le1,le2,le3);
 		//	manager.createSchema(tab,le,le1,le2,le3);
 
@@ -238,7 +247,7 @@ public class CodeGenerator{
 	public StringBuffer generateCode4(SSQLparser parser, ExtList data_info) {
 		ITFE tfe_info = parser.get_TFEschema();
 
-		//	ɬ�פʤ饳���ȥ����ȳ�����Manager������ѹ�
+		//	ɬ�פʤ饳���ȥ����ȳ�����Manager������ѹ�
 		//	manager.preProcess(tab,le,le1,le2,le3);
 		//	manager.createSchema(tab,le,le1,le2,le3);
 
@@ -261,7 +270,7 @@ public class CodeGenerator{
 	public StringBuffer generateCssfile(SSQLparser parser, ExtList data_info) {
 		ITFE tfe_info = parser.get_TFEschema();
 
-		//	ɬ�פʤ饳���ȥ����ȳ�����Manager������ѹ�
+		//	ɬ�פʤ饳���ȥ����ȳ�����Manager������ѹ�
 		//	manager.preProcess(tab,le,le1,le2,le3);
 		//	manager.createSchema(tab,le,le1,le2,le3);
 
@@ -286,7 +295,7 @@ public class CodeGenerator{
 		return factory;
 	}
 
-	public String getMedia() {
+	public static String getMedia() {
 		return media;
 	}
 

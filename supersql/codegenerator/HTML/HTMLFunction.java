@@ -3,7 +3,6 @@ package supersql.codegenerator.HTML;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -17,25 +16,14 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Map.Entry;
-
-import org.jsoup.nodes.Attributes;
-import org.jsoup.nodes.DataNode;
-import org.jsoup.nodes.Element;
-import org.jsoup.nodes.Node;
-import org.jsoup.nodes.TextNode;
-import org.jsoup.parser.Tag;
 
 import supersql.codegenerator.CodeGenerator;
 import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.FuncArg;
 import supersql.codegenerator.Function;
 import supersql.codegenerator.Manager;
-import supersql.codegenerator.TFE;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.dataconstructor.DataConstructor;
@@ -44,138 +32,200 @@ import supersql.parser.SSQLparser;
 
 public class HTMLFunction extends Function {
 
-	private static int meterId = 0;
-    //added by goto 20130914  "SEQ_NUM"
-    static ArrayList<Integer> seq_num = new ArrayList<Integer>();
-    static ArrayList<String> seq_num_ClassID = new ArrayList<String>();
-	static ArrayList<Integer> seq_num_gl = new ArrayList<Integer>();
-    static ArrayList<Integer> seq_num_startNum = new ArrayList<Integer>();
-    static ArrayList<Boolean> seq_num_DESC_Flg = new ArrayList<Boolean>();
-    static String classID = "";
-    static int glvl = 0;
+	protected static String updateFile;
 
+	public static String createForm(DecorateList decos) {
+		new String();
+		String path = new String();
+		String form = new String();
+		// System.out.println(this.getAtt("label"));
+		if (decos.containsKey("path")) {
+			path = decos.getStr("path").replaceAll("\"", "");
+		} else {
+			path = ".";
+		}
 
-	// 鐃緒申鐃藷ストラク鐃緒申
-	@Deprecated
-	/** use HTMLFunction() instead **/
+		form = "<form method=\"POST\" action=\"" + path
+				+ "/supersql.form.FormServlet\" " + "name=\""
+				+ HTMLEnv.getFormName() + "\" " + ">";
+
+		form += "<input type=\"hidden\" name=\"configfile\" value=\""
+				+ GlobalEnv.getFileDirectory() + "/config.ssql\" />";
+
+		if (decos.containsKey("link")) {
+			opt(decos.getStr("link"));
+			form += "<input type=\"hidden\" name=\"sqlfile\" value=\"" + path
+					+ "/" + decos.getStr("link").replaceAll("\"", "") + "\" />";
+		}
+
+		if (decos.containsKey("cond")) {
+			form += "<input type=\"hidden\" name=\"cond1\" value=\""
+					+ decos.getStr("cond").replaceAll("\"", "") + "\" />";
+		}
+
+		if (decos.containsKey("updatefile")) {
+			String tmp = opt(decos.getStr("updatefile"));
+			updateFile = "<input type=\"hidden\" name=\"updatefile\" value=\""
+					+ path + "/" + tmp + "\" />";
+			form += updateFile;
+		}
+		if (decos.containsKey("linkfile")) {
+			opt(decos.getStr("linkfile"));
+			form += "<input type=\"hidden\" name=\"linkfile\" value=\"" + path
+					+ "/" + decos.getStr("linkfile").replaceAll("\"", "")
+					+ "\" />";
+		}
+		if (decos.containsKey("cond")) {
+			form += "<input type=\"hidden\" name=\"linkcond\" value=\""
+					+ decos.getStr("cond").replaceAll("\"", "") + "\" />";
+		}
+		Log.out(form);
+		HTMLEnv.setFormDetail(form);
+		return form;
+	}
+
+	public static String opt(String s) {
+		if (s.contains("\"")) {
+			s = s.replaceAll("\"", "");
+		}
+		if (s.startsWith("./")) {
+			s = s.substring(2, s.length());
+		}
+		if (s.startsWith("/")) {
+			s = s.substring(1, s.length());
+		}
+		return s;
+	}
+
+	private HTMLEnv htmlEnv;
+	private HTMLEnv htmlEnv2;
+
+	public HTMLFunction() {
+
+	}
+
+	// ���󥹥ȥ饯��
 	public HTMLFunction(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
 		super();
-	}
-	public HTMLFunction(){
-		super();
-	}
-
-	@Override
-	public Node createNode(ExtList<ExtList<String>> data_info) {
-		this.setDataList(data_info);
-		String FuncName = this.getFuncName();
-		if (FuncName.equalsIgnoreCase("imagefile")
-				|| FuncName.equalsIgnoreCase("image")
-				|| FuncName.equalsIgnoreCase("img")) {
-			return FuncImagefile();
-		} else if (FuncName.equalsIgnoreCase("invoke")) {
-			return FuncInvoke();
-		} else if (FuncName.equalsIgnoreCase("foreach")) {
-			return FuncForeach(data_info);
-		} else if (FuncName.equalsIgnoreCase("sinvoke")
-				|| FuncName.equalsIgnoreCase("link")) {
-			return FuncSinvoke(data_info);
-		} else if (FuncName.equalsIgnoreCase("null")) {
-			return FuncNull();
-		} else if (FuncName.equalsIgnoreCase("url")
-				|| FuncName.equalsIgnoreCase("anchor")
-				|| FuncName.equalsIgnoreCase("a")) {
-			return FuncUrl(false);
-		} else if (FuncName.equalsIgnoreCase("mail")) {
-			return FuncUrl(true);
-		} else if (FuncName.equalsIgnoreCase("object")) {
-			return FuncObject("");
-		} else if (FuncName.equalsIgnoreCase("seq_num")
-				|| FuncName.equalsIgnoreCase("row_number")) {
-			return Func_seq_num();
-		} else if (FuncName.equalsIgnoreCase("submit")) {
-			return FuncSubmit();
-		} else if (FuncName.equalsIgnoreCase("select")) {
-			return FuncSelect();
-		} else if (FuncName.equalsIgnoreCase("checkbox")) {
-			return FuncCheckbox();
-		} else if (FuncName.equalsIgnoreCase("radio")) {
-			return FuncRadio();
-		} else if (FuncName.equalsIgnoreCase("inputtext")) {
-			return FuncInputtext();
-		} else if (FuncName.equalsIgnoreCase("textarea")) {
-			return FuncTextarea();
-		} else if (FuncName.equalsIgnoreCase("hidden")) {
-			return FuncHidden();
-		} else if (FuncName.equalsIgnoreCase("session")) {
-			// Func_session(); not use
-			return new Element(Tag.valueOf(""), "");
-		} else if (FuncName.equalsIgnoreCase("youtube")) {
-			return funcYoutube();
-		} else if (FuncName.equalsIgnoreCase("video")) {
-			return funcVideoFile();
-		} else if (FuncName.equalsIgnoreCase("meter")) {
-			return funcMeter();
-		}
-		// added by goto 20130308 "url���"
-		else if (FuncName.equalsIgnoreCase("url")
-				|| FuncName.equalsIgnoreCase("anchor")
-				|| FuncName.equalsIgnoreCase("a")) {
-			return FuncUrl(false);
-		}
-		// added by goto 20130417 "mail"
-		else if (FuncName.equalsIgnoreCase("mail")) {
-			FuncUrl(true);
-		}
-		// tk start//////////////////////////////////
-		else if (FuncName.equalsIgnoreCase("embed")) {
-			Log.out("[enter embed]");
-			return FuncEmbed(data_info);
-		}
-        else{
-        	Log.err("[Warning] no such function name: "+FuncName+"()");
-        }
-		// tk end////////////////////////////////////
-		Log.out("TFEId = " + HTMLEnv.getClassID(this));
-		return null;
+		this.htmlEnv = henv;
+		this.htmlEnv2 = henv2;
 	}
 
-	private void checkArgsNumber(int expected) {
-		if(expected == 0 && Args.size() == 1 && getValue(1).isEmpty())
-			return;
-		if (expected != Args.size()) {
-			System.err.println("Argument number error for the function "
-					+ getFuncName() + "\n This function has " + expected
-					+ " required parameters");
-			System.exit(1);
+	// // for practice 2012/02/09
+	// private void Func_button() {
+	// String statement ="";
+	// String button_media = this.getArgs().get(0).toString();
+	// if (button_media.equals("\"goback\"")){
+	// // ���ܥ������������
+	// statement =
+	// "<form><INPUT type=\"button\" onClick='history.back();' value=\"���\"></form>";
+	// }else if(button_media.equals("\"bookmark\"")){
+	// // �����˥֥å��ޡ�������򵭽Ҥ���
+	// }else if(button_media.equals("\"facebook\"")){
+	// // facebook�Τ����͡��ܥ���ν���򵭽Ҥ���
+	// }else{
+	// // �ä˻��꤬�ʤ�������ܥ���ˤ���
+	// statement =
+	// "<form><INPUT type=\"button\" onClick='history.back();' value=\"���\"></form>";
+	// }
+	// // �ư����˽����̤�HTML�˽񤭤���
+	// html_env.code.append(statement);
+	// return;
+	// }
+
+	private String createForm() {
+		String path = new String();
+		String form = new String();
+		if (this.getAtt("path") != null && !this.getAtt("path").isEmpty()) {
+			path = this.getAtt("path").replaceAll("\"", "");
+		} else {
+			path = ".";
 		}
+
+		form += "<form method=\"POST\" action=\"" + path
+				+ "/servlet/supersql.form.FormServlet\"" + ">";
+
+		form += "<input type=\"hidden\" name=\"configfile\" value=\"" + path
+				+ "/config.ssql\" />";
+
+		if (this.getAtt("link") != null && !this.getAtt("link").isEmpty()) {
+			form += "<input type=\"hidden\" name=\"sqlfile\" value=\"" + path
+					+ "/" + this.getAtt("link").replaceAll("\"", "") + "\" />";
+		} else if (this.getAtt("linkfile") != null
+				&& !this.getAtt("linkfile").isEmpty()) {
+			form += "<input type=\"hidden\" name=\"sqlfile\" value=\"" + path
+					+ "/" + this.getAtt("linkfile").replaceAll("\"", "")
+					+ "\" />";
+		}
+		/*
+		 * if(!this.getAtt("default").equals(null)){ form +=
+		 * "<input type=\"hidden\" name=\"value1\" value=\""
+		 * +this.getAtt("default").replaceAll("\"", "")+"\" />"; }
+		 */
+
+		if (this.getAtt("cond") != null && !this.getAtt("cond").isEmpty()) {
+			if (!this.getAtt("cond").replaceAll("\"", "").isEmpty())
+				form += "<input type=\"hidden\" name=\"cond1\" value=\""
+						+ this.getAtt("cond").replaceAll("\"", "") + "\" />";
+		}
+
+		String att = new String();
+		Integer attNo = 1;
+		while (!this.getAtt("att" + attNo).equals("")) {
+			if (attNo > 1)
+				att += ",";
+			att += this.getAtt("att" + attNo);
+			attNo++;
+			Log.out("att:" + att + " attNo:" + attNo);
+		}
+
+		if (attNo == 1 && !this.getAtt("att").equals("")) {
+			att += this.getAtt("att");
+			Log.out("att:" + att + " attNo:" + attNo);
+		}
+
+		if (this.getAtt("update") != null && !this.getAtt("update").isEmpty()) {
+			form += "<input type=\"hidden\" name=\"updatefile\" value=\""
+					+ path + "/" + this.getAtt("update").replaceAll("\"", "")
+					+ "(" + att + ")\" />";
+		} else if (this.getAtt("updatefile") != null
+				&& !this.getAtt("updatefile").isEmpty()) {
+			form += "<input type=\"hidden\" name=\"updatefile\" value=\""
+					+ path + "/"
+					+ this.getAtt("updatefile").replaceAll("\"", "") + "("
+					+ att + ")\" />";
+		}
+
+		Log.out(form);
+		return form;
 	}
 
-	private void checkArgType(FuncArg argument, int index, Class<? extends TFE>... expectedClass) {
-		for (int i = 0; i < expectedClass.length; i++) {
-			if (expectedClass[i] == HTMLC0.class
-					&& argument.getTFEClass() == HTMLAttribute.class)
-				return;
+	// added by chie 2009 func form checkbox
+	private void Func_checkbox() {
+		Func_FormCommon("checkbox");
 
-			if ((expectedClass[i].isAssignableFrom(argument.getTFEClass()))) {
-				return;
-			}
+		if (!this.getAtt("checked").equals("")) {
+			HTMLEnv.setChecked(this.getAtt("checked"));
 		}
-		System.err.println("The argument number " + index + " of the "
-				+ getFuncName()
-				+ " function has a wrong type. It should be a "
-				+ expectedClass.toString());
-		System.exit(1);
+
+		return;
 	}
 
-	private Element FuncEmbed(ExtList<ExtList<String>> data_info) {
+	// tk
+	// start//////////////////////////////////////////////////////////////////////////////
+	private void Func_embed(ExtList data_info) {
 		String file = this.getAtt("file");
 		String where = this.getAtt("where");
 		String att = this.getAtt("att");
+		this.getAtt("border");
 		String att2 = this.getAtt("attString");
 		String condition = new String();
+		this.getAtt("defcond");
+
+		Log.out("function embed");
+		Log.out("isNewEmbed:" + GlobalEnv.isNewEmbed());
+
 		boolean is_hidden = false;
-		Element result = null;
 
 		if (decos.containsKey("status"))
 			if (decos.getStr("status").compareTo("hidden") == 0)
@@ -183,37 +233,41 @@ public class HTMLFunction extends Function {
 
 		// for tab
 		if (decos.containsKey("tab")) {
-			result = new Element(Tag.valueOf("div"), "");
-			result.attr("id", "myTab");
+			htmlEnv.code.append("<div id=\"myTab\" ");
+
 			if (decos.containsKey("class"))
-				result.addClass(decos.getStr("class"));
-			Element div = new Element(Tag.valueOf("div"), "")
-					.attr("id", "mTab").addClass("yui-navset");
-			result.appendChild(div);
+				htmlEnv.code.append("class=\"" + decos.getStr("class") + "\"");
 
-			Element script = new Element(Tag.valueOf("script"), "");
-			script.append("var mTab = new YAHOO.widget.TabView(\"mTab\");\new YAHOO.util.DDTarget(\"myTab\", \"myTab\");");
-			result.appendChild(script);
+			htmlEnv.code.append(">\n");
+			htmlEnv.code.append("<div id=\"mTab\" class=\"yui-navset\">\n");
 
-			return result;
+			htmlEnv.code.append("</div></div>\n");
+
+			htmlEnv.script
+					.append("var mTab = new YAHOO.widget.TabView(\"mTab\");");
+			htmlEnv.script
+					.append("new YAHOO.util.DDTarget(\"myTab\", \"myTab\");");
+
+			return;
 		}
 
 		if (!is_hidden) {
-			result = new Element(Tag.valueOf("table"), "").addClass("att")
-					.addClass(HTMLEnv.getOutlineModeAtt());
+			htmlEnv.code.append("<table class=\"att "
+					+ htmlEnv.getOutlineModeAtt() + " ");
 
 			if (decos.containsKey("class"))
-				result.addClass(decos.getStr("class"));
+				htmlEnv.code.append(decos.getStr("class"));
 			else
-				result.addClass(HTMLEnv.getClassID(this));
-			result.append("<tr><td></td></tr>");
-			// htmlEnv.code.append("><tr><td>");
+				htmlEnv.code.append(HTMLEnv.getClassID(this));
+
+			htmlEnv.code.append("\"");
+			htmlEnv.code.append("><tr><td>");
 		}
 
 		// for ajax div id
 		// //////////////////////////////////////////////////////
 
-		String divname = "";
+		String divname = new String();
 		boolean has_divid = false;
 
 		if (decos.containsKey("divid")) {
@@ -236,38 +290,52 @@ public class HTMLFunction extends Function {
 			} else {
 				divname = decos.getStr("divid");
 			}
-		}
-		Element script = null;
+		}/*
+		 * else { //online file if(file.contains("/")) { divname =
+		 * file.substring(file.lastIndexOf("/")+1,file.indexOf(".sql")); }
+		 * //ofline file else if(file.contains("\\")) {
+		 * Log.out(" // index"+file.indexOf(".sql")); divname =
+		 * file.substring(file.lastIndexOf("\\")+1,file.indexOf(".sql")); }
+		 * //only file name else { divname =
+		 * file.substring(0,file.indexOf(".sql")); }
+		 * 
+		 * }
+		 */
 		if (GlobalEnv.isAjax() && decos.containsKey("droppable")) {
-			script = new Element(Tag.valueOf("script"), "")
-					.append("new YAHOO.util.DDTarget(\"" + divname + "\", \""
-							+ divname + "\");");
+			htmlEnv.script.append("new YAHOO.util.DDTarget(\"" + divname
+					+ "\", \"" + divname + "\");");
 		}
 		// ajax & decos contains status=hidden
 		if (is_hidden && GlobalEnv.isAjax()) {
 
-			result = new Element(Tag.valueOf("div"), "").attr("id", divname);
+			htmlEnv.code.append("<div id=\"" + divname + "\" ");
 
-			HTMLEnv.code.append("<div id=\"" + divname + "\" ");
-			if (script != null) {
-				result.appendChild(script);
-			}
 			if (decos.containsKey("class"))
-				HTMLEnv.code.append("class=\"" + decos.getStr("class") + "\" ");
+				htmlEnv.code.append("class=\"" + decos.getStr("class") + "\" ");
 
-			HTMLEnv.code.append("></div>");
+			htmlEnv.code.append("></div>");
 			Log.out("<div id=" + divname + "></div>");
 
-			return result;
+			return;
 		}
+		// end ajax divname ////////////////////////////////////////////////
+
+		/*
+		 * if(border.compareTo("1") == 0) {} else html_env.css.append(
+		 * ".embed { vertical-align : text-top; padding : 0px ; margin : 0px; border: 0px,0px,0px,0px; width: 100%;}"
+		 * );
+		 */
 		if (att.compareTo("") != 0) {
 			condition = condition + where + att;
 		} else if (att2.compareTo("") != 0) {
 			condition = condition + where + "'" + att2 + "'";
 		}
 		// store original config
-		Hashtable<String, String> tmphash = GlobalEnv.getEnv();
+		Hashtable tmphash = GlobalEnv.getEnv();
 
+		// set new config for embed
+		// String[] args = {"-f",file,"-cond",condition,"-debug"};
+		// Log.out("cond:"+condition);
 		String[] args;
 		if (GlobalEnv.isAjax()) {
 			if (condition.equals("")) {
@@ -275,6 +343,7 @@ public class HTMLFunction extends Function {
 				args[0] = "-f";
 				args[1] = file;
 				args[2] = "-ajax";
+				// args[3] = "-debug";
 
 			} else {
 				args = new String[5];
@@ -283,6 +352,7 @@ public class HTMLFunction extends Function {
 				args[2] = "-cond";
 				args[3] = condition;
 				args[4] = "-ajax";
+				// args[5] = "-debug";
 			}
 		} else {
 			if (GlobalEnv.isOpt()) {
@@ -292,16 +362,18 @@ public class HTMLFunction extends Function {
 				args[2] = "-cond";
 				args[3] = condition;
 				args[4] = "-optimizer";
+				// args[5] = "-debug";
 			} else {
 				args = new String[4];
 				args[0] = "-f";
 				args[1] = file;
 				args[2] = "-cond";
 				args[3] = condition;
+				// args[4] = "-debug";
 			}
 		}
 
-		HTMLEnv.embedCount++;
+		htmlEnv.embedCount++;
 
 		if (file.contains(".sql") || file.contains(".ssql")) {
 
@@ -333,7 +405,7 @@ public class HTMLFunction extends Function {
 							Log.out("line : " + line);
 							line = dis.readLine();
 							if (line != null)
-								HTMLEnv.code.append(line);
+								htmlEnv.code.append(line);
 						}
 					} catch (NullPointerException e) {
 						Log.out("no more lines");
@@ -352,7 +424,7 @@ public class HTMLFunction extends Function {
 				if (file.contains("http")) {
 					parser = new SSQLparser("online");
 				} else {
-					parser = new SSQLparser(10000 * (HTMLEnv.embedCount + 1));
+					parser = new SSQLparser(10000 * (htmlEnv.embedCount + 1));
 				}
 
 				CodeGenerator codegenerator = parser.getcodegenerator();
@@ -364,6 +436,7 @@ public class HTMLFunction extends Function {
 				// ajax add div
 				// tag////////////////////////////////////////////////////////////////////
 				if (GlobalEnv.isAjax()) {
+					// TODO 20140619_masato
 					if (!has_divid) {
 						int x = 0;
 						if (file.indexOf(".sql")>0) {
@@ -373,14 +446,12 @@ public class HTMLFunction extends Function {
 						}
 						// online file
 						if (file.contains("/")) {
-							divname = file.substring(file.lastIndexOf("/") + 1,
-									x);
+							divname = file.substring(file.lastIndexOf("/") + 1, x);
 						}
 						// ofline file
 						else if (file.contains("\\")) {
 							divname = file.substring(
-									file.lastIndexOf("\\") + 1,
-									x);
+									file.lastIndexOf("\\") + 1, x);
 						}
 						// only file name
 						else {
@@ -388,33 +459,34 @@ public class HTMLFunction extends Function {
 						}
 					}
 
-					HTMLEnv.code.append("<div id=\"" + divname + "\" ");
+					htmlEnv.code.append("<div id=\"" + divname + "\" ");
 
 					if (decos.containsKey("class"))
-						HTMLEnv.code.append("class=\"" + decos.getStr("class")
+						htmlEnv.code.append("class=\"" + decos.getStr("class")
 								+ "\" ");
 
-					HTMLEnv.code.append(">");
+					htmlEnv.code.append(">");
+					// html_env.code.append("<br><a href=\"close.html\" class=\"bottom_close_"+divname+"\" onClick=\"return closeDiv('"+divname+"')\">close</a><br>");
 					Log.out("<div id=" + divname + ">");
 				}
 
 				// xml�����
 				if (!is_hidden) {
-					HTMLEnv.code.append("<EMBED>");
-					HTMLEnv.code.append(returnedcode);
-					HTMLEnv.code.append(returnedcode);
-					HTMLEnv.code.append("</EMBED>");
+					htmlEnv2.code.append("<EMBED>");
+					htmlEnv.code.append(returnedcode);
+					htmlEnv2.code.append(returnedcode);
+					htmlEnv2.code.append("</EMBED>");
 				}
 
 				if (GlobalEnv.isAjax())
-					HTMLEnv.code.append("</div>");
+					htmlEnv.code.append("</div>");
 				// end ajax
 				// /////////////////////////////////////////////////////////////////
 
-				if (HTMLEnv.embedCount >= 1) {
-					HTMLEnv.css.append(codegenerator.generateCode3(parser,
+				if (htmlEnv.embedCount >= 1) {
+					htmlEnv.css.append(codegenerator.generateCode3(parser,
 							dc.getData()));
-					HTMLEnv.cssFile.append(codegenerator.generateCssfile(
+					htmlEnv.cssFile.append(codegenerator.generateCssfile(
 							parser, dc.getData()));
 				}
 
@@ -441,11 +513,19 @@ public class HTMLFunction extends Function {
 						OutputStreamWriter out = new OutputStreamWriter(bout,
 								"UTF-8");
 
-						out.write(HTMLEnv.header.toString());
+						out.write(htmlEnv.header.toString());
 						out.write(returnedcode.toString());
-						out.write(HTMLEnv.footer.toString());
+						out.write(htmlEnv.footer.toString());
 
 						out.close();
+						/*
+						 * PrintWriter pw = new PrintWriter(new
+						 * BufferedWriter(new FileWriter( filename)));
+						 * Log.out("filename:"+filename);
+						 * pw.println(html_env.header);
+						 * pw.println(returnedcode);
+						 * pw.println(html_env.footer); pw.close();
+						 */
 					} catch (FileNotFoundException fe) {
 
 						fe.printStackTrace();
@@ -453,19 +533,23 @@ public class HTMLFunction extends Function {
 								.println("Error: specified embedtmp outdirectory \""
 										+ GlobalEnv.getEmbedTmp()
 										+ "\" is not found to write "
-										+ HTMLEnv.fileName);
+										+ htmlEnv.fileName);
 
 						GlobalEnv
 								.addErr("Error: specified embedtmp outdirectory \""
 										+ GlobalEnv.getEmbedTmp()
 										+ "\" is not found to write "
-										+ HTMLEnv.fileName);
+										+ htmlEnv.fileName);
+						// comment out by chie
+						// System.exit(-1);
 					} catch (IOException e) {
 						System.err
 								.println("Error[HTMLManager]: File IO Error in HTMLManager at embed");
 						e.printStackTrace();
 						GlobalEnv
 								.addErr("Error[HTMLManager]: File IO Error in HTMLManager at embed");
+						// comment out by chie
+						// System.exit(-1);
 					}
 				}
 
@@ -499,7 +583,7 @@ public class HTMLFunction extends Function {
 						Log.out("embed file (html):" + file);
 						dis = new BufferedReader(new FileReader(new File(file)));
 					} catch (IOException ioe) {
-						String path = HTMLEnv.outFile;
+						String path = htmlEnv.outFile;
 						if (path.contains("\\"))
 							path = path
 									.substring(0, path.lastIndexOf("\\") + 1);
@@ -522,6 +606,10 @@ public class HTMLFunction extends Function {
 						}
 					}
 				}
+				/*
+				 * DataInputStream dis = new
+				 * DataInputStream(fileurlConnection.getInputStream());
+				 */
 				line = dis.readLine(); // read <BODY> and/or <HEAD>
 				if (line.contains("<head>")) {
 				} else {
@@ -531,24 +619,24 @@ public class HTMLFunction extends Function {
 				while (!line.equalsIgnoreCase("</head>")) {
 					line = dis.readLine();
 					if (!line.equalsIgnoreCase("</head>"))
-						HTMLEnv.header.append(line + "\n");
+						htmlEnv.header.append(line + "\n");
 				}
 				line = dis.readLine(); // read <body>
 
-				HTMLEnv.code.append("<div id=\"" + divname + "\" ");
+				htmlEnv.code.append("<div id=\"" + divname + "\" ");
 
 				if (decos.containsKey("class"))
-					HTMLEnv.code.append("class=\"" + decos.getStr("class")
+					htmlEnv.code.append("class=\"" + decos.getStr("class")
 							+ "\" ");
 
-				HTMLEnv.code.append(">");
+				htmlEnv.code.append(">");
 
-				HTMLEnv.code.append("<EMBED>");
+				htmlEnv2.code.append("<EMBED>");
 				while (!line.equalsIgnoreCase("</body>")) {
 					Log.out("line : " + line);
 					line = dis.readLine();
 					if (!line.equalsIgnoreCase("</body>")) {
-						HTMLEnv.code.append(line);
+						htmlEnv.code.append(line);
 						if (line.contains("&"))
 							line = line.replace("&", "&amp;");
 						if (line.contains("<"))
@@ -558,12 +646,13 @@ public class HTMLFunction extends Function {
 							line = line.replace(">", "&gt;");
 						if (line.contains("���"))
 							line = line.replace("���", "&#65374;");
-						HTMLEnv.code.append(line);
+						htmlEnv2.code.append(line);
 					}
 				}
-				HTMLEnv.code.append("</EMBED>");
+				htmlEnv2.code.append("</EMBED>");
+				// html_env.code.append("<br><a href=\"close.html\" class=\"bottom_close_"+divname+"\" onClick=\"return closeDiv('"+divname+"')\">close</a><br>");
 
-				HTMLEnv.code.append("</div>");
+				htmlEnv.code.append("</div>");
 				dis.close();
 
 			} catch (MalformedURLException me) {
@@ -574,559 +663,36 @@ public class HTMLFunction extends Function {
 
 		}
 		if (!is_hidden)
-			HTMLEnv.code.append("</td></tr></table>");
+			htmlEnv.code.append("</td></tr></table>");
 
-		HTMLEnv.embedCount += 1;
-		return result;
+		htmlEnv.embedCount += 1;
 	}
 
-	private Element FuncHidden() {
-		return FuncFormCommon("hidden");
-	}
-
-	private Element FuncTextarea() {
-		return FuncFormCommon("textarea");
-	}
-
-	private Element FuncInputtext() {
-		return FuncFormCommon("text");
-	}
-
-	private Element FuncRadio() {
-		if (!this.getAtt("checked").equals("")) {
-			HTMLEnv.setChecked(this.getAtt("checked"));
-		}
-		return FuncFormCommon("radio");
-	}
-
-	private Element FuncCheckbox() {
-		Element result = FuncFormCommon("checkbox");
-
-		if (!this.getAtt("checked").equals("")) {
-			HTMLEnv.setChecked(this.getAtt("checked"));
-		}
-
-		return result;
-	}
-
-	private Element FuncSelect() {
-		if (!this.getAtt("selected").equals("")) {
-			HTMLEnv.setSelected(this.getAtt("selected"));
-		}
-		return FuncFormCommon("select");
-	}
-
-	private Element FuncSubmit() {
-		Element result = new Element(Tag.valueOf("form"), "");
-		boolean openFormInThis = false;
-
-		// submit only ----- no "@{form}"
-		if (!HTMLEnv.getFormItemFlg() && !decos.containsKey("form")) {
-			result = createForm();
-			openFormInThis = true;
-		} else if (decos.containsKey("form")) {
-			result = createForm(decos);
-			openFormInThis = true;
-		}
-
-		HTMLEnv.setFormItemFlg(true, "submit");
-
-		String value = "";
-		if (!this.getAtt("default").equals(null)) {
-			value = this.getAtt("default");
-		}
-
-		result.appendChild(JsoupFactory.createInput("submit", "", value));
-		if (openFormInThis == true) {
-			HTMLEnv.setFormItemFlg(false, null);
-			openFormInThis = false;
-		} else {
-			HTMLEnv.setFormItemFlg(true, null);
-		}
-
-		return result;
-	}
-
-	private Element FuncNull() {
-		return new Element(Tag.valueOf("span"), "");
-	}
-
-	private Attributes getAttributes() {
-		Attributes attributes = new Attributes();
-		for (String key : ArgHash.keySet()) {
-			attributes.put(key, getAtt(key));
-		}
-		return attributes;
-	}
-
-	private Element FuncSinvoke(ExtList<ExtList<String>> data_info) {
-		checkArgsNumber(2);
-
-		FuncArg content = this.Args.get(0);
-		FuncArg href = this.Args.get(1);
-
-		checkArgType(content, 0, TFE.class);
-		checkArgType(href, 1, HTMLC0.class);
-
-		Element result = new Element(Tag.valueOf("a"), "");
-		result.addClass("box").addClass("link");
-		result.appendChild((Element) content.createNode());
-		result.attr("href", ((Element) href.createNode()).text());
-		result.attributes().addAll(getAttributes());
-
-		if (GlobalEnv.isAjax()) {
-			HTMLEnv.ajaxCond = this.getAtt("ajaxcond") + "="
-					+ this.getAtt("att");
-
-			Date d2 = new Date();
-			SimpleDateFormat sdf2 = new SimpleDateFormat("yyyymmddHHmmss");
-			String today2 = sdf2.format(d2);
-
-			HTMLEnv.dragDivId = HTMLEnv.ajaxQuery + "+" + HTMLEnv.ajaxCond
-					+ "&" + today2;
-
-			if (decos.containsKey("in")) {
-				String effect = decos.getStr("in");
-
-				if (effect.equalsIgnoreCase("blind"))
-					HTMLEnv.inEffect = 1;
-				if (effect.equalsIgnoreCase("fade"))
-					HTMLEnv.inEffect = 2;
-			}
-			if (decos.containsKey("out")) {
-				String effect = decos.getStr("out");
-
-				if (effect.equalsIgnoreCase("blind"))
-					HTMLEnv.outEffect = 1;
-				if (effect.equalsIgnoreCase("fade"))
-					HTMLEnv.outEffect = 2;
-			}
-
-			if (decos.containsKey("panel")) {
-				HTMLEnv.isPanel = true;
-			}
-			if (decos.containsKey("dispdiv")) {
-				String dispdiv = decos.getStr("dispdiv");
-				if (dispdiv.contains("+")) {
-					String tmp2 = dispdiv
-							.substring(0, dispdiv.lastIndexOf("+"));
-					String tmp3 = dispdiv.substring(
-							dispdiv.lastIndexOf("+") + 1, dispdiv.length());
-
-					if (tmp3.compareTo("att") == 0) {
-						HTMLEnv.ajaxtarget = tmp2 + "_" + this.getAtt("att");
-					} else
-						HTMLEnv.ajaxtarget = dispdiv;
-				} else {
-					HTMLEnv.ajaxtarget = dispdiv;
-				}
-				HTMLEnv.hasDispDiv = true;
-			} else if (decos.containsKey("dragto")) {
-				HTMLEnv.draggable = true;
-
-				// drag to
-				String value = decos.getStr("dragto");
-				String[] droptarget = new String[100];
-				int targetnum = 0;
-
-				if (value.contains("+")) {
-					while (true) {
-						if (!value.contains("+")) {
-							droptarget[targetnum] = value;
-							targetnum++;
-							break;
-						}
-						droptarget[targetnum] = value.substring(0,
-								value.indexOf("+"));
-						value = value.substring(value.indexOf("+") + 1,
-								value.length());
-
-						targetnum++;
-					}
-				} else
-					droptarget[0] = value;
-
-				// script 鐃緒申鐃緒申
-				Date d1 = new Date();
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyymmddHHmmss");
-				String today = sdf.format(d1);
-
-				String scriptname = "drop" + today + HTMLEnv.scriptNum;
-				HTMLEnv.script.append(scriptname + " = new DragDrop(\""
-						+ HTMLEnv.dragDivId + "\", \"" + droptarget[0]
-						+ "\");\n");
-
-				// for tab
-				HTMLEnv.script.append(scriptname + ".addToGroup(\"myTab\");\n");
-
-				for (int i = 1; i < targetnum; ++i) {
-					HTMLEnv.script.append(scriptname + ".addToGroup(\""
-							+ droptarget[i] + "\");\n");
-				}
-
-				HTMLEnv.scriptNum++;
-			}
-		}
-
-		return result;
-	}
-
-	private Element FuncForeach(ExtList<ExtList<String>> data_info) {
+	// tk
+	// end////////////////////////////////////////////////////////////////////////////
+	private void Func_foreach(ExtList data_info)
+			throws UnsupportedEncodingException {
 		String att = new String();
 		for (int i = 0; i < this.countconnectitem(); i++) {
 			att = att + "_" + this.getAtt(Integer.toString(i));
 		}
-		try {
-			att = URLEncoder.encode(att, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-		String filename = HTMLEnv.outFile + att + ".html";
+		// String filename = html_env.outfile + "_" + this.getAtt("default") +
+		// ".html";
+		att = URLEncoder.encode(att, "UTF-8");
+		String filename = htmlEnv.outFile + att + ".html";
 
-		HTMLEnv.fileName = filename;
-		return null;
+		htmlEnv.fileName = filename;
+		// System.out.println(filename);
+		return;
 	}
 
-	private Element FuncInvoke() {
-
-		String path = this.getAtt("path", ".");
-		if (!GlobalEnv.getFileDirectory().equals(".")) {
-			path = GlobalEnv.getFileDirectory();
-		}
-		String filename = this.getAtt("filename");
-		if (!filename.startsWith("/") && (path != null)) {
-			filename = path + "/" + filename;
-		}
-
-		HTMLEnv.linkUrl = this.getAtt("server_path",
-				GlobalEnv.getInvokeServletPath())
-				+ "?"
-				+ "config="
-				+ path
-				+ "/config.ssql"
-				+ "&"
-				+ "query="
-				+ filename + "&" + "cond=" + this.getAtt("condition");
-
-		Element result = (Element) this.createNodeAtt("default");
-
-		return result;
-	}
-
-	@SuppressWarnings("unused")
-	private String cleanPathString(String path) {
-		String result = "";
-		if (!path.startsWith("/")) {
-			String basedir = GlobalEnv.getBaseDir();
-			if (basedir != null && basedir != "") {
-				result = GlobalEnv.getBaseDir() + "/" + path;
-			}
-		}
-		if (GlobalEnv.isServlet()) {
-			result = GlobalEnv.getFileDirectory() + path;
-		}
-		return result;
-	}
-
-	private Element FuncImagefile() {
-		checkArgsNumber(1);
-
-		FuncArg src = Args.get(0);
-
-		Element result = new Element(Tag.valueOf("img"), "");
-		result.attributes().addAll(getAttributes());
-
-		String srcString = ((Element) src.createNode()).text();
-		result.attr("src", srcString);
-
-		if (decos.containsKey("lightbox")) {
-			Date d1 = new Date();
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyymmddHHmmss");
-			String today = sdf.format(d1);
-
-			Element link = JsoupFactory.createLink(
-					srcString + "/" + this.getAtt("default"), "", "");
-			link.attr("rel", "lightbox[lb" + today + "]");
-			result.appendChild(link);
-
-			if (decos.getStr("lightbox").compareTo("root") == 0
-					|| decos.getStr("lightbox").compareTo("thumb") == 0) {
-				Element img = new Element(Tag.valueOf("img"), "")
-						.addClass(HTMLEnv.getClassID(this));
-				HTMLEnv.code.append("<img class=\"" + HTMLEnv.getClassID(this)
-						+ " ");
-
-				img.attr("src", srcString + "/" + this.getAtt("default")).attr(
-						"onLoad", "initLightBox()");
-				link.appendChild(img);
-			}
-		} else {
-			result.addClass(HTMLEnv.getClassID(this));
-		}
-		return result;
-	}
-
-	private Element FuncUrl(boolean mailFncFlg) {
-		Element result = null;
-
-		FuncArg fa1 = (FuncArg) this.Args.get(0), fa2, fa3;
-		String url, name, type;
-
-		try { // 鐃緒申鐃�鐃緒申 or 3鐃縦の常申鐃�
-			fa2 = (FuncArg) this.Args.get(1);
-			url = ((mailFncFlg) ? ("mailto:") : ("")) + fa2.getStr();
-			name = fa1.getStr();
-
-			try { // 鐃緒申鐃�鐃縦の常申鐃�
-				fa3 = (FuncArg) this.Args.get(2);
-				type = fa3.getStr();
-
-				// type=1 -> 文鐃緒申
-				if (type.equals("1") || type.equals("text") || type.equals("")) {
-					result = getTextAnchor(url, name);
-
-					// url鐃旬ワ申鐃緒申(鐃叔ワ申鐃緒申鐃夙ップ￥申鐃緒申丱鐃緒申覿�申鐃�
-				} else if (type.equals("3") || type.equals("button")
-						|| type.equals("bt")) {
-					result = JsoupFactory.createInput("button", "", name).attr(
-							"onClick", "location.href='" + url + "");
-					result.addClass(className());
-
-					// url鐃旬ワ申鐃緒申 width,height鐃緒申鐃緒申鐃緒申僚鐃緒申鐃�
-					if (decos.containsKey("width")
-							|| decos.containsKey("height")) {
-						String style = "";
-						if (decos.containsKey("width"))
-							style += "WIDTH:"
-									+ decos.getStr("width").replace("\"", "")
-									+ "; ";
-						if (decos.containsKey("height"))
-							style += "HEIGHT:"
-									+ decos.getStr("height").replace("\"", "")
-									+ "; "; // 100; ";
-						result.attr("style", style);
-					}
-
-					// type=3 -> url鐃緒申鐃緒申
-				} else if (type.equals("2") || type.equals("image")
-						|| type.equals("img")) {
-					result = JsoupFactory.createLink(url, "", "", className());
-					result.attr("data-transition", transition());
-					if (decos.containsKey("prefetch")
-							|| decos.containsKey("pref"))
-						result.attr("data-prefetch", "");
-
-					Element img = new Element(Tag.valueOf("img"), "");
-
-					// url鐃緒申鐃緒申 width,height鐃緒申鐃緒申鐃緒申僚鐃緒申鐃�
-					if (decos.containsKey("width"))
-						img.attr("width",
-								decos.getStr("width").replace("\"", ""));
-					else {
-						// added by goto 20130312 "Default width: 100%"
-						img.attr("width", "100%");
-					}
-					if (decos.containsKey("height"))
-						img.attr("height",
-								decos.getStr("height").replace("\"", "")); // 100;
-
-					result.appendChild(img);
-				}
-
-			} catch (Exception e) { // 鐃緒申鐃�鐃縦の常申鐃� statement =
-			}
-
-		} catch (Exception e) { // 鐃緒申鐃�鐃縦の常申鐃�
-			url = fa1.getStr();
-			result = JsoupFactory.createLink(
-					((mailFncFlg) ? ("mailto:") : ("")), "", url);
-			result.attr("data-transition", transition());
-			if (decos.containsKey("prefetch") || decos.containsKey("pref"))
-				result.attr("data-prefetch", "");
-		}
-
-		// 鐃銃逸申鐃緒申鐃祝緒申鐃緒申鐃縮わ申HTML鐃祝書きわ申鐃緒申
-		return result;
-	}
-
-	private Element getTextAnchor(String url, String name) {
-		// [ ]鐃叔囲わ申譴随申鐃淑�申鐃熟ワ申鐃術￥申鐃緒申鵐�砲鐃緒申鐃� //ex) a("[This] is anchor.","URL")
-		String A = "";
-		int a1 = 0, a2 = name.length() - 1;
-		try {
-			for (int i = 0; i < name.length(); i++) {
-				if (i > 0 && name.charAt(i) == '['
-						&& name.charAt(i - 1) != '\\')
-					a1 = i;
-				else if (i > 0 && name.charAt(i) == ']'
-						&& name.charAt(i - 1) != '\\')
-					a2 = i;
-			}
-			if (a1 == 0 && a2 == name.length() - 1)
-				A = name.substring(a1, a2 + 1);
-			else
-				A = name.substring(a1 + 1, a2);
-			A = A.replaceAll("\\\\\\[", "[").replaceAll("\\\\\\]", "]");
-			name.substring(0, a1).replaceAll("\\\\\\[", "[")
-					.replaceAll("\\\\\\]", "]");
-			name.substring(a2 + 1).replaceAll("\\\\\\[", "[")
-					.replaceAll("\\\\\\]", "]");
-		} catch (Exception e) {
-		}
-		Element result = JsoupFactory.createLink(url, "", A, className()).attr(
-				"data-transition", transition());
-		if (decos.containsKey("prefetch") || decos.containsKey("pref"))
-			result.attr("data-prefetch", "");
-		return result;
-	}
-
-	private String className() { // added 20130703
-		if (decos.containsKey("class"))
-			return decos.getStr("class");
-		return "";
-	}
-
-	private String transition() {
-		// 鐃緒申鐃緒申鐃緒申鐃旬ワ申鐃祝メー鐃緒申鐃緒申鐃�data-transition)鐃緒申鐃緒申鐃緒申僚鐃緒申鐃�
-		// //鐃緒申鐃緒申鐃緒申鐃准￥申鐃緒申鐃舜わ申鐃緒申鐃旬にわ申鐃出縁申鐃緒申鐃銃わ申鐃淑わ申
-		if (decos.containsKey("transition"))
-			return decos.getStr("transition");
-		if (decos.containsKey("trans"))
-			return decos.getStr("trans");
-		return "";
-	}
-
-	private Node FuncObject(String path) {
-		String classID = HTMLEnv.getClassID(this);
-		Element result = null;
-
-		if (path.equals("")) {
-			try {
-				path = ((FuncArg) this.Args.get(0)).getStr().trim();
-			} catch (Exception e) {
-			}
-		}
-
-		// 各引数毎に処理した結果をHTMLに書きこむ
-		if (path.endsWith(".php")) { // .php file
-			String phpCode = "";
-			BufferedReader in;
-			try {
-				in = new BufferedReader(new InputStreamReader(
-						new FileInputStream(path), "UTF-8"));
-				String line = null;
-				while (true) {
-					line = in.readLine();
-					if (line == null)
-						break;
-					else
-						phpCode += line + "\n";
-				}
-				in.close();
-				return new TextNode(phpCode, "");
-			} catch (Exception e) {
-				System.err.println("<Warning> Can't open '" + path + "'.");
-			}
-		} else if (path.endsWith(".js")) // .js file
-			result = JsoupFactory.createJsElement(path);
-		else
-			result = new Element(Tag.valueOf("object"), "").attr("data", path)
-					.addClass(classID).html("\n");
-		// .html, .pdf, .swf, .gif, .mp4, etc.
-		return result;
-	}
-
-
-    /*  SEQ_NUM( [Start number [, ASC or DESC] ] )  */
-    private Node Func_seq_num() {
-    	Element result = new Element(Tag.valueOf("div"), "");
-    	result.addClass("box att seqNum");
-    	int start = 1;
-    	String order = "asc";
-    	checkArgsNumber(0);
-    	if(ArgHash.containsKey("start"))
-    		start = Integer.valueOf(getAtt("start"));
-    	if(ArgHash.containsKey("order"))
-    		order = getAtt("order");
-    	
-        classID = HTMLEnv.getClassID(this);
-        int i;
-        for(i=0; i<seq_num_ClassID.size()+1; i++){
-            try{
-                if(classID.equals(seq_num_ClassID.get(i)))
-                    break;
-            }catch(Exception e1){
-                seq_num_ClassID.add(i, classID);
-                seq_num_gl.add(i, glvl);
-                try{
-                    //第一引数 Start number
-                    seq_num_startNum.add(i, start);
-                    //第二引数 ASC or DESC
-                    if(order.toLowerCase().trim().equals("desc"))	seq_num_DESC_Flg.add(i, true);
-                    else                                            seq_num_DESC_Flg.add(i, false);
-                }catch(Exception e2){
-                    seq_num_startNum.add(i, 1);        //default: 1
-                    seq_num_DESC_Flg.add(i, false);    //default: false
-                }
-                seq_num.add(i, seq_num_startNum.get(i));
-                break;
-            }
-        }
-        
-        result.html(""+((!seq_num_DESC_Flg.get(i))? (seq_num.get(i)):(seq_num.get(i))));
-        if(!seq_num_DESC_Flg.get(i))    seq_num.set(i,seq_num.get(i)+1);
-        else                    		seq_num.set(i,seq_num.get(i)-1);
-        return result;
-    }
-    //seq_num end
-    //added by goto 20130914  "SEQ_NUM"
-    static void Func_seq_num_initialization(int gl) {		//initialize seq_num
-    	try{
-    		for(int i=0; i<seq_num_ClassID.size(); i++){
-    			if(seq_num_ClassID.get(i).equals(classID) && seq_num_gl.get(i)==gl){
-    				for(int j=i; j>=0; j--){
-    					if(seq_num_gl.get(j)==gl){
-    						seq_num.set(j, seq_num_startNum.get(j));	//replace
-    					}
-    					if(seq_num_gl.get(j)!=gl)	break;
-    				}
-    				break;
-    			}
-    		}
-    	}catch(Exception e){}
-    	return;
-    }
-
-	// // for practice 2012/02/09
-	// private void Func_button() {
-	// String statement ="";
-	// String button_media = this.getArgs().get(0).toString();
-	// if (button_media.equals("\"goback\"")){
-	// // 鐃緒申鐃旬ワ申鐃緒申鐃緒申鐃緒申鐃緒申鐃緒申鐃�// statement =
-	// "<form><INPUT type=\"button\" onClick='history.back();' value=\"鐃緒申鐃�"></form>";
-	// }else if(button_media.equals("\"bookmark\"")){
-	// // 鐃緒申鐃緒申鐃祝ブッワ申鐃殉￥申鐃緒申鐃緒申鐃緒申魑�劼鐃緒申鐃�// }else
-	// if(button_media.equals("\"facebook\"")){
-	// // facebook鐃塾わ申鐃緒申鐃粛￥申鐃旬ワ申鐃緒申僚鐃緒申鐃薯記述わ申鐃緒申
-	// }else{
-	// // 鐃獣に誌申鐃所が鐃淑わ申鐃緒申鐃緒申鐃緒申椒鐃緒申鐃祝わ申鐃緒申
-	// statement =
-	// "<form><INPUT type=\"button\" onClick='history.back();' value=\"鐃緒申鐃�"></form>";
-	// }
-	// // 鐃銃逸申鐃緒申鐃祝緒申鐃緒申鐃縮わ申HTML鐃祝書きわ申鐃緒申
-	// html_env.code.append(statement);
-	// return;
-	// }
-
-	private Element FuncFormCommon(String s) {
-		Element result = new Element(Tag.valueOf("div"), "");
-
-		Node form = new TextNode("", "");
+	private void Func_FormCommon(String s) {
+		String form = new String();
 
 		boolean openFormInThis = false;
 
 		if (!HTMLEnv.getFormItemFlg()) {
-			form = createForm(decos);
+			form = createForm();
 			openFormInThis = true;
 		}
 
@@ -1164,268 +730,662 @@ public class HTMLFunction extends Function {
 			HTMLEnv.cond = this.getAtt("cond");
 		}
 
-		result.appendChild(form);
+		htmlEnv.code.append(form);
 
 		if (this.Args.get(0) instanceof FuncArg) {
+			// HTMLEnv.setSelectFlg(true,(String)this.decos.get("select"));
 			HTMLEnv.setFormValueString(att);
 			Log.out("ARGS are function");
-			FuncArg fa = (FuncArg) this.Args.get(0);
-			result.appendChild((Node) fa.createNode());
+			FuncArg fa = this.Args.get(0);
+			fa.workAtt();
 		} else {
-			result.appendChild((Node) this.createNodeAtt("default"));
+			this.workAtt("default");
 		}
 
 		if (openFormInThis == true) {
+			htmlEnv.code.append("</form>");
 			HTMLEnv.setFormItemFlg(false, null);
 			openFormInThis = false;
 		} else {
 			HTMLEnv.setFormItemFlg(true, null);
 		}
-		return result;
+		return;
 	}
 
-	private Element createForm() {
-		Element result = new Element(Tag.valueOf("form"), "");
-		String path = new String();
-		if (this.getAtt("path") != null && !this.getAtt("path").isEmpty()) {
-			path = this.getAtt("path").replaceAll("\"", "");
-		} else {
-			path = ".";
+	// added by chie 2009 func form hidden
+	private void Func_hidden() {
+		Func_FormCommon("hidden");
+		return;
+	}
+
+	// added by chie 2009 func form inputtext
+	private void Func_inputtext() {
+		Func_FormCommon("text");
+		return;
+	}
+
+	private void Func_invoke() {
+
+		/*
+		 * Invoke function : <td> <a
+		 * href="${server_path}/supersql.invoke.InvokeServlet?
+		 * ${dbname}+${query_filename}+${added_condition}"> TFE </a> </td>
+		 */
+
+		String path = this.getAtt("path", ".");
+		if (!GlobalEnv.getFileDirectory().equals(".")) {
+			path = GlobalEnv.getFileDirectory();
+		}
+		String filename = this.getAtt("filename");
+		if (!filename.startsWith("/") && (path != null)) {
+			filename = path + "/" + filename;
 		}
 
-		result.attr("method", "POST").attr("action",
-				path + "/servlet/supersql.form.FormServlet");
-		result.appendChild(JsoupFactory.createInput("hidden", "configfile",
-				path + "/config.ssql"));
+		Log.out("invoke filename:" + filename);
 
-		if (this.getAtt("link") != null && !this.getAtt("link").isEmpty()) {
-			result.appendChild(JsoupFactory.createInput("hidden", "sqlfile",
-					path + "/" + this.getAtt("link").replaceAll("\"", "")));
-		} else if (this.getAtt("linkfile") != null
-				&& !this.getAtt("linkfile").isEmpty()) {
-			result.appendChild(JsoupFactory.createInput("hidden", "sqlfile",
-					path + "/" + this.getAtt("linkfile").replaceAll("\"", "")));
+		// start tk/////////////////////////////////
+		/*
+		 * html_env.linkurl = this.getAtt("server_path", GlobalEnv
+		 * .getInvokeServletPath()) + "?" + this.getAtt("dbname",
+		 * GlobalEnv.getdbname()) + "+" + filename + "+" +
+		 * this.getAtt("condition");
+		 */
+		/*
+		 * html_env.linkurl =
+		 * "http://localhost:8080/invoke/servlet/supersql.invoke.InvokeServlet2"
+		 * + "?" + "config=http://localhost:8080/invoke/config.ssql" + "&" +
+		 * "query=" + filename + "&" + "cond=" + this.getAtt("condition");
+		 */
+		// change chie
+		htmlEnv.linkUrl = this.getAtt("server_path",
+				GlobalEnv.getInvokeServletPath())
+				+ "?"
+				+ "config="
+				+ path
+				+ "/config.ssql"
+				+ "&"
+				+ "query="
+				+ filename + "&" + "cond=" + this.getAtt("condition");
+		// end tk//////////////////////////////////////////////////
+
+		htmlEnv.linkFlag = 1;
+		this.workAtt("default");
+		htmlEnv.linkFlag = 0;
+
+		return;
+	}
+
+	// added by chie 2009 func form radio
+	private void Func_radio() {
+
+		if (!this.getAtt("checked").equals("")) {
+			HTMLEnv.setChecked(this.getAtt("checked"));
 		}
 
-		if (this.getAtt("cond") != null && !this.getAtt("cond").isEmpty()) {
-			if (!this.getAtt("cond").replaceAll("\"", "").isEmpty())
-				result.appendChild(JsoupFactory.createInput("hidden", "cond1",
-						this.getAtt("cond").replaceAll("\"", "")));
+		Func_FormCommon("radio");
+
+		return;
+	}
+
+	// added by chie 2009 func form select
+	private void Func_select() {
+		if (!this.getAtt("selected").equals("")) {
+			HTMLEnv.setSelected(this.getAtt("selected"));
 		}
 
+		Func_FormCommon("select");
+
+		return;
+	}
+
+	private void Func_sinvoke(ExtList data_info) {
+		String file = this.getAtt("file");
+		String action = this.getAtt("action");
+		int attNo = 1;
 		String att = new String();
-		Integer attNo = 1;
+		Log.out("sinvoke file 3: " + file);
+
+		// tk start/////////////////////////////////////////////////////////////
+		/*
+		 * if (file.indexOf("/") > 0) { file =
+		 * file.substring(file.lastIndexOf("/") + 1); }
+		 */
+		// tk end//////////////////////////////////////////////////////////////
+		Log.out("1 att:" + att + " attNo:" + attNo + " att1:"
+				+ this.getAtt("att1"));
+
 		while (!this.getAtt("att" + attNo).equals("")) {
-			if (attNo > 1)
-				att += ",";
-			att += this.getAtt("att" + attNo);
+			att = att + "_" + this.getAtt("att" + attNo);
 			attNo++;
 			Log.out("att:" + att + " attNo:" + attNo);
+			// System.out.println(att);
 		}
-
-		if (attNo == 1 && !this.getAtt("att").equals("")) {
-			att += this.getAtt("att");
-			Log.out("att:" + att + " attNo:" + attNo);
-		}
-
-		if (this.getAtt("update") != null && !this.getAtt("update").isEmpty()) {
-			result.appendChild(JsoupFactory.createInput("hidden", "updatefile",
-					path + "/" + this.getAtt("update").replaceAll("\"", "")
-							+ "(" + att + ")"));
-		} else if (this.getAtt("updatefile") != null
-				&& !this.getAtt("updatefile").isEmpty()) {
-			result.appendChild(JsoupFactory.createInput("hidden", "updatefile",
-					path + "/" + this.getAtt("updatefile").replaceAll("\"", "")
-							+ "(" + att + ")"));
-		}
-		return result;
-	}
-
-	protected static Element createForm(DecorateList decos) {
-		Element result = new Element(Tag.valueOf("form"), "");
-		String path = new String();
-		if (decos.containsKey("path")) {
-			path = decos.getStr("path").replaceAll("\"", "");
-		} else {
-			path = ".";
-		}
-
-		result.attr("method", "POST");
-		result.attr("action", path + "/supersql.form.FormServlet");
-		result.attr("name", HTMLEnv.getFormName());
-
-		result.appendChild(JsoupFactory.createInput("hidden", "configFile",
-				GlobalEnv.getFileDirectory() + "/config.ssql"));
-
-		if (decos.containsKey("link")) {
-			opt(decos.getStr("link"));
-			result.appendChild(JsoupFactory.createInput("hidden", "sqlfile",
-					path + "/" + decos.getStr("link").replaceAll("\"", "")));
-		}
-
-		if (decos.containsKey("cond")) {
-			result.appendChild(JsoupFactory.createInput("hidden", "cond1", path
-					+ "/" + decos.getStr("link").replaceAll("\"", "")));
-		}
-
-		if (decos.containsKey("updatefile")) {
-			result.appendChild(JsoupFactory.createInput("hidden", "updateFile",
-					path + "/" + opt(decos.getStr("updatefile"))));
-		}
-		if (decos.containsKey("linkfile")) {
-			opt(decos.getStr("linkfile"));
-			result.appendChild(JsoupFactory.createInput("hidden", "linkfile",
-					path + "/" + decos.getStr("linkfile").replaceAll("\"", "")));
-		}
-		if (decos.containsKey("cond")) {
-			result.appendChild(JsoupFactory.createInput("hidden", "linkcond",
-					decos.getStr("cond").replaceAll("\"", "")));
-		}
-		return result;
-	}
-
-	public static String opt(String s) {
-		if (s.contains("\"")) {
-			s = s.replaceAll("\"", "");
-		}
-		if (s.startsWith("./")) {
-			s = s.substring(2, s.length());
-		}
-		if (s.startsWith("/")) {
-			s = s.substring(1, s.length());
-		}
-		return s;
-	}
-
-	private Element funcYoutube() {
-		checkArgsNumber(1);
-		FuncArg src = Args.get(0);
-		checkArgType(src, 0, HTMLC0.class);
-		String srcString = "http://www.youtube.com/embed/"
-				+ ((Element) src.createNode()).text();
-
-		Element iframe = new Element(Tag.valueOf("iframe"), "");
-		iframe.attr("allowFullScreen");
-		iframe.attr("frameborder", "0");
-		iframe.attr("src", srcString);
-		iframe.attributes().addAll(getAttributes());
-
-		if (decos.containsKey("width"))
-			iframe.attr("width", decos.getStr("width"));
-		else
-			iframe.attr("width", "560");
-
-		if (decos.containsKey("height"))
-			iframe.attr("height", decos.getStr("height"));
-		else
-			iframe.attr("height", "315");
-
-		return iframe;
-	}
-
-	private Element funcVideoFile() {
-		checkArgsNumber(1);
-		FuncArg src = Args.get(0);
-		checkArgType(src, 0, HTMLC1.class, HTMLC0.class);
-
-		Element video = new Element(Tag.valueOf("video"), "");
-
-		for (Element e : ((Element) src.createNode()).getElementsByClass("att")) {
-			String srcString = e.text();
-			String extension = srcString.split("\\.")[srcString.split("\\.").length - 1];
-			video.appendElement("source").attr("type", "video/" + extension)
-					.attr("src", srcString);
-		}
-
-		video.append("Your browser does not support the video tag.");
-
-		video.attributes().addAll(getAttributes());
-
-		return video;
-	}
-
-	private Element funcMeter() {
-		/*
-		 * <div><script type="text/javascript">addEvent(window,"load",function()
-		 * { var layout = [ 200, //width 40, //height 170, //m_width 25,
-		 * //m_height 100, //max 0, //min 30, //low 70 //high ] var color = [
-		 * "#FF0000", //max_color "#00FFFF", //low_color "#00FFFF", //high_color
-		 * "#00FF00", //mid_color "#CCCCCC" //bg_color ]
-		 * draw("meter2",layout,color,70); });</script>
-		 * 
-		 * <canvas width="200" height="40" id="meter2"></canvas></div>
-		 */
-		meterId++;
-		checkArgsNumber(1);
-		FuncArg attribute = Args.get(0);
-		checkArgType(attribute, 0, HTMLAttribute.class);
-
-		Element result = new Element(Tag.valueOf("div"), "");
-		Element script = new Element(Tag.valueOf("script"), "").attr("type",
-				"text/javascript");
-		Element canvas = new Element(Tag.valueOf("canvas"), "");
-		String scriptString = "window.onload = function() { \nvar layout = [";
-
-		canvas.attr("id", "meter" + meterId);
-
-		HashMap<String, String> propertiesHashMap = new HashMap<String, String>();
-		{ // The order in which we put the values here is important.
-			propertiesHashMap.put("width", "200");
-			propertiesHashMap.put("height", "40");
-			propertiesHashMap.put("m_width", "170");
-			propertiesHashMap.put("m_height", "25");
-			propertiesHashMap.put("max", "100");
-			propertiesHashMap.put("min", "0");
-			propertiesHashMap.put("low", "30");
-			propertiesHashMap.put("high", "70");
-			propertiesHashMap.put("max_color", "#FF0000");
-			propertiesHashMap.put("low_color", "#00FFFF");
-			propertiesHashMap.put("high_color", "#00FFFF");
-			propertiesHashMap.put("mid_color", "#00FF00");
-			propertiesHashMap.put("bg_color", "#CCCCCC");
-		}
-
-		for (String deco : decos.keySet()) {
-			if (propertiesHashMap.keySet().contains(deco))
-				propertiesHashMap.put(deco, decos.getStr(deco));
-		}
-
-		for (Entry<String, String> currentProperty : propertiesHashMap
-				.entrySet()) {
-			String key = currentProperty.getKey();
-			String value = currentProperty.getValue();
-			scriptString += "\"" + value + "\"";
-			if (key.equalsIgnoreCase("high"))
-				scriptString += "]; \nvar color = [";
-			else
-				scriptString += ",";
-			if (key.equalsIgnoreCase("width") || key.equalsIgnoreCase("height"))
-				canvas.attr(key, value);
-		}
-
-		scriptString += "]; \ndraw(\"meter" + meterId + "\",layout,color,";
-		scriptString += ((Element) (attribute.createNode())).text();
-		scriptString += ");}</script>";
-		script.appendChild(new DataNode(scriptString, ""));
-
-		result.appendChild(canvas);
-		HTMLEnv.getHtmlEnv1().head()
-				.appendChild(JsoupFactory.createJsElement("js/canvas.js"));
-		HTMLEnv.getHtmlEnv1().head().appendChild(script);
-
-		return result;
-	}
-
-	// 20130920
-	private String getValue(int x) {
 		try {
-			String str = ((FuncArg) this.Args.get(x - 1)).getStr(); // 第x引数
-			if (!str.equals(""))
-				return str;
-			else
-				return "";
-		} catch (Exception e) {
-			return "";
+			att = URLEncoder.encode(att, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
 		}
+		if (this.getAtt("action").equals("")) {
+			try {
+				if (file.toLowerCase().contains(".sql")) {
+					file = file.substring(0, file.indexOf(".sql"));
+				} else if (file.toLowerCase().contains(".ssql")) {
+					file = file.substring(0, file.indexOf(".ssql"));
+				} else if (file.toLowerCase().contains(".html")) {
+					file = file.substring(0, file.indexOf(".html"));
+				}
+			} catch (Exception e) {
+				GlobalEnv.addErr("Error[HTMLFunction]: filename is invalid.");
+//				System.err.println("Error[HTMLFunction]: filename is invalid.");
+				Log.err("Error[HTMLFunction]: filename is invalid.");
+//				GlobalEnv.errorText += "Error[HTMLFunction]: filename is invalid.";
+			}
+
+			String filename = new String();
+			if (!this.getAtt("att").equals("")) {
+				if (this.getAtt("att").toLowerCase().startsWith("http://"))
+					filename = this.getAtt("att");
+				else if (this.getAtt("att").toLowerCase().endsWith(".html"))
+					filename = this.getAtt("att");
+				else
+					filename = file + "_" + this.getAtt("att") + ".html";
+			} else {
+				filename = file + att + ".html";
+			}
+
+			filename.replace("\\\\", "\\");
+			htmlEnv.linkUrl = filename;
+			htmlEnv.sinvokeFlag = true;
+
+		} else {
+			String filename = new String();
+			if (!this.getAtt("att").equals(""))
+				filename = action + "/" + this.getAtt("att");
+			else
+				filename = action + att;
+
+			filename.replace("\\\\", "\\");
+			htmlEnv.linkUrl = filename;
+			htmlEnv.sinvokeFlag = true;
+		}
+
+		// tk to make hyper link to
+		// image///////////////////////////////////////////////////
+		// tk to ajax
+		if (GlobalEnv.isAjax()) {
+			htmlEnv.linkUrl = file + ".html";
+			htmlEnv.ajaxQuery = file + ".sql";
+			// html_env.ajaxatt = this.getAtt("att");
+			htmlEnv.ajaxCond = this.getAtt("ajaxcond") + "="
+					+ this.getAtt("att");
+
+			Date d2 = new Date();
+			SimpleDateFormat sdf2 = new SimpleDateFormat("yyyymmddHHmmss");
+			String today2 = sdf2.format(d2);
+
+			htmlEnv.dragDivId = htmlEnv.ajaxQuery + "+" + htmlEnv.ajaxCond
+					+ "&" + today2;
+
+			if (decos.containsKey("in")) {
+				String effect = decos.getStr("in");
+
+				if (effect.equalsIgnoreCase("blind"))
+					htmlEnv.inEffect = 1;
+				if (effect.equalsIgnoreCase("fade"))
+					htmlEnv.inEffect = 2;
+			}
+			if (decos.containsKey("out")) {
+				String effect = decos.getStr("out");
+
+				if (effect.equalsIgnoreCase("blind"))
+					htmlEnv.outEffect = 1;
+				if (effect.equalsIgnoreCase("fade"))
+					htmlEnv.outEffect = 2;
+			}
+
+			if (decos.containsKey("panel")) {
+				htmlEnv.isPanel = true;
+			}
+			if (decos.containsKey("dispdiv")) {
+				String dispdiv = decos.getStr("dispdiv");
+				if (dispdiv.contains("+")) {
+					String tmp2 = dispdiv
+							.substring(0, dispdiv.lastIndexOf("+"));
+					String tmp3 = dispdiv.substring(
+							dispdiv.lastIndexOf("+") + 1, dispdiv.length());
+
+					if (tmp3.compareTo("att") == 0) {
+						htmlEnv.ajaxtarget = tmp2 + "_" + this.getAtt("att");
+					} else
+						htmlEnv.ajaxtarget = dispdiv;
+				} else {
+					htmlEnv.ajaxtarget = dispdiv;
+				}
+				htmlEnv.hasDispDiv = true;
+				Log.out("html_env.ajaxtarget:" + htmlEnv.ajaxtarget);
+			} else if (decos.containsKey("dragto")) {
+				Log.out("draggable = ture");
+				htmlEnv.draggable = true;
+
+				// drag to
+				String value = decos.getStr("dragto");
+				String[] droptarget = new String[100];
+				int targetnum = 0;
+
+				if (value.contains("+")) {
+					while (true) {
+						if (!value.contains("+")) {
+							droptarget[targetnum] = value;
+							targetnum++;
+							break;
+						}
+						droptarget[targetnum] = value.substring(0,
+								value.indexOf("+"));
+						value = value.substring(value.indexOf("+") + 1,
+								value.length());
+
+						targetnum++;
+					}
+				} else
+					droptarget[0] = value;
+
+				// script ����
+				Date d1 = new Date();
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyymmddHHmmss");
+				String today = sdf.format(d1);
+
+				String scriptname = "drop" + today + htmlEnv.scriptNum;
+				htmlEnv.script.append(scriptname + " = new DragDrop(\""
+						+ htmlEnv.dragDivId + "\", \"" + droptarget[0]
+						+ "\");\n");
+
+				Log.out(scriptname + " = new DragDrop(\"" + htmlEnv.dragDivId
+						+ "\", \"" + droptarget[0] + "\");\n");
+
+				// for tab
+				htmlEnv.script.append(scriptname + ".addToGroup(\"myTab\");\n");
+
+				for (int i = 1; i < targetnum; ++i) {
+					htmlEnv.script.append(scriptname + ".addToGroup(\""
+							+ droptarget[i] + "\");\n");
+				}
+
+				htmlEnv.scriptNum++;
+			}
+		}
+		if (this.Args.get(0) instanceof FuncArg) {
+			Log.out("ARGS are function");
+			FuncArg fa = this.Args.get(0);
+			fa.workAtt();
+		} else
+			this.workAtt("default");
+		// tk//////////////////////////////////////////////////
+
+		htmlEnv.sinvokeFlag = false;
+		return;
 	}
+
+	// not use
+	/*
+	 * private void Func_session() {
+	 * System.out.println("aaaaaaaaa"+this.getClassName());
+	 * html_env.code.append("b");
+	 * html_env2.code.append("<VALUE type=\"form\">b</VALUE>"); return; }
+	 */
+
+	// added by chie 2009 func form textarea
+	private void Func_textarea() {
+		Func_FormCommon("textarea");
+		return;
+	}
+
+	protected void Func_imagefile() {
+
+		/*
+		 * ImageFile function : <td> <img src="${imgpath}/"+att /> </td>
+		 */
+
+		String path = this.getAtt("path", ".");
+		if (!path.startsWith("/")) {
+			String basedir = GlobalEnv.getBaseDir();
+			if (basedir != null && basedir != "") {
+				path = GlobalEnv.getBaseDir() + "/" + path;
+			}
+		}
+		if (GlobalEnv.isServlet()) {
+			path = GlobalEnv.getFileDirectory() + path;
+		}
+
+		// System.out.println(GlobalEnv.isServlet());
+
+		// tk to make hyper link to
+		// image//////////////////////////////////////////////////////////////////////////////////
+		if (htmlEnv.linkFlag > 0 || htmlEnv.sinvokeFlag) {
+			// added by goto 20121222 start
+			// �ʲ��ϡ�-f�Υե�����̾���꤬���Хѥ��ˤʤäƤ�����ν���(?)
+			// [%Ϣ���] href�λ�������Хѥ���������Хѥ������פ��ѹ�
+			// 20120622�ν������ȡ���-f �ե�ѥ��ե�����̾�פ��Ѥ��Ƥ����硢���Хѥ������ˤʤ�ʤ�
+			String fileDir = new File(htmlEnv.linkUrl).getAbsoluteFile()
+					.getParent();
+
+			if (fileDir.length() < htmlEnv.linkUrl.length()
+					&& fileDir.equals(htmlEnv.linkUrl.substring(0,
+							fileDir.length()))) {
+				String relative_path = htmlEnv.linkUrl.substring(fileDir
+						.length() + 1);
+				htmlEnv.code.append("<A href=\"" + relative_path + "\" ");
+			} else
+				htmlEnv.code.append("<A href=\"" + htmlEnv.linkUrl + "\" ");
+
+			// html_env.code.append("<A href=\"" + html_env.linkurl + "\" ");
+			// added by goto 20121222 end
+
+			if (decos.containsKey("target"))
+				htmlEnv.code.append(" target=\"" + decos.getStr("target")
+						+ "\" ");
+			if (decos.containsKey("class"))
+				htmlEnv.code
+						.append(" class=\"" + decos.getStr("class") + "\" ");
+			htmlEnv.code.append(">\n");
+
+			Log.out("<A href=\"" + htmlEnv.linkUrl + "\">");
+		}
+		// tk/////////////////////////////////////////////////////////////////////////////////
+
+		if (decos.containsKey("lightbox")) {
+			Date d1 = new Date();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyymmddHHmmss");
+			String today = sdf.format(d1);
+
+			htmlEnv.code.append("<a href=\"" + path + "/"
+					+ this.Args.get(0).getStr() + "\" rel=\"lightbox[lb" + today
+					+ "]\">");
+
+			if (decos.getStr("lightbox").compareTo("root") == 0
+					|| decos.getStr("lightbox").compareTo("thumb") == 0) {
+				htmlEnv.code.append("<img class=\"" + HTMLEnv.getClassID(this)
+						+ " ");
+
+				if (decos.containsKey("class"))
+					htmlEnv.code.append(decos.getStr("class"));
+
+				htmlEnv.code.append(" \" src=\"" + path + "/"
+						+ this.Args.get(0).getStr()
+						+ "\" onLoad=\"initLightbox()\"/>");
+
+			}
+			htmlEnv.code.append("</a>");
+		} else {
+			htmlEnv.code.append("<img class=\"" + HTMLEnv.getClassID(this)
+					+ " ");
+			htmlEnv2.code.append("<VALUE type=\"img\" class=\""
+					+ HTMLEnv.getClassID(this) + " ");
+			if (decos.containsKey("class"))
+				htmlEnv.code.append(decos.getStr("class"));
+
+			htmlEnv.code.append(" \" src=\"" + path + "/"
+					+ this.Args.get(0).getStr() + "\"/>");
+			htmlEnv2.code.append(" \" src=\"" + path + "/"
+					+ this.Args.get(0).getStr() + "\" ");
+			if (decos.containsKey("width")) {
+				htmlEnv2.code.append("width=\""
+						+ decos.getStr("width").replace("\"", "") + "\" ");
+			}
+			if (decos.containsKey("height")) {
+				htmlEnv2.code.append("height=\""
+						+ decos.getStr("height").replace("\"", "") + "\" ");
+			}
+			htmlEnv2.code.append(" ></VALUE>");
+		}
+		// tk to make hyper link to
+		// image///////////////////////////////////////////////////////////////////////////////////
+		if (htmlEnv.linkFlag > 0 || htmlEnv.sinvokeFlag) {
+			htmlEnv.code.append("</a>");
+		}
+		// tk///////////////////////////////////////////////////////////////////////////////////
+		return;
+	}
+
+	protected void Func_null() {
+		return;
+	}
+
+	// added by chie 2009 func form submit
+	protected void Func_submit() {
+		String form = new String();
+		boolean openFormInThis = false;
+
+		// submit only ----- no "@{form}"
+		if (!HTMLEnv.getFormItemFlg() && !decos.containsKey("form")) {
+			form = createForm();
+			openFormInThis = true;
+		} else if (decos.containsKey("form")) {
+			form = createForm(decos);
+			openFormInThis = true;
+		}
+
+		HTMLEnv.setFormItemFlg(true, "submit");
+
+		String option = new String();
+		if (!this.Args.get(0).getStr().equals(null)) {
+			option += "value=\"" + this.Args.get(0).getStr() + "\"";
+		}
+
+		form += "<input type=\"submit\" " + option + " />";
+
+		if (openFormInThis == true) {
+			form += "</form>";
+			HTMLEnv.setFormItemFlg(false, null);
+			openFormInThis = false;
+		} else {
+			HTMLEnv.setFormItemFlg(true, null);
+		}
+
+		htmlEnv.code.append(form);
+		htmlEnv2.code.append("<VALUE type=\"form\">" + form + "</VALUE>");
+		return;
+	}
+
+	//added by goto 20130308 start  "anchor"  anchor(), a(), url(), mail()
+    /** anchor関数: anchor( name/button-name/button-url, url, type(bt/button/img/image) )
+     *          @{ width=~, height=~, transition=~ } 
+    /*    url("title", "detail/imgURL", int type), anchor(), a()    */
+    /*    <type:1> a(リンク元の名前, リンク先URL) <=> a(リンク元の名前, リンク先URL, 1)    */
+    /*    <type:2> a(画像URL, リンク先URL, 2)    	   	*/
+    /*    <type:3> a(ボタンの名前, リンク先URL, 3)        	*/
+    /*    mail()でも使用							        */
+    private void Func_url(boolean mailFncFlg, String t) {
+    	String statement = "";
+    	FuncArg fa1 = (FuncArg) this.Args.get(0), fa2, fa3;
+    	String url, name, type;
+    	
+    	try{					//引数2つ or 3つの場合
+    		fa2 = (FuncArg) this.Args.get(1);
+    		url = ((mailFncFlg)?("mailto:"):("")) + fa2.getStr();
+    		name = fa1.getStr();
+        	
+        	try{						//引数3つの場合
+        		if(!t.isEmpty()){
+        			type = t;
+        		} else {
+        			fa3 = (FuncArg) this.Args.get(2);
+        			type = fa3.getStr();
+        		}
+        		//type=1 -> 文字
+        		if(type.equals("1") || type.equals("text") || type.equals("")){
+        			statement = getTextAnchor(url, name);
+        			//statement = "<a href=\""+url+"\""+transition()+prefetch()+target(url)+">"+name+"</a>";
+        		
+        		//type=2 -> urlモバイルボタン
+        		}else if(type.equals("3") || type.equals("button") || type.equals("bt")){
+            		statement = "<a href=\""+url+"\" data-role=\"button\""+className()+transition()+prefetch()+target(url)+">"+name+"</a>";
+
+            	//urlボタン(デスクトップ・モバイル共通)
+            	}else if(type.equals("dbutton") || type.equals("dbt")){
+            		statement = "<input type=\"button\" value=\""+name+"\" onClick=\"location.href='"+url+"'\""+className();
+            		
+            		//urlボタン width,height指定時の処理
+            		if(decos.containsKey("width") || decos.containsKey("height")){
+            			statement += " style=\"";
+            			if(decos.containsKey("width"))	statement += "WIDTH:"+decos.getStr("width").replace("\"", "")+"; ";
+            			if(decos.containsKey("height"))	statement += "HEIGHT:"+decos.getStr("height").replace("\"", "")+"; ";	//100; ";
+            			statement += "\"";
+                	}
+            		statement += ">";
+            	
+            	//type=3 -> url画像
+            	}else if(type.equals("2") || type.equals("image") || type.equals("img")){
+            		statement = "<a href=\""+url+"\""+className()+transition()+prefetch()+target(url)+"><img src=\""+name+"\"";
+    		        
+        			//url画像 width,height指定時の処理
+            		if(decos.containsKey("width"))	statement += " width="+decos.getStr("width").replace("\"", "");
+//            		else{
+//            	        //added by goto 20130312  "Default width: 100%"
+//            			statement += " width=\"100%\"";
+//            		}
+        			if(decos.containsKey("height"))	statement += " height="+decos.getStr("height").replace("\"", "");	//100; ";
+        			statement += "></a>";
+            	}
+        		
+        	}catch(Exception e){		//引数2つの場合
+    			statement = getTextAnchor(url, name);
+        		//statement = "<a href=\""+url+"\""+transition()+prefetch()+target(url)+">"+name+"</a>";
+        	}
+        	
+    	}catch(Exception e){	//引数1つの場合
+    		url = fa1.getStr();
+    		statement = "<a href=\""+((mailFncFlg)?("mailto:"):("")) + url+"\""+transition()+prefetch()+target(url)+">"+url+"</a>";
+    	}
+    	
+//    	// 各引数毎に処理した結果をHTMLに書きこむ
+    	htmlEnv.code.append(statement);
+//    	return statement;
+    }
+	
+    protected String className() {	//added 20130703
+    	if(decos.containsKey("class"))
+    		return " class=\""+decos.getStr("class")+"\" ";
+    	return "";
+    }
+    
+    private String transition() {
+    	//画面遷移アニメーション(data-transition)指定時の処理
+    	//※外部ページへの遷移には対応していない
+    	if (decos.containsKey("transition"))
+    		return " data-transition=\"" + decos.getStr("transition") + "\"";
+    	if (decos.containsKey("trans"))
+    		return " data-transition=\"" + decos.getStr("trans") + "\"";
+		return "";
+    }
+    
+    private String prefetch() {
+    	//遷移先ページプリフェッチ(data-prefetch)指定時の処理
+    	//※外部ページへの遷移に使用してはいけない決まりがある
+    	if (decos.containsKey("prefetch") || decos.containsKey("pref"))
+    		return " data-prefetch";
+		return "";
+    }
+
+    private String target(String url) {
+    	//新規ウィンドウで表示する場合(target="_blank")の処理　=> _blankはW3Cで禁止されているため、JS + rel=externalを使用
+    	//「外部ページに飛ぶ場合( http(s)://で始まる場合)」のみ新規ウィンドウ表示
+    	try{
+	    	if (url.matches("\\s*(http|https)://.*"))
+	    		return "  rel=\"external\"";
+	    		//return " target=\"_blank\"";
+    	}catch(Exception e){}
+		return " target=\"_self\"";
+		
+    }
+    
+    private String getTextAnchor(String url, String name) {
+    	//[ ]で囲われた部分をハイパーリンクにする
+    	//ex) a("[This] is anchor.","URL")
+    	String A="",notA1="",notA2="";
+    	int a1 = 0, a2 = name.length()-1;
+    	try{
+    		for(int i=0;i<name.length();i++){
+    			if(i>0 && name.charAt(i)=='[' && name.charAt(i-1)!='\\')		a1=i;
+    			else if(i>0 && name.charAt(i)==']' && name.charAt(i-1)!='\\')	a2=i;
+    		}
+    		if(a1==0 && a2==name.length()-1)	A=name.substring(a1,a2+1);
+    		else								A=name.substring(a1+1,a2);
+    		A=A.replaceAll("\\\\\\[", "[").replaceAll("\\\\\\]", "]");
+    		notA1=name.substring(0,a1).replaceAll("\\\\\\[", "[").replaceAll("\\\\\\]", "]");
+    		notA2=name.substring(a2+1).replaceAll("\\\\\\[", "[").replaceAll("\\\\\\]", "]");
+    	}catch(Exception e){}
+    	
+    	return notA1+"<a href=\""+url+"\""+className()+transition()+prefetch()+target(url)+">"+A+"</a>"+notA2;
+    }
+    
+	// Function��work�᥽�å�
+	@Override
+	public String work(ExtList data_info) {
+		this.setDataList(data_info);
+		// Log.out("FuncName= " + this.getFuncName());
+		// Log.out("filename= " + this.getAtt("filename"));
+		// Log.out("condition= " + this.getAtt("condition"));
+
+		String FuncName = this.getFuncName();
+
+		if (FuncName.equalsIgnoreCase("imagefile") || FuncName.equalsIgnoreCase("image")) {
+			Func_imagefile();
+		} else if (FuncName.equalsIgnoreCase("invoke")) {
+			Func_invoke();
+		} else if (FuncName.equalsIgnoreCase("foreach")) {
+			try {
+				Func_foreach(data_info);
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+		} else if (FuncName.equalsIgnoreCase("sinvoke")
+				|| FuncName.equalsIgnoreCase("link")) {
+			Func_sinvoke(data_info);
+		} else if (FuncName.equalsIgnoreCase("null")) {
+			Func_null();
+		}
+		// // for practice
+		// else if(FuncName.equalsIgnoreCase("button")){
+		// Func_button();
+		// }
+		// chie
+		else if (FuncName.equalsIgnoreCase("submit")) {
+			Func_submit();
+		} else if (FuncName.equalsIgnoreCase("select")) {
+			Func_select();
+		} else if (FuncName.equalsIgnoreCase("checkbox")) {
+			Func_checkbox();
+		} else if (FuncName.equalsIgnoreCase("radio")) {
+			Func_radio();
+		} else if (FuncName.equalsIgnoreCase("inputtext")) {
+			Func_inputtext();
+		} else if (FuncName.equalsIgnoreCase("textarea")) {
+			Func_textarea();
+		} else if (FuncName.equalsIgnoreCase("hidden")) {
+			Func_hidden();
+		} else if (FuncName.equalsIgnoreCase("session")) {
+			// Func_session(); not use
+		}
+		// tk start//////////////////////////////////
+		else if (FuncName.equalsIgnoreCase("embed")) {
+			Log.out("[enter embed]");
+			Func_embed(data_info);
+		}
+		// tk end////////////////////////////////////
+		else if(FuncName.equalsIgnoreCase("anchor") 
+				|| FuncName.equalsIgnoreCase("a")){
+        	Func_url(false, "");
+        } else if(FuncName.equalsIgnoreCase("image_anchor") 
+        		|| FuncName.equalsIgnoreCase("img_anchor")
+        		|| FuncName.equalsIgnoreCase("img_a")
+        		|| FuncName.equalsIgnoreCase("image_a")){
+			Func_url(false, "image");
+		} 
+		
+		Log.out("TFEId = " + HTMLEnv.getClassID(this));
+		htmlEnv.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
+		return null;
+
+	}
+
 }

@@ -116,8 +116,6 @@ public class Connector extends Operator{
 		ITFE tfe = (ITFE) tfes.get(sindex);
 		int ci = tfe.countconnectitem();
 
-		//Log.out("ci : " + ci);
-
 		ExtList subdata = data.ExtsubList(dindex, dindex + ci);
 
 		if (tfe instanceof Connector || tfe instanceof Attribute

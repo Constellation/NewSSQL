@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 
-import com.sun.org.apache.regexp.internal.recompile;
 
 import supersql.codegenerator.CodeGenerator;
 import supersql.codegenerator.DecorateList;
@@ -2491,8 +2490,8 @@ public class Mobile_HTML5Function extends Function {
 				}else{
 					String echo = "", echo2 = "";
 					if(!$session_array[i].equals("")){
-						echo += "	echo $_SESSION["+$session_array[i]+"];\n";
-						echo2 += "'.$_SESSION["+$session_array[i]+"].'";
+						echo += "	echo $_SESSION['"+$session_array[i]+"'];\n";
+						echo2 += "'.$_SESSION['"+$session_array[i]+"'].'";
 					}
 					else if(!$time_array[i].equals("")){
 						echo += "	echo "+$time_array[i]+";\n";
@@ -2570,10 +2569,17 @@ public class Mobile_HTML5Function extends Function {
     			statement += 
     				"<div id=\"SSQL_Insert"+insertCount+"_result\" data-role=\"none\"><!-- SSQL Insert"+insertCount+" Result"+insertCount+" --></div>\n" +
     				"\n" +
+    	    		//added by goto 20141128 form confirm  start
+    				"<div id=\"SSQL_Insert"+insertCount+"_confirmButton\">\n" +
+    				"	<input type=\"button\" value=\"戻る&emsp;\" data-icon=\"arrow-l\" data-inline=\"true\" onClick=\"javascript:SSQL_Insert"+insertCount+"_showButton(0);\" >\n" +
+    				"	<input type=\"button\" value=\"&emsp;登録&emsp;&emsp;&emsp;&emsp;\" data-icon=\"insert\" data-inline=\"true\" data-theme=\"a\" onClick=\"javascript:SSQL_Insert"+insertCount+"();\" >\n" +
+    				"</div>\n" +
+    				"\n" +
+    	    		//added by goto 20141128 form confirm  end
     				"<br>\n";
     		}
     		statement += 
-    				"</div>\n";
+    				"</div>\n\n";
     		//getGPSinfo()
     		statement += gps_js;
     		statement += 
@@ -2581,11 +2587,29 @@ public class Mobile_HTML5Function extends Function {
     				"\n" +
     				"<!-- SSQL Insert"+insertCount+" JS start -->\n" +
     				"<script type=\"text/javascript\">\n" +
+    				//added by goto 20141128 form confirm  start
+    				"SSQL_Insert"+insertCount+"_showButton(0);\n" +
+    				"function SSQL_Insert"+insertCount+"_showButton(num){\n" +
+    				"	$(function () {\n" +
+    				"		if(num != 1){\n" +
+    				"			$(\"#SSQL_INSERT"+insertCount+"panel form\").show();\n" +
+    				"			$(\"#SSQL_Insert"+insertCount+"_registButton\").show();\n" +
+    				"			$(\"#SSQL_Insert"+insertCount+"_confirmButton\").hide();\n" +
+    				"			document.getElementById(\"SSQL_Insert"+insertCount+"_result\").innerHTML = '';\n" +
+    				"		}else{\n" +
+    				"			$(\"#SSQL_INSERT"+insertCount+"panel form\").hide();\n" +
+    				"			$(\"#SSQL_Insert"+insertCount+"_registButton\").hide();\n" +
+    				"			$(\"#SSQL_Insert"+insertCount+"_confirmButton\").show();\n" +
+    				"		}\n" +
+    				"	});\n" +
+    				"}\n" +
+					//added by goto 20141128 form confirm  end
     				"function SSQL_Insert"+insertCount+"_echo(str){\n";
 			if(!noresult){
 				statement += 
 	    				"	var textArea = document.getElementById(\"SSQL_Insert"+insertCount+"_result\");\n" +
-	    				"	textArea.innerHTML = str;\n";
+	    				"	textArea.innerHTML = str;\n" +
+						"	$(\"#SSQL_Insert"+insertCount+"_confirmButton\").hide();\n";	//added by goto 20141128 form confirm
 			}
 			if(!noreset){
 				statement += 
@@ -2604,6 +2628,7 @@ public class Mobile_HTML5Function extends Function {
 		    			"	$(function(){\n" +
     	    			"		setTimeout(function(){\n" +
     	    			"			document.getElementById(\"SSQL_Insert"+insertCount+"_result\").innerHTML = '';\n" +
+    	    			"			SSQL_Insert"+insertCount+"_showButton(0);\n" +	//added by goto 20141128 form confirm
     	    			"		},3000);\n" +
     	    			"	});\n";
 			}
@@ -2616,11 +2641,33 @@ public class Mobile_HTML5Function extends Function {
 					"        	error.appendTo(element.parent().parent().after());\n" +
 					"    	},\n" +
 					"		submitHandler: function(form) {\n" +
-					"		 	SSQL_Insert"+insertCount+"();\n" +
+//					"		 	SSQL_Insert"+insertCount+"();\n" +			//added by goto 20141128 form confirm
+					"		 	SSQL_Insert"+insertCount+"_confirm();\n" +	//added by goto 20141128 form confirm
 					"		    return false;\n" +
 					"		}\n" +
 					"	});\n" +
 					"})\n" +
+					//added by goto 20141128 form confirm  start
+					"function SSQL_Insert"+insertCount+"_confirm(){\n" +
+					"	//confirm form\n" +
+					"	var SSQL_Insert"+insertCount+"_formVal = $(\"#SSQL_INSERT"+insertCount+"panel form\").serializeArray();\n" +
+					"	var s = \"<div style='background:#FEF9F9;'>\";\n" +
+					"	s += \"<span style='line-height:40px; font-weight:800;'>下記の内容で登録します。</span><br>\";\n" +
+//					"	s += \"<span style='line-height:30px; font-weight:600;'>\";\n";
+					"	s += \"<table style='width:100%; font-weight:500; line-height:30px;'>\";\n";
+//					"	for(i=0; i<"+inputCount+"+; i++)\n"
+//					"		s += $(\"#SSQL_insert"+insertCount+"_q\"+(i+1)).html() + \" 「\" + SSQL_Insert"+insertCount+"_formVal[i].value+\"」<br>\";\n" +
+			for(int i=0; i<col_num; i++){
+//				statement += "	s += \""+s_name_array[i]+" 「\" + SSQL_Insert"+insertCount+"_formVal["+i+"].value+\"」<br>\";\n";
+				statement += "	s += \"<tr><td style='width:40%; text-align:center;'>"+s_name_array[i]+"</td>" +
+						"<td>「<span style='color:red;'>\" + SSQL_Insert"+insertCount+"_formVal["+i+"].value+\"</span>」</td></tr>\";\n";
+			}
+			statement += 
+//					"	document.getElementById(\"SSQL_Insert"+insertCount+"_result\").innerHTML = s+\"</span></div>\";\n" +
+					"	document.getElementById(\"SSQL_Insert"+insertCount+"_result\").innerHTML = s+\"</table></div>\";\n" +
+					"	SSQL_Insert"+insertCount+"_showButton(1);\n" +
+					"}\n" +
+					//added by goto 20141128 form confirm  end
 					"function SSQL_Insert"+insertCount+"(){\n" +
 					//"	//ajax: PHPへ値を渡して実行\n" +
 					"	$.ajax({\n" +
@@ -3309,7 +3356,7 @@ public class Mobile_HTML5Function extends Function {
 	    		return "";
 	    	}
 	    	statement += "EOF;\n" +
-	    			"		echo $_SESSION["+attribute+"];\n" +
+	    			"		echo $_SESSION['"+attribute+"'];\n" +
 	    			"		echo <<<EOF\n";
 //	    	// 各引数毎に処理した結果をHTMLに書きこむ
 //	    	html_env.code.append(statement);

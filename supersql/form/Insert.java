@@ -22,7 +22,7 @@ public void doPost(HttpServletRequest req,
                       HttpServletResponse res) 
                           throws ServletException, IOException {
 
-    // ContentType��ݒ�
+    // ContentType��ݒ�
     res.setContentType("text/html; charset=Shift_JIS");
     req.setCharacterEncoding("Shift-JIS");
     
@@ -90,18 +90,18 @@ public void doPost(HttpServletRequest req,
 	  
 	  //update database
 	  try {
-		  Class.forName("org.postgresql.Driver"); // PostgreSQL�̏ꍇ
+		  Class.forName("org.postgresql.Driver"); // PostgreSQL�̏ꍇ
 	      Connection con =
 	        DriverManager.getConnection("jdbc:postgresql:ssql",
 	                                    "chie",
-	                                    ""); // PostgreSQL�̏ꍇ
+	                                    ""); // PostgreSQL�̏ꍇ
 	      Statement stmt = con.createStatement();
 	
 	      stmt.executeQuery(sql);
 	      
 	      return;
       } catch (Exception e) {
-          System.err.println("sqlerr"+ e);
+    	  Log.err("sqlerr"+ e);
       }
   }
 }

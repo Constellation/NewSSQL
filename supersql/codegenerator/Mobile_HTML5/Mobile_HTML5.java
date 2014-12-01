@@ -11,7 +11,6 @@ import java.util.HashSet;
 import java.util.Map;
 
 import com.ibm.db2.jcc.am.no;
-import com.sun.org.apache.regexp.internal.recompile;
 
 import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.FuncArg;
@@ -585,7 +584,7 @@ public class Mobile_HTML5 {
 					}else{
 						//statement += "    <input type=\"text\" name=\"form"+formCount+"_words"+(++insertWordCount)+"\" placeholder=\""+s_name_array[i]+"\">\n";
 						String echo = "";
-						if(!$session_array[i].equals(""))	echo += "	echo $_SESSION["+$session_array[i]+"];\n";
+						if(!$session_array[i].equals(""))	echo += "	echo $_SESSION['"+$session_array[i]+"'];\n";
 						else if(!$time_array[i].equals(""))	echo += "	echo "+$time_array[i]+";\n";
 						//else if(!$gps_array[i].equals(""))	echo += "	echo \"<script> getGPSinfo(); </script>\";\n";
 						//else if(!$gps_array[i].equals(""))	echo += "	echo\"<script> getGPSinfo(); </script>\";\n";
@@ -1454,6 +1453,7 @@ public class Mobile_HTML5 {
 	    		if(dynamicRowFlg){
 	    			php += 
 							"if ($_POST['currentPage'] != \"\") {\n" +
+//							"if (isset($_POST['currentPage'])) {\n" +
 							"	$cp = $_POST['currentPage'];\n" +
 							"	$col = "+numberOfColumns+";\n" +
 							"	$r = $_POST['row'] * $col;\n" +
@@ -1568,7 +1568,7 @@ public class Mobile_HTML5 {
 //							"                    	dynamic"+dynamicCount+"_p2($pop_str, ++$k);     	//tdに結果を埋め込む\n" +
 //							"                    }else									dynamic"+dynamicCount+"_p2($row[$j], ++$k);     //tdに結果を埋め込む\n" +
 							"              		//$b .= $row[$j];\n" +
-							"              		$b .= str_replace("+dynamicFuncCountLabel+", '_'.$i, $row[$j]);\n" +	//For function's count
+							"              		$b .= str_replace('"+dynamicFuncCountLabel+"', '_'.$i, $row[$j]);\n" +	//For function's count
 							"              }\n" +
 							php_str3 +
 							((dynamicRowFlg)? "              }\n":"") +
