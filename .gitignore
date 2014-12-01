@@ -1,20 +1,9 @@
-.ssql_mobile
 *.DS_Store
 */*.DS_Store
 
-*.html
-*.xml
-sample_queries/*.sql
-/*.sql
-*.ssql
-*.class
 *.db
-.settings/org.eclipse.core.resources.prefs
-.classpath
-.settings/org.eclipse.jdt.core.prefs
+
 .project
-bin/
-.checkstyle
-js/script.js
-bg/
+.settings/org.eclipse.core.resources.prefs
+.settings/org.eclipse.jdt.core.prefs
 .settings/*

@@ -1,0 +1,6 @@
+FOREACH p.team,p.num
+GENERATE HTML
+                [{p.name, link(t.name, file = "team.ssql", att = t.id)}!
+                imagefile(p.pict, path = "photo")]!
+FROM player p, team t
+WHERE p.team = t.id
