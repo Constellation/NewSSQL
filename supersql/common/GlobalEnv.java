@@ -801,8 +801,8 @@ public class GlobalEnv {
     //added by goto 20141201
 	private static String getCurrentPath(){
 		String cp = System.getProperty("java.class.path");
-		if(cp.contains(":"))
-			cp = cp.substring(0,cp.indexOf(":"));
+		if(cp.contains(OS_PS))
+			cp = cp.substring(0,cp.indexOf(OS_PS));
 		if(cp.endsWith(".jar"))
 			cp = new File(cp).getAbsolutePath();
 		return cp;

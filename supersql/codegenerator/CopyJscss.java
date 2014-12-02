@@ -17,7 +17,7 @@ public class CopyJscss {
 
 	}
 	
-	//copy Mobile_HTML5 JSCSS to the output directory
+	//copy JSCSS to the output directory
 	public static void copyJSCSS_to_outputDir() {
 		String media = CodeGenerator.getMedia();
 		String ep = GlobalEnv.EXE_FILE_PATH;
