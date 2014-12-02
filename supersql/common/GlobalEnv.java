@@ -793,7 +793,8 @@ public class GlobalEnv {
     
     //added by goto 20141201
     public static boolean isLogger() {
-    	if(seek("-logger") != null)
+    	//Default: off
+    	if(seek("-logger") != null && seek("-logger").equalsIgnoreCase("on"))
     		return true;
     	return false;
     }
