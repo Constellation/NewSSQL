@@ -23,15 +23,15 @@ public class Log {
 			// do nothing
 			break;
 		case 1:
-			// É¸½à½ÐÎÏ¤Ø½ÐÎÏ
+			// É¸ï¿½ï¿½ï¿½ï¿½Ï¤Ø½ï¿½ï¿½ï¿½
 			System.out.println(o.toString());
 			break;
 		case 2:
-			// É¸½à¥¨¥é¡¼¤Ø½ÐÎÏ
+			// É¸ï¿½à¥¨ï¿½é¡¼ï¿½Ø½ï¿½ï¿½ï¿½
 			Log.err(o.toString());
 			break;
 		case 3:
-			// É¸½à½ÐÎÏ¤Ë¥É¥Ã¥È¤ò½ÐÎÏ
+			// É¸ï¿½ï¿½ï¿½ï¿½Ï¤Ë¥É¥Ã¥È¤ï¿½ï¿½ï¿½ï¿½
 		    if (dotcount >= 600) {
 		        dotreturn();
 		    }
@@ -41,7 +41,7 @@ public class Log {
 		    dotcount++;
 			break;
 		case 10:
-			// buffer¤Ë³ÊÇ¼
+			// bufferï¿½Ë³ï¿½Ç¼
 			buf.append(o.toString()).append('\n');
 			break;
 		}
@@ -63,7 +63,7 @@ public class Log {
 		return buf.toString();
 	}
 
-	// É¸½àÅª¤ÊÆ°ºî¤Ç½ÐÎÏ¤µ¤ì¤ë¤â¤Î (-quiet»þ¤Ë¤Ï½Ð¤Ê¤¤)
+	// É¸ï¿½ï¿½Åªï¿½ï¿½Æ°ï¿½ï¿½Ç½ï¿½ï¿½Ï¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (-quietï¿½ï¿½ï¿½Ë¤Ï½Ð¤Ê¤ï¿½)
 	public static void info(Object o) {
 
 		switch (infoflag) {
@@ -71,16 +71,16 @@ public class Log {
 			// do nothing
 			break;
 		case 1:
-			// É¸½à½ÐÎÏ¤Ø½ÐÎÏ
+			// É¸ï¿½ï¿½ï¿½ï¿½Ï¤Ø½ï¿½ï¿½ï¿½
 		    dotreturn();
 			System.out.println(o.toString());
 			break;
 		case 2:
-			// É¸½à¥¨¥é¡¼¤Ø½ÐÎÏ
+			// É¸ï¿½à¥¨ï¿½é¡¼ï¿½Ø½ï¿½ï¿½ï¿½
 			Log.err(o.toString());
 			break;
 		case 10:
-			// buffer¤Ë³ÊÇ¼
+			// bufferï¿½Ë³ï¿½Ç¼
 			buf.append(o.toString()).append('\n');
 			break;
 		}

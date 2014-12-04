@@ -309,7 +309,7 @@ public class HTMLEnv extends LocalEnv {
 	protected Connector connector;
 	protected StringBuffer div = new StringBuffer();
 	protected StringBuffer meta = new StringBuffer();
-	// outline����Ϥ����ɤ����Υե饰��?
+	// outline�����������������������������������������������������?
 	protected boolean OutlineMode = false;
 	protected StringBuffer title = new StringBuffer();
 	protected StringBuffer titleClass = new StringBuffer();
@@ -321,6 +321,9 @@ public class HTMLEnv extends LocalEnv {
 
 	public String ajaxtarget = new String();
 
+	// add 20141203_masato
+	public String code_tmp;
+	
 	public StringBuffer code;
 
 	public int countFile;
@@ -524,9 +527,9 @@ public class HTMLEnv extends LocalEnv {
 		Log.out("[HTML append_css_def_att] classid=" + classid);
 		Log.out("decos = " + decos);
 
-		// ��classid�Υ�����?�����Ȥ��������ꤷ�����Ȥ���?��
+		// ������classid��������������������?����������������������������������������������������������������������?������
 		if (writtenClassId.contains(classid)) {
-			// ������ѤΥ�����?������
+			// �������������������������������������?������������������
 			haveClass = 1;
 			Log.out("==> already created style");
 			return;
@@ -591,7 +594,7 @@ public class HTMLEnv extends LocalEnv {
 
 		computeConditionalDecorations(decos, css);
 
-		// ��??
+		// ������??
 		if (decos.containsKey("width")) {
 			if (GlobalEnv.getframeworklist() == null)
 				cssbuf.append(" width:" + decos.getStr("width") + ";");
@@ -601,7 +604,7 @@ public class HTMLEnv extends LocalEnv {
 			// cssbuf.append(" width:120;");
 		}
 
-		// ��??
+		// ������??
 		if (decos.containsKey("height")) {
 			if (GlobalEnv.getframeworklist() == null)
 				cssbuf.append(" height:" + decos.getStr("height") + ";");
@@ -616,7 +619,7 @@ public class HTMLEnv extends LocalEnv {
 			// cssbuf.append(" padding:0.3em;");
 		}
 
-		// �ѥǥ��󥰡�;���
+		// �������������������������������
 		if (decos.containsKey("padding")) {
 			cssbuf.append(" padding:" + decos.getStr("padding") + ";");
 			// } else {
@@ -638,22 +641,22 @@ public class HTMLEnv extends LocalEnv {
 					+ ";");
 		}
 
-		// ������
+		// ������������������
 		if (decos.containsKey("align"))
 			cssbuf.append(" text-align:" + decos.getStr("align") + ";");
 
-		// �İ���
+		// ��������������
 		if (decos.containsKey("valign"))
 			cssbuf.append(" vertical-align:" + decos.getStr("valign") + ";");
 
-		// �طʿ�
+		// ����������
 		if (decos.containsKey("background-color"))
 			cssbuf.append(" background-color:"
 					+ decos.getStr("background-color") + ";");
 		if (decos.containsKey("bgcolor"))
 			cssbuf.append(" background-color:" + decos.getStr("bgcolor") + ";");
 
-		// ʸ��
+		// ��������
 		if (decos.containsKey("color"))
 			cssbuf.append(" color:" + decos.getStr("color") + ";");
 		if (decos.containsKey("font-color"))
@@ -661,7 +664,7 @@ public class HTMLEnv extends LocalEnv {
 		if (decos.containsKey("font color"))
 			cssbuf.append(" color:" + decos.getStr("font color") + ";");
 
-		// ʸ����
+		// ��������������
 		if (decos.containsKey("font-size"))
 			if (GlobalEnv.getframeworklist() == null)
 				cssbuf.append(" font-size:" + decos.getStr("font-size") + ";");
@@ -678,11 +681,11 @@ public class HTMLEnv extends LocalEnv {
 			else
 				cssbuf.append(" font-size:" + decos.getStr("size") + "px;");
 
-		// ʸ�������
+		// �����������������������
 		if (decos.containsKey("font-weight"))
 			cssbuf.append(" font-weight:" + decos.getStr("font-weight") + ";");
 
-		// ʸ����?
+		// ��������������?
 		if (decos.containsKey("font-style"))
 			cssbuf.append(" font-style:" + decos.getStr("font-style") + ";");
 		if (decos.containsKey("font-family"))
@@ -748,14 +751,14 @@ public class HTMLEnv extends LocalEnv {
 
 		if (cssbuf.length() > 0) {
 			haveClass = 1;
-			// ����?�Υ�����?����
+			// ������������?��������������������?������������
 			css.append("." + classid + "{");
 
 			css.append(cssbuf);
-			// ��?�Υ�����?�Ĥ�
+			// ������?��������������������?��������
 			css.append(" }\n");
 
-			// ������?��?�Ѥߥ��饹��id����¸���Ƥ���
+			// ������������������?������?����������������������id����������������������������������
 			writtenClassId.addElement(classid);
 		} else {
 			Log.out("==> style is null. not created style");
@@ -1022,17 +1025,19 @@ public class HTMLEnv extends LocalEnv {
 //			"</style>\n");
 		// 20140701_masato
 		"<link rel=\"stylesheet\" type=\"text/css\" href=\"jscss/ssql-pagination.css\">\n");
-			
+		header.append("<script type=\"text/javascript\" src=\"jscss/ssql-pagination.js\"></script>\n");
+	
 			// 20140704_masato
 			if (!bg.equals("")){
 	        	header.append("<style type=\"text/css\">");
 	            header.append("body { background-image: url("+bg+"); }");
 	          	header.append("</style>\n");
 	        }
-			
 			header.append("</HEAD>\n");
 
-			header.append("<BODY class=\"body\">\n");
+			code_tmp = "";
+			code_tmp += "<BODY class=\"body\">\n";
+//			code.append("<BODY class=\"body\">\n");
 
 			
 			// 20140528_masato
@@ -1058,65 +1063,67 @@ public class HTMLEnv extends LocalEnv {
 //			"	});\n" +
 //			"});\n" +
 //		"</script>\n");
-			header.append("<script type=\"text/javascript\" src=\"jscss/ssql-pagination.js\"></script>\n");
 
 			
 			
-			// TODO masato_20140602 このdivは何？
-			header.append("<div");
-			header.append(div);
-			header.append(titleClass);
-			header.append(">");
-			header.append(title);
+			// TODO masato_20140602 ������div���������
+			code_tmp += "<div";
+			code_tmp += div;
+			code_tmp += titleClass;
+			code_tmp += ">";
+			code_tmp += title;
+			code_tmp += "</div>";
 			// tk end///////////////////////////////////////////////////////
 			// chie//
-
+			
 			Log.out("--></style></head>");
 			Log.out("<body>");
 		}
 
 		if (Connector.loginFlag) {
-			header.append("<form action = \""
+			code_tmp += "<form action = \""
 					+ GlobalEnv.getFileDirectory()
-					+ "/servlet/supersql.form.Session\" method = \"post\" name=\"theForm\">\n");
+					+ "/servlet/supersql.form.Session\" method = \"post\" name=\"theForm\">\n";
 			// header.append("<form action = \""+ GlobalEnv.getFileDirectory() +
 			// "/supersql.form.Session\" method = \"post\" name=\"theForm\">\n");
-			header.append("<input type=\"hidden\" name=\"tableinfo\" value=\""
-					+ SSQLparser.get_from_info_st() + "\" >");
-			header.append("<input type=\"hidden\" name=\"configfile\" value=\""
-					+ GlobalEnv.getconfigfile() + "\" >");
+			code_tmp += "<input type=\"hidden\" name=\"tableinfo\" value=\""
+					+ SSQLparser.get_from_info_st() + "\" >";
+			code_tmp += "<input type=\"hidden\" name=\"configfile\" value=\""
+					+ GlobalEnv.getconfigfile() + "\" >";
 		}
 
 		if (Connector.logoutFlag) {
-			header.append("<form action = \""
+			code_tmp += "<form action = \""
 					+ GlobalEnv.getFileDirectory()
-					+ "/servlet/supersql.form.Session\" method = \"post\" name=\"theForm\">\n");
+					+ "/servlet/supersql.form.Session\" method = \"post\" name=\"theForm\">\n";
 			// header.append("<form action = \""+ GlobalEnv.getFileDirectory() +
 			// "/supersql.form.Session\" method = \"post\" name=\"theForm\">\n");
 			// header.append("<input type=\"hidden\" name=\"tableinfo\" value=\""
 			// + SSQLparser.get_from_info_st() + "\" >");
-			header.append("<input type=\"hidden\" name=\"configfile\" value=\""
-					+ GlobalEnv.getconfigfile() + "\" >");
+			code_tmp += "<input type=\"hidden\" name=\"configfile\" value=\""
+					+ GlobalEnv.getconfigfile() + "\" >";
 		}
 
 		if (Connector.insertFlag || Connector.deleteFlag
 				|| Connector.updateFlag) {
-			header.append("<form action = \""
+			code_tmp += "<form action = \""
 					+ GlobalEnv.getFileDirectory()
-					+ "/servlet/supersql.form.Update\" method = \"post\" name=\"theForm\">\n");
+					+ "/servlet/supersql.form.Update\" method = \"post\" name=\"theForm\">\n";
 			// header.append("<form action = \""+ GlobalEnv.getFileDirectory() +
 			// "/supersql.form.Update\" method = \"post\" name=\"theForm\">\n");
-			header.append("<input type=\"hidden\" name=\"tableinfo\" value=\""
-					+ SSQLparser.get_from_info_st() + "\" >");
-			header.append("<input type=\"hidden\" name=\"configfile\" value=\""
-					+ GlobalEnv.getconfigfile() + "\" >");
+			code_tmp += "<input type=\"hidden\" name=\"tableinfo\" value=\""
+					+ SSQLparser.get_from_info_st() + "\" >";
+			code_tmp += "<input type=\"hidden\" name=\"configfile\" value=\""
+					+ GlobalEnv.getconfigfile() + "\" >";
 			if (Connector.insertFlag)
-				header.append("<input type=\"hidden\" name=\"sql_param\" value=\"insert\" >");
+				code_tmp += "<input type=\"hidden\" name=\"sql_param\" value=\"insert\" >";
 			if (Connector.deleteFlag)
-				header.append("<input type=\"hidden\" name=\"sql_param\" value=\"delete\" >");
+				code_tmp += "<input type=\"hidden\" name=\"sql_param\" value=\"delete\" >";
 			if (Connector.updateFlag)
-				header.append("<input type=\"hidden\" name=\"sql_param\" value=\"update\" >");
+				code_tmp += "<input type=\"hidden\" name=\"sql_param\" value=\"update\" >";
 		}
+		code.insert(0, code_tmp);
+
 	}
 
 	public void includeDecorationProperties(String classId, DecorateList decos) {

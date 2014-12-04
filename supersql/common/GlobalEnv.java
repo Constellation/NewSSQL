@@ -340,9 +340,10 @@ public class GlobalEnv {
 		if (ret == null) {
 			if (host != null) {
 				ret = host;
-			} else {
-				ret = "postgres.db.ics.keio.ac.jp";
 			}
+//			else {
+//				ret = "postgres.db.ics.keio.ac.jp";
+//			}
 		}
 		return ret;
 	}
@@ -361,6 +362,11 @@ public class GlobalEnv {
 
 	//��³����DB��url
 	public static String geturl() {
+    	//added by goto 20141204
+    	if(getDriverName() != null)	driver = getDriverName();
+    	if(gethost() != null)		host = gethost();
+    	if(getdbname() != null)		db = getdbname();
+
 		String ret = "jdbc:postgresql://" + host + "/" + db;;
 		if (driver != null) {
 			if(driver.equals("postgres")){
@@ -700,8 +706,13 @@ public class GlobalEnv {
 		return fileDirectory;
 	}
 
+	public static String getDriverName(){
+		return seek("-driver");
+	}
+		
 	public static String getDriver(){
 		String ret = seek("-driver");
+		
 		if (ret == null) {
 			if (driver != null) {
 				ret = driver;
