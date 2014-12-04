@@ -54,7 +54,8 @@ public class CodeGenerator{
 		this.media = media;
 		if (media.toLowerCase().equals("pdf")) {
 			factory = new PDFFactory();
-		} else if (media.toLowerCase().equals("html")) {
+			// add 20141204 masato for ehtml
+		} else if (media.toLowerCase().equals("html") || media.toLowerCase().equals("ehtml")) {
 			factory = new HTMLFactory();			
 		} else if (media.toLowerCase().equals("x3d")) {
 			factory = new X3DFactory();

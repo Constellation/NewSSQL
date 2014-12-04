@@ -23,7 +23,8 @@ public class CopyJscss {
 		String ep = GlobalEnv.EXE_FILE_PATH;
 		
 		File from = null;
-		if (media.equalsIgnoreCase("html"))
+		// add 20141204 masato for ehtml
+		if (media.equalsIgnoreCase("html") || media.equalsIgnoreCase("ehtml"))
 			from = new File(ep+fs+"jscss"+fs+"forHTML"+fs+"jscss");
 		else if (media.equalsIgnoreCase("mobile_html5"))
 			from = new File(ep+fs+"jscss");

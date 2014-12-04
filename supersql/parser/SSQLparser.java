@@ -145,12 +145,12 @@ public class SSQLparser {
 		StringBuffer tmp = new StringBuffer();
 		try{
 			//in = new BufferedReader(new FileReader(filename));
-			//TODO: file-encoding鐃緒申鐃緒申鐃緒申鐃緒申鐃緒申鐃緒申鐃緒申鐃緒申鐃夙随申任鐃緒申鐃緒申鐃緒申鐃緒申 鐃緒申鐃緒申JISAutoDetect: 文鐃緒申鐃宿の種申動判鐃緒申鐃�eader鐃緒申鐃初ス鐃塾わ申鐃緒申鐃術可￥申
-			// 鐃緒申鐃緒申鐃瞬ワ申奪箸妊螢�申鐃緒申鐃緒申肇如鐃緒申鐃緒申鐃淑醐申鐃緒申匹鐃銃逸申儡鐃緒申鐃緒申鐃緒申匹濆鐃緒申鐃緒申鐃�			//BufferedReader
+			//TODO: file-encoding��������������������������������������������������������������������������������������������������������������������������� ������������������JISAutoDetect: ������������������������������������������������eader������������������������������������������������������
+			// ������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������			//BufferedReader
 			//InputStream is = getInputStream(filename);
 			//in = new BufferedReader(new InputStreamReader(getInputStream(filename), "JISAutoDetect"));
 			//in = new BufferedReader(new InputStreamReader(res.getInputStream(), "JISAutoDetect"));
-			// 鐃緒申鐃緒申鐃瞬ワ申奪箸妊譽刻申櫂鵐好如鐃緒申鐃緒申鐃�UC鐃緒申鐃緒申鐃宿わ申鐃術器申鐃緒申鐃銃書き刻申鐃緒申鐃緒申
+			// ������������������������������������������������������������������������������������UC���������������������������������������������������������������������������������������
 			//PrintWriter out = new PrintWriter(new OutputStreamWriter(res.getOutputStream(), "EUC-JP"))
 			in = new BufferedReader(new InputStreamReader(new FileInputStream(filename), "UTF-8"));		//changed by goto 20130519 (This is an important change.)
 
@@ -208,8 +208,8 @@ public class SSQLparser {
 				}
 				
 //				//goto 20130915  "<$  $>"
-//				//"内は読み飛ばす
-//				//TODO 下記をもっとスマートに
+//				//"���������������������
+//				//TODO ���������������������������������
 //				boolean onlyTextFlg = false;	//This line has only text string.
 //				while (line.contains("<$") && !onlyTextFlg){
 ////				while ((line.contains("<$") || line.contains("$$")) && !onlyTextFlg){
@@ -231,7 +231,7 @@ public class SSQLparser {
 ////						while(true){
 //						if(line.contains("$$")){
 //							while(!$$endFlg){
-//								//TODO: これを簡略化(このifの下のループで一度に処理する)
+//								//TODO: ������������������(������if������������������������������������������)
 //								//Log.e("	In line.contains($$)!!");
 //	//							boolean $$Flg = false;
 //								for (i=0; i < line.length(); i++){
@@ -264,7 +264,7 @@ public class SSQLparser {
 //								c0 = ' ';
 //								c1 = ' ';
 //								//Log.e("	In line.contains($$)!!: "+line+" "+$$Flg);
-//								if($$Flg){//TODO:　閉じられてないので閉じられるまで改行
+//								if($$Flg){//TODO:���������������������������������������������������������
 //									line = in.readLine();
 //								}else{
 //									$$endFlg = true;
@@ -362,14 +362,14 @@ public class SSQLparser {
 		//goto
 		media = getGenereteMedia(query);
 		if(media.endsWith("{")){
-			//generate MEDIA{　->　generate MEDIA {
+			//generate MEDIA{���->���generate MEDIA {
 			media = media.substring(0,media.length()-1);
 			query = query.replace(media+"{", media+" {");
 		}
 		media = media.toLowerCase();
 		if(
 				media.equals("html") || media.equals("mobile_html5") || 
-				media.equals("html_flexbox")){		//TODO masato
+				media.equals("html_flexbox") || media.equals("ehtml")){		// add 20141204 masato for ehtml
 			query = replaceQuery_For_HTML_and_MobileHTML5(query);
 			while(query.contains(") ] }@{text}"))						//TODO
 				query = query.replace(") ] }@{text}", ") ]! }@{text}");	//TODO
@@ -455,14 +455,14 @@ public class SSQLparser {
 		
 		//added by goto For "slideshow"
 		if(media.equals("mobile_html5") && query.contains("slideshow")){
-			// TODO: 1."sslideshow"鐃緒申離潺鐃緒申鐃緒申鐃緒申彁鐃緒申離鐃緒申蕁蕊緒申鐃緒申鐃�.鐃緒申鐃緒申鐃緒申鐃緒申鐃緒申表鐃緒申鐃緒申鐃宿わ申鐃緒申鐃緒申判鐃緒申
+			// TODO: 1."sslideshow"���������������������������������������������������������������������������������������������.������������������������������������������������������������������������������������������������������������
 			
 			// 20130122
-			// 鐃瞬器申: replaceAll
-			// <鐃緒申鐃緒申表鐃緒申>
-			// 0文鐃緒申幣鐃緒申任鐃春わ申文鐃緒申鐃緒申.*
-			// 0鐃縦以常申龍鐃緒申鐃�\s*
-			// ( )鐃叔囲っわ申鐃緒申分鐃熟￥申S1,鐃緒申$2鐃緒申箸鐃緒申董鐃緒申峇鐃緒申鐃緒申文鐃緒申鐃緒申忙鐃緒申儔鐃叔緒申鐃緒申峇鐃緒申鐃緒申鐃緒申鐃淑醐申鐃緒申鐃熟￥申$0)
+			// ������������: replaceAll
+			// <������������������������������>
+			// 0������������������������������������������������������������.*
+			// 0���������������������������������\s*
+			// ( )������������������������������������������S1,���������$2������������������������������������������������������������������������������������������������������������������������������������������������������������������������������$0)
 
 			// "slideshow [" -> "[imagefile("
 			query = query.replaceAll("slideshow\\s*\\[", "\\[imagefile(");
@@ -472,13 +472,13 @@ public class SSQLparser {
 					"$1, type=\"slideshow\")");
 
 			if (query.matches(".*\\[imagefile\\(.*\\)\\s*\\@\\s*\\{.*\\}.*")) {
-				// @鐃緒申鐃緒申
+				// @������������������
 				// "[imagefile(*) @ {*}" -> "[imagefile(*) @ {*} ]! "
 				query = query.replaceAll(
 								"\\[imagefile\\(.*\\)\\s*\\@\\s*\\{[a-zA-Z0-9=\\s,]*\\}",
 								"$0]! ");
 			} else {
-				// @無鐃緒申
+				// @������������
 				// "[imagefile(*) " -> "[imagefile(*)]! "
 				query = query.replaceAll("\\[imagefile\\(.*\\)", // "(\\[imagefile\\(.*\\)[\\s*|\\s*^\\@])",
 						"$0]! ");
@@ -486,7 +486,7 @@ public class SSQLparser {
 		}
 		//TODO masato
         //added by goto 20130422  For "!number, / ,number! / ,number!nuber, "
-        //鐃緒申 鐃緒申鐃緒申}(鐃縦わ申鐃暑カ鐃獣ワ申)鐃殉でわ申0文鐃緒申幣鐃緒申任鐃春わ申文鐃緒申鐃緒申: [^\\}]*
+        //��������� ������������������}(���������������������������������)���������������0������������������������������������������������������������: [^\\}]*
 		// 20140611__masato For !number,number%
 		query = query.replaceAll("\\]\\s*\\!\\s*([0-9]+)\\s*,\\s*([0-9]+)\\s*%\\s*@\\s*\\{([^\\}]*)", "]!@{$3,row=$1,column=$2");
 		query = query.replaceAll("\\]\\s*\\!\\s*([0-9]+)\\s*,\\s*([0-9]+)\\s*%", "]!@{row=$1,column=$2}");
@@ -968,7 +968,7 @@ public class SSQLparser {
 			
 			// changed by goto 20130122 For "slideshow"
 			if (!tfe.toString().contains("type=\"slideshow\""))
-				System.out.println("[Parser:tfe] tfe = " + tfe);
+				Log.info("[Parser:tfe] tfe = " + tfe);
 
 			Preprocessor preprocessor = new Preprocessor(tfe.toString());
 			tfe = preprocessor.pushAggregate();

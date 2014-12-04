@@ -10,6 +10,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.Vector;
 
+import supersql.codegenerator.CodeGenerator;
 import supersql.codegenerator.CopyJscss;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.Manager;
@@ -191,66 +192,76 @@ public class HTMLManager extends Manager {
 				+ Utils.getEncode() + "\"?><SSQL>");
 		htmlEnv2.footer.append("</SSQL>");
 		try {
-			if (!GlobalEnv.isOpt()) {
-				// changed by goto 20120715 start
-				// PrintWriter pw = new PrintWriter(new BufferedWriter(new
-				// FileWriter(
-				// html_env.filename)));
-				PrintWriter pw;
-				if (htmlEnv.charset != null) {
-					pw = new PrintWriter(new BufferedWriter(
-							new OutputStreamWriter(new FileOutputStream(
-									htmlEnv.fileName), htmlEnv.charset)));
-					Log.info("File encoding: " + htmlEnv.charset);
-				} else
-					pw = new PrintWriter(new BufferedWriter(new FileWriter(
-							htmlEnv.fileName)));
-				// Log.info("File encoding: "+((html_env.charset!=null)?
-				// html_env.charset : "UTF-8"));
-				// changed by goto 20120715 end
-
-				if (GlobalEnv.cssout() == null)
+			
+			if(CodeGenerator.getMedia().equalsIgnoreCase("html")){
+			
+				if (!GlobalEnv.isOpt()) {
+					// changed by goto 20120715 start
+					// PrintWriter pw = new PrintWriter(new BufferedWriter(new
+					// FileWriter(
+					// html_env.filename)));
+					PrintWriter pw;
+					if (htmlEnv.charset != null) {
+						pw = new PrintWriter(new BufferedWriter(
+								new OutputStreamWriter(new FileOutputStream(
+										htmlEnv.fileName), htmlEnv.charset)));
+						Log.info("File encoding: " + htmlEnv.charset);
+					} else
+						pw = new PrintWriter(new BufferedWriter(new FileWriter(
+								htmlEnv.fileName)));
+					// Log.info("File encoding: "+((html_env.charset!=null)?
+					// html_env.charset : "UTF-8"));
+					// changed by goto 20120715 end
+	
+					if (GlobalEnv.cssout() == null)
+						pw.println(htmlEnv.header);
+					pw.println(htmlEnv.code);
+					pw.println(htmlEnv.footer);
+					pw.close();
+				}
+				// xml
+				if (GlobalEnv.isOpt()) {
+	
+					/*
+					 * int i=0; while(html_env2.code.indexOf("&",i) != -1){ i =
+					 * html_env2.code.indexOf("&",i); html_env2.code =
+					 * html_env2.code.replace(i,i+1, "&amp;"); i++; }
+					 */
+	
+					htmlEnv2.fileName = htmlEnv.outFile + ".xml";
+					PrintWriter pw2 = new PrintWriter(new BufferedWriter(
+							new FileWriter(htmlEnv2.fileName)));
+					if (GlobalEnv.cssout() == null)
+						pw2.println(htmlEnv2.header);
+					pw2.println(htmlEnv2.code);
+					pw2.println(htmlEnv2.footer);
+					pw2.close();
+					HTMLoptimizer xml = new HTMLoptimizer();
+					String xml_str = xml.generateHtml(htmlEnv2.fileName);
+					PrintWriter pw = new PrintWriter(new BufferedWriter(
+							new FileWriter(htmlEnv.fileName)));
 					pw.println(htmlEnv.header);
-				pw.println(htmlEnv.code);
-				pw.println(htmlEnv.footer);
-				pw.close();
+					pw.println(xml_str);
+					// StringBuffer footer = new
+					// StringBuffer("</div></body></html>");
+					pw.println(htmlEnv.footer);
+					pw.close();
+				}
+	
+				if (GlobalEnv.cssout() != null) {
+					PrintWriter pw3 = new PrintWriter(new BufferedWriter(
+							new FileWriter(GlobalEnv.cssout())));
+					pw3.println(htmlEnv.header);
+					pw3.close();
+				}
+			// add 20141204 masato for ehtml
+			} else {
+				Log.ehtmlInfo("=-=-=-=");
+				Log.ehtmlInfo(htmlEnv.header);
+				Log.ehtmlInfo(htmlEnv.code);
+				Log.ehtmlInfo(htmlEnv.footer);
 			}
-			// xml
-			if (GlobalEnv.isOpt()) {
-
-				/*
-				 * int i=0; while(html_env2.code.indexOf("&",i) != -1){ i =
-				 * html_env2.code.indexOf("&",i); html_env2.code =
-				 * html_env2.code.replace(i,i+1, "&amp;"); i++; }
-				 */
-
-				htmlEnv2.fileName = htmlEnv.outFile + ".xml";
-				PrintWriter pw2 = new PrintWriter(new BufferedWriter(
-						new FileWriter(htmlEnv2.fileName)));
-				if (GlobalEnv.cssout() == null)
-					pw2.println(htmlEnv2.header);
-				pw2.println(htmlEnv2.code);
-				pw2.println(htmlEnv2.footer);
-				pw2.close();
-				HTMLoptimizer xml = new HTMLoptimizer();
-				String xml_str = xml.generateHtml(htmlEnv2.fileName);
-				PrintWriter pw = new PrintWriter(new BufferedWriter(
-						new FileWriter(htmlEnv.fileName)));
-				pw.println(htmlEnv.header);
-				pw.println(xml_str);
-				// StringBuffer footer = new
-				// StringBuffer("</div></body></html>");
-				pw.println(htmlEnv.footer);
-				pw.close();
-			}
-
-			if (GlobalEnv.cssout() != null) {
-				PrintWriter pw3 = new PrintWriter(new BufferedWriter(
-						new FileWriter(GlobalEnv.cssout())));
-				pw3.println(htmlEnv.header);
-				pw3.close();
-			}
-
+			
 			HTMLEnv.initAllFormFlg();
 			CopyJscss.copyJSCSS_to_outputDir();	//goto 20141201
 		} catch (FileNotFoundException fe) {

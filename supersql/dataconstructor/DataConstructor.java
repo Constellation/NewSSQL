@@ -53,7 +53,7 @@ public class DataConstructor {
 
 		// Make schema
 		sep_sch = parser.get_TFEschema().makesch();
-		System.out.println("Schema: " + sep_sch);
+		Log.info("Schema: " + sep_sch);
 
 		// Check Optimization Parameters
 		if (GlobalEnv.getOptLevel() == 0 || !GlobalEnv.isOptimizable()

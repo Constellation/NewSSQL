@@ -322,7 +322,7 @@ public class HTMLEnv extends LocalEnv {
 	public String ajaxtarget = new String();
 
 	// add 20141203_masato
-	public String code_tmp;
+	public String code_tmp = "";
 	
 	public StringBuffer code;
 
@@ -1035,7 +1035,6 @@ public class HTMLEnv extends LocalEnv {
 	        }
 			header.append("</HEAD>\n");
 
-			code_tmp = "";
 			code_tmp += "<BODY class=\"body\">\n";
 //			code.append("<BODY class=\"body\">\n");
 
