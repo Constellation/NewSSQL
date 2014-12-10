@@ -11,7 +11,7 @@ import java.io.PrintWriter;
 import java.util.Vector;
 
 import supersql.codegenerator.CodeGenerator;
-import supersql.codegenerator.CopyJscss;
+import supersql.codegenerator.Jscss;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
@@ -263,7 +263,7 @@ public class HTMLManager extends Manager {
 			}
 			
 			HTMLEnv.initAllFormFlg();
-			CopyJscss.copyJSCSS_to_outputDir();	//goto 20141201
+			Jscss.process();	//goto 20141209
 		} catch (FileNotFoundException fe) {
 			fe.printStackTrace();
 			Log.err("Error: specified outdirectory \""

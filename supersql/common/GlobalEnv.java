@@ -11,7 +11,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Hashtable;
-//added by goto 20120624
 
 public class GlobalEnv {
 	
@@ -819,4 +818,14 @@ public class GlobalEnv {
 			cp = new File(cp).getAbsolutePath();
 		return cp;
 	}
+
+    //added by goto 20141209
+	//return the output directory's path
+	public static String getOutputDirPath() {
+		String outdir = GlobalEnv.getoutdirectory();
+		if (outdir == null)
+			outdir = GlobalEnv.getfileparent();
+		return outdir;
+	}
+
 }

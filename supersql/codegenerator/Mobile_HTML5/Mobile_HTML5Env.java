@@ -14,6 +14,7 @@ import java.util.Vector;
 import supersql.codegenerator.Connector;
 import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.ITFE;
+import supersql.codegenerator.Jscss;
 import supersql.codegenerator.LocalEnv;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
@@ -78,7 +79,7 @@ public class Mobile_HTML5Env extends LocalEnv {
 
     StringBuffer code;
 
-    StringBuffer css;
+    public static StringBuffer css;
 
 	static int ID_counter=0;	//add oka
 
@@ -195,20 +196,7 @@ public class Mobile_HTML5Env extends LocalEnv {
 	        
 	        //Generator
 	        header.append("<meta name=\"GENERATOR\" content=\" SuperSQL (Generate Mobile_HTML5) \">\n");
-	        
-	        //added by goto 20120629
-	        //header.append("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n");
-	        
-	        //changed by goto 20120622 start
-	        //Log.out("<style type=text/css><!--");
    		}
-        /*commonCSS();
-        header.append(css);
-        Log.out(css.toString());
-
-        if(GlobalEnv.getframeworklist() == null)
-        	header.append("--></STYLE>");*/
-   		//changed by goto 20120622 end
 
         //tk start////////////////////////////////////////////////////
         header.append(meta);
@@ -283,28 +271,21 @@ public class Mobile_HTML5Env extends LocalEnv {
             //added by goto 20121217 start
         	header.append("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no\"/>\n");
         	
-	        header.append("<STYLE TYPE=\"text/css\">\n");
-	        header.append("<!--\n");
-	        commonCSS();
-	        header.append(css);
-	        Log.out(css.toString());
-	        header.append("\n-->\n</STYLE>\n");
+//	        header.append("<STYLE TYPE=\"text/css\">\n");
+//	        header.append("<!--\n");
+//	        commonCSS();
+//	        header.append(css);
+//	        Log.out(css.toString());
+//	        header.append("\n-->\n</STYLE>\n");
 
-//退避	        header.append("<link rel=\"stylesheet\" href=\"http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css\"/>\n");
-//退避	        header.append("<link rel=\"stylesheet\" href=\"http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.css\"/>\n");
-//退避	        header.append("<link rel=\"stylesheet\" href=\"js/jqm-icon-pack-2.0-original.css\"/>\n");
+	        header.append("<!-- SuperSQL JavaScript & CSS -->\n");
 	        header.append("<link rel=\"stylesheet\" href=\"jscss/jquery-ui.css\"/>\n");
             header.append("<link rel=\"stylesheet\" href=\"jscss/jquery.mobile-1.3.1.min.css\"/>\n");
             header.append("<link rel=\"stylesheet\" href=\"jscss/jqm-datebox.min.css\"/>\n");
             header.append("<link rel=\"stylesheet\" href=\"jscss/jqm-icon-pack-2.0-original.css\"/>\n");
             header.append("<link rel=\"stylesheet\" href=\"jscss/jquery.simplePagination.css\"/>\n");
-            //header.append("<link rel=\"stylesheet\" href="css/custom.css\"/>\n");
             //20130206
             //※※　要注意　※※　 jquery.jsより先にjquerymobile.jsをインポートすると、ボタン等の表示がうまくいかなくなる!!
-//退避            header.append("<script src=\"http://code.jquery.com/jquery-1.7.1.min.js\"></script>\n");
-//退避            header.append("<script src=\"http://code.jquery.com/ui/1.9.2/jquery-ui.min.js\"></script>\n");
-//退避            header.append("<script src=\"http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.js\"></script>\n");
-//退避            header.append("<script src=\"js/jquery.mobile.dynamic.popup.js\"></script>\n");
             header.append("<script src=\"jscss/jquery-1.7.1.min.js\"></script>\n");
             header.append(Mobile_HTML5Function.updateFormJS);
             header.append("<script src=\"jscss/jquery-ui.min.js\"></script>\n");
@@ -316,32 +297,11 @@ public class Mobile_HTML5Env extends LocalEnv {
             header.append("<script src=\"jscss/jqm-datebox.mode.flipbox.min.js\"></script>\n");
             header.append("<script src=\"jscss/jquery.simplePagination.js\"></script>\n");
             header.append("<script src=\"jscss/jquery.mobile.dynamic.popup.js\"></script>\n");
-            //header.append("<script src=\"js/config.js\"></script>\n");
-
-            //added by goto 20130110 start
-            //for slideshow
-            //header.append("<link href=\"js/photoswipe/photoswipe.css\" type=\"text/css\" rel=\"stylesheet\" />\n");
-            //header.append("<link href=\"js/photoswipe/jquery-mobile.css\" type=\"text/css\" rel=\"stylesheet\" />\n");
-       		//header.append("<script src=\"js/photoswipe/klass.min.js\"></script>\n");
-       		//header.append("<script src=\"js/photoswipe/code.photoswipe.jquery-3.0.4.min.js\"></script>\n");
-//退避            header.append("<link href=\"http://www.db.ics.keio.ac.jp/ssqlcss/photoswipe/photoswipe.css\" type=\"text/css\" rel=\"stylesheet\" />\n");
-//退避            header.append("<link href=\"http://www.db.ics.keio.ac.jp/ssqljscss/photoswipe/jquery-mobile.css\" type=\"text/css\" rel=\"stylesheet\" />\n");
-//退避    		header.append("<script src=\"http://www.db.ics.keio.ac.jp/ssqljscss/photoswipe/klass.min.js\"></script>\n");
-//退避    		header.append("<script src=\"http://www.db.ics.keio.ac.jp/ssqljscss/photoswipe/code.photoswipe.jquery-3.0.4.min.js\"></script>\n");
-            //added by goto 20130110 end
-       		
-    		//added by goto 20130413  "row Prev/Next"
-//    		header.append("<script src=\"js/jquery.iframe-auto-height.plugin.js\"></script>\n");
-//    		header.append("<script src=\"js/script2.js\"></script>\n");
-//退避    		header.append("<script src=\"http://www.db.ics.keio.ac.jp/ssqljscss/jquery.iframe-auto-height.plugin.js\"></script>\n");
-//退避    		header.append("<script src=\"http://www.db.ics.keio.ac.jp/ssqljscss/script2.js\"></script>\n");
     		header.append("<script src=\"jscss/jquery.iframe-auto-height_re.plugin.js\"></script>\n");
     		header.append("<script src=\"jscss/jquery.validate.min.js\"></script>\n");
     		header.append("<script src=\"jscss/supersql.prev-next.js\"></script>\n");
-
     		
     		//added by goto 20130512  "max-width"
-//    		header.append("<script type=\"text/javascript\"> var windowWidthThreshold = "+maxWidth+" </script>\n");
 			header.append(
 					"<script type=\"text/javascript\">\n" +
 					"<!-- \n" +
@@ -350,344 +310,32 @@ public class Mobile_HTML5Env extends LocalEnv {
 					"var pcWidth = "+pcWidth+";\n" +
 					"-->\n" +
 					"</script>\n");
-    		
-//退避    		header.append("<script src=\"js/script1.js\"></script>\n");
     		header.append("<script src=\"jscss/supersql.js\"></script>\n");
             //added by goto 20121217 end
             
-            header.append("\n");
-            
-            //added by goto 20130311  "background"
-	        if (!bg.equals("")){
-	        	header.append("<style type=\"text/css\">");
-	            header.append("<!-- .ui-page{ background: transparent url("+bg+") } -->");
-	          	header.append("</style>\n");
-	        }
-	        
-            //20130309  "div"
-            header.append("<style type=\"text/css\">\n");
-            header.append("<!-- div{ text-align:center; float:center; vertical-align:middle; } -->\n");
-            //20130315	"長い文字が...と省略されるのを防ぐ (*:全てのタイプに適用) "
-            header.append("<!-- * { white-space: normal; } -->\n");
-            header.append("<!-- .error{ color:red; text-align:left; display:block; } -->\n");
-            header.append("<!--\n");
-            header.append(".ui-grid { overflow: hidden; }\n");
-            //header.append(".ui-block { margin: 0; padding: 0; border: 0; float: left; min-height: 1px; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -ms-box-sizing: border-box; box-sizing: border-box; }\n");
-            header.append(".ui-block { margin: 0; padding: 0; float: left; min-height: 1px; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -ms-box-sizing: border-box; box-sizing: border-box; }\n");
-            header.append("-->\n");
-          	header.append("</style>\n");
-
-	        //added by goto 20130512  "Tableのセンタリング（画面横幅の大きいデバイスで見ると効果が分かる）"
-//          	header.append("<style type=\"text/css\"><!-- table{ margin:auto; } --></style>\n");
-            
-            //20130206
-            //下記は2013.02のSSQL教育で使用
-            //※※　要注意　※※ generate mobileでは、ボタン等の表示に干渉してしまうため使用しない方が良い!!
-//            header.append("<link href=\"http://www.db.ics.keio.ac.jp/ssqljscss/jquery-ui/css/ui-lightness/jquery-ui-1.9.2.custom.min.css\" type=\"text/css\" rel=\"stylesheet\" />\n");
-//            header.append("<script src=\"http://code.jquery.com/jquery-1.7.1.min.js\"></script>\n");
-//            header.append("<script src=\"http://www.db.ics.keio.ac.jp/ssqljscss/jquery-ui/js/jquery-ui-1.9.2.custom.min.js\" type=\"text/javascript\"></script>\n");
-//            header.append("<script type=\"text/javascript\">\n");
-//            header.append("$(function() {\n");
-//            header.append("	$(\"[id=bounce]\").click(function() {\n");
-//            header.append("		$(this).effect(\"bounce\", '', 1500);\n");
-//         	  header.append("	});\n");
-//            header.append("});\n");
-//         	  header.append("</script>\n");
-//            header.append("\n");
-            
-            
-//            //20130205
-              //下記は未完成
-//            header.append("<script type=\"text/javascript\" src=\"interface.js\"></script>\n");
-//            header.append("<script type=\"text/javascript\">" +
-//            		"$(function(){" +
-//            		"	$('#fisheye').Fisheye({" +
-////            		"	$('[id=fisheye]').Fisheye({" +
-//            		"		maxWidth: 80," +
-//            		"		items: 'a'," +
-//            		"		itemsText: 'span'," +
-//            		"		container: '.fisheyeContainter'," +
-//            		"		itemWidth: 80," +
-//            		"		proximity: 90," +
-//            		"		halign : 'center'" +
-//            		"	})" +
-//            		"})" +
-//            		"</script>\n");
-//            header.append("<style type=\"text/css\" media=\"all\">" +
-//            		"#fisheye{" +
-//            		"	margin-top:200px;" +
-//            		"}" +
-//            		".fisheye{" +
-//            		"	text-align: center;" +
-//            		"	height: 200px;" +
-//            		"	position: relative;" +
-//            		"}a.fisheyeItem{" +
-//            		"	text-align: center;" +
-//            		"	color: #000;" +
-//            		"	font-weight: bold;" +
-//            		"	text-decoration: none;" +
-//            		"	width: 40px;" +
-//            		"	position: absolute;" +
-//            		"	display: block;" +
-//            		"	top: 0;" +
-//            		"}" +
-//            		".fisheyeItem img{border: none;	margin: 0 auto 5px auto;	width: 100%;}" +
-//            		".fisheyeItem span{	display: none;	positon: absolute;}" +
-//            		".fisheyeContainter{height: 200px;	width: 700px;	position: absolute;}" +
-//            		"</style>\n");
-            
-//          	if(headerFlag==1){		//通常時のみ（Prev/Nextでは行わない）
-//	            //added by goto 20121222 start, changed by goto 20130110
-//	            //js/script1.jsの生成・書き込み
-//	            // TODO: 下記の場所を他へ変更（下記だと複数回生成・書き込みが行われる）
-//	            // TODO: -outdir?時の処理（下記は、出力先が.ssqlファイル格納場所に限定）
-//	            String fileName=GlobalEnv.getfilename();
-//	            String fileDir = "";
-//	            if(fileName.contains("/")){
-//	            	//TODO: filename.substring(ファイル名)へ変更
-//	            	fileDir = fileName.substring(0,fileName.lastIndexOf("/"));
-//	            }else{
-//	            	//TODO: fileNameのカレントディレクトリの絶対パスを取得
-//	            	//fileDir = fileNameのカレントディレクトリの絶対パス
-//	            }
-//	            //		下記は、linkを使うときのみ有効 (commentted out by goto 20130110)
-//	            //      String fileDir = new File(linkurl).getAbsoluteFile().getParent();	//htm_env.~をcut
-//	            // 書き込むファイルの名前
-//	            String outputFileName = fileDir + "/jscss/script1.js";
-//	            // ファイルオブジェクトの生成
-//	            File outputFile = new File(outputFileName);
-//	            
-//	            File dir = outputFile.getParentFile();  
-//	            if (!dir.exists()) {
-//	                dir.mkdirs();   //make folders
-//	            }
-//	            
-//	            try {
-//	              // 出力ストリームの生成
-//	//              FileOutputStream fos = new FileOutputStream(outputFile);
-//	//              OutputStreamWriter osw = new OutputStreamWriter(fos);
-//	//              PrintWriter pw = new PrintWriter(osw);
-//	              
-//	    	  		PrintWriter pw;
-//	    	        if (charset != null){
-//	    	        	pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
-//	    	        			new FileOutputStream(outputFile),charset)));
-//	    	        	//Log.info("File encoding: "+html_env.charset);
-//	    	        }else
-//	    	        	pw = new PrintWriter(new BufferedWriter(new FileWriter(
-//	    	        			outputFile)));
-//	    	        
-//	    	        //ファイルへの書き込み
-//	    	        //フッタ(id=\"footer1\")の処理
-//	    	        //左右フリック・タップすることにより、[進む]・[戻る]・[更新]を行う		//added by goto 20130520
-//	    	        pw.println("\n" +
-//	    	        		"/** フッタ(id=\"footer1\")の処理 **/\n" +
-//	    	        		"//左フリック: [進む]、右フリック: [戻る]、タップ: [更新]\n" +
-//	    	        		"$(function() {\n" +
-//	    	        		"	//タップ時: [更新]\n" +
-//	    	        		"	$('#footer1').bind('tap',function(){\n" +
-//	    	        		"		location.reload();\n" +
-//	    	        		"	});\n" +
-//	    	        		"\n" +
-//	    	        		"	//タッチイベントの取得\n" +
-//	    	        		"	$(\"#footer1\").bind(\"touchstart touchmove touchend\", touchHandler);\n" +
-//	    	        		"	function touchHandler(e) {  \n" +
-//	    	        		"		e.preventDefault();  \n" +
-//	    	        		"		var touch = e.originalEvent.touches[0];  \n" +
-//	    	        		"\n" +
-//	    	        		"		if(e.type == \"touchstart\"){\n" +
-//	    	        		"			//タッチ開始時のX座標(startX)\n" +
-//	    	        		"			startX = touch.pageX; \n" +
-//	    	        		"		}else if(e.type == \"touchmove\"){\n" +
-//	    	        		"			//移動距離(diffX) = スライド時のX座標 - 開始時のX座標\n" +
-//	    	        		"			diffX = touch.pageX - startX;\n" +
-//	    	        		"			if(( diffX > 0 ) || ( diffX < 0 )) {\n" +
-//	    	        		"				$('#footer1').css( \"left\", diffX );\n" +
-//	    	        		"			}\n" +
-//	    	        		"		}else if(e.type == \"touchend\"){\n" +
-//	    	        		"			if(diffX > 10) {		//右に10px以上移動: [戻る]\n" +
-//	    	        		"				history.go(-1);\n" +
-//	    	        		"			}else if(diffX < -10){	//左に10px以上移動: [進む]\n" +
-//	    	        		"				history.go(1);\n" +
-//	    	        		"			}else{\n" +
-//	    	        		"				$( '#footer1' ).animate({ left: 0 }, 200);\n" +
-//	    	        		"			} \n" +
-//	    	        		"		}\n" +
-//	    	        		"	}\n" +
-//	    	        		"});\n");
-//	    	        //rel="external"と指定されていた場合は、別ウィンドウを開く
-//	    	        //（W3C target="_blank" strict対策）		//added by goto 20130518
-//	    	        pw.println("\n/** rel=\"external\"と指定されていた場合は、別ウィンドウを開く **/\n" +
-//							"/**（W3C target=\"_blank\" strict対策）**/\n" +
-//							"$(function(){\n" +
-//							"	$(\"a[rel='external']\").click(function(){\n" +
-//							"		window.open($(this).attr(\"href\"));\n" +
-//							"		return false;\n" +
-//							"	});\n" +
-//							"});\n");
-//	    	        //画面サイズに応じて表示widthを変更		//added by goto 20130512
-//	    	        pw.println("\n/** 画面サイズに応じて表示widthを変更 **/\n" +
-//	    	        		"/** 画面width > 閾値 のとき、widthを固定して表示をセンタリング **/\n" +
-//	    	        		//"//閾値(windowWidthThreshold)は、HTMLファイルの<head>で指定\n" +
-//	    	        		"//PC: pc-width値に固定(指定なし(-1):350)\n" +
-//	    	        		"//モバイル: 縦=portrait-width値に固定(指定なし(-1):100%) ／ 縦=landscape-width値に固定(指定なし(-1):100%)\n" +
-//	    	        		//"var windowWidthThreshold = 500; 	//閾値\n" +
-//	    	        		"//初期load時\n" +
-//	    	        		"var windowWidthThreshold = 0;\n" +
-//	    	        		"$(document).ready(function(){\n" +
-//	    	        		"	windowWidthThreshold = getWindowWidthThreshold();\n" +
-//	    	        		"	if( $(window).width() > windowWidthThreshold ){\n" +
-//	    	        		"		//$(\"table\").css(\"width\",\"auto\");\n" +
-//	    	        		"		$(\"#header1\").css(\"width\",windowWidthThreshold).css(\"margin\",\"auto\");\n" +
-//	    	        		"		$(\"#content1\").css(\"width\",windowWidthThreshold).css(\"margin\",\"auto\");\n" +
-//	    	        		"		$(\"#footer1\").css(\"width\",windowWidthThreshold).css(\"margin\",\"auto\");\n" +
-//	    	        		"		$(\"#LOGINpanel1\").css(\"width\",windowWidthThreshold).css(\"margin\",\"auto\");\n" +
-//	    	        		"		$(\"#LOGOUTpanel1\").css(\"width\",windowWidthThreshold).css(\"margin\",\"auto\");\n" +
-//	    	        		"	}\n" +
-//	    	        		"});\n" +
-//	    	        		"//画面サイズが変更されたとき\n" +
-//	    	        		"window.onresize = function() {\n" +
-//	    	        		"	windowWidthThreshold = getWindowWidthThreshold();\n" +
-//	    	        		"	if( $(window).width() > windowWidthThreshold ){\n" +
-//	    	        		"    	//$(\"table\").css(\"width\",\"auto\");\n" +
-//	    	        		"		$(\"#header1\").css(\"width\",windowWidthThreshold).css(\"margin\",\"auto\");\n" +
-//	    	        		"		$(\"#content1\").css(\"width\",windowWidthThreshold).css(\"margin\",\"auto\");\n" +
-//	    	        		"		$(\"#footer1\").css(\"width\",windowWidthThreshold).css(\"margin\",\"auto\");\n" +
-//	    	        		"		$(\"#LOGINpanel1\").css(\"width\",windowWidthThreshold).css(\"margin\",\"auto\");\n" +
-//	    	        		"		$(\"#LOGOUTpanel1\").css(\"width\",windowWidthThreshold).css(\"margin\",\"auto\");\n" +
-//	    	        		"	}else{\n" +
-//	    	        		"		//$(\"table\").css(\"width\",\"100%\");\n" +
-//	    	        		"		$(\"#header1\").css(\"width\",\"100%\");\n" +
-//	    	        		"		$(\"#content1\").css(\"width\",\"100%\");\n" +
-//	    	        		"		$(\"#footer1\").css(\"width\",\"100%\");\n" +
-//	    	        		"		$(\"#LOGINpanel1\").css(\"width\",\"97%\");\n" +
-//	    	        		"		$(\"#LOGOUTpanel1\").css(\"width\",\"100%\");\n" +
-//	    	        		"	}\n" +
-//	    	        		"}\n" +
-//	    	        		"//画面width閾値を返す\n" +
-//	    	        		"function getWindowWidthThreshold(){\n" +
-//	    	        		"	if(!isSmartphone()){\n" +
-//	    	        		"		//PC\n" +
-//	    	        		"		if(pcWidth < 0)	return 350;\n" +
-//	    	        		"		else			return pcWidth;\n" +
-//	    	        		"	}else{\n" +
-//	    	        		"		//モバイル\n" +
-//	    	        		"		if(isPortrait()){\n" +
-//	    	        		"			//縦向き\n" +
-//	    	        		"			return portraitWidth;\n" +
-//	    	        		"		}else{\n" +
-//	    	        		"			//横向き\n" +
-//	    	        		"			return landscapeWidth;\n" +
-//	    	        		"		}\n" +
-//	    	        		"	}\n" +
-//	    	        		"}\n" +
-//	    	        		"//端末が縦向きかどうか\n" +
-//	    	        		"function isPortrait(){\n" +
-//	    	        		"	if($(window).width() < $(window).height())\n" +
-//	    	        		"		return true;\n" +
-//	    	        		"	return false;\n" +
-//	    	        		"}\n\n");
-//	    	        //twitter
-//	              	pw.println("$(document).on(\"pagebeforecreate\",'[data-role=page]',function(e){\n" +
-//	              			"  $.ajaxSetup({cache : true});\n" +
-//	              			"  $.getScript('http://platform.twitter.com/widgets.js');\n" +
-//	              			"  $.ajaxSetup({cache : false});\n" +
-//	              			"});\n\n");
-//	              	//facebook
-//	              	pw.println("$(document).on('pageshow', '[data-role=page]', function(e) {\n" +
-//	              			"  var src = '//www.facebook.com/plugins/like.php?href=';\n" +
-//	              			"  src += encodeURIComponent(location.href);\n" +
-//	              			"  src += '&send=false&layout=button_count&width=200&show_faces=true&action=like&colorscheme=light&height=21';\n" +
-//	              			"  $('.like-btn').attr('src', src);\n" +
-//	              			"});\n\n");
-//	              	//bookmark
-//	              	pw.println("function addBookmark(title,url) {\n" +
-//	              			"	//IE\n" +
-//	              			"	if(navigator.userAgent.indexOf(\"MSIE\") > -1){\n" +
-//							"		window.external.AddFavorite(url, title);\n" +
-//							"	}\n" +
-//							"	//Firefox\n" +
-//							"	else if(navigator.userAgent.indexOf(\"Firefox\") > -1){\n" +
-//							"		window.sidebar.addPanel(title, url, \"\");\n" +
-//							"	}\n" +
-//							"	//Opera\n" +
-//							"	else if(navigator.userAgent.indexOf(\"Opera\") > -1){\n" +
-//							"		document.write('<div style=\"text-align:center\"><a href=\"'+url+'\" rel=\"sidebar\" title=\"'+title+'\">ブックマークに追加</a></div><br>');\n" +
-//							"	}\n" +
-//							"	//Netscape\n" +
-//							"	else if(navigator.userAgent.indexOf(\"Netscape\") > -1){\n" +
-//							"		document.write('<div style=\"text-align:center\"><input type=\"button\" value=\"ブックマークに追加\"');\n" +
-//							"		document.write(' onclick=\"window.sidebar.addPanel(\\''+title+'\\',\\''+url+'\\',\\'\\');\"></div><br>');\n" +
-//							"	}\n" +
-//							"	else{\n" +
-//							"    	alert(\"このブラウザへのお気に入り追加ボタンは、Chrome/Safari等には対応しておりません。\\nChrome/Safariの場合、CtrlキーとDキーを同時に押してください。\\nその他の場合はご自身のブラウザからお気に入りへ追加下さい。\");\n" +
-//							"  	}\n" +
-//							"}\n");
-//	              	//added by goto 20130110
-//	              	//slideshow
-//	              	pw.println("$(document).on('pageshow', '#p-gallery', function(e){\n" +
-//	              			"	var currentPage = $(e.target);\n" +
-//	              			"	photoSwipeInstance = $(\"ul.gallery a\", e.target).photoSwipe({},  currentPage.attr('id'));\n" +
-//	              			"}).on('pagehide', '#p-gallery', function(e){\n" +
-//	              			"	var currentPage = $(e.target),\n" +
-//	              			"	photoSwipeInstance = window.Code.PhotoSwipe.getInstance(currentPage.attr('id'));\n" +
-//	              			"	if (typeof photoSwipeInstance != \"undefined\" && photoSwipeInstance != null) {\n" +
-//	              			"		window.Code.PhotoSwipe.detatch(photoSwipeInstance);\n" +
-//	              			"	}\n" +
-//	              			"});\n");
-//	              	
-//	              	//added by goto 20130330
-//	              	//tab
-//	              	pw.println("$(document).ready(function() {\n" +
-//	              			"	$( \"[id=tabs]\" ).tabs();\n" +
-//	//              			"	$( \"#tabs\" ).tabs();\n" +
-//	              			"});\n");
-//	              	
-//	              	//form validation
-//	              	pw.println("\n/** <form> validation **/\n" +
-//	              			"$(document).ready(function () {\n" +
-//	              			"	jQuery.validator.addMethod(\n" +
-//	              			"	  \"jqValidate_TelephoneNumber\", function(value, element) {\n" +
-//	              			"	     return this.optional(element) || new RegExp(\"^[0-9\\-]+$\").test(value);\n" +
-//	              			"	   }, \"Please enter a valid telephone number.\"\n" +
-//	              			"	);\n" +
-//	              			"	jQuery.validator.addMethod(\n" +
-//	              			"	  \"jqValidate_Alphabet\", function(value, element) {\n" +
-//	              			"	     return this.optional(element) || new RegExp(\"^[a-zA-Z]+$\").test(value);\n" +
-//	              			"	   }, \"You can enter only the alphabet.\"\n" +
-//	              			"	);\n" +
-//	              			"	jQuery.validator.addMethod(\n" +
-//	              			"	  \"jqValidate_AlphabetNumber\", function(value, element) {\n" +
-//	              			"	     return this.optional(element) || new RegExp(\"^[0-9a-zA-Z]+$\").test(value);\n" +
-//	              			"	   }, \"You can enter only the alphabet and a number.\"\n" +
-//	              			"	);\n" +
-//	              			"});\n");
-//	              	
-//	//              	//added by goto 20130503
-//	//              	//panel
-//	//              	pw.println("$(document).on('click',\"button.open\",function(){\n" +
-//	//              			"	$(\"[id=ssqlpanel]\").panel(\"open\")\n" +
-//	//      					"}).on('click',\"button.close\",function(){\n" +
-//	//						"	$(\"[id=ssqlpanel]\").panel(\"close\")\n" +
-//	//						"});\n");
-//	              
-//	              	// 後始末
-//	              	pw.close();
-//	            // エラーがあった場合は、スタックトレースを出力
-//	            } catch(Exception e) {
-//	            	e.printStackTrace();
-//	            }
-//	            //added by goto 20121222 end
-//          	}//通常のみの処理（jsファイル作成）end
-        	
-          	header.append("\n");
 	        header.append(jscss);
           	header.append(cssjsFile);	//added by goto 20130703
 	        header.append(cssfile);
 			header.append(jsFile);		//added by goto 20130703
-	        header.append("</HEAD>\n");
+            
+            //added by goto 20130311  "background"
+			css.append("\n");
+	        if (!bg.equals("")){
+	        	css.append(".ui-page{ background: transparent url(../"+bg+") }\n");
+	        }
+            //20130309  "div"
+            css.append("div{ text-align:center; float:center; vertical-align:middle; }\n");
+            //20130315	"長い文字が...と省略されるのを防ぐ (*:全てのタイプに適用) "
+            css.append("* { white-space: normal; }\n");
+            css.append(".error{ color:red; text-align:left; display:block; } -->\n");
+            css.append(".ui-grid { overflow: hidden; }\n");
+            css.append(".ui-block { margin: 0; padding: 0; float: left; min-height: 1px; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -ms-box-sizing: border-box; box-sizing: border-box; }\n");
 
-	        //header.append("<BODY class=\"body\">\n");
+			header.append("<!-- Generated CSS -->\n");
+			header.append("<link rel=\"stylesheet\" type=\"text/css\" href=\""+ Jscss.getGenerateCssFileName(0) + "\">\n");
+	        header.append("</HEAD>\n\n");
+
+	        
 	        header.append("<BODY>\n");
 	        header.append("<!-- data-role=page start -->\n<div data-role=\"page\" id=\"p-top1\" >\n\n");
 	        
@@ -695,10 +343,8 @@ public class Mobile_HTML5Env extends LocalEnv {
 	        //ログイン・ログアウト・新規登録
 	        if(SSQLparser.sessionFlag){
 	        	String s = SSQLparser.sessionString.trim();
-	        	//Log.i("sessionString:" + s);
 	        	
 	        	//置換 ( " , "  ->  " ; " )
-	    		//Log.i("Before sessionString: "+s);
 	        	boolean dqFlg = false;
 	        	for(int i=0; i<s.length();i++){
 	        		if(!dqFlg){
@@ -709,7 +355,6 @@ public class Mobile_HTML5Env extends LocalEnv {
 	    	    		else if(s.charAt(i)=='"')	dqFlg=false;
 	        		}
 	        	}
-	        	//Log.i("After sessionString:  "+s);
 	        	
 	        	String sessionVariable_UniqueName = "ssql_";		//セッション変数に使用するユニークな名前（session()の最後から取ってくる）
 	        	
@@ -717,24 +362,13 @@ public class Mobile_HTML5Env extends LocalEnv {
 	        	if(s.startsWith("login"))	s_val = s.substring("login".length(),s.indexOf("(")).trim();
 	        	else						s_val = s.substring("session".length(),s.indexOf("(")).trim();
 	        	if(s_val.equals(""))		s_val = "1";
-//	        	Log.i("s_val:" + s_val);
 	        	String DB = GlobalEnv.getdbname();										//DB
 	        	String c1str = "";
 	        	if(!s_val.equals("3"))	c1str = "ID:";									//ID string
 	        	else					c1str = "E-mail address:";						//E-mail string
 	        	String c1 = "";															//ID column
-//	        	String c1 = s.substring(s.indexOf("(")+1,s.indexOf(",")).trim();		//ID column
-//	        	if(c1.contains(":")){
-//	        		c1str = c1.substring(0,c1.lastIndexOf(":")+1);
-//	        		c1 = c1.substring(c1.lastIndexOf(":")+1).trim();
-//	        	}
 	        	String c2str = "Password";												//PW string
 	        	String c2 = "";															//PW column
-//	        	String c2 = s.substring(s.indexOf(",")+1,s.lastIndexOf(",")).trim();	//PW column
-//	        	if(c2.contains(":")){
-//	        		c2str = c2.substring(0,c2.lastIndexOf(":"));
-//	        		c2 = c2.substring(c2.lastIndexOf(":")+1).trim();
-//	        	}
 	        	String from = "";
 	        	String fromWhere = "";
 	        	String fromWhere_left = "";
@@ -747,8 +381,6 @@ public class Mobile_HTML5Env extends LocalEnv {
 	        	int c3_array_num = 0;
 	        	if(s_val.equals("1") || s_val.equals("2")){
 	        		//s_val:1 or 2
-	        		//Log.i("s: "+s);
-//	        		for(int i=0; i<s.length(); i++) Log.i(s.charAt(i));
 	        		String buf = s.substring(0,s.indexOf(","));
 		        	c1 = buf.substring(buf.indexOf("\"")+1,buf.indexOf(";")).trim();			//ID column,
 		        	if(c1.contains(":")){
@@ -1564,33 +1196,16 @@ public class Mobile_HTML5Env extends LocalEnv {
 
     }
 
-    private void commonCSS() {
-        //        header.append("TABLE {border-collapse:collapse; table-layout:fixed; border:none; height:100%;}\n");
-
-
-    	//tk modified
-    	//header.append(".nest { height:100%;z-index: 1}\n");
-        //header.append(".nest { position : relative ; top ; 5px ; }");
-    	//header.append(".nest {top : 5px ;}");
-
-    	//comment out 200805 chie
-    	//header.append(".nest {top : 5px ; vertical-align : top;}");
-
-    	//        header.append(".outline { border: 2px solid gray; height:auto;}\n");
-      	//        header.append("TD { padding: 0;}\n");
-        //        header.append("TD.tate { border-top: 2px solid gray;}\n");
-        //        header.append("TD.top { border-top: none;}\n");
-        //        header.append("TD.yoko { border-left: 2px solid gray;}\n");
-        //        header.append("TD.left { border-left: none;}\n");
-        //tk//
-    	if(!GlobalEnv.isOpt()){
-        header.append(".att { padding: 0px; margin : 0px;height : 100%; z-index: 2}\n");
-        header.append(".linkbutton {text-align:center; margin-top: 5px; padding:5px;}\n");
-        header.append(".embed { vertical-align : text-top; padding : 0px ; margin : 0px; border: 0px,0px,0px,0px; width: 100%; }\n");
-        header.append(".noborder { border-width : 0px; " +
-        		"margin-top : -1px; padding-top : -1px; " +
-        		"margin-bottom : -1px; padding-bottom : -1px; }\n");
-    	}
+	public static String commonCSS() {
+		String s = "";
+		if (!GlobalEnv.isOpt()) {
+			s += ".att { padding:0px; margin:0px; height:100%; z-index:2; }\n";
+			s += ".linkbutton { text-align:center; margin-top:5px; padding:5px; }\n";
+			s += ".embed { vertical-align:text-top; padding:0px; margin:0px; border:0px,0px,0px,0px; width:100%; }\n" +
+				".noborder { border-width:0px; margin-top:-1px; padding-top:-1px; "
+					+ "margin-bottom:-1px; padding-bottom:-1px; }\n\n";
+		}
+		return s;
     }
 
     public void getFooter(int footerFlag) {		//[headerFlag] 1:通常、2:Prev/Next

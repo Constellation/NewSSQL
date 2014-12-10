@@ -1168,7 +1168,7 @@ public class Mobile_HTML5 {
 					}catch(Exception e){}
 					if(numberOfColumns<2){
 						numberOfColumns = 1;
-	            		Log.err("<<Warning>> column指定の範囲は、2〜です。指定された「column="+numberOfColumns+"」は使用できません。");
+	            		//Log.err("<<Warning>> column指定の範囲は、2〜です。指定された「column="+numberOfColumns+"」は使用できません。");
 					}else{
 						if(decos.containsKey("table") || decos.containsKey("table0")){
 							//table
