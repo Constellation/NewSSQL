@@ -704,6 +704,14 @@ public class HTMLEnv extends LocalEnv {
 		if (decos.containsKey("border-collapse"))
 			cssbuf.append(" border-collapse:" + decos.getStr("border-collapse")
 					+ ";");
+		
+        //added by masato 20141214  "style"
+        if (decos.containsKey("style")){
+        	String style = decos.getStr("style");
+        	cssbuf.append(" " + style);
+        	if(!style.matches(".*;\\s*$"))	cssbuf.append(";");	//���������";"���������������������
+        }
+		
         //added by goto 20130311  "background"
         if (decos.containsKey("background"))
         	bg = decos.getStr("background");
@@ -1027,7 +1035,7 @@ public class HTMLEnv extends LocalEnv {
 			header.append("</HEAD>\n");
 
 			
-			Log.out("<body>");			
+			Log.out("<body>");
 			code_tmp += "<BODY class=\"body\">\n";
 			code_tmp += "<div";
 			code_tmp += div;
