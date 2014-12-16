@@ -822,7 +822,6 @@ public class GlobalEnv {
 			}
 		}
 		if(cp.endsWith(".jar")){
-			Log.e("new File(cp).getAbsolutePath() = "+new File(cp).getParent());
 			cp = new File(cp).getParent();
 			if(cp.endsWith("libs"))
 				cp = new File(cp).getParent();
