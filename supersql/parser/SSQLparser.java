@@ -159,7 +159,7 @@ public class SSQLparser {
 				line = in.readLine();
 				if (line == null)	break;
 				
-				if (line.contains("/*")){
+				while (line.contains("/*")){
 					String line1 = line.substring(0, line.indexOf("/*"));
 					while (!line.contains("*/"))
 						line = in.readLine();
@@ -552,7 +552,7 @@ public class SSQLparser {
 					if (line == null || line.equals("-1"))
 						break;
 
-					if (line != null && line.contains("/*")) {
+					while (line != null && line.contains("/*")) {
 						int s = line.indexOf("/*");
 						String line1 = line.substring(0, s);
 						// tmp.append(" "+line1);
@@ -1375,7 +1375,7 @@ public class SSQLparser {
                 if (line == null)
                     break;
 
-                if(line!=null && line.contains("/*"))
+                while(line!=null && line.contains("/*"))
                 {
                 	int s = line.indexOf("/*");
                 	String line1 = line.substring(0,s);
