@@ -37,7 +37,7 @@ public class HTMLManager extends Manager {
 		if (fileDir.length() < htmlEnv.outFile.length()
 				&& fileDir
 						.equals(htmlEnv.outFile.substring(0, fileDir.length())))
-			htmlEnv.outFile = htmlEnv.outFile.substring(fileDir.length() + 1); // ���Хѥ��ե�����̾
+			htmlEnv.outFile = htmlEnv.outFile.substring(fileDir.length() + 1); // 鐃緒申鐃出パワ申鐃春ワ申鐃緒申鐃緒申名
 		// added by goto 20120627 end
 
 		String tmpqueryfile = new String();
@@ -72,12 +72,12 @@ public class HTMLManager extends Manager {
 	}
 
 	private int indexOf(String string) {
-		// TODO ��ư�������줿�᥽�åɡ�������
+		// TODO 鐃緒申動鐃緒申鐃緒申鐃緒申鐃曙た鐃潤ソ鐃獣ド¥申鐃緒申鐃緒申鐃緒申
 		return 0;
 	}
 
 	private int lastIndexOf(String string) {
-		// TODO ��ư�������줿�᥽�åɡ�������
+		// TODO 鐃緒申動鐃緒申鐃緒申鐃緒申鐃曙た鐃潤ソ鐃獣ド¥申鐃緒申鐃緒申鐃緒申
 		return 0;
 	}
 
@@ -88,9 +88,9 @@ public class HTMLManager extends Manager {
 		htmlEnv.outDir = outdir;
 
 		/*
-		 * ���ϥե���?(outfilename)�����ꤵ?�Ƥ�???
-		 * html_env.outfile��globalenv.outfilename�ˤ�?
-		 * ��?�ʳ��ΤȤ��ϥ���?�ե���?��̾��(filename)�ˤ�?
+		 * 鐃緒申鐃熟フワ申鐃緒申?(outfilename)鐃緒申鐃緒申鐃所さ?鐃銃わ申???
+		 * html_env.outfile鐃緒申globalenv.outfilename鐃祝わ申?
+		 * 鐃緒申?鐃淑鰹申鐃塾とわ申鐃熟ワ申鐃緒申?鐃春ワ申鐃緒申?鐃緒申名鐃緒申(filename)鐃祝わ申?
 		 */
 		if (GlobalEnv.getQuery() != null) {
 			htmlEnv.outFile = "./fromquery";
@@ -120,7 +120,7 @@ public class HTMLManager extends Manager {
 		 * Log.out("outfile log:"+html_env.outfile); } //tk end
 		 */
 		/*
-		 * ������ǥ�?����?(outdirectory)�����ꤵ?�Ƥ�???
+		 * 鐃緒申鐃緒申鐃緒申妊鐃����?(outdirectory)�����ꤵ?�Ƥ�???
 		 * outdirectory��filename��Ĥʤ�����Τ�file�Ȥ�?
 		 */
 

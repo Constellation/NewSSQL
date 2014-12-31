@@ -5,7 +5,7 @@ import supersql.extendclass.ExtList;
 import supersql.parser.Preprocessor;
 
 /**
- * �̎ڎ����������������͎�?��������������򧎹
+ * 鐃緒申鐃緒申鐃緒申鐃緒申鐃緒申鐃緒申鐃緒申鐃緒申鐃緒申鐃緒申鐃緒申鐃緒申鐃緒申?鐃緒申鐃緒申鐃緒申鐃緒申鐃緒申鐃緒申鐃緒申鐃緒申鐃緒申
  */
 public class TreeGenerator {
 
@@ -13,7 +13,7 @@ public class TreeGenerator {
 	}
 
 	public ExtList makeTree(ExtList sch, ExtList tuples) {
-//		public void makeTree(ExtList sch, ExtList tuples) {
+		//		public void makeTree(ExtList sch, ExtList tuples) {
 		
 		ExtList result = new ExtList();
 		Log.out("= makeTree =");
@@ -115,7 +115,6 @@ Log.out("AFTER "+info);
 			}
 		}
 		//		Log.out("result = "+result);
-
 		return result;
 	}
 

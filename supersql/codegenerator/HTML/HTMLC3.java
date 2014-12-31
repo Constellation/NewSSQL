@@ -21,7 +21,7 @@ public class HTMLC3 extends Connector {
 	private HTMLEnv htmlEnv;
 	private HTMLEnv htmlEnv2;
 
-	// ･ｳ･�ｹ･ﾈ･鬣ｯ･ｿ
+	// ・ウ・�ケ・ネ・鬣ッ・ソ
 	public HTMLC3(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
 		this.htmlEnv = henv;
 		this.htmlEnv2 = henv2;
@@ -32,7 +32,7 @@ public class HTMLC3 extends Connector {
 		return "HTMLC3";
 	}
 
-	// C3､ﾎwork･皈ｽ･ﾃ･ﾉ
+	// C3、ホwork・皈ス・テ・ノ
 	@Override
 	public String work(ExtList data_info) {
 		String parentfile = htmlEnv.fileName;

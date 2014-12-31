@@ -346,7 +346,6 @@ public class DataConstructor {
 
 		Log.out("## constructed Data ##");
 		Log.out(sep_data_info);
-
 		return sep_data_info;
 	}
 
