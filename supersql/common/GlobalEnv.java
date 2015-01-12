@@ -809,6 +809,14 @@ public class GlobalEnv {
     	return false;
     }
     
+    //added by goto 20150112
+    public static boolean isCheckquery() {
+    	if(seek("-checkquery") != null || seek("-getparseresult") != null)
+    		return true;
+    	return false;
+    }
+    
+    
     //added by goto 20141201
 	private static String getCurrentPath(){
 		String cp = System.getProperty("java.class.path");

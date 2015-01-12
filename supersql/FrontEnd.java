@@ -40,6 +40,12 @@ public class FrontEnd {
 		Log.info("//Entering SuperSQL System//");
 
 		SSQLparser parser = new SSQLparser();
+		
+		if (GlobalEnv.isCheckquery()){
+			if (GlobalEnv.getErrFlag() == 0)
+				Log.info("// Parser completed normally //");
+			return;
+		}
 
 		long afterparser = System.currentTimeMillis();
 		long afterdc = 0;
