@@ -367,14 +367,10 @@ public class SSQLparser {
 			query = query.replace(media+"{", media+" {");
 		}
 		media = media.toLowerCase();
-		if(
-				media.equals("html") || media.equals("mobile_html5") || 
-				media.equals("html_flexbox") || media.equals("ehtml")){		// add 20141204 masato for ehtml
+		if(media.equals("html") || media.equals("mobile_html5")
+		|| media.equals("html_flexbox") || media.equals("ehtml")){		// add 20141204 masato for ehtml
 			query = replaceQuery_For_HTML_and_MobileHTML5(query);
-			while(query.contains(") ] }@{text}"))						//TODO
-				query = query.replace(") ] }@{text}", ") ]! }@{text}");	//TODO
 		}
-		//Log.e("query = "+query);
 		return query;
 	}
 
@@ -390,14 +386,15 @@ public class SSQLparser {
 		}catch(Exception e){ }
 		return "";
 	}
+	
 	// replaceQuery_For_HTML_and_MobileHTML5
 	private String replaceQuery_For_HTML_and_MobileHTML5(String query){
 		
 		//check by one character and replace
 		boolean dqFlg = false;
-		boolean exclamationFlg = false;
-		boolean squareBracketsFlg = false;
-		int exclamationNum = 0;
+//		boolean exclamationFlg = false;
+//		boolean squareBracketsFlg = false;
+//		int exclamationNum = 0;
 		char c;
 		for (int i = 0; i < query.length(); i++) {
 			c = query.charAt(i);
@@ -413,34 +410,34 @@ public class SSQLparser {
 			if (dqFlg && i < query.length() - 2 && (query.charAt(i-1) != '\\' && c == '\\' && query.charAt(i+1) == 'n'))	//exclude '\\n'
 				query = query.substring(0,i) + "<BR>" + query.substring(i+2);
 			
-			//20130915  for last '!'
-			// ! }  ->  }   or  ! ]  ->  ]   or  ! FROM  ->  FROM
-			if(!exclamationFlg && !dqFlg && !squareBracketsFlg && c == ']')		squareBracketsFlg = true;	//check squareBracketsFlg
-			else if(!exclamationFlg && !dqFlg && squareBracketsFlg && c == '!')	squareBracketsFlg = false;
-			else 
-				if (!dqFlg && i > 2 && !exclamationFlg && !squareBracketsFlg && c == '!'){
-				//check exclamation -> true
- 				exclamationNum = i;
- 				exclamationFlg = true;
-			}else if(exclamationFlg && !Character.isWhitespace(c) && c != '}' && c != ']' && 
-					i < query.length() - 4 && Character.toLowerCase(c) != 'f' && Character.toLowerCase(query.charAt(i+1)) != 'r' && 
-							Character.toLowerCase(query.charAt(i+2)) != 'o' && Character.toLowerCase(query.charAt(i+3)) != 'm'){
-				//check exclamation -> false
-				exclamationNum = 0;
-				exclamationFlg = false;
-			}else if(exclamationFlg && (
-					c == '}' || c == ']' ||
-					(i < query.length() - 4 && Character.toLowerCase(c) == 'f' && Character.toLowerCase(query.charAt(i+1)) == 'r' && 
-							Character.toLowerCase(query.charAt(i+2)) == 'o' && Character.toLowerCase(query.charAt(i+3)) == 'm') )){
-				//replace:  ! }  ->  }  or  ! ]  ->  ]  or  ! FROM  ->  FROM
-				query = query.substring(0,exclamationNum) +" "+ query.substring(i);
-				exclamationFlg = false;
-			}
+//			//20130915  for last '!'
+//			// ! }  ->  }   or  ! ]  ->  ]   or  ! FROM  ->  FROM
+//			if(!exclamationFlg && !dqFlg && !squareBracketsFlg && c == ']')		squareBracketsFlg = true;	//check squareBracketsFlg
+//			else if(!exclamationFlg && !dqFlg && squareBracketsFlg && c == '!')	squareBracketsFlg = false;
+//			else 
+//				if (!dqFlg && i > 2 && !exclamationFlg && !squareBracketsFlg && c == '!'){
+//				//check exclamation -> true
+// 				exclamationNum = i;
+// 				exclamationFlg = true;
+//			}else if(exclamationFlg && !Character.isWhitespace(c) && c != '}' && c != ']' && 
+//					i < query.length() - 4 && Character.toLowerCase(c) != 'f' && Character.toLowerCase(query.charAt(i+1)) != 'r' && 
+//							Character.toLowerCase(query.charAt(i+2)) != 'o' && Character.toLowerCase(query.charAt(i+3)) != 'm'){
+//				//check exclamation -> false
+//				exclamationNum = 0;
+//				exclamationFlg = false;
+//			}else if(exclamationFlg && (
+//					c == '}' || c == ']' ||
+//					(i < query.length() - 4 && Character.toLowerCase(c) == 'f' && Character.toLowerCase(query.charAt(i+1)) == 'r' && 
+//							Character.toLowerCase(query.charAt(i+2)) == 'o' && Character.toLowerCase(query.charAt(i+3)) == 'm') )){
+//				//replace:  ! }  ->  }  or  ! ]  ->  ]  or  ! FROM  ->  FROM
+//				query = query.substring(0,exclamationNum) +" "+ query.substring(i);
+//				exclamationFlg = false;
+//			}
 		}
 		
-		//20130915  for last '!'
-		// if query.endsWith '!' -> ''
-		if(query.endsWith("!"))	query = query.substring(0,query.length()-1);
+//		//20130915  for last '!'
+//		// if query.endsWith '!' -> ''
+//		if(query.endsWith("!"))	query = query.substring(0,query.length()-1);
 		
 		//check by one word and replace
 //		try{
@@ -452,38 +449,6 @@ public class SSQLparser {
 //			}
 //		}catch(Exception e){ }
 		
-		
-		//added by goto For "slideshow"
-		if(media.equals("mobile_html5") && query.contains("slideshow")){
-			// TODO: 1."sslideshow"���������������������������������������������������������������������������������������������.������������������������������������������������������������������������������������������������������������
-			
-			// 20130122
-			// ������������: replaceAll
-			// <������������������������������>
-			// 0������������������������������������������������������������.*
-			// 0���������������������������������\s*
-			// ( )������������������������������������������S1,���������$2������������������������������������������������������������������������������������������������������������������������������������������������������������������������������$0)
-
-			// "slideshow [" -> "[imagefile("
-			query = query.replaceAll("slideshow\\s*\\[", "\\[imagefile(");
-			// "[imagefile(*,path="*"*]" ->
-			// "[imagefile(*,path="*"*, type="slideshow")"
-			query = query.replaceAll("(\\[imagefile\\(.*,\\spath=\".*\".*)\\]",
-					"$1, type=\"slideshow\")");
-
-			if (query.matches(".*\\[imagefile\\(.*\\)\\s*\\@\\s*\\{.*\\}.*")) {
-				// @������������������
-				// "[imagefile(*) @ {*}" -> "[imagefile(*) @ {*} ]! "
-				query = query.replaceAll(
-								"\\[imagefile\\(.*\\)\\s*\\@\\s*\\{[a-zA-Z0-9=\\s,]*\\}",
-								"$0]! ");
-			} else {
-				// @������������
-				// "[imagefile(*) " -> "[imagefile(*)]! "
-				query = query.replaceAll("\\[imagefile\\(.*\\)", // "(\\[imagefile\\(.*\\)[\\s*|\\s*^\\@])",
-						"$0]! ");
-			}
-		}
 		//TODO masato
         //added by goto 20130422  For "!number, / ,number! / ,number!nuber, "
         //��������� ������������������}(���������������������������������)���������������0������������������������������������������������������������: [^\\}]*
@@ -509,10 +474,12 @@ public class SSQLparser {
 		query = query.replaceAll("\\]\\s*\\,\\s*([0-9]+)\\s*%\\s*@\\s*\\{([^\\}]*)", "],@{$2,column=$1,row=1");
     	query = query.replaceAll("\\]\\s*\\,\\s*([0-9]+)\\s*%", "],@{column=$1,row=1}");
     	
-
-//    	Log.i("	query = "+query);
+		while(query.contains(") ] }@{text}"))						//TODO
+			query = query.replace(") ] }@{text}", ") ]! }@{text}");	//TODO
+    	
+    	//Log.i("query = "+query);
 		return query;
-	}//End of replaceQuery_For_HTML_and_MobileHTML5
+	}
 
 	// to get SSQL file from Internet
 	private String getSSQLQuery2() {
@@ -966,9 +933,7 @@ public class SSQLparser {
 				tfe.append("]%");
 			}
 			
-			// changed by goto 20130122 For "slideshow"
-			if (!tfe.toString().contains("type=\"slideshow\""))
-				Log.info("[Parser:tfe] tfe = " + tfe);
+			Log.info("[Parser:tfe] tfe = " + tfe);
 
 			Preprocessor preprocessor = new Preprocessor(tfe.toString());
 			tfe = preprocessor.pushAggregate();
