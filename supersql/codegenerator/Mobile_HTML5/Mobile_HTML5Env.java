@@ -460,684 +460,779 @@ public class Mobile_HTML5Env extends LocalEnv {
 	        		Log.i("s: "+s+" expire_time:"+expire_time+" sender_name:"+sender_name+" admin_email:"+admin_email+" sessionVariable_UniqueName:"+sessionVariable_UniqueName);
 	        	}
 	        	String DBMS = GlobalEnv.getdbms();										//DBMS
+		    	String HOST = "", USER = "", PASSWD = "";
+		    	if(DBMS.equals("postgresql") || DBMS.equals("postgres")){
+		    		HOST = GlobalEnv.gethost();
+		    		USER = GlobalEnv.getusername();
+		    		PASSWD = GlobalEnv.getpassword();
+		    	}
 	        	//Log.i(c1str+c1+"   "+c2str+c2+"      "+c3+"   from:"+from+"   DB:"+DB+"	DBMS:"+DBMS);
 	        	
-	        	//sqlite3 php
-	        	if(DBMS.equals("sqlite") || DBMS.equals("sqlite3")){
-	        		if(s_val.equals("1") || s_val.equals("2")){
-		        		header.append("\n" +
-		        				"<!-- \"Login & Logout\" start -->\n" +
-		        				"<?php\n" +
-		        				"//最初にログイン中かどうか判定\n" +
-//		        				"if($_SESSION["+sessionVariable_UniqueName+"id] != \"\"){\n" +
-		        				"if(isset($_SESSION['"+sessionVariable_UniqueName+"id'])){\n" +
-		        				"?>\n" +
-		        				"	<script type=\"text/javascript\">\n" +
-		        				"	$(document).ready(function(){\n" +
-		        				"		$('#login1').attr('checked', 'checked');	//load時\n" +
-		        				"		$('#LOGINpanel1').hide();\n" +
-		        				"	});\n" +
-		        				"	</script>\n" +
-		        				"<?php\n" +
-		        				"	display_html();								//display_html\n" +
-		        				//ユーザ名
-		        				"	echo '<script type=\"text/javascript\">$(\\'#showValues\\').html(\\'<div style=\\\"text-align:right;color:gray;font-size:12;background-color:whitesmoke;\\\">ログイン日時: '.$_SESSION['"+sessionVariable_UniqueName+"logintime'].'<br>ようこそ '.$_SESSION['"+sessionVariable_UniqueName+"id'].'さん</div>\\');</script>';\n" +
-		        				"}else{\n" +
-		        				"?>\n" +
-		        				"	<script type=\"text/javascript\">\n" +
-		        				"	$(document).ready(function(){\n" +
-		        				"		$('#LOGOUTpanel1').hide();\n" +
-		        				"	});\n" +
-		        				"	</script>\n" +
-		        				"<?php\n" +
-		        				"}\n" +
-		        				"?>\n" +
-		        				"\n" +
-		        				"<!-- Login & Registration start -->\n" +
-		        				"<!-- Login Panel start -->\n" +
-		        				"<br>\n" +
-		        				//"<div id=\"LOGINpanel1\" style=\"background-color:black; width:100%;\" data-role=\"none\">\n" +
-		        				//"<div id=\"LOGINpanel1\" style=\"background-color:whitesmoke; border-radius:20px; border:5px gray solid;\" data-role=\"none\">\n" +
-		        				"<div id=\"LOGINpanel1\" style=\"background-color:whitesmoke; border-radius:10px; border:3px gray solid;\" data-role=\"none\">\n" +
-		        				//"<div style=\"color:lightgray; font-size:30; background-color:black; border-radius:15px 15px 0px 0px;\" id=\"loginTitle1\">Log in</div>\n" +
-		        				"<div style=\"color:lightgray; font-size:30; background-color:black; border-radius:5px 5px 0px 0px;\" id=\"loginTitle1\">Log in</div>\n" +
-		        				"<br>\n" +
-		        				"<form method=\"post\" action=\"\" target=\"login_ifr1\">\n" +
-		        				"<div>\n" +
-		        				"	<div style=\"font-size:20;\">"+c1str+"&nbsp;&nbsp;</div>\n" +
-		        				"	<input type=\"text\" name=\"id\" data-mini=\"true\">\n");
-		        		
-	    				if(!s_val.equals("1"))
-		        			header.append(
-		        				"	<fieldset data-role=\"controlgroup\" data-type=\"horizontal\" data-mini=\"true\">\n" +
-		        				"		<input type=\"radio\" name=\"choose\" id=\"login1\" value=\"login1\" checked=\"checked\">\n" +
-		        				"	    <label for=\"login1\">I have an account</label>\n" +
-		        				"		<input type=\"radio\" name=\"choose\" id=\"signup1\">\n" +
-		        				"		<label for=\"signup1\"> I am new!</label>\n" +
-		        				"	</fieldset>\n");
-	    				
-	    				header.append(
-		        				"</div>\n" +
-		        				"<div id=\"login_block\">\n" +
-		        				"	<div style=\"font-size:20;\">"+c2str+":&nbsp;&nbsp;&nbsp;</div>\n" +
-		        				"	<input type=\"password\" name=\"password\" id=\"password\" data-mini=\"true\">\n" +
-		        				"	<input type=\"submit\" value=\" Login \" name=\"sqlite3_login1\" id=\"sqlite3_login1\" data-mini=\"false\" data-inline=\"false\">\n" +
-		        				"</div>\n");
-		        				
-		        		if(!s_val.equals("1"))
-		        			header.append(
-		        				"<div id=\"signup_block\" style=\"display:none\" data-role=\"none\">\n" +
-		        				"	<div style=\"font-size:20;\">Choose "+c2str+":&nbsp;&nbsp;</div>\n" +
-		        				"	<input type=\"password\" name=\"newpassword\" id=\"newpassword\" data-mini=\"true\">\n" +
-		        				"	<div style=\"font-size:20;\">Reinput "+c2str+":&nbsp;&nbsp;</div>\n" +
-		        				"	<input type=\"password\" name=\"re_newpassword\" id=\"re_newpassword\" data-mini=\"true\">\n" +
-		        				"	<input type=\"submit\" value=\" Signup \" name=\"sqlite3_login1\" id=\"sqlite3_login1\" data-mini=\"false\" data-inline=\"false\">\n" +
-		        				"</div>\n");
-		        		
+	        	//php
+        		if(s_val.equals("1") || s_val.equals("2")){
+	        		header.append("\n" +
+	        				"<!-- \"Login & Logout\" start -->\n" +
+	        				"<?php\n" +
+	        				"//最初にログイン中かどうか判定\n" +
+	        				"if(isset($_SESSION['"+sessionVariable_UniqueName+"id'])){\n" +
+	        				"?>\n" +
+	        				"	<script type=\"text/javascript\">\n" +
+	        				"	$(document).ready(function(){\n" +
+	        				"		$('#login1').attr('checked', 'checked');	//load時\n" +
+	        				"		$('#LOGINpanel1').hide();\n" +
+	        				"	});\n" +
+	        				"	</script>\n" +
+	        				"<?php\n" +
+	        				"	display_html();								//display_html\n" +
+	        				//ユーザ名
+	        				"	echo '<script type=\"text/javascript\">$(\\'#showValues\\').html(\\'<div style=\\\"text-align:right;color:gray;font-size:12;background-color:whitesmoke;\\\">ログイン日時: '.$_SESSION['"+sessionVariable_UniqueName+"logintime'].'<br>ようこそ '.$_SESSION['"+sessionVariable_UniqueName+"id'].'さん</div>\\');</script>';\n" +
+	        				"}else{\n" +
+	        				"?>\n" +
+	        				"	<script type=\"text/javascript\">\n" +
+	        				"	$(document).ready(function(){\n" +
+	        				"		$('#LOGOUTpanel1').hide();\n" +
+	        				"	});\n" +
+	        				"	</script>\n" +
+	        				"<?php\n" +
+	        				"}\n" +
+	        				"?>\n" +
+	        				"\n" +
+	        				"<!-- Login & Registration start -->\n" +
+	        				"<!-- Login Panel start -->\n" +
+	        				"<br>\n" +
+	        				//"<div id=\"LOGINpanel1\" style=\"background-color:black; width:100%;\" data-role=\"none\">\n" +
+	        				//"<div id=\"LOGINpanel1\" style=\"background-color:whitesmoke; border-radius:20px; border:5px gray solid;\" data-role=\"none\">\n" +
+	        				"<div id=\"LOGINpanel1\" style=\"background-color:whitesmoke; border-radius:10px; border:3px gray solid;\" data-role=\"none\">\n" +
+	        				//"<div style=\"color:lightgray; font-size:30; background-color:black; border-radius:15px 15px 0px 0px;\" id=\"loginTitle1\">Log in</div>\n" +
+	        				"<div style=\"color:lightgray; font-size:30; background-color:black; border-radius:5px 5px 0px 0px;\" id=\"loginTitle1\">Log in</div>\n" +
+	        				"<br>\n" +
+	        				"<form method=\"post\" action=\"\" target=\"login_ifr1\">\n" +
+	        				"<div>\n" +
+	        				"	<div style=\"font-size:20;\">"+c1str+"&nbsp;&nbsp;</div>\n" +
+	        				"	<input type=\"text\" name=\"id\" data-mini=\"true\">\n");
+	        		
+    				if(!s_val.equals("1"))
+	        			header.append(
+	        				"	<fieldset data-role=\"controlgroup\" data-type=\"horizontal\" data-mini=\"true\">\n" +
+	        				"		<input type=\"radio\" name=\"choose\" id=\"login1\" value=\"login1\" checked=\"checked\">\n" +
+	        				"	    <label for=\"login1\">I have an account</label>\n" +
+	        				"		<input type=\"radio\" name=\"choose\" id=\"signup1\">\n" +
+	        				"		<label for=\"signup1\"> I am new!</label>\n" +
+	        				"	</fieldset>\n");
+    				
+    				header.append(
+	        				"</div>\n" +
+	        				"<div id=\"login_block\">\n" +
+	        				"	<div style=\"font-size:20;\">"+c2str+":&nbsp;&nbsp;&nbsp;</div>\n" +
+	        				"	<input type=\"password\" name=\"password\" id=\"password\" data-mini=\"true\">\n" +
+	        				"	<input type=\"submit\" value=\" Login \" name=\"ssql_login1\" id=\"ssql_login1\" data-mini=\"false\" data-inline=\"false\">\n" +
+	        				"</div>\n");
+	        				
+	        		if(!s_val.equals("1"))
+	        			header.append(
+	        				"<div id=\"signup_block\" style=\"display:none\" data-role=\"none\">\n" +
+	        				"	<div style=\"font-size:20;\">Choose "+c2str+":&nbsp;&nbsp;</div>\n" +
+	        				"	<input type=\"password\" name=\"newpassword\" id=\"newpassword\" data-mini=\"true\">\n" +
+	        				"	<div style=\"font-size:20;\">Reinput "+c2str+":&nbsp;&nbsp;</div>\n" +
+	        				"	<input type=\"password\" name=\"re_newpassword\" id=\"re_newpassword\" data-mini=\"true\">\n" +
+	        				"	<input type=\"submit\" value=\" Signup \" name=\"ssql_login1\" id=\"ssql_login1\" data-mini=\"false\" data-inline=\"false\">\n" +
+	        				"</div>\n");
+	        		
+	        		header.append(
+	        				"</form>\n" +
+	        				"\n" +
+	        				"<iframe name=\"login_ifr1\" style=\"display:none;\"></iframe>\n" +
+	        				"<p id=\"Login_text1\"  data-role=\"none\"><!-- ここに表示 --></p>\n" +
+	        				"<br>\n" +
+	        				"</div>\n" +
+	        				"<!-- Login Panel end -->\n" +
+	        				"\n" +
+	        				"<?php\n" +
+	        				"//Login or Registration\n" +
+	        				"if(isset($_POST['ssql_login1'])){\n" +
+	        				"	//ユーザ定義\n" +
+	        				((DBMS.equals("sqlite") || DBMS.equals("sqlite3"))? ("    $sqlite3_DB = '"+DB+"';\n"):"") +
+	        				"	$ssql_id = '"+c1+"';\n" +
+	        				"	$ssql_pw = '"+c2+"';\n" +
+	        				"	$ssql_c3 = '"+((!c3.equals(""))?(","+c3):("") )+"';\n" +
+	        				"	$ssql_table = \""+from+"\";\n" +
+	        				"\n" +
+	        				"	$id = checkHTMLsc($_POST['id']);\n" +
+	        				"	$pw = checkHTMLsc($_POST['password']);\n" +
+	        				"	$newpw = checkHTMLsc($_POST['newpassword']);\n" +
+	        				"	$re_newpw = checkHTMLsc($_POST['re_newpassword']);\n" +
+	        				"\n" +
+	        				"	if($pw && $id){\n" +
+	        				"		//Login\n");
+	        		if(DBMS.equals("sqlite") || DBMS.equals("sqlite3")){
 		        		header.append(
-		        				"</form>\n" +
-		        				"\n" +
-		        				"<iframe name=\"login_ifr1\" style=\"display:none;\"></iframe>\n" +
-		        				"<p id=\"Login_text1\"  data-role=\"none\"><!-- ここに表示 --></p>\n" +
-		        				"<br>\n" +
-		        				"</div>\n" +
-		        				"<!-- Login Panel end -->\n" +
-		        				"\n" +
-		        				"<?php\n" +
-		        				"//Login or Registration\n" +
-//		        				"if($_POST['sqlite3_login1']){\n" +
-		        				"if(isset($_POST['sqlite3_login1'])){\n" +
-		        				"	//ユーザ定義\n" +
-		        				"	$sqlite3_DB = '"+DB+"';\n" +
-		        				"	$sqlite3_id = '"+c1+"';\n" +
-		        				"	$sqlite3_pw = '"+c2+"';\n" +
-		        				"	$sqlite3_c3 = '"+((!c3.equals(""))?(","+c3):("") )+"';\n" +
-		        				"	$sqlite3_table = \""+from+"\";\n" +
-		        				"\n" +
-		        				"	$id = checkHTMLsc($_POST['id']);\n" +
-		        				"	$pw = checkHTMLsc($_POST['password']);\n" +
-		        				"	$newpw = checkHTMLsc($_POST['newpassword']);\n" +
-		        				"	$re_newpw = checkHTMLsc($_POST['re_newpassword']);\n" +
-		        				"\n" +
-		        				"	if($pw && $id){\n" +
-		        				"		//Login\n" +
 		        				"		$db = new SQLite3($sqlite3_DB);\n" +
-		        				"		$sql = \"SELECT \".$sqlite3_id.\",\".$sqlite3_pw.\"\".$sqlite3_c3.\" FROM \".$sqlite3_table.\" WHERE \".$sqlite3_id.\"='\".$id.\"' and \".$sqlite3_pw.\"='\".$pw.\"'\""+fromWhere+";\n" +
+		        				"		$sql = \"SELECT \".$ssql_id.\",\".$ssql_pw.\"\".$ssql_c3.\" FROM \".$ssql_table.\" WHERE \".$ssql_id.\"='\".$id.\"' and \".$ssql_pw.\"='\".$pw.\"'\""+fromWhere+";\n" +
 		        				"	    $result = $db->query($sql);\n" +
 		        				"	    $i = 0;\n" +
-		        				//"	    while($res = $result->fetchArray(SQLITE3_ASSOC)){\n" +
 		        				"	    while($res = $result->fetchArray()){\n");
-//		        				"	          $_SESSION[name] = $res[2];\n" +
-						if(!c3.equals("")){
-			        		for(int i=0; i<c3_array_num; i++){
-								//c3_array[i];
-								header.append(
-				        				"	          $_SESSION['"+c3_array[i]+"'] = $res["+(i+2)+"];\n");
-							}
+					} else if(DBMS.equals("postgresql") || DBMS.equals("postgres")){
+		        		header.append(
+		        				"		$db = pg_connect (\"host="+HOST+" dbname="+DB+" user="+USER+""+(!PASSWD.isEmpty()? (" password="+PASSWD):"")+"\");\n" +
+		        				"		$sql = \"SELECT \".$ssql_id.\",\".$ssql_pw.\"\".$ssql_c3.\" FROM \".$ssql_table.\" WHERE \".$ssql_id.\"=$1 and \".$ssql_pw.\"=$2\""+fromWhere+";\n" +
+		        				"		$result = pg_prepare($db, \"ssql_login0\", $sql);\n" +
+			    				"		$result = pg_execute($db, \"ssql_login0\", array($id,$pw));\n" +
+		        				"	    $i = 0;\n" +
+					        	"	    while($res = pg_fetch_row($result)){\n");
+					}
+					if(!c3.equals("")){
+		        		for(int i=0; i<c3_array_num; i++){
+							//c3_array[i];
+							header.append(
+			        				"	          $_SESSION['"+c3_array[i]+"'] = $res["+(i+2)+"];\n");
 						}
+					}
+					header.append(
+	        				"	          $i++;\n" +
+	        				"	          if($i==1)	break;\n" +
+	        				"	    }\n" +
+	        				"	    if($i == 0)	p('<font color=#ff0000>Login failed.</font>');	//Login failed.\n" +
+	        				"	    else{\n" +
+	        				"	    	//Login success.\n" +
+	        				"	    	$_SESSION['"+sessionVariable_UniqueName+"id'] = $id;\n" +
+	        				"	    	$_SESSION['"+sessionVariable_UniqueName+"logintime'] = date('Y/m/d(D) H:i:s', time());\n" +		//ユーザ名
+	        				"			echo '<script type=\"text/javascript\">window.parent.$(\\'#Login_text1\\').text(\"\");</script>';\n" +
+	        				"			echo '<script type=\"text/javascript\">window.parent.location.reload(true);</script>';	//reload\n" +
+	        				"	    }\n" +
+	        				"	}else if($newpw && $re_newpw && $id){\n" +
+	        				"		//check (pw==re_pw)?\n" +
+	        				"		if($newpw != $re_newpw){\n" +
+	        				"			p('<font color=#ff0000>Please input the same "+c2str+".</font>');	//PW is not equal\n" +
+	        				"		}else{\n" +
+	        				
+	        				"			//check & registration\n");
+					if(DBMS.equals("sqlite") || DBMS.equals("sqlite3")){
 						header.append(
-		        				"	          $i++;\n" +
-		        				"	          if($i==1)	break;\n" +
-		        				"	    }\n" +
-		        				"	    if($i == 0)	p('<font color=#ff0000>Login failed.</font>');	//Login failed.\n" +
-		        				"	    else{\n" +
-		        				"	    	//Login success.\n" +
-		        				"	    	$_SESSION['"+sessionVariable_UniqueName+"id'] = $id;\n" +
-		        				"	    	$_SESSION['"+sessionVariable_UniqueName+"logintime'] = date('Y/m/d(D) H:i:s', time());\n" +		//ユーザ名
-		        				"			echo '<script type=\"text/javascript\">window.parent.$(\\'#Login_text1\\').text(\"\");</script>';\n" +
-		        				"			echo '<script type=\"text/javascript\">window.parent.location.reload(true);</script>';	//reload\n" +
-		        				"	    }\n" +
-		        				"	}else if($newpw && $re_newpw && $id){\n" +
-		        				"		//check (pw==re_pw)?\n" +
-		        				"		if($newpw != $re_newpw){\n" +
-		        				"			p('<font color=#ff0000>Please input the same "+c2str+".</font>');	//PW is not equal\n" +
-		        				"		}else{\n" +
-		        				
-		        				"			//check & registration\n" +
 		        				"			$db = new SQLite3($sqlite3_DB);\n" +
 		        				"			\n" +
 		        				"			//check\n" +
-		        				"			$sql1 = \"SELECT \".$sqlite3_id.\" FROM \".$sqlite3_table.\" where \".$sqlite3_id.\"='\".$id.\"'\""+fromWhere+";\n" +
+		        				"			$sql1 = \"SELECT \".$ssql_id.\" FROM \".$ssql_table.\" where \".$ssql_id.\"='\".$id.\"'\""+fromWhere+";\n" +
 		        				"		    $result1 = $db->query($sql1);\n" +
 		        				"		    $i=0;\n" +
-		        				"		    while($res = $result1->fetchArray(SQLITE3_ASSOC)){\n" +
-		        				"	   	       $i++;\n" +
-		        				"	   	       if($i==1)	break;\n" +
-		        				"		    }\n" +
-		        				"		    if($i > 0)	p('<font color=#ff0000>\\\''.$id.'\\\' has been already registered.</font>');	//already registered.\n" +
-		        				"		    else{\n" +
-		        				"	   	       //registration\n" +
-		        				"	   	       $sql2 = \"INSERT INTO \".$sqlite3_table.\" (\".$sqlite3_id.\", \".$sqlite3_pw.\""+fromWhere_left+") VALUES ('\".$id.\"','\".$newpw.\"'"+fromWhere_right+")\";\n" +
+		        				"		    while($res = $result1->fetchArray(SQLITE3_ASSOC)){\n");
+					} else if(DBMS.equals("postgresql") || DBMS.equals("postgres")){
+						header.append(
+		        				"			$db = pg_connect (\"host="+HOST+" dbname="+DB+" user="+USER+""+(!PASSWD.isEmpty()? (" password="+PASSWD):"")+"\");\n" +
+		        				"			\n" +
+		        				"			//check\n" +
+		        				"			$sql1 = \"SELECT \".$ssql_id.\" FROM \".$ssql_table.\" where \".$ssql_id.\"=$1\""+fromWhere+";\n" +
+		        				"			$result1 = pg_prepare($db, \"ssql_login1\", $sql1);\n" +
+			    				"			$result1 = pg_execute($db, \"ssql_login1\", array($id));\n" +
+		        				"	    	$i = 0;\n" +
+					        	"	    	while($res = pg_fetch_assoc($result1)){\n");
+					}
+					header.append(
+	        				"	   	       $i++;\n" +
+	        				"	   	       if($i==1)	break;\n" +
+	        				"		    }\n" +
+	        				"		    if($i > 0)	p('<font color=#ff0000>\\\''.$id.'\\\' has been already registered.</font>');	//already registered.\n" +
+	        				"		    else{\n" +
+	        				"	   	       //registration\n");
+					if(DBMS.equals("sqlite") || DBMS.equals("sqlite3")){
+						header.append(
+	        				"	   	       $sql2 = \"INSERT INTO \".$ssql_table.\" (\".$ssql_id.\", \".$ssql_pw.\""+fromWhere_left+") VALUES ('\".$id.\"','\".$newpw.\"'"+fromWhere_right+")\";\n" +
+	        				"	   	       try{\n" +
+	        				"					$result2 = $db->exec($sql2);\n");
+					} else if(DBMS.equals("postgresql") || DBMS.equals("postgres")){
+						header.append(
+		        				"	   	       $sql2 = \"INSERT INTO \".$ssql_table.\" (\".$ssql_id.\", \".$ssql_pw.\""+fromWhere_left+") VALUES ($1, $2"+fromWhere_right+")\";\n" +
 		        				"	   	       try{\n" +
-		        				"					$result2 = $db->exec($sql2);\n" +
-		        				"					p('<font color=gold>Registration Success!!</font>');\n" +
-		        				"	   	       }catch(Exception $e){\n" +
-		        				"					p('<font color=#ff0000>Registration failed.</font>'.$e->getMessage());\n" +
-		        				"	   	       }\n" +
-		        				"		    }\n" +
-		        				
-		        				"		}\n" +
-		        				"	}else{\n" +
-		        				"		p('<font color=#ff0000>Please input form.</font>');\n" +
-		        				"	}\n" +
-		        				"	unset($db);\n" +
-		        				"}\n" +
-		        				"function p($str){\n" +
-		        				"	//親ウインドウのJavaScript関数（テキストエリアへ書き込み）を呼び出す\n" +
-		        				"	echo '<script type=\"text/javascript\">window.parent.Login_echo1(\"'.$str.'\");</script>';\n" +
-		        				"}\n" +
-		        				"?>\n" +
-		        				"\n" +
-		        				"<script type=\"text/javascript\">\n");
-		        		
-	    				if(!s_val.equals("1"))
-		        			header.append(
-		        				"$(document).ready(function(){\n" +
-		        				"	//アカウントあり or 新規登録 クリック時の処理\n" +
-		        				"	$('#signup1').click(function(){\n" +
-		        				"		$('#loginTitle1').text('Sign up');\n" +
-		        				"		$('#password').val('');\n" +
-		        				"		$('#login_block').hide();\n" +
-		        				"		$('#signup_block').show();\n" +
-		        				"		Login_echo1(\"\");\n" +
-		        				"	});\n" +
-		        				"	$('#login1').click(function(){\n" +
-		        				"		$('#loginTitle1').text('Log in');\n" +
-		        				"		$('#newpassword').val('');\n" +
-		        				"		$('#re_newpassword').val('');\n" +
-		        				"		$('#signup_block').hide();\n" +
-		        				"		$('#login_block').show();\n" +
-		        				"		Login_echo1(\"\");\n" +
-		        				"	});\n" +
-		        				"});\n" +
-		        				"\n");
-	    				
-	    				header.append(
-		        				"//テキストエリアへ書き込み\n" +
-		        				"function Login_echo1(str){\n" +
-		        				"  var textArea = document.getElementById(\"Login_text1\");\n" +
-		        				"  textArea.innerHTML = \"<h2>\" + str + \"</h2>\";\n" +
-		        				"}\n" +
-		        				"</script>\n" +
-		        				"<!-- Login & Registration end -->\n" +
-		        				"\n" +
-		        				"\n");
-	    				
-	        		}else{	//s_val:3（E-mail登録）
+		        				"					$result2 = pg_prepare($db, \"ssql_login2\", $sql2);\n" +
+			    				"					$result2 = pg_execute($db, \"ssql_login2\", array($id,$newpw));\n");
+					}
+					header.append(
+	        				"					p('<font color=gold>Registration Success!!</font>');\n" +
+	        				"	   	       }catch(Exception $e){\n" +
+	        				"					p('<font color=#ff0000>Registration failed.</font>'.$e->getMessage());\n" +
+	        				"	   	       }\n" +
+	        				"		    }\n" +
+	        				
+	        				"		}\n" +
+	        				"	}else{\n" +
+	        				"		p('<font color=#ff0000>Please input form.</font>');\n" +
+	        				"	}\n" +
+	        				((DBMS.equals("sqlite") || DBMS.equals("sqlite3"))?      ("	unset($db);\n"):"") +
+	        				((DBMS.equals("postgresql") || DBMS.equals("postgres"))? ("	pg_close($db);\n"):"") +
+	        				"}\n" +
+	        				"function p($str){\n" +
+	        				"	//親ウインドウのJavaScript関数（テキストエリアへ書き込み）を呼び出す\n" +
+	        				"	echo '<script type=\"text/javascript\">window.parent.Login_echo1(\"'.$str.'\");</script>';\n" +
+	        				"}\n" +
+	        				"?>\n" +
+	        				"\n" +
+	        				"<script type=\"text/javascript\">\n");
+	        		
+    				if(!s_val.equals("1"))
 	        			header.append(
-	        					"<!-- \"Login & Logout\" start -->\n" +
-    							"<?php\n" +
-    							"    //定義\n" +
-    							"    $tokendir = dirname( __FILE__ ).DIRECTORY_SEPARATOR.\"token\".DIRECTORY_SEPARATOR;\n" +
-    							"    $email = \"\";\n" +
-    							"    $expire_time = "+expire_time+"*60;						//分\n" +
-    							"    $sender_name = \""+sender_name+"\";                    //送信者名\n" +
-    							"    $admin_email = \""+admin_email+"\";	//本当は、管理者メールアドレスはconfig.phpのMAILTO_MASTERを利用した方が良い\n" +
-    							"    \n" +
-    							"    $success_page = \"http://\".$_SERVER[\"HTTP_HOST\"].$_SERVER[\"REQUEST_URI\"];	//ログインページ\n" +
-    							"    $pos = strpos($success_page, '?');		//?以下をカット\n" +
-    							"	if($pos !== false)	$success_page = substr($success_page, 0, $pos); \n" +
-    							"    $resistration_page = $success_page;											//もう一度こちらから\n" +
-    							"    \n" +
-    							"    mb_language(\"ja\");				//カレントの言語を日本語に設定する\n" +
-    							"    mb_internal_encoding(\"UTF-8\");	//内部文字エンコードを設定する\n" +
-    							"?>\n" +
-    							"\n" +
-    							"<?php\n" +
-    							"//最初にログイン中かどうか判定\n" +
-    							"if(isset($_SESSION['"+sessionVariable_UniqueName+"id'])){\n" +
-    							"?>\n" +
-    							"	<script type=\"text/javascript\">\n" +
-    							"	$(document).ready(function(){\n" +
-    							"		$('#login1').attr('checked', 'checked');	//load時\n" +
-    							"		$('#LOGINpanel1').hide();\n" +
-    							"	});\n" +
-    							"	</script>\n" +
-    							"<?php\n" +
-    							"	display_html();								//display_html\n" +
-    							"}else{\n" +
-    							"?>\n" +
-    							"	<script type=\"text/javascript\">\n" +
-    							"	$(document).ready(function(){\n" +
-    							"		$('#LOGOUTpanel1').hide();\n" +
-    							"	});\n" +
-    							"	</script>\n" +
-    							"<?php\n" +
-    							"}\n" +
-    							"?>\n" +
-    							"\n" +
-    							"<div id=\"message\"  data-role=\"none\"><!-- ここに表示 --></div>\n" +
-    							"\n" +
-    							"<script type=\"text/javascript\">\n" +
-    							"$(document).ready(function(){\n" +
-    							"<?php\n" +
-    							"    if(isset($_GET[\"key\"])){\n" +
-    							"        if(delete_old_token($_GET[\"key\"])){\n" +
-    							"            global $email,$success_page;\n" +
-    							"           \n" +
-    							"            if(mail_to_success($email)){//ユーザーにメール\n" +
-    							"            	mail_to_master($email); //管理者にメール\n" +
-    							"?>\n" +
-    							"            	$(\"#message\").html(\"<br><div>登録完了メールを送信しました。<a href=\\\"<?php echo $success_page; ?>\\\" target=\\\"_self\\\"><br>ログインページ</a>へ</div>\");\n" +
-    							"            	$(\"#LOGINpanel1\").hide();\n" +
-    							"<?php\n" +
-    							"			}\n" +
-    							"        }else{\n" +
-    							"            //document.write(\"もう一度初めからやり直してください。\");\n" +
-    							"?>\n" +
-    							"            $(\"#message\").html(\"<br><div>もう一度<a href=\\\"<?php echo $resistration_page; ?>\\\" target=\\\"_self\\\">こちら</a>からやり直してください。</div>\");\n" +
-    							"            $(\"#LOGINpanel1\").hide();\n" +
-    							"<?php\n" +
-    							"        }\n" +
-    							"    }\n" +
-    							"?>\n" +
-    							"});\n" +
-    							"</script>\n" +
-    							"\n" +
-    							"<!-- Login & Registration start -->\n" +
-    							"<!-- Login Panel start -->\n" +
-    							"<div id=\"LOGINpanel1\">\n" +
-    							"	<br>\n" +
-    							"	<div style=\"text-align:right; margin-right:20px; font-size:18px;\">\n" +
-    							"		<span id=\"login1\"><span style=\"font-weight:bold;\">ログイン</span></span>\n" +
-    							"		<span id=\"signup1\"><a href=\"\">新規登録</a></span>\n" +
-    							"		<!--<fieldset data-role=\"controlgroup\" data-type=\"horizontal\" data-mini=\"true\" data-role=\"none\">\n" +
-    							"			<input type=\"radio\" name=\"choose\" id=\"login1\" value=\"login1\" checked=\"checked\">\n" +
-    							"		    <label for=\"login1\">I have an account</label>\n" +
-    							"			<input type=\"radio\" name=\"choose\" id=\"signup1\">\n" +
-    							"			<label for=\"signup1\"> I am new!</label>\n" +
-    							"		</fieldset>-->\n" +
-    							"	</div>\n" +
-    							"	<div style=\"background-color:whitesmoke; width:97%;  border-radius:20px; border:5px gray solid;\" data-role=\"none\">\n" +
-    							"		<div style=\"color:lightgray; font-size:30; background-color:black; border-radius:15px 15px 0px 0px;\" id=\"loginTitle1\">ログイン</div>\n" +
-    							"		<br><br>\n" +
-    							"		\n" +
-    							"		<form method=\"post\" action=\"\" target=\"login_ifr1\">\n" +
-    							"			<div id=\"login_block\">\n" +
-    							"				<div style=\"font-size:20;\">"+c1str+"&nbsp;&nbsp;</div>\n" +
-    							"				<input type=\"text\" name=\"id\" data-mini=\"true\">	\n" +
-    							"				<div style=\"font-size:20;\">"+c2str+":&nbsp;&nbsp;&nbsp;</div>\n" +
-    							"				<input type=\"password\" name=\"password\" id=\"password\" data-mini=\"true\">\n" +
-    							"				<input type=\"submit\" value=\" Login \" name=\"sqlite3_login1\" id=\"sqlite3_login1\" data-mini=\"false\" data-inline=\"false\">\n" +
-    							"			</div>\n" +
-    							"			<div id=\"signup_block\" style=\"display:none\" data-role=\"none\">\n" +
-    							"			    <div style=\"font-size:20;\">"+c1str+"&nbsp;&nbsp;</div>\n" +
-    							"			    <input type=\"text\" name=\"mail1\" id=\"mail1\" data-mini=\"true\">\n" +
-    							"			    <input type=\"submit\" value=\" Send \" name=\"mail\" id=\"mail\" data-mini=\"false\" data-inline=\"false\">\n" +
-    							"			</div>\n" +
-    							"		</form>\n" +
-    							"		\n" +
-    							"		<iframe name=\"login_ifr1\" style=\"display:none;\"></iframe>\n" +
-    							"		<div id=\"Login_text1\"  data-role=\"none\"><!-- ここに表示 --></div>\n" +
-    							"		<br>\n" +
-    							"	</div>\n" +
-    							"</div>\n" +
-    							"\n" +
-    							"<form method=\"post\" action=\"\" target=\"reset_ifr1\" id=\"RESETpanel1\" name=\"RESETpanel1\">\n" +
-    							"<input type=\"hidden\" name=\"sqlite3_reset1\" value=\"\">\n" +
-    							"</form>\n" +
-    							"<iframe name=\"reset_ifr1\" style=\"display:none;\"></iframe>\n" +
-    							"<!-- Login Panel end -->\n" +
-    							"\n" +
-    							"<?php\n" +
-    							"	//ログイン処理\n" +
-//    							"	if($_POST['sqlite3_login1']){\n" +
-    							"	if(isset($_POST['sqlite3_login1'])){\n" +
-    							"		//ユーザ定義\n" +
-    							"		$sqlite3_DB = '"+DB+"';\n" +
-    							"		$sqlite3_id = '"+c1+"';\n" +
-    							"		$sqlite3_pw = '"+c2+"';\n" +
-    							"		$sqlite3_table = \""+from+"\";\n" +
-    							"	\n" +
-    							"		$id = checkHTMLsc($_POST['id']);\n" +
-    							"		$pw = checkHTMLsc($_POST['password']);\n" +
-    							"	\n" +
-    							"		if($pw && $id){\n" +
+	        				"$(document).ready(function(){\n" +
+	        				"	//アカウントあり or 新規登録 クリック時の処理\n" +
+	        				"	$('#signup1').click(function(){\n" +
+	        				"		$('#loginTitle1').text('Sign up');\n" +
+	        				"		$('#password').val('');\n" +
+	        				"		$('#login_block').hide();\n" +
+	        				"		$('#signup_block').show();\n" +
+	        				"		Login_echo1(\"\");\n" +
+	        				"	});\n" +
+	        				"	$('#login1').click(function(){\n" +
+	        				"		$('#loginTitle1').text('Log in');\n" +
+	        				"		$('#newpassword').val('');\n" +
+	        				"		$('#re_newpassword').val('');\n" +
+	        				"		$('#signup_block').hide();\n" +
+	        				"		$('#login_block').show();\n" +
+	        				"		Login_echo1(\"\");\n" +
+	        				"	});\n" +
+	        				"});\n" +
+	        				"\n");
+    				
+    				header.append(
+	        				"//テキストエリアへ書き込み\n" +
+	        				"function Login_echo1(str){\n" +
+	        				"  var textArea = document.getElementById(\"Login_text1\");\n" +
+	        				"  textArea.innerHTML = \"<h2>\" + str + \"</h2>\";\n" +
+	        				"}\n" +
+	        				"</script>\n" +
+	        				"<!-- Login & Registration end -->\n" +
+	        				"\n" +
+	        				"\n");
+    				
+        		}else{	//s_val:3（E-mail登録）
+        			header.append(
+        					"<!-- \"Login & Logout\" start -->\n" +
+							"<?php\n" +
+							"    //定義\n" +
+							"    $tokendir = dirname( __FILE__ ).DIRECTORY_SEPARATOR.\"token\".DIRECTORY_SEPARATOR;\n" +
+							"    $email = \"\";\n" +
+							"    $expire_time = "+expire_time+"*60;						//分\n" +
+							"    $sender_name = \""+sender_name+"\";                    //送信者名\n" +
+							"    $admin_email = \""+admin_email+"\";	//本当は、管理者メールアドレスはconfig.phpのMAILTO_MASTERを利用した方が良い\n" +
+							"    \n" +
+							"    $success_page = \"http://\".$_SERVER[\"HTTP_HOST\"].$_SERVER[\"REQUEST_URI\"];	//ログインページ\n" +
+							"    $pos = strpos($success_page, '?');		//?以下をカット\n" +
+							"	if($pos !== false)	$success_page = substr($success_page, 0, $pos); \n" +
+							"    $resistration_page = $success_page;											//もう一度こちらから\n" +
+							"    \n" +
+							"    mb_language(\"ja\");				//カレントの言語を日本語に設定する\n" +
+							"    mb_internal_encoding(\"UTF-8\");	//内部文字エンコードを設定する\n" +
+							"?>\n" +
+							"\n" +
+							"<?php\n" +
+							"//最初にログイン中かどうか判定\n" +
+							"if(isset($_SESSION['"+sessionVariable_UniqueName+"id'])){\n" +
+							"?>\n" +
+							"	<script type=\"text/javascript\">\n" +
+							"	$(document).ready(function(){\n" +
+							"		$('#login1').attr('checked', 'checked');	//load時\n" +
+							"		$('#LOGINpanel1').hide();\n" +
+							"	});\n" +
+							"	</script>\n" +
+							"<?php\n" +
+							"	display_html();								//display_html\n" +
+							"}else{\n" +
+							"?>\n" +
+							"	<script type=\"text/javascript\">\n" +
+							"	$(document).ready(function(){\n" +
+							"		$('#LOGOUTpanel1').hide();\n" +
+							"	});\n" +
+							"	</script>\n" +
+							"<?php\n" +
+							"}\n" +
+							"?>\n" +
+							"\n" +
+							"<div id=\"message\"  data-role=\"none\"><!-- ここに表示 --></div>\n" +
+							"\n" +
+							"<script type=\"text/javascript\">\n" +
+							"$(document).ready(function(){\n" +
+							"<?php\n" +
+							"    if(isset($_GET[\"key\"])){\n" +
+							"        if(delete_old_token($_GET[\"key\"])){\n" +
+							"            global $email,$success_page;\n" +
+							"           \n" +
+							"            if(mail_to_success($email)){//ユーザーにメール\n" +
+							"            	mail_to_master($email); //管理者にメール\n" +
+							"?>\n" +
+							"            	$(\"#message\").html(\"<br><div>登録完了メールを送信しました。<a href=\\\"<?php echo $success_page; ?>\\\" target=\\\"_self\\\"><br>ログインページ</a>へ</div>\");\n" +
+							"            	$(\"#LOGINpanel1\").hide();\n" +
+							"<?php\n" +
+							"			}\n" +
+							"        }else{\n" +
+							"            //document.write(\"もう一度初めからやり直してください。\");\n" +
+							"?>\n" +
+							"            $(\"#message\").html(\"<br><div>もう一度<a href=\\\"<?php echo $resistration_page; ?>\\\" target=\\\"_self\\\">こちら</a>からやり直してください。</div>\");\n" +
+							"            $(\"#LOGINpanel1\").hide();\n" +
+							"<?php\n" +
+							"        }\n" +
+							"    }\n" +
+							"?>\n" +
+							"});\n" +
+							"</script>\n" +
+							"\n" +
+							"<!-- Login & Registration start -->\n" +
+							"<!-- Login Panel start -->\n" +
+							"<div id=\"LOGINpanel1\">\n" +
+							"	<br>\n" +
+							"	<div style=\"text-align:right; margin-right:20px; font-size:18px;\">\n" +
+							"		<span id=\"login1\"><span style=\"font-weight:bold;\">ログイン</span></span>\n" +
+							"		<span id=\"signup1\"><a href=\"\">新規登録</a></span>\n" +
+							"		<!--<fieldset data-role=\"controlgroup\" data-type=\"horizontal\" data-mini=\"true\" data-role=\"none\">\n" +
+							"			<input type=\"radio\" name=\"choose\" id=\"login1\" value=\"login1\" checked=\"checked\">\n" +
+							"		    <label for=\"login1\">I have an account</label>\n" +
+							"			<input type=\"radio\" name=\"choose\" id=\"signup1\">\n" +
+							"			<label for=\"signup1\"> I am new!</label>\n" +
+							"		</fieldset>-->\n" +
+							"	</div>\n" +
+							"	<div style=\"background-color:whitesmoke; width:97%;  border-radius:20px; border:5px gray solid;\" data-role=\"none\">\n" +
+							"		<div style=\"color:lightgray; font-size:30; background-color:black; border-radius:15px 15px 0px 0px;\" id=\"loginTitle1\">ログイン</div>\n" +
+							"		<br><br>\n" +
+							"		\n" +
+							"		<form method=\"post\" action=\"\" target=\"login_ifr1\">\n" +
+							"			<div id=\"login_block\">\n" +
+							"				<div style=\"font-size:20;\">"+c1str+"&nbsp;&nbsp;</div>\n" +
+							"				<input type=\"text\" name=\"id\" data-mini=\"true\">	\n" +
+							"				<div style=\"font-size:20;\">"+c2str+":&nbsp;&nbsp;&nbsp;</div>\n" +
+							"				<input type=\"password\" name=\"password\" id=\"password\" data-mini=\"true\">\n" +
+							"				<input type=\"submit\" value=\" Login \" name=\"ssql_login1\" id=\"ssql_login1\" data-mini=\"false\" data-inline=\"false\">\n" +
+							"			</div>\n" +
+							"			<div id=\"signup_block\" style=\"display:none\" data-role=\"none\">\n" +
+							"			    <div style=\"font-size:20;\">"+c1str+"&nbsp;&nbsp;</div>\n" +
+							"			    <input type=\"text\" name=\"mail1\" id=\"mail1\" data-mini=\"true\">\n" +
+							"			    <input type=\"submit\" value=\" Send \" name=\"mail\" id=\"mail\" data-mini=\"false\" data-inline=\"false\">\n" +
+							"			</div>\n" +
+							"		</form>\n" +
+							"		\n" +
+							"		<iframe name=\"login_ifr1\" style=\"display:none;\"></iframe>\n" +
+							"		<div id=\"Login_text1\"  data-role=\"none\"><!-- ここに表示 --></div>\n" +
+							"		<br>\n" +
+							"	</div>\n" +
+							"</div>\n" +
+							"\n" +
+							"<form method=\"post\" action=\"\" target=\"reset_ifr1\" id=\"RESETpanel1\" name=\"RESETpanel1\">\n" +
+							"<input type=\"hidden\" name=\"ssql_reset1\" value=\"\">\n" +
+							"</form>\n" +
+							"<iframe name=\"reset_ifr1\" style=\"display:none;\"></iframe>\n" +
+							"<!-- Login Panel end -->\n" +
+							"\n" +
+							"<?php\n" +
+							"	//ログイン処理\n" +
+							"	if(isset($_POST['ssql_login1'])){\n" +
+							"		//ユーザ定義\n" +
+							((DBMS.equals("sqlite") || DBMS.equals("sqlite3"))? ("    $sqlite3_DB = '"+DB+"';\n"):"") +
+							"		$ssql_id = '"+c1+"';\n" +
+							"		$ssql_pw = '"+c2+"';\n" +
+							"		$ssql_table = \""+from+"\";\n" +
+							"	\n" +
+							"		$id = checkHTMLsc($_POST['id']);\n" +
+							"		$pw = checkHTMLsc($_POST['password']);\n" +
+							"	\n" +
+							"		if($pw && $id){\n");
+					if(DBMS.equals("sqlite") || DBMS.equals("sqlite3")){
+						header.append(
     							"	   		$db = new SQLite3($sqlite3_DB);\n" +
-    							"			$sql = \"SELECT \".$sqlite3_id.\",\".$sqlite3_pw.\" FROM \".$sqlite3_table.\" where \".$sqlite3_id.\"='\".$id.\"' and \".$sqlite3_pw.\"='\".$pw.\"'\""+fromWhere+";\n" +
+    							"			$sql = \"SELECT \".$ssql_id.\",\".$ssql_pw.\" FROM \".$ssql_table.\" where \".$ssql_id.\"='\".$id.\"' and \".$ssql_pw.\"='\".$pw.\"'\""+fromWhere+";\n" +
     							"		    $result = $db->query($sql);\n" +
     							"		    $i = 0;\n" +
-    							"		    while($res = $result->fetchArray(SQLITE3_ASSOC)){\n" +
-    							"		          $i++;\n" +
-    							"		          if($i==1)	break;\n" +
-    							"		    }\n" +
-    							"		    if($i == 0)	p('<font color=#ff0000>Login failed.</font>');	//Login failed.\n" +
-    							"		    else{\n" +
-    							"		    	//Login success.\n" +
-    							"		    	$_SESSION['"+sessionVariable_UniqueName+"id'] = $id;\n" +
-    							"				echo '<script type=\"text/javascript\">window.parent.$(\\'#Login_text1\\').text(\"\");</script>';\n" +
-    							"				echo '<script type=\"text/javascript\">window.parent.location.reload(true);</script>';	//reload\n" +
-    							"		    }\n" +
-    							"		}else{\n" +
-    							"			p('<font color=#ff0000>Please input form.</font>');\n" +
-    							"		}\n" +
-    							"		unset($db);\n" +
-    							"	}\n" +
-    							"\n" +
-    							"	//メール送信 ＆ 新規登録\n" +
-//    							"	if($_POST['mail'] || $_POST['mail1']){\n" +
-    							"	if(isset($_POST['mail']) || isset($_POST['mail1'])){\n" +
-//    							"	    if($_POST[\"mail1\"]==\"\"){\n" +
-    							"	    if(!isset($_POST[\"mail1\"])){\n" +
-    							"	        p(\"<font color=#ff0000>メールアドレスを入力してください。</font>\");\n" +
-    							"	    }elseif(mb_strlen($_POST[\"mail1\"])> 0 && !preg_match(\"/^([a-z0-9_]|\\-|\\.|\\+)+@(([a-z0-9_]|\\-)+\\.)+[a-z]{2,6}$/i\",$_POST[\"mail1\"])){\n" +
-    							"	        p(\"<font color=#ff0000>メールアドレスの書式に<br>誤りがあります。</font>\");\n" +
-    							"	    }else{\n" +
-    							"	    	//TODO: トークンが存在しているかどうかチェック\n" +
-    							"	    	//hasToken($_POST[\"mail1\"]);\n" +
-    							"	    	\n" +
-    							"			//ユーザ定義\n" +
-    							"			$sqlite3_DB = '"+DB+"';\n" +
-    							"			$sqlite3_id = '"+c1+"';\n" +
-    							"			$sqlite3_table = \""+from+"\";\n" +
-    							"			\n" +
-    							"			$email = $_POST[\"mail1\"];\n" +
-    							"	        \n" +
-    							"	        //DB登録未登録のメールアドレスかどうかの判定\n" +
-    							"	        if( isResistered($email, $sqlite3_DB, $sqlite3_id, $sqlite3_table) ){\n" +
-    							"	       		//登録済み\n" +
-    							"		    	p('<font color=#ff0000>\\''.$email.'\\' は<br>既に登録済です。</font><br><span style=\\\"font-size:11px;\\\">パスワードを忘れた場合は、<a href=\\\"\\\" onclick=\\\"window.parent.document.RESETpanel1.sqlite3_reset1.value=\\''.$email.'\\';window.parent.document.RESETpanel1.submit();return false;\\\">こちら</a>をクリックしてください。</span>');\n" +
-    							"	        }else{\n" +
-    							"	        	//未登録　→　確認メール送信\n" +
-    							"	        	p(\"確認メールを送信しました。\".\"<br>\".'<span style=\\\"font-size:15px;\\\">E-mail to: '.$email.'</span>');\n" +
-    							"	        	mail_to_token($email);\n" +
-    							"	        }\n" +
-    							"	    }\n" +
-    							"	}\n" +
-    							"\n" +
-    							"	//パスワードをランダムパスワードで初期化。ユーザーへメール送信\n" +
-//    							"	if($_POST['sqlite3_reset1']){ \n" +
-    							"	if(isset($_POST['sqlite3_reset1'])){ \n" +
-    							"		$mail = $_POST['sqlite3_reset1'];\n" +
-    							"	    echo '<script type=\"text/javascript\">window.parent.window.parent.Login_echo1(\"'.$mail.' 登録済みパスワードを初期化します。\");</script>';\n" +
-    							"		password_reset_and_send_mail($mail);\n" +
-    							"		//echo '<script type=\"text/javascript\">window.parent.window.parent.Login_echo1(\"テスト2\");</script>';\n" +
-    							"	}\n" +
-    							"	\n" +
-    							"	function password_reset_and_send_mail($mail){\n" +
-    							"		//8桁ランダムパスワードの発行\n" +
-    							"		$r_password = getRandomPassword(8);\n" +
-    							"		\n" +
-    							"		//ユーザ定義\n" +
-    							"		$sqlite3_DB = '"+DB+"';\n" +
-    							"		$sqlite3_id = '"+c1+"';\n" +
-    							"		$sqlite3_pw = '"+c2+"';\n" +
-    							"		$sqlite3_table = \""+from+"\";\n" +
-    							"\n" +
-    							"		//$mail列のパスワードを「ランダムpassword」で初期化\n" +
-    							"		$reset_sql1 = \"UPDATE \".$sqlite3_table.\" SET \".$sqlite3_pw.\"='\".$r_password.\"' where \".$sqlite3_id.\"='\".$mail.\"'\""+fromWhere+";\n" +
+    							"		    while($res = $result->fetchArray(SQLITE3_ASSOC)){\n");
+					} else if(DBMS.equals("postgresql") || DBMS.equals("postgres")){
+						header.append(
+		        				"			$db = pg_connect (\"host="+HOST+" dbname="+DB+" user="+USER+""+(!PASSWD.isEmpty()? (" password="+PASSWD):"")+"\");\n" +
+		        				"			$sql = \"SELECT \".$ssql_id.\",\".$ssql_pw.\" FROM \".$ssql_table.\" where \".$ssql_id.\"=$1 and \".$ssql_pw.\"=$2\""+fromWhere+";\n" +
+		        				"			$result = pg_prepare($db, \"ssql_email_login0\", $sql);\n" +
+			    				"			$result = pg_execute($db, \"ssql_email_login0\", array($id,$pw));\n" +
+		        				"	    	$i = 0;\n" +
+					        	"	    	while($res = pg_fetch_assoc($result)){\n");
+					}
+					header.append(
+							"		          $i++;\n" +
+							"		          if($i==1)	break;\n" +
+							"		    }\n" +
+							"		    if($i == 0)	p('<font color=#ff0000>Login failed.</font>');	//Login failed.\n" +
+							"		    else{\n" +
+							"		    	//Login success.\n" +
+							"		    	$_SESSION['"+sessionVariable_UniqueName+"id'] = $id;\n" +
+							"				echo '<script type=\"text/javascript\">window.parent.$(\\'#Login_text1\\').text(\"\");</script>';\n" +
+							"				echo '<script type=\"text/javascript\">window.parent.location.reload(true);</script>';	//reload\n" +
+							"		    }\n" +
+							"		}else{\n" +
+							"			p('<font color=#ff0000>Please input form.</font>');\n" +
+							"		}\n" +
+							((DBMS.equals("sqlite") || DBMS.equals("sqlite3"))?      ("		unset($db);"):"") +
+	        				((DBMS.equals("postgresql") || DBMS.equals("postgres"))? ("		pg_close($db);\n"):"") +
+							"	}\n" +
+							"\n" +
+							"	//メール送信 ＆ 新規登録\n" +
+							"	if(isset($_POST['mail']) || isset($_POST['mail1'])){\n" +
+							"	    if(!isset($_POST[\"mail1\"])){\n" +
+							"	        p(\"<font color=#ff0000>メールアドレスを入力してください。</font>\");\n" +
+							"	    }elseif(mb_strlen($_POST[\"mail1\"])> 0 && !preg_match(\"/^([a-z0-9_]|\\-|\\.|\\+)+@(([a-z0-9_]|\\-)+\\.)+[a-z]{2,6}$/i\",$_POST[\"mail1\"])){\n" +
+							"	        p(\"<font color=#ff0000>メールアドレスの書式に<br>誤りがあります。</font>\");\n" +
+							"	    }else{\n" +
+							"	    	//TODO: トークンが存在しているかどうかチェック\n" +
+							"	    	//hasToken($_POST[\"mail1\"]);\n" +
+							"	    	\n" +
+							"			//ユーザ定義\n" +
+							((DBMS.equals("sqlite") || DBMS.equals("sqlite3"))? ("			$sqlite3_DB = '"+DB+"';\n"):"") +
+							"			$ssql_id = '"+c1+"';\n" +
+							"			$ssql_table = \""+from+"\";\n" +
+							"			\n" +
+							"			$email = $_POST[\"mail1\"];\n" +
+							"	        \n" +
+							"	        //DB登録未登録のメールアドレスかどうかの判定\n" +
+							((DBMS.equals("sqlite") || DBMS.equals("sqlite3"))?      ("	        if( isResistered($email, $sqlite3_DB, $ssql_id, $ssql_table) ){\n"):"") +
+	        				((DBMS.equals("postgresql") || DBMS.equals("postgres"))? ("	        if( isResistered($email, \"\", $ssql_id, $ssql_table) ){\n"):"") +
+							"	       		//登録済み\n" +
+							"		    	p('<font color=#ff0000>\\''.$email.'\\' は<br>既に登録済です。</font><br><span style=\\\"font-size:11px;\\\">パスワードを忘れた場合は、<a href=\\\"\\\" onclick=\\\"window.parent.document.RESETpanel1.ssql_reset1.value=\\''.$email.'\\';window.parent.document.RESETpanel1.submit();return false;\\\">こちら</a>をクリックしてください。</span>');\n" +
+							"	        }else{\n" +
+							"	        	//未登録　→　確認メール送信\n" +
+							"	        	p(\"確認メールを送信しました。\".\"<br>\".'<span style=\\\"font-size:15px;\\\">E-mail to: '.$email.'</span>');\n" +
+							"	        	mail_to_token($email);\n" +
+							"	        }\n" +
+							"	    }\n" +
+							"	}\n" +
+							"\n" +
+							"	//パスワードをランダムパスワードで初期化。ユーザーへメール送信\n" +
+							"	if(isset($_POST['ssql_reset1'])){ \n" +
+							"		$mail = $_POST['ssql_reset1'];\n" +
+							"	    echo '<script type=\"text/javascript\">window.parent.window.parent.Login_echo1(\"'.$mail.' 登録済みパスワードを初期化します。\");</script>';\n" +
+							"		password_reset_and_send_mail($mail);\n" +
+							"		//echo '<script type=\"text/javascript\">window.parent.window.parent.Login_echo1(\"テスト2\");</script>';\n" +
+							"	}\n" +
+							"	\n" +
+							"	function password_reset_and_send_mail($mail){\n" +
+							"		//8桁ランダムパスワードの発行\n" +
+							"		$r_password = getRandomPassword(8);\n" +
+							"		\n" +
+							"		//ユーザ定義\n" +
+							((DBMS.equals("sqlite") || DBMS.equals("sqlite3"))? ("		$sqlite3_DB = '"+DB+"';\n"):"") +
+							"		$ssql_id = '"+c1+"';\n" +
+							"		$ssql_pw = '"+c2+"';\n" +
+							"		$ssql_table = \""+from+"\";\n" +
+							"\n" +
+							"		//$mail列のパスワードを「ランダムpassword」で初期化\n");
+					if(DBMS.equals("sqlite") || DBMS.equals("sqlite3")){
+						header.append(
+    							"		$reset_sql1 = \"UPDATE \".$ssql_table.\" SET \".$ssql_pw.\"='\".$r_password.\"' where \".$ssql_id.\"='\".$mail.\"'\""+fromWhere+";\n" +
     							"		$db = new SQLite3($sqlite3_DB);\n" +
     							"		$result1 = $db->exec($reset_sql1);\n" +
     							"		if ($result1) {\n" +
-    							"			$changed_num = $db->changes();		//変更された行の数: $db->changes()\n" +
-    							"			\n" +
-    							"			if($changed_num > 0){\n" +
-    							"				//リセット成功　→　リセット済みパスワードの送信\n" +
-    							"				echo '<script type=\"text/javascript\">window.parent.window.parent.Login_echo1(\"パスワードを初期化して<br>ご登録先へ送信しました。\");</script>';\n" +
-    							"				mail_to_reset($mail,$r_password);\n" +
-    							"			}else{\n" +
-    							"				//リセット失敗\n" +
-    							"				echo '<script type=\"text/javascript\">window.parent.window.parent.Login_echo1(\"<span style=\\\"color:red;\\\">初期化に失敗しました。しばらく経ってからもう一度お試しください。</span>\");</script>';\n" +
-    							"			}\n" +
-    							"		}\n" +
-    							"		unset($db);\n" +
-    							"	}\n" +
-    							"\n" +
-    							"	//DB登録未登録かどうかの判定\n" +
-    							"    function isResistered($check_string, $database, $c1, $table) {\n" +
-    							"		//SQLite3\n" +
-    							"		//DB登録未登録のメールアドレスかどうかチェック\n" +
-    							"   		$db = new SQLite3($database);\n" +
+    							"			$changed_num = $db->changes();		//変更された行の数: $db->changes()\n");
+					} else if(DBMS.equals("postgresql") || DBMS.equals("postgres")){
+						header.append(
+    							"		$reset_sql1 = \"UPDATE \".$ssql_table.\" SET \".$ssql_pw.\"=$1 where \".$ssql_id.\"=$2\""+fromWhere+";\n" +
+    							"		$db = pg_connect (\"host="+HOST+" dbname="+DB+" user="+USER+""+(!PASSWD.isEmpty()? (" password="+PASSWD):"")+"\");\n" +
+    							"		$result1 = pg_prepare($db, \"ssql_email_login1\", $reset_sql1);\n" +
+    				    		"		$result1 = pg_execute($db, \"ssql_email_login1\", array($r_password, $mail));\n" +
+    							"		if ($result1) {\n" +
+    							"			$changed_num = pg_affected_rows($result1);		//変更されたタプル数\n");
+					}
+					header.append(
+							"			\n" +
+							"			if($changed_num > 0){\n" +
+							"				//リセット成功　→　リセット済みパスワードの送信\n" +
+							"				echo '<script type=\"text/javascript\">window.parent.window.parent.Login_echo1(\"パスワードを初期化して<br>ご登録先へ送信しました。\");</script>';\n" +
+							"				mail_to_reset($mail,$r_password);\n" +
+							"			}else{\n" +
+							"				//リセット失敗\n" +
+							"				echo '<script type=\"text/javascript\">window.parent.window.parent.Login_echo1(\"<span style=\\\"color:red;\\\">初期化に失敗しました。しばらく経ってからもう一度お試しください。</span>\");</script>';\n" +
+							"			}\n" +
+							"		}\n" +
+							((DBMS.equals("sqlite") || DBMS.equals("sqlite3"))?      ("		unset($db);\n"):"") +
+	        				((DBMS.equals("postgresql") || DBMS.equals("postgres"))? ("		pg_close($db);\n"):"") +
+							"	}\n" +
+							"\n" +
+							"	//DB登録未登録かどうかの判定\n" +
+							"    function isResistered($check_string, $database, $c1, $table) {\n" +
+							"		//DB登録未登録のメールアドレスかどうかチェック\n");
+					if(DBMS.equals("sqlite") || DBMS.equals("sqlite3")){
+						header.append(
+    							"		$db = new SQLite3($database);\n" +
     							"		$sql = \"SELECT \".$c1.\" FROM \".$table.\" where \".$c1.\"='\".checkHTMLsc($check_string).\"'\";\n" +
     							"	    $result = $db->query($sql);\n" +
     							"	    $i = 0;\n" +
-    							"	    while($res = $result->fetchArray(SQLITE3_ASSOC)){\n" +
-    							"	          $i++;\n" +
-    							"	          if($i==1)	break;\n" +
-    							"	    }\n" +
-    							"	    unset($db);\n" +
-    							"	    if($i > 0)	return true;	//登録済\n" +
-    							"	    else		return false;  	//未登録\n" +
-    							"    }\n" +
-    							"    \n" +
-    							"    function mail_to_token($address) {\n" +
-    							"        global $tokendir, $sender_name, $expire_time;\n" +
-    							"      \n" +
-    							"        $limit = (time()+$expire_time);\n" +
-    							"        $token= rand(0,100).uniqid();		//トークン\n" +
-    							"        touch($tokendir.$token.\".log\");		//トークンファイル作成\n" +
-    							"    \n" +
-    							"        $url = $_SERVER[\"HTTP_REFERER\"].\"?key=\".$token;\n" +
-    							"        file_put_contents($tokendir.$token.\".log\", $address, LOCK_EX);	//期限保存\n" +
-    							"        delete_old_token($tokendir);									//古いトークンの削除\n" +
-    							"        $message=\"登録を完了するには、以下のアドレスを開いてください。\n\".($expire_time/60).\"分以内にアクセスが無かった場合は無効となります。\n\";\n" +
-    							"        $message.= $url.\"\n\n\";\n" +
-    							"\n" +
-    							"        if($sender_name != \"\")	my_send_mail($address,'['.$sender_name.'] 登録確認',$message);\n" +
-    							"        else					my_send_mail($address,'登録確認',$message);\n" +
-    							"    }\n" +
-    							"    \n" +
-    							"    function mail_to_success($mailto) {\n" +
-    							"        global $success_page, $resistration_page, $sender_name;\n" +
-    							"       \n" +
-    							"        //「メールアドレス」と「ランダムpassword」をDBへ登録\n" +
-    							"        $random_password = register_email_and_random_password($mailto);\n" +
-    							"      	if($random_password != \"\"){\n" +
-    							"	        $message=\"登録が完了しました。\n\nログイン仮パスワード：\".$random_password.\" (※ログイン後に必ず変更してください）\n\n\";\n" +
-    							"	        $message.=\"こちらからログインできます: \".$success_page.\"\n\n\";\n" +
-    							"	        if($sender_name != \"\")	my_send_mail($mailto, '['.$sender_name.'] ご登録ありがとうございます', $message);\n" +
-    							"	        else					my_send_mail($mailto, 'ご登録ありがとうございます', $message);\n" +
-    							"	        return true;\n" +
-    							"	    }else{\n" +
-    							"	    	p('<font color=#ff0000>\\''.$mailto.'\\'の登録に失敗しました。既に登録済みの可能性があります。<br>もう一度<a href=\"'.$resistration_page.'\" target=\"_self\">こちら</a>からやり直してください。</font>');	//登録失敗（レアケース）\n" +
-    							"	    	return false;\n" +
-    							"	    }\n" +
-    							"    }\n" +
-    							"    \n" +
-    							"    //「メールアドレス」と「ランダムpassword」をDBへ登録する\n" +
-    							"    function register_email_and_random_password($mail) {\n" +
-    							"		//8桁ランダムパスワードの発行\n" +
-    							"		$r_password = getRandomPassword(8);\n" +
-    							"		\n" +
-    							"		//ユーザ定義\n" +
-    							"		$sqlite3_DB = '"+DB+"';\n" +
-    							"		$sqlite3_id = '"+c1+"';\n" +
-    							"		$sqlite3_pw = '"+c2+"';\n" +
-    							"		$sqlite3_table = \""+from+"\";\n" +
-    							"		\n" +
-    							"		//「メールアドレス」と「ランダムpassword」をDBへ登録\n" +
-    							"		//check & registration\n" +
+    							"	    while($res = $result->fetchArray(SQLITE3_ASSOC)){\n");
+					} else if(DBMS.equals("postgresql") || DBMS.equals("postgres")){
+						header.append(
+    							"		$db = pg_connect (\"host="+HOST+" dbname="+DB+" user="+USER+""+(!PASSWD.isEmpty()? (" password="+PASSWD):"")+"\");\n" +
+    							"		$sql = \"SELECT \".$c1.\" FROM \".$table.\" where \".$c1.\"=$1\";\n" +
+		        				"		$result = pg_prepare($db, \"ssql_email_login3\", $sql);\n" +
+			    				"		$result = pg_execute($db, \"ssql_email_login3\", array(checkHTMLsc($check_string)));\n" +
+		        				"	   	$i = 0;\n" +
+					        	"	   	while($res = pg_fetch_assoc($result)){\n");
+					}
+					header.append(
+							"	          $i++;\n" +
+							"	          if($i==1)	break;\n" +
+							"	    }\n" +
+							((DBMS.equals("sqlite") || DBMS.equals("sqlite3"))?      ("		unset($db);\n"):"") +
+	        				((DBMS.equals("postgresql") || DBMS.equals("postgres"))? ("		pg_close($db);\n"):"") +
+							"	    if($i > 0)	return true;	//登録済\n" +
+							"	    else		return false;  	//未登録\n" +
+							"    }\n" +
+							"    \n" +
+							"    function mail_to_token($address) {\n" +
+							"        global $tokendir, $sender_name, $expire_time;\n" +
+							"      \n" +
+							"        $limit = (time()+$expire_time);\n" +
+							"        $token= rand(0,100).uniqid();		//トークン\n" +
+							"        touch($tokendir.$token.\".log\");		//トークンファイル作成\n" +
+							"    \n" +
+							"        $url = $_SERVER[\"HTTP_REFERER\"].\"?key=\".$token;\n" +
+							"        file_put_contents($tokendir.$token.\".log\", $address, LOCK_EX);	//期限保存\n" +
+							"        delete_old_token($tokendir);									//古いトークンの削除\n" +
+							"        $message=\"登録を完了するには、以下のアドレスを開いてください。\n\".($expire_time/60).\"分以内にアクセスが無かった場合は無効となります。\n\";\n" +
+							"        $message.= $url.\"\n\n\";\n" +
+							"\n" +
+							"        if($sender_name != \"\")	my_send_mail($address,'['.$sender_name.'] 登録確認',$message);\n" +
+							"        else					my_send_mail($address,'登録確認',$message);\n" +
+							"    }\n" +
+							"    \n" +
+							"    function mail_to_success($mailto) {\n" +
+							"        global $success_page, $resistration_page, $sender_name;\n" +
+							"       \n" +
+							"        //「メールアドレス」と「ランダムpassword」をDBへ登録\n" +
+							"        $random_password = register_email_and_random_password($mailto);\n" +
+							"      	if($random_password != \"\"){\n" +
+							"	        $message=\"登録が完了しました。\n\nログイン仮パスワード：\".$random_password.\" (※ログイン後に必ず変更してください）\n\n\";\n" +
+							"	        $message.=\"こちらからログインできます: \".$success_page.\"\n\n\";\n" +
+							"	        if($sender_name != \"\")	my_send_mail($mailto, '['.$sender_name.'] ご登録ありがとうございます', $message);\n" +
+							"	        else					my_send_mail($mailto, 'ご登録ありがとうございます', $message);\n" +
+							"	        return true;\n" +
+							"	    }else{\n" +
+							"	    	p('<font color=#ff0000>\\''.$mailto.'\\'の登録に失敗しました。既に登録済みの可能性があります。<br>もう一度<a href=\"'.$resistration_page.'\" target=\"_self\">こちら</a>からやり直してください。</font>');	//登録失敗（レアケース）\n" +
+							"	    	return false;\n" +
+							"	    }\n" +
+							"    }\n" +
+							"    \n" +
+							"    //「メールアドレス」と「ランダムpassword」をDBへ登録する\n" +
+							"    function register_email_and_random_password($mail) {\n" +
+							"		//8桁ランダムパスワードの発行\n" +
+							"		$r_password = getRandomPassword(8);\n" +
+							"		\n" +
+							"		//ユーザ定義\n" +
+							((DBMS.equals("sqlite") || DBMS.equals("sqlite3"))? ("		$sqlite3_DB = '"+DB+"';\n"):"") +
+							"		$ssql_id = '"+c1+"';\n" +
+							"		$ssql_pw = '"+c2+"';\n" +
+							"		$ssql_table = \""+from+"\";\n" +
+							"		\n" +
+							"		//「メールアドレス」と「ランダムpassword」をDBへ登録\n" +
+							"		//check & registration\n");
+					if(DBMS.equals("sqlite") || DBMS.equals("sqlite3")){
+						header.append(
     							"		$db = new SQLite3($sqlite3_DB);\n" +
     							"		//一応、再check\n" +
-    							"		$sql1 = \"SELECT \".$sqlite3_id.\" FROM \".$sqlite3_table.\" where \".$sqlite3_id.\"='\".$mail.\"'\""+fromWhere+";\n" +
+    							"		$sql1 = \"SELECT \".$ssql_id.\" FROM \".$ssql_table.\" where \".$ssql_id.\"='\".$mail.\"'\""+fromWhere+";\n" +
     							"	    $result1 = $db->query($sql1);\n" +
     							"	    $i=0;\n" +
-    							"	    while($res = $result1->fetchArray(SQLITE3_ASSOC)){\n" +
-    							"   	       $i++;\n" +
-    							"   	       if($i==1)	break;\n" +
-    							"	    }\n" +
-    							"	    if($i > 0){\n" +
-    							"	    	unset($db);\n" +
-    							"	     	return \"\";		//既に登録済み（レアケース）\n" +
-    							"	    }else{\n" +
-    							"   	       //「メールアドレス」と「ランダムpassword」をDBへ登録\n" +
-    							"   	       $sql2 = \"INSERT INTO \".$sqlite3_table.\" (\".$sqlite3_id.\", \".$sqlite3_pw.\""+fromWhere_left+") VALUES ('\".$mail.\"','\".$r_password.\"'"+fromWhere_right+")\";\n" +
+    							"	    while($res = $result1->fetchArray(SQLITE3_ASSOC)){\n");
+					} else if(DBMS.equals("postgresql") || DBMS.equals("postgres")){
+						header.append(
+    							"		$db = pg_connect (\"host="+HOST+" dbname="+DB+" user="+USER+""+(!PASSWD.isEmpty()? (" password="+PASSWD):"")+"\");\n" +
+    							"		//一応、再check\n" +
+    							"		$sql1 = \"SELECT \".$ssql_id.\" FROM \".$ssql_table.\" where \".$ssql_id.\"=$1\""+fromWhere+";\n" +
+		        				"		$result1 = pg_prepare($db, \"ssql_email_login4\", $sql1);\n" +
+			    				"		$result1 = pg_execute($db, \"ssql_email_login4\", array($mail));\n" +
+		        				"	    $i = 0;\n" +
+					        	"	    while($res = pg_fetch_assoc($result1)){\n");
+					}
+					header.append(
+							"   	       $i++;\n" +
+							"   	       if($i==1)	break;\n" +
+							"	    }\n" +
+							"	    if($i > 0){\n" +
+							((DBMS.equals("sqlite") || DBMS.equals("sqlite3"))?      ("	    	unset($db);\n"):"") +
+	        				((DBMS.equals("postgresql") || DBMS.equals("postgres"))? ("	    	pg_close($db);\n"):"") +
+							"	     	return \"\";		//既に登録済み（レアケース）\n" +
+							"	    }else{\n" +
+							"   	       //「メールアドレス」と「ランダムpassword」をDBへ登録\n");
+					if(DBMS.equals("sqlite") || DBMS.equals("sqlite3")){
+						header.append(
+    							"   	       $sql2 = \"INSERT INTO \".$ssql_table.\" (\".$ssql_id.\", \".$ssql_pw.\""+fromWhere_left+") VALUES ('\".$mail.\"','\".$r_password.\"'"+fromWhere_right+")\";\n" +
     							"   	       try{\n" +
     							"				$result2 = $db->exec($sql2);\n" +
     							"				unset($db);\n" +
     							"				return $r_password;	//登録成功\n" +
     							"   	       }catch(Exception $e){\n" +
-    							"   	       		unset($db);\n" +
-    							"   	       		return \"\";			//登録失敗\n" +
-    							"   	       }\n" +
-    							"	    }\n" +
-    							"	}\n" +
-    							"	function getRandomPassword($length){\n" +
-    							"    	return substr(str_shuffle('1234567890abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ'), 0, $length);\n" +
-    							"	}\n" +
-    							"\n" +
-    							"    function mail_to_master($mail) {\n" +
-    							"        global $admin_email, $sender_name;\n" +
-    							"        \n" +
-    							"        if($admin_email != \"\"){\n" +
-    							"	        $message =\"新しく登録されたユーザーの情報は次の通りです。\n\";\n" +
-    							"	        $message.=\"────────────────────────────────────────────────\n\";\n" +
-    							"	        $message.= $mail.\"\n\n\";\n" +
-    							"	        $message.=\"DATE: \".date(\"Y/m/d - H:i:s\").\"\n\";\n" +
-    							"	        $message.=\"IP: \".$_SERVER['REMOTE_ADDR'].\"\n\";\n" +
-    							"	        $message.=\"HOST: \".@gethostbyaddr($_SERVER['REMOTE_ADDR']).\"\n\";\n" +
-    							"	        $message.=\"USER AGENT: \".$_SERVER['HTTP_USER_AGENT'].\"\n\";\n" +
-    							"	        $message.=\"────────────────────────────────────────────────\n\";\n" +
-    							"	      \n" +
-    							"	        //my_send_mail(MAILTO_MASTER, 'ユーザー登録通知', $message);\n" +
-    							"	        if($sender_name != \"\")	my_send_mail($admin_email, '['.$sender_name.' admin] ユーザー登録通知', $message);\n" +
-    							"	        else					my_send_mail($admin_email, '[admin] ユーザー登録通知', $message);\n" +
-    							"        }\n" +
-    							"    }\n" +
-    							"    \n" +
-    							"    function mail_to_reset($mail,$random_password) {\n" +
-    							"        global $sender_name,$success_page;\n" +
-    							"       \n" +
-    							"       	$message=\"ご登録パスワードを初期化しました。\n\nログイン仮パスワード：\".$random_password.\" (※ログイン後に必ず変更してください）\n\n\";\n" +
-    							"	    $message.=\"こちらからログインできます: \".$success_page.\"\n\n\";\n" +
-    							"      \n" +
-    							"        if($sender_name != \"\")	my_send_mail($mail, '['.$sender_name.'] パスワード初期化通知', $message);\n" +
-    							"        else					my_send_mail($mail, 'パスワード初期化通知', $message);\n" +
-    							"    }\n" +
-    							"    \n" +
-    							"    function delete_old_token($token = NULL) {\n" +
-    							"        global $tokendir,$email,$expire_time;\n" +
-    							"        if (is_dir($tokendir)) {\n" +
-    							"            if ($dh = opendir($tokendir)) {\n" +
-    							"                while (($file = readdir($dh)) !== false) {\n" +
-    							"                    if(is_file($tokendir.$file) && is_null($token)){\n" +
-    							"                        $log = file_get_contents($tokendir.$file);\n" +
-    							"                        list($data,$mail) = preg_split(\"<>\",$log);\n" +
-    							"                        $email = $mail;\n" +
-    							"                        if(time()> $data) @unlink($tokendir.$file);\n" +
-    							"                      \n" +
-    							"                    }else if(basename($file,\".log\")==$token && !is_null($token)){\n" +
-    							"                        if(time() <(filemtime($tokendir.$token.\".log\")+$expire_time) ){\n" +
-    							"                            $log = file_get_contents($tokendir.$token.\".log\");\n" +
-    							"                            //p(\"log:\".$log);\n" +
-    							"                           \n" +
-    							"                            $mail = trim($log);\n" +
-    							"                            $email = $mail;\n" +
-    							"                      \n" +
-    							"                            @unlink($tokendir.$token.\".log\");\n" +
-    							"                            return true;\n" +
-    							"                        }else{\n" +
-    							"                            @unlink($tokendir.$token.\".log\");\n" +
-    							"                            return false;\n" +
-    							"                        }\n" +
-    							"                    }\n" +
-    							"                }\n" +
-    							"                closedir($dh);\n" +
-    							"            }\n" +
-    							"        }\n" +
-    							"    }\n" +
-    							"    \n" +
-    							"    function my_send_mail($mailto, $subject, $message) {\n" +
-    							"        global $sender_name;\n" +
-    							"       \n" +
-    							"        $header =\"From: \".$sender_name.\" <info@example.com>\n\";\n" +
-    							"        $mmm = mb_send_mail($mailto, $subject, $message, $header);\n" +
-    							"    }\n" +
-    							"\n" +
-    							"	function p($str){\n" +
-    							"	    //親ウインドウのJavaScript関数（テキストエリアへ書き込み）を呼び出す\n" +
-    							"	    echo '<script type=\"text/javascript\">window.parent.Login_echo1(\"'.$str.'\");</script>';\n" +
-    							"	}\n" +
-    							"?>\n" +
-    							"\n" +
-    							"<script type=\"text/javascript\">\n" +
-    							"$(document).ready(function(){\n" +
-    							"	//アカウントあり or 新規登録 クリック時の処理\n" +
-    							"	$('#signup1').click(function(){\n" +
-    							"		$('#login1').html('<a href=\"\" style=\"color:#0000CC;\">ログイン</a>');\n" +
-    							"		$('#signup1').html('<span style=\"font-weight:bold;\">新規登録</span>');\n" +
-    							"		$('#loginTitle1').text('新規登録');\n" +
-    							"		$('#password').val('');\n" +
-    							"		$('#login_block').hide();\n" +
-    							"		$('#signup_block').show();\n" +
-    							"		Login_echo1(\"\");\n" +
-    							"	});\n" +
-    							"	$('#login1').click(function(){\n" +
-    							"		$('#login1').html('<span style=\"font-weight:bold;\">ログイン</span>');\n" +
-    							"		$('#signup1').html('<a href=\"\" style=\"color:#0000CC;\">新規登録</a>');\n" +
-    							"		$('#loginTitle1').text('ログイン');\n" +
-    							"		$('#mail1').val('');\n" +
-    							"		$('#signup_block').hide();\n" +
-    							"		$('#login_block').show();\n" +
-    							"		Login_echo1(\"\");\n" +
-    							"	});\n" +
-    							"});\n" +
-    							"\n" +
-    							"//テキストエリアへ書き込み\n" +
-    							"function Login_echo1(str){\n" +
-    							"  var textArea = document.getElementById(\"Login_text1\");\n" +
-    							//"  textArea.innerHTML =  str +\"<br>\";\n" +
-		        				"  textArea.innerHTML = \"<h2>\" + str + \"</h2>\";\n" +
-    							"}\n" +
-    							"</script>\n" +
-    							"<!-- Login & Registration end -->\n" +
-    							"\n");
-	        		}
-	        				
-    				//ログアウトボタンの付加
-    				
-					//通常時のみ（Prev/Nextでは行わない）
-    				if(headerFlag==1)
-    				header.append(
-	        				"<!-- Logout start -->\n" +
-	        				"<form method=\"post\" action=\"\" target=\"logout_ifr1\" id=\"LOGOUTpanel1\" name=\"LOGOUTpanel1\">\n" +
-	        				"<input type=\"submit\" value=\" Logout \" name=\"sqlite3_logout1\" data-mini=\"false\" data-inline=\"false\">\n" +
-	        				"<input type=\"hidden\" value=\" Logout \" name=\"sqlite3_logout1\">\n" +
-	        				"</form>\n" +
-	        				"<iframe name=\"logout_ifr1\" style=\"display:none;\"></iframe>\n" +
-	        				"\n");
-    				//通常時のみ（Prev/Nextでは行わない）&& ( header()があるとき || button("logout")があるとき )
-    				if(headerFlag==1 && ( !Mobile_HTML5Function.headerString.equals("") || Mobile_HTML5Function.logoutButtonFlg ))
-    				header.append(
-    						"<script type=\"text/javascript\">\n" +
-							"$(document).ready(function(){\n" +
-	        				"	$('#LOGOUTpanel1').hide();\n" +
-	        				"});\n" +
-	        				"</script>\n"
-    						);
-    				//通常時のみ（Prev/Nextでは行わない）
-	        		if(headerFlag==1)
-	        		header.append("<?php\n" +
-//	        				"if($_POST['sqlite3_logout1']){\n" +
-	        				"if(isset($_POST['sqlite3_logout1'])){\n" +
-	        				"	//ログアウト処理\n" +
-	        				"	//セッション変数を全て解除\n" +
-	        				"	$_SESSION = array();\n" +
-	        				"	//セッションを切断するにはセッションクッキーも削除\n" +
-	        				"	//Note: セッション情報だけでなくセッションを破壊\n" +
-	        				"	if (isset($_COOKIE[session_name()])) {\n" +
-	        				"    	setcookie(session_name(), '', time()-42000, '/');\n" +
-	        				"	}\n" +
-	        				"	session_destroy();\n" +
-	        				"	echo '<script type=\"text/javascript\">window.parent.location.reload(true);</script>';	//reload\n" +
-	        				"}\n" +
-	        				"?>\n" +
-	        				"<!-- Logout end -->\n");
-	        				
+    							"   	       		unset($db);\n");
+					} else if(DBMS.equals("postgresql") || DBMS.equals("postgres")){
+						header.append(
+    							"   	       $sql2 = \"INSERT INTO \".$ssql_table.\" (\".$ssql_id.\", \".$ssql_pw.\""+fromWhere_left+") VALUES ($1, $2"+fromWhere_right+")\";\n" +
+    							"   	       try{\n" +
+								"				$result2 = pg_prepare($db, \"ssql_email_login5\", $sql2);\n" +
+								"				$result2 = pg_execute($db, \"ssql_email_login5\", array($mail,$r_password));\n" +
+    							"				pg_close($db);\n" +
+    							"				return $r_password;	//登録成功\n" +
+    							"   	       }catch(Exception $e){\n" +
+    							"   	       		pg_close($db);\n");
+					}
 					header.append(
-	        				"<!-- \"Login & Logout\" end -->\n" +
-	        				"\n" +
-	        				"\n" +
-	        				"<?php\n" +
-	        				"//<!-- display_html start -->\n" +
-	        				"function display_html(){\n" +
-	        				"	if(isset($_SESSION['"+sessionVariable_UniqueName+"id'])){\n" +
-	        				"		echo <<<EOF\n" +
-	        				"		\n");
-	        	}
-	        	//else if(DBMS.equals("postgresql")){
-	        	//	;
-	        	//}
+							"   	       		return \"\";			//登録失敗\n" +
+							"   	       }\n" +
+							"	    }\n" +
+							"	}\n" +
+							"	function getRandomPassword($length){\n" +
+							"    	return substr(str_shuffle('1234567890abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ'), 0, $length);\n" +
+							"	}\n" +
+							"\n" +
+							"    function mail_to_master($mail) {\n" +
+							"        global $admin_email, $sender_name;\n" +
+							"        \n" +
+							"        if($admin_email != \"\"){\n" +
+							"	        $message =\"新しく登録されたユーザーの情報は次の通りです。\n\";\n" +
+							"	        $message.=\"────────────────────────────────────────────────\n\";\n" +
+							"	        $message.= $mail.\"\n\n\";\n" +
+							"	        $message.=\"DATE: \".date(\"Y/m/d - H:i:s\").\"\n\";\n" +
+							"	        $message.=\"IP: \".$_SERVER['REMOTE_ADDR'].\"\n\";\n" +
+							"	        $message.=\"HOST: \".@gethostbyaddr($_SERVER['REMOTE_ADDR']).\"\n\";\n" +
+							"	        $message.=\"USER AGENT: \".$_SERVER['HTTP_USER_AGENT'].\"\n\";\n" +
+							"	        $message.=\"────────────────────────────────────────────────\n\";\n" +
+							"	      \n" +
+							"	        //my_send_mail(MAILTO_MASTER, 'ユーザー登録通知', $message);\n" +
+							"	        if($sender_name != \"\")	my_send_mail($admin_email, '['.$sender_name.' admin] ユーザー登録通知', $message);\n" +
+							"	        else					my_send_mail($admin_email, '[admin] ユーザー登録通知', $message);\n" +
+							"        }\n" +
+							"    }\n" +
+							"    \n" +
+							"    function mail_to_reset($mail,$random_password) {\n" +
+							"        global $sender_name,$success_page;\n" +
+							"       \n" +
+							"       	$message=\"ご登録パスワードを初期化しました。\n\nログイン仮パスワード：\".$random_password.\" (※ログイン後に必ず変更してください）\n\n\";\n" +
+							"	    $message.=\"こちらからログインできます: \".$success_page.\"\n\n\";\n" +
+							"      \n" +
+							"        if($sender_name != \"\")	my_send_mail($mail, '['.$sender_name.'] パスワード初期化通知', $message);\n" +
+							"        else					my_send_mail($mail, 'パスワード初期化通知', $message);\n" +
+							"    }\n" +
+							"    \n" +
+							"    function delete_old_token($token = NULL) {\n" +
+							"        global $tokendir,$email,$expire_time;\n" +
+							"        if (is_dir($tokendir)) {\n" +
+							"            if ($dh = opendir($tokendir)) {\n" +
+							"                while (($file = readdir($dh)) !== false) {\n" +
+							"                    if(is_file($tokendir.$file) && is_null($token)){\n" +
+							"                        $log = file_get_contents($tokendir.$file);\n" +
+							"                        list($data,$mail) = preg_split(\"<>\",$log);\n" +
+							"                        $email = $mail;\n" +
+							"                        if(time()> $data) @unlink($tokendir.$file);\n" +
+							"                      \n" +
+							"                    }else if(basename($file,\".log\")==$token && !is_null($token)){\n" +
+							"                        if(time() <(filemtime($tokendir.$token.\".log\")+$expire_time) ){\n" +
+							"                            $log = file_get_contents($tokendir.$token.\".log\");\n" +
+							"                            //p(\"log:\".$log);\n" +
+							"                           \n" +
+							"                            $mail = trim($log);\n" +
+							"                            $email = $mail;\n" +
+							"                      \n" +
+							"                            @unlink($tokendir.$token.\".log\");\n" +
+							"                            return true;\n" +
+							"                        }else{\n" +
+							"                            @unlink($tokendir.$token.\".log\");\n" +
+							"                            return false;\n" +
+							"                        }\n" +
+							"                    }\n" +
+							"                }\n" +
+							"                closedir($dh);\n" +
+							"            }\n" +
+							"        }\n" +
+							"    }\n" +
+							"    \n" +
+							"    function my_send_mail($mailto, $subject, $message) {\n" +
+							"        global $sender_name;\n" +
+							"       \n" +
+							"        $header =\"From: \".$sender_name.\" <info@example.com>\n\";\n" +
+							"        $mmm = mb_send_mail($mailto, $subject, $message, $header);\n" +
+							"    }\n" +
+							"\n" +
+							"	function p($str){\n" +
+							"	    //親ウインドウのJavaScript関数（テキストエリアへ書き込み）を呼び出す\n" +
+							"	    echo '<script type=\"text/javascript\">window.parent.Login_echo1(\"'.$str.'\");</script>';\n" +
+							"	}\n" +
+							"?>\n" +
+							"\n" +
+							"<script type=\"text/javascript\">\n" +
+							"$(document).ready(function(){\n" +
+							"	//アカウントあり or 新規登録 クリック時の処理\n" +
+							"	$('#signup1').click(function(){\n" +
+							"		$('#login1').html('<a href=\"\" style=\"color:#0000CC;\">ログイン</a>');\n" +
+							"		$('#signup1').html('<span style=\"font-weight:bold;\">新規登録</span>');\n" +
+							"		$('#loginTitle1').text('新規登録');\n" +
+							"		$('#password').val('');\n" +
+							"		$('#login_block').hide();\n" +
+							"		$('#signup_block').show();\n" +
+							"		Login_echo1(\"\");\n" +
+							"	});\n" +
+							"	$('#login1').click(function(){\n" +
+							"		$('#login1').html('<span style=\"font-weight:bold;\">ログイン</span>');\n" +
+							"		$('#signup1').html('<a href=\"\" style=\"color:#0000CC;\">新規登録</a>');\n" +
+							"		$('#loginTitle1').text('ログイン');\n" +
+							"		$('#mail1').val('');\n" +
+							"		$('#signup_block').hide();\n" +
+							"		$('#login_block').show();\n" +
+							"		Login_echo1(\"\");\n" +
+							"	});\n" +
+							"});\n" +
+							"\n" +
+							"//テキストエリアへ書き込み\n" +
+							"function Login_echo1(str){\n" +
+							"  var textArea = document.getElementById(\"Login_text1\");\n" +
+	        				"  textArea.innerHTML = \"<h2>\" + str + \"</h2>\";\n" +
+							"}\n" +
+							"</script>\n" +
+							"<!-- Login & Registration end -->\n" +
+							"\n");
+        		}//End of s_val:3（E-mail Login）
+
+        		
+				//ログアウトボタンの付加
+				
+				//通常時のみ（Prev/Nextでは行わない）
+				if(headerFlag==1)
+				header.append(
+        				"<!-- Logout start -->\n" +
+        				"<form method=\"post\" action=\"\" target=\"logout_ifr1\" id=\"LOGOUTpanel1\" name=\"LOGOUTpanel1\">\n" +
+        				"<input type=\"submit\" value=\" Logout \" name=\"ssql_logout1\" data-mini=\"false\" data-inline=\"false\">\n" +
+        				"<input type=\"hidden\" value=\" Logout \" name=\"ssql_logout1\">\n" +
+        				"</form>\n" +
+        				"<iframe name=\"logout_ifr1\" style=\"display:none;\"></iframe>\n" +
+        				"\n");
+				//通常時のみ（Prev/Nextでは行わない）&& ( header()があるとき || button("logout")があるとき )
+				if(headerFlag==1 && ( !Mobile_HTML5Function.headerString.equals("") || Mobile_HTML5Function.logoutButtonFlg ))
+				header.append(
+						"<script type=\"text/javascript\">\n" +
+						"$(document).ready(function(){\n" +
+        				"	$('#LOGOUTpanel1').hide();\n" +
+        				"});\n" +
+        				"</script>\n"
+						);
+				//通常時のみ（Prev/Nextでは行わない）
+        		if(headerFlag==1)
+        		header.append("<?php\n" +
+        				"if(isset($_POST['ssql_logout1'])){\n" +
+        				"	//ログアウト処理\n" +
+        				"	//セッション変数を全て解除\n" +
+        				"	$_SESSION = array();\n" +
+        				"	//セッションを切断するにはセッションクッキーも削除\n" +
+        				"	//Note: セッション情報だけでなくセッションを破壊\n" +
+        				"	if (isset($_COOKIE[session_name()])) {\n" +
+        				"    	setcookie(session_name(), '', time()-42000, '/');\n" +
+        				"	}\n" +
+        				"	session_destroy();\n" +
+        				"	echo '<script type=\"text/javascript\">window.parent.location.reload(true);</script>';	//reload\n" +
+        				"}\n" +
+        				"?>\n" +
+        				"<!-- Logout end -->\n");
+        				
+				header.append(
+        				"<!-- \"Login & Logout\" end -->\n" +
+        				"\n" +
+        				"\n" +
+        				"<?php\n" +
+        				"//<!-- display_html start -->\n" +
+        				"function display_html(){\n" +
+        				"	if(isset($_SESSION['"+sessionVariable_UniqueName+"id'])){\n" +
+        				"		echo <<<EOF\n" +
+        				"		\n");
 	        }
 	        //added by goto 20130508  "Login&Logout" end
 	        
@@ -1153,15 +1248,6 @@ public class Mobile_HTML5Env extends LocalEnv {
 	        	header.append("\n<div id=\"showValues\"><!-- ユーザ名等を表示 --></div>\n");	//ユーザ名
 	        }
 	        	
-	        //commented out by goto  201203
-//	        header.append("<div");
-//	        header.append(div);
-//	        header.append(titleclass);
-//	        header.append(">");
-	        //header.append(title);		//disuse
-	        //tk end///////////////////////////////////////////////////////
-	        //chie//
-
 	        Log.out("--></style></head>");
 	        Log.out("<body>");
         }
@@ -1237,10 +1323,8 @@ public class Mobile_HTML5Env extends LocalEnv {
 	    		if(!noAd){
 		    		//SuperSQLの宣伝を付加
 		    		footer.append("<div style=\"font-size:11;\">\n");
-		//    		footer.append("<a href=\""+filename.substring(0,filename.lastIndexOf(".html"))+"_sql.html\" target=\"_self\">This HTML</a> was generated by <a href=\"http://ssql.db.ics.keio.ac.jp/\" target=\"_self\">SuperSQL</a>\n");
 		    		if(fff.equals(""))	footer.append("This HTML was generated by <a href=\"http://ssql.db.ics.keio.ac.jp/\" rel=\"external\">SuperSQL</a>\n");
 		    		else				footer.append("<a href=\""+ fff +"\" target=\"_self\">This HTML</a> was generated by <a href=\"http://ssql.db.ics.keio.ac.jp/\" rel=\"external\">SuperSQL</a>\n");
-					//footer.append("<a href=\""+filename+"_sql.html\" target=\"_self\">This HTML</a> was generated by <a href=\"http://ssql.db.ics.keio.ac.jp/\" target=\"_self\">SuperSQL</a>\n");
 					footer.append("</div>\n\n");
 	    		}
     		}
@@ -1250,7 +1334,6 @@ public class Mobile_HTML5Env extends LocalEnv {
     		
     		if(footerFlag==1 && Mobile_HTML5Function.footerString.equals("") && flickBarFlg)	//通常時のみ（Prev/Nextでは行わない）
     			Mobile_HTML5Function.footerString
-//    			+= "<div data-role=\"footer\" data-position=\"fixed\" style=\"padding:11px 0px; border:1px solid gray; background:rgba(0,0,0,0.4);\" id=\"footer1\">\n" +
     			+= "<div data-role=\"footer\" data-position=\"fixed\" style=\"padding:11px 0px; background:gray; filter: alpha(opacity=25); -moz-opacity:0.25; opacity:0.25;\" id=\"footer1\">\n" +
     			   "<=&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Flick bar&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=>"+"\n" +
 		    	   "</div>\n";
@@ -1272,11 +1355,8 @@ public class Mobile_HTML5Env extends LocalEnv {
     		if(SSQLparser.sessionFlag || Mobile_HTML5Function.searchCount>1 || Mobile_HTML5Function.selectCount>1){
     			footer.append(Mobile_HTML5Env.PHP);			//PHPストリングを付加			//added by goto 20130515  "search"
     		}
-    		//footer.append(HTMLEnv.PHPpost+"\n?>\n");		//PHPpostストリングを付加		//added by goto 20130531
-    		//footer.append(HTMLEnv.PHPfunc);		//PHPfuncストリングを付加		//added by goto 20130531
     		if(footerFlag==1)		//通常時のみ（Prev/Nextでは行わない）
     			footer.append("\n\n");
-//	    		footer.append("\n<BR><BR>\n");
     		footer.append("</div><!-- Close <div data-role=\"page\"> -->\n<!-- data-role=page end -->\n");			//Close <div data-role="page">
     		footer.append("\n</BODY>\n</HTML>\n");
 	        Log.out("</body></html>");
