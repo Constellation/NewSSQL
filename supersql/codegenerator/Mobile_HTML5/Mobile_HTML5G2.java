@@ -95,10 +95,10 @@ public class Mobile_HTML5G2 extends Grouper {
             	parentfile = html_env.filename;
                 parentnextbackfile = html_env.nextbackfile;
                 parentcode = html_env.code;
-                parentcss = html_env.css;
+//                parentcss = html_env.css;
                 parentheader = html_env.header;
                 parentfooter = html_env.footer;
-    	        html_env.css = new StringBuffer();
+//    	        html_env.css = new StringBuffer();
     	        html_env.header = new StringBuffer();
     	        html_env.footer = new StringBuffer();
 //            	//decos.remove("row");	//対策
@@ -427,7 +427,7 @@ public class Mobile_HTML5G2 extends Grouper {
         	//ファイル名・コード等をparent HTMLのものへ戻す
         	html_env.filename = parentfile;
         	html_env.code = parentcode;
-            html_env.css = parentcss;
+//            html_env.css = parentcss;
             html_env.header = parentheader;
             html_env.footer = parentfooter;
             html_env.nextbackfile = parentnextbackfile;

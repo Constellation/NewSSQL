@@ -8,14 +8,12 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 
-import com.ibm.db2.jcc.a.e;
-import com.ibm.db2.jcc.am.l;
-import com.ibm.db2.jcc.am.no;
-
+import supersql.codegenerator.Asc_Desc;
+import supersql.codegenerator.Asc_Desc.AscDesc;
 import supersql.codegenerator.DecorateList;
-import supersql.codegenerator.FuncArg;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.TFE;
 import supersql.common.DB;
@@ -1355,6 +1353,11 @@ public class Mobile_HTML5 {
 	    		orderby = query.substring(query.lastIndexOf(" order by ")+" order by ".length());
 	    		query = query.substring(0,query.lastIndexOf(" order by "));
 	    	}
+	    	String asc_desc = getOrderByString();
+	    	if(!asc_desc.isEmpty()){
+	    		if (!orderby.isEmpty())	orderby += ", ";
+	    		orderby += asc_desc;
+	    	}
 	    	if(query.contains(" having ")){
 	    		having = query.substring(query.lastIndexOf(" having ")+" having ".length());
 	    		having = having.replaceAll("\\\"","\\\\\"");	// " -> \"
@@ -1418,7 +1421,7 @@ public class Mobile_HTML5 {
 						"    $dynamic_pop_Flg = array("+dynamic_popFlg+");\n" +
 						"    $groupby = \""+groupby+"\";\n" +
 						"    $having0 = \""+having+"\";\n" +
-						"    $orderby = \""+((orderby!="")?(" ORDER BY "+orderby+" "):("")) +"\";\n" +
+						"    $orderby = \""+((!orderby.isEmpty())?(" ORDER BY "+orderby+" "):("")) +"\";\n" +
 						"    $limit = \""+((limit!="")?(" LIMIT "+limit+" "):("")) +"\";\n" +
 						((limit!="")?("    $limitNum = "+limit+";\n"):("")) +	//TODO dynamicPaging時にLIMITが指定されていた場合
 						"\n";
@@ -1575,6 +1578,24 @@ public class Mobile_HTML5 {
         }
 		return false;
 	}
+	
+	//getOrderByString
+	private static String getOrderByString() {
+		String s = "";
+		Asc_Desc ad = new Asc_Desc();
+		ad.sorting();
+		
+		@SuppressWarnings("static-access")
+		Iterator<AscDesc> it = ad.asc_desc.iterator();
+		while (it.hasNext()) {
+			AscDesc data = it.next();
+			s += data.getAscDesc()+", ";
+			//Log.info(data.getNo() + " : " + data.getAscDesc());
+		}
+        if(!s.isEmpty() && s.contains(","))	s = s.substring(0, s.lastIndexOf(","));
+		return s;
+	}
+	
 	private static String getDynamicHTML(int num, String phpFileName){
 		phpFileName = new File(phpFileName).getName();
 		String s =

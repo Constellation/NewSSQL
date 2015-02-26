@@ -318,19 +318,21 @@ public class Mobile_HTML5Env extends LocalEnv {
 	        header.append(cssfile);
 			header.append(jsFile);		//added by goto 20130703
             
-            //added by goto 20130311  "background"
-			css.append("\n");
-	        if (!bg.equals("")){
-	        	css.append(".ui-page{ background: transparent url(../"+bg+") }\n");
-	        }
-            //20130309  "div"
-            css.append("div{ text-align:center; float:center; vertical-align:middle; }\n");
-            //20130315	"長い文字が...と省略されるのを防ぐ (*:全てのタイプに適用) "
-            css.append("* { white-space: normal; }\n");
-            css.append(".error{ color:red; text-align:left; display:block; } -->\n");
-            css.append(".ui-grid { overflow: hidden; }\n");
-            css.append(".ui-block { margin: 0; padding: 0; float: left; min-height: 1px; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -ms-box-sizing: border-box; box-sizing: border-box; }\n");
-
+			if(headerFlag == 1){
+	            //added by goto 20130311  "background"
+				css.append("\n");
+		        if (!bg.equals("")){
+		        	css.append(".ui-page{ background: transparent url(../"+bg+") }\n");
+		        }
+	            //20130309  "div"
+	            css.append("div{ text-align:center; float:center; vertical-align:middle; }\n");
+	            //20130315	"長い文字が...と省略されるのを防ぐ (*:全てのタイプに適用) "
+	            css.append("* { white-space: normal; }\n");
+	            css.append(".error{ color:red; text-align:left; display:block; } -->\n");
+	            css.append(".ui-grid { overflow: hidden; }\n");
+	            css.append(".ui-block { margin: 0; padding: 0; float: left; min-height: 1px; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -ms-box-sizing: border-box; box-sizing: border-box; }\n");
+			}
+            
 			header.append("<!-- Generated CSS -->\n");
 			header.append("<link rel=\"stylesheet\" type=\"text/css\" href=\""+ Jscss.getGenerateCssFileName(0) + "\">\n");
 	        header.append("</HEAD>\n\n");

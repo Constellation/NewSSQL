@@ -4,6 +4,7 @@
  */
 package supersql.parser;
 
+import supersql.codegenerator.Asc_Desc;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
 
@@ -80,7 +81,7 @@ public class Preprocessor {
 
     		/* 3. convert if there exist "order by" */
     		if (order_flag) {
-
+    			new Asc_Desc().addOrderBy(order, token);
     			/* decoration exists originally */
     			if (st.lookToken().equals("@")) {
     					token = token + st.nextToken();
