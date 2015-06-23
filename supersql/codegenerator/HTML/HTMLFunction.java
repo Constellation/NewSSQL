@@ -1063,7 +1063,16 @@ public class HTMLFunction extends Function {
 		/*
 		 * ImageFile function : <td> <img src="${imgpath}/"+att /> </td>
 		 */
-		String path = this.getAtt("path", ".");
+		// little change by masato 20150623
+		String path = this.Args.get(1).toString();
+		if(path == null){
+			path = ".";
+		} else {
+			if(path.startsWith("'") || path.startsWith("\"")){
+				path = path.substring(1,  path.length()-1);
+			}
+		}
+//		String path = this.getAtt("path", ".");
 		if (!path.startsWith("/")) {
 			String basedir = GlobalEnv.getBaseDir();
 			if (basedir != null && basedir != "") {
