@@ -1,5 +1,7 @@
 package supersql.dataconstructor;
 
+import java.util.Arrays;
+
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
 import supersql.parser.Preprocessor;
@@ -207,15 +209,16 @@ public class OrderBy {
 	}
 
 	/* list "order by" in a proper order */
-	public static ExtList tableToList(ExtList table) {
+	public static ExtList tableToList(ExtList table, int sch_contain_itemnum) {
 		boolean done = false;
 		int j, index_of_bracket;
 		ExtList info = new ExtList();
 		//added by ryosuke start
-		//番号が振られている場合はtrue, 振られていない場合はfalseを格納する配列
-		boolean[] used = new boolean[table.size()];
-		//used配列に対応して、" asc"か" desc"を格納する配列
-		String[] usedad = new String[table.size()];
+		//属性に数字指定ascが指定されてる場合は1, 数字指定が無い場合は2を格納する配列
+		int[] used = new int[sch_contain_itemnum];
+		Arrays.fill(used, 0);
+		//used配列に対応して、指定された" asc"又は" desc"を格納する配列
+		String[] usedad = new String[sch_contain_itemnum];
 
 		j = 1;
 		while (table.size() != 0) {
@@ -224,10 +227,11 @@ public class OrderBy {
 					index_of_bracket = table.get(i).toString().indexOf("[");
 					if (index_of_bracket > 3 && Integer.parseInt(table.get(i).toString().substring(3, index_of_bracket)) == j) {
 						info.add(table.get(i).toString().substring(index_of_bracket+1, table.get(i).toString().length()-1) + " asc");
-						used[Integer.parseInt(table.get(i).toString().substring(index_of_bracket+1, table.get(i).toString().length()-1))-1] = true;
+						used[Integer.parseInt(table.get(i).toString().substring(index_of_bracket+1, table.get(i).toString().length()-1))] = 1;
 						done = true;
 					} else if (index_of_bracket ==3) {
-						usedad[Integer.parseInt(table.get(i).toString().substring(index_of_bracket+1, table.get(i).toString().length()-1))-1] = " asc";
+						used[Integer.parseInt(table.get(i).toString().substring(index_of_bracket+1, table.get(i).toString().length()-1))] = 2;
+						usedad[Integer.parseInt(table.get(i).toString().substring(index_of_bracket+1, table.get(i).toString().length()-1))] = " asc";
 						done = true;
 					}
 				}
@@ -235,10 +239,11 @@ public class OrderBy {
 					index_of_bracket = table.get(i).toString().indexOf("[");
 					if (index_of_bracket > 4 && Integer.parseInt(table.get(i).toString().substring(4, index_of_bracket)) == j) {
 						info.add(table.get(i).toString().substring(index_of_bracket+1, table.get(i).toString().length()-1) + " desc");
-						used[Integer.parseInt(table.get(i).toString().substring(index_of_bracket+1, table.get(i).toString().length()-1))-1] = true;
+						used[Integer.parseInt(table.get(i).toString().substring(index_of_bracket+1, table.get(i).toString().length()-1))] = 1;
 						done = true;
 					} else if (index_of_bracket == 4) {
-						usedad[Integer.parseInt(table.get(i).toString().substring(index_of_bracket+1, table.get(i).toString().length()-1))-1] = " desc";
+						used[Integer.parseInt(table.get(i).toString().substring(index_of_bracket+1, table.get(i).toString().length()-1))] = 2;
+						usedad[Integer.parseInt(table.get(i).toString().substring(index_of_bracket+1, table.get(i).toString().length()-1))] = " desc";
 						done = true;
 					}
 				}
@@ -251,8 +256,8 @@ public class OrderBy {
 			j++;
 		}
 		for (int i=0; i < used.length; i++) {
-			if (used[i] == false) {
-				info.add((i+1) + usedad[i]);
+			if (used[i] == 2) {
+				info.add((i) + usedad[i]);
 			}
 		}
 		//		end
