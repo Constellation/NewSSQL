@@ -48,7 +48,7 @@ public class HTML5C2 extends Connector{
 		}
 		
 		html5Env.code.append("</div>\n");
-		
+		Log.out("+++++++ C2 +++++++");
 		return null;
 	}
 }

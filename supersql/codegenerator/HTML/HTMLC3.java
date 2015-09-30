@@ -68,6 +68,7 @@ public class HTMLC3 extends Connector {
 				+ String.valueOf(htmlEnv.countFile) + ".html";
 		htmlEnv.linkFlag++;
 		Log.out("linkflag =" + htmlEnv.linkFlag);
+		Log.out("c3items = " + c3items);
 		this.setDataList(data_info);
 
 		this.worknextItem();

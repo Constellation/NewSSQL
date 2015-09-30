@@ -27,6 +27,11 @@ public class HTML5Factory extends Factory {
 	}
 	
 	@Override
+	public Connector createC3(Manager manager) {
+		return new HTML5C3(manager, html5Env, html5Env2);
+	}
+	
+	@Override
 	public Grouper createG1(Manager manager) {
 		return new HTML5G1(manager, html5Env, html5Env2);
 	}

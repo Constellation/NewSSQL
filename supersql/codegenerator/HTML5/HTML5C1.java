@@ -50,6 +50,7 @@ public class HTML5C1 extends Connector {
 		
 		html5Env.code.append("</div>\n");
 		
+		Log.out("+++++++ C1 +++++++");
 		return null;
 	}
 }

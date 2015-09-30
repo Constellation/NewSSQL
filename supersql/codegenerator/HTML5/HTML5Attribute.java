@@ -1,5 +1,7 @@
 package supersql.codegenerator.HTML5;
 
+import java.io.File;
+
 import supersql.codegenerator.Attribute;
 import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
@@ -28,8 +30,29 @@ public class HTML5Attribute extends Attribute {
 		html5Env.code.append(HTML5Env.getClassID(this));
 		html5Env.code.append(" att\">");
 		
+		// C3, G3の場合 <a>
+		if (html5Env.linkFlag > 0) {
+			//TODO
+			String fileDir = new File(html5Env.linkUrl).getAbsoluteFile().getParent();
+			if (fileDir.length() < html5Env.linkUrl.length() && fileDir.equals(html5Env.linkUrl.substring(0, fileDir.length()))) {
+				String relative_path = html5Env.linkUrl.substring(fileDir.length() + 1);
+				html5Env.code.append("<a href=\"" + relative_path + "\">");
+				Log.out("<a href=\"" + relative_path + "\">");
+			} else {
+				html5Env.code.append("<a href=\"" + html5Env.linkUrl + "\">");
+				Log.out("<a href=\"" + html5Env.linkUrl + "\">");
+			}
+		}
+		
 		Log.out("data_info = " + data_info);
 		html5Env.code.append(this.getStr(data_info));
+		
+		// C3, G3の場合 </a>
+		if (html5Env.linkFlag > 0) {
+			//TODO
+			html5Env.code.append("</a>");
+			Log.out("</a>");
+		}
 		
 		html5Env.code.append("</div>\n");
 		

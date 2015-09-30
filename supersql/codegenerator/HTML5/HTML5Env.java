@@ -16,12 +16,15 @@ public class HTML5Env extends LocalEnv {
 	private Document html5Env;
 	
 	public StringBuffer code;
+	public int countFile = 0; // C3, G3
 	public static StringBuffer css;
 	public String fileName;
 	public StringBuffer footer;
 	public int haveClass = 0;
 	public StringBuffer header;
+	public int linkFlag = 0; // C3, G3
 	public String linkOutFile;
+	public String linkUrl; // C3, G3
 	public Vector<String> notWrittenClassId = new Vector<String>();
 	public String outDir;
 	public String outFile;
@@ -102,6 +105,7 @@ public class HTML5Env extends LocalEnv {
 	}
 	
 	public void header_creation() { // css等詳細ヘッダーの追加
+		header.append("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
 		header.append("<!-- Genarated CSS -->\n");
 		header.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + Jscss.getGenerateCssFileName(0) + "\">\n");
 	}

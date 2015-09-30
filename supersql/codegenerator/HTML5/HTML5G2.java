@@ -41,6 +41,7 @@ public class HTML5G2 extends Grouper {
 		
 		html5Env.code.append("</div>");
 		
+		Log.out("+++++++ G2 +++++++");
 		return null;
 	}
 }
