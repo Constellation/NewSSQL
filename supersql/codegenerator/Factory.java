@@ -17,7 +17,7 @@ public class Factory {
 		args = new Class[3];
 		try {
 			Class argsClass = Class.forName(getClassPrefix() + "Env");
-			args[0] = Class.forName("supersql.codegenerator.Manager");;
+			args[0] = Class.forName("supersql.codegenerator.Manager");
 			args[1] = argsClass;
 			args[2] = argsClass;
 		} catch (ClassNotFoundException e) {

@@ -26,7 +26,7 @@ import supersql.extendclass.ExtList;
 
 public class SSQLparser {
 
-	private String commentOutLetters = ""+GlobalEnv.COMMENT_OUT_LETTER+GlobalEnv.COMMENT_OUT_LETTER;	//="--"
+	private String commentOutLetters = ""+GlobalEnv.COMMENT_OUT_LETTER+GlobalEnv.COMMENT_OUT_LETTER;	// = "--"
     
     //added by goto 20130508  "Login&Logout"
 	public static boolean sessionFlag = false;
@@ -58,23 +58,25 @@ public class SSQLparser {
 
 	public static int xpathTagExist = 0;
 
-	private CodeGenerator codeGenerator;
+	private CodeGenerator codeGenerator; // ここにこれあっていいのか？
+	private String media; // 同上
+	private String QueryImage; // 同上
+	
+	private static boolean distinct = false;
 
 	private StringBuffer embedFrom = new StringBuffer();
 	private StringBuffer embedGroup = new StringBuffer();
 	private StringBuffer embedHaving = new StringBuffer();
 	private StringBuffer embedWhere = new StringBuffer();
+	
 	private boolean foreachFlag = false;
 	private String foreachFrom = "";
-
 	private ForeachInfo foreachInfo;
 	private String foreachWhere = "";
 
 	private FromInfo fromInfo;
 	private String groupStatement;
 	private String havingStatement;
-	private String media;
-	private String QueryImage;
 
 	private int tableNum = 0;
 
@@ -87,70 +89,48 @@ public class SSQLparser {
 	private StringBuffer group_c = new StringBuffer();
 	private StringBuffer having_c = new StringBuffer();
 	
-	private static boolean distinct = false;
-
-	public static String get_from_info_st() {
-		if (fromInfoString == null) {
-			return "";
-		}
-		return fromInfoString;
-	}
-
-	public static boolean isDbpediaQuery() {
-		return dbpediaQuery;
-	}
-
-	public static void set_from_info_st(String fi) {
-		fromInfoString = fi;
-	}
-
-	public static void setDbpediaQuery(boolean dbpediaQuery) {
-		SSQLparser.dbpediaQuery = dbpediaQuery;
-	}
-
 	public SSQLparser() {
 		parseSSQL(this.getSSQLQuery(), 10000);
 	}
 
-	public SSQLparser(int id) {
+	public SSQLparser(int id) { // TODO
 		parseSSQL(this.getSSQLQuery(), id);
 	}
 
-	public SSQLparser(String a) {
+	public SSQLparser(String a) { // TODO
 		parseSSQL(this.getSSQLQuery2(), 10000);
 	}
 
-	public SSQLparser(StringBuffer querybuffer) {
+	public SSQLparser(StringBuffer querybuffer) { // TODO
 		parseSSQL(querybuffer.toString(), 10000);
 	}
-
+	
 	private String getSSQLQuery() {
 
-		String query = GlobalEnv.getQuery();
-		if (query != null) {
-			query = query.trim();
-		}
+//		String query = GlobalEnv.getQuery(); // -queryによるクエリ取得
+//		if (query != null) {
+//			query = query.trim();
+//		}
+		
+		String query = "";
 
-		String filename = GlobalEnv.getfilename();
+		String filename = GlobalEnv.getfilename(); // -fによるファイル読み込み
 		if (filename == null || filename.isEmpty()) {
 			Log.err("Error[SQLparser]: File Is Not Specified.");
-			GlobalEnv.addErr("Error[SQLparser]: File Is Not Specified.");
+			GlobalEnv.addErr("Error[SQLparser]: File Is Not Specified."); // 必要か？
 			return "";
 		}
 
-		Log.info("[Parser:Parser] filename = " + filename);
 		// 20140624_masato
 		GlobalEnv.queryName = "[Parser:Parser] filename = " + filename;
+		Log.info(GlobalEnv.queryName);
 		BufferedReader in;
 		StringBuffer tmp = new StringBuffer();
 		try{
 			//in = new BufferedReader(new FileReader(filename));
-			//TODO: file-encoding��������������������������������������������������������������������������������������������������������������������������� ������������������JISAutoDetect: ������������������������������������������������eader������������������������������������������������������
-			// ������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������������			//BufferedReader
 			//InputStream is = getInputStream(filename);
 			//in = new BufferedReader(new InputStreamReader(getInputStream(filename), "JISAutoDetect"));
 			//in = new BufferedReader(new InputStreamReader(res.getInputStream(), "JISAutoDetect"));
-			// ������������������������������������������������������������������������������������UC���������������������������������������������������������������������������������������
 			//PrintWriter out = new PrintWriter(new OutputStreamWriter(res.getOutputStream(), "EUC-JP"))
 			in = new BufferedReader(new InputStreamReader(new FileInputStream(filename), "UTF-8"));		//changed by goto 20130519 (This is an important change.)
 
@@ -159,6 +139,7 @@ public class SSQLparser {
 				line = in.readLine();
 				if (line == null)	break;
 				
+				// /**/によるコメント処理
 				while (line.contains("/*")){
 					String line1 = line.substring(0, line.indexOf("/*"));
 					while (!line.contains("*/"))
@@ -182,8 +163,9 @@ public class SSQLparser {
 //				} 
 				
 				// #import  by goto 201312
-				line = Import.checkImportString(in, line);
+				line = Import.checkImportString(in, line); //TODO
 				
+				// -- 以降はコメントアウト
 				if (line.contains(commentOutLetters) || line.contains("\\\"") || line.contains("\"\"")){	//commentOutLetters = "--"
 					boolean dqFlg = false;
 					int i = 0;
@@ -208,8 +190,6 @@ public class SSQLparser {
 				}
 				
 //				//goto 20130915  "<$  $>"
-//				//"���������������������
-//				//TODO ���������������������������������
 //				boolean onlyTextFlg = false;	//This line has only text string.
 //				while (line.contains("<$") && !onlyTextFlg){
 ////				while ((line.contains("<$") || line.contains("$$")) && !onlyTextFlg){
@@ -354,37 +334,131 @@ public class SSQLparser {
 		GlobalEnv.queryLog = "\n[Parser:Parser] ssql statement = " + query;
 		
 		// #import  by goto 201312
-		query = Import.importProcess(query);
+		query = Import.importProcess(query); //TODO
 		
 		//goto 20130915-2  "<$  $>"
-		query = Embed.checkEmbed(query);
+		query = Embed.checkEmbed(query); // TODO
 
 		//goto
-		media = getGenereteMedia(query);
+		media = getGenerateMedia(query);
 		if(media.endsWith("{")){
-			//generate MEDIA{���->���generate MEDIA {
+			//generate MEDIA{ -> generate MEDIA {
 			media = media.substring(0,media.length()-1);
 			query = query.replace(media+"{", media+" {");
 		}
 		media = media.toLowerCase();
 		if(media.equals("html") || media.equals("mobile_html5")
 		|| media.equals("html_flexbox") || media.equals("ehtml")){		// add 20141204 masato for ehtml
-			query = replaceQuery_For_HTML_and_MobileHTML5(query);
+			query = replaceQuery_For_HTML_and_MobileHTML5(query); // 改行などをhtmlタグにして変換 //TODO
 		}
 		return query;
 	}
-
+	
 	// goto
 	// return Generate media name
-	private String getGenereteMedia(String query){
+	private String getGenerateMedia(String query){
 		try{
 			StringTokenizer st = new StringTokenizer(query);
 			while(st.hasMoreTokens()){
 				if(st.nextToken().toString().toLowerCase().equals("generate"))
 					return st.nextToken().toString();
 			}
-		}catch(Exception e){ }
+		}catch(Exception e){ 
+			Log.err("Exception error from supersql.parser.SSQLparser.getGenerateMedia");
+		}
 		return "";
+	}
+	
+	private void parseSSQL(String QueryString, int id) {
+		// replace '*' to attributes added by chie
+		// ex. generate media * from table
+		if (QueryString.contains("*")) {
+			QueryString = replaceQuery(QueryString);
+		}
+
+		QueryImage = QueryString;
+		StringTokenizer st = new StringTokenizer(QueryString);
+
+		try {
+			if (!st.hasMoreTokens()) {
+				Log.err("*** No Query Specified ***");
+				throw (new IllegalStateException());
+			}
+
+			String nt = st.nextToken().toString();
+			Log.out("[Parser:Parser] start parsing");
+
+			preProcess(st, nt); // FOREACH, REQUEST, SESSIONなどのフラグ付け GENERATEまでポインタ
+
+			media = st.nextToken().toString();
+			if(media.equalsIgnoreCase("DISTINCT")){
+				distinct = true;
+				media = st.nextToken().toString();
+			}
+
+			// for embed css TFE_ID
+			codeGenerator = new CodeGenerator(id);
+			// mediaの設定
+			codeGenerator.setFactory(media);
+			codeGenerator.initiate();
+
+			StringBuffer tfe = new StringBuffer();
+
+			// FOREACH
+			if (foreachFlag) {
+				tfe.append("[foreach(" + foreachInfo.getForeachAtt() + ")?");
+			}
+
+			// tfeの格納
+			processFROM(tfe, st);
+
+			// FOREACH
+			if (foreachFlag) {
+				tfe.append("]%");
+			}
+			
+			Log.info("[Parser:tfe] tfe = " + tfe);
+
+			Preprocessor preprocessor = new Preprocessor(tfe.toString());
+			tfe = preprocessor.pushAggregate();
+			tfe = preprocessor.pushOrderBy();
+			Log.out("[Parser:tfe] converted_tfe = " + tfe);
+
+			// tfeの木構造を生成
+			tfeInfo = new TFEparser(tfe.toString(), codeGenerator);
+			tfeInfo.debugout();
+
+			processKeywords(st);
+			postProcess();
+			
+		} catch (IllegalStateException e) {
+			System.err
+			.println("Error[SSQLparser]: Syntax Error in SSQL statement : "
+					+ QueryImage);
+			GlobalEnv
+			.addErr("Error[SSQLparser]: Syntax Error in SSQL statement : "
+					+ QueryImage);
+			return;
+		}
+	}
+
+	public static String get_from_info_st() {
+		if (fromInfoString == null) {
+			return "";
+		}
+		return fromInfoString;
+	}
+
+	public static boolean isDbpediaQuery() {
+		return dbpediaQuery;
+	}
+
+	public static void set_from_info_st(String fi) {
+		fromInfoString = fi;
+	}
+
+	public static void setDbpediaQuery(boolean dbpediaQuery) {
+		SSQLparser.dbpediaQuery = dbpediaQuery;
 	}
 	
 	// replaceQuery_For_HTML_and_MobileHTML5
@@ -887,130 +961,6 @@ public class SSQLparser {
 		}
 		Log.out("[Paeser:Where] where = " + whereInfo);
 	}
-	
-	private void parseSSQL(String QueryString, int id) {
-		// replace '*' to attributes added by chie
-		if (QueryString.contains("*")) {
-			QueryString = replaceQuery(QueryString);
-		}
-
-		QueryImage = QueryString;
-		StringTokenizer st = new StringTokenizer(QueryString);
-
-		try {
-			if (!st.hasMoreTokens()) {
-				Log.err("*** No Query Specified ***");
-				throw (new IllegalStateException());
-			}
-
-			String nt = st.nextToken().toString();
-			Log.out("[Parser:Parser] start parsing");
-
-			preProcess(st, nt);
-
-			media = st.nextToken().toString();
-			if(media.equalsIgnoreCase("DISTINCT")){
-				distinct = true;
-				media = st.nextToken().toString();
-			}
-
-			// for embed css TFE_ID
-			codeGenerator = new CodeGenerator(id);
-			codeGenerator.setFactory(media.toUpperCase());
-			codeGenerator.initiate();
-
-			StringBuffer tfe = new StringBuffer();
-
-			// FOREACH
-			if (foreachFlag) {
-				tfe.append("[foreach(" + foreachInfo.getForeachAtt() + ")?");
-			}
-
-			processFROM(tfe, st);
-
-			// FOREACH
-			if (foreachFlag) {
-				tfe.append("]%");
-			}
-			
-			Log.info("[Parser:tfe] tfe = " + tfe);
-
-			Preprocessor preprocessor = new Preprocessor(tfe.toString());
-			tfe = preprocessor.pushAggregate();
-			tfe = preprocessor.pushOrderBy();
-			Log.out("[Parser:tfe] converted_tfe = " + tfe);
-
-			tfeInfo = new TFEparser(tfe.toString(), codeGenerator);
-			tfeInfo.debugout();
-
-			processKeywords(st);
-			postProcess();
-			
-		} catch (IllegalStateException e) {
-			System.err
-			.println("Error[SSQLparser]: Syntax Error in SSQL statement : "
-					+ QueryImage);
-			GlobalEnv
-			.addErr("Error[SSQLparser]: Syntax Error in SSQL statement : "
-					+ QueryImage);
-			return;
-		}
-	}
-
-	private void preProcess(StringTokenizer st, String nt) {
-		
-		// FOREACH
-		if (nt.equalsIgnoreCase("FOREACH")) {
-			foreachFlag = true;
-			StringBuffer foreach_c = new StringBuffer();
-			while (st.hasMoreTokens()) {
-				nt = st.nextToken().toString();
-				if (nt.equalsIgnoreCase("GENERATE"))
-					break;
-				foreach_c.append(nt + " ");
-			}
-			Log.out("*** This query contains FOREACH clause ***");
-			Log.out(" foreach_c :" + foreach_c);
-
-			foreachInfo = new ForeachInfo(foreach_c.toString().trim());
-			foreachFrom = foreachInfo.getForeachFrom();
-			foreachWhere = foreachInfo.getForeachWhere();
-
-			Log.out("[Parser:Foreach] foreach = " + foreachInfo);
-		}
-		GlobalEnv.foreach_flag = foreachFlag;
-
-		// REQUEST SESSION
-		if (nt.equalsIgnoreCase("REQUEST")) {
-			while (st.hasMoreTokens()) {
-				nt = st.nextToken().toString();
-				if (nt.equalsIgnoreCase("GENERATE"))
-					break;
-			}
-		}
-		
-		//SESSION  //added by goto 20130508  "Login&Logout"
-        if (nt.toUpperCase().matches("SESSION.*") || nt.toUpperCase().matches("LOGIN.*")) {
-            while (st.hasMoreTokens()) {
-            	sessionString += nt+" ";
-                nt = st.nextToken().toString();
-                if (nt.equalsIgnoreCase("GENERATE"))
-                    break;
-            }
-            sessionFlag = true;
-        }
-
-		// GENERATE medium
-		if (!nt.equalsIgnoreCase("GENERATE")) {
-			Log.err("*** The Query should start by GENERATE ***");
-			throw (new IllegalStateException());
-		}
-        
-		if (!st.hasMoreTokens()) {
-			Log.err("*** No medium/tfe Specified ***");
-			throw (new IllegalStateException());
-		}
-	}
 
 	// added by chie replace '*'
 	private String replaceQuery(String query) {
@@ -1147,6 +1097,62 @@ public class SSQLparser {
     	Log.out("query : " + queryResult);
     	return queryResult;
     }
+	
+	private void preProcess(StringTokenizer st, String nt) {
+		
+		// FOREACH
+		if (nt.equalsIgnoreCase("FOREACH")) {
+			foreachFlag = true;
+			StringBuffer foreach_c = new StringBuffer();
+			while (st.hasMoreTokens()) {
+				nt = st.nextToken().toString();
+				if (nt.equalsIgnoreCase("GENERATE"))
+					break;
+				foreach_c.append(nt + " ");
+			}
+			Log.out("*** This query contains FOREACH clause ***");
+			Log.out(" foreach_c :" + foreach_c);
+
+			foreachInfo = new ForeachInfo(foreach_c.toString().trim());
+			foreachFrom = foreachInfo.getForeachFrom();
+			foreachWhere = foreachInfo.getForeachWhere();
+
+			Log.out("[Parser:Foreach] foreach = " + foreachInfo);
+		}
+		GlobalEnv.foreach_flag = foreachFlag;
+
+		// REQUEST SESSION //TODO
+		if (nt.equalsIgnoreCase("REQUEST")) { // 何の目的？
+			while (st.hasMoreTokens()) {
+				nt = st.nextToken().toString();
+				if (nt.equalsIgnoreCase("GENERATE"))
+					break;
+			}
+		}
+		
+		//SESSION  //added by goto 20130508  "Login&Logout"
+        if (nt.toUpperCase().matches("SESSION.*") || nt.toUpperCase().matches("LOGIN.*")) {
+            while (st.hasMoreTokens()) {
+            	sessionString += nt+" ";
+                nt = st.nextToken().toString();
+                if (nt.equalsIgnoreCase("GENERATE"))
+                    break;
+            }
+            sessionFlag = true;
+        }
+        GlobalEnv.session_flag = sessionFlag;
+
+		// GENERATE medium
+		if (!nt.equalsIgnoreCase("GENERATE")) {
+			Log.err("*** The Query should start by GENERATE ***");
+			throw (new IllegalStateException());
+		}
+        
+		if (!st.hasMoreTokens()) {
+			Log.err("*** No medium/tfe Specified ***");
+			throw (new IllegalStateException());
+		}
+	}
 
     public TFEparser gettfe_info() {
         return tfeInfo;

@@ -14,7 +14,7 @@ import java.util.Hashtable;
 
 public class GlobalEnv {
 	
-	public static final char COMMENT_OUT_LETTER = '-';	//�����ȥ����Ȥ˻��Ѥ���ʸ��(ex: -- ) // TODO
+	public static final char COMMENT_OUT_LETTER = '-';	//コメントアウト等による利用(ex: -- )
 	
     /* [����] getProperty�᥽�åɤˤ�äơ������ƥ�ץ�ѥƥ�����(OS���ե�������ڤ�ʸ��ۡ��ࡢ����ʤ�)����� */
     /* �����ƥ�ץ�ѥƥ��Ͱ����μ���: System.getProperties().list(System.out); */
@@ -27,7 +27,7 @@ public class GlobalEnv {
     public final static String USER_LANGUAGE = System.getProperty("user.language");		//使用言語(日本:ja)
     public final static String USER_COUNTRY = System.getProperty("user.country");		//国̾(日本:JP)
 
-    public final static String MEDIA_XML = System.getProperty("user.dir")+OS_FS+"XML"+OS_FS+"ssql_medias.xml"; // TODO 
+    public final static String MEDIA_XML = System.getProperty("user.dir")+OS_FS+"XML"+OS_FS+"ssql_medias.xml"; // このファイルは存在しないのでは？ //TODO 
 
 	public final static String DEFAULT_CHARACTER_CODE = "UTF-8";
     
@@ -66,7 +66,10 @@ public class GlobalEnv {
 	public static String where_line;
 
 	//foreachなど
-	public static boolean foreach_flag;
+	public static boolean foreach_flag = false;
+	
+	//sessionなど
+	public static boolean session_flag = false;
 
 	//optimizerなど
 	private static boolean optimizable = true;
@@ -253,7 +256,7 @@ public class GlobalEnv {
 	}
 
 	/**
-	 * SuperSQL����ʸ����Ǽ����Ƥ���ե�����̾
+	 * SuperSQLの基本的読み込み方法
 	 */
 	public static String getfilename() {
 		return seek("-f");
@@ -427,7 +430,7 @@ public class GlobalEnv {
 	}
 
 	/*
-	 * ����ʸ��������ʸ�Ȥ���(-f������)
+	 * -queryによるクエリの入力(-f以外のパターン)
 	 */
 	public static String getQuery() {
 		return seek("-query");

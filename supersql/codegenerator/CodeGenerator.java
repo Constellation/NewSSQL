@@ -80,19 +80,19 @@ public class CodeGenerator{
 		else {
 			String m = media.toLowerCase();
 			Log.err("Error[Media]: valid medium '"+m+"' not found");
-//			GlobalEnv.errorText += "Error[Media]: valid medium '"+m+"' not found";
 			GlobalEnv.addErr("Error[Media]: valid medium '"+m+"' not found");
+//			GlobalEnv.errorText += "Error[Media]: valid medium '"+m+"' not found";
 			
 			//20131106
 			//Log.err("\nGENERATE >>>> "+m+" <<<<");
-			String XMLfile = GlobalEnv.MEDIA_XML;
-			ArrayList<String> medias = ParseXML.getAttributes(XMLfile, "media", "name");
-			String media_list = LevenshteinDistance.checkLevenshteinAndSuggest(m, medias);
-			if(!media_list.isEmpty()){
-				Log.err("\n## Media list ##\n" + media_list);
-				// 20140624_masato
+//			String XMLfile = GlobalEnv.MEDIA_XML;
+//			ArrayList<String> medias = ParseXML.getAttributes(XMLfile, "media", "name");
+//			String media_list = LevenshteinDistance.checkLevenshteinAndSuggest(m, medias);
+//			if(!media_list.isEmpty()){
+//				Log.err("\n## Media list ##\n" + media_list);
+//				 //20140624_masato
 //				GlobalEnv.errorText += "\n## Media list ##\n" + media_list;
-			}
+//			}
 			System.exit(1);
 		}
 	}
