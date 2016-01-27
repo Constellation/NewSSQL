@@ -14,26 +14,26 @@ import java.util.Hashtable;
 
 public class GlobalEnv {
 	
-	public static final char COMMENT_OUT_LETTER = '-';	//�����ȥ����Ȥ˻��Ѥ���ʸ��(ex: -- )
+	public static final char COMMENT_OUT_LETTER = '-';	//�����ȥ����Ȥ˻��Ѥ���ʸ��(ex: -- ) // TODO
 	
     /* [����] getProperty�᥽�åɤˤ�äơ������ƥ�ץ�ѥƥ�����(OS���ե�������ڤ�ʸ��ۡ��ࡢ����ʤ�)����� */
     /* �����ƥ�ץ�ѥƥ��Ͱ����μ���: System.getProperties().list(System.out); */
-    public final static String USER_HOME = System.getProperty("user.home");				//�桼���Υۡ���ǥ��쥯�ȥ�
-    public final static String OS = System.getProperty("os.name");						//OS��̾��("Mac OS X" ��)
-    public final static String OS_LS = System.getProperty("line.separator");			//OS���Ȥβ��ԥ�����(Windows:"\r\n",Mac:"\r",UNIX:"\n" ��)
-    public final static String OS_FS = System.getProperty("file.separator");			//OS���ȤΥե�������ڤ�ʸ��(Windows:"\" , Mac��Linux:"/" ��)
-    public final static String OS_PS = System.getProperty("path.separator");			//OS���ȤΥѥ����ڤ�ʸ��(Windows";" , Mac��Linux":" ��)
-    public final static String EXE_FILE_PATH = getCurrentPath();	//�¹ԥե�����Υѥ�(�¹�jar�ե�������ɤ��ˤ��뤫)����� (�����:���Хѥ����֤äƤ����礢��)
-    public final static String USER_LANGUAGE = System.getProperty("user.language");		//�桼���θ���(���ܸ�:ja)  ���ܸ졦�Ѹ��ڤ��ؤ���ǽ���դ���Ȥ��˻��ѡ�
-    public final static String USER_COUNTRY = System.getProperty("user.country");		//�桼���ι�̾(����:JP)   ���ܸ졦�Ѹ��ڤ��ؤ���ǽ���դ���Ȥ��˻��ѡ�
+    public final static String USER_HOME = System.getProperty("user.home");				//ユーザのホームディレクトリの取得
+    public final static String OS = System.getProperty("os.name");						//OS名の取得("Mac OS X" など)
+    public final static String OS_LS = System.getProperty("line.separator");			//OSごとの行区切り文字(Windows:"\r\n",Mac:"\r",UNIX:"\n" など)
+    public final static String OS_FS = System.getProperty("file.separator");			//OSごとのファイル区切り文字(Windows:"\" , MacとLinux:"/" など)
+    public final static String OS_PS = System.getProperty("path.separator");			//OSごとのパス区切り文字(Windows";" , MacとLinux":" など)
+    public final static String EXE_FILE_PATH = getCurrentPath();	// TODO
+    public final static String USER_LANGUAGE = System.getProperty("user.language");		//使用言語(日本:ja)
+    public final static String USER_COUNTRY = System.getProperty("user.country");		//国̾(日本:JP)
 
-    public final static String MEDIA_XML = System.getProperty("user.dir")+OS_FS+"XML"+OS_FS+"ssql_medias.xml";
+    public final static String MEDIA_XML = System.getProperty("user.dir")+OS_FS+"XML"+OS_FS+"ssql_medias.xml"; // TODO 
 
-	public static final String DEFAULT_CHARACTER_CODE = "UTF-8";
+	public final static String DEFAULT_CHARACTER_CODE = "UTF-8";
     
     public static String query = "";
     
-	private static Hashtable<String, String> envs;
+	private static Hashtable<String, String> envs; //引数の情報を格納
 	
 	// 20140624_masato
 	public static String errorText = "";
@@ -42,50 +42,36 @@ public class GlobalEnv {
 	public static String queryLog = "";
 	public static String queryName = "";
 
-	//����ե�����ξ���
 	private static String layout = "";
 	
 	private static String host;
-
 	private static String db;
-
 	private static String user;
-
 	private static String home;
-
 	private static String outdir;
-
 	private static String password;
-
 	private static String encode;
-	
-	private static String apiServerUrl;
+	private static String apiServerUrl; // 使っているのか?
 
 	//chie start
 	private static String driver;
-
 	private static String optimizer;
-
 	private static String invokeServletPath; //used by online
-
 	private static String fileDirectory; //used by online
-
 	private static int tupleNum;
-
 	//chie end
 
-	//swf��
+	//swfなど
 	public static String table_name;
 	public static String where_line;
 
-	//foreach��
+	//foreachなど
 	public static boolean foreach_flag;
 
-	//added by ria 20110704 start
+	//optimizerなど
 	private static boolean optimizable = true;
-	//added by ria 20110704 end
 
-	//tk embed��
+	//tk embedなど
 	public static StringBuffer err = new StringBuffer();
 	public static int online_flag = 0;
 	public static int err_flag = 0;
@@ -98,9 +84,9 @@ public class GlobalEnv {
 	public static int startnum = 0;
 	public static int endnum = 0;
 
-	public static void setGlobalEnv(String[] args) {
-		err_flag = 0;
-		err = new StringBuffer();
+	public static void setGlobalEnv(String[] args) { // 引数のファイル名やオプション等を取得
+		// err_flag = 0; // TODO 最初に初期化されているから必要ない？
+		// err = new StringBuffer(); // TODO 上と同様？
 		envs = new Hashtable<String, String>();
 		String key = null;
 
@@ -120,7 +106,8 @@ public class GlobalEnv {
 		}
 		
 		//added by goto 20120707 start
-		//optimize level���ꥪ�ץ����"-O0,-O1,-O2,-O3"����Ѳ�ǽ��
+		//optimize level　"-O0,-O1,-O2,-O3"
+		//optimize level が設定されていればオプションを書き直す
 		for (int i = 0; i <= 3; i++)
 			if(envs.containsKey("-O"+i)){
 				envs.remove("-O"+i);
@@ -129,8 +116,8 @@ public class GlobalEnv {
 			}
 		//added by goto 20120707 end
 
-		setQuietLog();
-		getConfig();
+		setQuietLog(); // ログを出力するかどうか
+		getConfig(); // TODO
 		Log.out("GlobalEnv is " + envs);
 	}
 
@@ -163,14 +150,14 @@ public class GlobalEnv {
 	public static void getConfig() {
 		host = null;
 		db = null;
-		user = System.getProperty("user.name");
-		home = System.getProperty("user.home");
+		user = USER_HOME;
+		home = USER_HOME;
 		outdir = null;
 		driver = null;
 		password = null;
 		encode = null;
 		optimizer = null;
-		String config = getconfigfile();
+		String config = getconfigfile(); // -cでconfigファイルを指定できる
 		String[] c_value;
 
 		//tk
@@ -194,7 +181,7 @@ public class GlobalEnv {
 
 		if (c_value[0] == null && c_value[1] == null && c_value[2] == null
 				&& c_value[3] == null) {
-			     Log.out("No config file("+config+")!!");
+			     Log.err("No config file("+config+")");
 			return;
 		}
 		try {
@@ -242,7 +229,7 @@ public class GlobalEnv {
 		} catch (Exception ex) {
 		}
 
-		if(embedtmp == null)
+		if(embedtmp == null) //TODO
 			embedtmp = "/tmp";
 
 		Log.out("Config is {host=" + host + ", db=" + db + ", user=" + user
@@ -423,7 +410,7 @@ public class GlobalEnv {
 
 
 	/*
-	 * -debug������Ȥ�������Log.out����Ϥ���
+	 * -debugでLog.outの出力、-quietでLog.infoも出力しない
 	 */
 	public static void setQuietLog() {
 		if (seek("-debug") == null) {
@@ -487,8 +474,9 @@ public class GlobalEnv {
 			}
 			filein.close();
 		} catch (FileNotFoundException e1) {
-			Log.out("Configuration file " + config + " not found.");
+			Log.err("Configuration file " + config + " not found.");
 		} catch (IOException e) {
+			Log.err("IOEXception error from supersql.common.GlobalEnv.getConfigValue.");
 		}
 
 		return c_value;

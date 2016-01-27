@@ -10,7 +10,7 @@ import supersql.parser.SSQLparser;
 import supersql.parser.TFEmatcher;
 
 public class FrontEnd {
-//public class FrontEnd_ implements FrontEndService {
+//public class FrontEnd_ implements FrontEndService { // TODO
 
 	public static void main(String[] args) {
 		new FrontEnd(args);
@@ -19,17 +19,6 @@ public class FrontEnd {
 	public FrontEnd(String[] args) {
 		execSuperSQL(args);
 	}
-	
-//	// halken write 20140818
-//	@Override 
-//	public int[] FrontEndssql(String arg1, String arg2) {
-//		String args[] = new String[2];
-//		args[0] = arg1;
-//		args[1] = arg2;
-//		System.out.println(args[0] + " " + args[1]);
-//		int[] TFEdate = execSuperSQL(args);
-//		return TFEdate;
-//	}
 
 	public void execSuperSQL(String[] args) {
 
@@ -39,9 +28,9 @@ public class FrontEnd {
 
 		Log.info("//Entering SuperSQL System//");
 
-		Log.info("$$$$$ SSQLparser start $$$$$");
+		Log.out("$$$$$ SSQLparser start $$$$$");
 		SSQLparser parser = new SSQLparser();
-		Log.info("%%%%% SSQLparser end %%%%%");
+		Log.out("%%%%% SSQLparser end %%%%%");
 		
 		if (GlobalEnv.isCheckquery()){
 			if (GlobalEnv.getErrFlag() == 0)
@@ -54,20 +43,20 @@ public class FrontEnd {
 		long aftercg = 0;
 
 		if (GlobalEnv.getErrFlag() == 0) {
-			Log.info("$$$$$ codegenerator start $$$$$");
+			Log.out("$$$$$ codegenerator start $$$$$");
 			CodeGenerator codegenerator = parser.getcodegenerator();
-			Log.info("%%%%% codegenerator end %%%%%");
+			Log.out("%%%%% codegenerator end %%%%%");
 
 			if (GlobalEnv.getErrFlag() == 0) {
-				Log.info("$$$$$ DataConstructor start $$$$$");
+				Log.out("$$$$$ DataConstructor start $$$$$");
 				DataConstructor dc = new DataConstructor(parser);
-				Log.info("%%%%% DataConstructor end %%%%%");
+				Log.out("%%%%% DataConstructor end %%%%%");
 				afterdc = System.currentTimeMillis();
 
 				if (GlobalEnv.getErrFlag() == 0) {
-					Log.info("$$$$$ generateCode start $$$$$");
+					Log.out("$$$$$ generateCode start $$$$$");
 					codegenerator.generateCode(parser, dc.getData());
-					Log.info("%%%%% generateCode end %%%%%");
+					Log.out("%%%%% generateCode end %%%%%");
 					aftercg = System.currentTimeMillis();
 				}
 			}
