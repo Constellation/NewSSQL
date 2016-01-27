@@ -6,12 +6,12 @@ import supersql.codegenerator.CodeGenerator;
 
 public class Log {
 
-	private static int flag = 0;
-	private static int infoflag = 1;
+	private static int flag = 0; // Log.outを出力するかしないかのフラグ(デフォルトはしない)
+	private static int infoflag = 1; // Log.infoを出力するかしないかのフラグ(デフォルトはする)
 
-	private static int dotcount = 0;
+	private static int dotcount = 0; // TODO
 
-	private static StringBuffer buf = new StringBuffer();
+	private static StringBuffer buf = new StringBuffer(); // TODO
 
 	public static void setLog(int f) {
 		flag = f;
@@ -28,15 +28,15 @@ public class Log {
 			// do nothing
 			break;
 		case 1:
-			// ɸ����Ϥؽ���
+			// ログ出力
 			System.out.println(o.toString());
 			break;
 		case 2:
-			// ɸ�२�顼�ؽ���
+			// エラー出力
 			Log.err(o.toString());
 			break;
 		case 3:
-			// ɸ����Ϥ˥ɥåȤ����
+			// TODO
 			if (dotcount >= 600) {
 				dotreturn();
 			}
@@ -46,7 +46,7 @@ public class Log {
 			dotcount++;
 			break;
 		case 10:
-			// buffer�˳�Ǽ
+			// TODO
 			buf.append(o.toString()).append('\n');
 			break;
 		}
@@ -68,7 +68,7 @@ public class Log {
 		return buf.toString();
 	}
 
-	// ɸ��Ū��ư��ǽ��Ϥ������ (-quiet���ˤϽФʤ�)
+	// ログ出力 (-quietで出力しない)
 	public static void info(Object o) {
 		// add 20141204 masato for ehtml
 		if (CodeGenerator.getMedia() != null
@@ -80,19 +80,24 @@ public class Log {
 			// do nothing
 			break;
 		case 1:
-			// ɸ����Ϥؽ���
+			// ログ出力
 			dotreturn();
 			System.out.println(o.toString());
 			break;
 		case 2:
-			// ɸ�२�顼�ؽ���
+			// エラー出力
 			Log.err(o.toString());
 			break;
 		case 10:
-			// buffer�˳�Ǽ
+			// buffer // TODO
 			buf.append(o.toString()).append('\n');
 			break;
 		}
+	}
+	
+	public static void err(Object o) {
+		System.err.println(o.toString());
+		GlobalEnv.errorText += o.toString();
 	}
 
 	public static void ehtmlInfo(Object o) {
@@ -108,12 +113,7 @@ public class Log {
 	public static void o(Object o) {
 		out(o);
 	}
-
-	public static void err(Object o) {
-		System.err.println(o.toString());
-		GlobalEnv.errorText += o.toString();
-	}
-
+	
 	public static void e(Object o) {
 		err(o);
 	}

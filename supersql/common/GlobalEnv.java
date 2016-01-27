@@ -36,7 +36,7 @@ public class GlobalEnv {
 	private static Hashtable<String, String> envs; //引数の情報を格納
 	
 	// 20140624_masato
-	public static String errorText = "";
+	public static String errorText = ""; // エラーログの格納
 	public static String errorText_main = "";
 	public static String queryInfo = "";
 	public static String queryLog = "";
