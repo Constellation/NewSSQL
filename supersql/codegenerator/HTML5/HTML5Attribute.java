@@ -26,9 +26,15 @@ public class HTML5Attribute extends Attribute {
 		html5Env.append_css_def_att(HTML5Env.getClassID(this), this.decos);
 		
 		// HTMLコード書き込み
-		html5Env.code.append("<div class=\"");
-		html5Env.code.append(HTML5Env.getClassID(this));
-		html5Env.code.append(" att\">");
+		if (html5Env.tableFlag) {
+			html5Env.code.append("<td class=\"");
+			html5Env.code.append(HTML5Env.getClassID(this));
+			html5Env.code.append(" att\">");
+		} else {
+			html5Env.code.append("<div class=\"");
+			html5Env.code.append(HTML5Env.getClassID(this));
+			html5Env.code.append(" att\">");
+		}
 		
 		// C3, G3の場合 <a>
 		if (html5Env.linkFlag > 0) {
@@ -45,7 +51,14 @@ public class HTML5Attribute extends Attribute {
 		}
 		
 		Log.out("data_info = " + data_info);
-		html5Env.code.append(this.getStr(data_info));
+		String data = this.getStr(data_info);
+		Log.out("data = " + data);
+		data = data.replace("\\r\\n", "<br>");
+		data = data.replace("\\r", "<br>");
+		data = data.replace("\\n", "<br>");
+		Log.out("replace data = " + data);
+		// html5Env.code.append(this.getStr(data_info));
+		html5Env.code.append(data);
 		
 		// C3, G3の場合 </a>
 		if (html5Env.linkFlag > 0) {
@@ -54,7 +67,11 @@ public class HTML5Attribute extends Attribute {
 			Log.out("</a>");
 		}
 		
-		html5Env.code.append("</div>\n");
+		if (html5Env.tableFlag) {
+			html5Env.code.append("</td>\n");
+		} else {
+			html5Env.code.append("</div>\n");
+		}
 		
 		return null;
 	}

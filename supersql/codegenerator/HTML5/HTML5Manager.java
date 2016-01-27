@@ -73,12 +73,7 @@ public class HTML5Manager extends Manager {
 		html5Env2.fileName = html5Env.outFile + ".xml";
 		
 		// 順にコードの生成
-		if (data_info.size() == 0 && !DataConstructor.SQL_string.equals("SELECT DISTINCT FROM ;")) {
-			Log.out("SuperSQL query is no data");
-			html5Env.code.append("<div>NO DATA FOUND</div>");
-		} else {
-			tfe_info.work(data_info);
-		}
+		tfe_info.work(data_info);
 		
 		// <html><head> ~ </head><body>まで記述
 		html5Env.getHeader();

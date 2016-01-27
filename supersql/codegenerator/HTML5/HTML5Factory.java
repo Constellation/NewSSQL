@@ -3,6 +3,7 @@ package supersql.codegenerator.HTML5;
 import supersql.codegenerator.Attribute;
 import supersql.codegenerator.Connector;
 import supersql.codegenerator.Factory;
+import supersql.codegenerator.Function;
 import supersql.codegenerator.Grouper;
 import supersql.codegenerator.Manager;
 
@@ -14,6 +15,11 @@ public class HTML5Factory extends Factory {
 	@Override
 	public Attribute createAttribute(Manager manager) {
 		return new HTML5Attribute(manager, html5Env, html5Env2);
+	}
+	
+	@Override
+	public Function createFunction(Manager manager) {
+		return new HTML5Function(manager, html5Env, html5Env2);
 	}
 	
 	@Override
