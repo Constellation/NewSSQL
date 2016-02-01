@@ -28,9 +28,9 @@ public class FrontEnd {
 
 		Log.info("//Entering SuperSQL System//");
 
-		Log.out("$$$$$ SSQLparser start $$$$$");
+		Log.out("-- SSQLparser start --");
 		SSQLparser parser = new SSQLparser();
-		Log.out("%%%%% SSQLparser end %%%%%");
+		Log.out("-- SSQLparser end --");
 		
 		if (GlobalEnv.isCheckquery()){
 			if (GlobalEnv.getErrFlag() == 0)
@@ -43,20 +43,20 @@ public class FrontEnd {
 		long aftercg = 0;
 
 		if (GlobalEnv.getErrFlag() == 0) {
-			Log.out("$$$$$ codegenerator start $$$$$");
+			Log.out("-- codegenerator start --");
 			CodeGenerator codegenerator = parser.getcodegenerator();
-			Log.out("%%%%% codegenerator end %%%%%");
+			Log.out("-- codegenerator end --");
 
 			if (GlobalEnv.getErrFlag() == 0) {
-				Log.out("$$$$$ DataConstructor start $$$$$");
+				Log.out("-- DataConstructor start --");
 				DataConstructor dc = new DataConstructor(parser);
-				Log.out("%%%%% DataConstructor end %%%%%");
+				Log.out("-- DataConstructor end --");
 				afterdc = System.currentTimeMillis();
 
 				if (GlobalEnv.getErrFlag() == 0) {
-					Log.out("$$$$$ generateCode start $$$$$");
+					Log.out("-- generateCode start --");
 					codegenerator.generateCode(parser, dc.getData());
-					Log.out("%%%%% generateCode end %%%%%");
+					Log.out("-- generateCode end --");
 					aftercg = System.currentTimeMillis();
 				}
 			}
