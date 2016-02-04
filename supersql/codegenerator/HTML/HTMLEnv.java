@@ -3,6 +3,8 @@ package supersql.codegenerator.HTML;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.Vector;
 
 import org.jsoup.nodes.Attribute;
@@ -598,17 +600,17 @@ public class HTMLEnv extends LocalEnv {
 
 		// ������??
 		if (decos.containsKey("width")) {
-			if (GlobalEnv.getframeworklist() == null)
+//			if (GlobalEnv.getframeworklist() == null)
+			if (!isNumber(decos.getStr("width")))
 				cssbuf.append(" width:" + decos.getStr("width") + ";");
 			else
 				cssbuf.append(" width:" + decos.getStr("width") + "px;");
-			// } else {
-			// cssbuf.append(" width:120;");
 		}
 
 		// ������??
 		if (decos.containsKey("height")) {
-			if (GlobalEnv.getframeworklist() == null)
+//			if (GlobalEnv.getframeworklist() == null)
+			if (!isNumber(decos.getStr("height")))
 				cssbuf.append(" height:" + decos.getStr("height") + ";");
 			else
 				cssbuf.append(" height:" + decos.getStr("height") + "px;");
@@ -1192,6 +1194,13 @@ public class HTMLEnv extends LocalEnv {
 
 	public void setOutlineMode() {
 		OutlineMode = true;
+	}
+	
+	public boolean isNumber(String val) { // 文字列が全部数字であるかチェック
+		String regex = "^\\-?[0-9]*\\.?[0-9]+$";
+	    Pattern p = Pattern.compile(regex);
+	    Matcher m = p.matcher(val);
+	    return m.find();
 	}
 
 }
