@@ -3,6 +3,7 @@ package supersql.codegenerator;
 import java.util.ArrayList;
 
 import supersql.codegenerator.HTML.HTMLFactory;
+import supersql.codegenerator.HTML5.HTML5Factory;
 import supersql.codegenerator.HTML_Flexbox.HTML_FlexboxFactory;
 import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5Factory;
 import supersql.codegenerator.PDF.PDFFactory;
@@ -69,6 +70,8 @@ public class CodeGenerator{
 			factory = new SWFFactory();
 		}  else if (media.toLowerCase().equals("html_flexbox")) {
 			factory = new HTML_FlexboxFactory();
+		} else if (media.toLowerCase().equals("html5")) { // added by halken 20150805
+			factory = new HTML5Factory();
 		}
 		/*
 		 * else if(media.toLowerCase().equals("xml")){ factory = new
