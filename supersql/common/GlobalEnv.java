@@ -103,7 +103,7 @@ public class GlobalEnv {
 		err = new StringBuffer();
 		envs = new Hashtable<String, String>();
 		String key = null;
-
+		
 		for (int i = 0; i < args.length; i++) {
 			if (args[i].startsWith("-")) {
 				if (key != null) {
@@ -111,10 +111,41 @@ public class GlobalEnv {
 				}
 				key = args[i];
 			} else {
-				envs.put(key, args[i]);
+				// modifed by masato 20151118 for ehtml
+				if (key.equals("-query")) {
+					String q = "";
+					for (int j = i; j < args.length; j++) {
+						if (!args[j].startsWith("-")) {
+							q += args[j] + " ";
+						} else {
+							envs.put(key, q);
+							i = j;
+							j = args.length - 1;
+						}
+						if (j == args.length - 1) {
+							envs.put(key, q);
+							i = j;
+							j = args.length - 1;
+						}
+					}
+				} else {
+					//
+					envs.put(key, args[i]);
+				}
 				key = null;
 			}
 		}
+//		for (int i = 0; i < args.length; i++) {
+//			if (args[i].startsWith("-")) {
+//				if (key != null) {
+//					envs.put(key, "");
+//				}
+//				key = args[i];
+//			} else {
+//				envs.put(key, args[i]);
+//				key = null;
+//			}
+//		}
 		if (key != null) {
 			envs.put(key, "");
 		}

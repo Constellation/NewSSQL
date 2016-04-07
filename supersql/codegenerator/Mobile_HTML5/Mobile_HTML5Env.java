@@ -43,20 +43,7 @@ public class Mobile_HTML5Env extends LocalEnv {
 	    		"	return htmlspecialchars($str, ENT_QUOTES, 'UTF-8');\n" +
 	    		"}\n" +
 	    		"?>\n";
-    
-//    public static String 				//added by goto 20130531 
-//    	PHPpost = "<?php\n" +	//初期定義(dummy if)
-//	    		"//dummy\n" +
-//	    		"if($_POST['dummy']){\n" +
-//				"	;\n" +
-//				"}\n";
-//    public static String PHPfunc = "";	//added by goto 20130531 
-    
-//    static boolean dynamicFlg = false;			//20130529  dynamic
-//    static StringBuffer staticBuf;				//20130529  dynamic
-//    static StringBuffer dynamicBuf;				//20130529  dynamic
-    
-    //Vector not_written_classid;
+
     Vector<String> not_written_classid= new Vector();
 
     int total_element = 0;
@@ -93,10 +80,8 @@ public class Mobile_HTML5Env extends LocalEnv {
 
 	Boolean flickBarFlg = false;				//20130521  "flickbar"
 	
-    //tk start///////////////////////////////////////////////////
     StringBuffer meta = new StringBuffer();
     StringBuffer div = new StringBuffer();
-    //StringBuffer title = new StringBuffer();		//disuse
     StringBuffer titleclass = new StringBuffer();
     public static String jscss = new String();		//js and css file names that using in the Mobile_HTML5
     StringBuffer cssfile = new StringBuffer();
@@ -125,7 +110,6 @@ public class Mobile_HTML5Env extends LocalEnv {
 
     //for panel
     boolean isPanel = false;
-    //tk end//////////////////////////////////////////////////////
 
     StringBuffer header;
 
@@ -147,13 +131,10 @@ public class Mobile_HTML5Env extends LocalEnv {
     
     static int uiGridCount = 0;		//20130314  C1 ui-Grid用
     static int uiGridCount2 = 0;	//20130314  G1 ui-Grid用
-    //static boolean tableFlg = false;		//20130314  table
     
     static int tabCount = 1;			//20130330  tab用
-    //static boolean tabFlg = false;		//20130330  tab用
     static int maxTab = 15;				//20130330  tab用
     
-//	static String divWidth = "";		//20131002
 	
 	static boolean noAd = false;		//20131106
     
@@ -1483,13 +1464,6 @@ public class Mobile_HTML5Env extends LocalEnv {
 
         //tk end//////////////////////////////////////////////////////////////
 
-//        //20131002
-//		if(!decos.containsKey("width")){
-//			if(!Mobile_HTML5Env.divWidth.equals(""))
-//				decos.put("width", Mobile_HTML5Env.divWidth);
-//	  	}
-//		Mobile_HTML5Env.divWidth = "";
-		
 		// ��??
         if (decos.containsKey("width")) {
         	if(GlobalEnv.getframeworklist() == null)
@@ -1893,10 +1867,10 @@ public class Mobile_HTML5Env extends LocalEnv {
         }
         if (tfe instanceof Mobile_HTML5G3) {
             result = getClassID(((ITFE) ((Mobile_HTML5G3) tfe).tfe));
-            	return result;
+        	return result;
         }
         result =  "TFE" + tfe.getId();
-        	return result;
+        return result;
     }
 
     /***start oka***/

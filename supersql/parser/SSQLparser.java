@@ -125,11 +125,16 @@ public class SSQLparser {
 	}
 
 	private String getSSQLQuery() {
-
 		String query = GlobalEnv.getQuery();
-		if (query != null) {
-			query = query.trim();
+		if (GlobalEnv.getQuery() != null && GlobalEnv.getoutfilename() != null) {
+			query = GlobalEnv.getQuery();
+			query = replaceQuery_For_HTML_and_MobileHTML5(query);
+			return query;
 		}
+//		String query = GlobalEnv.getQuery();
+//		if (query != null) {
+//			query = query.trim();
+//		}
 
 		String filename = GlobalEnv.getfilename();
 		if (filename == null || filename.isEmpty()) {
