@@ -18,9 +18,11 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Hashtable;
 
+import com.ibm.db2.jcc.am.s;
 
 import supersql.codegenerator.CodeGenerator;
 import supersql.codegenerator.DecorateList;
@@ -523,7 +525,6 @@ public class Mobile_HTML5Function extends Function {
         			html_env.code.append("<ul id=\"Gallery\" class=\"gallery\">\n");
         			slideshowFlg=true;
         		}else
-        			//html_env.code.delete(html_env.code.lastIndexOf("</TD>"),html_env.code.length());
         			html_env.code.delete(html_env.code.lastIndexOf("</ul>"),html_env.code.length());
         		
         		slideshowNum++;
@@ -1235,6 +1236,7 @@ public class Mobile_HTML5Function extends Function {
     	String search_aFlg = "\"";		//Flg
     	String search_mailFlg = "\"";		//Flg
     	String search_popFlg = "\"";	//Flg
+    	String search_pop_imgFlg = "\"";	//Flg
     	int a_pop_count = 0;
     	for(int i=0; i<col_num; i++){
     		a = s_array[i].replaceAll(" ","");
@@ -1242,56 +1244,58 @@ public class Mobile_HTML5Function extends Function {
     		if(a.startsWith("a(") || a.startsWith("anchor(")){
     			search_aFlg += "true\""+((i<col_num-1)?(",\""):(""));
     			if(a.endsWith(")")){
-//    				search_col += s_array[i] +((i<col_num-1)?(","):(""));
-//    	    		search_col_array += s_array[i] +"\""+((i<col_num-1)?(",\""):(""));
-//    	    		search_aFlg += "false\""+((i<col_num-1)?(",\""):(""));
-//    	    		search_popFlg += "false\""+((i<col_num-1)?(",\""):(""));
     				search_col += s_array[i]+",";
     				search_col_array += s_array[i]+"\",\"";
     				search_aFlg += ((i<col_num-1)?(""):(",\""))+"false\""+((i<col_num-1)?(",\""):(""));
     				search_mailFlg += ((i<col_num-1)?(""):(",\""))+"false\""+((i<col_num-1)?(",\""):(""));
     				search_popFlg += ((i<col_num-1)?(""):(",\""))+"false\""+((i<col_num-1)?(",\""):(""));
+    				search_pop_imgFlg += ((i<col_num-1)?(""):(",\""))+"false\""+((i<col_num-1)?(",\""):(""));
     			}else	a_pop_count++;
     		}else
     			search_aFlg += "false\""+((i<col_num-1)?(",\""):(""));
     		if(a.startsWith("mail(")){
     			search_mailFlg += "true\""+((i<col_num-1)?(",\""):(""));
     			if(a.endsWith(")")){
-//    				search_col += s_array[i] +((i<col_num-1)?(","):(""));
-//    	    		search_col_array += s_array[i] +"\""+((i<col_num-1)?(",\""):(""));
-//    	    		search_aFlg += "false\""+((i<col_num-1)?(",\""):(""));
-//    	    		search_popFlg += "false\""+((i<col_num-1)?(",\""):(""));
     	    		search_col += s_array[i]+",";
     				search_col_array += s_array[i]+"\",\"";
     				search_aFlg += ((i<col_num-1)?(""):(",\""))+"false\""+((i<col_num-1)?(",\""):(""));
     				search_mailFlg += ((i<col_num-1)?(""):(",\""))+"false\""+((i<col_num-1)?(",\""):(""));
     				search_popFlg += ((i<col_num-1)?(""):(",\""))+"false\""+((i<col_num-1)?(",\""):(""));
+    				search_pop_imgFlg += ((i<col_num-1)?(""):(",\""))+"false\""+((i<col_num-1)?(",\""):(""));
     			}else	a_pop_count++;
     		}else
     			search_mailFlg += "false\""+((i<col_num-1)?(",\""):(""));
     		if(a.startsWith("pop(") || a.startsWith("popup(")){
     			search_popFlg += "true\""+((i<col_num-1)?(",\""):(""));
     			if(a.endsWith(")")){
-//    				search_col += s_array[i] +((i<col_num-1)?(","):(""));
-//    	    		search_col_array += s_array[i] +"\""+((i<col_num-1)?(",\""):(""));
-//    	    		search_aFlg += "false\""+((i<col_num-1)?(",\""):(""));
-//    	    		search_popFlg += "false\""+((i<col_num-1)?(",\""):(""));
     				search_col += s_array[i]+",";
     				search_col_array += s_array[i]+"\",\"";
     				search_aFlg += ((i<col_num-1)?(""):(",\""))+"false\""+((i<col_num-1)?(",\""):(""));
     				search_mailFlg += ((i<col_num-1)?(""):(",\""))+"false\""+((i<col_num-1)?(",\""):(""));
     				search_popFlg += ((i<col_num-1)?(""):(",\""))+"false\""+((i<col_num-1)?(",\""):(""));
+    				search_pop_imgFlg += ((i<col_num-1)?(""):(",\""))+"false\""+((i<col_num-1)?(",\""):(""));
     			}else	a_pop_count++;
     		}else
     			search_popFlg += "false\""+((i<col_num-1)?(",\""):(""));
+    		if(a.startsWith("popup_image(")){
+    			search_pop_imgFlg += "true\""+((i<col_num-1)?(",\""):(""));
+				if(a.endsWith(")")){
+					search_col += s_array[i]+",";
+					search_col_array += s_array[i]+"\",\"";
+					search_aFlg += ((i<col_num-1)?(""):(",\""))+"false\""+((i<col_num-1)?(",\""):(""));
+					search_mailFlg += ((i<col_num-1)?(""):(",\""))+"false\""+((i<col_num-1)?(",\""):(""));
+					search_popFlg += ((i<col_num-1)?(""):(",\""))+"false\""+((i<col_num-1)?(",\""):(""));
+					search_pop_imgFlg += ((i<col_num-1)?(""):(",\""))+"false\""+((i<col_num-1)?(",\""):(""));
+				}else	a_pop_count++;
+    		}else
+    			search_pop_imgFlg += "false\""+((i<col_num-1)?(",\""):(""));
+    		
     		search_col += s_array[i] +((i<col_num-1)?(","):(""));
     		search_col_array += s_array[i] +"\""+((i<col_num-1)?(",\""):(""));
     	}
     	col_num -= a_pop_count;
-//    	search_col = search_col.replaceAll("a\\(","").replaceAll("anchor\\(","").replaceAll("mail\\(","").replaceAll("pop\\(","").replaceAll("popup\\(","").replaceAll("\\)","");
-//    	search_col_array = search_col_array.replaceAll("a\\(","").replaceAll("anchor\\(","").replaceAll("mail\\(","").replaceAll("pop\\(","").replaceAll("popup\\(","").replaceAll("\\)","");
-    	search_col = search_col.replaceAll("a\\(","").replaceAll("anchor\\(","").replaceAll("mail\\(","").replaceAll("pop\\(","").replaceAll("popup\\(","").replaceAll("count\\(\\*\\)","count[*]").replaceAll("\\)","").replaceAll("count\\[\\*\\]","count(*)");
-    	search_col_array = search_col_array.replaceAll("a\\(","").replaceAll("anchor\\(","").replaceAll("mail\\(","").replaceAll("pop\\(","").replaceAll("popup\\(","").replaceAll("count\\(\\*\\)","count[*]").replaceAll("\\)","").replaceAll("count\\[\\*\\]","count(*)");
+    	search_col = search_col.replaceAll("a\\(","").replaceAll("anchor\\(","").replaceAll("mail\\(","").replaceAll("pop\\(","").replaceAll("popup\\(","").replaceAll("popup_image\\(","").replaceAll("count\\(\\*\\)","count[*]").replaceAll("\\)","").replaceAll("count\\[\\*\\]","count(*)");
+    	search_col_array = search_col_array.replaceAll("a\\(","").replaceAll("anchor\\(","").replaceAll("mail\\(","").replaceAll("pop\\(","").replaceAll("popup\\(","").replaceAll("popup_image\\(","").replaceAll("count\\(\\*\\)","count[*]").replaceAll("\\)","").replaceAll("count\\[\\*\\]","count(*)");
     	
     	//Log.i("	1:"+title+"	2:"+columns+"	col_num:"+col_num);
     	//Log.i("	search_col:"+search_col+"	search_col_array:"+search_col_array);
@@ -1348,7 +1352,13 @@ public class Mobile_HTML5Function extends Function {
     	}
     	if(query.contains(" where ")){
     		where = query.substring(query.lastIndexOf(" where ")+" where ".length());
-			where = where.replaceAll("\\'","\\\\'");		// ' -> \'
+    		where = where.replaceAll("\\'","\\\\'");		// ' -> \'
+    		if(where.contains("$session")){
+    			//if WHERE phrase contains $session(XX)
+    			where = where.replaceAll("\\$session","'\".\\$_SESSION").replaceAll("\\(","[\"").replaceAll("\\)","\"].\"'");
+    			//if it contains $_SESSION [""attribute""] or $_SESSION [" "attribute" "]
+    			where = where.replace("[\"\"","[\"").replace("\"\"]","\"]").replace("[\" \"","[\"").replace("\" \"]","\"]");
+    		}
     		query = query.substring(0,query.lastIndexOf(" where "));
     	}
     	from = query.trim();
@@ -1421,6 +1431,7 @@ public class Mobile_HTML5Function extends Function {
 				"    $search_a_Flg = array("+search_aFlg+");\n" +
 				"    $search_mail_Flg = array("+search_mailFlg+");\n" +
 				"    $search_pop_Flg = array("+search_popFlg+");\n" +
+				"    $search_pop_img_Flg = array("+search_pop_imgFlg+");\n" +
 				"    $groupby = \""+groupby+"\"; 	           //null => WHERE句にlikeを書く／ not null => HAVING句に～    //[要] Java側で、列名に予約語から始まるものがあるかチェック\n" +
 				"    $having0 = \""+having+"\";\n" +
 				"    $orderby = \""+((orderby!="")?(" ORDER BY "+orderby+" "):("")) +"\";\n" +
@@ -1488,31 +1499,8 @@ public class Mobile_HTML5Function extends Function {
 					"\n" +
 					"        $i = 0;\n" +
 					"        $pop_num = 0;\n" +
+					"        $t = date('YmdHis');\n" +
 					"        while($row = $result->fetchArray()){\n";
-//					"              $i++;\n" +
-//					"              $k=0;\n" +
-//					"              for($j=0; $j<$search_col_num; $j++){\n" +
-//					"					if($search_a_Flg[$j]=='true' || $search_mail_Flg[$j]=='true' || $search_pop_Flg[$j]=='true')	;\n" +
-//					"                    else if($j>0 && $search_a_Flg[$j-1]=='true')	search"+searchCount+"_p2('<a href=\\\"'.$row[$j].'\\\" target=\\\"_blank\\\" rel=\\\"external\\\" style=\\\"white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\\\">'.$row[$j-1].'</a>', ++$k);     //tdに結果を埋め込む\n" +
-//					"                    else if($j>0 && $search_mail_Flg[$j-1]=='true')	search"+searchCount+"_p2('<a href=\\\"mailto:'.$row[$j].'\\\" target=\\\"_self\\\" style=\\\"white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\\\">'.$row[$j-1].'</a>', ++$k);     				//tdに結果を埋め込む\n" +
-//					"                    //else if($j>0 && $search_pop_Flg[$j-1]=='true')	search"+searchCount+"_p2('<a href=\\\"'.$row[$j].'\\\" target=\\\"_blank\\\" rel=\\\"external\\\" style=\\\"white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\\\">'.$row[$j-1].'</a>', ++$k);     //tdに結果を埋め込む\n" +
-//					"                    else if($j>0 && $search_pop_Flg[$j-1]=='true' && !is_null($row[$j])){\n" +
-//					"                    	$pop_str = '<a href=\\\"#search_popup1_'.(++$pop_num).'\\\" data-rel=\\\"popup\\\" data-icon=\\\"arrow-r\\\" style=\\\"white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\\\">'.$row[$j-1].'</a>'\n" +
-//					"							.'<div data-role=\\\"popup\\\" id=\\\"search_popup1_'.($pop_num).'\\\" data-transition=\\\"slideup\\\" style=\\\"width:95%;\\\" data-overlay-theme=\\\"a\\\">'\n" +
-//					"								.'<a href=\\\"#\\\" data-rel=\\\"back\\\" data-role=\\\"button\\\" data-theme=\\\"a\\\" data-icon=\\\"delete\\\" data-iconpos=\\\"notext\\\" class=\\\"ui-btn-right\\\">Close</a>'\n" +
-//					"								.'<h2>'.$row[$j-1].'</h2>'\n" +
-//					"								.'<p>'.$row[$j].'</p>'\n" +
-//					"							.'</div>';\n" +
-//					"                    	search"+searchCount+"_p2($pop_str, ++$k);     	//tdに結果を埋め込む\n" +
-//					"                    }else									search"+searchCount+"_p2($row[$j], ++$k);     //tdに結果を埋め込む\n" +
-//					"              }\n" +
-//					"        }\n" +
-//					"		 if($i>0)	echo \"<script type=\\\"text/javascript\\\">window.parent.$('#Search"+searchCount+"_text_th').show();</script>\";    //カラム名を表示\n" +
-//					"        search"+searchCount+"_p1($i.' result'.(($i != 1)?('s'):('')));    //件数表示\n" +
-//					"    }else{\n" +
-//					"        search"+searchCount+"_p1('0 results');\n" +
-//					"    }\n" +
-//					"    unset($db"+searchCount+");\n";
 
 		} else if(DBMS.equals("postgresql") || DBMS.equals("postgres")){
 			Mobile_HTML5Env.PHP +=
@@ -1569,51 +1557,45 @@ public class Mobile_HTML5Function extends Function {
 					"\n" +
 					"        $i = 0;\n" +
 					"        $pop_num = 0;\n" +
+					"        $t = date('YmdHis');\n" +
 					"        while($row = pg_fetch_row($result)){\n";
-//					"              $i++;\n" +
-//					"              $j=0;\n" +
-//					"              $k=0;\n" +
-//					"              $a=array();\n" +
-//					"              foreach($row as $key => $val) {\n" +
-//					"					$a[$j]=$val;\n" +
-//					"					if($search_a_Flg[$j]=='true' || $search_mail_Flg[$j]=='true' || $search_pop_Flg[$j]=='true')	;\n" +
-//					"                    else if($j>0 && $search_a_Flg[$j-1]=='true')	search"+searchCount+"_p2('<a href=\\\"'.$a[$j].'\\\" target=\\\"_blank\\\" rel=\\\"external\\\" style=\\\"white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\\\">'.$a[$j-1].'</a>', ++$k);     //tdに結果を埋め込む\n" +
-//					"                    else if($j>0 && $search_mail_Flg[$j-1]=='true')	search"+searchCount+"_p2('<a href=\\\"mailto:'.$a[$j].'\\\" target=\\\"_self\\\" style=\\\"white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\\\">'.$a[$j-1].'</a>', ++$k);     				//tdに結果を埋め込む\n" +
-//					"                    //else if($j>0 && $search_pop_Flg[$j-1]=='true')	search"+searchCount+"_p2('<a href=\\\"'.$a[$j].'\\\" target=\\\"_blank\\\" rel=\\\"external\\\" style=\\\"white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\\\">'.$a[$j-1].'</a>', ++$k);     //tdに結果を埋め込む\n" +
-//					"                    else if($j>0 && $search_pop_Flg[$j-1]=='true' && !is_null($a[$j])){\n" +
-//					"                    	$pop_str = '<a href=\\\"#search_popup1_'.(++$pop_num).'\\\" data-rel=\\\"popup\\\" data-icon=\\\"arrow-r\\\" style=\\\"white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\\\">'.$a[$j-1].'</a>'\n" +
-//					"							.'<div data-role=\\\"popup\\\" id=\\\"search_popup1_'.($pop_num).'\\\" data-transition=\\\"slideup\\\" style=\\\"width:95%;\\\" data-overlay-theme=\\\"a\\\">'\n" +
-//					"								.'<a href=\\\"#\\\" data-rel=\\\"back\\\" data-role=\\\"button\\\" data-theme=\\\"a\\\" data-icon=\\\"delete\\\" data-iconpos=\\\"notext\\\" class=\\\"ui-btn-right\\\">Close</a>'\n" +
-//					"								.'<h2>'.$a[$j-1].'</h2>'\n" +
-//					"								.'<p>'.$a[$j].'</p>'\n" +
-//					"							.'</div>';\n" +
-//					"                    	search"+searchCount+"_p2($pop_str, ++$k);     	//tdに結果を埋め込む\n" +
-//					"                    }else									search"+searchCount+"_p2($a[$j], ++$k);     //tdに結果を埋め込む\n" +
-//					"                    $j++;\n" +
-//					"              }\n" +
-//					"        }\n" +
-//					"		 if($i>0)	echo \"<script type=\\\"text/javascript\\\">window.parent.$('#Search"+searchCount+"_text_th').show();</script>\";    //カラム名を表示\n" +
-//					"        search"+searchCount+"_p1($i.' result'.(($i != 1)?('s'):('')));    //件数表示\n" +
-//					"    }else{\n" +
-//					"        search"+searchCount+"_p1('0 results');\n" +
-//					"    }\n" +
-//					"    pg_close($db"+searchCount+");\n";
 		}
 		Mobile_HTML5Env.PHP +=
 				"              $i++;\n" +
 				"              $k=0;\n" +
 				"              for($j=0; $j<$search_col_num; $j++){\n" +
-				"					if($search_a_Flg[$j]=='true' || $search_mail_Flg[$j]=='true' || $search_pop_Flg[$j]=='true')	;\n" +
+				"					if($search_a_Flg[$j]=='true' || $search_mail_Flg[$j]=='true' || $search_pop_Flg[$j]=='true' || $search_pop_img_Flg[$j]=='true')	;\n" +
 				"                    else if($j>0 && $search_a_Flg[$j-1]=='true')	search"+searchCount+"_p2('<a href=\\\"'.$row[$j].'\\\" target=\\\"_blank\\\" rel=\\\"external\\\" style=\\\"white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\\\">'.$row[$j-1].'</a>', ++$k);     //tdに結果を埋め込む\n" +
 				"                    else if($j>0 && $search_mail_Flg[$j-1]=='true')	search"+searchCount+"_p2('<a href=\\\"mailto:'.$row[$j].'\\\" target=\\\"_self\\\" style=\\\"white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\\\">'.$row[$j-1].'</a>', ++$k);     				//tdに結果を埋め込む\n" +
 				"                    //else if($j>0 && $search_pop_Flg[$j-1]=='true')	search"+searchCount+"_p2('<a href=\\\"'.$row[$j].'\\\" target=\\\"_blank\\\" rel=\\\"external\\\" style=\\\"white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\\\">'.$row[$j-1].'</a>', ++$k);     //tdに結果を埋め込む\n" +
-				"                    else if($j>0 && $search_pop_Flg[$j-1]=='true' && !is_null($row[$j])){\n" +
-				"                    	$pop_str = '<a href=\\\"#search_popup1_'.(++$pop_num).'\\\" data-rel=\\\"popup\\\" data-icon=\\\"arrow-r\\\" style=\\\"white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\\\">'.$row[$j-1].'</a>'\n" +
-				"							.'<div data-role=\\\"popup\\\" id=\\\"search_popup1_'.($pop_num).'\\\" data-transition=\\\"slideup\\\" style=\\\"width:95%;\\\" data-overlay-theme=\\\"a\\\">'\n" +
-				"								.'<a href=\\\"#\\\" data-rel=\\\"back\\\" data-role=\\\"button\\\" data-theme=\\\"a\\\" data-icon=\\\"delete\\\" data-iconpos=\\\"notext\\\" class=\\\"ui-btn-right\\\">Close</a>'\n" +
-				"								.'<h2>'.$row[$j-1].'</h2>'\n" +
-				"								.'<p>'.$row[$j].'</p>'\n" +
-				"							.'</div>';\n" +
+//				"                    else if($j>0 && $search_pop_Flg[$j-1]=='true' && !is_null($row[$j])){\n" +
+//				"                    	$pop_str = '<a href=\\\"#search_popup1_'.(++$pop_num).'\\\" data-rel=\\\"popup\\\" data-icon=\\\"arrow-r\\\" style=\\\"white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\\\">'.$row[$j-1].'</a>'\n" +
+//				"							.'<div data-role=\\\"popup\\\" id=\\\"search_popup1_'.($pop_num).'\\\" data-transition=\\\"slideup\\\" style=\\\"width:95%;\\\" data-overlay-theme=\\\"a\\\">'\n" +
+//				"								.'<a href=\\\"#\\\" data-rel=\\\"back\\\" data-role=\\\"button\\\" data-theme=\\\"a\\\" data-icon=\\\"delete\\\" data-iconpos=\\\"notext\\\" class=\\\"ui-btn-right\\\">Close</a>'\n" +
+//				"								.'<h2>'.$row[$j-1].'</h2>'\n" +
+//				"								.'<p>'.$row[$j].'</p>'\n" +
+//				"							.'</div>';\n" +
+				"                    else if($j>0 && ($search_pop_Flg[$j-1]=='true' || $search_pop_img_Flg[$j-1]=='true') && !is_null($row[$j])){\n" +
+				"                    	$pop_str = '<a href=\\\"#search_popup"+searchCount+"_'.(++$pop_num).'_'.$t.'\\\" data-rel=\\\"popup\\\" data-icon=\\\"arrow-r\\\" style=\\\"white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\\\"';\n" +
+				"                    	if($search_pop_img_Flg[$j-1] == 'true'){\n" +
+				"                    		$pop_str .= ' class=\\\"ui-li-inside\\\"';\n" +
+				"                    	}\n" +
+				"                    	$pop_str .= '>'.$row[$j-1].'</a>'\n" +
+				"                    		.'<div data-role=\\\"popup\\\" id=\\\"search_popup"+searchCount+"_'.($pop_num).'_'.$t.'\\\" data-transition=\\\"';\n"+
+				"                    	if($search_pop_Flg[$j-1]=='true'){\n" +
+				"                    		$pop_str .= 'slideup';\n"+
+				"                    	}else{\n" +
+				"                    		$pop_str .= 'pop';\n"+
+				"                    	}\n" +
+				"                    	$pop_str .= '\\\" style=\\\"width:95%;\\\" data-overlay-theme=\\\"a\\\">'\n" +
+				"                    		.'<a href=\\\"#\\\" data-rel=\\\"back\\\" data-role=\\\"button\\\" data-theme=\\\"a\\\" data-icon=\\\"delete\\\" data-iconpos=\\\"notext\\\" class=\\\"ui-btn-right\\\">Close</a>'\n" +
+				"                    		.'<h2>'.$row[$j-1].'</h2>';\n" +
+				"                    	if($search_pop_Flg[$j-1]=='true'){\n" +
+				"                    		$pop_str .= '<p>'.$row[$j].'</p>';\n" +
+				"                    	}else{\n" +
+				"                    		$pop_str .= '<img src=\\\"'.$row[$j].'\\\">';\n" +
+				"                    	}\n" +
+				"                    	$pop_str .= '</div>';\n" +
 				"                    	search"+searchCount+"_p2($pop_str, ++$k);     	//tdに結果を埋め込む\n" +
 				"                    }else									search"+searchCount+"_p2($row[$j], ++$k);     //tdに結果を埋め込む\n" +
 				"              }\n" +
@@ -1846,6 +1828,12 @@ public class Mobile_HTML5Function extends Function {
     	if(query.contains(" where ")){
     		where = query.substring(query.lastIndexOf(" where ")+" where ".length());
     		where = where.replaceAll("\\'","\\\\'");		// ' -> \'
+    		if(where.contains("$session")){
+    			//if WHERE phrase contains $session(XX)
+    			where = where.replaceAll("\\$session","'\".\\$_SESSION").replaceAll("\\(","[\"").replaceAll("\\)","\"].\"'");
+    			//if it contains $_SESSION [""attribute""] or $_SESSION [" "attribute" "]
+    			where = where.replace("[\"\"","[\"").replace("\"\"]","\"]").replace("[\" \"","[\"").replace("\" \"]","\"]");
+    		}
     		query = query.substring(0,query.lastIndexOf(" where "));
     	}
     	from = query.trim();
@@ -1979,6 +1967,7 @@ public class Mobile_HTML5Function extends Function {
 					"\n" +
 					"        $i = 0;\n" +
 					"        $pop_num = 0;\n" +
+					"        $t = date('YmdHis');\n" +
 					"        while($row = $result->fetchArray()){\n";
 //					"              $i++;\n" +
 //					"              $k=0;\n" +
@@ -2068,6 +2057,7 @@ public class Mobile_HTML5Function extends Function {
 					"\n" +
 					"        $i = 0;\n" +
 					"        $pop_num = 0;\n" +
+					"        $t = date('YmdHis');\n" +
 					"        while($row = pg_fetch_row($result)){\n";
 ////					"              $i++;\n" +
 ////					"              $j=0;\n" +
@@ -2135,8 +2125,8 @@ public class Mobile_HTML5Function extends Function {
 				"                    else if($j>0 && $select_mail_Flg[$j-1]=='true')	select"+selectCount+"_p2('<a href=\\\"mailto:'.$row[$j].'\\\" target=\\\"_self\\\" style=\\\"white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\\\">'.$row[$j-1].'</a>', ++$k);     //tdに結果を埋め込む\n" +
 				"                    //else if($j>0 && $select_pop_Flg[$j-1]=='true')	select"+selectCount+"_p2('<a href=\\\"'.$row[$j].'\\\" target=\\\"_blank\\\" rel=\\\"external\\\" style=\\\"white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\\\">'.$row[$j-1].'</a>', ++$k);     //tdに結果を埋め込む\n" +
 				"                    else if($j>0 && $select_pop_Flg[$j-1]=='true' && !is_null($row[$j])){\n" +
-				"                    	$pop_str = '<a href=\\\"#select_popup1_'.(++$pop_num).'\\\" data-rel=\\\"popup\\\" data-icon=\\\"arrow-r\\\" style=\\\"white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\\\">'.$row[$j-1].'</a>'\n" +
-				"							.'<div data-role=\\\"popup\\\" id=\\\"select_popup1_'.($pop_num).'\\\" data-transition=\\\"slideup\\\" style=\\\"width:95%;\\\" data-overlay-theme=\\\"a\\\">'\n" +
+				"                    	$pop_str = '<a href=\\\"#select_popup"+selectCount+"_'.(++$pop_num).'_'.$t.'\\\" data-rel=\\\"popup\\\" data-icon=\\\"arrow-r\\\" style=\\\"white-space:nowrap; overflow:hidden; text-overflow:ellipsis;\\\">'.$row[$j-1].'</a>'\n" +
+				"							.'<div data-role=\\\"popup\\\" id=\\\"select_popup"+selectCount+"_'.($pop_num).'_'.$t.'\\\" data-transition=\\\"slideup\\\" style=\\\"width:95%;\\\" data-overlay-theme=\\\"a\\\">'\n" +
 				"								.'<a href=\\\"#\\\" data-rel=\\\"back\\\" data-role=\\\"button\\\" data-theme=\\\"a\\\" data-icon=\\\"delete\\\" data-iconpos=\\\"notext\\\" class=\\\"ui-btn-right\\\">Close</a>'\n" +
 				"								.'<h2>'.$row[$j-1].'</h2>'\n" +
 				"								.'<p>'.$row[$j].'</p>'\n" +
@@ -2223,10 +2213,6 @@ public class Mobile_HTML5Function extends Function {
     		//title（第一引数）
     		FuncArg fa1 = (FuncArg) this.Args.get(0);
     		if(!fa1.getStr().isEmpty())	title = fa1.getStr();
-//    		else{
-//    			if(update || insert_update)	title = "Update";
-//    			else						title = "Insert";
-//    		}
     		//columns（第二引数）
     		FuncArg fa2 = (FuncArg) this.Args.get(1);
     		columns += fa2.getStr();
@@ -2257,8 +2243,6 @@ public class Mobile_HTML5Function extends Function {
     		return "";
 		}
 		if(after_from.toLowerCase().startsWith("from "))	after_from = after_from.substring("from".length()).trim();
-//		if(insert_update)	insertFlag = "true";	//20130721
-		//Log.info(title);
 		
 		//Check options
 		boolean noresult = false;
@@ -2280,40 +2264,62 @@ public class Mobile_HTML5Function extends Function {
 		//Log.e(buttonName+" "+noresult+" "+noreset+" "+reloadAfterInsert+" "+reloadAfterInsertTime+"  "+decos);
     	
     	
-    	//置換 ( @ { , }  ->  @ { ; } )
-		//Log.i("Before: "+columns);
-    	int inAtFlg = 0;
+//    	//置換 ( @ { , }  ->  @ { ; } )
+//		//Log.i("Before: "+columns);
+//    	int inAtFlg = 0;
+//    	for(int i=0; i<columns.length();i++){
+//    		//Log.i(columns.charAt(i));
+//    		if(inAtFlg==0){
+//    			if(columns.charAt(i)=='@')		inAtFlg=1;
+//    		}else if(inAtFlg==1){
+//	    		if(columns.charAt(i)==' ')		inAtFlg=1;
+//	    		else if(columns.charAt(i)=='{')	inAtFlg=2;
+//    		}else if(inAtFlg==2){
+//    			if(columns.charAt(i)==',')
+//    				columns = columns.substring(0,i)+";"+columns.substring(i+1);	//置換
+//    			else if(columns.charAt(i)=='}')	inAtFlg=0;
+//    		}
+//    	}
+//    	//Log.i("After:  "+columns);
+    	
+    	
+		int col_num = 0;
+    	String[] s_array = new String[columns.length()-columns.replace(",", "").length()];
+    	boolean sq = false, dq = false;
+    	int braces/*{}*/ = 0;
+    	int lastIndex = 0;
+    	columns += ",";
     	for(int i=0; i<columns.length();i++){
-    		//Log.i(columns.charAt(i));
-    		if(inAtFlg==0){
-    			if(columns.charAt(i)=='@')		inAtFlg=1;
-    		}else if(inAtFlg==1){
-	    		if(columns.charAt(i)==' ')		inAtFlg=1;
-	    		else if(columns.charAt(i)=='{')	inAtFlg=2;
-    		}else if(inAtFlg==2){
-    			if(columns.charAt(i)==',')
-    				columns = columns.substring(0,i)+";"+columns.substring(i+1);	//置換
-    			else if(columns.charAt(i)=='}')	inAtFlg=0;
+    		char c = columns.charAt(i);
+    		
+    		if(c=='\'' && !dq && braces==0)		sq = !sq;
+    		else if(c=='"' && !sq && braces==0)	dq = !sq;
+    		else if(c=='{' && !sq && !dq)		braces++;
+    		else if(c=='}' && !sq && !dq)		braces--;
+    		else if(c==',' && !dq && !sq && braces==0){
+    			s_array[col_num++] = columns.substring(lastIndex, i);
+    			lastIndex = i+1;
     		}
     	}
-    	//Log.i("After:  "+columns);
+    	//System.out.println("col_num: "+col_num);
+    	//for(int i=0; i<col_num; i++)	System.out.println(i+": "+s_array[i]);
     	
     	
-    	int col_num=1;
-    	String columns0 = columns;
-    	while(columns0.contains(",")){
-    		columns0 = columns0.substring(columns0.indexOf(",")+1);
-    		col_num++;		//カウント
-    	}
+//    	int col_num=1;
+//    	String columns0 = columns;
+//    	while(columns0.contains(",")){
+//    		columns0 = columns0.substring(columns0.indexOf(",")+1);
+//    		col_num++;		//カウント
+//    	}
     	String[] s_name_array = new String[col_num];
-    	String[] s_array = new String[col_num];
-    	columns0 = columns;
-    	for(int i=0; i<col_num-1; i++){
-    		s_array[i] = columns0.substring(0,columns0.indexOf(","));
-    		columns0 = columns0.substring(columns0.indexOf(",")+1);
-    		//Log.i( "s_array["+i+"] = "+s_array[i]+"	"+columns0);
-    	}
-    	s_array[col_num-1] = columns0;
+//    	String[] s_array = new String[col_num];
+//    	columns0 = columns;
+//    	for(int i=0; i<col_num-1; i++){
+//    		s_array[i] = columns0.substring(0,columns0.indexOf(","));
+//    		columns0 = columns0.substring(columns0.indexOf(",")+1);
+//    		//Log.i( "s_array["+i+"] = "+s_array[i]+"	"+columns0);
+//    	}
+//    	s_array[col_num-1] = columns0;
 		//Log.i( "s_array["+(col_num-1)+"] = "+s_array[col_num-1]);
     	int j=0;
 		for(int i=0; i<col_num; i++){
@@ -2341,18 +2347,25 @@ public class Mobile_HTML5Function extends Function {
     	String[] validationType = new String[col_num];
     	boolean[] notnullFlg = new boolean[col_num];
     	String[] uploadFile = new String[col_num];
+    	String[] at_array = new String[col_num];
+    	String[] radioButton_array = new String[col_num];
+    	String[] selectbox_array = new String[col_num];
+    	String[] checkbox_array = new String[col_num];
+    	Arrays.fill(radioButton_array, "");
+    	Arrays.fill(selectbox_array, "");
+    	Arrays.fill(checkbox_array, "");
     	String notnullFlg_array = "";
+    	String checkboxFlg_array = "";
     	String[] $session_array = new String[col_num];
     	String[] $time_array = new String[col_num];
     	String[] $gps_array = new String[col_num];
-    	String[] button_array = new String[col_num];
+    	String[] text_array = new String[col_num];
     	String buttonSubmit = "";
     	String insert_aFlg = "\"";	//Flg
     	String insert_popFlg = "\"";	//Flg
     	int noinsert_count = 0;
     	int a_pop_count = 0;
     	for(int i=0; i<col_num; i++){
-    		
     		//Log.i(s_array[i]);
     		//Check: @textarea, @hidden, @noinsert, @notnull, @date, @date1-5, @time	//TODO:リファクタリング
     		textareaFlg[i] = false;
@@ -2361,9 +2374,11 @@ public class Mobile_HTML5Function extends Function {
     		validationType[i] = "";
     		notnullFlg[i] = false;
     		uploadFile[i] = "";
+    		at_array[i] = "";
     		String str = "";
     		if(s_array[i].replaceAll(" ","").contains("@{")){
     			str = s_array[i].substring(s_array[i].lastIndexOf("@")+1);	//@以下の文字列
+    			at_array[i] = str;
     			//Log.e(str);
 	    		if(str.contains("='")){
 	    			//image='', file=''
@@ -2395,7 +2410,7 @@ public class Mobile_HTML5Function extends Function {
 	    		if(str.contains("notnull"))	notnullFlg[i] = true;
 	    		validationType[i] = Mobile_HTML5.checkFormValidationType(str);	//form validation
 	    		
-	    		s_array[i] = s_array[i].substring(0,s_array[i].indexOf("@"));
+	    		s_array[i] = s_array[i].substring(0,s_array[i].lastIndexOf("@"));
 	    		//Log.i(s_array[i]);
     		}else{
     			if(i==(col_num-1))	notnullFlg_array += "FALSE";
@@ -2411,32 +2426,29 @@ public class Mobile_HTML5Function extends Function {
     				$session_array[i] = a.substring(a.indexOf("$session(")+"$session(".length(),a.indexOf(")"));
     				$time_array[i] = "";
     				$gps_array[i] = "";
-    				button_array[i] = "";
+    				text_array[i] = "";
     				a = a.substring(0,a.indexOf("=")).trim() + a.substring(a.indexOf(")")+1).trim();
         			s_array[i] = s_array[i].substring(0,s_array[i].indexOf("=")).trim() + s_array[i].substring(s_array[i].indexOf(")")+1).trim();
     			}else if(a_right.startsWith("time(") || a_right.startsWith("date(")){
     				String d = s_array[i].substring(s_array[i].indexOf("(")+1,s_array[i].lastIndexOf(")")).trim(); 
-//    				$time_array[i] = "date(\"Y-m-d H:i:s\")";	//"date(\"Y/m/d(D) H:i:s\")";
     				$time_array[i] = "date(\""+( (d.equals(""))? ("Y-m-d H:i:s") : (d) )+"\")";	//"date(\"Y/m/d(D) H:i:s\")";
     				$session_array[i] = "";
     				$gps_array[i] = "";
-    				button_array[i] = "";
+    				text_array[i] = "";
     				a = a.substring(0,a.indexOf("=")).trim() + a.substring(a.indexOf(")")+1).trim();
     				s_array[i] = s_array[i].substring(0,s_array[i].indexOf("=")).trim() + s_array[i].substring(s_array[i].indexOf(")")+1).trim();
     			}else if(a_right.startsWith("gps_info(")){
     				//gps_info()の取得
-    				//String d = s_array[i].substring(s_array[i].indexOf("(")+1,s_array[i].lastIndexOf(")")).trim(); 
-    				//$gps_array[i] = "date(\""+( (d.equals(""))? ("Y-m-d H:i:s") : (d) )+"\")";	//"date(\"Y/m/d(D) H:i:s\")";
     				$gps_array[i] = "gps_info";
     				
     				$session_array[i] = "";
     				$time_array[i] = "";
-    				button_array[i] = "";
+    				text_array[i] = "";
     				a = a.substring(0,a.indexOf("=")).trim() + a.substring(a.indexOf(")")+1).trim();
     				s_array[i] = s_array[i].substring(0,s_array[i].indexOf("=")).trim() + s_array[i].substring(s_array[i].indexOf(")")+1).trim();
-    			}else if(a.contains("{")){
-    				String ss = a.substring(a.indexOf("{")+"{".length(),a.indexOf("}"));
-    				button_array[i] = ss;
+    			}else if(a.contains("{") && a.contains("}")){
+    				String x = s_array[i];
+    				text_array[i] = x.substring(x.indexOf("{")+"{".length(), x.indexOf("}"));
     				$session_array[i] = "";
     				$time_array[i] = "";
     				$gps_array[i] = "";
@@ -2446,13 +2458,13 @@ public class Mobile_HTML5Function extends Function {
     				$session_array[i] = "";
     				$time_array[i] = "";
     				$gps_array[i] = "";
-    				button_array[i] = "";
+    				text_array[i] = "";
     			}
     		}else{
     			$session_array[i] = "";
     			$time_array[i] = "";
     			$gps_array[i] = "";
-    			button_array[i] = "";
+    			text_array[i] = "";
     		}
     		//Log.i(s_array[i]+"	"+$session_array[i]);
     		//Log.i(button_array[i]+"	"+button_array[i]);
@@ -2461,12 +2473,7 @@ public class Mobile_HTML5Function extends Function {
     		if(a.startsWith("a(") || a.startsWith("anchor(")){
     			insert_aFlg += "true\""+((i<col_num-1)?(",\""):(""));
     			if(a.endsWith(")")){
-//    				insert_col += s_array[i] +((i<col_num-1)?(","):(""));
-//    	    		insert_col_array += s_array[i] +"\""+((i<col_num-1)?(",\""):(""));
-//    	    		insert_aFlg += "false\""+((i<col_num-1)?(",\""):(""));
-//    	    		insert_popFlg += "false\""+((i<col_num-1)?(",\""):(""));
     	    		insert_col += s_array[i]+",";
-//    				insert_col_array += s_array[i]+"\",\"";
     				insert_aFlg += ((i<col_num-1)?(""):(",\""))+"false\""+((i<col_num-1)?(",\""):(""));
     				insert_popFlg += ((i<col_num-1)?(""):(",\""))+"false\""+((i<col_num-1)?(",\""):(""));
     			}else	a_pop_count++;
@@ -2475,18 +2482,12 @@ public class Mobile_HTML5Function extends Function {
     		if(a.startsWith("pop(") || a.startsWith("popup(")){
     			insert_popFlg += "true\""+((i<col_num-1)?(",\""):(""));
     			if(a.endsWith(")")){
-//    				insert_col += s_array[i] +((i<col_num-1)?(","):(""));
-//    	    		insert_col_array += s_array[i] +"\""+((i<col_num-1)?(",\""):(""));
-//    	    		insert_aFlg += "false\""+((i<col_num-1)?(",\""):(""));
-//    	    		insert_popFlg += "false\""+((i<col_num-1)?(",\""):(""));
     				insert_col += s_array[i]+",";
-//    				insert_col_array += s_array[i]+"\",\"";
     				insert_aFlg += ((i<col_num-1)?(""):(",\""))+"false\""+((i<col_num-1)?(",\""):(""));
     				insert_popFlg += ((i<col_num-1)?(""):(",\""))+"false\""+((i<col_num-1)?(",\""):(""));
     			}else	a_pop_count++;
     		}else
     			insert_popFlg += "false\""+((i<col_num-1)?(",\""):(""));
-    		
     		
     		if(!noinsertFlg[i]){
     			insert_col += s_array[i] +((i<col_num-1)?(","):(""));
@@ -2495,7 +2496,6 @@ public class Mobile_HTML5Function extends Function {
     	}
     	col_num -= a_pop_count;
     	insert_col = insert_col.replaceAll("a\\(","").replaceAll("anchor\\(","").replaceAll("pop\\(","").replaceAll("popup\\(","").replaceAll("\\)","");
-//    	insert_col_array = insert_col_array.replaceAll("a\\(","").replaceAll("anchor\\(","").replaceAll("pop\\(","").replaceAll("popup\\(","").replaceAll("\\)","");
     	
     	
     	//Log.i("	1:"+title+"	2:"+columns+"	col_num:"+col_num);
@@ -2572,8 +2572,6 @@ public class Mobile_HTML5Function extends Function {
     	if(update){
     		//update()
     		formPHPfileName = html_env.getFileName2()+"_SSQLupdateform_"+insertCount+".php";
-//    	}else if(insert_update){
-//			formPHPfileName = html_env.getFileName2()+"_SSQLinsertupdate_"+insertCount+".php";
     	}else{
     		//insert(), form()=insert_update()
     		formPHPfileName = html_env.getFileName2()+"_SSQLform_"+insertCount+".php";
@@ -2602,27 +2600,29 @@ public class Mobile_HTML5Function extends Function {
 				updateFromValue = "'.$row['"+cols[i]+"'].'";
 			}
 			if($session_array[i].equals("") && $time_array[i].equals("") && $gps_array[i].equals("")){
-				if(!button_array[i].equals("")){
-					//Log.i("bt_array:"+button_array[i]);
-					String ss = button_array[i]+"|";
-					int btRcount = ss.length() - ss.replaceAll("\\|","").length();
-					//Log.i("btRcount:"+btRcount);
+				if(!text_array[i].equals("")){
+					//Log.i("text_array:"+text_array[i]);
+					String ss = text_array[i]+"|";
+					String at = at_array[i];
+					int pipeCount = ss.length() - ss.replaceAll("\\|","").length();
+					//Log.i("pipeCount:"+pipeCount);
 					
-					if(btRcount == 1){				//テキスト ex){2013秋}
+					if(!at.contains("radio") && !at.contains("select") && !at.contains("check") && pipeCount==1){
+						//編集不可テキスト ex){2013秋}
 						statement += 
-								"    <"+((!textareaFlg[i])?("input"):("textarea"))+" type=\""+((!hiddenFlg[i])?("text"):("hidden"))+"\" disabled=\"disabled\" value=\""+( (!s_name_array[i].equals(""))? (s_name_array[i]+": "):("") )+"" +
-								""+( (!textareaFlg[i])? ("\n") : ((!s_name_array[i].equals(""))? ("\">"+s_name_array[i]+": "):("")) )+button_array[i]+"" +
+								"	<"+((!textareaFlg[i])?("input"):("textarea"))+" type=\""+((!hiddenFlg[i])?("text"):("hidden"))+"\" disabled=\"disabled\" value=\""+( (!s_name_array[i].equals(""))? (s_name_array[i]+": "):("") )+"" +
+								""+( (!textareaFlg[i])? ("\n") : ((!s_name_array[i].equals(""))? ("\">"+s_name_array[i]+": "):("")) )+text_array[i]+"" +
 								""+((!textareaFlg[i])?("\">"):("</textarea>"))+"\n";
 						update_statement += 	//TODO: button
-								"    <"+((!textareaFlg[i])?("input"):("textarea"))+" type=\""+((!hiddenFlg[i])?("text"):("hidden"))+"\" disabled=\"disabled\" " +
+								"	<"+((!textareaFlg[i])?("input"):("textarea"))+" type=\""+((!hiddenFlg[i])?("text"):("hidden"))+"\" disabled=\"disabled\" " +
 										"value=\""+( (!s_name_array[i].equals(""))? (s_name_array[i]+": "):("") )+"" +
-								""+( (!textareaFlg[i])? ("\n") : ((!s_name_array[i].equals(""))? ("\">"+s_name_array[i]+": "):("")) )+button_array[i]+"" +
+								""+( (!textareaFlg[i])? ("\n") : ((!s_name_array[i].equals(""))? ("\">"+s_name_array[i]+": "):("")) )+text_array[i]+"" +
 								""+((!textareaFlg[i])?("\">"):(updateFromValue+"</textarea>"))+"\n";
 						if(!noinsertFlg[i]){
 							statement += 
-									"    <input type=\"hidden\" id=\"SSQL_insert"+insertCount+"_words"+(++insertWordCount)+"\" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\" value=\""+button_array[i]+"\">\n";
+									"	<input type=\"hidden\" id=\"SSQL_insert"+insertCount+"_words"+(++insertWordCount)+"\" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\" value=\""+text_array[i]+"\">\n";
 							update_statement += //TODO: button
-									"    <input type=\"hidden\" id=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\" value=\""+button_array[i]+"\">\n";
+									"	<input type=\"hidden\" id=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\" value=\""+text_array[i]+"\">\n";
 						}
 					//TODO 以下を「@button」時のみに変更
 //						}else if(btRcount == 2){		//ボタン ex){出席|欠席}
@@ -2640,29 +2640,156 @@ public class Mobile_HTML5Function extends Function {
 //									"	</div>\n";
 //							buttonSubmit += " || $_POST['SSQL_insert"+insertCount+"_words"+(insertWordCount)+"']";
 						
-					}else{							//ラジオボタン ex){出席|欠席|その他}
+					}else{
+						//ラジオボタン, セレクトボックス, チェックボックス
+						//System.out.println("ss : "+ss);
+						//System.out.println("at : "+at);
+						
+						String inputType = "radio";		//Default: input type="radio"
+						if(at.contains("select"))		inputType = "select";
+						else if(at.contains("check"))	inputType = "checkbox";
+						boolean isSQL = !at.contains("sql")? false : true;
+						
+						//ラジオボタン ex){出席|欠席|その他}@{radio}, {★☆☆=1|★★☆=2|★★★=3}など (2個以上の選択項目がある場合、@{radio}はあってもなくてもOK)
+						//セレクトボックス ex){出席|欠席|その他}@{selectbox もしくは select}
+						//チェックボックス ex){出席|欠席|その他}@{checkbox もしくは check}
+						//※ DBから値を取得する場合の記述例：{select name, id from movie}@{sql, selectbox}
 						statement += "   <div data-role=\"controlgroup\">\n" + 
 									 "		<div style=\"text-align:left; font-size:16.5px\">"+s_name_array[i]+"</div>\n";
 						update_statement += "   <div data-role=\"controlgroup\">\n" + 
 									 "		<div style=\"text-align:left; font-size:16.5px\">"+s_name_array[i]+"</div>\n";
 						insertWordCount++;
-						for(int k=1; k<=btRcount; k++){
+						
+						if(inputType.equals("select")){
+							//セレクトボックス
+							String name = "SSQL_insert"+insertCount+"_words"+(insertWordCount);
+							selectbox_array[i] = name;
+//							statement += "		<select name=\""+name+"\" data-native-menu=\"false\">\n";
+//							update_statement += "		<select name=\""+name+"\" data-native-menu=\"false\">\n";	//TODO?
+							statement += "		<select name=\""+name+"\">\n";
+							update_statement += "		<select name=\""+name+"\">\n";	//TODO?
+						}
+						for(int k=1; k<=pipeCount; k++){
 							String val = ss.substring(0,ss.indexOf("|")).trim();
-							statement += 
-									"		<input type=\"radio\" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\" id=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"_"+k+"\" value=\""+val+"\""+( (k>1)? (""):(" checked=\"checked\"") )+">\n" +
-									"		<label for=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"_"+k+"\">"+val+"</label>\n";
-							update_statement += //TODO radio button
-									"		<input type=\"radio\" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\" id=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"_"+k+"\" value=\""+val+"\""+( (k>1)? (""):(" checked=\"checked\"") )+">\n" +
-									"		<label for=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"_"+k+"\">"+val+"</label>\n";
+							String insert_val = val;
+							if(val.contains("=")){
+								insert_val = val.substring(val.indexOf("=")+1).trim();
+								val = val.substring(0, val.indexOf("=")).trim();
+							}
+							
+							String id = "SSQL_insert"+insertCount+"_words"+insertWordCount;
+							String fn = html_env.getFileName2()+"_"+id+".php";
+							String name = id;
+							String checked = (k>1)? "" : " checked=\"checked\"" ;
+							String php_echo = "";
+							if(inputType.equals("radio") || inputType.equals("checkbox")){
+								//ラジオボタン, チェックボックス
+								if(inputType.equals("checkbox")){
+									//チェックボックス
+									checkbox_array[i] = name;
+									name += "[]";
+									checked = "";
+								}else
+									radioButton_array[i] = name;
+								
+								if(!isSQL){
+									statement += 
+											"		<input type=\""+inputType+"\" name=\""+name+"\" id=\""+id+"_"+k+"\" value=\""+insert_val+"\""+checked+">\n" +
+											"		<label for=\""+id+"_"+k+"\">"+val+"</label>\n";
+									update_statement += //TODO radio button
+											"		<input type=\""+inputType+"\" name=\""+name+"\" id=\""+id+"_"+k+"\" value=\""+insert_val+"\""+checked+">\n" +
+											"		<label for=\""+id+"_"+k+"\">"+val+"</label>\n";
+								}else{
+									//DBから値を取得する処理 ex){select name, id from movie}@{sql, selectbox}
+									php_echo += 
+											"			echo '		<input type=\""+inputType+"\" name=\"'.$name.'\" id=\"'.$id.'_'.$i.'\" value=\"'.$insert_val.'\"'.(($i != $checked_num)? '' : '"+checked+"').\">\n\";\n" +
+											"	    	echo '		<label for=\"'.$id.'_'.$i.'\">'.$val.\"</label>\n\";\n";
+								}
+							}
+							else if(inputType.equals("select")){
+								//セレクトボックス
+								if(!isSQL){
+									statement += "			<option value=\""+insert_val+"\""+((k>1)? (""):(" selected"))+">"+val+"</option>\n";
+									update_statement += "			<option value=\""+insert_val+"\""+((k>1)? (""):(" selected"))+">"+val+"</option>\n";	//TODO?
+								}else{
+									//DBから値を取得する処理 ex){select name, id from movie}@{sql, selectbox}
+									php_echo += 
+											"			echo '			<option value=\"'.$insert_val.'\"'.(($i != $checked_num)? '' : ' selected').'>'.$val.'</option>\n';\n";
+								}
+							}
+							
+							if(isSQL){
+								//DBから値を取得する処理
+								statement += "<?php	require_once '"+fn+"'; ?>\n";
+								update_statement += "<?php	require_once '"+fn+"'; ?>\n";
+								
+								//php作成
+								int checked_num = 1;
+								String sql = val;
+								String php2 =	Mobile_HTML5.getSessionStartString() +
+										"<?php\n" +
+										"	$checked_num = "+checked_num+";\n" +
+										"	$name = '"+name+"';\n" +
+										"	$id = '"+id+"';\n" +
+										"   \n" +
+										"   $sql = '"+sql+"';\n" +
+										"	try{\n";
+								if(DBMS.equals("sqlite") || DBMS.equals("sqlite3")){
+									php2 += 
+											"		$db = new SQLite3('"+DB+"');\n" +
+											"		$results = $db->query($sql);\n" +
+											"		$i = 1;\n" +
+											"		while ($row = $results->fetchArray()) {\n";
+								}
+								else if(DBMS.equals("postgresql") || DBMS.equals("postgres")){
+									php2 +=
+						    				"		$db = pg_connect(\"host="+HOST+" dbname="+DB+" user="+USER+""+(!PASSWD.isEmpty()? (" password="+PASSWD):"")+"\");\n" +
+						    				"		$results = pg_query($db, $sql);\n" +
+											"		$i = 1;\n" +
+											"		while ($row = pg_fetch_row($results)) {\n";
+								}
+								php2 +=
+										"			$val = $row[0];\n" +
+										"			$insert_val = $row[1];\n" +
+										"			if(is_null($insert_val))	$insert_val = $val;\n" +
+										php_echo +
+										"	    	$i++;\n" +
+										"		}\n" +
+										"	}catch(Exception $e){\n" +
+										"		echo '<font color=red>Select failed.<br>'.$e.'</font>';\n" +
+										"	}\n";
+								if(DBMS.equals("sqlite") || DBMS.equals("sqlite3"))
+									php2 += "	$db->close();";
+								else if(DBMS.equals("postgresql") || DBMS.equals("postgres"))
+									php2 += "	pg_close($db);\n";
+								php2 += "?>\n";
+								
+								Mobile_HTML5.createFile(html_env, fn, php2);//PHPファイルの作成
+							}
+							
 							ss = ss.substring(ss.indexOf("|")+1);
+						}
+						if(inputType.equals("select")){
+							//セレクトボックス
+							statement += "		</select>\n";
+							update_statement += "		</select>\n";
 						}
 						statement += "   </div>\n";
 						update_statement += "   </div>\n";
 					}
 				}else{
+					String at = at_array[i];
+					boolean isOutTitle = (at.contains("outtitle") || at.contains("outlabel") || at.contains("noplaceholder"))? true : false;	//placeholderにタイトルをセットしない
+					String outTitle = "";
+					if(isOutTitle){
+						outTitle = "<div style=\"text-align:left; font-size:16.5px; margin-top:15px;\">"+s_name_array[i]+"</div>\n";
+						s_name_array[i] = "";
+					}
+
 					if(validationType[i].isEmpty()){
 						statement += 
-								"    "+( (!textareaFlg[i])? "" : "<span>" )+"<span>" +
+								outTitle +
+								"	"+( (!textareaFlg[i])? "" : "<span>" )+"<span>" +
 								"<"+((!textareaFlg[i])?("input"):("textarea"))+"" +
 								" type=\""+((!hiddenFlg[i])?("text"):("hidden"))+"\"" +
 								" id=\"SSQL_insert"+insertCount+"_words"+(++insertWordCount)+"\"" +
@@ -2671,7 +2798,8 @@ public class Mobile_HTML5Function extends Function {
 								""+((!textareaFlg[i])?(""):("</textarea>")) +
 								"</span>"+( (!textareaFlg[i])? "" : "</span>" )+"\n";
 						update_statement += 
-								"    "+( (!textareaFlg[i])? "" : "<span>" )+"<span>" +
+								outTitle +
+								"	"+( (!textareaFlg[i])? "" : "<span>" )+"<span>" +
 								"<"+((!textareaFlg[i])?("input"):("textarea"))+"" +
 								" type=\""+((!hiddenFlg[i])?("text"):("hidden"))+"\"" +
 								" id=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\"" +
@@ -2682,9 +2810,9 @@ public class Mobile_HTML5Function extends Function {
 								"</span>"+( (!textareaFlg[i])? "" : "</span>" )+"\n";
 						//statement += "    <input type=\"text\" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\" placeholder=\""+s_name_array[i]+"\">\n";
 					}else{
-						statement += Mobile_HTML5.getFormValidationString(validationType[i], notnullFlg[i], "SSQL_insert"+insertCount+"_words"+(++insertWordCount), s_name_array[i], updateFromValue);
+						statement += Mobile_HTML5.getFormValidationString(validationType[i], notnullFlg[i], "SSQL_insert"+insertCount+"_words"+(++insertWordCount), s_name_array[i], updateFromValue, outTitle);
 						update_statement
-						          += Mobile_HTML5.getFormValidationString(validationType[i], notnullFlg[i], "SSQL_insert"+insertCount+"_words"+(insertWordCount), s_name_array[i], updateFromValue);
+						          += Mobile_HTML5.getFormValidationString(validationType[i], notnullFlg[i], "SSQL_insert"+insertCount+"_words"+(insertWordCount), s_name_array[i], updateFromValue, outTitle);
 					}
 				}
 			}else{
@@ -2845,14 +2973,41 @@ public class Mobile_HTML5Function extends Function {
 				//added by goto 20141128 form confirm  start
 				"function SSQL_Insert"+insertCount+"_confirm(){\n" +
 				"	//confirm form\n" +
-				"	var SSQL_Insert"+insertCount+"_formVal = $(\"#SSQL_INSERT"+insertCount+"panel form\").serializeArray();\n" +
+				//"	var SSQL_Insert"+insertCount+"_formVal = $(\"#SSQL_INSERT"+insertCount+"panel form\").serializeArray();\n" +
 				"	var s = \"<div style='background:#FEF9F9;'>\";\n" +
 				"	s += \"<span style='line-height:40px; font-weight:800;'>下記の内容で登録します。</span><br>\";\n" +
 				"	s += \"<table style='width:100%; font-weight:500; line-height:30px;'>\";\n";
 		for(int i=0; i<col_num; i++){
-			statement += "	s += \"<tr><td style='width:40%; text-align:center;'>"+s_name_array[i]+"</td>" +
-					"<td>「<span style='color:red;'>\" + SSQL_Insert"+insertCount+"_formVal["+i+"].value+\"</span>」</td></tr>\";\n";
+			String s = "";
+			if(!checkbox_array[i].equals("")){
+				s = checkbox_array[i];
+				statement += 
+					"	var "+s+"=[];\n" +
+					"	$('[name=\""+s+"[]\"]:checked').each(function(){\n" +
+					"		//"+s+".push($(this).val());\n" +
+					"		"+s+".push(' '+$('label[for=\"'+this.id+'\"]').text().trim()+' ');\n" +
+					"	});\n";
+				checkboxFlg_array += "TRUE,";
+			}else if(!radioButton_array[i].equals("")){
+				s = radioButton_array[i];
+				statement += "	var "+s+"=$(\"label[for='\"+$(\"input:radio[name='"+s+"']:checked\").attr(\"id\")+\"']\").text().trim();\n";
+				checkboxFlg_array += "FALSE,";
+			}else if(!selectbox_array[i].equals("")){
+				s = selectbox_array[i];
+				statement += "	var "+s+"=$('[name=\""+s+"\"] option:selected').text().trim();\n";
+				checkboxFlg_array += "FALSE,";
+			}else{
+				//s = "SSQL_Insert"+insertCount+"_formVal["+i+"].value";
+				s = "SSQL_insert"+insertCount+"_words"+(i+1);
+				statement += "	var "+s+"=$('#"+s+"').val();\n";
+				checkboxFlg_array += "FALSE,";
+			}
+			statement += 
+					"	s += \"<tr><td style='width:40%; text-align:center;'>"+s_name_array[i]+"</td>" +
+					"<td>「<span style='color:red;'>\"+"+s+"+\"</span>」</td></tr>\";\n";
 		}
+		if(checkboxFlg_array.contains(","))	
+			checkboxFlg_array = checkboxFlg_array.substring(0, checkboxFlg_array.lastIndexOf(","));
 		statement += 
 				"	document.getElementById(\"SSQL_Insert"+insertCount+"_result\").innerHTML = s+\"</table></div>\";\n" +
 				"	SSQL_Insert"+insertCount+"_showButton(1);\n" +
@@ -2916,13 +3071,13 @@ public class Mobile_HTML5Function extends Function {
 		}
 		php +=
 				"    $notnullFlg = array("+notnullFlg_array+");\n" +
+				"    $checkboxFlg = array("+checkboxFlg_array+");\n" +
 				"    $col_num = "+(col_num - noinsert_count)+";                          //カラム数(Java側で指定)\n" +
 				"    $table = '"+from+"';\n" +
 				"\n" +
 				"	$insert_str = \"notnull\";\n" +
 				"	for($k=1; $k<=$col_num; $k++){\n" +
 				getFormFileUploadPHP1() +
-				//"    	$var[$k] = checkHTMLsc($_POST['SSQL_insert"+insertCount+"_words'.$k]);\n" +
 				"    	$var[$k] = str_replace(array(\"\\r\\n\",\"\\r\",\"\\n\"), '<br>', $var[$k]);	//改行コードを<br>へ\n" +
 				//"    	//$var[$k] = mb_convert_encoding($var[$k], 'UTF-8', 'auto');					//エンコードをUTF-8へ PHP環境によってはうまく動かない？\n" +
 				"    	if($notnullFlg[$k-1]){\n" +
@@ -3130,11 +3285,20 @@ public class Mobile_HTML5Function extends Function {
     }
     //getFormFileUploadPHP1
     private String getFormFileUploadPHP1(){
+    	String r = 
+	    	"		$s = '';\n" +
+			"		if(!$checkboxFlg[$k-1]){\n" +
+			"			$s = $_POST['SSQL_insert"+insertCount+"_words'.$k];\n" +
+	    	"		}else{\n" +
+			"			if(isset($_POST['SSQL_insert"+insertCount+"_words'.$k]))\n" +
+			"				foreach($_POST['SSQL_insert"+insertCount+"_words'.$k] as $val)\n" +
+	        "        			$s .= $val.',';\n" +
+	       	"			if(strstr($s, ','))	$s = substr($s, 0, -1);\n" +
+	    	"		}\n";
     	if(formFileUpload){
-    		//return  "		if(!$fileFlg[$k-1]){\n" +
-    		return  "		if(empty($fileDir[$k-1])){\n" +
-    				"			$var[$k] = checkHTMLsc($_POST['SSQL_insert"+insertCount+"_words'.$k]);\n" +
-    				//"	    	$t .= $var[$k];\n" +
+    		return  r + 
+    				"		if(empty($fileDir[$k-1])){\n" +
+    				"			$var[$k] = checkHTMLsc($s);\n" +
     				"    	}else{\n" +
     				"    		//file\n" +
     				"    		$dir = $fileDir[$k-1];\n" +
@@ -3143,10 +3307,9 @@ public class Mobile_HTML5Function extends Function {
     				"    		$filename = $dir.$file2;\n" +
     				"    		$var[$k] = fileUpload($dir, $file1, $file2, $filename);\n" +
     				"    		$var[$k] = checkHTMLsc($var[$k]);\n" +
-    				//"    		$t .= $filename;\n" +
     				"    	}\n\n";
     	}
-    	return "		$var[$k] = checkHTMLsc($_POST['SSQL_insert"+insertCount+"_words'.$k]);\n";
+    	return r + "		$var[$k] = checkHTMLsc($s);\n";
     }
     //getFormFileUploadPHP2
     private String getFormFileUploadPHP2(){
@@ -3607,7 +3770,12 @@ public class Mobile_HTML5Function extends Function {
 	    	String statement = "\n";
 	    	String attribute = "";
 	    	try{
-	    		attribute = ((FuncArg) this.Args.get(0)).getStr();
+	    		if(this.Args.toString().contains("\""))
+	    			// $session("id")
+	    			attribute = ((FuncArg) this.Args.get(0)).getStr();
+	    		else
+	    			// $session(id)
+		    		attribute = this.Args.get(0).toString().replace("[", "").replace("]", "").trim();
 	    	}catch(Exception e){
 	    		Log.info("<Warning> $session関数の引数が不足しています。 ex. $session(\"name\")");
 	    		return "";
