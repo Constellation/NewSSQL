@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -24,10 +25,14 @@ import supersql.common.Log;
 import supersql.db.SQLManager;
 import supersql.extendclass.ExtList;
 
-public class SSQLparser {
+public class SSQLparser implements Serializable {
 
 	private String commentOutLetters = ""+GlobalEnv.COMMENT_OUT_LETTER+GlobalEnv.COMMENT_OUT_LETTER;	//="--"
     
+	// added by masato 20151125 for parameter clause
+	public static String[] parameters;
+	public static ArrayList<String> parameter_atts = new ArrayList<String>();	
+	
     //added by goto 20130508  "Login&Logout"
 	public static boolean sessionFlag = false;
 	public static String sessionString = "";
@@ -125,16 +130,17 @@ public class SSQLparser {
 	}
 
 	private String getSSQLQuery() {
+		// modifed by masato 20151118 little change for eHTML
 		String query = GlobalEnv.getQuery();
-		if (GlobalEnv.getQuery() != null && GlobalEnv.getoutfilename() != null) {
+		if(GlobalEnv.getQuery() != null && GlobalEnv.getoutfilename() != null){
 			query = GlobalEnv.getQuery();
 			query = replaceQuery_For_HTML_and_MobileHTML5(query);
 			return query;
 		}
-//		String query = GlobalEnv.getQuery();
-//		if (query != null) {
-//			query = query.trim();
-//		}
+		
+		if (query != null) {
+			query = query.trim();
+		}
 
 		String filename = GlobalEnv.getfilename();
 		if (filename == null || filename.isEmpty()) {
@@ -471,7 +477,6 @@ public class SSQLparser {
         //For !number,
         query = query.replaceAll("\\]\\s*!\\s*([0-9]+)\\s*\\,s*@\\s*\\{([^\\}]*)", "]!@{$2,row=$1");
     	query = query.replaceAll("\\]\\s*!\\s*([0-9]+)\\s*\\,", "]!@{row=$1}");						//masato "%" -> "\\,"
-
     	// 20140613_masato For !number%
 		query = query.replaceAll("\\]\\s*\\!\\s*([0-9]+)\\s*%\\s*@\\s*\\{([^\\}]*)", "]!@{$2,row=$1,column=1");
 		query = query.replaceAll("\\]\\s*\\!\\s*([0-9]+)\\s*%", "]!@{row=$1,column=1}");
@@ -870,6 +875,25 @@ public class SSQLparser {
 					+ ": Used in FOREACH clause and added to FROM clause ");
 		}
 
+		// added by masato 20151125 for parameter clause
+		if(parameters != null){
+			String where_tmp = "";
+			for(int i = 0; i < parameters.length; i++){
+				if(i != 0){
+					where_tmp += "AND"; 
+				}
+				where_tmp += parameter_atts.get(i) + " = " + parameters[i];
+			}
+			
+			// where句の中身をチェック
+			if(where_c.toString().equals("")){
+				where_c.append(where_tmp);
+			} else {
+				where_tmp += "AND ";
+				where_c.insert(0, where_tmp);
+			}
+		}
+
 		if (SSQLparser.isDbpediaQuery())
 			whereInfo.setSparqlWhereQuery(where_c.toString().trim());
 		else
@@ -893,7 +917,9 @@ public class SSQLparser {
 		Log.out("[Paeser:Where] where = " + whereInfo);
 	}
 	
-	private void parseSSQL(String QueryString, int id) {
+	public void parseSSQL(String QueryString, int id) {
+//		System.out.println("parsessql");
+
 		// replace '*' to attributes added by chie
 		if (QueryString.contains("*")) {
 			QueryString = replaceQuery(QueryString);
@@ -920,6 +946,7 @@ public class SSQLparser {
 			}
 
 			// for embed css TFE_ID
+//			System.out.println("media: " + media);
 			codeGenerator = new CodeGenerator(id);
 			codeGenerator.setFactory(media.toUpperCase());
 			codeGenerator.initiate();
@@ -947,10 +974,9 @@ public class SSQLparser {
 
 			tfeInfo = new TFEparser(tfe.toString(), codeGenerator);
 			tfeInfo.debugout();
-
+			
 			processKeywords(st);
 			postProcess();
-			
 		} catch (IllegalStateException e) {
 			System.err
 			.println("Error[SSQLparser]: Syntax Error in SSQL statement : "
@@ -963,6 +989,20 @@ public class SSQLparser {
 	}
 
 	private void preProcess(StringTokenizer st, String nt) {
+//		System.out.println("preprocess");
+
+		// added by masato 20151125 for parameter clause
+		if(nt.equalsIgnoreCase("PARAMETER")){
+			// -eHTMLarg{...,...,...,...}の...,...,...,...部分
+			String values =  GlobalEnv.getLinkValue().substring(1, GlobalEnv.getLinkValue().length()-1);
+			parameters = values.split(",");
+			while (st.hasMoreTokens()) {
+				nt = st.nextToken().toString();
+				if (nt.equalsIgnoreCase("GENERATE"))
+					break;
+				parameter_atts.add(nt);
+			}
+		}
 		
 		// FOREACH
 		if (nt.equalsIgnoreCase("FOREACH")) {

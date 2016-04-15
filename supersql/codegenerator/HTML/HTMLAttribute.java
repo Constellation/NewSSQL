@@ -3,6 +3,8 @@ package supersql.codegenerator.HTML;
 import java.io.File;
 
 import supersql.codegenerator.Attribute;
+import supersql.codegenerator.Ehtml;
+import supersql.codegenerator.Incremental;
 import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
@@ -20,6 +22,9 @@ public class HTMLAttribute extends Attribute {
 	private HTMLEnv htmlEnv;
 	private HTMLEnv htmlEnv2;
 	private int whichForm;
+
+	// private boolean tableFlg = false;
+	// private boolean divFlg = false;
 
 	// 鐃緒申鐃藷ストラク鐃緒申
 	public HTMLAttribute(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
@@ -420,7 +425,9 @@ public class HTMLAttribute extends Attribute {
 				}
 				if (decos.containsKey("class")) {
 					// class����(ex.class=menu)������Ȥ�
-					htmlEnv.code.append(" " + decos.getStr("class"));// added by masato 20140711　属性が一つのときにclassを指定しても機能しなかった問題を解決
+					htmlEnv.code.append(" " + decos.getStr("class"));// added by
+																		// masato
+																		// 20140711　属性が一つのときにclassを指定しても機能しなかった問題を解決
 				}
 				if (decos.getConditions().size() > 0) {
 					htmlEnv.code.append(" "
@@ -496,21 +503,25 @@ public class HTMLAttribute extends Attribute {
 					String target = GlobalEnv.getAjaxTarget();
 					if (target == null) {
 						String query = htmlEnv.ajaxQuery;
-						if (query.indexOf(".sql")>0) {
+						if (query.indexOf(".sql") > 0) {
 							if (query.contains("/")) {
-								target = query.substring(query.lastIndexOf("/") + 1,
+								target = query.substring(
+										query.lastIndexOf("/") + 1,
 										query.indexOf(".sql"));
-							} else{
-								target = query.substring(0, query.indexOf(".sql"));
+							} else {
+								target = query.substring(0,
+										query.indexOf(".sql"));
 							}
-			        	} else if (query.indexOf(".ssql")>0) {
-			        		if (query.contains("/")) {
-								target = query.substring(query.lastIndexOf("/") + 1,
+						} else if (query.indexOf(".ssql") > 0) {
+							if (query.contains("/")) {
+								target = query.substring(
+										query.lastIndexOf("/") + 1,
 										query.indexOf(".ssql"));
-							} else{
-								target = query.substring(0, query.indexOf(".ssql"));
+							} else {
+								target = query.substring(0,
+										query.indexOf(".ssql"));
 							}
-			        	}
+						}
 
 						if (htmlEnv.hasDispDiv) {
 							target = htmlEnv.ajaxtarget;
@@ -531,15 +542,55 @@ public class HTMLAttribute extends Attribute {
 				Log.out("<A href=\"" + htmlEnv.linkUrl + "\">");
 			}
 
+			// added by masato 20151124 for plink
+			if (htmlEnv.plinkFlag) {
+				String tmp = "";
+				for (int i = 0; i < htmlEnv.valueArray.size(); i++) {
+					tmp += " value" + (i + 1) + "='"
+							+ htmlEnv.valueArray.get(i) + "'";
+				}
+				Incremental.outXMLData(htmlEnv.xmlDepth, "<PostLink target='"
+						+ htmlEnv.linkUrl + "'" + tmp + ">\n");
+			}
 			// Log.out("data_info: "+this.getStr(data_info));
 
 			createForm(data_info);
-
 			if (whichForm == 0) { // normal process (not form)
 				// ***APPEND DATABASE VALUE***//
 				Log.out(data_info);
-				htmlEnv.code.append(this.getStr(data_info));
+				// added by masato 20150924 incremental update
+				if (Incremental.flag || Ehtml.flag) {
+					// modified by masato 20151201 XMLの要素名をTFE******に変更
+					// Incremental.outXMLData(htmlEnv.xmlDepth, "<" +
+					// Items.get(0) + tfe + ">" + this.getStr(data_info) + "</"
+					// + Items.get(0) + ">\n");
+					String outType = "div";
 
+					if (htmlEnv.xmlDepth != 0) {
+						// 親のoutTypeを継承
+						outType = htmlEnv.outTypeList.get(htmlEnv.xmlDepth - 1);
+					}
+					if (decos.containsKey("table") || !outType.equals("div")) {
+						htmlEnv.outTypeList.add(htmlEnv.xmlDepth, "table");
+					} else {
+						htmlEnv.outTypeList.add(htmlEnv.xmlDepth, "div");
+					}
+					if (decos.containsKey("div")) {
+						htmlEnv.outTypeList.add(htmlEnv.xmlDepth, "div");
+					}
+					String data = this.getStr(data_info)
+							.replaceAll("<", "&lt;");
+					data = data.replaceAll(">", "&gt;");
+					Incremental.outXMLData(
+							htmlEnv.xmlDepth,
+							"<Value outType=\'"
+									+ htmlEnv.outTypeList.get(htmlEnv.xmlDepth)
+									+ "\' class=\'" + HTMLEnv.getClassID(this)
+									+ "'>" + data + "</Value>\n");
+
+				} else {
+					htmlEnv.code.append(this.getStr(data_info));
+				}
 				Log.out(this.getStr(data_info));
 			}
 
@@ -553,6 +604,12 @@ public class HTMLAttribute extends Attribute {
 						htmlEnv.code.append("</div>\n");
 				}
 				Log.out("</A>");
+			}
+
+			// added by masato 20151124 for plink
+			if (htmlEnv.plinkFlag) {
+				Incremental.outXMLData(htmlEnv.xmlDepth, "</PostLink>\n");
+			
 			}
 
 			/*

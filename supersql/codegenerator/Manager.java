@@ -1,11 +1,14 @@
 package supersql.codegenerator;
 
+
+import java.io.Serializable;
+
 import supersql.extendclass.ExtList;
 
 /**
  * ?象クラスManager。ソース生成にあたっての共通な機能をまとめた。 前処?、スキーマ生成、インスタンス移行、後処?。
  */
-public abstract class Manager {
+public abstract class Manager implements Serializable{
 	/*
 	 * 必要ならばコメントアウトを外す = 要?談 =
 	 * 

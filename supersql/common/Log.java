@@ -1,8 +1,7 @@
 package supersql.common;
 
-import javax.smartcardio.CommandAPDU;
-
-import supersql.codegenerator.CodeGenerator;
+import supersql.codegenerator.Ehtml;
+import supersql.codegenerator.Incremental;
 
 public class Log {
 
@@ -70,9 +69,9 @@ public class Log {
 
 	// ɸ��Ū��ư��ǽ��Ϥ������ (-quiet���ˤϽФʤ�)
 	public static void info(Object o) {
-		// add 20141204 masato for ehtml
-		if (CodeGenerator.getMedia() != null
-				&& CodeGenerator.getMedia().equalsIgnoreCase("ehtml")) {
+		// add 20151118 masato for ehtml
+		// TODO 
+		if (Ehtml.flag || Incremental.flag) {
 			return;
 		}
 		switch (infoflag) {

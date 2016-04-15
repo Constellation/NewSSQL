@@ -12,6 +12,9 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
+import supersql.codegenerator.Ehtml;
+import supersql.codegenerator.Incremental;
+
 public class GlobalEnv {
 	
 	public static final char COMMENT_OUT_LETTER = '-';	//�����ȥ����Ȥ˻��Ѥ���ʸ��(ex: -- )
@@ -103,7 +106,7 @@ public class GlobalEnv {
 		err = new StringBuffer();
 		envs = new Hashtable<String, String>();
 		String key = null;
-		
+
 		for (int i = 0; i < args.length; i++) {
 			if (args[i].startsWith("-")) {
 				if (key != null) {
@@ -112,25 +115,25 @@ public class GlobalEnv {
 				key = args[i];
 			} else {
 				// modifed by masato 20151118 for ehtml
-				if (key.equals("-query")) {
+				if(key.equals("-query")){
 					String q = "";
-					for (int j = i; j < args.length; j++) {
-						if (!args[j].startsWith("-")) {
+					for(int j = i; j < args.length; j++){
+						if(!args[j].startsWith("-")){
 							q += args[j] + " ";
 						} else {
 							envs.put(key, q);
 							i = j;
-							j = args.length - 1;
+							j = args.length-1;
 						}
-						if (j == args.length - 1) {
+						if(j==args.length-1){
 							envs.put(key, q);
 							i = j;
-							j = args.length - 1;
+							j = args.length-1;
 						}
 					}
 				} else {
-					//
-					envs.put(key, args[i]);
+				//
+				envs.put(key, args[i]);
 				}
 				key = null;
 			}
@@ -161,6 +164,15 @@ public class GlobalEnv {
 		//added by goto 20120707 end
 
 		setQuietLog();
+		
+		// added by masato 20150915 start
+		setIncremental();
+		// added by masato 20150915 end
+		
+		// added by masato 20151118 start
+		setEhtml();
+		// added by masato 20151118 end
+
 		getConfig();
 		Log.out("GlobalEnv is " + envs);
 	}
@@ -469,7 +481,25 @@ public class GlobalEnv {
 			Log.setLog(0);
 		}
 	}
-
+	
+	// added by masato 20150915 for incremental update data
+	private static void setIncremental(){
+		if(seek("-incremental") != null){
+			Incremental.setIncremental();
+		} else {
+			return;
+		}
+	}
+	
+	// added by masato 20151118 for embedding
+	private static void setEhtml(){
+		if(seek("-ehtml") != null){
+			Ehtml.setEhtml();
+		} else {
+			return;
+		}
+	}
+	
 	/*
 	 * ����ʸ��������ʸ�Ȥ���(-f������)
 	 */
@@ -877,4 +907,13 @@ public class GlobalEnv {
 		return outdir;
 	}
 
+	// added by masato 20150525
+	public static String getLinkValue(){
+		return seek("-ehtmlarg");
+	}
+	
+	// added by masato 20151128 for execute multiple query in ehtml or incremental
+	public static Integer getQueryNum(){
+		return Integer.parseInt(seek("-querynum"));
+	}
 }

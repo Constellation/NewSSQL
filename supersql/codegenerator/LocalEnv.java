@@ -1,6 +1,9 @@
 package supersql.codegenerator;
 
-public abstract class LocalEnv {
+import java.io.Serializable;
+
+
+public abstract class LocalEnv implements Serializable {
 	
 	//tk start/////////////////////////////////////////////////
 	public static  DecorateList cssclass = new DecorateList();

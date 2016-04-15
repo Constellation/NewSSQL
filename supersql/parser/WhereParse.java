@@ -1,5 +1,7 @@
 package supersql.parser;
 
+
+import java.io.Serializable;
 import java.util.StringTokenizer;
 
 import supersql.extendclass.ExtHashSet;
@@ -7,7 +9,7 @@ import supersql.extendclass.ExtList;
 
 //import common.Log;
 
-public class WhereParse {
+public class WhereParse implements Serializable {
 
 	private String line;
 

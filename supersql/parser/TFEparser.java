@@ -1,5 +1,6 @@
 package supersql.parser;
 
+import java.io.Serializable;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
@@ -16,7 +17,7 @@ import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
 
-public class TFEparser {
+public class TFEparser implements Serializable {
 
 	private TFE schemaTop;
 
@@ -51,10 +52,10 @@ public class TFEparser {
 		cg = cgenerator;
 		
 		TFEmatcher.startTokenCount();		//halken TFEmatcher
-		
+
 		try {
 			schemaTop = connector("");
-			if (toks.hasMoreTokens()) {
+		if (toks.hasMoreTokens()) {
 				Log.err("*** Token remained after parsing TFE ***");
 				throw (new IllegalStateException());
 			}
@@ -265,7 +266,6 @@ public class TFEparser {
 		// Log.out(toks.DebugTrace());
 
 		Connector con = cg.createConnector(dim);
-
 		for (int i = 0; i < tfes.size(); i++) {
 			con.setTFE((ITFE) (tfes.get(i)));
 		}

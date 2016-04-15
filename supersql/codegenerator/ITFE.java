@@ -2,6 +2,8 @@
 
 package supersql.codegenerator;
 
+import java.io.Serializable;
+
 import supersql.extendclass.ExtList;
 
 /**
@@ -9,7 +11,7 @@ import supersql.extendclass.ExtList;
  *
  *
  */
-public interface ITFE {
+public interface ITFE extends Serializable {
 
 	/**
 	 *
