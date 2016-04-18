@@ -196,7 +196,7 @@ public class MakeSQL {
 
 		// Where
 		flag = false;
-
+		
 		Iterator e2 = where.getWhereClause().iterator();
 		while (e2.hasNext()) {
 			WhereParse whe = (WhereParse) e2.next();
@@ -205,6 +205,11 @@ public class MakeSQL {
 					buf.append(" AND " + whe.getLine());
 				} else {
 					flag = true;
+					// added by masato 20151125 for parameter clause
+					// WHERE句付け足すときに末尾に;があったら削除
+					if(buf.toString().endsWith(";")){
+						buf.deleteCharAt(buf.length()-1);
+					}
 					buf.append(" WHERE " + whe.getLine());
 				}
 			}

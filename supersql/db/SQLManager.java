@@ -1,5 +1,15 @@
 package supersql.db;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -9,6 +19,11 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
+import supersql.FrontEnd;
+import supersql.codegenerator.Ehtml;
+import supersql.codegenerator.Incremental;
 import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5;
 import supersql.common.DB;
 import supersql.common.GlobalEnv;
@@ -164,10 +179,12 @@ public class SQLManager {
 
             ExtList<String> tmplist;
             String val;
+            StringBuffer tmp = new StringBuffer();
             while (rs.next()) {
                 tmplist = new ExtList<String>();
                 for (int i = 1; i <= columnCount; i++) {
                     val = rs.getString(i);
+                    tmp.append(val);
                     if (val != null) {
                         tmplist.add(val.trim());
                     } else {
@@ -177,6 +194,89 @@ public class SQLManager {
                 }
                 tuples.add(tmplist);
             }
+            
+            // added by masato 20151221
+            if (Ehtml.flag) { // SQLの結果を保存
+            	String outDir = GlobalEnv.getoutdirectory();
+            	String outFile = GlobalEnv.getoutfilename();
+            	String a = outFile.substring(0, outFile.toLowerCase().indexOf("."));
+            	String sqlResultFileName = a.substring(a.lastIndexOf(GlobalEnv.OS_FS) + 1, a.length());
+            	File sqlResultFileDir = new File(outDir + GlobalEnv.OS_FS + "Ssql" + GlobalEnv.OS_FS + "sqlResults" + GlobalEnv.OS_FS + sqlResultFileName);
+    			String name = "ssqlResult" + GlobalEnv.getQueryNum() + ".txt";
+            	File sqlResultFile = new File(sqlResultFileDir.toString() + GlobalEnv.OS_FS + name);
+
+            	if ( !sqlResultFileDir.exists() ) {
+    				sqlResultFileDir.mkdirs();
+    			}
+            	PrintWriter pw = null;
+    			try {
+    				pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
+    						new FileOutputStream(sqlResultFile), "UTF-8")));
+    			} catch (UnsupportedEncodingException e) {
+    				e.printStackTrace();
+    			} catch (FileNotFoundException e) {
+    				e.printStackTrace();
+    			}
+				String hexString = DigestUtils.md5Hex(tmp.toString());
+//    			pw.println(hexString);
+    			pw.close();
+            } else if (Incremental.flag) { // 前回のsqlの結果を確認
+            	String outDir = GlobalEnv.getoutdirectory();
+            	String outFile = GlobalEnv.getoutfilename();
+            	String a = outFile.substring(0, outFile.toLowerCase().indexOf("."));
+            	String sqlResultFileName = a.substring(a.lastIndexOf(GlobalEnv.OS_FS) + 1, a.length());
+            	File sqlResultFileDir = new File(outDir + GlobalEnv.OS_FS + "Ssql" + GlobalEnv.OS_FS + "sqlResults" + GlobalEnv.OS_FS + sqlResultFileName);
+    			String name = "ssqlResult" + GlobalEnv.getQueryNum() + ".txt";
+            	File sqlResultFile = new File(sqlResultFileDir.toString() + GlobalEnv.OS_FS + name);
+            	StringBuffer sqlResultBuffer = new StringBuffer();
+                try {
+                    FileReader fr = new FileReader(sqlResultFile);
+                    BufferedReader br = new BufferedReader(fr);
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                    	sqlResultBuffer.append(line);
+                    }
+                    br.close();
+                    fr.close();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+				String hexString = DigestUtils.md5Hex(tmp.toString());
+                if(hexString.equals(sqlResultBuffer.toString())){
+                	// 同じだった場合
+                	Log.ehtmlInfo("test");
+                	
+                	// 評価用出力
+//                	long end = System.currentTimeMillis();
+//            		Log.ehtmlInfo("Parsing Time : " + (FrontEnd.afterparser - FrontEnd.start) + "msec<br>");
+//            		Log.ehtmlInfo("Data construction Time : " + (end - FrontEnd.afterparser) + "msec<br>");
+//            		Log.ehtmlInfo("Code generation Time : " + 0 + "msec<br>");
+//            		Log.ehtmlInfo("ExecTime: " + (end - FrontEnd.start) + "msec<br>");
+                	System.exit(0);
+                } else {
+                	// 違った場合は更新
+                	if ( !sqlResultFileDir.exists() ) {
+        				sqlResultFileDir.mkdirs();
+        			}
+                	PrintWriter pw = null;
+        			try {
+        				pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
+        						new FileOutputStream(sqlResultFile), "UTF-8")));
+        			} catch (UnsupportedEncodingException e) {
+        				e.printStackTrace();
+        			} catch (FileNotFoundException e) {
+        				e.printStackTrace();
+        			}
+//        			pw.println(hexString);
+        			pw.close();
+                }
+            }
+            
+            
+//            if(true){
+            	FrontEnd.aftersql = System.currentTimeMillis();
+//        		Log.info("SQL Time : " + (FrontEnd.aftersql - FrontEnd.afterparser) + "msec");
+//            }
             Log.out("[SQLManager:execQuerySQL] Result tuples count = "
                     + tuples.size());
             GlobalEnv.setTuplesNum(tuples.size());
@@ -241,8 +341,9 @@ public class SQLManager {
 			      return ;
         	}
         } catch (IllegalStateException e) {
-//        	if(!isSession)
-        		System.err.println("Error[SQLManager.ExecSQL]: No Data Found : query = " + query);
+            System.err
+                    .println("Error[SQLManager.ExecSQL]: No Data Found : query = "
+                            + query);
         }
     }
 

@@ -1,11 +1,13 @@
 package supersql.parser;
 
+
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 
 import supersql.extendclass.ExtList;
 
-public class WhereInfo {
+public class WhereInfo implements Serializable {
 
 	private ExtList where_clause;
 	private String sparqlWhereQuery;

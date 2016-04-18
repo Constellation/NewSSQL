@@ -1,5 +1,7 @@
 package supersql.codegenerator.HTML;
 
+import java.io.Serializable;
+
 import supersql.codegenerator.Attribute;
 import supersql.codegenerator.Connector;
 import supersql.codegenerator.Factory;
@@ -11,10 +13,10 @@ import supersql.codegenerator.TFE;
 
 //Operator, Manager鐃緒申鐃緒申鐃緒申鐃緒申鐃暑ク鐃初ス
 
-public class HTMLFactory extends Factory {
+public class HTMLFactory extends Factory implements Serializable{
 
-	private HTMLEnv htmlEnv;
-	private HTMLEnv htmlEnv2;
+	public static HTMLEnv htmlEnv;
+	public static HTMLEnv htmlEnv2;
 
 	@Override
 	public Attribute createAttribute(Manager manager) {

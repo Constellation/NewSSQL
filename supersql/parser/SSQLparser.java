@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -24,10 +25,14 @@ import supersql.common.Log;
 import supersql.db.SQLManager;
 import supersql.extendclass.ExtList;
 
-public class SSQLparser {
+public class SSQLparser implements Serializable {
 
 	private String commentOutLetters = ""+GlobalEnv.COMMENT_OUT_LETTER+GlobalEnv.COMMENT_OUT_LETTER;	// = "--"
     
+	// added by masato 20151125 for parameter clause
+	public static String[] parameters;
+	public static ArrayList<String> parameter_atts = new ArrayList<String>();	
+	
     //added by goto 20130508  "Login&Logout"
 	public static boolean sessionFlag = false;
 	public static String sessionString = "";
@@ -106,17 +111,17 @@ public class SSQLparser {
 	}
 	
 	private String getSSQLQuery() {
-
+		// modifed by masato 20151118 little change for eHTML
 		String query = GlobalEnv.getQuery();
-		if (GlobalEnv.getQuery() != null && GlobalEnv.getoutfilename() != null) {
+		if(GlobalEnv.getQuery() != null && GlobalEnv.getoutfilename() != null){
 			query = GlobalEnv.getQuery();
 			query = replaceQuery_For_HTML_and_MobileHTML5(query);
 			return query;
 		}
-//		String query = GlobalEnv.getQuery();
-//		if (query != null) {
-//			query = query.trim();
-//		}
+		
+		if (query != null) {
+			query = query.trim();
+		}
 
 		String filename = GlobalEnv.getfilename(); // -fによるファイル読み込み
 		if (filename == null || filename.isEmpty()) {
@@ -372,79 +377,6 @@ public class SSQLparser {
 		}
 		return "";
 	}
-	
-	private void parseSSQL(String QueryString, int id) {
-		// replace '*' to attributes added by chie
-		// ex. generate media * from table
-		if (QueryString.contains("*")) {
-			QueryString = replaceQuery(QueryString);
-		}
-
-		QueryImage = QueryString;
-		StringTokenizer st = new StringTokenizer(QueryString);
-
-		try {
-			if (!st.hasMoreTokens()) {
-				Log.err("*** No Query Specified ***");
-				throw (new IllegalStateException());
-			}
-
-			String nt = st.nextToken().toString();
-			Log.out("[Parser:Parser] start parsing");
-
-			preProcess(st, nt); // FOREACH, REQUEST, SESSIONなどのフラグ付け GENERATEまでポインタ
-
-			media = st.nextToken().toString();
-			if(media.equalsIgnoreCase("DISTINCT")){
-				distinct = true;
-				media = st.nextToken().toString();
-			}
-
-			// for embed css TFE_ID
-			codeGenerator = new CodeGenerator(id);
-			// mediaの設定
-			codeGenerator.setFactory(media);
-			codeGenerator.initiate();
-
-			StringBuffer tfe = new StringBuffer();
-
-			// FOREACH
-			if (foreachFlag) {
-				tfe.append("[foreach(" + foreachInfo.getForeachAtt() + ")?");
-			}
-
-			// tfeの格納
-			processFROM(tfe, st);
-
-			// FOREACH
-			if (foreachFlag) {
-				tfe.append("]%");
-			}
-			
-			Log.info("[Parser:tfe] tfe = " + tfe);
-
-			Preprocessor preprocessor = new Preprocessor(tfe.toString());
-			tfe = preprocessor.pushAggregate();
-			tfe = preprocessor.pushOrderBy();
-			Log.out("[Parser:tfe] converted_tfe = " + tfe);
-
-			// tfeの木構造を生成
-			tfeInfo = new TFEparser(tfe.toString(), codeGenerator);
-			tfeInfo.debugout();
-
-			processKeywords(st);
-			postProcess();
-			
-		} catch (IllegalStateException e) {
-			System.err
-			.println("Error[SSQLparser]: Syntax Error in SSQL statement : "
-					+ QueryImage);
-			GlobalEnv
-			.addErr("Error[SSQLparser]: Syntax Error in SSQL statement : "
-					+ QueryImage);
-			return;
-		}
-	}
 
 	public static String get_from_info_st() {
 		if (fromInfoString == null) {
@@ -544,7 +476,6 @@ public class SSQLparser {
         //For !number,
         query = query.replaceAll("\\]\\s*!\\s*([0-9]+)\\s*\\,s*@\\s*\\{([^\\}]*)", "]!@{$2,row=$1");
     	query = query.replaceAll("\\]\\s*!\\s*([0-9]+)\\s*\\,", "]!@{row=$1}");						//masato "%" -> "\\,"
-
     	// 20140613_masato For !number%
 		query = query.replaceAll("\\]\\s*\\!\\s*([0-9]+)\\s*%\\s*@\\s*\\{([^\\}]*)", "]!@{$2,row=$1,column=1");
 		query = query.replaceAll("\\]\\s*\\!\\s*([0-9]+)\\s*%", "]!@{row=$1,column=1}");
@@ -943,6 +874,25 @@ public class SSQLparser {
 					+ ": Used in FOREACH clause and added to FROM clause ");
 		}
 
+		// added by masato 20151125 for parameter clause
+		if(parameters != null){
+			String where_tmp = "";
+			for(int i = 0; i < parameters.length; i++){
+				if(i != 0){
+					where_tmp += "AND"; 
+				}
+				where_tmp += parameter_atts.get(i) + " = " + parameters[i];
+			}
+			
+			// where句の中身をチェック
+			if(where_c.toString().equals("")){
+				where_c.append(where_tmp);
+			} else {
+				where_tmp += "AND ";
+				where_c.insert(0, where_tmp);
+			}
+		}
+
 		if (SSQLparser.isDbpediaQuery())
 			whereInfo.setSparqlWhereQuery(where_c.toString().trim());
 		else
@@ -964,6 +914,146 @@ public class SSQLparser {
 			whereInfo.appendWhere(addCondition);
 		}
 		Log.out("[Paeser:Where] where = " + whereInfo);
+	}
+	
+	public void parseSSQL(String QueryString, int id) {
+//		System.out.println("parsessql");
+
+		// replace '*' to attributes added by chie
+		if (QueryString.contains("*")) {
+			QueryString = replaceQuery(QueryString);
+		}
+
+		QueryImage = QueryString;
+		StringTokenizer st = new StringTokenizer(QueryString);
+
+		try {
+			if (!st.hasMoreTokens()) {
+				Log.err("*** No Query Specified ***");
+				throw (new IllegalStateException());
+			}
+
+			String nt = st.nextToken().toString();
+			Log.out("[Parser:Parser] start parsing");
+
+			preProcess(st, nt);
+
+			media = st.nextToken().toString();
+			if(media.equalsIgnoreCase("DISTINCT")){
+				distinct = true;
+				media = st.nextToken().toString();
+			}
+
+			// for embed css TFE_ID
+//			System.out.println("media: " + media);
+			codeGenerator = new CodeGenerator(id);
+			codeGenerator.setFactory(media.toUpperCase());
+			codeGenerator.initiate();
+
+			StringBuffer tfe = new StringBuffer();
+
+			// FOREACH
+			if (foreachFlag) {
+				tfe.append("[foreach(" + foreachInfo.getForeachAtt() + ")?");
+			}
+
+			processFROM(tfe, st);
+
+			// FOREACH
+			if (foreachFlag) {
+				tfe.append("]%");
+			}
+			
+			Log.info("[Parser:tfe] tfe = " + tfe);
+
+			Preprocessor preprocessor = new Preprocessor(tfe.toString());
+			tfe = preprocessor.pushAggregate();
+			tfe = preprocessor.pushOrderBy();
+			Log.out("[Parser:tfe] converted_tfe = " + tfe);
+
+			tfeInfo = new TFEparser(tfe.toString(), codeGenerator);
+			tfeInfo.debugout();
+			
+			processKeywords(st);
+			postProcess();
+		} catch (IllegalStateException e) {
+			System.err
+			.println("Error[SSQLparser]: Syntax Error in SSQL statement : "
+					+ QueryImage);
+			GlobalEnv
+			.addErr("Error[SSQLparser]: Syntax Error in SSQL statement : "
+					+ QueryImage);
+			return;
+		}
+	}
+
+	private void preProcess(StringTokenizer st, String nt) {
+//		System.out.println("preprocess");
+
+		// added by masato 20151125 for parameter clause
+		if(nt.equalsIgnoreCase("PARAMETER")){
+			// -eHTMLarg{...,...,...,...}の...,...,...,...部分
+			String values =  GlobalEnv.getLinkValue().substring(1, GlobalEnv.getLinkValue().length()-1);
+			parameters = values.split(",");
+			while (st.hasMoreTokens()) {
+				nt = st.nextToken().toString();
+				if (nt.equalsIgnoreCase("GENERATE"))
+					break;
+				parameter_atts.add(nt);
+			}
+		}
+		
+		// FOREACH
+		if (nt.equalsIgnoreCase("FOREACH")) {
+			foreachFlag = true;
+			StringBuffer foreach_c = new StringBuffer();
+			while (st.hasMoreTokens()) {
+				nt = st.nextToken().toString();
+				if (nt.equalsIgnoreCase("GENERATE"))
+					break;
+				foreach_c.append(nt + " ");
+			}
+			Log.out("*** This query contains FOREACH clause ***");
+			Log.out(" foreach_c :" + foreach_c);
+
+			foreachInfo = new ForeachInfo(foreach_c.toString().trim());
+			foreachFrom = foreachInfo.getForeachFrom();
+			foreachWhere = foreachInfo.getForeachWhere();
+
+			Log.out("[Parser:Foreach] foreach = " + foreachInfo);
+		}
+		GlobalEnv.foreach_flag = foreachFlag;
+
+		// REQUEST SESSION
+		if (nt.equalsIgnoreCase("REQUEST")) {
+			while (st.hasMoreTokens()) {
+				nt = st.nextToken().toString();
+				if (nt.equalsIgnoreCase("GENERATE"))
+					break;
+			}
+		}
+		
+		//SESSION  //added by goto 20130508  "Login&Logout"
+        if (nt.toUpperCase().matches("SESSION.*") || nt.toUpperCase().matches("LOGIN.*")) {
+            while (st.hasMoreTokens()) {
+            	sessionString += nt+" ";
+                nt = st.nextToken().toString();
+                if (nt.equalsIgnoreCase("GENERATE"))
+                    break;
+            }
+            sessionFlag = true;
+        }
+
+		// GENERATE medium
+		if (!nt.equalsIgnoreCase("GENERATE")) {
+			Log.err("*** The Query should start by GENERATE ***");
+			throw (new IllegalStateException());
+		}
+        
+		if (!st.hasMoreTokens()) {
+			Log.err("*** No medium/tfe Specified ***");
+			throw (new IllegalStateException());
+		}
 	}
 
 	// added by chie replace '*'
@@ -1101,62 +1191,6 @@ public class SSQLparser {
     	Log.out("query : " + queryResult);
     	return queryResult;
     }
-	
-	private void preProcess(StringTokenizer st, String nt) {
-		
-		// FOREACH
-		if (nt.equalsIgnoreCase("FOREACH")) {
-			foreachFlag = true;
-			StringBuffer foreach_c = new StringBuffer();
-			while (st.hasMoreTokens()) {
-				nt = st.nextToken().toString();
-				if (nt.equalsIgnoreCase("GENERATE"))
-					break;
-				foreach_c.append(nt + " ");
-			}
-			Log.out("*** This query contains FOREACH clause ***");
-			Log.out(" foreach_c :" + foreach_c);
-
-			foreachInfo = new ForeachInfo(foreach_c.toString().trim());
-			foreachFrom = foreachInfo.getForeachFrom();
-			foreachWhere = foreachInfo.getForeachWhere();
-
-			Log.out("[Parser:Foreach] foreach = " + foreachInfo);
-		}
-		GlobalEnv.foreach_flag = foreachFlag;
-
-		// REQUEST SESSION //TODO
-		if (nt.equalsIgnoreCase("REQUEST")) { // 何の目的？
-			while (st.hasMoreTokens()) {
-				nt = st.nextToken().toString();
-				if (nt.equalsIgnoreCase("GENERATE"))
-					break;
-			}
-		}
-		
-		//SESSION  //added by goto 20130508  "Login&Logout"
-        if (nt.toUpperCase().matches("SESSION.*") || nt.toUpperCase().matches("LOGIN.*")) {
-            while (st.hasMoreTokens()) {
-            	sessionString += nt+" ";
-                nt = st.nextToken().toString();
-                if (nt.equalsIgnoreCase("GENERATE"))
-                    break;
-            }
-            sessionFlag = true;
-        }
-        GlobalEnv.session_flag = sessionFlag;
-
-		// GENERATE medium
-		if (!nt.equalsIgnoreCase("GENERATE")) {
-			Log.err("*** The Query should start by GENERATE ***");
-			throw (new IllegalStateException());
-		}
-        
-		if (!st.hasMoreTokens()) {
-			Log.err("*** No medium/tfe Specified ***");
-			throw (new IllegalStateException());
-		}
-	}
 
     public TFEparser gettfe_info() {
         return tfeInfo;

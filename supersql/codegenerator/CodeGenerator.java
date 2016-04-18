@@ -1,5 +1,7 @@
 package supersql.codegenerator;
 
+
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import supersql.codegenerator.HTML.HTMLFactory;
@@ -21,14 +23,14 @@ import supersql.parser.SSQLparser;
  * �����ɥ�����?�����ޥ͡����㥯�饹 ���ꤵ?�����Τˤ�äƥ����ɥ�����
  * �����ι������ʤ�������? ��?(Factory)��������?
  */
-public class CodeGenerator{
-	private Factory factory;
+public class CodeGenerator implements Serializable {
+	public Factory factory;
 
-	public int TFEid;
+	public static int TFEid;
 
 	public Manager manager;
 	
-	private static String media;
+	public static String media;
 	/**
 	 * ���󥹥ȥ饯��
 	 */

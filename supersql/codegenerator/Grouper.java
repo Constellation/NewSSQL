@@ -1,9 +1,12 @@
 package supersql.codegenerator;
 
+
+import java.io.Serializable;
+
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
 
-public class Grouper extends Operator {
+public class Grouper extends Operator implements Serializable {
 
     public TFE tfe; // 引数TFE
 
@@ -32,7 +35,6 @@ public class Grouper extends Operator {
     }
 
     public void debugout(int count) {
-
         Debug dbgout = new Debug();
         dbgout.prt(count, "<Grouper type=" + getSymbol() + " decoitems="
                 + decos.size() + " id=" + id + ">");

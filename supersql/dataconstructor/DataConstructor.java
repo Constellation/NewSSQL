@@ -315,9 +315,9 @@ public class DataConstructor {
 		else {
 			gfd = new GetFromDB();
 		}
-
 		gfd.execQuery(SQL_string, sep_data_info);
 
+		
 		gfd.close();
 
 		end = System.nanoTime();

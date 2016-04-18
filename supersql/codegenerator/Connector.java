@@ -1,10 +1,11 @@
 package supersql.codegenerator;
 
-import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5;
+import java.io.Serializable;
+
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
 
-public class Connector extends Operator{
+public class Connector extends Operator implements Serializable{
 
 	public int tfeItems;
 	public ExtList<TFE> tfes;

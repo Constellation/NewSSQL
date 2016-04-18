@@ -1,5 +1,6 @@
 package supersql.codegenerator.HTML;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -15,6 +16,7 @@ import org.jsoup.parser.Tag;
 
 import supersql.codegenerator.Connector;
 import supersql.codegenerator.DecorateList;
+import supersql.codegenerator.Ehtml;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.Jscss;
 import supersql.codegenerator.LocalEnv;
@@ -23,7 +25,7 @@ import supersql.common.Log;
 import supersql.common.Utils;
 import supersql.parser.SSQLparser;
 
-public class HTMLEnv extends LocalEnv {
+public class HTMLEnv extends LocalEnv implements Serializable{
 	static String formPartsName = null;
 	private static boolean charsetFlg = false; // added by goto 20120715
 	private static String checked = "";
@@ -43,6 +45,19 @@ public class HTMLEnv extends LocalEnv {
 	protected static int IDOld = 0; // add oka
 	public static String cond = "";
 	public static String bg = "";
+	// added by masato 20151202 
+	public static boolean defaultCssFlag = true;
+	// added by masato 20151214 for paging
+	public static int itemNumPerPage = 0;
+	public static int itemCount = 0;
+	// added by masato 20151214 for paging
+	public static int g1RetNum = 0;
+	public static int g2RetNum = 0;
+	public static int g1PaginationRowNum = 0;
+	public static int g1PaginationColumnNum = 0;
+	public static int g2PaginationRowNum = 0;
+	public static int g2PaginationColumnNum = 0;
+
 	
 	public static String condName = "";
 	// global form item number : t1,t2,t3...
@@ -307,7 +322,7 @@ public class HTMLEnv extends LocalEnv {
 		selectRepeat = b;
 	}
 
-	private Document htmlEnv1;
+	public static Document htmlEnv1;
 	protected String charset = null; // added by goto 20120715
 	protected Connector connector;
 	protected StringBuffer div = new StringBuffer();
@@ -328,7 +343,10 @@ public class HTMLEnv extends LocalEnv {
 	public String code_tmp = "";
 	
 	public StringBuffer code;
-
+	
+	// added by masato 20150914
+	public static StringBuffer xmlCode;
+	
 	public int countFile;
 
 	public static StringBuffer css;
@@ -350,12 +368,18 @@ public class HTMLEnv extends LocalEnv {
 	public boolean foreachFlag;
 
 	public int gLevel = 0;
+	
+	public ArrayList<String> outTypeList = new ArrayList<>();
+	
+	// added by masato 20150914
+	public int cNum = 0;
+	public int xmlDepth = 0;
 
 	public boolean hasDispDiv = false;
 
 	public int haveClass = 0;
 
-	public StringBuffer header;
+	public static StringBuffer header;
 
 	public int inEffect = 0;
 
@@ -385,7 +409,13 @@ public class HTMLEnv extends LocalEnv {
 	public int scriptNum = 0;
 
 	public boolean sinvokeFlag = false;
-
+	
+	// added by masato 20151124 for plink'values
+	public ArrayList<String> valueArray;
+	
+	// added by masato 20151124 for plink'values
+	public boolean plinkFlag = false;
+	
 	public String tableBorder = new String("1");
 
 	public Vector<String> writtenClassId;
@@ -516,6 +546,66 @@ public class HTMLEnv extends LocalEnv {
 
 	public static String commonCSS() {
 		String s = "";
+		// modifeid by masato 20151118 for ehtml start
+		// TODO
+		if(Ehtml.flag){
+				String id ="ssqlResult" + GlobalEnv.getQueryNum();
+			if(defaultCssFlag){ // TODO 場合分けをしっかり
+				s += "#"+ id + " div, table, tr, td, th, img, a{\n" +
+						"\tmargin: 0;\n" +
+						"\tpadding: 0;\n" +
+						"\tborder: 0;\n" +
+						"\tfont-style:normal;\n" +
+						"\tfont-weight: normal;\n" +
+						"\tfont-size: 100%;\n" +
+						"}\n\n";
+
+				s += "#"+ id + " .row { display: flex; flex-direction: row; }\n";
+				s += "#"+ id + " .col { display: flex; flex-direction: column; }\n";
+				s += "#"+ id + " .att { border: solid 0px; }\n";
+				
+				s += "#"+ id + " table {\n" +
+						"\tborder: 1px solid;\n" +
+						"\tpadding: 1px;\n" +
+						"}\n\n";
+				
+				s += "#"+ id + " td {\n" +
+						"\tvertical-align: middle;\n" +
+						"}\n\n";
+				
+//				s += "#"+ id + " table {\n" +
+//						"\tmargin-left: auto;\n" +
+//						"\tmargin-right: auto;\n" +
+//						"\tmargin-top: auto;\n" +
+//						"\tmargin-bottom: auto;\n" +
+//						"\twidth: 100px;\n" +
+//						"\tborder: 1px #BFBFBF solid;\n" +
+//						"}\n\n";
+//				s += "#"+ id + " table th {\n" +
+//						"\tfont-weight: normal;\n" +
+//						"\tbackground-color: #F0F0F0;\n" +
+//						"\tborder:1px solid #BFBFBF;\n" +
+//						"\ttext-align: center;\n" +
+//						"\tpadding: 1px;\n" +
+//						"}\n\n";
+//				s += "#"+ id + " table tr td {\n" +
+//						"\twidth: 100px;\n" +
+//						"\tbackground-color: #3f3f3f;\n" +
+//						"\tcolor: #e9e9e9;\n" +
+//						"\ttext-align: center;\n" +
+//						"\tpadding: 0px;\n" +
+//						"\tvertical-align: middle;\n" +
+//						"}\n\n";
+//				s += "#"+ id + " table.att {\n" +
+//						"\tmargin-left: auto;\n" +
+//						"\tmargin-right: auto;\n" +
+//						"\tmargin-top: auto;\n" +
+//						"\tmargin-bottom: auto;\n" +
+//						"\tborder: 1px #F0F0F0 solid;\n" +
+//						"}\n\n";	
+			}
+		} else 
+		// modifeid by masato 20151118 for ehtml end
 		if (!GlobalEnv.isOpt()) {
 			s += ".att { padding:0px; margin:0px; height:100%; z-index:2; }\n";
 			s += ".linkbutton { text-align:center; margin-top:5px; padding:5px; }\n";
@@ -598,19 +688,17 @@ public class HTMLEnv extends LocalEnv {
 
 		computeConditionalDecorations(decos, css);
 
-		// ������??
+		// width
 		if (decos.containsKey("width")) {
-//			if (GlobalEnv.getframeworklist() == null)
-			if (!isNumber(decos.getStr("width")))
+			if (GlobalEnv.getframeworklist() == null && !Ehtml.flag && !isNumber(decos.getStr("width")))
 				cssbuf.append(" width:" + decos.getStr("width") + ";");
 			else
 				cssbuf.append(" width:" + decos.getStr("width") + "px;");
 		}
 
-		// ������??
+		// height
 		if (decos.containsKey("height")) {
-//			if (GlobalEnv.getframeworklist() == null)
-			if (!isNumber(decos.getStr("height")))
+			if (GlobalEnv.getframeworklist() == null && !Ehtml.flag && !isNumber(decos.getStr("height")))
 				cssbuf.append(" height:" + decos.getStr("height") + ";");
 			else
 				cssbuf.append(" height:" + decos.getStr("height") + "px;");
@@ -623,28 +711,64 @@ public class HTMLEnv extends LocalEnv {
 			// cssbuf.append(" padding:0.3em;");
 		}
 
+		// added by masato
+		// margin
+		if (decos.containsKey("margin-left")) {
+			cssbuf.append(" margin-left:" + decos.getStr("margin-left") + ";");
+		}
+		if (decos.containsKey("margin-top")) {
+			cssbuf.append(" margin-top:" + decos.getStr("margin-top") + ";");
+		}
+		if (decos.containsKey("margin-right")) {
+			cssbuf.append(" margin-right:" + decos.getStr("margin-right")
+					+ ";");
+		}
+		if (decos.containsKey("margin-bottom")) {
+			cssbuf.append(" margin-bottom:" + decos.getStr("margin-bottom")
+					+ ";");
+		}
+		
 		// �������������������������������
 		if (decos.containsKey("padding")) {
-			cssbuf.append(" padding:" + decos.getStr("padding") + ";");
+			if (GlobalEnv.getframeworklist() == null && !Ehtml.flag)
+				cssbuf.append(" padding:" + decos.getStr("padding") + ";");
+			else
+				cssbuf.append(" padding:" + decos.getStr("padding") + "px;");
+
 			// } else {
 			// cssbuf.append(" padding:0.3em;");
 		}
 		// padding
 		if (decos.containsKey("padding-left")) {
-			cssbuf.append(" padding-left:" + decos.getStr("padding-left") + ";");
-		}
-		if (decos.containsKey("padding-top")) {
-			cssbuf.append(" padding-top:" + decos.getStr("padding-top") + ";");
+			if (GlobalEnv.getframeworklist() == null && !Ehtml.flag)
+				cssbuf.append(" padding-left:" + decos.getStr("padding-left") + ";");
+			else
+				cssbuf.append(" padding-left:" + decos.getStr("padding-left") + "px;");
 		}
 		if (decos.containsKey("padding-right")) {
-			cssbuf.append(" padding-right:" + decos.getStr("padding-right")
-					+ ";");
+			if (GlobalEnv.getframeworklist() == null && !Ehtml.flag)
+				cssbuf.append(" padding-right:" + decos.getStr("padding-right") + ";");
+			else
+				cssbuf.append(" padding-right:" + decos.getStr("padding-right") + "px;");
+		}
+		if (decos.containsKey("padding-top")) {
+			if (GlobalEnv.getframeworklist() == null && !Ehtml.flag)
+				cssbuf.append(" padding-top:" + decos.getStr("padding-top") + ";");
+			else
+				cssbuf.append(" padding-top:" + decos.getStr("padding-top") + "px;");
 		}
 		if (decos.containsKey("padding-bottom")) {
-			cssbuf.append(" padding-bottom:" + decos.getStr("padding-bottom")
-					+ ";");
+			if (GlobalEnv.getframeworklist() == null && !Ehtml.flag)
+				cssbuf.append(" padding-bottom:" + decos.getStr("padding-top") + ";");
+			else
+				cssbuf.append(" padding-bottom:" + decos.getStr("padding-top") + "px;");
 		}
 
+		// added by masato 20151207 new decos line-height ex) @{line-height=150}
+		if (decos.containsKey("line-height"))
+			cssbuf.append(" line-height:" + decos.getStr("line-height") + "%;");
+
+		
 		// ������������������
 		if (decos.containsKey("align"))
 			cssbuf.append(" text-align:" + decos.getStr("align") + ";");
@@ -670,17 +794,17 @@ public class HTMLEnv extends LocalEnv {
 
 		// ��������������
 		if (decos.containsKey("font-size"))
-			if (GlobalEnv.getframeworklist() == null)
+			if (GlobalEnv.getframeworklist() == null && !Ehtml.flag)
 				cssbuf.append(" font-size:" + decos.getStr("font-size") + ";");
 			else
 				cssbuf.append(" font-size:" + decos.getStr("font-size") + "px;");
 		if (decos.containsKey("font size"))
-			if (GlobalEnv.getframeworklist() == null)
+			if (GlobalEnv.getframeworklist() == null && !Ehtml.flag)
 				cssbuf.append(" font-size:" + decos.getStr("font size") + ";");
 			else
 				cssbuf.append(" font-size:" + decos.getStr("font size") + "px;");
 		if (decos.containsKey("size"))
-			if (GlobalEnv.getframeworklist() == null)
+			if (GlobalEnv.getframeworklist() == null && !Ehtml.flag)
 				cssbuf.append(" font-size:" + decos.getStr("size") + ";");
 			else
 				cssbuf.append(" font-size:" + decos.getStr("size") + "px;");
@@ -717,7 +841,11 @@ public class HTMLEnv extends LocalEnv {
         //added by goto 20130311  "background"
         if (decos.containsKey("background"))
         	bg = decos.getStr("background");
-		
+        
+        // added by masato 20151202  "no default css"
+        if (decos.containsKey("nodefaultcss"))
+        	defaultCssFlag = false;
+        
 		// tk
 		// start////////////////////////////////////////////////////////////////
 		// added by goto 20120715 start
@@ -764,7 +892,14 @@ public class HTMLEnv extends LocalEnv {
 		if (cssbuf.length() > 0) {
 			haveClass = 1;
 			// ������������?��������������������?������������
-			css.append("." + classid + "{");
+			// modified by masato 20151122 start for etml, css
+			if(Ehtml.flag){
+				String id = "ssqlResult" + GlobalEnv.getQueryNum();
+				css.append("#" + id + " ." + classid + "{");
+			} else {
+				css.append("." + classid + "{");
+
+			}
 
 			css.append(cssbuf);
 			// ������?��������������������?��������
@@ -1201,6 +1336,11 @@ public class HTMLEnv extends LocalEnv {
 	    Pattern p = Pattern.compile(regex);
 	    Matcher m = p.matcher(val);
 	    return m.find();
+	}
+
+	public static void initXML(){
+		xmlCode = new StringBuffer();
+		xmlCode.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 	}
 
 }

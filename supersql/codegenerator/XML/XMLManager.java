@@ -58,7 +58,7 @@ public class XMLManager extends Manager{
         	if(!GlobalEnv.isOpt()){
 	        	PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(
 	                    xml_env.filename)));
-
+	        	
 	            pw.println(xml_env.header);
 	            pw.println(xml_env.code);
 	            pw.println(xml_env.footer);
@@ -133,7 +133,9 @@ public class XMLManager extends Manager{
         if (!outdir.endsWith("/")) {
             outdir = outdir.concat("/");
         }
-        xml_env.outfile = outdir.concat(tmpqueryfile);
+        // TODO masato 20150728 something wrong outdir
+//        xml_env.outfile = outdir.concat(tmpqueryfile);
+
     }
 
     public void finish() {
