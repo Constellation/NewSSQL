@@ -32,6 +32,11 @@ public class HTML5C1 extends Connector {
 		if (html5Env.tableFlag) {
 			table_event = true;
 		}
+		// 親要素がborder状態なのかcheck
+		boolean border_event = false;
+		if (html5Env.borderFlag) {
+			border_event = true;
+		}
 		
 		// cssの情報を取得
 		html5Env.append_css_def_att(HTML5Env.getClassID(this), this.decos);
@@ -61,6 +66,11 @@ public class HTML5C1 extends Connector {
 			this.worknextItem();
 			
 			i++;
+		}
+		
+		if (html5Env.borderFlag && !border_event) {
+			html5Env.borderFlag = false;
+			Log.out("****** border off ******");
 		}
 		
 		if (html5Env.tableFlag) {

@@ -17,6 +17,7 @@ public class HTML5Env extends LocalEnv {
 	
 	private Document html5Env;
 	
+	public boolean borderFlag = false;
 	public StringBuffer code;
 	public int countFile = 0; // C3, G3
 	public static StringBuffer css;
@@ -33,6 +34,7 @@ public class HTML5Env extends LocalEnv {
 	public String outDir;
 	public String outFile;
 	public boolean tableFlag = false;
+	public boolean topLevelDiv = false;
 	public Vector<String> writtenClassId = new Vector<String>();
 	
 	public HTML5Env() {
@@ -103,6 +105,12 @@ public class HTML5Env extends LocalEnv {
 			}
 		}
 		
+		// border
+		if (decos.containsKey("border")) { // TODO
+			Log.out("****** div border on ******");
+			borderFlag = true;
+		}
+		
 		// border-collapse (only table element)
 		if (decos.containsKey("border-collapse")) { // TODO
 			cssbuf.append("\tborder-collapse: " + decos.getStr("border-collapse") + ";\n");
@@ -111,7 +119,10 @@ public class HTML5Env extends LocalEnv {
 		// border-color
 		if (decos.containsKey("border-color")) { // TODO
 			cssbuf.append("\tborder-color: " + decos.getStr("border-color") + ";\n");
+		} else if (borderFlag) {
+			cssbuf.append("\tborder-color: #F0F0F0;\n");
 		}
+		
 		// border-bottom-color & border-color-bottom
 		if (decos.containsKey("border-bottom-color")) { // TODO
 			cssbuf.append("\tborder-bottom-color: " + decos.getStr("border-bottom-color") + ";\n");
@@ -158,7 +169,10 @@ public class HTML5Env extends LocalEnv {
 		// border-style
 		if (decos.containsKey("border-style")) { // TODO
 			cssbuf.append("\tborder-style: " + decos.getStr("border-style") + ";\n");
+		} else if (borderFlag) {
+			cssbuf.append("\tborder-style: solid;\n");
 		}
+		
 		// border-bottom-style & border-style-bottom
 		if (decos.containsKey("border-bottom-style")) { // TODO
 			cssbuf.append("\tborder-bottom-style: " + decos.getStr("border-bottom-style") + ";\n");
@@ -191,7 +205,10 @@ public class HTML5Env extends LocalEnv {
 			} else {
 				cssbuf.append("\tborder-width: " + decos.getStr("border-width") + ";\n");
 			}
+		} else if (borderFlag) {
+			cssbuf.append("\tborder-width: 1px;\n");
 		}
+		
 		// border-bottom-width & border-width-bottom
 		if (decos.containsKey("border-bottom-width")) { // TODO
 			if (isNumber(decos.getStr("border-bottom-width"))) {
@@ -500,7 +517,10 @@ public class HTML5Env extends LocalEnv {
 			} else {
 				cssbuf.append("\tmargin-left: " + decos.getStr("margin-left") + ";\n");
 			}
+		} else if (!topLevelDiv) {
+			cssbuf.append("\tmargin-left: auto;\n"); // topLevelDiv default
 		}
+		
 		// margin-right
 		if (decos.containsKey("margin-right")) { // TODO
 			if (isNumber(decos.getStr("margin-right"))) {
@@ -508,7 +528,10 @@ public class HTML5Env extends LocalEnv {
 			} else {
 				cssbuf.append("\tmargin-right: " + decos.getStr("margin-right") + ";\n");
 			}
-		}
+		} else if (!topLevelDiv) {
+			cssbuf.append("\tmargin-right: auto;\n"); // topLevelDiv default
+		}		
+		
 		// margin-top
 		if (decos.containsKey("margin-top")) { // TODO
 			if (isNumber(decos.getStr("margin-top"))) {
@@ -800,6 +823,8 @@ public class HTML5Env extends LocalEnv {
 		} else {
 			if (tableFlag) {
 				cssbuf.append("\twidth: auto;\n"); // table default
+			} else if (!topLevelDiv) {
+				cssbuf.append("\twidth: 1280px;\n"); // topLevelDiv default
 			} else {
 				cssbuf.append("\twidth: 100%;\n"); // default
 			}
@@ -825,6 +850,7 @@ public class HTML5Env extends LocalEnv {
 		}
 		
 		// これ以降CSSでないルール
+		
 		// tableタグで生成
 		if (decos.containsKey("table")) { // TODO
 			Log.out("********table start********");
@@ -842,6 +868,10 @@ public class HTML5Env extends LocalEnv {
 			notWrittenClassId.addElement(classid);
 		}
 		Log.out("");
+		
+		if (!topLevelDiv) {
+			topLevelDiv = true; // 一番親だけ特別なクラスをもたせるため
+		}
 	}
 	
 	public static String commonCSS() { // デフォルトのcss付与
@@ -849,21 +879,21 @@ public class HTML5Env extends LocalEnv {
 		String s = "";
 		if (!GlobalEnv.isOpt()) {
 			if (headerFlag && footerFlag) {
-				s += "body {\n width: 1280px;\n margin-left: auto;\n margin-right: auto;\n padding-top: 30px;\n padding-bottom: 30px;\n}\n";
+//				s += "body {\n width: 1280px;\n margin-left: auto;\n margin-right: auto;\n padding-top: 30px;\n padding-bottom: 30px;\n}\n";
 				s += ".header {\n position: fixed !important;\n position: absolute;\n top: 0;\n left: 0;\n width: 100%;\n height: 30px;\n background-color: #000000;\n color: #fff;\n}\n";
 				s += ".footer {\n position: fixed !important;\n position: absolute;\n bottom: 0;\n left: 0;\n width: 100%;\n height: 30px;\n background-color: #000000;\n color: #fff;\n}\n";
 			} else if (headerFlag) {
-				s += "body {\n width: 1280px;\n margin-left: auto;\n margin-right: auto;\n padding-top: 30px;\n}\n";
+//				s += "body {\n width: 1280px;\n margin-left: auto;\n margin-right: auto;\n padding-top: 30px;\n}\n";
 				s += ".header {\n position: fixed !important;\n position: absolute;\n top: 0;\n left: 0;\n width: 100%;\n height: 30px;\n background-color: #000000;\n color: #fff;\n}\n";
 			} else if (footerFlag) {
-				s += "body {\n width: 1280px;\n margin-left: auto;\n margin-right: auto;\n padding-bottom: 30px;\n}\n";
+//				s += "body {\n width: 1280px;\n margin-left: auto;\n margin-right: auto;\n padding-bottom: 30px;\n}\n";
 				s += ".footer {\n position: fixed !important;\n position: absolute;\n bottom: 0;\n left: 0;\n width: 100%;\n height: 30px;\n background-color: #000000;\n color: #fff;\n}\n";
 			} else {
-				s += "body {\n width: 1280px;\n margin-left: auto;\n margin-right: auto;\n}\n";
+//				s += "body {\n width: 1280px;\n margin-left: auto;\n margin-right: auto;\n}\n";
 			}
-			s += ".row {\n display: flex;\n flex-direction: row;\n border: solid 1px #F0F0F0;\n text-align: center;\n}\n";
-			s += ".col {\n display: flex;\n flex-direction: column;\n border: solid 1px #F0F0F0;\n text-align: center;\n}\n";
-			s += ".att {\n margin-left: auto;\n margin-right: auto;\n border: solid 1px #F0F0F0;\n}\n";
+			s += ".row {\n display: flex;\n flex-direction: row;\n text-align: center;\n}\n";
+			s += ".col {\n display: flex;\n flex-direction: column;\n text-align: center;\n}\n";
+			s += ".att {\n margin-left: auto;\n margin-right: auto;\n}\n";
 		}
 		return s;
 	}
