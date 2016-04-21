@@ -30,6 +30,10 @@ public class HTML5Attribute extends Attribute {
 			html5Env.code.append("<td class=\"");
 			html5Env.code.append(HTML5Env.getClassID(this));
 			html5Env.code.append(" att\">");
+		} else if (html5Env.listUlFlag || html5Env.listOlFlag) {
+			html5Env.code.append("<li class=\"");
+			html5Env.code.append(HTML5Env.getClassID(this));
+			html5Env.code.append(" att\">");
 		} else {
 			html5Env.code.append("<div class=\"");
 			html5Env.code.append(HTML5Env.getClassID(this));
@@ -69,6 +73,8 @@ public class HTML5Attribute extends Attribute {
 		
 		if (html5Env.tableFlag) {
 			html5Env.code.append("</td>\n");
+		} else if (html5Env.listUlFlag || html5Env.listOlFlag) {
+			html5Env.code.append("</li>\n");
 		} else {
 			html5Env.code.append("</div>\n");
 		}

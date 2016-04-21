@@ -36,6 +36,16 @@ public class HTML5C2 extends Connector{
 		if (html5Env.borderFlag) {
 			border_event = true;
 		}
+		// 親要素がlist-ul状態なのかcheck
+		boolean listul_event = false;
+		if (html5Env.listUlFlag) {
+			listul_event = true;
+		}
+		// 親要素がlist-ol状態なのかcheck
+		boolean listol_event = false;
+		if (html5Env.listOlFlag) {
+			listol_event = true;
+		}
 		
 		// cssの情報を取得
 		html5Env.append_css_def_att(HTML5Env.getClassID(this), this.decos);
@@ -44,6 +54,8 @@ public class HTML5C2 extends Connector{
 		if (!GlobalEnv.isOpt()) {
 			if (table_event) {
 				html5Env.code.append("<td>\n");
+			} else if (listul_event || listol_event) {
+				html5Env.code.append("<li>\n");
 			} else {
 				html5Env.code.append("<div class=\"");
 				html5Env.code.append(HTML5Env.getClassID(this));
@@ -51,6 +63,14 @@ public class HTML5C2 extends Connector{
 			}
 			if (html5Env.tableFlag) { // table
 				html5Env.code.append("<table class=\"");
+				html5Env.code.append(HTML5Env.getClassID(this));
+				html5Env.code.append(" col\">\n");
+			} else if (html5Env.listUlFlag) { // list-ul
+				html5Env.code.append("<ul class=\"");
+				html5Env.code.append(HTML5Env.getClassID(this));
+				html5Env.code.append(" col\">\n");
+			} else if (html5Env.listOlFlag) { // list-ol
+				html5Env.code.append("<ol class=\"");
 				html5Env.code.append(HTML5Env.getClassID(this));
 				html5Env.code.append(" col\">\n");
 			}
@@ -86,10 +106,24 @@ public class HTML5C2 extends Connector{
 				html5Env.tableFlag = false;
 				Log.out("********table end********");
 			}
+		} else if (html5Env.listUlFlag) {
+			html5Env.code.append("</ul>\n");
+			if (!listul_event) {
+				html5Env.listUlFlag = false;
+				Log.out("********list end********");
+			}
+		} else if (html5Env.listOlFlag) {
+			html5Env.code.append("</ol>\n");
+			if (!listol_event) {
+				html5Env.listOlFlag = false;
+				Log.out("********list end********");
+			}
 		}
 		
 		if (table_event) {
 			html5Env.code.append("</td>\n");
+		} else if (listul_event || listol_event) {
+			html5Env.code.append("</li>\n");
 		} else {
 			html5Env.code.append("</div>\n");
 		}

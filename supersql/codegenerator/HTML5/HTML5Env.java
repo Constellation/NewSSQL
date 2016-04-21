@@ -30,6 +30,8 @@ public class HTML5Env extends LocalEnv {
 	public int linkFlag = 0; // C3, G3
 	public String linkOutFile;
 	public String linkUrl; // C3, G3
+	public boolean listOlFlag = false;
+	public boolean listUlFlag = false;
 	public Vector<String> notWrittenClassId = new Vector<String>();
 	public String outDir;
 	public String outFile;
@@ -475,23 +477,73 @@ public class HTML5Env extends LocalEnv {
 			}
 		}
 		
-		// list-style-image
-		if (decos.containsKey("list-style-image")) { // TODO
-			if ((decos.getStr("list-style-image").indexOf("url") != -1) || decos.getStr("list-style-image").equals("none") || decos.getStr("list-style-image").equals("inherit")) {
-				cssbuf.append("\tlist-style-image: " + decos.getStr("list-style-image") + ";\n");
-			} else {
-				cssbuf.append("\tlist-style-image: url(\"" + decos.getStr("list-style-image") + "\");\n");
+		// list
+		if (decos.containsKey("list") || decos.containsKey("list-style-type") || decos.containsKey("list-style-image") || decos.containsKey("list-style-position")) { // TODO
+			Log.out("********list start********");
+			if (decos.containsKey("list")) {
+				if (decos.getStr("list").equals("") || decos.getStr("list").equals("disc")) {
+					listUlFlag = true;
+					cssbuf.append("\tlist-style-type: disc;\n");
+				} else if (decos.getStr("list").equals("none") || decos.getStr("list").equals("circle") || decos.getStr("list").equals("square")) {
+					listUlFlag = true;
+					cssbuf.append("\tlist-style-type: " + decos.getStr("list") + ";\n");
+				} else if (decos.getStr("list").equals("number")) {
+					listOlFlag = true;
+					cssbuf.append("\tlist-style-type: decimal;\n");
+				} else if (decos.getStr("list").equals("lower-roman") || decos.getStr("list").equals("upper-roman")
+						|| decos.getStr("list").equals("lower-greek") || decos.getStr("list").equals("decimal")
+						|| decos.getStr("list").equals("decimal-leading-zero") || decos.getStr("list").equals("lower-latin")
+						|| decos.getStr("list").equals("lower-alpha") || decos.getStr("list").equals("upper-latin")
+						|| decos.getStr("list").equals("upper-alpha") || decos.getStr("list").equals("cjk-ideographic")
+						|| decos.getStr("list").equals("katakana") || decos.getStr("list").equals("hiragana")
+						|| decos.getStr("list").equals("katakana-iroha") || decos.getStr("list").equals("hiragana-iroha")
+						|| decos.getStr("list").equals("hebrew") || decos.getStr("list").equals("armenian")
+						|| decos.getStr("list").equals("georgian")) {
+					listOlFlag = true;
+					cssbuf.append("\tlist-style-type: " + decos.getStr("list") + ";\n");
+				}
 			}
-		}
-		
-		// list-style-position
-		if (decos.containsKey("list-style-position")) { // TODO
-			cssbuf.append("\tlist-style-position: " + decos.getStr("list-style-position") + ";\n");
-		}
-		
-		// list-style-type
-		if (decos.containsKey("list-style-type")) { // TODO
-			cssbuf.append("\tlist-style-type: " + decos.getStr("list-style-type") + ";\n");
+			if (decos.containsKey("list-style-type")) { // TODO
+				if (decos.getStr("list-style-type").equals("") || decos.getStr("list-style-type").equals("disc")) {
+					listUlFlag = true;
+					cssbuf.append("\tlist-style-type: disc;\n");
+				} else if (decos.getStr("list-style-type").equals("none") || decos.getStr("list-style-type").equals("circle") || decos.getStr("list-style-type").equals("square")) {
+					listUlFlag = true;
+					cssbuf.append("\tlist-style-type: " + decos.getStr("list-style-type") + ";\n");
+				} else if (decos.getStr("list-style-type").equals("number")) {
+					listOlFlag = true;
+					cssbuf.append("\tlist-style-type: decimal;\n");
+				} else if (decos.getStr("list-style-type").equals("lower-roman") || decos.getStr("list-style-type").equals("upper-roman")
+						|| decos.getStr("list-style-type").equals("lower-greek") || decos.getStr("list-style-type").equals("decimal")
+						|| decos.getStr("list-style-type").equals("decimal-leading-zero") || decos.getStr("list-style-type").equals("lower-latin")
+						|| decos.getStr("list-style-type").equals("lower-alpha") || decos.getStr("list-style-type").equals("upper-latin")
+						|| decos.getStr("list-style-type").equals("upper-alpha") || decos.getStr("list-style-type").equals("cjk-ideographic")
+						|| decos.getStr("list-style-type").equals("katakana") || decos.getStr("list-style-type").equals("hiragana")
+						|| decos.getStr("list-style-type").equals("katakana-iroha") || decos.getStr("list-style-type").equals("hiragana-iroha")
+						|| decos.getStr("list-style-type").equals("hebrew") || decos.getStr("list-style-type").equals("armenian")
+						|| decos.getStr("list-style-type").equals("georgian")) {
+					listOlFlag = true;
+					cssbuf.append("\tlist-style-type: " + decos.getStr("list-style-type") + ";\n");
+				}
+			}
+			// list-style-image
+			if (decos.containsKey("list-style-image")) { // TODO
+				if (!listUlFlag && !listOlFlag) {
+					listUlFlag = true;
+				}
+				if ((decos.getStr("list-style-image").indexOf("url") != -1) || decos.getStr("list-style-image").equals("none") || decos.getStr("list-style-image").equals("inherit")) {
+					cssbuf.append("\tlist-style-image: " + decos.getStr("list-style-image") + ";\n");
+				} else {
+					cssbuf.append("\tlist-style-image: url(\"" + decos.getStr("list-style-image") + "\");\n");
+				}
+			}		
+			// list-style-position
+			if (decos.containsKey("list-style-position")) { // TODO
+				if (!listUlFlag && !listOlFlag) {
+					listUlFlag = true;
+				}
+				cssbuf.append("\tlist-style-position: " + decos.getStr("list-style-position") + ";\n");
+			}
 		}
 		
 		// margin
