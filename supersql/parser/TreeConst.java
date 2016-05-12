@@ -1,4 +1,5 @@
-package supersql.src;
+
+package supersql.parser;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,20 +12,28 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.RuleNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
-import supersql.parser.prefixParser;
-import supersql.parser.querytestParser;
+import supersql.common.Log;
+import supersql.extendclass.ExtList;
 
 public class TreeConst {
-	public static List<SSQLParseTree> tree;
+	public static ExtList exttree;
+//	public static List<SSQLParseTree> tree;
 	public static boolean terminal_flag = false; // flag for if terminal node?
 
-	public static List<SSQLParseTree> createSSQLParseTree(ParseTree t, querytestParser recog) {
+//	public static List<SSQLParseTree> createSSQLParseTree(ParseTree t, querytestParser recog) {
+//		String[] ruleNames = recog != null ? recog.getRuleNames() : null;
+//		List<String> ruleNamesList = ruleNames != null ? Arrays.asList(ruleNames) : null;
+//		return createSSQLParseTree(t, ruleNamesList);
+//	}
+	
+	public static ExtList createSSQLParseTree(ParseTree t, querytestParser recog) {
 		String[] ruleNames = recog != null ? recog.getRuleNames() : null;
 		List<String> ruleNamesList = ruleNames != null ? Arrays.asList(ruleNames) : null;
 		return createSSQLParseTree(t, ruleNamesList);
 	}
+
 	
-	public static List<SSQLParseTree> createSSQLParseTree(ParseTree t, prefixParser recog) {
+	public static ExtList createSSQLParseTree(ParseTree t, prefixParser recog) {
 		String[] ruleNames = recog != null ? recog.getRuleNames() : null;
 		List<String> ruleNamesList = ruleNames != null ? Arrays.asList(ruleNames) : null;
 		return createSSQLParseTree(t, ruleNamesList);
@@ -33,36 +42,66 @@ public class TreeConst {
 	/*
 	 * generate tree structure & list of attributes in TFE
 	 */
-	public static List<SSQLParseTree> createSSQLParseTree(final ParseTree t, final List<String> ruleNamesList){
-		SSQLParseTree test = new SSQLParseTree();
+//	public static List<SSQLParseTree> createSSQLParseTree(final ParseTree t, final List<String> ruleNamesList){
+//		SSQLParseTree test = new SSQLParseTree();
+//		String s = getNodeText(t, ruleNamesList);
+//		test.parent_id = t.toString();
+//		test.parent_info = s;
+//		
+//		for (int i = 0; i<t.getChildCount(); i++) {
+//			Node n = new Node();
+//			ParseTree p = t.getChild(i);
+//			String k = getNodeText(p, ruleNamesList);
+//			
+//			n.id = p.toString();
+//			n.node = k;
+//			test.children.add(n);
+//		}
+//		if(tree == null){
+//			tree = new ArrayList<SSQLParseTree>();
+//		}
+//		tree.add(test);
+//		for (int i = 0; i<t.getChildCount(); i++) {
+//			if(t.getChild(i).getChildCount() == 0){
+//				continue;
+//			}else{
+//				createSSQLParseTree(t.getChild(i), ruleNamesList);
+//			}
+//		}
+//		
+//		return tree;
+//	}
+	
+	public static ExtList createSSQLParseTree(final ParseTree t, final List<String> ruleNamesList){
+		exttree = new ExtList(makeExtList(t, ruleNamesList));
+//		Log.info(exttree);
+		return exttree;
+	}
+	
+	public static ExtList makeExtList(final ParseTree t, final List<String> ruleNamesList){
+		ExtList c_1 = new ExtList();
 		String s = getNodeText(t, ruleNamesList);
-		test.parent_id = t.toString();
-		test.parent_info = s;
 		
+		c_1.add(s);
+		
+		ExtList c_2 = new ExtList();
 		for (int i = 0; i<t.getChildCount(); i++) {
-			Node n = new Node();
 			ParseTree p = t.getChild(i);
 			String k = getNodeText(p, ruleNamesList);
 			
-			n.id = p.toString();
-			n.node = k;
-			test.children.add(n);
-		}
-		if(tree == null){
-			tree = new ArrayList<SSQLParseTree>();
-		}
-		tree.add(test);
-		for (int i = 0; i<t.getChildCount(); i++) {
-			if(t.getChild(i).getChildCount() == 0){
+			if(p.getChildCount() != 0){
+				c_2.add(makeExtList(t.getChild(i), ruleNamesList));
 				continue;
-			}else{
-				createSSQLParseTree(t.getChild(i), ruleNamesList);
+			}
+			else if(p.getChildCount() == 0){
+				c_2.add(k);
 			}
 		}
+		c_1.add(c_2);
 		
-		return tree;
+		return c_1;
+
 	}
-	
 	
 	
 	
@@ -100,23 +139,21 @@ public class TreeConst {
 //		}
 //	}
 	
-	public static String getMedia(List<SSQLParseTree> tree){
+	public static String getMedia(ExtList tree){
 		for(int i = 0; i < tree.size(); i++){
-			if(tree.get(i).parent_info.equals("media")){
-				return tree.get(i).children.get(1).node;
-			}
+			
 		}
 		return null;
 	}
-	
-	public static List<SSQLParseTree> getfromInfo(List<SSQLParseTree> tree){
-		for(int i = 0; i < tree.size(); i++){
-			if(tree.get(i).parent_info.equals("from")){
-				return tree.subList(i, tree.size()-1);
-			}
-		}
-		return null;
-	}
+//	
+//	public static List<SSQLParseTree> getfromInfo(List<SSQLParseTree> tree){
+//		for(int i = 0; i < tree.size(); i++){
+//			if(tree.get(i).parent_info.equals("from")){
+//				return tree.subList(i, tree.size()-1);
+//			}
+//		}
+//		return null;
+//	}
 	
 //	public static void showTree(SSQLParseTree t){
 //		System.out.println(t.parent_info);

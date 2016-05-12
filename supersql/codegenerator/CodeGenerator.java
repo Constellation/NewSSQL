@@ -3,103 +3,82 @@ package supersql.codegenerator;
 import java.util.ArrayList;
 import java.util.List;
 
-import supersql.src.SSQLParseTree;
-import supersql.src.Start_Parse;
 import supersql.codegenerator.Manager;
+import supersql.codegenerator.HTML.HTMLFactory;
 import supersql.common.GlobalEnv;
 import supersql.common.LevenshteinDistance;
 import supersql.common.Log;
 import supersql.common.ParseXML;
+import supersql.extendclass.ExtList;
+import supersql.parser.Start_Parse;
 
 public class CodeGenerator {
 	private static Factory factory;
 	public static Manager manager;
 	public static int TFEid;	
 	private static String media;
-	
-	public static void setFactory(String media) {
-		media = media;
-		
-		if (media.toLowerCase().equals("html")) {
-			factory = new Factory();
-			// add 20141204 masato for ehtml
-		}
-//		if (media.toLowerCase().equals("pdf")) {
-//			factory = new PDFFactory();
-//			// add 20141204 masato for ehtml
-//		} else if (media.toLowerCase().equals("html") || media.toLowerCase().equals("ehtml")) {
-//			factory = new HTMLFactory();			
-//		} else if (media.toLowerCase().equals("x3d")) {
-//			factory = new X3DFactory();
-//		} else if(media.toLowerCase().equals("xml")){
-//			factory = new XMLFactory();
-//		} else if (media.toLowerCase().equals("swf")) {
-//		 	factory = new SWFFactory();
-//		} else if (media.toLowerCase().equals("mobile_html5")) {	//added by goto 20121217
-//		 	factory = new Mobile_HTML5Factory();
-//		}  else if (media.toLowerCase().equals("csv")) {
-//			factory = new SWFFactory();
-//		}  else if (media.toLowerCase().equals("html_flexbox")) {
-//			factory = new HTML_FlexboxFactory();
-//		}
-		/*
-		 * else if(media.toLowerCase().equals("xml")){ factory = new
-		 * XMLFactory(); }
-		 */
-		else {
-			String m = media.toLowerCase();
-			Log.err("Error[Media]: valid medium '"+m+"' not found");
-//			GlobalEnv.errorText += "Error[Media]: valid medium '"+m+"' not found";
-			GlobalEnv.addErr("Error[Media]: valid medium '"+m+"' not found");
-			
-			//20131106
-			//Log.err("\nGENERATE >>>> "+m+" <<<<");
-			String XMLfile = GlobalEnv.MEDIA_XML;
-			ArrayList<String> medias = ParseXML.getAttributes(XMLfile, "media", "name");
-			String media_list = LevenshteinDistance.checkLevenshteinAndSuggest(m, medias);
-			if(!media_list.isEmpty()){
-				Log.err("\n## Media list ##\n" + media_list);
-				// 20140624_masato
-//				GlobalEnv.errorText += "\n## Media list ##\n" + media_list;
-			}
-			System.exit(1);
-		}
-	}
 
-	
+
 	public static void CodeGenerator(Start_Parse parser){
-		List<SSQLParseTree> tree = parser.List_tree_b;
+		ExtList tfe = (ExtList)((ExtList)parser.list_tfe.get(1)).get(0);
 		int dim;
-		
-		
-		for(int i = 0; i < tree.size(); i++){
-			if(tree.get(i).parent_info.equals("media")){
-				media = getMedia(tree.get(i));
-				setFactory(media);
-				initiate();
-			}
-			if(tree.get(i).parent_info.equals("d_exp")){
+
+		media = ((ExtList) parser.list_media.get(1)).get(1).toString();
+		setFactory(media);
+		initiate();
+
+		while(tfe.size() != 0){
+			System.out.println("TFE:"+tfe);
+			if(tfe.get(0).toString().equals("d_exp")){
 				dim = 3;
 				createconnector(dim);
-			}
-			if(tree.get(i).parent_info.equals("v_exp")){
+			}else if(tfe.get(0).toString().equals("v_exp")){
 				dim = 2;
 				createconnector(dim);
-			}
-			if(tree.get(i).parent_info.equals("h_exp")){
+			}else if(tfe.get(0).toString().equals("h_exp")){
 				dim = 1;
 				createconnector(dim);
 			}
-			if(tree.get(i).parent_info.equals("grouper")){
-				if(tree.get(i).children.get(3).node.equals(",")){
-					dim = 1;
-				}
+			if(tfe.get(0).toString().equals("grouper")){
 				
-				if(tree.get(i).children.get(3).node.equals("!")){
-					dim = 2;
-				}
 			}
-		}	
+			if(((ExtList)tfe.get(1)).get(0) instanceof String){
+				break;
+			}else{
+				tfe = (ExtList)((ExtList)tfe.get(1)).get(0);
+			}
+			
+		}
+
+		//		
+		//		for(int i = 0; i < tree.size(); i++){
+		//			if(tree.get(i).equals("media")){
+		//				media = getMedia(tree.get(i));
+		//				setFactory(media);
+		//				initiate();
+		//			}
+		//			if(tree.get(i).parent_info.equals("d_exp")){
+		//				dim = 3;
+		//				createconnector(dim);
+		//			}
+		//			if(tree.get(i).parent_info.equals("v_exp")){
+		//				dim = 2;
+		//				createconnector(dim);
+		//			}
+		//			if(tree.get(i).parent_info.equals("h_exp")){
+		//				dim = 1;
+		//				createconnector(dim);
+		//			}
+		//			if(tree.get(i).parent_info.equals("grouper")){
+		//				if(tree.get(i).children.get(3).node.equals(",")){
+		//					dim = 1;
+		//				}
+		//				
+		//				if(tree.get(i).children.get(3).node.equals("!")){
+		//					dim = 2;
+		//				}
+		//			}
+		//		}	
 	}
 
 	public static void initiate() {
@@ -109,7 +88,32 @@ public class CodeGenerator {
 			manager = factory.createManager();
 		}
 	}
-	
+
+	public static void setFactory(String media) {
+		if (media.toLowerCase().equals("html")) {
+			factory = new HTMLFactory();
+			// add 20141204 masato for ehtml
+		}
+		else {
+			String m = media.toLowerCase();
+			Log.err("Error[Media]: valid medium '"+m+"' not found");
+			//			GlobalEnv.errorText += "Error[Media]: valid medium '"+m+"' not found";
+			GlobalEnv.addErr("Error[Media]: valid medium '"+m+"' not found");
+
+			//20131106
+			//Log.err("\nGENERATE >>>> "+m+" <<<<");
+			String XMLfile = GlobalEnv.MEDIA_XML;
+			ArrayList<String> medias = ParseXML.getAttributes(XMLfile, "media", "name");
+			String media_list = LevenshteinDistance.checkLevenshteinAndSuggest(m, medias);
+			if(!media_list.isEmpty()){
+				Log.err("\n## Media list ##\n" + media_list);
+				// 20140624_masato
+				//				GlobalEnv.errorText += "\n## Media list ##\n" + media_list;
+			}
+			System.exit(1);
+		}
+	}
+
 	public static Connector createconnector(int dim){
 		Connector connector = new Connector();
 		if(dim == 3){
@@ -125,7 +129,7 @@ public class CodeGenerator {
 		connector.setId(TFEid++);
 		return connector;
 	}
-	
+
 	public static Grouper creategrouper(int dim){
 		Grouper grouper = null;
 		if(dim == 2){
@@ -138,9 +142,9 @@ public class CodeGenerator {
 		grouper.setId(TFEid++);
 		return grouper;
 	}
-	
-	public static String getMedia(SSQLParseTree node){
-		String media = node.children.get(1).node;
-		return media;
-	}
+
+	//	public static String getMedia(SSQLParseTree node){
+	//		String media = node.children.get(1).node;
+	//		return media;
+	//	}
 }

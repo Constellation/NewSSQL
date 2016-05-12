@@ -1,5 +1,8 @@
 package supersql.codegenerator;
 
+import supersql.common.Log;
+import supersql.extendclass.ExtList;
+
 public class Grouper extends Operator{
 
     public TFE tfe; // 引数TFE
@@ -41,21 +44,21 @@ public class Grouper extends Operator{
 //
 //    }
 //
-//    public ExtList makesch() {
-//        ExtList outsch = new ExtList();
-//        outsch.add(tfe.makesch());
-//        //  Log.out("Grp outsch:"+outsch);
-//
-//        return outsch;
-//    }
-//
-//    public ExtList makele0() {
-//        ExtList le0 = new ExtList();
-//        le0.add(this.getSymbol());
-//        le0.add(tfe.makele0());
-//        Log.out("Grp le0:" + le0);
-//        return le0;
-//    }
+    public ExtList makesch() {
+        ExtList outsch = new ExtList();
+        outsch.add(tfe.makesch());
+        //  Log.out("Grp outsch:"+outsch);
+
+        return outsch;
+    }
+
+    public ExtList makele0() {
+        ExtList le0 = new ExtList();
+        le0.add(this.getSymbol());
+        le0.add(tfe.makele0());
+        Log.out("Grp le0:" + le0);
+        return le0;
+    }
 
     public String getSymbol() {
         return "G?";
@@ -107,6 +110,12 @@ public class Grouper extends Operator{
     public boolean isFirstItem() {
         return (dindex == 0);
     }
+
+	@Override
+	public String work(ExtList<ExtList<String>> data_info) {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
 
 //	//added by ria 20110913 start
 //	public ExtList makeschImage() {

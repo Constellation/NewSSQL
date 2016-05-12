@@ -1,5 +1,7 @@
 package supersql.codegenerator;
 
+import supersql.extendclass.ExtList;
+
 public class TFE implements ITFE{
 
 	protected int id; // SchemaID
@@ -77,6 +79,36 @@ public class TFE implements ITFE{
 	public void addDeco(String key, Object val) {
 		// TODO 自動生成されたメソッド・スタブ
 		
+	}
+
+	@Override
+	public ExtList<Integer> makesch() {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
+
+	@Override
+	public ExtList makele0() {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
+
+	@Override
+	public String work(ExtList<ExtList<String>> data_info) {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
+
+	@Override
+	public Object createNode(ExtList<ExtList<String>> data_info) {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
+
+	@Override
+	public ExtList makeschImage() {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
 	}
 
 

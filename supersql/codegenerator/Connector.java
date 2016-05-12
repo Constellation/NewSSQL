@@ -1,9 +1,12 @@
 package supersql.codegenerator;
 
+import supersql.common.Log;
+import supersql.extendclass.ExtList;
+
 public class Connector extends Operator {
 
 	public int tfeItems;
-//	public ExtList<TFE> tfes;
+	public ExtList<TFE> tfes;
 
     //oka start
     public static boolean updateFlag;
@@ -19,19 +22,25 @@ public class Connector extends Operator {
 		super();
 		Dimension = -1;
 		tfeItems = 0;
-//		tfes = new ExtList<TFE>();
+		tfes = new ExtList<TFE>();
 	}
 
 	public Connector(int d) {
 		super();
 		Dimension = d;
 		tfeItems = 0;
-//		tfes = new ExtList<TFE>();
+		tfes = new ExtList<TFE>();
 	}
 
 	public void setTFE(ITFE t) {
 		tfeItems++;
 //		tfes.add((TFE) t);
+	}
+
+	@Override
+	public String work(ExtList<ExtList<String>> data_info) {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
 	}
 
 //	public void debugout() {
@@ -51,36 +60,36 @@ public class Connector extends Operator {
 //		dbgout.prt(count, "</Connector>");
 //	}
 //
-//	public ExtList<Integer> makesch() {
-//		ExtList<Integer> outsch = new ExtList<Integer>();
-//		for (int i = 0; i < tfeItems; i++) {
-//			outsch.addAll(tfes.get(i).makesch());
-//		}
-//		return outsch;
-//	}
-//
-//	public ExtList makele0() {
-//		ExtList le0 = new ExtList();
-//		le0.add(this.getSymbol());
-//		for (int i = 0; i < tfeItems; i++) {
-//			le0.add(((ITFE) tfes.get(i)).makele0());
-//		}
-//
-//		Log.out("Con le0:" + le0);
-//		return le0;
-//	}
-//
-//	public String getSymbol() {
-//		return "C?";
-//	}
-//
-//	public int countconnectitem() {
-//		int items = 0;
-//		for (int i = 0; i < tfes.size(); i++) {
-//			items += ((ITFE) tfes.get(i)).countconnectitem();
-//		}
-//		return items;
-//	}
+	public ExtList<Integer> makesch() {
+		ExtList<Integer> outsch = new ExtList<Integer>();
+		for (int i = 0; i < tfeItems; i++) {
+			outsch.addAll(tfes.get(i).makesch());
+		}
+		return outsch;
+	}
+
+	public ExtList makele0() {
+		ExtList le0 = new ExtList();
+		le0.add(this.getSymbol());
+		for (int i = 0; i < tfeItems; i++) {
+			le0.add(((ITFE) tfes.get(i)).makele0());
+		}
+
+		Log.out("Con le0:" + le0);
+		return le0;
+	}
+
+	public String getSymbol() {
+		return "C?";
+	}
+
+	public int countconnectitem() {
+		int items = 0;
+		for (int i = 0; i < tfes.size(); i++) {
+			items += ((ITFE) tfes.get(i)).countconnectitem();
+		}
+		return items;
+	}
 //
 //	public void setDataList(ExtList d) {
 //		data = d;

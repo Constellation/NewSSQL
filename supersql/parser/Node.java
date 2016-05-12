@@ -1,4 +1,4 @@
-package supersql.src;
+package supersql.parser;
 
 import java.util.ArrayList;
 import java.util.List;

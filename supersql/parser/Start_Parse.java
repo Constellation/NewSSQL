@@ -1,4 +1,4 @@
-package supersql.src;
+package supersql.parser;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 import org.antlr.v4.runtime.*;
@@ -15,6 +16,7 @@ import org.antlr.v4.runtime.tree.*;
 import supersql.codegenerator.CodeGenerator;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
+import supersql.extendclass.ExtList;
 import supersql.parser.*;
 import supersql.parser.org.antlr.v4.runtime.MyErrorStrategy;
 
@@ -23,9 +25,11 @@ public class Start_Parse {
 
 	public static String att = null;
 	public static String media = null;
-	public static List<SSQLParseTree> List_tree_a, List_tree_b;
+	public ExtList List_tree_a, List_tree_b, list_tfe, list_from, list_media;
 	private CodeGenerator codegenerator;
+	public static Hashtable<?, ?> atts;
 	
+	@SuppressWarnings("unchecked")
 	public Start_Parse()
 	{
 		//read file & query
@@ -89,8 +93,14 @@ public class Start_Parse {
 				ParseTree tree_b = parser_b.query(); // begin parsing at rule query
 
 				List_tree_b = TreeConst.createSSQLParseTree(tree_b, parser_b);
-				
-				TreeConst.getfromInfo(List_tree_b);
+				List_tree_b = (ExtList) List_tree_b.get(1);
+				list_media = (ExtList) List_tree_b.get(0);
+				list_tfe = (ExtList) List_tree_b.get(1);
+				list_from = (ExtList) List_tree_b.get(2);
+				System.out.println(list_media);
+				System.out.println(list_tfe);
+				System.out.println(list_from);
+//				TreeConst.getfromInfo(List_tree_b);
 				codegenerator = new CodeGenerator();
 				
 			}catch(Exception e){
@@ -104,6 +114,40 @@ public class Start_Parse {
 		return codegenerator;
 		
 	}
+	
+//	public Hashtable get_att_info(List<SSQLParseTree> tree){
+//		String parent = null;
+//		String child = null;
+//		int i = 0, id = 0;
+//		boolean t_flag = false; // flag for table_alias
+//		boolean c_flag = false; // flag for column_name
+//
+//		while((parent = tree.get(i).parent_info) != "from"){
+//		}if(parent.equals("table_alias")){
+//			t_flag = true;
+//			i++;
+//		}else if(parent.equals("column_name")){
+//			c_flag = true;
+//			i++;
+//		}else if(parent.equals("any_name") && t_flag){
+//			child = tree.get(i).children.get(0).node;
+//			att = child + ".";
+//			t_flag = false;
+//			i++;
+//		}else if(parent.equals("any_name") && c_flag){
+//			child = tree.get(i).children.get(0).node;
+//			att = att + child;
+//			atts.put(id, att);
+//			id++;
+//			att = null;
+//			c_flag = false;
+//			i++;
+//		}else{
+//			i++;
+//		}
+//		
+//		return atts;
+//	}
 
 //	//use other class
 //	public static void get_TFEschema(List<SSQLParseTree> tree){

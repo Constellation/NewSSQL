@@ -2,6 +2,7 @@ package supersql.codegenerator;
 
 import supersql.codegenerator.IOperator;
 import supersql.codegenerator.TFE;
+import supersql.extendclass.ExtList;
 
 public abstract class Operator extends TFE implements IOperator{
 
@@ -10,14 +11,14 @@ public abstract class Operator extends TFE implements IOperator{
 		return Dimension;
 	}
 
-//	protected ExtList data;
+	protected ExtList data;
     protected int dindex;
     
     public Operator() {
     	super();
     }
 
-//	@Override
-//	public abstract String work(ExtList<ExtList<String>> data_info);
+	@Override
+	public abstract String work(ExtList<ExtList<String>> data_info);
 
 }

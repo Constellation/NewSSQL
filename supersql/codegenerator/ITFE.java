@@ -1,5 +1,6 @@
 package supersql.codegenerator;
 
+import supersql.extendclass.ExtList;
 
 public interface ITFE {
 	/**
@@ -12,12 +13,12 @@ public interface ITFE {
 	 *
 	 * @return
 	 */
-//	ExtList<Integer> makesch();
+	ExtList<Integer> makesch();
 
-//	ExtList makele0();
+	ExtList makele0();
 
-//	String work(ExtList<ExtList<String>> data_info);
-//	Object createNode(ExtList<ExtList<String>> data_info);
+	String work(ExtList<ExtList<String>> data_info);
+	Object createNode(ExtList<ExtList<String>> data_info);
 
 	int countconnectitem();
 
@@ -30,7 +31,7 @@ public interface ITFE {
 	void setOrderBy(String order);
 	void setAggregate(String aggregate);
 
-//	ExtList makeschImage();
+	ExtList makeschImage();
 
 //	void addDeco(String name, String value, String condition);
 }
