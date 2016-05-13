@@ -1,6 +1,7 @@
 package supersql.codegenerator;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 import supersql.codegenerator.Manager;
@@ -13,42 +14,37 @@ import supersql.extendclass.ExtList;
 import supersql.parser.Start_Parse;
 
 public class CodeGenerator {
+
+	private static TFE schemaTop;
+
+	private ExtList sch;
+
+	private static Hashtable attp;
+
+	private static int attno;
+
+	private static String att_tmp;
+	
 	private static Factory factory;
 	public static Manager manager;
-	public static int TFEid;	
+	public static int TFEid;
 	private static String media;
 
 
-	public static void CodeGenerator(Start_Parse parser){
+	public void CodeGenerator(Start_Parse parser) {
+		attno = 0;
+		initialize(parser);
+	}
+
+	public static void initialize(Start_Parse parser){
+		attp = new Hashtable();
 		ExtList tfe = (ExtList)((ExtList)parser.list_tfe.get(1)).get(0);
-		int dim;
 
 		media = ((ExtList) parser.list_media.get(1)).get(1).toString();
 		setFactory(media);
 		initiate();
 
-		while(tfe.size() != 0){
-			System.out.println("TFE:"+tfe);
-			if(tfe.get(0).toString().equals("d_exp")){
-				dim = 3;
-				createconnector(dim);
-			}else if(tfe.get(0).toString().equals("v_exp")){
-				dim = 2;
-				createconnector(dim);
-			}else if(tfe.get(0).toString().equals("h_exp")){
-				dim = 1;
-				createconnector(dim);
-			}
-			if(tfe.get(0).toString().equals("grouper")){
-				
-			}
-			if(((ExtList)tfe.get(1)).get(0) instanceof String){
-				break;
-			}else{
-				tfe = (ExtList)((ExtList)tfe.get(1)).get(0);
-			}
-			
-		}
+		schemaTop = initialize(tfe);
 
 		//		
 		//		for(int i = 0; i < tree.size(); i++){
@@ -81,6 +77,42 @@ public class CodeGenerator {
 		//		}	
 	}
 
+	public static TFE initialize(ExtList tfe){
+		TFE out_sch = null;
+		int dim;
+		
+		out_sch = makeschematop(tfe);
+		
+		return out_sch;
+	}
+
+	private static TFE makeschematop(ExtList list){
+		TFE tfe = null;
+		ExtList test;
+		String att = new String();
+		Log.info(list);
+		if(list.get(0).toString().equals("operand")){
+			test = (ExtList) list.get(1);
+			Log.info("test:"+test);
+			if(((ExtList)test.get(0)).get(0).toString().equals("table_alias")){
+				Log.info(((ExtList)((ExtList)((ExtList)((ExtList)test.get(0)).get(1)).get(0)).get(1)).get(0));
+				att = ((ExtList)((ExtList)((ExtList)((ExtList)test.get(0)).get(1)).get(0)).get(1)).get(0).toString();
+				att = att + test.get(1).toString();
+				att = att + ((ExtList)((ExtList)((ExtList)((ExtList)test.get(2)).get(1)).get(0)).get(1)).get(0).toString();
+				Log.info(att);
+				Attribute Att = makeAttribute(att);
+				tfe = Att;
+			}else{
+				
+			}
+		}else{
+			tfe = makeschematop((ExtList)((ExtList)list.get(1)).get(0));
+		}
+		
+		return tfe;
+		
+	}
+	
 	public static void initiate() {
 		if (factory != null) {
 			Log.out("factory is " + factory);
@@ -142,7 +174,51 @@ public class CodeGenerator {
 		grouper.setId(TFEid++);
 		return grouper;
 	}
+	
+	public static Attribute createAttribute() {
+	    Attribute attribute = factory.createAttribute(manager);
+		attribute.setId(TFEid++);
+		return attribute;
+	}
 
+
+	private static Attribute makeAttribute(String token){
+		return makeAttribute(token, false);
+	}
+	
+	private static Attribute makeAttribute(String token, boolean skipCondition) {
+		String line;
+		String name;
+		String key = "";
+
+		int as_string = token.toLowerCase().indexOf(" as ");
+		if (as_string != -1) {
+			line = (String) (token.substring(0, as_string));
+			name = (String) (token.substring(as_string + 4));
+		} else {
+			line = token;
+			name = token;
+		}
+
+		// tk to ignore space between = and value/////////////////
+		line = line.trim();
+		name = name.trim();
+		att_tmp = name;
+		// tk//////////////////////////////////
+		Log.out("[makeAttribute] line : " + line);
+		Log.out("[makeAttribute] name : " + name);
+
+		Log.info(key);
+		Attribute att = createAttribute();
+		attno = att.setItem(attno, name, line, key, attp);
+
+//		this.setDecoration(att);
+
+		return att;
+
+	}
+
+	
 	//	public static String getMedia(SSQLParseTree node){
 	//		String media = node.children.get(1).node;
 	//		return media;

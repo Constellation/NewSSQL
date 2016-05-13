@@ -3,6 +3,8 @@ package supersql.codegenerator;
 import java.util.StringTokenizer;
 
 import supersql.common.Log;
+import supersql.extendclass.ExtHashSet;
+import supersql.extendclass.ExtList;
 
 public class AttributeItem {
 
@@ -10,42 +12,42 @@ public class AttributeItem {
 
 	private String Image;
 
-//	private ExtList UseAtts;
-//
-//	private ExtHashSet UseTables;
+	private ExtList UseAtts;
+
+	private ExtHashSet UseTables;
 
 	public boolean IsStr;
 
 	public AttributeItem() {
 	}
 
-//	public AttributeItem(String str) {
-//		IsStr = true;
-//		Image = str;
-//		UseAtts = new ExtList();
-//		UseTables = new ExtHashSet();
-//	}
+	public AttributeItem(String str) {
+		IsStr = true;
+		Image = str;
+		UseAtts = new ExtList();
+		UseTables = new ExtHashSet();
+	}
 
-//	public AttributeItem(String str, int no) {
-//		IsStr = false;
-//		Image = str;
-//		AttNo = no;
-//		UseAtts = new ExtList();
-//		UseTables = new ExtHashSet();
-//
-//		StringTokenizer st = new StringTokenizer(str, " 	()+-*/<>=~@");
-//		while (st.hasMoreTokens()) {
-//			String ch = st.nextToken();
-//			StringTokenizer st1 = new StringTokenizer(ch, ".");
-//			if (st1.countTokens() == 2) {
-//				//st1 is table.attribute
-//				//Log.out("[parseString] ch : "+ch);
-//				UseAtts.add(new String(ch));
-//				String tbl = new String(st1.nextToken());
-//				UseTables.add(tbl);
-//			}
-//		}
-//	}
+	public AttributeItem(String str, int no) {
+		IsStr = false;
+		Image = str;
+		AttNo = no;
+		UseAtts = new ExtList();
+		UseTables = new ExtHashSet();
+
+		StringTokenizer st = new StringTokenizer(str, " 	()+-*/<>=~@");
+		while (st.hasMoreTokens()) {
+			String ch = st.nextToken();
+			StringTokenizer st1 = new StringTokenizer(ch, ".");
+			if (st1.countTokens() == 2) {
+				//st1 is table.attribute
+				//Log.out("[parseString] ch : "+ch);
+				UseAtts.add(new String(ch));
+				String tbl = new String(st1.nextToken());
+				UseTables.add(tbl);
+			}
+		}
+	}
 
 	public void debugout() {
 		debugout(0);
