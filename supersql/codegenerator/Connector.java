@@ -34,7 +34,7 @@ public class Connector extends Operator {
 
 	public void setTFE(ITFE t) {
 		tfeItems++;
-//		tfes.add((TFE) t);
+		tfes.add((TFE) t);
 	}
 
 	@Override

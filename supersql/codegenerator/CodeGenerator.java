@@ -17,14 +17,14 @@ public class CodeGenerator {
 
 	private static TFE schemaTop;
 
-	private ExtList sch;
+	private static ExtList sch;
 
 	private static Hashtable attp;
 
 	private static int attno;
 
 	private static String att_tmp;
-	
+
 	private static Factory factory;
 	public static Manager manager;
 	public static int TFEid;
@@ -38,13 +38,17 @@ public class CodeGenerator {
 
 	public static void initialize(Start_Parse parser){
 		attp = new Hashtable();
-		ExtList tfe = (ExtList)((ExtList)parser.list_tfe.get(1)).get(0);
+		ExtList tfe = (ExtList)parser.list_tfe.get(1);
 
 		media = ((ExtList) parser.list_media.get(1)).get(1).toString();
 		setFactory(media);
 		initiate();
 
-		schemaTop = initialize(tfe);
+		schemaTop = initialize((ExtList)tfe.get(0));
+
+		sch = schemaTop.makesch();
+		Log.info("Schema is " + sch);
+		Log.info("le0 is " + schemaTop.makele0());
 
 		//		
 		//		for(int i = 0; i < tree.size(); i++){
@@ -80,39 +84,92 @@ public class CodeGenerator {
 	public static TFE initialize(ExtList tfe){
 		TFE out_sch = null;
 		int dim;
-		
 		out_sch = makeschematop(tfe);
-		
+
 		return out_sch;
 	}
 
 	private static TFE makeschematop(ExtList list){
 		TFE tfe = null;
-		ExtList test;
+		tfe = read_attribute(list);
+
+		return tfe;
+
+	}
+
+	private static TFE read_attribute(ExtList tfe_tree){
 		String att = new String();
-		Log.info(list);
-		if(list.get(0).toString().equals("operand")){
-			test = (ExtList) list.get(1);
-			Log.info("test:"+test);
-			if(((ExtList)test.get(0)).get(0).toString().equals("table_alias")){
-				Log.info(((ExtList)((ExtList)((ExtList)((ExtList)test.get(0)).get(1)).get(0)).get(1)).get(0));
-				att = ((ExtList)((ExtList)((ExtList)((ExtList)test.get(0)).get(1)).get(0)).get(1)).get(0).toString();
-				att = att + test.get(1).toString();
-				att = att + ((ExtList)((ExtList)((ExtList)((ExtList)test.get(2)).get(1)).get(0)).get(1)).get(0).toString();
+		TFE out_sch = null;
+		Log.info("TFE_TREE:"+tfe_tree);
+		if(tfe_tree.get(0).toString().equals("operand")){
+			if(((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("table_alias")){
+				att = ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(0)).get(1)).get(0).toString();
+				att = att + ((ExtList)tfe_tree.get(1)).get(1).toString();
+				att = att + ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(2)).get(1)).get(0)).get(1)).get(0);
 				Log.info(att);
 				Attribute Att = makeAttribute(att);
-				tfe = Att;
-			}else{
-				
+				out_sch = Att;
+			}else if(((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("column_name")){
+				att = ((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(0)).get(1)).get(0)).get(1)).get(0).toString();
+				Attribute Att = makeAttribute(att);
+				out_sch = Att;
+			}else if( ((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("grouper") ){
+				out_sch = grouper((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1));
 			}
+			else{
+
+			}
+		}else if(tfe_tree.get(0).toString().equals("h_exp")){
+			out_sch = connector_main((ExtList)tfe_tree.get(1), 1);
+		}else if(tfe_tree.get(0).toString().equals("v_exp")){
+			out_sch = connector_main((ExtList)tfe_tree.get(1), 2);
+		}else if(tfe_tree.get(0).toString().equals("d_exp")){
+			out_sch = connector_main((ExtList)tfe_tree.get(1), 3);
 		}else{
-			tfe = makeschematop((ExtList)((ExtList)list.get(1)).get(0));
+			out_sch = makeschematop((ExtList)((ExtList)tfe_tree.get(1)).get(0));
+		}
+		return out_sch;
+	}
+	
+	private static Connector connector_main(ExtList operand, int dim){
+		ExtList atts = new ExtList();
+		
+		Log.info(operand.size());
+		for(int i = 0; i <= operand.size(); i++){
+			Log.info(i);
+			TFE att = read_attribute((ExtList)operand.get(i));
+			atts.add(att);
+			i++;
 		}
 		
-		return tfe;
+		
+		Connector con = createconnector(dim);
+		
+		for (int i = 0; i < atts.size(); i++) {
+			con.setTFE((ITFE) (atts.get(i)));
+		}
+
+		return con;
 		
 	}
 	
+	private static Grouper grouper(ExtList operand){
+		String iterator = new String();
+		int dim = 0;
+		TFE operand1 = read_attribute((ExtList)operand.get(1));
+		
+		if(operand.get(operand.size() - 1).toString().equals("!")){
+			dim = 2;
+		}else if(operand.get(operand.size() - 1).toString().equals(",")){
+			dim = 1;
+		}
+		
+		Grouper grp = creategrouper(dim);
+		grp.setTFE(operand1);
+		
+		return grp;
+	}
+
 	public static void initiate() {
 		if (factory != null) {
 			Log.out("factory is " + factory);
@@ -174,9 +231,9 @@ public class CodeGenerator {
 		grouper.setId(TFEid++);
 		return grouper;
 	}
-	
+
 	public static Attribute createAttribute() {
-	    Attribute attribute = factory.createAttribute(manager);
+		Attribute attribute = factory.createAttribute(manager);
 		attribute.setId(TFEid++);
 		return attribute;
 	}
@@ -185,7 +242,7 @@ public class CodeGenerator {
 	private static Attribute makeAttribute(String token){
 		return makeAttribute(token, false);
 	}
-	
+
 	private static Attribute makeAttribute(String token, boolean skipCondition) {
 		String line;
 		String name;
@@ -202,6 +259,7 @@ public class CodeGenerator {
 
 		// tk to ignore space between = and value/////////////////
 		line = line.trim();
+		
 		name = name.trim();
 		att_tmp = name;
 		// tk//////////////////////////////////
@@ -212,13 +270,13 @@ public class CodeGenerator {
 		Attribute att = createAttribute();
 		attno = att.setItem(attno, name, line, key, attp);
 
-//		this.setDecoration(att);
+		//		this.setDecoration(att);
 
 		return att;
 
 	}
 
-	
+
 	//	public static String getMedia(SSQLParseTree node){
 	//		String media = node.children.get(1).node;
 	//		return media;

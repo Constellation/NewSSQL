@@ -17,11 +17,11 @@ public class HTMLC3 extends Connector {
 		this.htmlEnv2 = henv2;
 	}
 
-//	@Override
-//	public String getSymbol() {
-//		return "HTMLC3";
-//	}
-//
+	@Override
+	public String getSymbol() {
+		return "HTMLC3";
+	}
+
 //	// C3、ホwork・皈ス・テ・ノ
 //	@Override
 //	public String work(ExtList data_info) {

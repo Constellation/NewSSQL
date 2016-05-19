@@ -17,11 +17,11 @@ public class HTMLC2 extends Connector {
 		this.htmlEnv2 = henv2;
 	}
 
-//	@Override
-//	public String getSymbol() {
-//		return "HTMLC2";
-//	}
-//
+	@Override
+	public String getSymbol() {
+		return "HTMLC2";
+	}
+
 //	// C2鐃緒申work鐃潤ソ鐃獣ワ申
 //	@Override
 //	public String work(ExtList data_info) {

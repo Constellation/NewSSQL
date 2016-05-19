@@ -133,13 +133,13 @@ public class Attribute extends Operand {
 //		dbgout.prt(count, "</Attribute>");
 //	}
 //
-//	public ExtList<Integer> makesch() {
-//		ExtList<Integer> outsch = new ExtList<Integer>();
-//
-//		for (int i = 0; i < Items.size(); i++) {
-//			outsch.addAll((Items.get(i)).makesch());
-//		}
-//
+	public ExtList<Integer> makesch() {
+		ExtList<Integer> outsch = new ExtList<Integer>();
+
+		for (int i = 0; i < Items.size(); i++) {
+			outsch.addAll((Items.get(i)).makesch());
+		}
+
 //		if (orderFlag) {
 //			Preprocessor.putOrderByTable(order, outsch);
 //			orderFlag = false;
@@ -149,23 +149,23 @@ public class Attribute extends Operand {
 //			Preprocessor.putAggregateList(outsch, aggregate);
 //			aggregateFlag = false;
 //		}
-//		return outsch;
-//	}
-//
-//	public ExtList makele0() {
-//
-//		ExtList attno = new ExtList();
-//		//  attno.add("Att");
-//
-//		for (int i = 0; i < Items.size(); i++) {
-//			attno.addAll(Items.get(i).makele0());
-//		}
-//
-//		Log.out("Att le0:" + attno);
-//
-//		return attno;
-//	}
-//
+		return outsch;
+	}
+
+	public ExtList makele0() {
+
+		ExtList attno = new ExtList();
+		//  attno.add("Att");
+
+		for (int i = 0; i < Items.size(); i++) {
+			attno.addAll(Items.get(i).makele0());
+		}
+
+		Log.out("Att le0:" + attno);
+
+		return attno;
+	}
+
 //	public String work(ExtList data_info) {
 //		return null;
 ////		return aggregate;

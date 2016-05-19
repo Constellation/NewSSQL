@@ -19,11 +19,11 @@ public class HTMLC1 extends Connector {
 		this.htmlEnv2 = henv2;
 	}
 
-//	@Override
-//	public String getSymbol() {
-//		return "HTMLC1";
-//	}
-//
+	@Override
+	public String getSymbol() {
+		return "HTMLC1";
+	}
+
 //	// C1��work�᥽�å�
 //	@Override
 //	public String work(ExtList data_info) {

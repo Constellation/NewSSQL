@@ -15,10 +15,10 @@ public class HTMLC0 extends Connector {
 		this.htmlEnv2 = henv2;
 	}
 
-//	@Override
-//	public String getSymbol() {
-//		return "HTMLC0";
-//	}
+	@Override
+	public String getSymbol() {
+		return "HTMLC0";
+	}
 
 	// C2鐃緒申work鐃潤ソ鐃獣ワ申
 //	@Override

@@ -23,26 +23,17 @@ public class TFE implements ITFE{
 		
 	}
 
-//	@Override
-//	public ExtList<Integer> makesch() {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public ExtList makele0() {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	@Deprecated
-//	public String work(ExtList<ExtList<String>> data_info) {
-//		return null;
-////		return aggregate;
-//		// TODO Auto-generated method stub
-//		
-//	}
+	@Override
+	public ExtList<Integer> makesch() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ExtList makele0() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	@Override
 	public int countconnectitem() {
@@ -79,18 +70,6 @@ public class TFE implements ITFE{
 	public void addDeco(String key, Object val) {
 		// TODO 自動生成されたメソッド・スタブ
 		
-	}
-
-	@Override
-	public ExtList<Integer> makesch() {
-		// TODO 自動生成されたメソッド・スタブ
-		return null;
-	}
-
-	@Override
-	public ExtList makele0() {
-		// TODO 自動生成されたメソッド・スタブ
-		return null;
 	}
 
 	@Override

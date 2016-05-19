@@ -67,28 +67,28 @@ public class AttributeItem {
 		dbgout.prt(count, "</AttributeItem>");
 	}
 
-//	public ExtList<Integer> makesch() {
-//		ExtList<Integer> outsch = new ExtList<Integer>();
-//		if (!IsStr) {
-//			outsch.add(new Integer(AttNo));
-//		}
-//		return outsch;
-//	}
-//
-//	public ExtList makele0() {
-//
-//		ExtList attno = new ExtList();
-//
-//		if (!IsStr) {
-//			attno.add(new Integer(AttNo));
-//			Log.out("AttItem le0:" + attno);
-//		} else {
-//			attno.add("const");
-//		}
-//
-//		return attno;
-//	}
-//
+	public ExtList<Integer> makesch() {
+		ExtList<Integer> outsch = new ExtList<Integer>();
+		if (!IsStr) {
+			outsch.add(new Integer(AttNo));
+		}
+		return outsch;
+	}
+
+	public ExtList makele0() {
+
+		ExtList attno = new ExtList();
+
+		if (!IsStr) {
+			attno.add(new Integer(AttNo));
+			Log.out("AttItem le0:" + attno);
+		} else {
+			attno.add("const");
+		}
+
+		return attno;
+	}
+
 	@Override
 	public String toString() {
 		return Image;
