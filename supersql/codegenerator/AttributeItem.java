@@ -143,18 +143,18 @@ public class AttributeItem {
 //		return sig.toString();
 //	}
 //	
-//	//added by ria 20110913 start
-//	public ExtList makeschImage() 
-//	{
-//		ExtList outsch = new ExtList();
-//		
-//		if (!IsStr) 
-//		{
-//			outsch.add(Image);
-//		}
-//
-//		return outsch;
-//	}
-//	//added by ria 20110913 end
+	//added by ria 20110913 start
+	public ExtList makeschImage() 
+	{
+		ExtList outsch = new ExtList();
+		
+		if (!IsStr) 
+		{
+			outsch.add(Image);
+		}
+
+		return outsch;
+	}
+	//added by ria 20110913 end
 }
 

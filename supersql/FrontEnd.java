@@ -2,6 +2,7 @@ package supersql;
 
 import supersql.codegenerator.CodeGenerator;
 import supersql.common.*;
+import supersql.dataconstructor.DataConstructor;
 import supersql.parser.Start_Parse;
 
 public class FrontEnd {
@@ -39,13 +40,11 @@ public class FrontEnd {
 			CodeGenerator codegenerator = parsertree.getcodegenerator();
 			if (GlobalEnv.getErrFlag() == 0) {
 				codegenerator.CodeGenerator(parsertree);
-				
-////				DataConstructor dc = new DataConstructor(parser);
-//				DataConstructor dc = new DataConstructor(parsertree);
-//				afterdc = System.currentTimeMillis();
+
+				DataConstructor dc = new DataConstructor(parsertree);
+				afterdc = System.currentTimeMillis();
 //
 ////				if (GlobalEnv.getErrFlag() == 0) {
-//					CodeGenerator codegenerator_1 = parsertree.getcodegenerator();
 ////					codegenerator.generateCode(parser, dc.getData());
 ////					aftercg = System.currentTimeMillis();
 ////				}

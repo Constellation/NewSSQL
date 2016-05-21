@@ -149,15 +149,15 @@ public class Connector extends Operator {
 //		return tfes.get(i);
 //	}
 //
-//	//added by ria 20110913 start
-//	public ExtList makeschImage() {
-//		ExtList outsch = new ExtList();
-//		for (int i = 0; i < tfeItems; i++) {
-//			outsch.addAll(((ITFE) tfes.get(i)).makeschImage());
-//		}
-//		return outsch;
-//	}
-//	//added by ria 20110913 end
+	//added by ria 20110913 start
+	public ExtList makeschImage() {
+		ExtList outsch = new ExtList();
+		for (int i = 0; i < tfeItems; i++) {
+			outsch.addAll(((ITFE) tfes.get(i)).makeschImage());
+		}
+		return outsch;
+	}
+	//added by ria 20110913 end
 //
 //	public void addDeco(String key, String val, String condition) {
 //		decos.put(key, val, condition);

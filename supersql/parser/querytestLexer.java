@@ -1,5 +1,6 @@
-package supersql.parser;
 // Generated from querytest.g4 by ANTLR 4.5
+
+package supersql.parser;
 
 import java.util.*;
 import java.io.*;

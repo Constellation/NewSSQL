@@ -3,40 +3,37 @@ package supersql.dataconstructor;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.List;
 
-import supersql.antlr.*;
 import supersql.codegenerator.AttributeItem;
+import supersql.codegenerator.XML.XMLFunction;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
-import supersql.parser.*;
+import supersql.extendclass.ExtList;
+import supersql.parser.FromInfo;
+import supersql.parser.FromParse;
+import supersql.parser.Preprocessor;
+import supersql.parser.SSQLparser;
+import supersql.parser.Start_Parse;
+import supersql.parser.WhereInfo;
+import supersql.parser.WhereParse;
+//ryuryu
 
 public class MakeSQL {
 
 	//test
-	private List<SSQLParseTree> from;
+	private ExtList from;
 
-	private List<SSQLParseTree> where;
+	private ExtList where;
 
 	private Hashtable atts;
 
+	private ExtList table_group;
+
 	public MakeSQL(Start_Parse p) {
-		List<SSQLParseTree> tree = p.List_tree_b;
-		int f_index = 0, w_index = 0;
-		for(int i = 0; i < tree.size(); i++){
-			if(tree.get(i).parent_info.equals("from")){
-				f_index = i;
-			}else if(tree.get(i).children.contains("where")){
-				w_index = i;
-			}
-		}
-		if(f_index != 0){
-			from = tree.subList(f_index, w_index);
-		}
-		if(w_index != 0){
-			where = tree.subList(w_index, tree.size());
-		}
-		atts = p.get_att_info(tree);
+		setFrom(p.list_from);
+		where = p.list_where;
+		atts = p.get_att_info();
+		Log.info("atts:"+atts);
 
 		MakeGroup mg = new MakeGroup(atts, where);
 		table_group = mg.getTblGroup();
@@ -222,6 +219,14 @@ public class MakeSQL {
 
 		return buf.toString();
 
+	}
+
+	public FromInfo getFrom() {
+		return from;
+	}
+
+	public void setFrom(ExtList from) {
+		this.from = from;
 	}
 
 }

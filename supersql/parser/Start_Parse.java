@@ -14,20 +14,26 @@ import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 
 import supersql.codegenerator.CodeGenerator;
+import supersql.codegenerator.TFE;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
-import supersql.parser.*;
 import supersql.parser.org.antlr.v4.runtime.MyErrorStrategy;
 
 
 public class Start_Parse {
 
+	private static boolean jsonQuery = false;
+	private static boolean dbpediaQuery = false;
 	public static String att = null;
 	public static String media = null;
-	public ExtList List_tree_a, List_tree_b, list_tfe, list_from, list_media;
+	public ExtList List_tree_a, List_tree_b, list_tfe, list_from_where, list_from, list_where, list_media, list_table;
 	private CodeGenerator codegenerator;
 	public static Hashtable<?, ?> atts;
+	public static TFE schemaTop;
+	public static ExtList sch;
+	public static ExtList schema;
+
 	
 	@SuppressWarnings("unchecked")
 	public Start_Parse()
@@ -96,10 +102,33 @@ public class Start_Parse {
 				List_tree_b = (ExtList) List_tree_b.get(1);
 				list_media = (ExtList) List_tree_b.get(0);
 				list_tfe = (ExtList) List_tree_b.get(1);
-				list_from = (ExtList) List_tree_b.get(2);
+				list_from_where = (ExtList) List_tree_b.get(2);
+				list_from = new ExtList();
+				list_where = new ExtList();
+
+				while(true){
+					if(((ExtList)((ExtList)list_from_where.get(1)).get(0)).get(0).toString().equals("select_core")){
+						list_from_where = (ExtList) ((ExtList)((ExtList)list_from_where.get(1)).get(0)).get(1);
+						if(((ExtList)list_from_where.get(list_from_where.size() - 1)).get(0).toString().equals("where")){
+							list_where = (ExtList)list_from_where.get(list_from_where.size() - 1);
+							for(int i = 0; i < list_from_where.size() - 1; i++){
+								list_from.add(list_from_where.get(i));
+							}
+						}else{
+							for(int i = 0; i < list_from_where.size(); i++){
+								list_from.add(list_from_where.get(i));
+							}
+						}
+						break;
+					}else{
+						list_from_where = (ExtList)((ExtList)list_from_where.get(1)).get(0);
+					}
+				}
 				System.out.println(list_media);
 				System.out.println(list_tfe);
 				System.out.println(list_from);
+				System.out.println(list_where);
+				list_table = set_fromInfo();
 //				TreeConst.getfromInfo(List_tree_b);
 				codegenerator = new CodeGenerator();
 				
@@ -114,6 +143,39 @@ public class Start_Parse {
 		return codegenerator;
 		
 	}
+	
+	public static boolean isDbpediaQuery() {
+		return dbpediaQuery;
+	}
+
+	public static boolean isJsonQuery() {
+		return jsonQuery;
+	}
+    
+    public TFE get_TFEschema(){
+    	TFE sch = codegenerator.schemaTop;
+		return sch;    	
+    }
+    
+    public Hashtable get_att_info(){
+    	Hashtable attp = codegenerator.get_attp();
+		return attp;
+    }
+    
+    private ExtList set_fromInfo(){
+    	ExtList from_tables = new ExtList();
+//    	ExtList from_table = new ExtList();
+    	for(int i = 0; i < list_from.size(); i++){
+    		if(list_from.get(i) instanceof ExtList){
+    			from_tables.add(((ExtList)list_from.get(i)).get(1));
+    		}else{
+    			continue;
+    		}
+    	}
+    	
+    	return from_tables;
+    }
+	
 	
 //	public Hashtable get_att_info(List<SSQLParseTree> tree){
 //		String parent = null;

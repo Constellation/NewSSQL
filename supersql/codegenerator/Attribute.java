@@ -238,17 +238,17 @@ public class Attribute extends Operand {
 		return this.ValKey;
 	}
 	
-//	//added by ria 20110913 start
-//	public ExtList makeschImage() {
-//		ExtList outsch = new ExtList();
-//
-//		for (int i = 0; i < Items.size(); i++) {
-//			outsch.addAll(Items.get(i).makeschImage());
-//		}
-//		
-//		return outsch;
-//	}
-	//added by ria 20110913 end
+	//added by ria 20110913 start
+	public ExtList makeschImage() {
+		ExtList outsch = new ExtList();
+
+		for (int i = 0; i < Items.size(); i++) {
+			outsch.addAll(Items.get(i).makeschImage());
+		}
+		
+		return outsch;
+	}
+//	added by ria 20110913 end
 
 	public String getCondition() {
 		return condition;

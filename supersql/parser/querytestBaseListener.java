@@ -1,5 +1,6 @@
-package supersql.parser;
 // Generated from querytest.g4 by ANTLR 4.5
+
+package supersql.parser;
 
 import java.util.*;
 import java.io.*;
@@ -177,13 +178,13 @@ public class querytestBaseListener implements querytestListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterFrom(querytestParser.FromContext ctx) { }
+	@Override public void enterFrom_where(querytestParser.From_whereContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitFrom(querytestParser.FromContext ctx) { }
+	@Override public void exitFrom_where(querytestParser.From_whereContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -244,6 +245,18 @@ public class querytestBaseListener implements querytestListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitSelect_core(querytestParser.Select_coreContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterWhere(querytestParser.WhereContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitWhere(querytestParser.WhereContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

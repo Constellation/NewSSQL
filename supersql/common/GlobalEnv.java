@@ -591,6 +591,7 @@ public class GlobalEnv {
 	public static void addErr(String errMsg)
 	{
 		err.append(errMsg);
+		Log.info("env:"+err);
 		err_flag = 1;
 	}
 

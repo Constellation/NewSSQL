@@ -1,5 +1,6 @@
-package supersql.parser;
 // Generated from querytest.g4 by ANTLR 4.5
+
+package supersql.parser;
 
 import java.util.*;
 import java.io.*;
@@ -143,15 +144,15 @@ public interface querytestListener extends ParseTreeListener {
 	 */
 	void exitIf_then_else(querytestParser.If_then_elseContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link querytestParser#from}.
+	 * Enter a parse tree produced by {@link querytestParser#from_where}.
 	 * @param ctx the parse tree
 	 */
-	void enterFrom(querytestParser.FromContext ctx);
+	void enterFrom_where(querytestParser.From_whereContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link querytestParser#from}.
+	 * Exit a parse tree produced by {@link querytestParser#from_where}.
 	 * @param ctx the parse tree
 	 */
-	void exitFrom(querytestParser.FromContext ctx);
+	void exitFrom_where(querytestParser.From_whereContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link querytestParser#error}.
 	 * @param ctx the parse tree
@@ -202,6 +203,16 @@ public interface querytestListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitSelect_core(querytestParser.Select_coreContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link querytestParser#where}.
+	 * @param ctx the parse tree
+	 */
+	void enterWhere(querytestParser.WhereContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link querytestParser#where}.
+	 * @param ctx the parse tree
+	 */
+	void exitWhere(querytestParser.WhereContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link querytestParser#result_column}.
 	 * @param ctx the parse tree

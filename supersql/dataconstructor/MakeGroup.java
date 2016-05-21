@@ -4,21 +4,23 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.List;
 
-import supersql.antlr.SSQLParseTree;
 import supersql.codegenerator.AttributeItem;
 import supersql.common.Log;
+import supersql.extendclass.ExtHashSet;
+import supersql.extendclass.ExtList;
+import supersql.parser.WhereInfo;
+import supersql.parser.WhereParse;
 
 public class MakeGroup {
 
 	private ExtList tbl_group;
 
-	public MakeGroup(Hashtable att, List<SSQLParseTree> where) {
+	public MakeGroup(Hashtable att, WhereInfo where) {
 		makeGroup_main(att, where);
 	}
 
-	public void makeGroup_main(Hashtable att, List<SSQLParseTree> where) {
+	public void makeGroup_main(Hashtable att, WhereInfo where) {
 
 		ExtList result = new ExtList();
 		HashSet table_list = new HashSet();

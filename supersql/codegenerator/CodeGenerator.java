@@ -15,20 +15,21 @@ import supersql.parser.Start_Parse;
 
 public class CodeGenerator {
 
-	private static TFE schemaTop;
-
-	private static ExtList sch;
-
 	private static Hashtable attp;
 
 	private static int attno;
 
 	private static String att_tmp;
 
+	private static String media;
+
 	private static Factory factory;
+	
+	public static TFE schemaTop;
+	public static ExtList sch;
+	public static ExtList schema;
 	public static Manager manager;
 	public static int TFEid;
-	private static String media;
 
 
 	public void CodeGenerator(Start_Parse parser) {
@@ -47,9 +48,14 @@ public class CodeGenerator {
 		schemaTop = initialize((ExtList)tfe.get(0));
 
 		sch = schemaTop.makesch();
+		schema = schemaTop.makeschImage();
 		Log.info("Schema is " + sch);
 		Log.info("le0 is " + schemaTop.makele0());
 
+		parser.schemaTop = schemaTop;
+		parser.sch = sch;
+		parser.schema = schema;
+		
 		//		
 		//		for(int i = 0; i < tree.size(); i++){
 		//			if(tree.get(i).equals("media")){
@@ -100,13 +106,11 @@ public class CodeGenerator {
 	private static TFE read_attribute(ExtList tfe_tree){
 		String att = new String();
 		TFE out_sch = null;
-		Log.info("TFE_TREE:"+tfe_tree);
 		if(tfe_tree.get(0).toString().equals("operand")){
 			if(((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("table_alias")){
 				att = ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(0)).get(1)).get(0).toString();
 				att = att + ((ExtList)tfe_tree.get(1)).get(1).toString();
 				att = att + ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(2)).get(1)).get(0)).get(1)).get(0);
-				Log.info(att);
 				Attribute Att = makeAttribute(att);
 				out_sch = Att;
 			}else if(((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("column_name")){
@@ -134,9 +138,7 @@ public class CodeGenerator {
 	private static Connector connector_main(ExtList operand, int dim){
 		ExtList atts = new ExtList();
 		
-		Log.info(operand.size());
 		for(int i = 0; i <= operand.size(); i++){
-			Log.info(i);
 			TFE att = read_attribute((ExtList)operand.get(i));
 			atts.add(att);
 			i++;
@@ -266,7 +268,6 @@ public class CodeGenerator {
 		Log.out("[makeAttribute] line : " + line);
 		Log.out("[makeAttribute] name : " + name);
 
-		Log.info(key);
 		Attribute att = createAttribute();
 		attno = att.setItem(attno, name, line, key, attp);
 
@@ -274,6 +275,10 @@ public class CodeGenerator {
 
 		return att;
 
+	}
+	
+	public Hashtable get_attp() {
+		return this.attp;
 	}
 
 

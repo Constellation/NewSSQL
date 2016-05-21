@@ -117,14 +117,14 @@ public class Grouper extends Operator{
 		return null;
 	}
 
-//	//added by ria 20110913 start
-//	public ExtList makeschImage() {
-//        ExtList outsch = new ExtList();
-//        outsch.add(tfe.makeschImage());
-//
-//        return outsch;
-//	}
-//	//added by ria 20110913 end
+	//added by ria 20110913 start
+	public ExtList makeschImage() {
+        ExtList outsch = new ExtList();
+        outsch.add(tfe.makeschImage());
+
+        return outsch;
+	}
+	//added by ria 20110913 end
 //
 //	public void addDeco(String name, String value, String condition) {
 //        decos.put(name, value, condition);
