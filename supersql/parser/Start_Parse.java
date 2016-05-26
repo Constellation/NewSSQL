@@ -110,7 +110,7 @@ public class Start_Parse {
 					if(((ExtList)((ExtList)list_from_where.get(1)).get(0)).get(0).toString().equals("select_core")){
 						list_from_where = (ExtList) ((ExtList)((ExtList)list_from_where.get(1)).get(0)).get(1);
 						if(((ExtList)list_from_where.get(list_from_where.size() - 1)).get(0).toString().equals("where")){
-							list_where = (ExtList)list_from_where.get(list_from_where.size() - 1);
+							list_where = (ExtList) ((ExtList)list_from_where.get(list_from_where.size() - 1)).get(1);
 							for(int i = 0; i < list_from_where.size() - 1; i++){
 								list_from.add(list_from_where.get(i));
 							}
@@ -121,7 +121,7 @@ public class Start_Parse {
 						}
 						break;
 					}else{
-						list_from_where = (ExtList)((ExtList)list_from_where.get(1)).get(0);
+						list_from_where = (ExtList)(ExtList)((ExtList)list_from_where.get(1)).get(0);
 					}
 				}
 				System.out.println(list_media);

@@ -24,7 +24,7 @@ public class CodeGenerator {
 	private static String media;
 
 	private static Factory factory;
-	
+
 	public static TFE schemaTop;
 	public static ExtList sch;
 	public static ExtList schema;
@@ -37,139 +37,12 @@ public class CodeGenerator {
 		initialize(parser);
 	}
 
-	public static void initialize(Start_Parse parser){
-		attp = new Hashtable();
-		ExtList tfe = (ExtList)parser.list_tfe.get(1);
-
-		media = ((ExtList) parser.list_media.get(1)).get(1).toString();
-		setFactory(media);
-		initiate();
-
-		schemaTop = initialize((ExtList)tfe.get(0));
-
-		sch = schemaTop.makesch();
-		schema = schemaTop.makeschImage();
-		Log.info("Schema is " + sch);
-		Log.info("le0 is " + schemaTop.makele0());
-
-		parser.schemaTop = schemaTop;
-		parser.sch = sch;
-		parser.schema = schema;
-		
-		//		
-		//		for(int i = 0; i < tree.size(); i++){
-		//			if(tree.get(i).equals("media")){
-		//				media = getMedia(tree.get(i));
-		//				setFactory(media);
-		//				initiate();
-		//			}
-		//			if(tree.get(i).parent_info.equals("d_exp")){
-		//				dim = 3;
-		//				createconnector(dim);
-		//			}
-		//			if(tree.get(i).parent_info.equals("v_exp")){
-		//				dim = 2;
-		//				createconnector(dim);
-		//			}
-		//			if(tree.get(i).parent_info.equals("h_exp")){
-		//				dim = 1;
-		//				createconnector(dim);
-		//			}
-		//			if(tree.get(i).parent_info.equals("grouper")){
-		//				if(tree.get(i).children.get(3).node.equals(",")){
-		//					dim = 1;
-		//				}
-		//				
-		//				if(tree.get(i).children.get(3).node.equals("!")){
-		//					dim = 2;
-		//				}
-		//			}
-		//		}	
-	}
-
 	public static TFE initialize(ExtList tfe){
 		TFE out_sch = null;
 		int dim;
 		out_sch = makeschematop(tfe);
 
 		return out_sch;
-	}
-
-	private static TFE makeschematop(ExtList list){
-		TFE tfe = null;
-		tfe = read_attribute(list);
-
-		return tfe;
-
-	}
-
-	private static TFE read_attribute(ExtList tfe_tree){
-		String att = new String();
-		TFE out_sch = null;
-		if(tfe_tree.get(0).toString().equals("operand")){
-			if(((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("table_alias")){
-				att = ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(0)).get(1)).get(0).toString();
-				att = att + ((ExtList)tfe_tree.get(1)).get(1).toString();
-				att = att + ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(2)).get(1)).get(0)).get(1)).get(0);
-				Attribute Att = makeAttribute(att);
-				out_sch = Att;
-			}else if(((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("column_name")){
-				att = ((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(0)).get(1)).get(0)).get(1)).get(0).toString();
-				Attribute Att = makeAttribute(att);
-				out_sch = Att;
-			}else if( ((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("grouper") ){
-				out_sch = grouper((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1));
-			}
-			else{
-
-			}
-		}else if(tfe_tree.get(0).toString().equals("h_exp")){
-			out_sch = connector_main((ExtList)tfe_tree.get(1), 1);
-		}else if(tfe_tree.get(0).toString().equals("v_exp")){
-			out_sch = connector_main((ExtList)tfe_tree.get(1), 2);
-		}else if(tfe_tree.get(0).toString().equals("d_exp")){
-			out_sch = connector_main((ExtList)tfe_tree.get(1), 3);
-		}else{
-			out_sch = makeschematop((ExtList)((ExtList)tfe_tree.get(1)).get(0));
-		}
-		return out_sch;
-	}
-	
-	private static Connector connector_main(ExtList operand, int dim){
-		ExtList atts = new ExtList();
-		
-		for(int i = 0; i <= operand.size(); i++){
-			TFE att = read_attribute((ExtList)operand.get(i));
-			atts.add(att);
-			i++;
-		}
-		
-		
-		Connector con = createconnector(dim);
-		
-		for (int i = 0; i < atts.size(); i++) {
-			con.setTFE((ITFE) (atts.get(i)));
-		}
-
-		return con;
-		
-	}
-	
-	private static Grouper grouper(ExtList operand){
-		String iterator = new String();
-		int dim = 0;
-		TFE operand1 = read_attribute((ExtList)operand.get(1));
-		
-		if(operand.get(operand.size() - 1).toString().equals("!")){
-			dim = 2;
-		}else if(operand.get(operand.size() - 1).toString().equals(",")){
-			dim = 1;
-		}
-		
-		Grouper grp = creategrouper(dim);
-		grp.setTFE(operand1);
-		
-		return grp;
 	}
 
 	public static void initiate() {
@@ -205,7 +78,207 @@ public class CodeGenerator {
 		}
 	}
 
-	public static Connector createconnector(int dim){
+
+	public static void initialize(Start_Parse parser){
+		attp = new Hashtable();
+		ExtList tfe = (ExtList)parser.list_tfe.get(1);
+
+		media = ((ExtList) parser.list_media.get(1)).get(1).toString();
+		setFactory(media);
+		initiate();
+
+		schemaTop = initialize((ExtList)tfe.get(0));
+
+		sch = schemaTop.makesch();
+		schema = schemaTop.makeschImage();
+		Log.info("Schema is " + sch);
+		Log.info("le0 is " + schemaTop.makele0());
+
+		parser.schemaTop = schemaTop;
+		parser.sch = sch;
+		parser.schema = schema;
+	}
+
+	public Hashtable get_attp() {
+		return this.attp;
+	}
+
+
+	private static TFE makeschematop(ExtList list){
+		TFE tfe = null;
+		tfe = read_attribute(list);
+
+		return tfe;
+
+	}
+
+	private static TFE read_attribute(ExtList tfe_tree){
+		String att = new String();
+		TFE out_sch = null;
+		String decos = new String();
+		String iterator = new String();
+		boolean add_deco = false;
+		
+		if(tfe_tree.get(0).toString().equals("operand")){
+			if( ((ExtList)tfe_tree.get(1)).get(0) instanceof String ){
+				if(((ExtList)tfe_tree.get(1)).get(0).toString().equals("{")){
+					((ExtList)tfe_tree.get(1)).remove(0);
+					((ExtList)tfe_tree.get(1)).remove(((ExtList)tfe_tree.get(1)).size() - 1);
+				}
+				out_sch = read_attribute( (ExtList)((ExtList)tfe_tree.get(1)).get(0) );
+			}
+
+			if( ((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("sorting") ){
+				decos = ((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(1).toString();
+				add_deco = true;
+				((ExtList)tfe_tree.get(1)).remove(0);
+			}
+
+			if(((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("table_alias")){
+				att = ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(0)).get(1)).get(0).toString();
+				att = att + ((ExtList)tfe_tree.get(1)).get(1).toString();
+				att = att + ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(2)).get(1)).get(0)).get(1)).get(0);
+				Attribute Att = makeAttribute(att);
+				out_sch = Att;
+			}else if(((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("column_name")){
+				att = ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(0)).get(1)).get(0).toString();
+				Attribute Att = makeAttribute(att);
+				out_sch = Att;
+			}else if( ((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("grouper") ){
+				out_sch = grouper((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1));
+			}else if( ((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("composite_iterator") ){
+				ExtList group = composite( (ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1) );
+				add_deco = true;
+				decos = (String) group.get(group.size() - 1);
+				group.remove(group.size() - 1);
+				out_sch = grouper(group);
+			}
+			else if( ((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("function") ){
+				out_sch = func_read((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1));
+			}else if(((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("sl")){
+				att = ((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(0).toString();
+				Attribute SL = makeAttribute(att);
+				out_sch = SL;
+			}
+			else{
+
+			}
+
+			if( !(((ExtList)tfe_tree.get(1)).get( ((ExtList)tfe_tree.get(1)).size() - 1 ) instanceof ExtList) ){
+				String deco = ((ExtList)tfe_tree.get(1)).get( ((ExtList)tfe_tree.get(1)).size() - 1 ).toString();
+				if(deco.contains("@{")){
+					if(add_deco){
+						deco = deco.substring(0, deco.lastIndexOf("}")) + "," + decos + "}";
+						setDecoration(out_sch, deco);
+					}else{
+						setDecoration(out_sch, deco);
+					}
+				}else if(add_deco){
+					deco = "@{" + decos + "}";
+					setDecoration(out_sch, deco);
+				}
+			}
+		}else if(tfe_tree.get(0).toString().equals("h_exp")){
+			out_sch = connector_main((ExtList)tfe_tree.get(1), 1);
+		}else if(tfe_tree.get(0).toString().equals("v_exp")){
+			out_sch = connector_main((ExtList)tfe_tree.get(1), 2);
+		}else if(tfe_tree.get(0).toString().equals("d_exp")){
+			out_sch = connector_main((ExtList)tfe_tree.get(1), 3);
+		}else{
+			out_sch = makeschematop((ExtList)((ExtList)tfe_tree.get(1)).get(0));
+		}
+		return out_sch;
+	}
+
+	private static Connector connector_main(ExtList operand, int dim){
+		ExtList atts = new ExtList();
+
+		for(int i = 0; i <= operand.size(); i++){
+			TFE att = read_attribute((ExtList)operand.get(i));
+			atts.add(att);
+			i++;
+		}
+
+		Connector con = createconnector(dim);
+
+		for (int i = 0; i < atts.size(); i++) {
+			con.setTFE((ITFE) (atts.get(i)));
+		}
+
+		return con;
+
+	}
+
+	private static Grouper grouper(ExtList operand){
+		String iterator = new String();
+		int dim = 0;
+		TFE operand1 = read_attribute((ExtList)operand.get(1));
+
+		if(operand.get(operand.size() - 1).toString().equals("!")){
+			dim = 2;
+		}else if(operand.get(operand.size() - 1).toString().equals(",")){
+			dim = 1;
+		}
+
+		Grouper grp = creategrouper(dim);
+		grp.setTFE(operand1);
+
+		return grp;
+	}
+
+	private static ExtList composite(ExtList operand){
+		int index = operand.indexOf("]");
+		String deco = "";
+		ArrayList iterators = new ArrayList();
+		
+		for(int i = 1; i+index < operand.size(); i++ ){
+			iterators.add(operand.get(i+index));
+			if(i != 1){
+				operand.remove(i+index);
+				i--;
+			}
+		}
+		
+		if(iterators.get(0).equals(",")){
+			deco = "column=";
+			iterators.remove(0);
+			deco = deco + iterators.get(0);
+			iterators.remove(0);
+			if(iterators.get(0).equals("!")){
+				iterators.remove(0);
+				if(iterators.isEmpty()){
+				}else{
+					deco = deco + ", row=" + iterators.get(0);
+					iterators.remove(0);
+				}
+			}else if(iterators.get(0).equals("%")){
+				iterators.remove(0);
+				deco = deco + ", row=1";
+			}
+		}else if(iterators.get(0).equals("!")){
+			deco = "row=";
+			iterators.remove(0);
+			deco = deco + iterators.get(0);
+			iterators.remove(0);
+			if(iterators.get(0).equals(",")){
+				iterators.remove(0);
+				if(iterators.isEmpty()){
+				}else{
+					deco = deco + ", column=" + iterators.get(0);
+					iterators.remove(0);
+				}
+			}else if(iterators.get(0).equals("%")){
+				iterators.remove(0);
+				deco = deco + ", column=1";
+			}
+
+		}
+		operand.add(deco);
+		Log.info(operand);
+		return operand;
+	}
+
+	private static Connector createconnector(int dim){
 		Connector connector = new Connector();
 		if(dim == 3){
 			//factory and manager
@@ -221,7 +294,7 @@ public class CodeGenerator {
 		return connector;
 	}
 
-	public static Grouper creategrouper(int dim){
+	private static Grouper creategrouper(int dim){
 		Grouper grouper = null;
 		if(dim == 2){
 			//factory and manager
@@ -234,7 +307,13 @@ public class CodeGenerator {
 		return grouper;
 	}
 
-	public static Attribute createAttribute() {
+	private static Function createFunction() {
+		Function function = factory.createFunction(manager);
+		function.setId(TFEid++);
+		return function;
+	}
+
+	private static Attribute createAttribute() {
 		Attribute attribute = factory.createAttribute(manager);
 		attribute.setId(TFEid++);
 		return attribute;
@@ -261,7 +340,7 @@ public class CodeGenerator {
 
 		// tk to ignore space between = and value/////////////////
 		line = line.trim();
-		
+
 		name = name.trim();
 		att_tmp = name;
 		// tk//////////////////////////////////
@@ -271,14 +350,116 @@ public class CodeGenerator {
 		Attribute att = createAttribute();
 		attno = att.setItem(attno, name, line, key, attp);
 
-		//		this.setDecoration(att);
-
 		return att;
 
 	}
-	
-	public Hashtable get_attp() {
-		return this.attp;
+
+	private static Function func_read(ExtList fn) {
+
+		String token;
+		Function fnc = createFunction();
+		String func_name = new String();
+		ExtList atts = new ExtList();
+		ExtList func_atts = new ExtList();
+
+		for(int i = 0; i < fn.size(); i++){
+			if(i == 0){
+				func_name = ((ExtList)((ExtList)((ExtList)((ExtList)fn.get(i)).get(1)).get(0)).get(1)).get(0).toString();
+			}else if(fn.get(i) instanceof String){
+				if(fn.get(i).toString().equals(",")){
+					atts.add(fn.get(i));
+				}else{
+					continue;
+				}
+			}else{
+				atts.add(fn.get(i));
+			}
+		}
+
+		func_atts.add("h_exp");
+		func_atts.add(atts);
+		Log.info(func_atts);
+		fnc.setFname( func_name );
+		FunctionData fnd = new FunctionData(func_name);
+
+		String name, value;
+
+		Log.out("[func*read start funcname]=" + fn);
+		/* func_read */
+		TFE read_tfe = read_attribute(func_atts);
+
+		Log.info("[func*TFE]=" + read_tfe.makele0());
+		if (read_tfe instanceof Connector) {
+			//		if(read_tfe instanceof Connector && ((Connector) read_tfe).getDimension() == 1){
+			for(TFE tfe: ((Connector)read_tfe).tfes){
+				fnc.addArg(makeFuncArg(tfe));
+			}
+		}
+		else
+			fnc.addArg(makeFuncArg(read_tfe));
+		if (fn.equals("select")) {
+			fnc.addDeco("select", att_tmp);
+		}
+
+		//		this.setDecoration(fnc);
+
+		return fnc;
+
+	}
+
+	private static FuncArg makeFuncArg(TFE arg) {
+		FuncArg out_fa;
+		Log.info("argsaregs: " + arg);
+
+		if (arg instanceof Attribute) {
+			out_fa = new FuncArg(((Attribute) arg).getKey(), arg);
+		} else {
+			out_fa = new FuncArg("default", arg);
+		}
+
+		return out_fa;
+	}
+
+
+	private static void setDecoration(ITFE tfe, String decos) {
+		String token = new String();
+		String name, value;
+		int equalidx;
+
+		decos = decos.substring(decos.indexOf("{")+1, decos.lastIndexOf("}"));
+		Log.info(decos);
+		String[] decolist = decos.split(",");
+
+		for(int i = 0; i < decolist.length; i++) {
+
+			name = new String();
+			value = new String();
+
+			// read name
+			token = decolist[i];
+			equalidx = token.indexOf('=');
+			if (equalidx != -1) {
+				// key = idx
+				name = token.substring(0, equalidx);
+				value = token.substring(equalidx + 1);
+				Log.info(name+","+value);
+				decoration_out(tfe, name, value);
+			} else {
+				// key only
+				decoration_out(tfe, token, "");
+			}
+		}
+		Log.out("@ decoration end @");
+		// Log.out(toks.DebugTrace());
+
+	}
+
+	private static void decoration_out(ITFE tfe, String name, Object value) {
+
+		/* 鐃緒申?的鐃緒申String鐃緒申鐃緒申鐃宿わ申覆鐃�*/
+		tfe.addDeco(name, (String) value);
+		Log.info("[decoration name=" + name + " value=" + value + "]");
+
 	}
 
 

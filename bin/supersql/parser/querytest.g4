@@ -48,7 +48,7 @@ operand    :
 				| grouper 
 				| composite_iterator 
 				| if_then_else
-				| STRING_LITERAL
+				| sl
 				| NUMERIC_LITERAL 
 				)
 				('||' operand)*
@@ -371,7 +371,7 @@ ordering_term
 expr
   : literal_value
   | BIND_PARAMETER
-  | ( ( database_name '.' )? table_name '.' )? column_name
+  | ( ( database_name '.' )? table_alias '.' )? column_name
   | unary_operator expr
   | expr '||' expr
   | expr ( '*' | '/' | '%' ) expr
@@ -482,9 +482,11 @@ index_name
 any_name
   : keyword
   | IDENTIFIER 
-  | STRING_LITERAL 
+//  | STRING_LITERAL 
 //  | '(' any_name ')'
   ;
+
+sl : STRING_LITERAL;
 
 signed_number
   : ( '+' | '-' )? NUMERIC_LITERAL
@@ -631,9 +633,11 @@ BIND_PARAMETER
   ;
 
 IDENTIFIER
-  : '"' (~'"' | '""')* '"'
-  | '`' (~'`' | '``')* '`'
-  | [a-zA-Z_0-9]* [a-zA-Z_] [a-zA-Z_0-9]* // TODO check: needs more chars in set
+  : 
+//  '"' (~'"' | '""')* '"'
+//  | '`' (~'`' | '``')* '`'
+//  | 
+  [a-zA-Z_0-9]* [a-zA-Z_] [a-zA-Z_0-9]* // TODO check: needs more chars in set
   ;
 
 STRING_LITERAL	:	'\"' ( ~'\"')* '\"'	 | '\'' (~'\'')* '\'' ;

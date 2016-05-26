@@ -42,7 +42,6 @@ public class Attribute extends Operand {
 
 	public int setItem(int no, String nm, String attimg, String key,
 			Hashtable<Integer, AttributeItem> attp) {
-
 		if(conditional){
 			AttNames.add(nm);
 		}else
@@ -106,7 +105,7 @@ public class Attribute extends Operand {
 //		}
 //		decos.put(key, val);
 //	}
-//
+
 //	public void debugout() {
 //		debugout(0);
 //	}
@@ -258,13 +257,13 @@ public class Attribute extends Operand {
 		this.condition = condition;
 	}
 
-//	public void addDeco(String key, String val, String condition) {
-//		if(key.equals("insert")||key.equals("update")||key.equals("delete")||key.equals("login")){
-//			decos.put(key, AttName, condition);
-//			return;
-//		}
-//		decos.put(key, val, condition);
-//	}
+	public void addDeco(String key, String val, String condition) {
+		if(key.equals("insert")||key.equals("update")||key.equals("delete")||key.equals("login")){
+			decos.put(key, AttName, condition);
+			return;
+		}
+		decos.put(key, val, condition);
+	}
 
 //	@Override
 //	public Object createNode(ExtList<ExtList<String>> data_info) {

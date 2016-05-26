@@ -6,21 +6,22 @@ import java.lang.reflect.InvocationTargetException;
 import supersql.codegenerator.Attribute;
 import supersql.codegenerator.Connector;
 import supersql.codegenerator.Grouper;
+import supersql.codegenerator.Function;
 import supersql.codegenerator.LocalEnv;
 import supersql.codegenerator.Manager;
-import supersql.codegenerator.TFE;
+import supersql.common.Log;
 
 public class Factory {
 	private LocalEnv env;
 	private LocalEnv env2;
-	private String classPrefix;
+	private String classPrefix = new String();
 	private Class[] args;
 	
 	private void initializeArgs() {
 		args = new Class[3];
 		try {
 			Class argsClass = Class.forName(getClassPrefix() + "Env");
-			args[0] = Class.forName("supersql.codegenerator.Manager");;
+			args[0] = Class.forName("supersql.codegenerator.Manager");
 			args[1] = argsClass;
 			args[2] = argsClass;
 		} catch (ClassNotFoundException e) {
@@ -43,9 +44,7 @@ public class Factory {
 		// TODO remove method initializeArgs
 		initializeArgs();
 		try {
-
 			return Class.forName(getClassPrefix() + postfix).getConstructor(args);
-
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (SecurityException e) {
@@ -110,7 +109,6 @@ public class Factory {
 
 	public Connector createC1(Manager manager) {
 		try {
-			
 			Constructor connectorConstructor = getConstructor("C1");
 			return (Connector) connectorConstructor.newInstance(manager, getEnv(), getEnv2());
 
@@ -230,7 +228,6 @@ public class Factory {
 
 	public Grouper createG2(Manager manager) {
 		try {
-			
 			Constructor connectorConstructor = getConstructor("G2");
 			return (Grouper) connectorConstructor.newInstance(manager, getEnv(), getEnv2());
 
@@ -308,6 +305,23 @@ public class Factory {
 		return null;
 	}
 
+	public Function createFunction(Manager manager) {
+		try {
+			Constructor connectorConstructor = getConstructor("Function");
+			return (Function) connectorConstructor.newInstance(manager, getEnv(), getEnv2());
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 /*********************
 * Getters and Setters
 *********************/

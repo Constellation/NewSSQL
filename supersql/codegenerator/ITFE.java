@@ -23,7 +23,7 @@ public interface ITFE {
 	int countconnectitem();
 
 	void addDeco(String key, Object val);
-//	void setDeco(DecorateList d);
+	void setDeco(DecorateList d);
 	
 	void setId(int id);
 	int getId();
@@ -33,5 +33,5 @@ public interface ITFE {
 
 	ExtList makeschImage();
 
-//	void addDeco(String name, String value, String condition);
+	void addDeco(String name, String value, String condition);
 }

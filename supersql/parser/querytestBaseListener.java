@@ -586,6 +586,18 @@ public class querytestBaseListener implements querytestListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterSl(querytestParser.SlContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSl(querytestParser.SlContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterSigned_number(querytestParser.Signed_numberContext ctx) { }
 	/**
 	 * {@inheritDoc}

@@ -484,6 +484,16 @@ public interface querytestListener extends ParseTreeListener {
 	 */
 	void exitAny_name(querytestParser.Any_nameContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link querytestParser#sl}.
+	 * @param ctx the parse tree
+	 */
+	void enterSl(querytestParser.SlContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link querytestParser#sl}.
+	 * @param ctx the parse tree
+	 */
+	void exitSl(querytestParser.SlContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link querytestParser#signed_number}.
 	 * @param ctx the parse tree
 	 */

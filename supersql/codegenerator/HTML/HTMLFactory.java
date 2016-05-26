@@ -3,6 +3,7 @@ package supersql.codegenerator.HTML;
 import supersql.codegenerator.Attribute;
 import supersql.codegenerator.Connector;
 import supersql.codegenerator.Factory;
+import supersql.codegenerator.Function;
 import supersql.codegenerator.Grouper;
 import supersql.codegenerator.Manager;
 import supersql.codegenerator.TFE;
@@ -69,6 +70,11 @@ public class HTMLFactory extends Factory {
 		// return new HTMLG4(manager, html_env);
 	}
 
+	@Override
+	public Function createFunction(Manager manager) {
+		return new HTMLFunction(manager, htmlEnv, htmlEnv2);
+	}
+	
 	@Override
 	public void createLocalEnv() {
 		htmlEnv = new HTMLEnv();

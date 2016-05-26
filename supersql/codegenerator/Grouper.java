@@ -125,15 +125,15 @@ public class Grouper extends Operator{
         return outsch;
 	}
 	//added by ria 20110913 end
-//
-//	public void addDeco(String name, String value, String condition) {
-//        decos.put(name, value, condition);
-//	}
-//
-//	@Override
-//	public Object createNode(ExtList<ExtList<String>> data_info) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
+
+	public void addDeco(String name, String value, String condition) {
+        decos.put(name, value, condition);
+	}
+
+	@Override
+	public Object createNode(ExtList<ExtList<String>> data_info) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

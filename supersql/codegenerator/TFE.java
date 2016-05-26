@@ -1,5 +1,6 @@
 package supersql.codegenerator;
 
+import supersql.common.Log;
 import supersql.extendclass.ExtList;
 
 public class TFE implements ITFE{
@@ -9,12 +10,12 @@ public class TFE implements ITFE{
 	protected boolean aggregateFlag;
 	protected String order;
 	protected String aggregate;    
-//	public DecorateList decos;
+	public DecorateList decos;
 	
 	public TFE() {
 		orderFlag = false;
 		aggregateFlag = false;
-//		decos = new DecorateList();
+		decos = new DecorateList();
 	}
 	
 	@Override
@@ -66,11 +67,6 @@ public class TFE implements ITFE{
 		this.aggregate = aggregate;
 	}
 
-	@Override
-	public void addDeco(String key, Object val) {
-		// TODO 自動生成されたメソッド・スタブ
-		
-	}
 
 	@Override
 	public String work(ExtList<ExtList<String>> data_info) {
@@ -79,43 +75,30 @@ public class TFE implements ITFE{
 	}
 
 	@Override
-	public Object createNode(ExtList<ExtList<String>> data_info) {
-		// TODO 自動生成されたメソッド・スタブ
+	public ExtList makeschImage() {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public ExtList makeschImage() {
-		// TODO 自動生成されたメソッド・スタブ
-		return null;
+	public void addDeco(String key, Object val) {
+		decos.put(key, val);
+	}
+	
+	@Override
+	public void addDeco(String name, String value, String condition) {
+		decos.put(name, value,condition);
 	}
 
+	@Override
+	public void setDeco(DecorateList d) {
+		decos = d;
+	}
 
-//	@Override
-//	public ExtList makeschImage() {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public void addDeco(String key, Object val) {
-//		decos.put(key, val);
-//	}
-//	
-//	@Override
-//	public void addDeco(String name, String value, String condition) {
-//		decos.put(name, value,condition);
-//	}
-//
-//	@Override
-//	public void setDeco(DecorateList d) {
-//		decos = d;
-//	}
-//
-//	@Override
-//	public Object createNode(ExtList<ExtList<String>> data_info) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
+	@Override
+	public Object createNode(ExtList<ExtList<String>> data_info) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

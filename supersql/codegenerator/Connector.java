@@ -159,11 +159,11 @@ public class Connector extends Operator {
 	}
 	//added by ria 20110913 end
 //
-//	public void addDeco(String key, String val, String condition) {
-//		decos.put(key, val, condition);
-//		
-//	}
-//
+	public void addDeco(String key, String val, String condition) {
+		decos.put(key, val, condition);
+		
+	}
+
 //	@Override
 //	public String work(ExtList data_info) {
 //		return null;
