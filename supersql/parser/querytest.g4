@@ -113,8 +113,12 @@ v_exp :
     ;
     
 h_exp :
-	operand
-	(C1 operand )*
+	(operand | n_exp)
+	(C1 (operand | n_exp) )*
+  ;
+
+n_exp :
+  operand C0 operand
     ;
 
 sorting	:
@@ -379,9 +383,8 @@ expr
   | expr ( '<<' | '>>' | '&' | '|' ) expr
   | expr ( '<' | '<=' | '>' | '>=' ) expr
   | expr ( '=' | '==' | '!=' | '<>' | K_IS | K_IS K_NOT | K_IN | K_LIKE | K_GLOB | K_MATCH | K_REGEXP ) expr
-  | expr K_AND expr
-  | expr K_OR expr
-//  | function_name '(' ( K_DISTINCT? expr ( ',' expr )* | '*' )? ')'
+  | expr K_AND  expr
+  | expr K_OR  expr
   | '(' expr ')'
   | K_CAST '(' expr K_AS type_name ')'
   | expr K_COLLATE collation_name
@@ -579,6 +582,7 @@ K_SUM	:	S U M	;
 //FUNC1 :	'$'?[a-zA-Z]+[0-9]*([ \t\r\n])*'('	;
 //FUNC2 :	[a-zA-Z]+([ \t\r\n])*'['	;
 
+C0  : '?' ;
 C1	:	','	;
 C2	:	'!'	;
 C3	:	'%'	;

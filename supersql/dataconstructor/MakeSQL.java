@@ -8,25 +8,28 @@ import supersql.codegenerator.AttributeItem;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
+import supersql.parser.FromInfo;
+import supersql.parser.FromParse;
 import supersql.parser.Start_Parse;
 //ryuryu
+import supersql.parser.WhereInfo;
+import supersql.parser.WhereParse;
 
 public class MakeSQL {
 
 	//test
-	private ExtList from;
+	private FromInfo from;
 
-	private ExtList where;
+	private WhereInfo where;
 
 	private Hashtable atts;
 
 	private ExtList table_group;
 
 	public MakeSQL(Start_Parse p) {
-		setFrom(p.list_from);
-		where = p.list_where;
+		setFrom(p.get_from_info());
+		where = p.whereInfo;
 		atts = p.get_att_info();
-		Log.info("atts:"+atts);
 
 		MakeGroup mg = new MakeGroup(atts, where);
 		table_group = mg.getTblGroup();
@@ -48,17 +51,18 @@ public class MakeSQL {
 		//hanki start
 		StringBuffer buf;
 
-		if (Preprocessor.isAggregate()) {
-			buf = new StringBuffer("SELECT ALL ");
-		} else {
-			if(SSQLparser.isDistinct()){
+//		if (Preprocessor.isAggregate()) {
+//			buf = new StringBuffer("SELECT ALL ");
+//		} 
+//		 {
+			if(Start_Parse.distinct){
 				buf = new StringBuffer("SELECT DISTINCT ");
 			}
 			else{
 				buf = new StringBuffer("SELECT ");
 			}
 			//ryuryu(end)/////////////////////////////////////////////////////
-		}
+//		}
 		//hanki end
 
 		int tmp_flag = 0; //ryuryu
@@ -76,66 +80,64 @@ public class MakeSQL {
 			}*/
 
 			//ryuryu(start)//////////////////////////////////////////////////////////////////////////////////////////
-			if(SSQLparser.xpathExist == 0){
 				if (idx != 0) {
 					buf.append(", " + att1.getSQLimage());
 				}
 				else{
 					buf.append(att1.getSQLimage());
 				}
-			}
 
 
-			else if(SSQLparser.xpathExist == 1){
-
-				if (idx != 0) {
-					if(att1.getSQLimage().equals(SSQLparser.tmpXpath1)){
-						buf.append(", " + SSQLparser.Xpath.replace("\"", "'"));
-						tmp_flag = 1;
-					}
-
-					else if(att1.getSQLimage().equals(SSQLparser.tmpXmlQuery1)){
-						String tmp_xmlquery = new String();
-						tmp_xmlquery = (SSQLparser.DB2_XQUERY.replace("\"", "'")).replace((SSQLparser.tmpXmlQuery2 + "',"), (SSQLparser.tmpXmlQuery2 + "' PASSING "));
-						tmp_xmlquery = tmp_xmlquery.replace((SSQLparser.tmpXmlQuery1 + ")"), (SSQLparser.tmpXmlQuery1 + " AS \"a\")"));
-						buf.append(", " + tmp_xmlquery);
-						tmp_flag = 1;
-					}
-
-					else{
-						if(tmp_flag==0){
-							buf.append(", " + att1.getSQLimage());
-						}
-						else{
-							buf.append(" " + att1.getSQLimage());
-							tmp_flag=0;
-						}
-					}
-				}
-
-				else {
-					if(att1.getSQLimage().equals(SSQLparser.tmpXpath1)){
-						String tmp = SSQLparser.Xpath.replace("\"", "'");
-						tmp = tmp.replace("),", ")");
-						buf.append(tmp);
-
-						XMLFunction.xpath_first = 1;
-					}
-
-					else if(att1.getSQLimage().equals(SSQLparser.tmpXmlQuery1)){
-						String tmp_xmlquery = new String();
-						tmp_xmlquery = (SSQLparser.DB2_XQUERY.replace("\"", "'")).replace((SSQLparser.tmpXmlQuery2 + "',"), (SSQLparser.tmpXmlQuery2 + "' PASSING "));
-						tmp_xmlquery = tmp_xmlquery.replace((SSQLparser.tmpXmlQuery1 + ")"), (SSQLparser.tmpXmlQuery1 + " AS \"a\")"));
-						buf.append(tmp_xmlquery);
-
-						XMLFunction.xpath_first = 1;
-					}
-
-					else{
-						buf.append(att1.getSQLimage());
-					}
-				}
-			}
+////			else if(SSQLparser.xpathExist == 1){
+////
+////				if (idx != 0) {
+////					if(att1.getSQLimage().equals(SSQLparser.tmpXpath1)){
+////						buf.append(", " + SSQLparser.Xpath.replace("\"", "'"));
+////						tmp_flag = 1;
+////					}
+////
+////					else if(att1.getSQLimage().equals(SSQLparser.tmpXmlQuery1)){
+////						String tmp_xmlquery = new String();
+////						tmp_xmlquery = (SSQLparser.DB2_XQUERY.replace("\"", "'")).replace((SSQLparser.tmpXmlQuery2 + "',"), (SSQLparser.tmpXmlQuery2 + "' PASSING "));
+////						tmp_xmlquery = tmp_xmlquery.replace((SSQLparser.tmpXmlQuery1 + ")"), (SSQLparser.tmpXmlQuery1 + " AS \"a\")"));
+////						buf.append(", " + tmp_xmlquery);
+////						tmp_flag = 1;
+////					}
+////
+////					else{
+////						if(tmp_flag==0){
+////							buf.append(", " + att1.getSQLimage());
+////						}
+////						else{
+////							buf.append(" " + att1.getSQLimage());
+////							tmp_flag=0;
+////						}
+////					}
+////				}
+//
+//				else {
+//					if(att1.getSQLimage().equals(SSQLparser.tmpXpath1)){
+//						String tmp = SSQLparser.Xpath.replace("\"", "'");
+//						tmp = tmp.replace("),", ")");
+//						buf.append(tmp);
+//
+//						XMLFunction.xpath_first = 1;
+//					}
+//
+//					else if(att1.getSQLimage().equals(SSQLparser.tmpXmlQuery1)){
+//						String tmp_xmlquery = new String();
+//						tmp_xmlquery = (SSQLparser.DB2_XQUERY.replace("\"", "'")).replace((SSQLparser.tmpXmlQuery2 + "',"), (SSQLparser.tmpXmlQuery2 + "' PASSING "));
+//						tmp_xmlquery = tmp_xmlquery.replace((SSQLparser.tmpXmlQuery1 + ")"), (SSQLparser.tmpXmlQuery1 + " AS \"a\")"));
+//						buf.append(tmp_xmlquery);
+//
+//						XMLFunction.xpath_first = 1;
+//					}
+//
+//					else{
+//						buf.append(att1.getSQLimage());
+//					}
+//				}
+//			}
 			//ryuryu(end)//////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -218,8 +220,8 @@ public class MakeSQL {
 		return from;
 	}
 
-	public void setFrom(ExtList from) {
-		this.from = from;
+	public void setFrom(FromInfo fromInfo) {
+		this.from = fromInfo;
 	}
 
 }

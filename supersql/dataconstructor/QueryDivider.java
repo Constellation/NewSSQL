@@ -19,33 +19,31 @@ public class QueryDivider {
 	boolean dupAtt = false;
 	Graph g;
 
-	public QueryDivider( Start_Parse p )
-	{
-		this.parser = p;
-		//MakeGraph();
-	}
-
-	public boolean MakeGraph()
-	{
-		schema = parser.schema;
-		Log.info(schema);
-		level = 0;
-		num = 0;
-		column = 0;
-		vertices = new TreeMap<String, Attribute>();
-		//System.out.println( schema );
-		if ( MakeSchemaNodes( schema ) ) 	//make nodes from the schema
-		{
-			return false;
-		}
-
-		MakeWhereNodes(); 			//make nodes from the where
-		g = new Graph( vertices ); 	//make the graph
-		AddWhereEdges();  			//connect nodes equated in where
-		g.setRoot();
-		//g.printGraph();
-		return true;
-	}
+//	public QueryDivider( Start_Parse p )
+//	{
+//		this.parser = p;
+//		//MakeGraph();
+//	}
+//
+//	public boolean MakeGraph()
+//	{
+//		schema = parser.schema;
+//		level = 0;
+//		num = 0;
+//		column = 0;
+//		vertices = new TreeMap<String, Attribute>();
+//		//System.out.println( schema );
+//		if ( MakeSchemaNodes( schema ) ) 	//make nodes from the schema
+//		{
+//			return false;
+//		}
+//		MakeWhereNodes(); //make nodes from the where
+//		g = new Graph( vertices ); 	//make the graph
+//		AddWhereEdges();  			//connect nodes equated in where
+//		g.setRoot();
+//		//g.printGraph();
+//		return true;
+//	}
 
 	private boolean MakeSchemaNodes(ExtList sch) 
 	{
@@ -104,7 +102,6 @@ public class QueryDivider {
 		ExtList w1 = new ExtList();
 		ExtList winfo_clause = (ExtList) ((ExtList) parser.list_where.get(1)).get(1);
 		ExtList winfo_att = new ExtList();
-		Log.info(winfo_clause);
 		int winfo_size = winfo_clause.size();
 		String att = new String();
 
@@ -114,14 +111,10 @@ public class QueryDivider {
 			ExtList w = (ExtList) winfo_clause.get(i);
 			if(w.get(0).toString().equals("expr")){
 				w = (ExtList) w.get(1);
-				Log.info("w :"+w);
 				for(int j = 0; j < w.size(); j++){
-					Log.info(j);
 					if(w.get(j) instanceof ExtList) w1 = (ExtList) w.get(j);
 					else continue;
-					Log.info(w1);
 					if(w1.get(0).toString().equals("expr")){
-						Log.info("expr");
 						if(((ExtList)((ExtList)w1.get(1)).get(0)).get(0).toString().equals("table_alias")){
 							att = ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)w1.get(1)).get(0)).get(1)).get(0)).get(1)).get(0).toString();
 							att = att + ((ExtList)w1.get(1)).get(1).toString();
@@ -159,73 +152,73 @@ public class QueryDivider {
 		}
 	}
 
-	private void AddWhereEdges()
-	{
-		//where info: with parenthesis, add edge
-		//same group, add an edge
-		//add filters too
-
-		int winfo_size = parser.get_where_info().getWhereClause().size();
-
-		for ( int i = 0; i < winfo_size; i++)
-		{
-			ExtList winfo_clause = parser.get_where_info().getWhereClause();
-			ExtList winfo_att = ( (WhereParse) winfo_clause.get( i ) ).getUseAtts();
-			int winfo_asize = winfo_att.size();
-
-			for ( int j = 0; j < winfo_asize; j+=2 )
-			{   	
-				Attribute node1 = vertices.get( (String) winfo_att.get( j ) ); 
-				Attribute node2 = vertices.get( (String) winfo_att.get( j + 1 ) ); 
-
-				if ( node2 == null ) continue;
-
-				node1.setWhere( ( ( WhereParse ) winfo_clause.get( i ) ).getLine() );
-				node2.setWhere( ( ( WhereParse ) winfo_clause.get( i ) ).getLine() );
-
-				//algorithm for checking connectors start
-				if ( node1.getConnTable().isEmpty() )
-				{
-					node1.setConnTable(node2.getTable());
-				}
-
-				if ( node2.getConnTable().isEmpty() )
-				{
-					node2.setConnTable(node1.getTable());
-				}
-
-				if ( node1.getConnTable().compareTo( node2.getTable() ) != 0  
-						&& node1.getTable().compareTo( node2.getTable() ) != 0 )
-				{ 
-					node1.setConnector(true);
-					node1.setWhere("");
-				}
-
-				if ( node2.getConnTable().compareTo( node1.getTable() ) != 0
-						&& node1.getTable().compareTo( node2.getTable() ) != 0 )
-				{ 
-					node2.setConnector(true);
-					node2.setWhere("");
-				}
-				node1.connectTo( node2 );
-				node2.connectTo( node1 );
-				//algorithm for checking connectors end
-
-			}
-
-			//connect nodes within the parentheses
-			for ( int j = 0; (j + 2) < winfo_asize; j+=2 )
-			{ 
-
-				Attribute node1 = vertices.get( (String) winfo_att.get( j ) ); 
-				Attribute node2 = vertices.get( (String) winfo_att.get( j + 2 ) );
-
-				node1.connectTo( node2 );
-				node2.connectTo( node1 );
-
-			}
-		}
-	}
+//	private void AddWhereEdges()
+//	{
+//		//where info: with parenthesis, add edge
+//		//same group, add an edge
+//		//add filters too
+//
+//		int winfo_size = parser.get_where_info().getWhereClause().size();
+//
+//		for ( int i = 0; i < winfo_size; i++)
+//		{
+//			ExtList winfo_clause = parser.get_where_info().getWhereClause();
+//			ExtList winfo_att = ( (WhereParse) winfo_clause.get( i ) ).getUseAtts();
+//			int winfo_asize = winfo_att.size();
+//
+//			for ( int j = 0; j < winfo_asize; j+=2 )
+//			{   	
+//				Attribute node1 = vertices.get( (String) winfo_att.get( j ) ); 
+//				Attribute node2 = vertices.get( (String) winfo_att.get( j + 1 ) ); 
+//
+//				if ( node2 == null ) continue;
+//
+//				node1.setWhere( ( ( WhereParse ) winfo_clause.get( i ) ).getLine() );
+//				node2.setWhere( ( ( WhereParse ) winfo_clause.get( i ) ).getLine() );
+//
+//				//algorithm for checking connectors start
+//				if ( node1.getConnTable().isEmpty() )
+//				{
+//					node1.setConnTable(node2.getTable());
+//				}
+//
+//				if ( node2.getConnTable().isEmpty() )
+//				{
+//					node2.setConnTable(node1.getTable());
+//				}
+//
+//				if ( node1.getConnTable().compareTo( node2.getTable() ) != 0  
+//						&& node1.getTable().compareTo( node2.getTable() ) != 0 )
+//				{ 
+//					node1.setConnector(true);
+//					node1.setWhere("");
+//				}
+//
+//				if ( node2.getConnTable().compareTo( node1.getTable() ) != 0
+//						&& node1.getTable().compareTo( node2.getTable() ) != 0 )
+//				{ 
+//					node2.setConnector(true);
+//					node2.setWhere("");
+//				}
+//				node1.connectTo( node2 );
+//				node2.connectTo( node1 );
+//				//algorithm for checking connectors end
+//
+//			}
+//
+//			//connect nodes within the parentheses
+//			for ( int j = 0; (j + 2) < winfo_asize; j+=2 )
+//			{ 
+//
+//				Attribute node1 = vertices.get( (String) winfo_att.get( j ) ); 
+//				Attribute node2 = vertices.get( (String) winfo_att.get( j + 2 ) );
+//
+//				node1.connectTo( node2 );
+//				node2.connectTo( node1 );
+//
+//			}
+//		}
+//	}
 
 	private Attribute NewNode( Object l, double group )
 	{
@@ -263,10 +256,10 @@ public class QueryDivider {
 		return true;
 	}
 
-	public ArrayList<SQLQuery> divideQuery()
-	{
-		return g.connectedComponents();
-	}
+//	public ArrayList<SQLQuery> divideQuery()
+//	{
+//		return g.connectedComponents();
+//	}
 
 	public ExtList getSchema()
 	{

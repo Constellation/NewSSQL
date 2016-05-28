@@ -1,5 +1,7 @@
-package supersql.parser;
 // Generated from prefix.g4 by ANTLR 4.5
+
+package supersql.parser;
+
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -18,6 +20,16 @@ public interface prefixListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitPrefix(prefixParser.PrefixContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link prefixParser#operand}.
+	 * @param ctx the parse tree
+	 */
+	void enterOperand(prefixParser.OperandContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link prefixParser#operand}.
+	 * @param ctx the parse tree
+	 */
+	void exitOperand(prefixParser.OperandContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link prefixParser#exdef}.
 	 * @param ctx the parse tree

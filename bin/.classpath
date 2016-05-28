@@ -11,5 +11,6 @@
 	<classpathentry kind="lib" path="/Users/taji/Documents/workspace/ssql/libs/pdflib.jar"/>
 	<classpathentry kind="lib" path="/Users/taji/Documents/workspace/ssql/libs/servlet-api.jar"/>
 	<classpathentry kind="lib" path="/Users/taji/Documents/workspace/ssql/libs/jdbc/mysql-connector-java-5.1.13-bin.jar"/>
+	<classpathentry kind="lib" path="/Users/taji/Documents/workspace/ssql/libs/jdbc/sqlitejdbc-v056.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

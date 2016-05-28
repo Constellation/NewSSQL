@@ -1,7 +1,7 @@
 package supersql.codegenerator;
 
-public class LocalEnv {
-	
+public abstract class LocalEnv {
+	public static  DecorateList cssclass = new DecorateList();
 	public LocalEnv() {
 
 	}

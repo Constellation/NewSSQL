@@ -1,5 +1,7 @@
-package supersql.parser;
 // Generated from prefix.g4 by ANTLR 4.5
+
+package supersql.parser;
+
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.NotNull;
@@ -24,6 +26,18 @@ public class prefixBaseListener implements prefixListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitPrefix(prefixParser.PrefixContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterOperand(prefixParser.OperandContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitOperand(prefixParser.OperandContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

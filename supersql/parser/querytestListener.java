@@ -114,6 +114,16 @@ public interface querytestListener extends ParseTreeListener {
 	 */
 	void exitH_exp(querytestParser.H_expContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link querytestParser#n_exp}.
+	 * @param ctx the parse tree
+	 */
+	void enterN_exp(querytestParser.N_expContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link querytestParser#n_exp}.
+	 * @param ctx the parse tree
+	 */
+	void exitN_exp(querytestParser.N_expContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link querytestParser#sorting}.
 	 * @param ctx the parse tree
 	 */

@@ -3,7 +3,7 @@ package supersql.cache;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
-import supersql.parser.SSQLparser;
+import supersql.parser.Start_Parse;;
 
 public class CacheData {
 
@@ -21,7 +21,7 @@ public class CacheData {
 		super.finalize();
 	}
 
-	public static String getSQLsig(SSQLparser parser, ExtList sep_sch) {
+	public static String getSQLsig(Start_Parse parser, ExtList sep_sch) {
 
 		StringBuffer sig = new StringBuffer("[SQL]");
 
@@ -34,7 +34,7 @@ public class CacheData {
 
 	}
 
-	public static String getTFEsig(SSQLparser parser, ExtList sep_sch) {
+	public static String getTFEsig(Start_Parse parser, ExtList sep_sch) {
 
 		StringBuffer sig = new StringBuffer("[TFE]");
 
@@ -47,7 +47,7 @@ public class CacheData {
 
 	}
 
-	public static String getSSQLsig(SSQLparser ssqlp) {
+	public static String getSSQLsig(Start_Parse ssqlp) {
 
 		StringBuffer sig = new StringBuffer("[SSQL]");
 

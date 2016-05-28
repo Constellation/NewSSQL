@@ -2,6 +2,7 @@ package supersql.db;
 
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
+import supersql.extendclass.ExtList;
 
 public class GetFromDB {
 

@@ -5,6 +5,7 @@ import java.util.StringTokenizer;
 import supersql.common.Log;
 import supersql.extendclass.ExtHashSet;
 import supersql.extendclass.ExtList;
+import supersql.parser.FromInfo;
 
 public class AttributeItem {
 
@@ -94,13 +95,13 @@ public class AttributeItem {
 		return Image;
 	}
 
-//	public String getStr(ExtList data_info, int idx) {
-//		if (IsStr) {
-//			return Image;
-//		} else {
-//			return (data_info.get(AttNo - idx)).toString();
-//		}
-//	}
+	public String getStr(ExtList data_info, int idx) {
+		if (IsStr) {
+			return Image;
+		} else {
+			return (data_info.get(AttNo - idx)).toString();
+		}
+	}
 
 	public int countconnectitem() {
 		if (IsStr) {
@@ -110,39 +111,39 @@ public class AttributeItem {
 		}
 	}
 
-//	public ExtHashSet getUseTables() {
-//		return UseTables;
-//	}
+	public ExtHashSet getUseTables() {
+		return UseTables;
+	}
 
 	public String getSQLimage() {
 		return this.Image;
 	}
 
-//	public String getAttributeSig(FromInfo from) {
-//
-//		StringBuffer sig = new StringBuffer();
-//
-//		StringTokenizer st = new StringTokenizer(Image, " 	()+-*/<>=~@", true);
-//		while (st.hasMoreTokens()) {
-//			String ch = st.nextToken();
-//			if (ch.equals(" ") || ch.equals("	")) {
-//				continue;
-//			}
-//			StringTokenizer st1 = new StringTokenizer(ch, ".");
-//			if (st1.countTokens() == 2) {
-//				//st1 is table.attribute
-//				sig.append(from.getOrigTable(st1.nextToken()));
-//				sig.append(".");
-//				sig.append(st1.nextToken());
-//			} else {
-//				sig.append(ch);
-//			}
-//		}
-//
-//		//Log.out("[Att sig] : " + sig);
-//		return sig.toString();
-//	}
-//	
+	public String getAttributeSig(FromInfo from) {
+
+		StringBuffer sig = new StringBuffer();
+
+		StringTokenizer st = new StringTokenizer(Image, " 	()+-*/<>=~@", true);
+		while (st.hasMoreTokens()) {
+			String ch = st.nextToken();
+			if (ch.equals(" ") || ch.equals("	")) {
+				continue;
+			}
+			StringTokenizer st1 = new StringTokenizer(ch, ".");
+			if (st1.countTokens() == 2) {
+				//st1 is table.attribute
+				sig.append(from.getOrigTable(st1.nextToken()));
+				sig.append(".");
+				sig.append(st1.nextToken());
+			} else {
+				sig.append(ch);
+			}
+		}
+
+		//Log.out("[Att sig] : " + sig);
+		return sig.toString();
+	}
+	
 	//added by ria 20110913 start
 	public ExtList makeschImage() 
 	{

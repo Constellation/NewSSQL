@@ -142,6 +142,18 @@ public class querytestBaseListener implements querytestListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterN_exp(querytestParser.N_expContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitN_exp(querytestParser.N_expContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterSorting(querytestParser.SortingContext ctx) { }
 	/**
 	 * {@inheritDoc}

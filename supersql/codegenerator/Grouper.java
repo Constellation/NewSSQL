@@ -27,23 +27,23 @@ public class Grouper extends Operator{
         tfe = t;
     }
 
-//    public void debugout() {
-//        debugout(0);
-//    }
-//
-//    public void debugout(int count) {
-//
-//        Debug dbgout = new Debug();
-//        dbgout.prt(count, "<Grouper type=" + getSymbol() + " decoitems="
-//                + decos.size() + " id=" + id + ">");
-//
-//        decos.debugout(count + 1);
-//        tfe.debugout(count + 1);
-//
-//        dbgout.prt(count, "</Grouper>");
-//
-//    }
-//
+    public void debugout() {
+        debugout(0);
+    }
+
+    public void debugout(int count) {
+
+        Debug dbgout = new Debug();
+        dbgout.prt(count, "<Grouper type=" + getSymbol() + " decoitems="
+                + decos.size() + " id=" + id + ">");
+
+        decos.debugout(count + 1);
+        tfe.debugout(count + 1);
+
+        dbgout.prt(count, "</Grouper>");
+
+    }
+
     public ExtList makesch() {
         ExtList outsch = new ExtList();
         outsch.add(tfe.makesch());
@@ -64,58 +64,52 @@ public class Grouper extends Operator{
         return "G?";
     }
 
-//    public String work(ExtList data_info) {
-//		return null;
-////		return aggregate;
-//    }
-//
-//    public int countconnectitem() {
-//        return 1;
-//    }
-//
-//    public void setDataList(ExtList d) {
-//        data = d;
-//        dindex = 0;
-//    }
-//
-//    public boolean hasMoreItems() {
-//        return (dindex < data.size());
-//    }
-//    
-//    public Object createNextItemNode(){
-//    	ExtList subdata = (ExtList) (data.get(dindex));
-//    	dindex++;
-//        if (tfe instanceof Connector || tfe instanceof Attribute
-//                || tfe instanceof Function || tfe instanceof IfCondition) {
-//            return tfe.createNode(subdata);
-//        } else {
-//            return tfe.createNode((ExtList) subdata.get(0));
-//        }
-//    }
-//
-//    public void worknextItem() {
-//
-//        ExtList subdata = (ExtList) (data.get(dindex));
-//        if (tfe instanceof Connector || tfe instanceof Attribute
-//                || tfe instanceof Function || tfe instanceof IfCondition) {
-//            tfe.work(subdata);
-//        } else {
-//            tfe.work((ExtList) subdata.get(0));
-//            Log.out(subdata.get(0));
-//        }
-//        dindex++;
-//
-//    }
+    public String work(ExtList data_info) {
+		return null;
+//		return aggregate;
+    }
+
+    public int countconnectitem() {
+        return 1;
+    }
+
+    public void setDataList(ExtList d) {
+        data = d;
+        dindex = 0;
+    }
+
+    public boolean hasMoreItems() {
+        return (dindex < data.size());
+    }
+    
+    public Object createNextItemNode(){
+    	ExtList subdata = (ExtList) (data.get(dindex));
+    	dindex++;
+        if (tfe instanceof Connector || tfe instanceof Attribute
+                || tfe instanceof Function /*|| tfe instanceof IfCondition*/) {
+            return tfe.createNode(subdata);
+        } else {
+            return tfe.createNode((ExtList) subdata.get(0));
+        }
+    }
+
+    public void worknextItem() {
+
+        ExtList subdata = (ExtList) (data.get(dindex));
+        if (tfe instanceof Connector || tfe instanceof Attribute
+                || tfe instanceof Function /*|| tfe instanceof IfCondition*/) {
+            tfe.work(subdata);
+        } else {
+            tfe.work((ExtList) subdata.get(0));
+            Log.out(subdata.get(0));
+        }
+        dindex++;
+
+    }
 
     public boolean isFirstItem() {
         return (dindex == 0);
     }
-
-	@Override
-	public String work(ExtList<ExtList<String>> data_info) {
-		// TODO 自動生成されたメソッド・スタブ
-		return null;
-	}
 
 	//added by ria 20110913 start
 	public ExtList makeschImage() {

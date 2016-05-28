@@ -41,13 +41,13 @@ public class FrontEnd {
 			if (GlobalEnv.getErrFlag() == 0) {
 				codegenerator.CodeGenerator(parsertree);
 
-//				DataConstructor dc = new DataConstructor(parsertree);
-//				afterdc = System.currentTimeMillis();
-//
-////				if (GlobalEnv.getErrFlag() == 0) {
-////					codegenerator.generateCode(parser, dc.getData());
-////					aftercg = System.currentTimeMillis();
-////				}
+				DataConstructor dc = new DataConstructor(parsertree);
+				afterdc = System.currentTimeMillis();
+
+				if (GlobalEnv.getErrFlag() == 0) {
+					codegenerator.generateCode(parsertree, dc.getData());
+					aftercg = System.currentTimeMillis();
+				}
 			}
 		}
 

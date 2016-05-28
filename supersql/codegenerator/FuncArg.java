@@ -76,19 +76,19 @@ public class FuncArg {
 			return tfe.work(Data);	//recursive call
 
 		} 
-//		else if (tfe instanceof Attribute) {
-//			
-//			//20131118 dynamic
+		else if (tfe instanceof Attribute) {
+			
+			//20131118 dynamic
 //			if(Mobile_HTML5.dynamicDisplay){
 //				return Mobile_HTML5.dynamicFuncArgProcess(tfe);
 //			}
-////			//20131127 form
-////			if(Mobile_HTML5.form){
-////				return Mobile_HTML5.formFuncArgProcess(tfe);
-////			}
-//
-//			return ((Attribute) tfe).getStr(Data);
-//		} 
+//			//20131127 form
+//			if(Mobile_HTML5.form){
+//				return Mobile_HTML5.formFuncArgProcess(tfe);
+//			}
+
+			return ((Attribute) tfe).getStr(Data);
+		} 
 		else {
 			return null;
 		}

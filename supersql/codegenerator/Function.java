@@ -82,7 +82,6 @@ public class Function extends Operand {
 		for (int i = 0; i < Args.size(); i++) {
 			items += ((FuncArg) Args.get(i)).countconnectitem();
 		}
-
 		return items;
 	}
 

@@ -12,7 +12,9 @@ import org.jsoup.nodes.Element;
 import org.jsoup.parser.Tag;
 
 import supersql.codegenerator.Connector;
+import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.ITFE;
+import supersql.codegenerator.Jscss;
 import supersql.codegenerator.LocalEnv;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
@@ -46,117 +48,117 @@ public class HTMLEnv extends LocalEnv {
 	public static String nameId = "";
 	public static int searchId = 0;
 
-//	public static void computeConditionalDecorations(DecorateList decos,
-//			StringBuffer css) {
-//		Object decorationKeys;
-//		Object decorationValue;
-//		String decorationKey;
-//		String condition;
-//		String className;
-//		for (Entry<String, Object> conditions : decos.getConditions()
-//				.entrySet()) {
-//			decorationKeys = conditions.getValue();
-//			condition = conditions.getKey();
-//
-//			className = "C_" + decos.getClassesIds().get(condition);
-//			css.append("." + className + "{");
-//
-//			if (decorationKeys instanceof String) {
-//				decorationKey = (String) decorationKeys;
-//				decorationValue = decos
-//						.getDecorationValueFromDecorationKeyAndCondition(
-//								decorationKey, condition);
-//				css.append(decorationKey + " : " + decorationValue + ";");
-//			} else {
-//				Iterator<String> decorationKeysIterator = ((ArrayList<String>) (decorationKeys))
-//						.iterator();
-//				while (decorationKeysIterator.hasNext()) {
-//					decorationKey = decorationKeysIterator.next();
-//					decorationValue = decos
-//							.getDecorationValueFromDecorationKeyAndCondition(
-//									decorationKey, condition);
-//					css.append(decorationKey + " : " + decorationValue + ";");
-//				}
-//			}
-//
-//			css.append("}");
-//		}
-//	}
-//
-//	public static void exFormName() {
-//		String s = "t" + formPartsNumber + ":" + formPartsName + ":";
-//		if (exchange_form_name == null || exchange_form_name.isEmpty()) {
-//			exchange_form_name = ":" + s;
-//		} else {
-//			if (!exchange_form_name.contains(s))
-//				exchange_form_name += s;
-//		}
-//	}
-//
-//	public static String exFormNameCreate() {
-//		String ret = new String();
-//		if (exchange_form_name != null) {
-//			ret = "<input type=\"hidden\" name=\"exchangeName\" value=\""
-//					+ exchange_form_name + "\" />";
-//			setFormDetail(ret);
-//			return ret;
-//		} else {
-//			return null;
-//		}
-//	}
-//
-//	public static String getChecked() {
-//		return checked;
-//	}
-//
-//	public static String getClassID(ITFE tfe) {
-//		String result;
-//		if (tfe instanceof HTMLC3) {
-//			result = getClassID((((HTMLC3) tfe).tfes.get(0)));
-//			return result;
-//		}
-//		if (tfe instanceof HTMLG3) {
-//			result = getClassID((((HTMLG3) tfe).tfe));
-//			return result;
-//		}
-//		result = "TFE" + tfe.getId();
-//		return result;
-//	}
-//
-//	/*** start oka ***/
-//	public static String getDataID(ITFE tfe) {
-//		String ClassID;
-//		int DataID = 0;
-//		String return_value;
-//
-//		if (tfe instanceof HTMLC3) {
-//			return getClassID((((HTMLC3) tfe).tfes.get(0)));
-//		}
-//		if (tfe instanceof HTMLG3) {
-//			return getClassID((((HTMLG3) tfe).tfe));
-//		}
-//		ClassID = String.valueOf(tfe.getId());
-//		DataID = Integer.valueOf(
-//				(ClassID.substring(ClassID.length() - 3, ClassID.length())))
-//				.intValue();
-//
-//		Log.out("ClassID=" + ClassID);
-//		Log.out("DataID=" + DataID);
-//		Log.out("ID_counter=" + IDCounter);
-//
-//		if (DataID < IDOld) {
-//			IDCounter = DataID;
-//		} else {
-//			if (DataID != IDCounter && DataID > IDCounter) {
-//				DataID = IDCounter;
-//			}
-//		}
-//		IDCounter++;
-//		IDOld = DataID;
-//		return_value = String.valueOf(DataID);
-//		return return_value;
-//	}
-//
+	public static void computeConditionalDecorations(DecorateList decos,
+			StringBuffer css) {
+		Object decorationKeys;
+		Object decorationValue;
+		String decorationKey;
+		String condition;
+		String className;
+		for (Entry<String, Object> conditions : decos.getConditions()
+				.entrySet()) {
+			decorationKeys = conditions.getValue();
+			condition = conditions.getKey();
+
+			className = "C_" + decos.getClassesIds().get(condition);
+			css.append("." + className + "{");
+
+			if (decorationKeys instanceof String) {
+				decorationKey = (String) decorationKeys;
+				decorationValue = decos
+						.getDecorationValueFromDecorationKeyAndCondition(
+								decorationKey, condition);
+				css.append(decorationKey + " : " + decorationValue + ";");
+			} else {
+				Iterator<String> decorationKeysIterator = ((ArrayList<String>) (decorationKeys))
+						.iterator();
+				while (decorationKeysIterator.hasNext()) {
+					decorationKey = decorationKeysIterator.next();
+					decorationValue = decos
+							.getDecorationValueFromDecorationKeyAndCondition(
+									decorationKey, condition);
+					css.append(decorationKey + " : " + decorationValue + ";");
+				}
+			}
+
+			css.append("}");
+		}
+	}
+
+	public static void exFormName() {
+		String s = "t" + formPartsNumber + ":" + formPartsName + ":";
+		if (exchange_form_name == null || exchange_form_name.isEmpty()) {
+			exchange_form_name = ":" + s;
+		} else {
+			if (!exchange_form_name.contains(s))
+				exchange_form_name += s;
+		}
+	}
+
+	public static String exFormNameCreate() {
+		String ret = new String();
+		if (exchange_form_name != null) {
+			ret = "<input type=\"hidden\" name=\"exchangeName\" value=\""
+					+ exchange_form_name + "\" />";
+			setFormDetail(ret);
+			return ret;
+		} else {
+			return null;
+		}
+	}
+
+	public static String getChecked() {
+		return checked;
+	}
+
+	public static String getClassID(ITFE tfe) {
+		String result;
+		if (tfe instanceof HTMLC3) {
+			result = getClassID((((HTMLC3) tfe).tfes.get(0)));
+			return result;
+		}
+		if (tfe instanceof HTMLG3) {
+			result = getClassID((((HTMLG3) tfe).tfe));
+			return result;
+		}
+		result = "TFE" + tfe.getId();
+		return result;
+	}
+
+	/*** start oka ***/
+	public static String getDataID(ITFE tfe) {
+		String ClassID;
+		int DataID = 0;
+		String return_value;
+
+		if (tfe instanceof HTMLC3) {
+			return getClassID((((HTMLC3) tfe).tfes.get(0)));
+		}
+		if (tfe instanceof HTMLG3) {
+			return getClassID((((HTMLG3) tfe).tfe));
+		}
+		ClassID = String.valueOf(tfe.getId());
+		DataID = Integer.valueOf(
+				(ClassID.substring(ClassID.length() - 3, ClassID.length())))
+				.intValue();
+
+		Log.out("ClassID=" + ClassID);
+		Log.out("DataID=" + DataID);
+		Log.out("ID_counter=" + IDCounter);
+
+		if (DataID < IDOld) {
+			IDCounter = DataID;
+		} else {
+			if (DataID != IDCounter && DataID > IDCounter) {
+				DataID = IDCounter;
+			}
+		}
+		IDCounter++;
+		IDOld = DataID;
+		return_value = String.valueOf(DataID);
+		return return_value;
+	}
+
 	public static String getFormDetail(int i) {
 		return formDetail[i];
 	}
@@ -522,267 +524,267 @@ public class HTMLEnv extends LocalEnv {
 		return s;
 	}
 
-//	public void append_css_def_td(String classid, DecorateList decos) {
-//		haveClass = 0;
-//		Log.out("[HTML append_css_def_att] classid=" + classid);
-//		Log.out("decos = " + decos);
-//
-//		// ������classid��������������������?����������������������������������������������������������������������?������
-//		if (writtenClassId.contains(classid)) {
-//			// �������������������������������������?������������������
-//			haveClass = 1;
-//			Log.out("==> already created style");
-//			return;
-//		} else if (notWrittenClassId != null
-//				&& notWrittenClassId.contains(classid)) {
-//			Log.out("==> style is null. not created style");
-//			return;
-//		}
-//
-//		Log.out("==> new style");
-//		Log.out("@@ creating style no " + classid);
-//
-//		StringBuffer cssbuf = new StringBuffer();
-//
-//		// tk
-//		// start////////////////////////////////////////////////////////////////
-//		StringBuffer metabuf = new StringBuffer();
-//
-//		if (decos.containsKey("class")) {
-//			cssclass.put(classid, decos.getStr("class"));
-//			Log.out("class =" + classid + decos.getStr("class"));
-//		}
-//
-//		if (decos.containsKey("cssfile")) {
-//			cssFile.delete(0, cssFile.length());
-//			if (GlobalEnv.isServlet()) {
-//				cssFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\""
-//						+ GlobalEnv.getFileDirectory()
-//						+ decos.getStr("cssfile") + "\">\n");
-//			} else {
-//				cssFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\""
-//						+ decos.getStr("cssfile") + "\">\n");
-//			}
-//		} else if (cssFile.length() == 0) {
-//			if (GlobalEnv.isServlet()) {
-//				cssFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\""
-//						+ GlobalEnv.getFileDirectory() + "/default.css \">\n");
-//			} else {
-//				if (Utils.getOs().contains("Windows")) {
-//					cssFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"default.css\">\n");
-//				} else {
-//					// itc
-//					if (GlobalEnv.isOpt())
-//						cssFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"http://www.db.ics.keio.ac.jp/ssqlcss/default_opt.css\">\n");
-//					else
-//						cssFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"http://www.db.ics.keio.ac.jp/ssqlcss/default.css\">\n");
-//				}
-//			}
-//		}
-//
-//		if (decos.containsKey("divalign") && div.length() == 0)
-//			div.append(" align=" + decos.getStr("divalign"));
-//
-//		if (decos.containsKey("title") && title.length() == 0)
-//			title.append(decos.getStr("title"));
-//		if (decos.containsKey("title_class"))
-//			titleClass.append(" class=\"" + decos.getStr("title_class") + "\"");
-//		if (decos.containsKey("tableborder"))// && tableborder.length() == 0)
-//			tableBorder = decos.getStr("tableborder");
-//
-//		// tk end//////////////////////////////////////////////////////////////
-//
-//		computeConditionalDecorations(decos, css);
-//
-//		// ������??
-//		if (decos.containsKey("width")) {
-//			if (GlobalEnv.getframeworklist() == null)
-//				cssbuf.append(" width:" + decos.getStr("width") + ";");
-//			else
-//				cssbuf.append(" width:" + decos.getStr("width") + "px;");
-//			// } else {
-//			// cssbuf.append(" width:120;");
-//		}
-//
-//		// ������??
-//		if (decos.containsKey("height")) {
-//			if (GlobalEnv.getframeworklist() == null)
-//				cssbuf.append(" height:" + decos.getStr("height") + ";");
-//			else
-//				cssbuf.append(" height:" + decos.getStr("height") + "px;");
-//		}
-//
-//		// margin
-//		if (decos.containsKey("margin")) {
-//			cssbuf.append(" margin:" + decos.getStr("margin") + ";");
-//			// } else {
-//			// cssbuf.append(" padding:0.3em;");
-//		}
-//
-//		// �������������������������������
-//		if (decos.containsKey("padding")) {
-//			cssbuf.append(" padding:" + decos.getStr("padding") + ";");
-//			// } else {
-//			// cssbuf.append(" padding:0.3em;");
-//		}
-//		// padding
-//		if (decos.containsKey("padding-left")) {
-//			cssbuf.append(" padding-left:" + decos.getStr("padding-left") + ";");
-//		}
-//		if (decos.containsKey("padding-top")) {
-//			cssbuf.append(" padding-top:" + decos.getStr("padding-top") + ";");
-//		}
-//		if (decos.containsKey("padding-right")) {
-//			cssbuf.append(" padding-right:" + decos.getStr("padding-right")
-//					+ ";");
-//		}
-//		if (decos.containsKey("padding-bottom")) {
-//			cssbuf.append(" padding-bottom:" + decos.getStr("padding-bottom")
-//					+ ";");
-//		}
-//
-//		// ������������������
-//		if (decos.containsKey("align"))
-//			cssbuf.append(" text-align:" + decos.getStr("align") + ";");
-//
-//		// ��������������
-//		if (decos.containsKey("valign"))
-//			cssbuf.append(" vertical-align:" + decos.getStr("valign") + ";");
-//
-//		// ����������
-//		if (decos.containsKey("background-color"))
-//			cssbuf.append(" background-color:"
-//					+ decos.getStr("background-color") + ";");
-//		if (decos.containsKey("bgcolor"))
-//			cssbuf.append(" background-color:" + decos.getStr("bgcolor") + ";");
-//
-//		// ��������
-//		if (decos.containsKey("color"))
-//			cssbuf.append(" color:" + decos.getStr("color") + ";");
-//		if (decos.containsKey("font-color"))
-//			cssbuf.append(" color:" + decos.getStr("font-color") + ";");
-//		if (decos.containsKey("font color"))
-//			cssbuf.append(" color:" + decos.getStr("font color") + ";");
-//
-//		// ��������������
-//		if (decos.containsKey("font-size"))
-//			if (GlobalEnv.getframeworklist() == null)
-//				cssbuf.append(" font-size:" + decos.getStr("font-size") + ";");
-//			else
-//				cssbuf.append(" font-size:" + decos.getStr("font-size") + "px;");
-//		if (decos.containsKey("font size"))
-//			if (GlobalEnv.getframeworklist() == null)
-//				cssbuf.append(" font-size:" + decos.getStr("font size") + ";");
-//			else
-//				cssbuf.append(" font-size:" + decos.getStr("font size") + "px;");
-//		if (decos.containsKey("size"))
-//			if (GlobalEnv.getframeworklist() == null)
-//				cssbuf.append(" font-size:" + decos.getStr("size") + ";");
-//			else
-//				cssbuf.append(" font-size:" + decos.getStr("size") + "px;");
-//
-//		// �����������������������
-//		if (decos.containsKey("font-weight"))
-//			cssbuf.append(" font-weight:" + decos.getStr("font-weight") + ";");
-//
-//		// ��������������?
-//		if (decos.containsKey("font-style"))
-//			cssbuf.append(" font-style:" + decos.getStr("font-style") + ";");
-//		if (decos.containsKey("font-family"))
-//			cssbuf.append(" font-family:" + decos.getStr("font-family") + ";");
-//
-//		if (decos.containsKey("border"))
-//			cssbuf.append(" border:" + decos.getStr("border") + ";");
-//		if (decos.containsKey("border-width"))
-//			cssbuf.append(" border-width:" + decos.getStr("border-width") + ";");
-//		if (decos.containsKey("border-color"))
-//			cssbuf.append(" border-color:" + decos.getStr("border-color") + ";");
-//		if (decos.containsKey("border-style"))
-//			cssbuf.append(" border-style:" + decos.getStr("border-style") + ";");
-//		if (decos.containsKey("border-collapse"))
-//			cssbuf.append(" border-collapse:" + decos.getStr("border-collapse")
-//					+ ";");
-//		
-//        //added by masato 20141214  "style"
-//        if (decos.containsKey("style")){
-//        	String style = decos.getStr("style");
-//        	cssbuf.append(" " + style);
-//        	if(!style.matches(".*;\\s*$"))	cssbuf.append(";");	//���������";"���������������������
-//        }
-//		
-//        //added by goto 20130311  "background"
-//        if (decos.containsKey("background"))
-//        	bg = decos.getStr("background");
-//		
-//		// tk
-//		// start////////////////////////////////////////////////////////////////
-//		// added by goto 20120715 start
-//		if (decos.containsKey("charset"))
-//			charset = decos.getStr("charset");
-//		else if (!charsetFlg)
-////			charset = "EUC-JP"; // default charset = EUC-JP
-//			charset = "UTF-8"; // default charset = UTF-8
-//		if (!charsetFlg && charset != null) {
-//			metabuf.append("<meta http-equiv=\"Content-Type\" content=\"text/html; charset="
-//					+ charset + "\">");
-//			charsetFlg = true;
-//		}
-//		// if (decos.containsKey("charset")){
-//		// metabuf.append("<meta http-equiv=\"Content-Type\" content=\"text/html; charset="
-//		// + decos.getStr("charset") + "\">");
-//		// charset=decos.getStr("charset");
-//		// charsetFlg=1;
-//		// }else if(charsetFlg!=1){
-//		// metabuf.append("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=EUC-JP\">");
-//		// charset="EUC-JP"; //default charset = EUC-JP
-//		// charsetFlg=1;
-//		// }
-//		// added by goto 20120715 end
-//
-//		if (decos.containsKey("description"))
-//			metabuf.append("<meta name=\"Description\" content=\""
-//					+ decos.getStr("description") + "\">");
-//		if (decos.containsKey("keyword"))
-//			metabuf.append("<meta name=\"Keyword\" content=\""
-//					+ decos.getStr("keyword") + "\">");
-//		if (decos.containsKey("author"))
-//			metabuf.append("<meta name=\"Author\" content=\""
-//					+ decos.getStr("author") + "\">");
-//		if (decos.containsKey("pragma"))
-//			metabuf.append("<meta http-equiv=\"Pragma\" content=\""
-//					+ decos.getStr("pragma") + "\">");
-//		if (decos.containsKey("robot"))
-//			metabuf.append("<meta name=\"Robot\" content=\""
-//					+ decos.getStr("robot") + "\">");
-//		// tk
-//		// end///////////////////////////////////////////////////////////////////
-//
-//		if (cssbuf.length() > 0) {
-//			haveClass = 1;
-//			// ������������?��������������������?������������
-//			css.append("." + classid + "{");
-//
-//			css.append(cssbuf);
-//			// ������?��������������������?��������
-//			css.append(" }\n");
-//
-//			// ������������������?������?����������������������id����������������������������������
-//			writtenClassId.addElement(classid);
-//		} else {
-//			Log.out("==> style is null. not created style");
-//			notWrittenClassId.addElement(classid);
-//		}
-//
-//		// tk start//////////////////////////////////////////////////////////
-//		if (metabuf.length() > 0) {
-//			// meta.append(" "); //commented out by goto 201303
-//			meta.append(metabuf);
-//			meta.append("\n");
-//
-//		}
-//		// tk end////////////////////////////////////////////////////////////
-//
-//	}
+	public void append_css_def_td(String classid, DecorateList decos) {
+		haveClass = 0;
+		Log.out("[HTML append_css_def_att] classid=" + classid);
+		Log.out("decos = " + decos);
+
+		// ������classid��������������������?����������������������������������������������������������������������?������
+		if (writtenClassId.contains(classid)) {
+			// �������������������������������������?������������������
+			haveClass = 1;
+			Log.out("==> already created style");
+			return;
+		} else if (notWrittenClassId != null
+				&& notWrittenClassId.contains(classid)) {
+			Log.out("==> style is null. not created style");
+			return;
+		}
+
+		Log.out("==> new style");
+		Log.out("@@ creating style no " + classid);
+
+		StringBuffer cssbuf = new StringBuffer();
+
+		// tk
+		// start////////////////////////////////////////////////////////////////
+		StringBuffer metabuf = new StringBuffer();
+
+		if (decos.containsKey("class")) {
+			cssclass.put(classid, decos.getStr("class"));
+			Log.out("class =" + classid + decos.getStr("class"));
+		}
+
+		if (decos.containsKey("cssfile")) {
+			cssFile.delete(0, cssFile.length());
+			if (GlobalEnv.isServlet()) {
+				cssFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\""
+						+ GlobalEnv.getFileDirectory()
+						+ decos.getStr("cssfile") + "\">\n");
+			} else {
+				cssFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\""
+						+ decos.getStr("cssfile") + "\">\n");
+			}
+		} else if (cssFile.length() == 0) {
+			if (GlobalEnv.isServlet()) {
+				cssFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\""
+						+ GlobalEnv.getFileDirectory() + "/default.css \">\n");
+			} else {
+				if (Utils.getOs().contains("Windows")) {
+					cssFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"default.css\">\n");
+				} else {
+					// itc
+					if (GlobalEnv.isOpt())
+						cssFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"http://www.db.ics.keio.ac.jp/ssqlcss/default_opt.css\">\n");
+					else
+						cssFile.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"http://www.db.ics.keio.ac.jp/ssqlcss/default.css\">\n");
+				}
+			}
+		}
+
+		if (decos.containsKey("divalign") && div.length() == 0)
+			div.append(" align=" + decos.getStr("divalign"));
+
+		if (decos.containsKey("title") && title.length() == 0)
+			title.append(decos.getStr("title"));
+		if (decos.containsKey("title_class"))
+			titleClass.append(" class=\"" + decos.getStr("title_class") + "\"");
+		if (decos.containsKey("tableborder"))// && tableborder.length() == 0)
+			tableBorder = decos.getStr("tableborder");
+
+		// tk end//////////////////////////////////////////////////////////////
+
+		computeConditionalDecorations(decos, css);
+
+		// ������??
+		if (decos.containsKey("width")) {
+			if (GlobalEnv.getframeworklist() == null)
+				cssbuf.append(" width:" + decos.getStr("width") + ";");
+			else
+				cssbuf.append(" width:" + decos.getStr("width") + "px;");
+			// } else {
+			// cssbuf.append(" width:120;");
+		}
+
+		// ������??
+		if (decos.containsKey("height")) {
+			if (GlobalEnv.getframeworklist() == null)
+				cssbuf.append(" height:" + decos.getStr("height") + ";");
+			else
+				cssbuf.append(" height:" + decos.getStr("height") + "px;");
+		}
+
+		// margin
+		if (decos.containsKey("margin")) {
+			cssbuf.append(" margin:" + decos.getStr("margin") + ";");
+			// } else {
+			// cssbuf.append(" padding:0.3em;");
+		}
+
+		// �������������������������������
+		if (decos.containsKey("padding")) {
+			cssbuf.append(" padding:" + decos.getStr("padding") + ";");
+			// } else {
+			// cssbuf.append(" padding:0.3em;");
+		}
+		// padding
+		if (decos.containsKey("padding-left")) {
+			cssbuf.append(" padding-left:" + decos.getStr("padding-left") + ";");
+		}
+		if (decos.containsKey("padding-top")) {
+			cssbuf.append(" padding-top:" + decos.getStr("padding-top") + ";");
+		}
+		if (decos.containsKey("padding-right")) {
+			cssbuf.append(" padding-right:" + decos.getStr("padding-right")
+					+ ";");
+		}
+		if (decos.containsKey("padding-bottom")) {
+			cssbuf.append(" padding-bottom:" + decos.getStr("padding-bottom")
+					+ ";");
+		}
+
+		// ������������������
+		if (decos.containsKey("align"))
+			cssbuf.append(" text-align:" + decos.getStr("align") + ";");
+
+		// ��������������
+		if (decos.containsKey("valign"))
+			cssbuf.append(" vertical-align:" + decos.getStr("valign") + ";");
+
+		// ����������
+		if (decos.containsKey("background-color"))
+			cssbuf.append(" background-color:"
+					+ decos.getStr("background-color") + ";");
+		if (decos.containsKey("bgcolor"))
+			cssbuf.append(" background-color:" + decos.getStr("bgcolor") + ";");
+
+		// ��������
+		if (decos.containsKey("color"))
+			cssbuf.append(" color:" + decos.getStr("color") + ";");
+		if (decos.containsKey("font-color"))
+			cssbuf.append(" color:" + decos.getStr("font-color") + ";");
+		if (decos.containsKey("font color"))
+			cssbuf.append(" color:" + decos.getStr("font color") + ";");
+
+		// ��������������
+		if (decos.containsKey("font-size"))
+			if (GlobalEnv.getframeworklist() == null)
+				cssbuf.append(" font-size:" + decos.getStr("font-size") + ";");
+			else
+				cssbuf.append(" font-size:" + decos.getStr("font-size") + "px;");
+		if (decos.containsKey("font size"))
+			if (GlobalEnv.getframeworklist() == null)
+				cssbuf.append(" font-size:" + decos.getStr("font size") + ";");
+			else
+				cssbuf.append(" font-size:" + decos.getStr("font size") + "px;");
+		if (decos.containsKey("size"))
+			if (GlobalEnv.getframeworklist() == null)
+				cssbuf.append(" font-size:" + decos.getStr("size") + ";");
+			else
+				cssbuf.append(" font-size:" + decos.getStr("size") + "px;");
+
+		// �����������������������
+		if (decos.containsKey("font-weight"))
+			cssbuf.append(" font-weight:" + decos.getStr("font-weight") + ";");
+
+		// ��������������?
+		if (decos.containsKey("font-style"))
+			cssbuf.append(" font-style:" + decos.getStr("font-style") + ";");
+		if (decos.containsKey("font-family"))
+			cssbuf.append(" font-family:" + decos.getStr("font-family") + ";");
+
+		if (decos.containsKey("border"))
+			cssbuf.append(" border:" + decos.getStr("border") + ";");
+		if (decos.containsKey("border-width"))
+			cssbuf.append(" border-width:" + decos.getStr("border-width") + ";");
+		if (decos.containsKey("border-color"))
+			cssbuf.append(" border-color:" + decos.getStr("border-color") + ";");
+		if (decos.containsKey("border-style"))
+			cssbuf.append(" border-style:" + decos.getStr("border-style") + ";");
+		if (decos.containsKey("border-collapse"))
+			cssbuf.append(" border-collapse:" + decos.getStr("border-collapse")
+					+ ";");
+		
+        //added by masato 20141214  "style"
+        if (decos.containsKey("style")){
+        	String style = decos.getStr("style");
+        	cssbuf.append(" " + style);
+        	if(!style.matches(".*;\\s*$"))	cssbuf.append(";");	//���������";"���������������������
+        }
+		
+        //added by goto 20130311  "background"
+        if (decos.containsKey("background"))
+        	bg = decos.getStr("background");
+		
+		// tk
+		// start////////////////////////////////////////////////////////////////
+		// added by goto 20120715 start
+		if (decos.containsKey("charset"))
+			charset = decos.getStr("charset");
+		else if (!charsetFlg)
+//			charset = "EUC-JP"; // default charset = EUC-JP
+			charset = "UTF-8"; // default charset = UTF-8
+		if (!charsetFlg && charset != null) {
+			metabuf.append("<meta http-equiv=\"Content-Type\" content=\"text/html; charset="
+					+ charset + "\">");
+			charsetFlg = true;
+		}
+		// if (decos.containsKey("charset")){
+		// metabuf.append("<meta http-equiv=\"Content-Type\" content=\"text/html; charset="
+		// + decos.getStr("charset") + "\">");
+		// charset=decos.getStr("charset");
+		// charsetFlg=1;
+		// }else if(charsetFlg!=1){
+		// metabuf.append("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=EUC-JP\">");
+		// charset="EUC-JP"; //default charset = EUC-JP
+		// charsetFlg=1;
+		// }
+		// added by goto 20120715 end
+
+		if (decos.containsKey("description"))
+			metabuf.append("<meta name=\"Description\" content=\""
+					+ decos.getStr("description") + "\">");
+		if (decos.containsKey("keyword"))
+			metabuf.append("<meta name=\"Keyword\" content=\""
+					+ decos.getStr("keyword") + "\">");
+		if (decos.containsKey("author"))
+			metabuf.append("<meta name=\"Author\" content=\""
+					+ decos.getStr("author") + "\">");
+		if (decos.containsKey("pragma"))
+			metabuf.append("<meta http-equiv=\"Pragma\" content=\""
+					+ decos.getStr("pragma") + "\">");
+		if (decos.containsKey("robot"))
+			metabuf.append("<meta name=\"Robot\" content=\""
+					+ decos.getStr("robot") + "\">");
+		// tk
+		// end///////////////////////////////////////////////////////////////////
+
+		if (cssbuf.length() > 0) {
+			haveClass = 1;
+			// ������������?��������������������?������������
+			css.append("." + classid + "{");
+
+			css.append(cssbuf);
+			// ������?��������������������?��������
+			css.append(" }\n");
+
+			// ������������������?������?����������������������id����������������������������������
+			writtenClassId.addElement(classid);
+		} else {
+			Log.out("==> style is null. not created style");
+			notWrittenClassId.addElement(classid);
+		}
+
+		// tk start//////////////////////////////////////////////////////////
+		if (metabuf.length() > 0) {
+			// meta.append(" "); //commented out by goto 201303
+			meta.append(metabuf);
+			meta.append("\n");
+
+		}
+		// tk end////////////////////////////////////////////////////////////
+
+	}
 
 	public void createHeader() {
 		Attributes attributes = new Attributes();
@@ -1029,7 +1031,7 @@ public class HTMLEnv extends LocalEnv {
 	        }
 
 			header.append("<!-- Generated CSS -->\n");
-//			header.append("<link rel=\"stylesheet\" type=\"text/css\" href=\""+ Jscss.getGenerateCssFileName(0) + "\">\n");
+			header.append("<link rel=\"stylesheet\" type=\"text/css\" href=\""+ Jscss.getGenerateCssFileName(0) + "\">\n");
 			header.append("</HEAD>\n");
 
 			
@@ -1081,112 +1083,112 @@ public class HTMLEnv extends LocalEnv {
 
 	}
 
-//	public void includeDecorationProperties(String classId, DecorateList decos) {
-//		haveClass = 0;
-//		// TODO refactor this part
-//		if (writtenClassId.contains(classId)) {
-//			haveClass = 1;
-//			Log.out("==> already created style");
-//			return;
-//		} else if (notWrittenClassId != null
-//				&& notWrittenClassId.contains(classId)) {
-//			Log.out("==> style is null. not created style");
-//			return;
-//		}
-//
-//		if (decos.containsKey("class")) {
-//			cssclass.put(classId, decos.getStr("class"));
-//			Log.out("class =" + classId + decos.getStr("class"));
-//		}
-//
-//		if (decos.containsKey("divalign"))
-//			div.append(" align=" + decos.getStr("divalign"));
-//
-//		if (decos.containsKey("title")) {
-//			if (decos.contains("title_class")) {
-//				Attributes titleAttribute = new Attributes();
-//				titleAttribute.put("class", decos.getStr("title_class"));
-//				Element title = new Element(Tag.valueOf("title"), "",
-//						titleAttribute);
-//				title.html(decos.getStr("title"));
-//				htmlEnv1.head().appendChild(title);
-//			} else {
-//				Element title = new Element(Tag.valueOf("title"), "");
-//				title.html(decos.getStr("title"));
-//				htmlEnv1.appendChild(title);
-//			}
-//
-//			// TODO something to put a h1 tag for the title
-//		}
-//
-//		if (decos.containsKey("tableborder"))
-//			tableBorder = decos.getStr("tableborder");
-//
-//		computeConditionalDecorations(decos, css);
-//
-//		// TODO a lot of decorations should be added but in css file, we should
-//		// call another method here
-//
-//		Attributes attributes = new Attributes();
-//
-//		// added by goto 20120715 start
-//		if (decos.containsKey("charset"))
-//			charset = decos.getStr("charset");
-//		else if (!charsetFlg)
-////			charset = "EUC-JP"; // default charset = EUC-JP
-//			charset = "UTF-8"; // default charset = UTF-8
-//		if (!charsetFlg && charset != null) {
-//			attributes.put("http-equiv", "Content-Type");
-//			attributes.put("content", "text/html");
-//			attributes.put("charset", charset);
-//			htmlEnv1.head().appendChild(
-//					new Element(Tag.valueOf("meta"), "", attributes));
-//			charsetFlg = true;
-//		}
-//
-//		if (decos.containsKey("description")) {
-//			attributes = new Attributes();
-//			attributes.put("name", "Description");
-//			attributes.put("content", decos.getStr("description"));
-//			htmlEnv1.head().appendChild(
-//					new Element(Tag.valueOf("meta"), "", attributes));
-//		}
-//		if (decos.containsKey("keyword")) {
-//			attributes = new Attributes();
-//			attributes.put("name", "Keyword");
-//			attributes.put("content", decos.getStr("keyword"));
-//			htmlEnv1.head().appendChild(
-//					new Element(Tag.valueOf("meta"), "", attributes));
-//		}
-//		if (decos.containsKey("author")) {
-//			attributes = new Attributes();
-//			attributes.put("name", "Author");
-//			attributes.put("content", decos.getStr("author"));
-//			htmlEnv1.head().appendChild(
-//					new Element(Tag.valueOf("meta"), "", attributes));
-//		}
-//		if (decos.containsKey("pragma")) {
-//			attributes = new Attributes();
-//			attributes.put("name", "Pragma");
-//			attributes.put("content", decos.getStr("pragma"));
-//			htmlEnv1.head().appendChild(
-//					new Element(Tag.valueOf("meta"), "", attributes));
-//		}
-//		if (decos.containsKey("robot")) {
-//			attributes = new Attributes();
-//			attributes.put("name", "Robot");
-//			attributes.put("content", decos.getStr("robot"));
-//			htmlEnv1.head().appendChild(
-//					new Element(Tag.valueOf("meta"), "", attributes));
-//		}
-//
-//		if ("".length() > 0) {
-//			// TODO
-//		} else {
-//			Log.out("==> style is null. not created style");
-//			notWrittenClassId.addElement(classId);
-//		}
-//	}
+	public void includeDecorationProperties(String classId, DecorateList decos) {
+		haveClass = 0;
+		// TODO refactor this part
+		if (writtenClassId.contains(classId)) {
+			haveClass = 1;
+			Log.out("==> already created style");
+			return;
+		} else if (notWrittenClassId != null
+				&& notWrittenClassId.contains(classId)) {
+			Log.out("==> style is null. not created style");
+			return;
+		}
+
+		if (decos.containsKey("class")) {
+			cssclass.put(classId, decos.getStr("class"));
+			Log.out("class =" + classId + decos.getStr("class"));
+		}
+
+		if (decos.containsKey("divalign"))
+			div.append(" align=" + decos.getStr("divalign"));
+
+		if (decos.containsKey("title")) {
+			if (decos.contains("title_class")) {
+				Attributes titleAttribute = new Attributes();
+				titleAttribute.put("class", decos.getStr("title_class"));
+				Element title = new Element(Tag.valueOf("title"), "",
+						titleAttribute);
+				title.html(decos.getStr("title"));
+				htmlEnv1.head().appendChild(title);
+			} else {
+				Element title = new Element(Tag.valueOf("title"), "");
+				title.html(decos.getStr("title"));
+				htmlEnv1.appendChild(title);
+			}
+
+			// TODO something to put a h1 tag for the title
+		}
+
+		if (decos.containsKey("tableborder"))
+			tableBorder = decos.getStr("tableborder");
+
+		computeConditionalDecorations(decos, css);
+
+		// TODO a lot of decorations should be added but in css file, we should
+		// call another method here
+
+		Attributes attributes = new Attributes();
+
+		// added by goto 20120715 start
+		if (decos.containsKey("charset"))
+			charset = decos.getStr("charset");
+		else if (!charsetFlg)
+//			charset = "EUC-JP"; // default charset = EUC-JP
+			charset = "UTF-8"; // default charset = UTF-8
+		if (!charsetFlg && charset != null) {
+			attributes.put("http-equiv", "Content-Type");
+			attributes.put("content", "text/html");
+			attributes.put("charset", charset);
+			htmlEnv1.head().appendChild(
+					new Element(Tag.valueOf("meta"), "", attributes));
+			charsetFlg = true;
+		}
+
+		if (decos.containsKey("description")) {
+			attributes = new Attributes();
+			attributes.put("name", "Description");
+			attributes.put("content", decos.getStr("description"));
+			htmlEnv1.head().appendChild(
+					new Element(Tag.valueOf("meta"), "", attributes));
+		}
+		if (decos.containsKey("keyword")) {
+			attributes = new Attributes();
+			attributes.put("name", "Keyword");
+			attributes.put("content", decos.getStr("keyword"));
+			htmlEnv1.head().appendChild(
+					new Element(Tag.valueOf("meta"), "", attributes));
+		}
+		if (decos.containsKey("author")) {
+			attributes = new Attributes();
+			attributes.put("name", "Author");
+			attributes.put("content", decos.getStr("author"));
+			htmlEnv1.head().appendChild(
+					new Element(Tag.valueOf("meta"), "", attributes));
+		}
+		if (decos.containsKey("pragma")) {
+			attributes = new Attributes();
+			attributes.put("name", "Pragma");
+			attributes.put("content", decos.getStr("pragma"));
+			htmlEnv1.head().appendChild(
+					new Element(Tag.valueOf("meta"), "", attributes));
+		}
+		if (decos.containsKey("robot")) {
+			attributes = new Attributes();
+			attributes.put("name", "Robot");
+			attributes.put("content", decos.getStr("robot"));
+			htmlEnv1.head().appendChild(
+					new Element(Tag.valueOf("meta"), "", attributes));
+		}
+
+		if ("".length() > 0) {
+			// TODO
+		} else {
+			Log.out("==> style is null. not created style");
+			notWrittenClassId.addElement(classId);
+		}
+	}
 
 	public void setOutlineMode() {
 		OutlineMode = true;

@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.StringTokenizer;
 
 import supersql.common.Log;
+import supersql.extendclass.ExtHashSet;
 import supersql.extendclass.ExtList;
 
 public class Attribute extends Operand {
@@ -165,65 +166,65 @@ public class Attribute extends Operand {
 		return attno;
 	}
 
-//	public String work(ExtList data_info) {
-//		return null;
-////		return aggregate;
-//	}
-//
-//	public <T> String getStr(ExtList<T> data_info) {
-//		
-//		String str = "";
-//		
-//		if(conditional){
-//			int stringItemsNumber = 0; 
-//			Iterator<AttributeItem> iterator = Items.iterator();
-//			while(iterator.hasNext()){
-//				if(((AttributeItem)iterator.next()).IsStr)
-//					stringItemsNumber++;
-//			}
-//			String toCompare = (data_info.get(Items.size()-1-decos.getConditionsSize() - stringItemsNumber)).toString();
-//			if(toCompare.equals("t") || toCompare.equals("1")){
-//				str = (String) data_info.get(0);
-//			}
-//			else if(toCompare.equals("f") || toCompare.equals("0")){
-//				if(Items.size()-decos.getConditionsSize() == 3)
-//					str = (String)data_info.get(1);
-//				else
-//					str = "";
-//			}
-//			else throw new IllegalStateException();
-//			return str;
-//		}
-//		else{
-//			for (int i = 0; i < Items.size()-decos.getConditionsSize(); i++) {
-//				str += (Items.get(i).getStr(data_info, AttNo-decos.getConditionsSize()));
-//			}
-//			return str;
-//		}
-//		
-//		
-//	}
-//	
-//
-//	public int countconnectitem() {
-//		int itemcount = 0;
-//		for (int i = 0; i < Items.size(); i++) {
-//			itemcount += Items.get(i).countconnectitem();
-//		}
-//		return itemcount;
-//	}
-//
-//	public DecorateList get_DecorateList() {
-//		return decos;
-//	}
-//
-//	public ExtHashSet getUseTablesAll() {
-//		ExtHashSet rs = new ExtHashSet();
-//		for (int i = 0; i < Items.size(); i++) {
-//			rs.add(Items.get(i).getUseTables());
-//		}
-//		return rs;
-//	}
+	public String work(ExtList data_info) {
+		return null;
+//		return aggregate;
+	}
+
+	public <T> String getStr(ExtList<T> data_info) {
+		
+		String str = "";
+		
+		if(conditional){
+			int stringItemsNumber = 0; 
+			Iterator<AttributeItem> iterator = Items.iterator();
+			while(iterator.hasNext()){
+				if(((AttributeItem)iterator.next()).IsStr)
+					stringItemsNumber++;
+			}
+			String toCompare = (data_info.get(Items.size()-1-decos.getConditionsSize() - stringItemsNumber)).toString();
+			if(toCompare.equals("t") || toCompare.equals("1")){
+				str = (String) data_info.get(0);
+			}
+			else if(toCompare.equals("f") || toCompare.equals("0")){
+				if(Items.size()-decos.getConditionsSize() == 3)
+					str = (String)data_info.get(1);
+				else
+					str = "";
+			}
+			else throw new IllegalStateException();
+			return str;
+		}
+		else{
+			for (int i = 0; i < Items.size()-decos.getConditionsSize(); i++) {
+				str += (Items.get(i).getStr(data_info, AttNo-decos.getConditionsSize()));
+			}
+			return str;
+		}
+		
+		
+	}
+	
+
+	public int countconnectitem() {
+		int itemcount = 0;
+		for (int i = 0; i < Items.size(); i++) {
+			itemcount += Items.get(i).countconnectitem();
+		}
+		return itemcount;
+	}
+
+	public DecorateList get_DecorateList() {
+		return decos;
+	}
+
+	public ExtHashSet getUseTablesAll() {
+		ExtHashSet rs = new ExtHashSet();
+		for (int i = 0; i < Items.size(); i++) {
+			rs.add(Items.get(i).getUseTables());
+		}
+		return rs;
+	}
 
 	@Override
 	public String toString() {
@@ -265,9 +266,9 @@ public class Attribute extends Operand {
 		decos.put(key, val, condition);
 	}
 
-//	@Override
-//	public Object createNode(ExtList<ExtList<String>> data_info) {
-//		return null;
-//	}
+	@Override
+	public Object createNode(ExtList<ExtList<String>> data_info) {
+		return null;
+	}
 
 }
