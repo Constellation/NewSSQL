@@ -11,6 +11,7 @@ import supersql.common.LevenshteinDistance;
 import supersql.common.Log;
 import supersql.common.ParseXML;
 import supersql.extendclass.ExtList;
+import supersql.parser.Preprocessor;
 import supersql.parser.Start_Parse;
 
 public class CodeGenerator {
@@ -124,6 +125,30 @@ public class CodeGenerator {
 
 
 	};
+	public StringBuffer generateCode2(Start_Parse parser, ExtList data_info) {
+		ITFE tfe_info = parser.get_TFEschema();
+
+		//	ɬ�פʤ饳���ȥ����ȳ�����Manager������ѹ�
+		//	manager.preProcess(tab,le,le1,le2,le3);
+		//	manager.createSchema(tab,le,le1,le2,le3);
+
+		Log.out("===============================");
+		Log.out("     generateCode2 is start     ");
+		Log.out("===============================");
+
+
+		// ?�ֳ��� Grouper�ΤȤ���data_info��Ĵ����?
+		if (tfe_info instanceof Grouper && data_info.size() != 0) {
+			data_info = (ExtList) data_info.get(0);
+		}
+		Log.out("data_info.size " + data_info.size());
+
+		if(data_info.size() == 0)
+			return manager.generateCodeNotuple(tfe_info);
+		else
+			return manager.generateCode2(tfe_info, data_info);
+
+	};
 
 	private static TFE makeschematop(ExtList list){
 		TFE tfe = null;
@@ -154,6 +179,19 @@ public class CodeGenerator {
 				add_deco = true;
 				((ExtList)tfe_tree.get(1)).remove(0);
 			}
+			if( ((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("aggregate") ){
+				decos = ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(0)).get(1)).get(0)).get(1)).get(0).toString();
+				add_deco = true;
+				ExtList att1 = new ExtList();
+				att1.add((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(2));
+				att1.add(((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(3));
+				att1.add((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(4));
+				Log.info(att1);
+				tfe_tree.remove(1);
+				tfe_tree.add(att1);
+				Log.info(tfe_tree);
+				
+			}
 
 			if(((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("table_alias")){
 				att = ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(0)).get(1)).get(0).toString();
@@ -176,7 +214,8 @@ public class CodeGenerator {
 			}
 			else if( ((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("function") ){
 				out_sch = func_read((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1));
-			}else if(((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("sl")){
+			}
+			else if(((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("sl")){
 				att = ((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(0).toString();
 				Attribute SL = makeAttribute(att);
 				out_sch = SL;
@@ -474,8 +513,10 @@ public class CodeGenerator {
 			token = decolist[i];
 			if (token.toLowerCase().contains("asc") || token.toLowerCase().contains("desc")) {
 
-				Log.info("@ order by found @");
+				Log.out("@ order by found @");
 
+				new Asc_Desc().addOrderBy(token, tfe.toString());
+				new Preprocessor().setOrderBy();
 				tfe.setOrderBy(token);
 
 				/* "aggregate functions" found */
@@ -489,19 +530,21 @@ public class CodeGenerator {
 
 				Log.out("@ aggregate functions found @");
 
+				new Preprocessor().setAggregate();
 				tfe.setAggregate(token);
 
-			}
-			equalidx = token.indexOf('=');
-			if (equalidx != -1) {
-				// key = idx
-				name = token.substring(0, equalidx);
-				value = token.substring(equalidx + 1);
-				Log.info(name+","+value);
-				decoration_out(tfe, name, value);
-			} else {
-				// key only
-				decoration_out(tfe, token, "");
+			}else{
+				equalidx = token.indexOf('=');
+				if (equalidx != -1) {
+					// key = idx
+					name = token.substring(0, equalidx);
+					value = token.substring(equalidx + 1);
+					Log.info(name+","+value);
+					decoration_out(tfe, name, value);
+				} else {
+					// key only
+					decoration_out(tfe, token, "");
+				}
 			}
 		}
 		Log.out("@ decoration end @");

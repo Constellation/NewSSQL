@@ -5,6 +5,15 @@ import supersql.extendclass.ExtList;
 
 public abstract class Manager {
 	//インスタンス移行プ?前ラムの生成
+	
+	public DecorateList decos = new DecorateList();
+	public void setDeco(DecorateList d) {
+		decos = d;
+	}
+
+	public void addDeco(String key, Object val) {
+		decos.put(key, val);
+	}
 	public void generateCode(ITFE tfe_info, ExtList data_info) {
 	}
 	

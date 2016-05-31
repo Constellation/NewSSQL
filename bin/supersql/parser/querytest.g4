@@ -49,7 +49,8 @@ operand    :
 				| composite_iterator 
 				| if_then_else
 				| sl
-				| NUMERIC_LITERAL 
+				| NUMERIC_LITERAL
+        | aggregate
 				)
 				('||' operand)*
 			)
@@ -150,12 +151,19 @@ function	:
 			)* 
 		)*
 		CLOSE_PARENTHESE
-	| ag_function_name 
-		OPEN_BRACKET
-		((table_alias '.')? column_name)
-		CLOSE_BRACKET
+//	| ag_function_name 
+//		OPEN_BRACKET
+//		((table_alias '.')? column_name)
+//		CLOSE_BRACKET
 	)
 	;
+
+aggregate :
+    ag_function_name 
+    OPEN_BRACKET
+    ((table_alias '.')? column_name)
+    CLOSE_BRACKET
+    ;
 
 //if then else
 if_then_else	: 

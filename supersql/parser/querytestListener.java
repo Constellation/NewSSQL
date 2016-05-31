@@ -144,6 +144,16 @@ public interface querytestListener extends ParseTreeListener {
 	 */
 	void exitFunction(querytestParser.FunctionContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link querytestParser#aggregate}.
+	 * @param ctx the parse tree
+	 */
+	void enterAggregate(querytestParser.AggregateContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link querytestParser#aggregate}.
+	 * @param ctx the parse tree
+	 */
+	void exitAggregate(querytestParser.AggregateContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link querytestParser#if_then_else}.
 	 * @param ctx the parse tree
 	 */

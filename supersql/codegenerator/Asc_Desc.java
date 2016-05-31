@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import supersql.common.Log;
+
 public class Asc_Desc {
 	
 	public static ArrayList<AscDesc> asc_desc = new ArrayList<>();
@@ -15,7 +17,7 @@ public class Asc_Desc {
 	
 	//addOrderBy
 	public void addOrderBy(String order, String token) {
-		//Log.info("order="+order+", token="+token);
+		Log.info("order="+order+", token="+token);
 		try{
 			if(order.toLowerCase().startsWith("asc")){
 				int no = Integer.parseInt(order.substring(3));

@@ -28,6 +28,7 @@ import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.dataconstructor.DataConstructor;
 import supersql.extendclass.ExtList;
+import supersql.parser.Start_Parse;
 
 public class HTMLFunction extends Function {
 
@@ -419,18 +420,18 @@ public class HTMLFunction extends Function {
 
 				GlobalEnv.setGlobalEnvEmbed(args);
 
-//				SSQLparser parser;
-//				if (file.contains("http")) {
-//					parser = new SSQLparser("online");
-//				} else {
-//					parser = new SSQLparser(10000 * (htmlEnv.embedCount + 1));
-//				}
+				Start_Parse parser;
+				if (file.contains("http")) {
+					parser = new Start_Parse("online");
+				} else {
+					parser = new Start_Parse(10000 * (htmlEnv.embedCount + 1));
+				}
 
-//				CodeGenerator codegenerator = parser.getcodegenerator();
-//				DataConstructor dc = new DataConstructor(parser);
+				CodeGenerator codegenerator = parser.getcodegenerator();
+				DataConstructor dc = new DataConstructor(parser);
 
-//				StringBuffer returnedcode = codegenerator.generateCode2(parser,
-//						dc.getData());
+				StringBuffer returnedcode = codegenerator.generateCode2(parser,
+						dc.getData());
 
 				// ajax add div
 				// tag////////////////////////////////////////////////////////////////////

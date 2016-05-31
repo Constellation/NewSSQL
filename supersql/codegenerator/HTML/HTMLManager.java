@@ -12,6 +12,7 @@ import java.util.Vector;
 
 import supersql.codegenerator.CodeGenerator;
 import supersql.codegenerator.ITFE;
+import supersql.codegenerator.Jscss;
 import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
@@ -263,7 +264,7 @@ public class HTMLManager extends Manager {
 			}
 			
 			HTMLEnv.initAllFormFlg();
-//			Jscss.process();	//goto 20141209
+			Jscss.process();	//goto 20141209
 		} catch (FileNotFoundException fe) {
 			fe.printStackTrace();
 			Log.err("Error: specified outdirectory \""

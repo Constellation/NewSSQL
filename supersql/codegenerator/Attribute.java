@@ -8,6 +8,7 @@ import java.util.StringTokenizer;
 import supersql.common.Log;
 import supersql.extendclass.ExtHashSet;
 import supersql.extendclass.ExtList;
+import supersql.parser.Preprocessor;
 
 public class Attribute extends Operand {
 
@@ -96,43 +97,43 @@ public class Attribute extends Operand {
 
 	}
 
-//	public void addDeco(String key, Object val) {
-//		if(key.equals("insert")
-//				||key.equals("update")
-//				||key.equals("delete")
-//				||key.equals("login")){
-//			decos.put(key, AttName);
-//			return;
-//		}
-//		decos.put(key, val);
-//	}
+	public void addDeco(String key, Object val) {
+		if(key.equals("insert")
+				||key.equals("update")
+				||key.equals("delete")
+				||key.equals("login")){
+			decos.put(key, AttName);
+			return;
+		}
+		decos.put(key, val);
+	}
 
-//	public void debugout() {
-//		debugout(0);
-//	}
-//
-//	public void debugout(int count) {
-//
-//		Debug dbgout = new Debug();
-//		dbgout.prt(count, "<Attribute No=" + AttNo + " AttName=" + AttName
-//				+ " AttType=" + AttType + " decoitems=" + decos.size() + " id=" + id + ">");
-//		if (ValKey != null) {
-//			dbgout.prt(count + 1, "<ValKey>");
-//			dbgout.prt(count + 2, ValKey);
-//			dbgout.prt(count + 1, "</ValKey>");
-//		}
-//		dbgout.prt(count + 1, "<AttributeItems>");
-//		for (int i = 0; i < Items.size(); i++) {
-//			Items.get(i).debugout(count + 2);
-//			decos.put("attributeName", Items.get(i).toString());//add by chie
-//		}
-//		dbgout.prt(count + 1, "</AttributeItems>");
-//
-//		decos.debugout(count + 1);
-//
-//		dbgout.prt(count, "</Attribute>");
-//	}
-//
+	public void debugout() {
+		debugout(0);
+	}
+
+	public void debugout(int count) {
+
+		Debug dbgout = new Debug();
+		dbgout.prt(count, "<Attribute No=" + AttNo + " AttName=" + AttName
+				+ " AttType=" + AttType + " decoitems=" + decos.size() + " id=" + id + ">");
+		if (ValKey != null) {
+			dbgout.prt(count + 1, "<ValKey>");
+			dbgout.prt(count + 2, ValKey);
+			dbgout.prt(count + 1, "</ValKey>");
+		}
+		dbgout.prt(count + 1, "<AttributeItems>");
+		for (int i = 0; i < Items.size(); i++) {
+			Items.get(i).debugout(count + 2);
+			decos.put("attributeName", Items.get(i).toString());//add by chie
+		}
+		dbgout.prt(count + 1, "</AttributeItems>");
+
+		decos.debugout(count + 1);
+
+		dbgout.prt(count, "</Attribute>");
+	}
+
 	public ExtList<Integer> makesch() {
 		ExtList<Integer> outsch = new ExtList<Integer>();
 
@@ -140,15 +141,15 @@ public class Attribute extends Operand {
 			outsch.addAll((Items.get(i)).makesch());
 		}
 
-//		if (orderFlag) {
-//			Preprocessor.putOrderByTable(order, outsch);
-//			orderFlag = false;
-//		} 
-//		
-//		if (aggregateFlag) {
-//			Preprocessor.putAggregateList(outsch, aggregate);
-//			aggregateFlag = false;
-//		}
+		if (orderFlag) {
+			Preprocessor.putOrderByTable(order, outsch);
+			orderFlag = false;
+		} 
+		
+		if (aggregateFlag) {
+			Preprocessor.putAggregateList(outsch, aggregate);
+			aggregateFlag = false;
+		}
 		return outsch;
 	}
 

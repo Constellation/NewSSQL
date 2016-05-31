@@ -603,7 +603,7 @@ public class HTMLEnv extends LocalEnv {
 			else
 				cssbuf.append(" width:" + decos.getStr("width") + "px;");
 			// } else {
-			// cssbuf.append(" width:120;");
+			// cssbuf.append(" width:120;");s
 		}
 
 		// ������??
@@ -800,7 +800,6 @@ public class HTMLEnv extends LocalEnv {
 					+ "-bottom : -1px;	padding-bottom : -1px;}\n-->\n"
 					+ "</STYLE>");
 		}
-
 		htmlEnv1.head().appendChild(style);
 
 		Attributes meta_attributes = new Attributes();

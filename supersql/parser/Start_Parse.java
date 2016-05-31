@@ -4,8 +4,12 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -155,12 +159,27 @@ public class Start_Parse {
         return ret;
     }
 	@SuppressWarnings("unchecked")
-	public Start_Parse()
+	
+	public Start_Parse() {
+		parseSSQL(this.getSSQLQuery(), 10000);
+	}
+
+	public Start_Parse(int id) {
+		parseSSQL(this.getSSQLQuery(), id);
+	}
+
+	public Start_Parse(String a) {
+		parseSSQL(this.getSSQLQuery2(), 10000);
+	}
+
+	public Start_Parse(StringBuffer querybuffer) {
+		parseSSQL(querybuffer.toString(), 10000);
+	}
+	private String getSSQLQuery()
 	{
 		//read file & query
 		String query = null;
 		String filename = GlobalEnv.getfilename();
-		String after_from = "";
 		if (filename == null || filename.isEmpty()) {
 			Log.err("Error[SQLparser]: File Is Not Specified.");
 			GlobalEnv.addErr("Error[SQLparser]: File Is Not Specified.");
@@ -184,110 +203,100 @@ public class Start_Parse {
 		} catch (IOException e) {
 			GlobalEnv.addErr("Error[SQLparser]:" + e);
 		}
+		return query;
 
 
 		//parse query
-		if(!query.toLowerCase().contains("generate")){
-			GlobalEnv.addErr("didn't find 'GENERATE'. please start with 'GENERATE'.");
-			System.err.println("didn't find 'GENERATE'. please start with 'GENERATE'.");
-		}else{
-			try{
-				String a = query.substring(0, query.toLowerCase().indexOf("generate"));
-				String b = query.substring(query.toLowerCase().indexOf("generate"));
-				Log.info(a);
-				Log.info(b);
 
-				if(a.equals(" ") || a.equals("") || a.equals("\r")){
-				}else{
-					
-					ANTLRInputStream input_a = new ANTLRInputStream(a);
-					prefixLexer lexer_a = new prefixLexer(input_a);
-					CommonTokenStream tokens_a = new CommonTokenStream(lexer_a);
+	}
+	
+	private String getSSQLQuery2() {
 
-					prefixParser parser_a = new prefixParser(tokens_a);
-					ParseTree tree_a = parser_a.prefix(); // begin parsing at rule query
-					List_tree_a = TreeConst.createSSQLParseTree(tree_a, parser_a);
-					Log.info(List_tree_a);
-					foreachinfo = TreeConst.getforeach(List_tree_a);
-					prefix = true;
-
-				}
-				if(prefix){
-					StringTokenizer str = new StringTokenizer(b);
-					String generate = null;
-					while(str.hasMoreTokens()){
-						String st = str.nextToken();
-						if(st.toLowerCase().equals("generate")){
-							generate = st + " " + str.nextToken();
-							b = b.substring(b.indexOf(str.nextToken()));
-							break;
-						}
-					}
-					generate = generate + "[foreach(";
-					for(int i = 0; i < foreachinfo.size(); i++){
-						if(i == 0)
-							generate = generate + foreachinfo.get(i);
-						else if(i != 0)
-							generate = generate + "," + foreachinfo.get(i);
-					}
-					generate = generate + ")?";
-					String b1 = b.substring(0, b.toLowerCase().indexOf("from"));
-					String b2 = b.substring(b.toLowerCase().indexOf("from"));
-					
-					
-					b = generate + b1 + "]%" + b2;
-					Log.info(b);
-				}
-				ANTLRInputStream input_b = new ANTLRInputStream(b);
-				querytestLexer lexer_b = new querytestLexer(input_b);
-				CommonTokenStream tokens_b = new CommonTokenStream(lexer_b);
-
-				querytestParser parser_b = new querytestParser(tokens_b);
-				parser_b.setErrorHandler(new MyErrorStrategy());
-				ParseTree tree_b = parser_b.query(); // begin parsing at rule query
-
-				List_tree_b = TreeConst.createSSQLParseTree(tree_b, parser_b);
-				List_tree_b = (ExtList) List_tree_b.get(1);
-				list_media = (ExtList) List_tree_b.get(0);
-				list_tfe = (ExtList) List_tree_b.get(1);
-				list_from_where = (ExtList) List_tree_b.get(2);
-				list_from = new ExtList();
-				list_where = new ExtList();
-
-				while(true){
-					if(((ExtList)((ExtList)list_from_where.get(1)).get(0)).get(0).toString().equals("select_core")){
-						list_from_where = (ExtList) ((ExtList)((ExtList)list_from_where.get(1)).get(0)).get(1);
-						if(((ExtList)list_from_where.get(list_from_where.size() - 1)).get(0).toString().equals("where")){
-							list_where = (ExtList) ((ExtList)list_from_where.get(list_from_where.size() - 1)).get(1);
-							for(int i = 0; i < list_from_where.size() - 1; i++){
-								list_from.add(list_from_where.get(i));
-							}
-						}else{
-							for(int i = 0; i < list_from_where.size(); i++){
-								list_from.add(list_from_where.get(i));
-							}
-						}
-						break;
-					}else{
-						list_from_where = (ExtList)(ExtList)((ExtList)list_from_where.get(1)).get(0);
-					}
-				}
-				System.out.println(list_media);
-				System.out.println(list_tfe);
-				System.out.println(list_from);
-				System.out.println(list_where);
-				list_table = set_fromInfo();
-				
-				after_from = b.substring(b.toLowerCase().indexOf("from") + 4).trim();
-				processKeywords(after_from);
-				postProcess();
-				
-				codegenerator = new CodeGenerator();
-				
-			}catch(Exception e){
-
-			}
+		String query = GlobalEnv.getQuery();
+		if (query != null) {
+			query = query.trim();
 		}
+
+		String filename = GlobalEnv.getfilename();
+		if (filename != null) {
+			Log.info("[Parser:Parser] filename = " + filename);
+			StringBuffer tmp = new StringBuffer();
+			String line = new String();
+			BufferedReader dis;
+			try {
+
+				if (filename.startsWith("http:")) {
+					URL fileurl = new URL(filename);
+
+					URLConnection fileurlConnection = fileurl.openConnection();
+					/*
+					 * DataInputStream dis = new
+					 * DataInputStream(fileurlConnection.getInputStream());
+					 */
+					dis = new BufferedReader(new InputStreamReader(
+							fileurlConnection.getInputStream(), "EUC-JP"));
+				}
+
+				else {
+					dis = new BufferedReader(new FileReader(filename));
+					line = null;
+				}
+				while (true) {
+					line = dis.readLine();
+
+					if (line == null || line.equals("-1"))
+						break;
+
+					while (line != null && line.contains("/*")) {
+						int s = line.indexOf("/*");
+						String line1 = line.substring(0, s);
+						// tmp.append(" "+line1);
+						while (!line.contains("*/"))
+							line = dis.readLine();
+						int t = line.indexOf("*/");
+						line = line1 + line.substring(t + 2);
+					}
+					// added by goto 20130412
+//					if (line != null && line.contains(commentOutLetters)) {	//commentOutLetters = "--"
+//						boolean dqFlg = false;
+//						int i = 0;
+//
+//						for (i = 0; i < line.length(); i++) {
+//							if (line.charAt(i) == '"' && !dqFlg)
+//								dqFlg = true;
+//							else if (line.charAt(i) == '"' && dqFlg)
+//								dqFlg = false;
+//
+//							if (!dqFlg
+//									&& i < line.length() - 1
+//									&& (line.charAt(i) == GlobalEnv.COMMENT_OUT_LETTER && line
+//									.charAt(i + 1) == GlobalEnv.COMMENT_OUT_LETTER))
+//								break;
+//						}
+//						line = line.substring(0, i);
+//					}
+
+					if (line != null)
+						tmp.append(" " + line);
+				}
+				dis.close();
+
+			} catch (MalformedURLException me) {
+				System.out.println("MalformedURLException: " + me);
+			} catch (IOException ioe) {
+				System.out.println("IOException: " + ioe);
+				GlobalEnv.addErr("Error[SQLparser]:" + ioe);
+			}
+
+			query = tmp.toString().trim();
+		}
+
+		if (query.endsWith(";")) {
+			query = query.substring(0, query.length() - 1).trim();
+		}
+
+		Log.info("[Parser:Parser] ssql statement = " + query);
+		return query;
 	}
 	
 	public CodeGenerator getcodegenerator(){
@@ -396,5 +405,112 @@ public class Start_Parse {
 			whereInfo.appendWhere(addCondition);
 		}
 		Log.out("[Paeser:Where] where = " + whereInfo);
+	}
+	
+	private void parseSSQL(String query, int id){
+		String after_from = "";
+		
+		if(!query.toLowerCase().contains("generate")){
+			GlobalEnv.addErr("didn't find 'GENERATE'. please start with 'GENERATE'.");
+			System.err.println("didn't find 'GENERATE'. please start with 'GENERATE'.");
+		}else{
+			try{
+				String a = query.substring(0, query.toLowerCase().indexOf("generate"));
+				String b = query.substring(query.toLowerCase().indexOf("generate"));
+				Log.info(a);
+				Log.info(b);
+
+				if(a.equals(" ") || a.equals("") || a.equals("\r")){
+				}else{
+					
+					ANTLRInputStream input_a = new ANTLRInputStream(a);
+					prefixLexer lexer_a = new prefixLexer(input_a);
+					CommonTokenStream tokens_a = new CommonTokenStream(lexer_a);
+
+					prefixParser parser_a = new prefixParser(tokens_a);
+					ParseTree tree_a = parser_a.prefix(); // begin parsing at rule query
+					List_tree_a = TreeConst.createSSQLParseTree(tree_a, parser_a);
+					Log.info(List_tree_a);
+					foreachinfo = TreeConst.getforeach(List_tree_a);
+					prefix = true;
+
+				}
+				if(prefix){
+					StringTokenizer str = new StringTokenizer(b);
+					String generate = null;
+					while(str.hasMoreTokens()){
+						String st = str.nextToken();
+						if(st.toLowerCase().equals("generate")){
+							generate = st + " " + str.nextToken();
+							b = b.substring(b.indexOf(str.nextToken()));
+							break;
+						}
+					}
+					generate = generate + "[foreach(";
+					for(int i = 0; i < foreachinfo.size(); i++){
+						if(i == 0)
+							generate = generate + foreachinfo.get(i);
+						else if(i != 0)
+							generate = generate + "," + foreachinfo.get(i);
+					}
+					generate = generate + ")?";
+					String b1 = b.substring(0, b.toLowerCase().indexOf("from"));
+					String b2 = b.substring(b.toLowerCase().indexOf("from"));
+					
+					
+					b = generate + b1 + "]%" + b2;
+					Log.info(b);
+				}
+				Preprocessor preprocessor = new Preprocessor(b);
+				ANTLRInputStream input_b = new ANTLRInputStream(b);
+				querytestLexer lexer_b = new querytestLexer(input_b);
+				CommonTokenStream tokens_b = new CommonTokenStream(lexer_b);
+
+				querytestParser parser_b = new querytestParser(tokens_b);
+				parser_b.setErrorHandler(new MyErrorStrategy());
+				ParseTree tree_b = parser_b.query(); // begin parsing at rule query
+
+				List_tree_b = TreeConst.createSSQLParseTree(tree_b, parser_b);
+				List_tree_b = (ExtList) List_tree_b.get(1);
+				list_media = (ExtList) List_tree_b.get(0);
+				list_tfe = (ExtList) List_tree_b.get(1);
+				list_from_where = (ExtList) List_tree_b.get(2);
+				list_from = new ExtList();
+				list_where = new ExtList();
+
+				while(true){
+					if(((ExtList)((ExtList)list_from_where.get(1)).get(0)).get(0).toString().equals("select_core")){
+						list_from_where = (ExtList) ((ExtList)((ExtList)list_from_where.get(1)).get(0)).get(1);
+						if(((ExtList)list_from_where.get(list_from_where.size() - 1)).get(0).toString().equals("where")){
+							list_where = (ExtList) ((ExtList)list_from_where.get(list_from_where.size() - 1)).get(1);
+							for(int i = 0; i < list_from_where.size() - 1; i++){
+								list_from.add(list_from_where.get(i));
+							}
+						}else{
+							for(int i = 0; i < list_from_where.size(); i++){
+								list_from.add(list_from_where.get(i));
+							}
+						}
+						break;
+					}else{
+						list_from_where = (ExtList)(ExtList)((ExtList)list_from_where.get(1)).get(0);
+					}
+				}
+				System.out.println(list_media);
+				System.out.println(list_tfe);
+				System.out.println(list_from);
+				System.out.println(list_where);
+				list_table = set_fromInfo();
+				
+				after_from = b.substring(b.toLowerCase().indexOf("from") + 4).trim();
+				processKeywords(after_from);
+				postProcess();
+				
+				codegenerator = new CodeGenerator();
+				
+			}catch(Exception e){
+
+			}
+		}
 	}
 }
