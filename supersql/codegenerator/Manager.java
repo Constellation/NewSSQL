@@ -1,6 +1,7 @@
 package supersql.codegenerator;
 
 import supersql.codegenerator.ITFE;
+import supersql.common.Log;
 import supersql.extendclass.ExtList;
 
 public abstract class Manager {

@@ -13,6 +13,7 @@ import org.antlr.v4.runtime.tree.RuleNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import supersql.codegenerator.Attribute;
+import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
 

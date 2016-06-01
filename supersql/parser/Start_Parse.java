@@ -33,6 +33,7 @@ public class Start_Parse {
 
 	private static boolean jsonQuery = false;
 	private static boolean dbpediaQuery = false;
+	private boolean foreachFlag = false;
 	public static String att = null;
 	public static String media = null;
 	public ExtList List_tree_a, List_tree_b, list_tfe, list_from_where, list_from, list_where, list_media, list_table;
@@ -431,11 +432,13 @@ public class Start_Parse {
 					ParseTree tree_a = parser_a.prefix(); // begin parsing at rule query
 					List_tree_a = TreeConst.createSSQLParseTree(tree_a, parser_a);
 					Log.info(List_tree_a);
+					if(((ExtList)List_tree_a.get(1)).get(0).toString().toLowerCase().equals("foreach"))
+						foreachFlag = true;
 					foreachinfo = TreeConst.getforeach(List_tree_a);
 					prefix = true;
 
 				}
-				if(prefix){
+				if(prefix && foreachFlag){
 					StringTokenizer str = new StringTokenizer(b);
 					String generate = null;
 					while(str.hasMoreTokens()){
@@ -461,6 +464,7 @@ public class Start_Parse {
 					b = generate + b1 + "]%" + b2;
 					Log.info(b);
 				}
+				GlobalEnv.foreach_flag = foreachFlag;
 				Preprocessor preprocessor = new Preprocessor(b);
 				ANTLRInputStream input_b = new ANTLRInputStream(b);
 				querytestLexer lexer_b = new querytestLexer(input_b);

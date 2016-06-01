@@ -240,7 +240,10 @@ public class CodeGenerator {
 		}else if(tfe_tree.get(0).toString().equals("n_exp")){
 			out_sch = connector_main((ExtList)tfe_tree.get(1), 0);
 		}else if(tfe_tree.get(0).toString().equals("h_exp")){
-			out_sch = connector_main((ExtList)tfe_tree.get(1), 1);
+			if( ((ExtList)tfe_tree.get(1)).size() == 1 )
+				out_sch = read_attribute( (ExtList)((ExtList)tfe_tree.get(1)).get(0) );
+			else
+				out_sch = connector_main((ExtList)tfe_tree.get(1), 1);
 		}else if(tfe_tree.get(0).toString().equals("v_exp")){
 			if( ((ExtList)tfe_tree.get(1)).size() == 1 )
 				out_sch = read_attribute( (ExtList)((ExtList)tfe_tree.get(1)).get(0) );
@@ -317,7 +320,7 @@ public class CodeGenerator {
 				iterators.remove(0);
 				if(iterators.isEmpty()){
 				}else{
-					deco = deco + ", row=" + iterators.get(0);
+					deco = deco + ",row=" + iterators.get(0);
 					iterators.remove(0);
 				}
 			}else if(iterators.get(0).equals("%")){
@@ -539,7 +542,6 @@ public class CodeGenerator {
 					// key = idx
 					name = token.substring(0, equalidx);
 					value = token.substring(equalidx + 1);
-					Log.info(name+","+value);
 					decoration_out(tfe, name, value);
 				} else {
 					// key only
