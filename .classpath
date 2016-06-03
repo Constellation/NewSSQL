@@ -12,5 +12,18 @@
 	<classpathentry kind="lib" path="/Users/taji/Documents/workspace/ssql/libs/servlet-api.jar"/>
 	<classpathentry kind="lib" path="/Users/taji/Documents/workspace/ssql/libs/jdbc/mysql-connector-java-5.1.13-bin.jar"/>
 	<classpathentry kind="lib" path="/Users/taji/Documents/workspace/ssql/libs/jdbc/sqlitejdbc-v056.jar"/>
+	<classpathentry kind="lib" path="/Users/arnaudwolf/Documents/workspace/newSSQL/libs/antlr-4.5-complete.jar"/>
+	<classpathentry kind="lib" path="/Users/arnaudwolf/Documents/workspace/newSSQL/libs/hamcrest-core-1.3.jar"/>
+	<classpathentry kind="lib" path="/Users/arnaudwolf/Documents/workspace/newSSQL/libs/json-simple-1.1.1.jar"/>
+	<classpathentry kind="lib" path="/Users/arnaudwolf/Documents/workspace/newSSQL/libs/jsoup-1.7.2.jar"/>
+	<classpathentry kind="lib" path="/Users/arnaudwolf/Documents/workspace/newSSQL/libs/junit-4.11.jar"/>
+	<classpathentry kind="lib" path="/Users/arnaudwolf/Documents/workspace/newSSQL/libs/log4j-1.2.17.jar"/>
+	<classpathentry kind="lib" path="/Users/arnaudwolf/Documents/workspace/newSSQL/libs/pdflib.jar"/>
+	<classpathentry kind="lib" path="/Users/arnaudwolf/Documents/workspace/newSSQL/libs/servlet-api.jar"/>
+	<classpathentry kind="lib" path="/Users/arnaudwolf/Documents/workspace/newSSQL/libs/jdbc/db2jcc.jar"/>
+	<classpathentry kind="lib" path="/Users/arnaudwolf/Documents/workspace/newSSQL/libs/jdbc/mysql-connector-java-5.1.13-bin.jar"/>
+	<classpathentry kind="lib" path="/Users/arnaudwolf/Documents/workspace/newSSQL/libs/jdbc/postgresql.jar"/>
+	<classpathentry kind="lib" path="/Users/arnaudwolf/Documents/workspace/newSSQL/libs/jdbc/sqlitejdbc-v056.jar"/>
+	<classpathentry kind="lib" path="/Users/arnaudwolf/Documents/workspace/newSSQL/libs/jgrapht-core-0.9.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
