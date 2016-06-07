@@ -8,6 +8,7 @@ import java.util.List;
 import supersql.codegenerator.Manager;
 import supersql.codegenerator.HTML.HTMLFactory;
 import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5Factory;
+import supersql.codegenerator.Web.WebFactory;
 import supersql.common.GlobalEnv;
 import supersql.common.LevenshteinDistance;
 import supersql.common.Log;
@@ -62,6 +63,8 @@ public class CodeGenerator {
 			factory = new HTMLFactory();
 		}else if(media.toLowerCase().equals("mobile_html5")){
 			factory = new Mobile_HTML5Factory();
+		}else if(media.toLowerCase().equals("web")) {
+			factory = new WebFactory();
 		}
 		else {
 			String m = media.toLowerCase();

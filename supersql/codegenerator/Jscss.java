@@ -11,6 +11,7 @@ import java.nio.channels.FileChannel;
 
 import supersql.codegenerator.HTML.HTMLEnv;
 import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5Env;
+import supersql.codegenerator.Web.WebEnv;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 
@@ -51,7 +52,7 @@ public class Jscss {
 		
 		File from = null;
 		// add 20141204 masato for ehtml
-		if (media.equalsIgnoreCase("html") || media.equalsIgnoreCase("ehtml"))
+		if (media.equalsIgnoreCase("html") || media.equalsIgnoreCase("ehtml") || media.equalsIgnoreCase("web"))
 			from = new File(ep+fs+"jscss"+fs+"forHTML"+fs+"jscss");
 		else if (media.equalsIgnoreCase("mobile_html5"))
 			from = new File(ep+fs+"jscss");
@@ -123,6 +124,8 @@ public class Jscss {
 			css = HTMLEnv.commonCSS() + HTMLEnv.css;
 		else if(media.equals("mobile_html5"))
 			css = Mobile_HTML5Env.commonCSS() + Mobile_HTML5Env.css;
+		else if(media.equals("web"))
+			css = WebEnv.commonCSS() + WebEnv.css;
 		String outputCssFileName = outdirPath+fs+fs+getGenerateCssFileName(1);
 		
 		if(!createFile(outputCssFileName, css))
