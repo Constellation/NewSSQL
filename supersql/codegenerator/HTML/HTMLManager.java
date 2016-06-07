@@ -36,7 +36,7 @@ public class HTMLManager extends Manager {
 				.getParent();
 		if (fileDir.length() < htmlEnv.outFile.length()
 				&& fileDir
-						.equals(htmlEnv.outFile.substring(0, fileDir.length())))
+				.equals(htmlEnv.outFile.substring(0, fileDir.length())))
 			htmlEnv.outFile = htmlEnv.outFile.substring(fileDir.length() + 1); // 鐃緒申鐃出パワ申鐃春ワ申鐃緒申鐃緒申名
 		// added by goto 20120627 end
 
@@ -174,28 +174,26 @@ public class HTMLManager extends Manager {
 		htmlEnv2.fileName = htmlEnv.outFile + ".xml";
 
 		htmlEnv.setOutlineMode();
-
 		if (data_info.size() == 0
-		// added by goto 20130306 "FROM�ʤ��������к� 3/3"
+				// added by goto 20130306 "FROM�ʤ��������к� 3/3"
 				&& !DataConstructor.SQL_string
-						.equals("SELECT DISTINCT  FROM ;")) {
+				.equals("SELECT DISTINCT  FROM ;")) {
 			Log.out("no data");
 			htmlEnv.code.append("<div class=\"nodata\" >");
 			htmlEnv.code.append("NO DATA FOUND");
 			htmlEnv.code.append("</div>");
 		} else
-			Log.info(data_info);
 			tfe_info.work(data_info);
-
+		
 		htmlEnv.getHeader();
 		htmlEnv.getFooter();
 		htmlEnv2.header.append("<?xml version=\"1.0\" encoding=\""
 				+ Utils.getEncode() + "\"?><SSQL>");
 		htmlEnv2.footer.append("</SSQL>");
 		try {
-			
+
 			if(CodeGenerator.getMedia().equalsIgnoreCase("html")){
-			
+
 				if (!GlobalEnv.isOpt()) {
 					// changed by goto 20120715 start
 					// PrintWriter pw = new PrintWriter(new BufferedWriter(new
@@ -213,7 +211,7 @@ public class HTMLManager extends Manager {
 					// Log.info("File encoding: "+((html_env.charset!=null)?
 					// html_env.charset : "UTF-8"));
 					// changed by goto 20120715 end
-	
+
 					if (GlobalEnv.cssout() == null)
 						pw.println(htmlEnv.header);
 					pw.println(htmlEnv.code);
@@ -222,13 +220,13 @@ public class HTMLManager extends Manager {
 				}
 				// xml
 				if (GlobalEnv.isOpt()) {
-	
+
 					/*
 					 * int i=0; while(html_env2.code.indexOf("&",i) != -1){ i =
 					 * html_env2.code.indexOf("&",i); html_env2.code =
 					 * html_env2.code.replace(i,i+1, "&amp;"); i++; }
 					 */
-	
+
 					htmlEnv2.fileName = htmlEnv.outFile + ".xml";
 					PrintWriter pw2 = new PrintWriter(new BufferedWriter(
 							new FileWriter(htmlEnv2.fileName)));
@@ -248,21 +246,21 @@ public class HTMLManager extends Manager {
 					pw.println(htmlEnv.footer);
 					pw.close();
 				}
-	
+
 				if (GlobalEnv.cssout() != null) {
 					PrintWriter pw3 = new PrintWriter(new BufferedWriter(
 							new FileWriter(GlobalEnv.cssout())));
 					pw3.println(htmlEnv.header);
 					pw3.close();
 				}
-			// add 20141204 masato for ehtml
+				// add 20141204 masato for ehtml
 			} else {
 				Log.ehtmlInfo("=-=-=-=");
 				Log.ehtmlInfo(htmlEnv.header);
 				Log.ehtmlInfo(htmlEnv.code);
 				Log.ehtmlInfo(htmlEnv.footer);
 			}
-			
+
 			HTMLEnv.initAllFormFlg();
 			Jscss.process();	//goto 20141209
 		} catch (FileNotFoundException fe) {
@@ -277,10 +275,10 @@ public class HTMLManager extends Manager {
 			// System.exit(-1);
 		} catch (IOException e) {
 			System.err
-					.println("Error[HTMLManager]: File IO Error in HTMLManager");
+			.println("Error[HTMLManager]: File IO Error in HTMLManager");
 			e.printStackTrace();
 			GlobalEnv
-					.addErr("Error[HTMLManager]: File IO Error in HTMLManager");
+			.addErr("Error[HTMLManager]: File IO Error in HTMLManager");
 			// comment out by chie
 			// System.exit(-1);
 		}
@@ -324,7 +322,7 @@ public class HTMLManager extends Manager {
 		tfe_info.work(data_info);
 
 		htmlEnv2.header
-				.append("<?xml version=\"1.0\" encoding=\"Shift_JIS\"?><SSQL>");
+		.append("<?xml version=\"1.0\" encoding=\"Shift_JIS\"?><SSQL>");
 		htmlEnv2.footer.append("</SSQL>");
 
 		if (GlobalEnv.isOpt()) {

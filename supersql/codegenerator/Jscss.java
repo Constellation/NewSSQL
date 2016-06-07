@@ -10,7 +10,7 @@ import java.io.PrintWriter;
 import java.nio.channels.FileChannel;
 
 import supersql.codegenerator.HTML.HTMLEnv;
-//import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5Env;
+import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5Env;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 
@@ -121,8 +121,8 @@ public class Jscss {
 		String css = "";
 		if(media.equals("html") || media.equals("ehtml"))
 			css = HTMLEnv.commonCSS() + HTMLEnv.css;
-//		else if(media.equals("mobile_html5"))
-//			css = Mobile_HTML5Env.commonCSS() + Mobile_HTML5Env.css;
+		else if(media.equals("mobile_html5"))
+			css = Mobile_HTML5Env.commonCSS() + Mobile_HTML5Env.css;
 		String outputCssFileName = outdirPath+fs+fs+getGenerateCssFileName(1);
 		
 		if(!createFile(outputCssFileName, css))

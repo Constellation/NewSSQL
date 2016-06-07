@@ -28,7 +28,6 @@ public class HTMLC1 extends Connector {
 	// C1��work�᥽�å�
 	@Override
 	public String work(ExtList data_info) {
-
 		Log.out("------- C1 -------");
 		Log.out("tfes.contain_itemnum=" + tfes.contain_itemnum());
 		Log.out("tfes.size=" + tfes.size());
@@ -55,7 +54,7 @@ public class HTMLC1 extends Connector {
 		// tk
 		// start///////////////////////////////////////////////////////////////////////
 		htmlEnv.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
-
+		
 		if (!GlobalEnv.isOpt()) {
 			htmlEnv.code
 					.append("<TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");

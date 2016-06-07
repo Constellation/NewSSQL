@@ -30,7 +30,6 @@ public class HTMLG1 extends Grouper {
 	public String work(ExtList data_info) {
 		Log.out("------- G1 -------");
 		this.setDataList(data_info);
-
 		// tk start///////////////////////////////////////////////////
 		html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
 

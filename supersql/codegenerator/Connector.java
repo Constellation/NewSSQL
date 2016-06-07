@@ -103,7 +103,7 @@ public class Connector extends Operator {
 		sindex++;
 		dindex += ci;
 		if (tfe instanceof Connector || tfe instanceof Attribute
-				|| tfe instanceof Function /*|| tfe instanceof IfCondition*/) {
+				|| tfe instanceof Function || tfe instanceof IfCondition) {
 			return tfe.createNode(subdata);
 		}
 		else {
@@ -118,7 +118,7 @@ public class Connector extends Operator {
 		ExtList subdata = data.ExtsubList(dindex, dindex + ci);
 
 		if (tfe instanceof Connector || tfe instanceof Attribute
-				|| tfe instanceof Function /*|| tfe instanceof IfCondition*/) {
+				|| tfe instanceof Function || tfe instanceof IfCondition) {
 			
 //			//20131118 dynamic
 //			if(Mobile_HTML5.dynamicDisplay){

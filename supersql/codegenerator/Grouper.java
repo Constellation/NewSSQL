@@ -97,7 +97,7 @@ public class Grouper extends Operator{
 
         ExtList subdata = (ExtList) (data.get(dindex));
         if (tfe instanceof Connector || tfe instanceof Attribute
-                || tfe instanceof Function /*|| tfe instanceof IfCondition*/) {
+                || tfe instanceof Function || tfe instanceof IfCondition) {
             tfe.work(subdata);
         } else {
             tfe.work((ExtList) subdata.get(0));

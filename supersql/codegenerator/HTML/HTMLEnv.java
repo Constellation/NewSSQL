@@ -369,7 +369,7 @@ public class HTMLEnv extends LocalEnv {
 
 	public String nextBackFile = new String();
 
-	public Vector<String> notWrittenClassId = new Vector<String>();
+	public Vector<String> notWrittenClassId = new Vector();
 
 	public String outDir;
 
@@ -386,7 +386,7 @@ public class HTMLEnv extends LocalEnv {
 
 	public String tableBorder = new String("1");
 
-	public Vector<String> writtenClassId;
+	public Vector<String> writtenClassId = new Vector();
 
 	public HTMLEnv() {
 		this.htmlEnv1 = new Document("");
@@ -401,22 +401,22 @@ public class HTMLEnv extends LocalEnv {
 		return new Element(Tag.valueOf("input"), "", attributes);
 	}
 
-//	private Element createInsertDeleteUpdateForm() {
-//		Attributes formAttributes = new Attributes();
-//		formAttributes.put("action", GlobalEnv.getFileDirectory()
-//				+ "/servlet/supersql.form.Update");
-//		formAttributes.put("method", "post");
-//		formAttributes.put("name", "theForm");
-//		Element form = new Element(Tag.valueOf("form"), "", formAttributes);
-//
-//		form.appendChild(createInput("hidden", "tableinfo",
-//				SSQLparser.get_from_info_st()));
-//		form.appendChild(createInput("hidden", "configfile",
-//				GlobalEnv.getconfigfile()));
-//
-//		return form;
-//
-//	}
+	private Element createInsertDeleteUpdateForm() {
+		Attributes formAttributes = new Attributes();
+		formAttributes.put("action", GlobalEnv.getFileDirectory()
+				+ "/servlet/supersql.form.Update");
+		formAttributes.put("method", "post");
+		formAttributes.put("name", "theForm");
+		Element form = new Element(Tag.valueOf("form"), "", formAttributes);
+
+		form.appendChild(createInput("hidden", "tableinfo",
+				Start_Parse.get_from_info_st()));
+		form.appendChild(createInput("hidden", "configfile",
+				GlobalEnv.getconfigfile()));
+
+		return form;
+
+	}
 
 	private Element createJsElement(String src) {
 		Attributes attributes = new Attributes();
@@ -433,33 +433,33 @@ public class HTMLEnv extends LocalEnv {
 		return elements;
 	}
 
-//	private Element createLoginForm() {
-//		Attributes formAttributes = new Attributes();
-//		formAttributes.put("action", GlobalEnv.getFileDirectory()
-//				+ "/servlet/supersql.form.Session");
-//		formAttributes.put("method", "post");
-//		formAttributes.put("name", "loginForm");
-//		Element form = new Element(Tag.valueOf("form"), "", formAttributes);
-//
-//		Attribute hidden = new Attribute("type", "hidden");
-//		Tag input = Tag.valueOf("input");
-//
-//		Attributes firstInputAttributes = new Attributes();
-//		firstInputAttributes.put(hidden);
-//		firstInputAttributes.put("name", "tableinfo");
-//		firstInputAttributes.put("value", SSQLparser.get_from_info_st());
-//		Element firstInput = new Element(input, "", firstInputAttributes);
-//
-//		Attributes secondInputAttributes = new Attributes();
-//		secondInputAttributes.put(hidden);
-//		secondInputAttributes.put("name", "configfile");
-//		secondInputAttributes.put("value", GlobalEnv.getconfigfile());
-//		Element secondInput = new Element(input, "", secondInputAttributes);
-//
-//		form.appendChild(firstInput);
-//		form.appendChild(secondInput);
-//		return form;
-//	}
+	private Element createLoginForm() {
+		Attributes formAttributes = new Attributes();
+		formAttributes.put("action", GlobalEnv.getFileDirectory()
+				+ "/servlet/supersql.form.Session");
+		formAttributes.put("method", "post");
+		formAttributes.put("name", "loginForm");
+		Element form = new Element(Tag.valueOf("form"), "", formAttributes);
+
+		Attribute hidden = new Attribute("type", "hidden");
+		Tag input = Tag.valueOf("input");
+
+		Attributes firstInputAttributes = new Attributes();
+		firstInputAttributes.put(hidden);
+		firstInputAttributes.put("name", "tableinfo");
+		firstInputAttributes.put("value", Start_Parse.get_from_info_st());
+		Element firstInput = new Element(input, "", firstInputAttributes);
+
+		Attributes secondInputAttributes = new Attributes();
+		secondInputAttributes.put(hidden);
+		secondInputAttributes.put("name", "configfile");
+		secondInputAttributes.put("value", GlobalEnv.getconfigfile());
+		Element secondInput = new Element(input, "", secondInputAttributes);
+
+		form.appendChild(firstInput);
+		form.appendChild(secondInput);
+		return form;
+	}
 
 	private Element createLogoutForm() {
 		Attributes formAttributes = new Attributes();

@@ -6,7 +6,6 @@ import supersql.dataconstructor.DataConstructor;
 import supersql.parser.Start_Parse;
 
 public class FrontEnd {
-//public class FrontEnd_ implements FrontEndService {
 
 	public static void main(String[] args) {
 		new FrontEnd(args);

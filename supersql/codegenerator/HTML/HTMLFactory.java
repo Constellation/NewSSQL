@@ -5,8 +5,10 @@ import supersql.codegenerator.Connector;
 import supersql.codegenerator.Factory;
 import supersql.codegenerator.Function;
 import supersql.codegenerator.Grouper;
+import supersql.codegenerator.IfCondition;
 import supersql.codegenerator.Manager;
 import supersql.codegenerator.TFE;
+import supersql.common.Log;
 
 //Operator, Manager鐃緒申鐃緒申鐃緒申鐃緒申鐃暑ク鐃初ス
 
@@ -73,6 +75,12 @@ public class HTMLFactory extends Factory {
 	@Override
 	public Function createFunction(Manager manager) {
 		return new HTMLFunction(manager, htmlEnv, htmlEnv2);
+	}
+	
+	@Override
+	public IfCondition createIfCondition(Manager manager, Attribute condition,
+			TFE thenTfe, TFE elseTfe) {
+		return new HTMLIfCondition(manager, htmlEnv, htmlEnv2, condition, thenTfe, elseTfe);
 	}
 	
 	@Override

@@ -1,5 +1,6 @@
 package supersql.codegenerator;
 
+import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
 
@@ -79,9 +80,9 @@ public class FuncArg {
 		else if (tfe instanceof Attribute) {
 			
 			//20131118 dynamic
-//			if(Mobile_HTML5.dynamicDisplay){
-//				return Mobile_HTML5.dynamicFuncArgProcess(tfe);
-//			}
+			if(Mobile_HTML5.dynamicDisplay){
+				return Mobile_HTML5.dynamicFuncArgProcess(tfe);
+			}
 //			//20131127 form
 //			if(Mobile_HTML5.form){
 //				return Mobile_HTML5.formFuncArgProcess(tfe);

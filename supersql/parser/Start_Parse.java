@@ -23,6 +23,7 @@ import org.antlr.v4.runtime.tree.*;
 import supersql.codegenerator.AttributeItem;
 import supersql.codegenerator.CodeGenerator;
 import supersql.codegenerator.TFE;
+import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5Function;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
@@ -34,21 +35,16 @@ public class Start_Parse {
 	private static boolean jsonQuery = false;
 	private static boolean dbpediaQuery = false;
 	private boolean foreachFlag = false;
-	public static String att = null;
-	public static String media = null;
-	public ExtList List_tree_a, List_tree_b, list_tfe, list_from_where, list_from, list_where, list_media, list_table;
 	private ExtList foreachinfo;
+	public static boolean sessionFlag = false;
+	public static String sessionString = "";
 	private CodeGenerator codegenerator;
-	public static Hashtable<?, ?> atts;
-	public static TFE schemaTop;
-	public static ExtList sch;
-	public static ExtList schema;
+	public static ArrayList<String> textString = new ArrayList<String>();
 	private static boolean prefix = false;
 	private FromInfo fromInfo;
 	private String groupStatement;
 	private String havingStatement;
 	private String foreachFrom = "";
-	public WhereInfo whereInfo = new WhereInfo();
 	private String foreachWhere = "";
 	private StringBuffer from_c = new StringBuffer();
 	private StringBuffer where_c = new StringBuffer();
@@ -61,13 +57,43 @@ public class Start_Parse {
 	private StringBuffer embedWhere = new StringBuffer();
 	private static String fromInfoString;
 	private String QueryImage;
+
+	
+	public static String att = null;
+	public static String media = null;
+	public ExtList List_tree_a, List_tree_b, list_tfe, list_from_where, list_from, list_where, list_media, list_table;
+	public static Hashtable<?, ?> atts;
+	public static TFE schemaTop;
+	public static ExtList sch;
+	public static ExtList schema;
+	public WhereInfo whereInfo = new WhereInfo();
 	public static boolean distinct = false;
 
 	
 	
-	
+	public Start_Parse() {
+		parseSSQL(this.getSSQLQuery(), 10000);
+	}
+
+	public Start_Parse(int id) {
+		parseSSQL(this.getSSQLQuery(), id);
+	}
+
+	public Start_Parse(String a) {
+		parseSSQL(this.getSSQLQuery2(), 10000);
+	}
+
+	public Start_Parse(StringBuffer querybuffer) {
+		parseSSQL(querybuffer.toString(), 10000);
+	}
 	public static void set_from_info_st(String fi) {
 		fromInfoString = fi;
+	}
+	public static String get_from_info_st() {
+		if (fromInfoString == null) {
+			return "";
+		}
+		return fromInfoString;
 	}
 	public static void setDbpediaQuery(boolean dbpediaQuery) {
 		Start_Parse.dbpediaQuery = dbpediaQuery;
@@ -78,6 +104,30 @@ public class Start_Parse {
     public FromInfo get_from_info() {
         return fromInfo;
     }
+	public CodeGenerator getcodegenerator(){
+		codegenerator.TFEid = 10000;
+		return codegenerator;
+		
+	}
+	
+	public static boolean isDbpediaQuery() {
+		return dbpediaQuery;
+	}
+
+	public static boolean isJsonQuery() {
+		return jsonQuery;
+	}
+    
+    public TFE get_TFEschema(){
+    	TFE sch = codegenerator.schemaTop;
+		return sch;    	
+    }
+    
+    public Hashtable get_att_info(){
+    	Hashtable attp = codegenerator.get_attp();
+		return attp;
+    }
+
     public String getTFEsig(ExtList sep_sch) {
 
         Hashtable atts = this.get_att_info();
@@ -159,23 +209,7 @@ public class Start_Parse {
 
         return ret;
     }
-	@SuppressWarnings("unchecked")
 	
-	public Start_Parse() {
-		parseSSQL(this.getSSQLQuery(), 10000);
-	}
-
-	public Start_Parse(int id) {
-		parseSSQL(this.getSSQLQuery(), id);
-	}
-
-	public Start_Parse(String a) {
-		parseSSQL(this.getSSQLQuery2(), 10000);
-	}
-
-	public Start_Parse(StringBuffer querybuffer) {
-		parseSSQL(querybuffer.toString(), 10000);
-	}
 	private String getSSQLQuery()
 	{
 		//read file & query
@@ -300,29 +334,6 @@ public class Start_Parse {
 		return query;
 	}
 	
-	public CodeGenerator getcodegenerator(){
-		codegenerator.TFEid = 10000;
-		return codegenerator;
-		
-	}
-	
-	public static boolean isDbpediaQuery() {
-		return dbpediaQuery;
-	}
-
-	public static boolean isJsonQuery() {
-		return jsonQuery;
-	}
-    
-    public TFE get_TFEschema(){
-    	TFE sch = codegenerator.schemaTop;
-		return sch;    	
-    }
-    
-    public Hashtable get_att_info(){
-    	Hashtable attp = codegenerator.get_attp();
-		return attp;
-    }
     
     private ExtList set_fromInfo(){
     	ExtList from_tables = new ExtList();
@@ -359,7 +370,7 @@ public class Start_Parse {
 			else {
 				buffer.append(nt + " ");
 			}
-//			Mobile_HTML5Function.after_from_string += nt+" ";	//added by goto 20130515  "search"
+			Mobile_HTML5Function.after_from_string += nt+" ";	//added by goto 20130515  "search"
 		}
 		Log.info(from_c);
 	}
@@ -500,10 +511,10 @@ public class Start_Parse {
 						list_from_where = (ExtList)(ExtList)((ExtList)list_from_where.get(1)).get(0);
 					}
 				}
-				System.out.println(list_media);
-				System.out.println(list_tfe);
-				System.out.println(list_from);
-				System.out.println(list_where);
+				Log.info(list_media);
+				Log.info(list_tfe);
+				Log.info(list_from);
+				Log.info(list_where);
 				list_table = set_fromInfo();
 				
 				after_from = b.substring(b.toLowerCase().indexOf("from") + 4).trim();

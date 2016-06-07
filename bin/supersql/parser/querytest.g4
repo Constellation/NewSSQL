@@ -52,11 +52,10 @@ operand    :
 				| NUMERIC_LITERAL
         | aggregate
 				)
-				('||' operand)*
+        ('||' operand)*
 			)
 			(DECOLATOR)?
 			;
-
 
 
 grouper	:
@@ -175,21 +174,24 @@ if_then_else	:
 			CLOSE_PARENTHESE
 			K_THEN
 			OPEN_PARENTHESE
-			operand 
-			(',' operand)* 
+      exp
+//			operand 
+//			(',' operand)* 
 			CLOSE_PARENTHESE
 			K_ELSE 
 			OPEN_PARENTHESE
-			operand 
-			(',' operand)* 
+      exp
+//			operand 
+//			(',' operand)* 
 			CLOSE_PARENTHESE
 			)
 			|
 			(OPEN_PARENTHESE
 			expr 
 			CLOSE_PARENTHESE '?'
-			( operand  (',' operand)* ) 
-			':' ( operand (',' operand)* )
+      exp':'exp
+//			( operand  (',' operand)* ) 
+//			':' ( operand (',' operand)* )
 			)
 		)
 		;
@@ -381,7 +383,7 @@ ordering_term
   ;
 
 expr
-  : literal_value
+  : operand
   | BIND_PARAMETER
   | ( ( database_name '.' )? table_alias '.' )? column_name
   | unary_operator expr

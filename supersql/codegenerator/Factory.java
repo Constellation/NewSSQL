@@ -322,6 +322,15 @@ public class Factory {
 		}
 		return null;
 	}
+	
+	public Attribute createConditionalAttribute(Manager manager) {
+		return null;
+	}
+	
+	public IfCondition createIfCondition(Manager manager, Attribute condition,
+			TFE thenTfe, TFE elseTfe) {
+		return null;
+	}
 /*********************
 * Getters and Setters
 *********************/
