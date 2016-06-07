@@ -28,9 +28,7 @@ import supersql.parser.Start_Parse;
 public class DataConstructor {
 
 	private ExtList data_info;
-
-	private ArrayList<SQLQuery> sqlQueries = null;
-	private QueryDivider qd;
+	
 	private String key = null;
 	private Attribute keyAtt = null;
 	private int col = -1;
@@ -54,39 +52,10 @@ public class DataConstructor {
 		sep_sch = parser.sch;
 		Log.info("Schema: " + sep_sch);
 
-		// Check Optimization Parameters
-		if (GlobalEnv.getOptLevel() == 0 || !GlobalEnv.isOptimizable()
-				|| Start_Parse.isDbpediaQuery() || Start_Parse.isJsonQuery()) {
-			sqlQueries = null;
-		} else {
-		// Initialize QueryDivider
-			long start = System.nanoTime();
-
-//			try {
-//				qd = new QueryDivider(parser);
-//
-//				if (qd.MakeGraph()) {
-//					// if graph was made successfully, divide
-//					sqlQueries = qd.divideQuery();
-//				}
-//			} catch (Exception e) {
-//				;
-//				// System.out.println( e.getMessage() ); //commented out by goto
-//				// 20120620
-//			}
-
-			long end = System.nanoTime();
-			exectime[ISDIVIS] = end - start;
-		}
-
 		// Make SQL
-		if ((sqlQueries == null || sqlQueries.size() < 2)
-				&& !Start_Parse.isDbpediaQuery()) {
-			// if graph was not made successfully or
-			// if graph has only one connected component
-			// query cannot be divided
+		if (!Start_Parse.isDbpediaQuery())
 			msql = new MakeSQL(parser);
-		}
+		
 
 		sep_data_info = new ExtList();
 		if (Start_Parse.isDbpediaQuery()) {
@@ -203,79 +172,10 @@ public class DataConstructor {
 			ExtList sep_sch, ExtList sep_data_info) {
 
 		long start, end;
-
-		if (msql != null) {
-			getFromDB(msql, sep_sch, sep_data_info);
-			sep_data_info = makeTree(sep_sch, sep_data_info);
-
-		} else {
-			getTuples(sep_sch, sep_data_info);
-			start = System.nanoTime();
-			sep_data_info = MakeTree(qd.getSchema());
-			// System.out.println(sep_data_info);
-			end = System.nanoTime();
-
-			exectime[MKETREE] = end - start;
-		}
+		getFromDB(msql, sep_sch, sep_data_info);
+		sep_data_info = makeTree(sep_sch, sep_data_info);
 
 		return sep_data_info;
-
-	}
-
-	private ExtList[] getTuples(ExtList sep_sch, ExtList sep_data_info) {
-
-		long start, end;
-		start = System.nanoTime();
-
-		ExtList[] table;
-		GetFromDB gfd;
-		int comp_size;
-
-		comp_size = sqlQueries.size();
-		table = new ExtList[comp_size];
-
-		if (GlobalEnv.isMultiThread()) {
-			System.out.println("[Enter MultiThread mode]");
-			ConnectDB cdb = new ConnectDB(GlobalEnv.geturl(),
-					GlobalEnv.getusername(), GlobalEnv.getDriver(),
-					GlobalEnv.getpassword());
-			System.out.println(GlobalEnv.geturl() + GlobalEnv.getusername()
-					+ GlobalEnv.getpassword());
-
-			cdb.setName("CDB1");
-			cdb.run();
-
-			gfd = new GetFromDB(cdb);
-		}
-
-		else {
-			gfd = new GetFromDB();
-		}
-
-		long time = 0;
-
-		// changed by goto 20120630
-		Log.info("sqlQueries.size() = " + sqlQueries.size());
-		for (int i = 0; i < sqlQueries.size() ; i++) {
-			table[i] = new ExtList();
-
-			long time1 = System.nanoTime();
-			String s = sqlQueries.get(i).getString();
-			time += (System.nanoTime() - time1);
-
-			gfd.execQuery(s, table[i]);
-			sqlQueries.get(i).setResult(table[i]);
-		}
-
-		gfd.close();
-		end = System.nanoTime();
-
-		exectime[EXECSQL] = end - start - time;
-		exectime[MAKESQL] = time;
-
-		Log.out("## DB result ##");
-
-		return table;
 
 	}
 
@@ -350,96 +250,6 @@ public class DataConstructor {
 
 	public ExtList getData() {
 		return data_info;
-	}
-
-	private ExtList MakeTree(ExtList schema) {
-		// added by ria
-		Object o;
-		ExtList buf = new ExtList();
-		for (int i = 0; i < schema.size(); i++) {
-			o = schema.get(i);
-
-			if (!(o instanceof ExtList)) {
-				if (keyAtt == null) {
-					keyAtt = (Attribute) o;
-					buf.add(keyAtt.getTuple());
-					// System.out.println(buf);
-					key = keyAtt.getTuple().toString();
-					col = keyAtt.getColumn();
-				} else {
-					Attribute a = (Attribute) o;
-					if (a == keyAtt) {
-						buf.add(keyAtt.getTuple());
-						// System.out.println(buf);
-						key = keyAtt.getTuple().toString();
-					} else {
-						// add here checking if the keyAtt is a connector
-						buf.add(a.getTuple(key, col));
-						// System.out.println(buf);
-						a.delTuples(key, col);
-					}
-				}
-			} else if (IsLeaf((ExtList) o)) {
-
-				ExtList obj = (ExtList) o;
-				ExtList temp = new ExtList();
-
-				Attribute a = (Attribute) obj.get(0);
-				temp.addAll((a.getTuples(key, col)));
-
-				if (temp.size() == 0) {
-					flag = false;
-				} else {
-					flag = true;
-				}
-
-				buf.add(temp);
-				// System.out.println(buf);
-
-				if (keyAtt != null) {
-					keyAtt.delTuples(key, col);
-				}
-
-			} else {
-				if (schema.size() == 1) {
-					ExtList temp = new ExtList();
-					do {
-						ExtList temp2 = MakeTree((ExtList) o);
-						if (!temp2.isEmpty()) {
-							temp.add(temp2);
-							if (keyAtt != null) {
-								keyAtt.delTuples(key, col);
-							}
-						}
-					} while ((keyAtt != null) && keyAtt.getSize() != 0);
-
-					buf.add(temp);
-					// System.out.println(buf);
-					flag = true;
-				} else {
-					ExtList temp = new ExtList();
-					temp.add(MakeTree((ExtList) o));
-
-					if (flag) {
-						buf.add(temp);
-						// System.out.println(buf);
-					}
-				}
-			}
-		}
-		if (!flag) {
-			buf = new ExtList();
-		}
-
-		return buf;
-	}
-
-	private boolean IsLeaf(ExtList sch) {
-		for (int i = 0; i < sch.size(); i++) {
-			if (sch.get(i) instanceof ExtList)
-				return false;
-		}
-		return true;
 	}
 
 	public static ExtList getDataFromDBPedia(String sparqlWhereQuery,

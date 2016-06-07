@@ -423,7 +423,6 @@ public class Start_Parse {
 
 				if(a.equals(" ") || a.equals("") || a.equals("\r")){
 				}else{
-					
 					ANTLRInputStream input_a = new ANTLRInputStream(a);
 					prefixLexer lexer_a = new prefixLexer(input_a);
 					CommonTokenStream tokens_a = new CommonTokenStream(lexer_a);
