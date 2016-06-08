@@ -876,7 +876,7 @@ public class WebEnv extends LocalEnv {
 			if (tableFlag) {
 				cssbuf.append("\twidth: auto;\n"); // table default
 			} else if (!topLevelDiv) {
-				cssbuf.append("\twidth: 1280px;\n"); // topLevelDiv default
+				cssbuf.append("\tmax-width: 1280px;\n"); // topLevelDiv default
 			} else {
 				cssbuf.append("\twidth: 100%;\n"); // default
 			}

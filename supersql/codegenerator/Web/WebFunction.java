@@ -100,9 +100,10 @@ public class WebFunction extends Function {
 	protected void Func_image() {
 		// 引数の取得
 		FuncArg arg1 = (FuncArg) this.Args.get(0);
+		FuncArg arg2 = (FuncArg) this.Args.get(1);
 		
 		// image(path)
-		String path = arg1.getStr();
+		String path = arg2.getStr() + "/" + arg1.getStr();
 		// HTMLに書き込み
 		if (webEnv.tableFlag) {
 			webEnv.code.append("<td>\n");
