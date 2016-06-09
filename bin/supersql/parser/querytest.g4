@@ -587,10 +587,10 @@ K_AVG	:	A V G	;
 K_COUNT	:	C O U N T	;			
 K_SUM	:	S U M	;
 
-//MEDIA	:	K_GENERATE ([ \t\r\n])+ [a-zA-Z_-]+[0-9]* ;
+//MEDIA	:	K_GENERATE (WS)+ [a-zA-Z_-]+[0-9]* ;
 
-//FUNC1 :	'$'?[a-zA-Z]+[0-9]*([ \t\r\n])*'('	;
-//FUNC2 :	[a-zA-Z]+([ \t\r\n])*'['	;
+//FUNC1 :	'$'?[a-zA-Z]+[0-9]*(WS)*'('	;
+//FUNC2 :	[a-zA-Z]+(WS)*'['	;
 
 C0  : '?' ;
 C1	:	','	;
@@ -606,29 +606,29 @@ CLOSE_BRACE	:	'}'	;
 SEMICOLON	:	';'	;
 
 DECOLATOR	:
-	'@'([ \t\r\n])*'{'
+	'@'(WS)*'{'
 		(
-			([ \t\r\n])*[a-zA-Z_.-]+([ \t\r\n])*[0-9]*
+			(WS)*[a-zA-Z_.-]+(WS)*[0-9]*
 			| 
-			([ \t\r\n])*[a-zA-Z_.-]+([ \t\r\n])*'='
-			([ \t\r\n])*(
+			(WS)*[a-zA-Z_.-]+(WS)*'='
+			(WS)*(
 				'#'?[a-zA-Z_0-9.-]+ 
 				| [0-9]+('%')? 
 				| STRING_LITERAL 
-				| (('~' | '.' | [a-zA-Z_0-9]+ | ':')+(([ \t\r\n])*('/' | '//')[a-zA-Z_0-9.]+)*)
+				| (('~' | '.' | [a-zA-Z_0-9]+ | ':')+((WS)*('/' | '//')[a-zA-Z_0-9.]+)*)
 			)
 		)
-			(([ \t\r\n])*','
+			((WS)*','
 				(
-					[ \t\r\n])*[a-zA-Z_.-]+([ \t\r\n])*[0-9]* 
-					| ([ \t\r\n])*[a-zA-Z_.-]+([ \t\r\n])*'='
-					([ \t\r\n])*(
+					WS)*[a-zA-Z_.-]+(WS)*[0-9]* 
+					| (WS)*[a-zA-Z_.-]+(WS)*'='
+					(WS)*(
 						'#'?[a-zA-Z_0-9.-]+ 
 						| [0-9]+('%')? 
 						| STRING_LITERAL 
-						| (('~' | '.' | [a-zA-Z_0-9]+)(([ \t\r\n])*'/'[a-zA-Z_0-9.]+)*)
+						| (('~' | '.' | [a-zA-Z_0-9]+)((WS)*'/'[a-zA-Z_0-9.]+)*)
 					)
-			)*([ \t\r\n])*
+			)*(WS)*
 	'}'	
 			;
 
@@ -660,7 +660,7 @@ MULTI_LINE_COMMENT	:
 	'/*' .*? ( '*/' | EOF ) -> channel(HIDDEN)	; 
 SINGLE_LINE_COMMENT	:
 	'--' ~[\r\n]* -> channel(HIDDEN)	;
-WS	:	[ \t\r\n]+ -> channel(HIDDEN) ;
+WS	:	[ \t\r\n　]+ -> channel(HIDDEN) ;
 
 UNEXPECTED_CHAR
   : .
