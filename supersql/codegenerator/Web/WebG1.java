@@ -9,6 +9,7 @@ import supersql.extendclass.ExtList;
 public class WebG1 extends Grouper {
 	private WebEnv webEnv;
 	private WebEnv webEnv2;
+	boolean retFlag = false; // multi-repeater flag
 	
 	public WebG1(Manager manager, WebEnv wEnv, WebEnv wEnv2) {
 		this.webEnv = wEnv;
@@ -46,13 +47,21 @@ public class WebG1 extends Grouper {
 		// cssの情報を取得
 		webEnv.append_css_def_att(WebEnv.getClassID(this), this.decos);
 		
+		// 複合反復子の場合
+		int count = 0;
+		int i = 0;
+		if (decos.containsKey("column")) {
+			i = Integer.parseInt(decos.getStr("column"));
+			retFlag = true;
+		}
+		
 		// htmlコード書き込み
 		if (!GlobalEnv.isOpt()) {
 			if (table_event) {
 				webEnv.code.append("<td>\n");
 			} else if (listul_event || listol_event) {
 				webEnv.code.append("<li>\n");
-			}else {
+			} else {
 				webEnv.code.append("<div class=\"");
 				webEnv.code.append(WebEnv.getClassID(this));
 				webEnv.code.append(" row\">\n");
@@ -77,6 +86,16 @@ public class WebG1 extends Grouper {
 			String classid = WebEnv.getClassID(tfe);
 			
 			this.worknextItem();
+			count++;
+			
+			if (retFlag) {
+				if ((count % i) == 0) {
+					webEnv.code.append("</div>\n");
+					webEnv.code.append("<div class=\"");
+					webEnv.code.append(WebEnv.getClassID(this));
+					webEnv.code.append(" row\">\n");
+				}
+			}
 		}
 		
 		if (webEnv.borderFlag && !border_event) {

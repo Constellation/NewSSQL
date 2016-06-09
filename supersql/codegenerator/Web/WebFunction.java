@@ -59,6 +59,11 @@ public class WebFunction extends Function {
 			Func_line();
 		}
 		
+		// null関数の発動
+		if (FuncName.equalsIgnoreCase("null")) {
+			Func_null();
+		}
+		
 		// text関数の発動
 		if (FuncName.equalsIgnoreCase("text")) {
 			Func_text();
@@ -138,6 +143,11 @@ public class WebFunction extends Function {
 		} catch (Exception e) { // 引数なし(デフォルト)
 			webEnv.code.append("<hr width=\"100%\" color=\"#000000\" size=\"10\">");
 		}
+	}
+	
+	// null関数
+	protected void Func_null() {
+		// 特に何も表記しない // TODO
 	}
 	
 	// text関数
