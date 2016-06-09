@@ -249,7 +249,7 @@ public class CodeGenerator {
 			if( ((ExtList)tfe_tree.get(1)).get(0) instanceof String ){
 				if(((ExtList)tfe_tree.get(1)).get(0).toString().equals("{")){
 					((ExtList)tfe_tree.get(1)).remove(0);
-					((ExtList)tfe_tree.get(1)).remove(((ExtList)tfe_tree.get(1)).size() - 1);
+					((ExtList)tfe_tree.get(1)).remove(((ExtList)tfe_tree.get(1)).indexOf("}"));
 				}
 				out_sch = read_attribute( (ExtList)((ExtList)tfe_tree.get(1)).get(0) );
 			}
@@ -327,7 +327,11 @@ public class CodeGenerator {
 		}else if(tfe_tree.get(0).toString().equals("h_exp")){
 			if( ((ExtList)tfe_tree.get(1)).size() == 1 )
 				out_sch = read_attribute( (ExtList)((ExtList)tfe_tree.get(1)).get(0) );
-			else
+			else if( ((ExtList)tfe_tree.get(1)).size() == 0 ){
+				((ExtList)tfe_tree.get(1)).add("");
+				Attribute WS = makeAttribute(((ExtList)tfe_tree.get(1)).get(0).toString());
+				out_sch = WS;
+			}else
 				out_sch = connector_main((ExtList)tfe_tree.get(1), 1);
 		}else if(tfe_tree.get(0).toString().equals("v_exp")){
 			if( ((ExtList)tfe_tree.get(1)).size() == 1 )
