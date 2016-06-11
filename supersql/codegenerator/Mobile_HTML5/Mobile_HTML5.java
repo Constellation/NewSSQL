@@ -1063,7 +1063,8 @@ public class Mobile_HTML5 {
 			//number
 		}else{
 			//attribute
-			s = "COALESCE("+s+", '')";	//NULL値 -> ''　NULLを含む行の表示のため（postgresql, sqlie, mysql共通関数）
+			//CAST(a AS varchar)
+			s = "COALESCE(CAST("+s+" AS varchar), '')";	//for displaying rows which include NULL values (common to postgresql, sqlie, mysql)
 			s = "'||"+s+"||'";
 		}
 		return s;
@@ -1408,8 +1409,8 @@ public class Mobile_HTML5 {
 						"    $col_num = "+col_num+";                          //カラム数(Java側で指定)\n" +
 						"    $table = '"+from+"';\n" +
 						"    $where0 = \""+where+"\";\n" +
-						"    $dynamic_col_array = array("+dynamic_col_array+");\n" +
-						"    $dynamic_col_num = count($dynamic_col_array);\n" +
+						//"    $dynamic_col_array = array("+dynamic_col_array+");\n" +
+						"    $dynamic_col_num = 1;\n" +//count($dynamic_col_array);\n" +
 						"    $dynamic_a_Flg = array("+dynamic_aFlg+");\n" +
 						"    $dynamic_mail_Flg = array("+dynamic_mailFlg+");\n" +
 						"    $dynamic_pop_Flg = array("+dynamic_popFlg+");\n" +
