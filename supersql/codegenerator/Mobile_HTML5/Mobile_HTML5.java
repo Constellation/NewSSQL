@@ -71,13 +71,10 @@ public class Mobile_HTML5 {
 		}
 		return true;
 	}
-	public static boolean afterWhileProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
+	public static boolean afterWhileProcess(String symbol, String tfeID, DecorateList decos, Mobile_HTML5Env html_env){
 		if(!symbol.contains("G1") && !symbol.contains("G2")){
 			dynamicStringGetProcess(symbol, decos, html_env);//最終的には不要
-			dynamicProcess(symbol, decos, html_env);//最終的には不要
-			
-//			formStringGetProcess(symbol, decos, html_env);
-//			formProcess(symbol, decos, html_env);
+			dynamicProcess(tfeID, symbol, decos, html_env);//最終的には不要
 		}
 		
 		Mobile_HTML5Function.func_null_count = 0;	//null()
@@ -88,9 +85,9 @@ public class Mobile_HTML5 {
 		}
 		return true;
 	}
-	public static boolean postProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
+	public static boolean postProcess(String symbol, String tfeID, DecorateList decos, Mobile_HTML5Env html_env){
 		if(symbol.contains("G1") || symbol.contains("G2")){
-			dynamicProcess(symbol, decos, html_env);
+			dynamicProcess(symbol, tfeID, decos, html_env);
 		}
 		if(!symbol.contains("G1") && !symbol.contains("G2")){
 			formStringGetProcess(symbol, decos, html_env);
@@ -99,7 +96,6 @@ public class Mobile_HTML5 {
 		
 		//Post-process (後処理)
 		showCloseProcess(decos, html_env);
-//		Mobile_HTML5Env.divWidth = "";
 		dynamicString = "";
 		formString = "";
 		return true;
@@ -107,16 +103,20 @@ public class Mobile_HTML5 {
 	
 	
 	//get DIV width (C1,G1)
-	public static String getDivWidth(DecorateList decos, int numberOfColumns){
+	public static String getDivWidth(String type, DecorateList decos, int numberOfColumns){
     	//20131002
 		String divWidthStr = "";
-    	if(decos.containsKey("width")){
-    		divWidthStr = decos.getStr("width");
-    	}else{
-	    	float divWidth = (float)Math.floor((double)(100.0/numberOfColumns)* 1000) / 1000;
+		if(type.equals("C1"))
+	    	if(decos.containsKey("width")){
+	    		divWidthStr = decos.getStr("width");
+	    	}else{
+		    	float divWidth = (float)Math.floor((double)(100.0/numberOfColumns)* 1000) / 1000;
+	        	divWidthStr = divWidth+"%";
+	    	}
+		else if(type.equals("G1")){
+			float divWidth = (float)Math.floor((double)(100.0/numberOfColumns)* 1000) / 1000;
         	divWidthStr = divWidth+"%";
-    	}
-//    	tfe.addDeco("width", Mobile_HTML5Env.divWidth); <= この方法は、widthが上書き？されるためNG
+		}
 		return divWidthStr;
 	}
 	
@@ -583,7 +583,7 @@ public class Mobile_HTML5 {
 									""+((!textareaFlg[i])?(""):("</textarea>"))+"\n";
 						}else{
 							//TODO 2nd引数
-							statement += Mobile_HTML5.getFormValidationString(validationType[i], false, "form"+formCount+"_words"+(++insertWordCount), s_name_array[i], null);
+							statement += Mobile_HTML5.getFormValidationString(validationType[i], false, "form"+formCount+"_words"+(++insertWordCount), s_name_array[i], null, "");
 						}
 					}
 				}else{
@@ -906,7 +906,7 @@ public class Mobile_HTML5 {
 		return type;
 	}
 //	static String upFormVal = "";
-	public static String getFormValidationString(String type, Boolean notnull, String name, String placeholder, String updateFromValue){
+	public static String getFormValidationString(String type, Boolean notnull, String name, String placeholder, String updateFromValue, String outTitle){
 		String s = "";
 		type = type.toLowerCase().trim();
 //		upFormVal = updateFromValue; //TODO: 他の方法
@@ -921,6 +921,7 @@ public class Mobile_HTML5 {
 //	    X date5<input type="text" name="insert1_words4" placeholder="Month / Day" data-role="datebox" data-options='{"mode":"calbox", "useNewStyle":true, "overrideCalHeaderFormat": "%m / %d", "overrideDateFormat": "%m/%d" }'}' >
 //	    ◎time <input type="text" name="insert1_words5" placeholder="Ex) 12:01" data-role="datebox" data-options='{"mode":"timebox", "overrideTimeFormat":24, "useNewStyle":true}'>
 
+		s += outTitle;
 		switch (type){
 		  case "tel":	//tel (custom type)
 			  s += getFormTag("tel", name, placeholder, "Telephone number", notnull, type);
@@ -1062,6 +1063,8 @@ public class Mobile_HTML5 {
 			//number
 		}else{
 			//attribute
+			//CAST(a AS varchar)
+			s = "COALESCE(CAST("+s+" AS varchar), '')";	//for displaying rows which include NULL values (common to postgresql, sqlie, mysql)
 			s = "'||"+s+"||'";
 		}
 		return s;
@@ -1121,7 +1124,7 @@ public class Mobile_HTML5 {
 		}
 		return false;
 	}
-	private static boolean dynamicProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
+	private static boolean dynamicProcess(String symbol, String tfeID, DecorateList decos, Mobile_HTML5Env html_env){
 		if(decos.containsKey("dynamic")){
 			
 			if(symbol.contains("G1") || symbol.contains("G2")){
@@ -1143,8 +1146,6 @@ public class Mobile_HTML5 {
 				ajax_loadInterval = (int) (Float.parseFloat(s)*1000.0);
 				//Log.i(ajax_loadInterval);
 			}
-			
-//			dynamicString = dynamicString.replaceAll("'", "\\\\\\\\\\\\\'");											//　' -> \'				//TODO これでOK?
 			
 			//TODO div, table以外の場合
 			int numberOfColumns = 1;
@@ -1205,8 +1206,6 @@ public class Mobile_HTML5 {
 			
 			
 			dynamicString = dynamicString.replaceAll("\r\n", "").replaceAll("\r", "").replaceAll("\n", "");	//改行コードの削除
-//			if(!dynamicRowFlg)	dynamicString = dynamicString.replaceAll("\"", "\\\\\\\\\\\\\"");			//　" -> \\\"			//TODO これでOK?
-//			else				dynamicString = dynamicString.replaceAll("\"", "\\\\\"");					//　" -> \"
 			dynamicString = dynamicString.replaceAll("\"", "\\\\\"");										//　" -> \"
 			//Log.e(dynamicString);
 			
@@ -1353,7 +1352,7 @@ public class Mobile_HTML5 {
 	    		orderby = query.substring(query.lastIndexOf(" order by ")+" order by ".length());
 	    		query = query.substring(0,query.lastIndexOf(" order by "));
 	    	}
-	    	String asc_desc = getOrderByString();
+	    	String asc_desc = getOrderByString(dynamicCount);
 	    	if(!asc_desc.isEmpty()){
 	    		if (!orderby.isEmpty())	orderby += ", ";
 	    		orderby += asc_desc;
@@ -1373,26 +1372,22 @@ public class Mobile_HTML5 {
 	    		if(where.contains("$session")){
 	    			//if WHERE phrase contains $session(XX)
 	    			where = where.replaceAll("\\$session","'\".\\$_SESSION").replaceAll("\\(","[\"").replaceAll("\\)","\"].\"'");
+	    			//if it contains $_SESSION [""attribute""] or $_SESSION [" "attribute" "]
+	    			where = where.replace("[\"\"","[\"").replace("\"\"]","\"]").replace("[\" \"","[\"").replace("\" \"]","\"]");
 	    		}
 	    		query = query.substring(0,query.lastIndexOf(" where "));
 	    	}
 	    	from = query.trim();
-	    	//Log.i("	FROM: "+from+"\n	WHERE: "+where+"\n	GROUP: "+groupby+"\n	HAVING: "+having);
-	    	//Log.i("	ORDER: "+orderby+"\n	LIMIT: "+limit+"\n	Query: "+query);
 	    	
-//	    	if(!groupbyFlg){
-//	    		groupby = "";
-//	    		having = "";
-//	    	}
 	    	
 	    	String statement = "";
 	    	String php = getSessionStartString()
 	    			     +"<?php\n";
 	    	//php
     		if(!dynamicRowFlg){
-	    		statement += getDynamicHTML(dynamicCount, dynamicPHPfileName);
+	    		statement += getDynamicHTML(tfeID, dynamicCount, dynamicPHPfileName);
     		}else{
-    			statement += getDynamicPagingHTML(dynamicRow, dynamicPagingCount, dynamicPHPfileName);
+    			statement += getDynamicPagingHTML(tfeID, dynamicRow, dynamicPagingCount, dynamicPHPfileName);
     		}
     		php += 
 					"$ret = array();\n" +
@@ -1414,8 +1409,8 @@ public class Mobile_HTML5 {
 						"    $col_num = "+col_num+";                          //カラム数(Java側で指定)\n" +
 						"    $table = '"+from+"';\n" +
 						"    $where0 = \""+where+"\";\n" +
-						"    $dynamic_col_array = array("+dynamic_col_array+");\n" +
-						"    $dynamic_col_num = count($dynamic_col_array);\n" +
+//						"    $dynamic_col_array = array("+dynamic_col_array+");\n" +
+						"    $dynamic_col_num = 1;\n" +//count($dynamic_col_array);\n" +
 						"    $dynamic_a_Flg = array("+dynamic_aFlg+");\n" +
 						"    $dynamic_mail_Flg = array("+dynamic_mailFlg+");\n" +
 						"    $dynamic_pop_Flg = array("+dynamic_popFlg+");\n" +
@@ -1580,30 +1575,32 @@ public class Mobile_HTML5 {
 	}
 	
 	//getOrderByString
-	private static String getOrderByString() {
+	private static String getOrderByString(int DynamicCount) {
 		String s = "";
 		Asc_Desc ad = new Asc_Desc();
+		//System.out.println(dynamicCount-1);
+		ad.asc_desc = ad.asc_desc_Array.get(dynamicCount-1);
 		ad.sorting();
 		
-		@SuppressWarnings("static-access")
-		Iterator<AscDesc> it = ad.asc_desc.iterator();
+		Iterator<AscDesc> it = Asc_Desc.asc_desc.iterator();
 		while (it.hasNext()) {
 			AscDesc data = it.next();
 			s += data.getAscDesc()+", ";
 			//Log.info(data.getNo() + " : " + data.getAscDesc());
 		}
         if(!s.isEmpty() && s.contains(","))	s = s.substring(0, s.lastIndexOf(","));
+		//System.out.println("s="+s);
 		return s;
 	}
 	
-	private static String getDynamicHTML(int num, String phpFileName){
+	private static String getDynamicHTML(String tfeID, int num, String phpFileName){
 		phpFileName = new File(phpFileName).getName();
 		String s =
 				"\n" +
 				"<!-- SSQL Dynamic"+num+" start -->\n" +
 				"<!-- SSQL Dynamic"+num+" DIV start -->\n" +
 				"<div id=\"SSQL_DynamicDisplay"+num+"_Panel\" style=\"\" data-role=\"none\">\n" +
-				"<div id=\"SSQL_DynamicDisplay"+num+"\" data-role=\"none\"><!-- SSQL Dynamic Display Data"+num+" --></div>\n" +
+				"<div id=\"SSQL_DynamicDisplay"+num+"\" class=\""+tfeID+"\" data-role=\"none\"><!-- SSQL Dynamic Display Data"+num+" --></div>\n" +
 				"</div>\n" +
 				"<!-- SSQL Dynamic"+num+" DIV end -->\n" +
 				"\n" +
@@ -1641,14 +1638,13 @@ public class Mobile_HTML5 {
 				"<!-- SSQL Dynamic"+num+" end -->\n\n";
 		return s;
 	}
-	private static String getDynamicPagingHTML(int row, int num, String phpFileName){
+	private static String getDynamicPagingHTML(String tfeID, int row, int num, String phpFileName){
 		phpFileName = new File(phpFileName).getName();
 		String s =
 				"\n" +
 				"<!-- SSQL DynamicPaging"+num+" start -->\n" +
 				"<!-- SSQL DynamicPaging"+num+" DIV start -->\n" +
-				//"<div id=\"SSQL_DynamicDisplayPaging"+num+"_Buttons\"></div>\n" +
-				"<div id=\"SSQL_DynamicDisplayPaging"+num+"\" data-role=\"none\"><!-- SSQL Dynamic Display Data"+num+" --></div>\n" +
+				"<div id=\"SSQL_DynamicDisplayPaging"+num+"\" class=\""+tfeID+"\" data-role=\"none\"><!-- SSQL Dynamic Display Data"+num+" --></div>\n" +
 				"<div id=\"SSQL_DynamicDisplayPaging"+num+"_Buttons\"></div>\n" +
 				"<!-- SSQL DynamicPaging"+num+" DIV end -->\n" +
 				"\n" +
@@ -1659,8 +1655,6 @@ public class Mobile_HTML5 {
 				"\n" +
 				"var SSQL_DynamicDisplayPaging"+num+"_currentItems = 1;		//グローバル変数\n" +
 				"function SSQL_DynamicDisplayPaging"+num+"_echo(str){\n" +
-				//"  var textArea = document.getElementById(\"SSQL_DynamicDisplayPaging"+num+"\");\n" +
-				//"  textArea.innerHTML = str;\n" +
 				"  $(\"#SSQL_DynamicDisplayPaging"+num+"\").html(str).trigger(\"create\");\n" +
 				"}\n";
 		if(ajax_loadInterval>0){

@@ -846,5 +846,14 @@ public class GlobalEnv {
 			outdir = GlobalEnv.getfileparent();
 		return outdir;
 	}
+	// added by masato 20150525
+	public static String getLinkValue(){
+		return seek("-ehtmlarg");
+	}
+	
+	// added by masato 20151128 for execute multiple query in ehtml or incremental
+	public static Integer getQueryNum(){
+		return Integer.parseInt(seek("-querynum"));
+	}
 
 }

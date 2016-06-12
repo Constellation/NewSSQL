@@ -244,6 +244,7 @@ public class CodeGenerator {
 		String iterator = new String();
 		boolean add_deco = false;
 
+		Asc_Desc ascDesc = new Asc_Desc();
 		if(tfe_tree.get(0).toString().equals("operand")){
 			
 			if( ((ExtList)tfe_tree.get(1)).get(0) instanceof String ){
@@ -311,6 +312,11 @@ public class CodeGenerator {
 			if( !(((ExtList)tfe_tree.get(1)).get( ((ExtList)tfe_tree.get(1)).size() - 1 ) instanceof ExtList) ){
 				String deco = ((ExtList)tfe_tree.get(1)).get( ((ExtList)tfe_tree.get(1)).size() - 1 ).toString();
 				if(deco.contains("@{")){
+		    		if(deco.contains("dynamic")){
+		    			ascDesc.add_asc_desc_Array();
+		    			ascDesc.dynamicCount++;
+		    			//TODO (asc)@{static}! (asc)@{dynamic}! 
+		    		}
 					if(add_deco){
 						deco = deco.substring(0, deco.lastIndexOf("}")) + "," + decos + "}";
 						setDecoration(out_sch, deco);
@@ -328,7 +334,8 @@ public class CodeGenerator {
 			if( ((ExtList)tfe_tree.get(1)).size() == 1 )
 				out_sch = read_attribute( (ExtList)((ExtList)tfe_tree.get(1)).get(0) );
 			else if( ((ExtList)tfe_tree.get(1)).size() == 0 ){
-				((ExtList)tfe_tree.get(1)).add("");
+				((ExtList)tfe_tree.get(1)).add("\"\"");
+				Log.info(tfe_tree);
 				Attribute WS = makeAttribute(((ExtList)tfe_tree.get(1)).get(0).toString());
 				out_sch = WS;
 			}else
@@ -580,8 +587,8 @@ public class CodeGenerator {
 		name = name.trim();
 		att_tmp = name;
 		// tk//////////////////////////////////
-		Log.out("[makeAttribute] line : " + line);
-		Log.out("[makeAttribute] name : " + name);
+		Log.info("[makeAttribute] line : " + line);
+		Log.info("[makeAttribute] name : " + name);
 
 		Attribute att = createAttribute();
 		attno = att.setItem(attno, name, line, key, attp);
