@@ -22,8 +22,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Hashtable;
 
-import com.ibm.db2.jcc.am.s;
-
 import supersql.codegenerator.CodeGenerator;
 import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.FuncArg;
@@ -2719,11 +2717,15 @@ public class Mobile_HTML5Function extends Function {
 							}
 							
 							if(isSQL){
-								//DBから値を取得する処理
-								statement += "<?php	require_once '"+fn+"'; ?>\n";
-								update_statement += "<?php	require_once '"+fn+"'; ?>\n";
+								String b = "require_once '"+fn+"';";
+								if(!SSQLparser.sessionFlag)
+									b = "<?php "+b+" ?>\n";
+								else
+									b = "EOF;\n"+b+"\n		echo <<<EOF\n";
+								statement += b;
+								update_statement += b;
 								
-								//php作成
+								//php
 								int checked_num = 1;
 								String sql = val;
 								String php2 =	Mobile_HTML5.getSessionStartString() +
