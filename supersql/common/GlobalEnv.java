@@ -80,6 +80,9 @@ public class GlobalEnv {
 
 	//foreach��
 	public static boolean foreach_flag;
+	
+	//sessionなど
+	public static boolean session_flag = false;
 
 	//added by ria 20110704 start
 	private static boolean optimizable = true;

@@ -133,6 +133,7 @@ public class Mobile_HTML5 {
 	static ArrayList<String> formColumn0 = new ArrayList<>();
 	static ArrayList<String> formColumnAlias = new ArrayList<>();
 	static ArrayList<String> formColumnTable = new ArrayList<>();
+	
 //	public static String formFuncArgProcess(ITFE tfe, DecorateList decos){
 //		//For Function
 //		return createFormAttribute(tfe, decos);
@@ -207,7 +208,6 @@ public class Mobile_HTML5 {
 	private static boolean formProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
 		if(decos.containsKey("form")){
 			
-			
 			//Log.e(" - Start form process -");
 			//Log.e(formString);
 			
@@ -264,9 +264,8 @@ public class Mobile_HTML5 {
 			if(after_from.toLowerCase().startsWith("from "))	after_from = after_from.substring("from".length()).trim();
 			if(insert_update)	insertFlag = "true";	//20130721
 			//Log.info(title);
-	    	
-	    	
-	    	//置換 ( @ { , }  ->  @ { ; } )
+
+			//置換 ( @ { , }  ->  @ { ; } )
 			//Log.i("Before: "+columns);
 	    	int inAtFlg = 0;
 	    	for(int i=0; i<columns.length();i++){

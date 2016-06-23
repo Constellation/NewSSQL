@@ -443,9 +443,16 @@ public class Start_Parse {
 					ParseTree tree_a = parser_a.prefix(); // begin parsing at rule query
 					List_tree_a = TreeConst.createSSQLParseTree(tree_a, parser_a);
 					Log.info(List_tree_a);
-					if(((ExtList)List_tree_a.get(1)).get(0).toString().toLowerCase().equals("foreach"))
+					String pre = ((ExtList)List_tree_a.get(1)).get(0).toString();
+					if(pre.toLowerCase().equals("foreach")){
 						foreachFlag = true;
-					foreachinfo = TreeConst.getforeach(List_tree_a);
+						foreachinfo = TreeConst.getforeach(List_tree_a);
+					}
+					else if( ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)List_tree_a.get(1)).get(0)).get(1)).get(0)).get(1)).get(0)).get(1)).get(0).toString().toUpperCase().matches("SESSION.*") 
+							|| ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)List_tree_a.get(1)).get(0)).get(1)).get(0)).get(1)).get(0)).get(1)).get(0).toString().toUpperCase().matches("LOGIN.*")){
+						sessionString = a;
+						sessionFlag = true;
+					}
 					prefix = true;
 
 				}
@@ -473,10 +480,10 @@ public class Start_Parse {
 
 
 					b = generate + b1 + "]%" + b2;
-					Log.info(b);
 				}
 				GlobalEnv.foreach_flag = foreachFlag;
 				Preprocessor preprocessor = new Preprocessor(b);
+				
 				ANTLRInputStream input_b = new ANTLRInputStream(b);
 				querytestLexer lexer_b = new querytestLexer(input_b);
 				CommonTokenStream tokens_b = new CommonTokenStream(lexer_b);
@@ -518,7 +525,7 @@ public class Start_Parse {
 
 				}
 //				Log.info(list_media);
-//				Log.info(list_tfe);
+				Log.info(list_tfe);
 //				Log.info(list_from);
 //				Log.info(list_where);
 				postProcess();

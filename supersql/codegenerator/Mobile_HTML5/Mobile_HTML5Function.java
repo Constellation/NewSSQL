@@ -22,8 +22,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Hashtable;
 
-import com.ibm.db2.jcc.am.s;
-
 import supersql.codegenerator.CodeGenerator;
 import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.FuncArg;
@@ -2644,12 +2642,12 @@ public class Mobile_HTML5Function extends Function {
 						//ラジオボタン, セレクトボックス, チェックボックス
 						//System.out.println("ss : "+ss);
 						//System.out.println("at : "+at);
-
+						
 						String inputType = "radio";		//Default: input type="radio"
 						if(at.contains("select"))		inputType = "select";
 						else if(at.contains("check"))	inputType = "checkbox";
 						boolean isSQL = !at.contains("sql")? false : true;
-
+						
 						//ラジオボタン ex){出席|欠席|その他}@{radio}, {★☆☆=1|★★☆=2|★★★=3}など (2個以上の選択項目がある場合、@{radio}はあってもなくてもOK)
 						//セレクトボックス ex){出席|欠席|その他}@{selectbox もしくは select}
 						//チェックボックス ex){出席|欠席|その他}@{checkbox もしくは check}
@@ -2719,11 +2717,15 @@ public class Mobile_HTML5Function extends Function {
 							}
 							
 							if(isSQL){
-								//DBから値を取得する処理
-								statement += "<?php	require_once '"+fn+"'; ?>\n";
-								update_statement += "<?php	require_once '"+fn+"'; ?>\n";
+								String b = "require_once '"+fn+"';";
+								if(!Start_Parse.sessionFlag)
+									b = "<?php "+b+" ?>\n";
+								else
+									b = "EOF;\n"+b+"\n		echo <<<EOF\n";
+								statement += b;
+								update_statement += b;
 								
-								//php作成
+								//php
 								int checked_num = 1;
 								String sql = val;
 								String php2 =	Mobile_HTML5.getSessionStartString() +
