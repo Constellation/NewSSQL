@@ -1,5 +1,4 @@
 GENERATE HTML
-{"部署名","マネージャー"}!
-[ d.name, e.name]!
+&CONCAT("taji:", "test")
 FROM dept d, employee e
 WHERE d.manager=e.id

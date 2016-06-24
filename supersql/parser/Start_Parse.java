@@ -524,6 +524,7 @@ public class Start_Parse {
 					processKeywords(after_from);
 
 				}
+				Log.info(List_tree_b);
 //				Log.info(list_media);
 				Log.info(list_tfe);
 //				Log.info(list_from);

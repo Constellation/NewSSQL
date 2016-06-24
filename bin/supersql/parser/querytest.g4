@@ -43,6 +43,7 @@ media	:	K_GENERATE IDENTIFIER	;
 operand    :  
 			( 
 				(function
+        | sqlfunc
 				| OPEN_BRACE exp CLOSE_BRACE
 				| (sorting)?((table_alias '.')? column_name)
 				| grouper 
@@ -150,12 +151,30 @@ function	:
 			)* 
 		)*
 		CLOSE_PARENTHESE
-//	| ag_function_name 
-//		OPEN_BRACKET
-//		((table_alias '.')? column_name)
-//		CLOSE_BRACKET
 	)
 	;
+
+//for sql function
+sqlfunc  :
+  ('&' function_name
+    OPEN_PARENTHESE
+    (
+      (
+      operand
+      | exp
+      | expr 
+      ) 
+      (',' 
+        (
+        operand
+        | exp
+        | expr
+        )
+      )* 
+    )*
+    CLOSE_PARENTHESE
+  )
+  ;
 
 aggregate :
     ag_function_name 

@@ -178,6 +178,18 @@ public class querytestBaseListener implements querytestListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterSqlfunc(querytestParser.SqlfuncContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSqlfunc(querytestParser.SqlfuncContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterAggregate(querytestParser.AggregateContext ctx) { }
 	/**
 	 * {@inheritDoc}

@@ -144,6 +144,16 @@ public interface querytestListener extends ParseTreeListener {
 	 */
 	void exitFunction(querytestParser.FunctionContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link querytestParser#sqlfunc}.
+	 * @param ctx the parse tree
+	 */
+	void enterSqlfunc(querytestParser.SqlfuncContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link querytestParser#sqlfunc}.
+	 * @param ctx the parse tree
+	 */
+	void exitSqlfunc(querytestParser.SqlfuncContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link querytestParser#aggregate}.
 	 * @param ctx the parse tree
 	 */
