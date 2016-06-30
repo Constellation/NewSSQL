@@ -11,6 +11,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.StringTokenizer;
 import java.util.TreeSet;
 
 import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.*;
 
 import supersql.codegenerator.AttributeItem;
@@ -372,7 +374,7 @@ public class Start_Parse {
 			}
 			Mobile_HTML5Function.after_from_string += nt+" ";	//added by goto 20130515  "search"
 		}
-		Log.info(from_c);
+		Log.out(from_c);
 	}
 
 	private void postProcess() {
@@ -483,7 +485,7 @@ public class Start_Parse {
 				}
 				GlobalEnv.foreach_flag = foreachFlag;
 				Preprocessor preprocessor = new Preprocessor(b);
-				
+
 				ANTLRInputStream input_b = new ANTLRInputStream(b);
 				querytestLexer lexer_b = new querytestLexer(input_b);
 				CommonTokenStream tokens_b = new CommonTokenStream(lexer_b);
@@ -495,6 +497,8 @@ public class Start_Parse {
 				List_tree_b = (ExtList) List_tree_b.get(1);
 				list_media = (ExtList) List_tree_b.get(0);
 				list_tfe = (ExtList) List_tree_b.get(1);
+				String[] ruleNames = parser_b.getRuleNames();
+//				Log.info(getText(list_tfe, ruleNames));
 				if(List_tree_b.size() > 2){
 					list_from_where = (ExtList) List_tree_b.get(2);
 					list_from = new ExtList();
@@ -521,14 +525,17 @@ public class Start_Parse {
 					list_table = set_fromInfo();
 
 					after_from = b.substring(b.toLowerCase().indexOf("from") + 4).trim();
+					after_from = getText( list_from_where, ruleNames );
+//					Log.info(after_from);
+
 					processKeywords(after_from);
 
 				}
-				Log.info(List_tree_b);
-//				Log.info(list_media);
-				Log.info(list_tfe);
-//				Log.info(list_from);
-//				Log.info(list_where);
+				//				Log.info(List_tree_b);
+				//				Log.info(list_media);
+//								Log.info(list_tfe);
+				//				Log.info(list_from);
+				//				Log.info(list_where);
 				postProcess();
 
 				codegenerator = new CodeGenerator();
@@ -537,5 +544,42 @@ public class Start_Parse {
 
 			}
 		}
+	}
+	String builder = new String();
+	public String getText(ExtList tree, String[] ruleNames){
+		if(tree.size() != 1){
+			for(int i = 0; i < tree.size(); i++){
+				if(tree.get(i) instanceof String){
+					if(Arrays.asList(ruleNames).contains(tree.get(i).toString())){
+						continue;
+					}else{
+						if( tree.get(i).toString().equals(".") ){
+							builder = builder.trim();
+							builder += tree.get(i).toString();
+						}
+						else if( tree.get(i).toString().toLowerCase().equals("from") ){
+							continue;
+						}else{
+							builder += tree.get(i).toString();
+							builder += " ";
+						}
+					}
+				}else {
+					getText((ExtList)tree.get(i), ruleNames);
+				}
+			}
+		}
+		else if(tree.size() == 1 && (tree.get(0) instanceof String)){
+			builder += tree.get(0).toString();
+			builder += " " ;
+			return builder.toString();
+		}
+		else if(tree.size() == 1 && ((ExtList)tree.get(0)).size() > 1 ){
+			return getText((ExtList)tree.get(0), ruleNames);
+		}
+		else if(tree.size() == 1 && ((ExtList)tree.get(0)).size() == 1 ){
+			return getText((ExtList)tree.get(0), ruleNames);
+		}
+		return builder.toString();
 	}
 }

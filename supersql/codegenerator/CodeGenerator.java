@@ -350,7 +350,7 @@ public class CodeGenerator {
 				out_sch = read_attribute( (ExtList)((ExtList)tfe_tree.get(1)).get(0) );
 			else if( ((ExtList)tfe_tree.get(1)).size() == 0 ){
 				((ExtList)tfe_tree.get(1)).add("\"\"");
-				Log.info(tfe_tree);
+//				Log.info(tfe_tree);
 				Attribute WS = makeAttribute(((ExtList)tfe_tree.get(1)).get(0).toString());
 				out_sch = WS;
 			}else

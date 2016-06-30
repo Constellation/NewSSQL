@@ -7,6 +7,13 @@ import supersql.parser.Start_Parse;
 
 public class FrontEnd {
 
+	public static Start_Parse parser;
+	public static long start = 0;
+	public static long afterparser = 0;
+	public static long afterdc;
+	public static long aftercg;
+	public static long aftersql;
+	
 	public static void main(String[] args) {
 		new FrontEnd(args);
 	}
@@ -17,13 +24,13 @@ public class FrontEnd {
 	
 	public void execSuperSQL(String[] args) {
 
-		long start = System.currentTimeMillis();
+		start = System.currentTimeMillis();
 		
 		GlobalEnv.setGlobalEnv(args);
 
 		Log.info("//Entering SuperSQL System//");
 
-		Start_Parse parsertree = new Start_Parse(); //read file & parse query
+		parser = new Start_Parse(); //read file & parse query
 		
 		if (GlobalEnv.isCheckquery()){
 			if (GlobalEnv.getErrFlag() == 0)
@@ -31,30 +38,37 @@ public class FrontEnd {
 			return;
 		}
 
-		long afterparser = System.currentTimeMillis();
-		long afterdc = 0;
-		long aftercg = 0;
+		afterparser = System.currentTimeMillis();
+		afterdc = 0;
+		aftercg = 0;
+		aftersql = 0;
 
 		if (GlobalEnv.getErrFlag() == 0) {
-			CodeGenerator codegenerator = parsertree.getcodegenerator();
+			CodeGenerator codegenerator = parser.getcodegenerator();
 			if (GlobalEnv.getErrFlag() == 0) {
-				codegenerator.CodeGenerator(parsertree);
+				codegenerator.CodeGenerator(parser);
 
-				DataConstructor dc = new DataConstructor(parsertree);
+				DataConstructor dc = new DataConstructor(parser);
 				afterdc = System.currentTimeMillis();
 
 				if (GlobalEnv.getErrFlag() == 0) {
-					codegenerator.generateCode(parsertree, dc.getData());
+					codegenerator.generateCode(parser, dc.getData());
 					aftercg = System.currentTimeMillis();
 				}
 			}
 		}
 
 		long end = System.currentTimeMillis();
-		Log.info("Parsing Time : " + (afterparser - start) + "msec");
-		Log.info("Data construction Time : "+ (afterdc - afterparser) + "msec");
-		Log.info("Code generation Time : " + (aftercg - afterdc) + "msec");
+//		Log.info("Parsing Time : " + (afterparser - start) + "msec");
+//		Log.info("Data construction Time : "+ (afterdc - afterparser) + "msec");
+//		Log.info("Code generation Time : " + (aftercg - afterdc) + "msec");
 		Log.info("ExecTime: " + (end - start) + "msec");
+		
+		// eHTML
+//		Log.ehtmlInfo("Parsing Time : " + (afterparser - start) + "msec<br>");
+//		Log.ehtmlInfo("Data construction Time : " + (afterdc - afterparser) + "msec<br>");
+//		Log.ehtmlInfo("Code generation Time : " + (aftercg - afterdc) + "msec<br>");
+//		Log.ehtmlInfo("ExecTime: " + (end - start) + "msec<br>");
 		
 		GlobalEnv.queryInfo += GlobalEnv.getusername() + " | " + GlobalEnv.queryName +  " | ";
 		if (GlobalEnv.getErrFlag() == 0){

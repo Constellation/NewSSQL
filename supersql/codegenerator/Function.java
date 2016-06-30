@@ -160,7 +160,7 @@ public class Function extends Operand {
 			}
 		}
 		
-		Log.info("getClassName = "+result);
+		Log.out("getClassName = "+result);
 		return result;
 
 	}
