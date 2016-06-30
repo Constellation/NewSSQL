@@ -525,15 +525,20 @@ public class Start_Parse {
 					list_table = set_fromInfo();
 
 					after_from = b.substring(b.toLowerCase().indexOf("from") + 4).trim();
-					after_from = getText( list_from_where, ruleNames );
-//					Log.info(after_from);
+					Log.info( getText( list_from_where, ruleNames ) );
+					String from = new String();
+					while(after_from.contains("/*")){
+						from = after_from.substring(0, after_from.indexOf("/*"));
+						from += after_from.substring(after_from.indexOf("*/") +2);
+						after_from = from;
+					}
 
 					processKeywords(after_from);
 
 				}
 				//				Log.info(List_tree_b);
 				//				Log.info(list_media);
-//								Log.info(list_tfe);
+								Log.info(list_tfe);
 				//				Log.info(list_from);
 				//				Log.info(list_where);
 				postProcess();
@@ -556,9 +561,6 @@ public class Start_Parse {
 						if( tree.get(i).toString().equals(".") ){
 							builder = builder.trim();
 							builder += tree.get(i).toString();
-						}
-						else if( tree.get(i).toString().toLowerCase().equals("from") ){
-							continue;
 						}else{
 							builder += tree.get(i).toString();
 							builder += " ";

@@ -132,13 +132,13 @@ public class MyErrorStrategy extends DefaultErrorStrategy{
 					" >>>>>" + before_offending.trim().substring(before_offending.trim().length()-1) + "<<<<< " 
 					+ offendingtoken + after_offending + "\n" ;
 		}
-		else if(offendingtoken.contains("@{")){///////////////find error the place of decolator //////////////////////
-			msg_detail = "*****decolator can't appear here*****";
+		else if(offendingtoken.contains("@{")){///////////////find error the place of decorator //////////////////////
+			msg_detail = "*****decorator can't appear here*****";
 			msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + 
 					"'\n"+ msg_detail + before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" ;
 		}
-		else if(offendingtoken.contains("@")){///////////////find error in decolator//////////////////////
-			msg_detail = "*****decolator doesn't describe correctly : @{ }*****";
+		else if(offendingtoken.contains("@")){///////////////find error in decorator//////////////////////
+			msg_detail = "*****decorator doesn't describe correctly : @{ }*****";
 			msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + 
 					"'\n"+ msg_detail + before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" ;
 		}
@@ -259,7 +259,7 @@ public class MyErrorStrategy extends DefaultErrorStrategy{
 			Pattern d = Pattern.compile(".+=.+}");
 			Matcher m_d = d.matcher(after_offending.substring(0,after_offending.indexOf("}")+1));
 			if(m_d.find()){
-				msg_detail = "****decolator should describe : '@" + offendingtoken + after_offending.substring(0, after_offending.indexOf("}")+1) +"'*****";
+				msg_detail = "****decorator should describe : '@" + offendingtoken + after_offending.substring(0, after_offending.indexOf("}")+1) +"'*****";
 				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
 						+ msg_detail + before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" ;
 			}else{
@@ -285,17 +285,17 @@ public class MyErrorStrategy extends DefaultErrorStrategy{
 		}
 		else if(e.getOffendingToken().getText().equals("<EOF>")){
 			msg_detail = "*****Input is not enough after " + tokens.getText(e.getStartToken(), e.getOffendingToken()) + "*****";
-			msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + 
-					 msg_detail +"'\n" + before_offending + "\n";
+			msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "\n"+
+					 msg_detail +"'\n" + before_offending;
 		}
 		else if(offendingtoken.equals(".")){
 			msg_detail = "*****'.' is not need here. OR did you mistake ',' to '.' ? *****";
-			msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + 
-					 msg_detail +"'\n" + before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n";
+			msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "\n" + 
+					 msg_detail +"'\n" + before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending ;
 		}
 		else if(offendingtoken.equals("=") || offendingtoken.equals(">=") || offendingtoken.equals("=<")){
-			msg_detail = "*****Inequality formula should appear in decolator:@{} or if_then_else.*****";
-			msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + msg_detail  + 
+			msg_detail = "*****Inequality formula should appear in decorator:@{} or if_then_else.*****";
+			msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "\n" + msg_detail  + 
 				"'\n" + before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n";
 		}
 		else if((offendingtoken.equals(",") || offendingtoken.equals("!") )&& before_offending.trim().substring(before_offending.trim().length()-1).matches("[0-9]+")){
@@ -304,7 +304,7 @@ public class MyErrorStrategy extends DefaultErrorStrategy{
 			}else if(before_offending.substring(before_offending.lastIndexOf("]") + 1, before_offending.lastIndexOf("]") + 2).equals("!")){
 				msg_detail = "****composite iterator wasn't described correctly : '[ ]!NUMBER,' or '[ ]!NUMBER,NUMBER%' or '[ ]!NUMBER%'*****";
 			}
-			msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + msg_detail  + 
+			msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText()+ "\n" + msg_detail  + 
 					"'\n" + before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n";
 		}
 		else if(offendingtoken.equals("\"")){
@@ -435,7 +435,7 @@ public class MyErrorStrategy extends DefaultErrorStrategy{
 			Pattern d = Pattern.compile(".+=.+}");
 			Matcher m_d = d.matcher(after_offending);
 			if(m_d.find()){
-				msg_detail = "****decolator should describe : '@" + offendingtoken + after_offending.substring(0, after_offending.indexOf("}")+1) +"'*****";
+				msg_detail = "****decorator should describe : '@" + offendingtoken + after_offending.substring(0, after_offending.indexOf("}")+1) +"'*****";
 				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" + msg_detail 
 				+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n";
 			}
