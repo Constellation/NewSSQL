@@ -99,7 +99,7 @@ public class QueryMaker {
 			boolean toBeMaterialized = queryGraph.toBeMaterialized(node);
 			if(toBeMaterialized)
 				query += getCreateClause(node);
-			query += getSelectClause(node) + getFromClause(node) + getWhereClauseBeforeMaterialize(node);
+			query += getSelectClause(node, toBeMaterialized) + getFromClause(node) + getWhereClauseBeforeMaterialize(node);
 			
 			if(toBeMaterialized)
 				materializationQueries.add(query);
@@ -155,7 +155,7 @@ public class QueryMaker {
 		return "CREATE TEMPORARY TABLE " + tmpTableName + " AS ";
 	}
 	
-	private String getSelectClause(Node node){
+	private String getSelectClause(Node node, boolean toBeMaterialized){
 		String clause = "SELECT ";
 		
 		boolean beginning = true;
@@ -163,7 +163,7 @@ public class QueryMaker {
 			if(beginning)
 				beginning = false;
 			else clause += ", ";
-			clause += listAttributes(table);
+			clause += listAttributes(table, toBeMaterialized);
 		}
 		
 		return clause;
@@ -224,7 +224,7 @@ public class QueryMaker {
 				if(j>0)
 					select += ", ";
 				Attribute att = tfeAttributes.get(j);
-				select += att.getAlias();
+				select += att.getAliasForRetrieval();
 			}
 			
 			i++;
@@ -235,7 +235,7 @@ public class QueryMaker {
 		return select + " " + from;
 	}
 	
-	private String listAttributes(OptimizerTable table){
+	private String listAttributes(OptimizerTable table, boolean toBeMaterialized){
 		String list = "";
 		
 		boolean beginning = true;
@@ -244,7 +244,9 @@ public class QueryMaker {
 				if(beginning)
 					beginning = false;
 				else list += ", ";
-				list += att.getRetrievalRepresentation() + " AS " + att.getAlias();
+				if(toBeMaterialized)
+					list += att.getMaterializationRepresentation() + " AS " + att.getAlias();
+				else list += att.getRetrievalRepresentation();
 			}
 		}
 		

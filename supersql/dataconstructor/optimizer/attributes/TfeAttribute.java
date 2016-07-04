@@ -33,6 +33,22 @@ public class TfeAttribute extends Attribute {
 		tfePaths = paths;
 	}
 	
+	public TfeAttribute(String name, Table table, String concat){
+		super(name, table, concat);
+		tfePaths = new ArrayList<TfePath>();
+	}
+	
+	public TfeAttribute(String name, Table table, String concat, TfePath path){
+		super(name, table, concat);
+		tfePaths = new ArrayList<TfePath>();
+		tfePaths.add(path);
+	}
+	
+	public TfeAttribute(String name, Table table, String concat, ArrayList<TfePath> paths){
+		super(name, table, concat);
+		tfePaths = paths;
+	}
+	
 	/**
 	 * Adds a path to the list of paths of this attribute
 	 * @param path

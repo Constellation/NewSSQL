@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Hashtable;
 import java.util.List;
 
+import supersql.dataconstructor.optimizer.StringLiteral;
 import supersql.dataconstructor.optimizer.attributes.TfeAttribute;
 import supersql.dataconstructor.optimizer.attributes.TfePath;
 import supersql.dataconstructor.optimizer.tables.OptimizerTable;
@@ -21,7 +22,7 @@ public class NodeManager {
 		return nodes;
 	}
 	
-	public void initNodesAndTables(Collection<TfeAttribute> tfeAttributes, Collection<Table> fromClauseTables){
+	public void initNodesAndTables(Collection<TfeAttribute> tfeAttributes, Collection<Table> fromClauseTables, Collection<StringLiteral> stringLiterals){
 		//Initialize the map path attribute
 		Hashtable<TfePath, TfeAttribute> mapPathAtt = new Hashtable<TfePath, TfeAttribute>();
 		for(TfeAttribute att: tfeAttributes){
@@ -73,6 +74,14 @@ public class NodeManager {
 			if(table.isExternalTable()){
 				Node newNode = newNode();
 				duplicateTableInNode(table, newNode);
+			}
+		}
+		
+		//Add string literals
+		for(StringLiteral sl: stringLiterals){
+			for(Node node: nodes){
+				if(node.getCoordinates().containsPath(sl.getPath()))
+					node.addStringLiteral(sl);
 			}
 		}
 	}
@@ -136,7 +145,8 @@ public class NodeManager {
 			}
 			
 		}
-		
+		newNode.addStringLiterals(node1.getStringLiterals());
+		newNode.addStringLiterals(node2.getStringLiterals());	
 		return newNode;
 	}
 }

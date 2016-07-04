@@ -35,6 +35,10 @@ public class GetFromDB {
         sqlm = new SQLManager(cdb);
 
     }
+    
+    public GetFromDB(SQLManager manager){
+    	sqlm = manager;
+    }
 
     public void execQuery(String query, ExtList ResultData) {
 

@@ -19,6 +19,7 @@ public class Optimizer {
 	Collection<TfeAttribute> tfeAttributes;
 	Collection<Table> fromClauseTables;
 	Predicate whereClausePredicate;
+	Collection<StringLiteral> stringLiterals;
 	
 	//Intermediate variables
 	NodeManager nodeManager;
@@ -26,16 +27,19 @@ public class Optimizer {
 	QueryGraph queryGraph;
 	QueryMaker queryMaker;
 	
-	public Optimizer(Collection<TfeAttribute> tfeAttributes, Collection<Table> fromClauseTables, Predicate whereClausePredicate){
+	public Optimizer(Collection<TfeAttribute> tfeAttributes, Collection<Table> fromClauseTables, Predicate whereClausePredicate, Collection<StringLiteral> stringLiterals){
 		this.tfeAttributes = tfeAttributes;
 		this.fromClauseTables = fromClauseTables;
 		this.whereClausePredicate = whereClausePredicate;
+		this.stringLiterals = stringLiterals;
+		
 		this.nodeManager = new NodeManager();
 		this.predicateManager = new PredicateManager();
+		
 	}
 	
 	public void optimize(){
-		nodeManager.initNodesAndTables(tfeAttributes, fromClauseTables);
+		nodeManager.initNodesAndTables(tfeAttributes, fromClauseTables, stringLiterals);
 		boolean existsCycles = true;
 	
 		while(existsCycles){

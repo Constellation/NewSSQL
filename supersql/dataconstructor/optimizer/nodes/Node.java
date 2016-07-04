@@ -1,8 +1,10 @@
 package supersql.dataconstructor.optimizer.nodes;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
+import supersql.dataconstructor.optimizer.StringLiteral;
 import supersql.dataconstructor.optimizer.attributes.Attribute;
 import supersql.dataconstructor.optimizer.attributes.TfeAttribute;
 import supersql.dataconstructor.optimizer.attributes.TfePath;
@@ -10,13 +12,16 @@ import supersql.dataconstructor.optimizer.tables.OptimizerTable;
 import supersql.dataconstructor.optimizer.tables.Table;
 
 public class Node {
+	
 	private HashSet<OptimizerTable> tables;
 	private NodeTfeCoordinate coordinates;
+	private Collection<StringLiteral> stringLiterals;
 	private boolean isExternalTable;
 	
 	public Node(){
 		tables = new HashSet<OptimizerTable>();
 		coordinates = new NodeTfeCoordinate();
+		stringLiterals = new ArrayList<StringLiteral>();
 		isExternalTable = true;
 	}
 	
@@ -32,6 +37,20 @@ public class Node {
 			}		
 		}
 		return this;
+	}
+	
+	public Node addStringLiteral(StringLiteral sl){
+		stringLiterals.add(sl);
+		return this;
+	}
+	
+	public Node addStringLiterals(Collection<StringLiteral> sls){
+		stringLiterals.addAll(sls);
+		return this;
+	}
+	
+	public Collection<StringLiteral> getStringLiterals(){
+		return stringLiterals;
 	}
 	
 	public HashSet<OptimizerTable> getTables(){

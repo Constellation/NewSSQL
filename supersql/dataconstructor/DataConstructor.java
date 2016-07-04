@@ -5,8 +5,6 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
 
 //import org.json.JSONArray;
 //import org.json.JSONObject;
@@ -15,10 +13,10 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import supersql.codegenerator.AttributeItem;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
-import supersql.common.Utils;
+import supersql.dataconstructor.optimizer.Optimizer;
+import supersql.dataconstructor.optimizer.OptimizerPreprocessor;
 import supersql.db.ConnectDB;
 import supersql.db.GetFromDB;
 import supersql.db.SQLManager;
@@ -40,14 +38,30 @@ public class DataConstructor {
 	private boolean flag = true;
 	public static String SQL_string; // added by goto 20130306
 										// "FROM鐃淑わ申鐃緒申鐃緒申鐃緒申鐃出削申"
-
+	private SQLManager sqlManager;
+	private boolean optimize = GlobalEnv.getOptLevel() > 0 && GlobalEnv.isOptimizable()
+			&& !Start_Parse.isDbpediaQuery() && !Start_Parse.isJsonQuery();
+	private Optimizer optimizer;
+	
 	public DataConstructor(Start_Parse parser) {
 
 		ExtList sep_sch;
 		ExtList sep_data_info;
+		
+		System.out.println("Processing");
 
 		MakeSQL msql = null;
-
+		sqlManager = new SQLManager(GlobalEnv.geturl(), GlobalEnv.getusername(), GlobalEnv.getDriver(), GlobalEnv.getpassword());
+		
+		if(optimize){
+			OptimizerPreprocessor optPreprocessor = new OptimizerPreprocessor(parser.list_tfe, parser.list_from, parser.whereInfo, sqlManager);
+			if(optimize &= optPreprocessor.setOptimizerInputFromParser()){
+				optimizer = new Optimizer(optPreprocessor.getTfeAttributes(), optPreprocessor.getFromClauseTables(), optPreprocessor.getWhereClausePredicate(), optPreprocessor.getStringLiterals());
+				optimizer.optimize();
+			}
+		}
+			
+		
 		// Make schema
 		sep_sch = parser.sch;
 		Log.info("Schema: " + sep_sch);
@@ -176,7 +190,6 @@ public class DataConstructor {
 		sep_data_info = makeTree(sep_sch, sep_data_info);
 
 		return sep_data_info;
-
 	}
 
 	private ExtList getFromDB(MakeSQL msql, ExtList sep_sch,

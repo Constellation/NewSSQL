@@ -13,6 +13,7 @@ public class Attribute {
 	private String name;
 	private Table table;
 	private String alias;
+	private String concat;
 	
 	/**
 	 * Constructs an attribute from its name and table
@@ -27,6 +28,11 @@ public class Attribute {
 			alias += "_" + this.table.getAlias();
 		if(this.table instanceof OptimizerTable)
 			alias += "_" + ((OptimizerTable) this.table).getDuplicationId();
+	}
+	
+	public Attribute(String name, Table table, String concat){
+		this(name, table);
+		this.concat = concat;
 	}
 	
 	/**
@@ -55,10 +61,27 @@ public class Attribute {
 		if(table.hasAlias())
 			result += table.getAlias() + ".";
 		result += name;
+		if(concat != null)
+			result += " || '" + concat + "'";
+		return result;
+	}
+	
+	public String getMaterializationRepresentation(){
+		String result = "";
+		if(table.hasAlias())
+			result += table.getAlias() + ".";
+		result += name;
 		
 		return result;
 	}
-
+	
+	public String getAliasForRetrieval(){
+		String result = alias;
+		if(concat != null)
+			result +=  " || '" + concat + "'";
+		return result;
+	}
+	
 	public boolean equals(Object o){
 		if(o instanceof Attribute){
 			return ((Attribute) o).name.equals(name) 

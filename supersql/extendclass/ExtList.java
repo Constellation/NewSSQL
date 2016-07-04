@@ -38,4 +38,33 @@ public class ExtList<T> extends ArrayList<T> {
 		}
 		return list;
 	}
+	
+	
+	/*
+	 * Below functions are functions dedicated for better reading of info from parser
+	 */
+	public boolean containsNodeInDepth(String s){
+		return !getNodesInDepth(s).isEmpty();
+	}
+	
+	/**
+	 * Get a list of sublists of this ExtList such as its first element is the string s
+	 */
+	public ArrayList<ExtList> getNodesInDepth(String s){
+		ArrayList<ExtList> nodes = new ArrayList<ExtList>();
+		this.getNodesInDepth(s, nodes);
+		return nodes;
+	}
+	
+	private void getNodesInDepth(String s, ArrayList<ExtList> nodes){
+		for(int i=0; i<this.size(); i++){
+			Object o = this.get(i);
+			if(i==0 && s.equals(o)){
+				nodes.add(this);
+				break;
+			}
+			if(o instanceof ExtList)
+				((ExtList)o).getNodes(s, nodes);
+		}
+	}
 }

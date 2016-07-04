@@ -24,6 +24,10 @@ public class TfePath {
 		leafIndex = index;
 	}
 	
+	public TfePath(TfePath originalPath){
+		path = new ArrayList<Integer>(originalPath.path);
+	}
+	
 	public TfePath setLeafIndex(int index){
 		leafIndex = index;
 		return this;

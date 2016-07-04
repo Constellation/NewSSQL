@@ -41,6 +41,8 @@ public class FrontEnd {
 			if (GlobalEnv.getErrFlag() == 0) {
 				codegenerator.CodeGenerator(parsertree);
 
+				
+				Log.info("Processing");
 				DataConstructor dc = new DataConstructor(parsertree);
 				afterdc = System.currentTimeMillis();
 

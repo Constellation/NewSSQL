@@ -196,9 +196,14 @@ public class Table {
 	}
 	
 	
-	public boolean containsPrimaryKey(Attribute attribute){
-		return primaryKeys.contains(attribute);
+	public boolean containsPrimaryKey(String attributeName){
+		for(Attribute pk: primaryKeys){
+			if(pk.getName().equals(attributeName))
+				return true;
+		}
+		return false;
 	}
+	
 	
 	public boolean isExternalTable(){
 		return tfeAttributes.isEmpty();

@@ -1,16 +1,17 @@
 package supersql.db;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import supersql.common.DB;
-
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.common.Suggest;
@@ -26,6 +27,8 @@ public class SQLManager {
 
 	private ConnectDB cdb;
 	private boolean isMulti = false;
+	
+	private DatabaseMetaData metadata;
 
     public SQLManager(ConnectDB in_cdb)
     {
@@ -348,4 +351,69 @@ public class SQLManager {
     	return columnList;
     }
 
+    
+    public Collection<String> getTables(){
+    	getMetadata();
+    	
+    	Collection<String> result = new ArrayList<String>();
+    	try{
+    		ResultSet rs = metadata.getTables(null, null, "%", null);
+    		
+    		while(rs.next()){
+    			result.add(rs.getString("TABLE_NAME"));
+    		}
+    	}catch(Exception e){
+    		String msg = "Error[SQLManager]: can't get db tables";
+    		Log.err(msg);
+    		GlobalEnv.addErr(msg);
+    	}
+    	return result;
+    }
+    
+    public Collection<String> getAttributes(String tableName){
+    	getMetadata();
+    	
+    	Collection<String> result = new ArrayList<String>();
+    	try{
+    		ResultSet rs = metadata.getColumns(null, null, tableName, null);
+    		
+    		while(rs.next())
+    			result.add(rs.getString("COLUMN_NAME"));
+    	}catch(Exception e){
+    		String msg = "Error[SQLManager]: can't get attribute of table " + tableName;
+    		Log.err(msg);
+    		GlobalEnv.addErr(msg);
+    	}
+    	
+    	return result;
+    }
+    
+    public Collection<String> getPrimaryKeys(String tableName){
+    	getMetadata();
+    	
+    	Collection<String> result = new ArrayList<String>();
+    	try{
+    		ResultSet rs = metadata.getPrimaryKeys(null, null, tableName);
+    		while(rs.next())
+    			result.add(rs.getString("COLUMN_NAME"));
+    	}catch(Exception e){
+    		String msg = "Error[SQLManager]: can't get attribute of table " + tableName;
+    		Log.err(msg);
+    		GlobalEnv.addErr(msg);
+    	}
+    	
+    	return result;
+    }
+    
+    private void getMetadata(){
+    	try{
+	    	if(metadata == null)
+	    		metadata = conn.getMetaData();
+    	}catch(Exception e){
+    		String msg = "Error[SQLManager]: can't get metadata";
+    		Log.err(msg);
+    		GlobalEnv.addErr(msg);
+    	}
+    }
+    
 }
