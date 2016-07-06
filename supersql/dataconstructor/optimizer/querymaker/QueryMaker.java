@@ -3,6 +3,8 @@ package supersql.dataconstructor.optimizer.querymaker;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import supersql.dataconstructor.optimizer.attributes.Attribute;
@@ -23,11 +25,12 @@ public class QueryMaker {
 	private Hashtable<Node, UnaryPredicate> unaryPredicates;
 	private Hashtable<NodePair, BinaryPredicate> binaryPredicates;
 	private QueryGraph queryGraph;
-	
-	private Hashtable<Node, String> directQueries;
-	private ArrayList<String> materializationQueries;
-	private ArrayList<ArrayList<String>> fullReducerQueries;
-	private Hashtable<Node, String> retrievalQueries;
+
+	private Map<Node, String> directQueries;
+	private List<String> materializationQueries;
+	private Map<QueryTree, List<String>> fullReducerQueries;
+	private Map<Node, String> retrievalQueries;
+	private Map<String, Attribute> mapNameAttribute;
 	
 	private Hashtable<Node, String> tmpTables;
 	private HashSet<Attribute> requiredAttributes;
@@ -41,8 +44,9 @@ public class QueryMaker {
 		
 		directQueries = new Hashtable<Node, String>();
 		materializationQueries = new ArrayList<String>();
-		fullReducerQueries = new ArrayList<ArrayList<String>>();
+		fullReducerQueries = new Hashtable<QueryTree, List<String>>();
 		retrievalQueries = new Hashtable<Node, String>();
+		mapNameAttribute = new Hashtable<String, Attribute>();
 		
 		tmpTables = new Hashtable<Node, String>();
 		requiredAttributes = new HashSet<Attribute>();
@@ -55,20 +59,24 @@ public class QueryMaker {
 		makeFullReducerQueries();
 	}
 	
-	public Hashtable<Node, String> getDirectQueries(){
+	public Map<Node, String> getDirectQueries(){
 		return directQueries;
 	}
 	
-	public ArrayList<String> getMaterializationQueries(){
+	public List<String> getMaterializationQueries(){
 		return materializationQueries;
 	}
 	
-	public ArrayList<ArrayList<String>> getFullReducerQueries(){
+	public Map<QueryTree, List<String>> getFullReducerQueries(){
 		return fullReducerQueries;
 	}
 	
-	public Hashtable<Node, String> getRetrievalQueries(){
+	public Map<Node, String> getRetrievalQueries(){
 		return retrievalQueries;
+	}
+	
+	public Map<String, Attribute> getMapNameAttribute(){
+		return mapNameAttribute;
 	}
 	
 	private void getRequiredAttributes(){
@@ -77,6 +85,7 @@ public class QueryMaker {
 				for(Attribute att: table.getAttributes()){
 					if(att instanceof TfeAttribute)
 						requiredAttributes.add(att);
+					
 				}
 			}
 		}
@@ -117,7 +126,7 @@ public class QueryMaker {
 	
 	private void makeFullReducerQueries(QueryTree tree){
 		ArrayList<String> queries = new ArrayList<String>();
-		fullReducerQueries.add(queries);
+		fullReducerQueries.put(tree, queries);
 		makeDescendingReducerQueries(tree, queries);
 		makeAscendingReducerQueries(tree, queries);
 
@@ -142,7 +151,7 @@ public class QueryMaker {
 			for(QueryTree child: tree.getChildren())
 				makeAscendingReducerQueries(child, queries);
 		}
-		else if(!tree.isRootNode())
+		else if(!tree.isRootNode() && !node.isExternalNode())
 			makeLeafRetrievalQuery(node, tree.getParent().getRoot());
 		else if(!node.isExternalNode()) //not supposed to happen
 			makeRetrievalAfterMaterializationQuery(tree.getRoot()); 
@@ -152,7 +161,7 @@ public class QueryMaker {
 		String tmpTableName = UUID.randomUUID().toString();
 		tmpTables.put(node, tmpTableName);
 		
-		return "CREATE TEMPORARY TABLE " + tmpTableName + " AS ";
+		return "CREATE TEMPORARY TABLE \"" + tmpTableName + "\" AS ";
 	}
 	
 	private String getSelectClause(Node node, boolean toBeMaterialized){
@@ -174,7 +183,7 @@ public class QueryMaker {
 		
 		int i=1;
 		for(OptimizerTable table: node.getTables()){
-			clause += table.toString();
+			clause += table.getStringRepresentationBeforeMaterialization();
 			if(i<node.size())
 				clause += ", ";
 			i++;
@@ -192,20 +201,25 @@ public class QueryMaker {
 	}
 	
 	private void makeReducerQuery(Node root, Node target, ArrayList<String> queries){
-		String tmpTableName = tmpTables.get(root);
-		String query = "DELETE FROM " + tmpTableName + getWhereClauseAfterMaterialize(root, target);
+		String tmpTableNameRoot = tmpTables.get(root);
+		String tmpTableNameTarget = tmpTables.get(target);
+		NodePair nodePair = new NodePair(root, target);
+		BinaryPredicate bp = binaryPredicates.get(nodePair);
+		String query = "DELETE FROM \"" + tmpTableNameRoot +"\"";
+		query += " WHERE NOT EXISTS (SELECT* FROM \"" + tmpTableNameTarget + "\" WHERE " + bp.getStringRepresentationAfterMaterialize() + ")"; 
 		queries.add(query);
 	}
 	
 	private void makeLeafRetrievalQuery(Node root, Node target){
-		String query =  getRetrievalAfterMaterializationQuery(root) + getWhereClauseAfterMaterialize(root, target);
+		String query =  getRetrievalAfterMaterializationQuery(root) + getWhereClauseAfterMaterializeForRetrieval(root, target);
 		retrievalQueries.put(root, query);
 	}
 	
-	private String getWhereClauseAfterMaterialize(Node node1, Node node2){
+	private String getWhereClauseAfterMaterializeForRetrieval(Node node1, Node node2){
 		NodePair nodePair = new NodePair(node1, node2);
 		BinaryPredicate bp = binaryPredicates.get(nodePair);
-		return " WHERE " + bp.getStringRepresentationAfterMaterialize();
+		String tmpTableNameTarget = tmpTables.get(node2);
+		return "WHERE EXISTS (SELECT* FROM \"" + tmpTableNameTarget + "\" WHERE " + bp.getStringRepresentationAfterMaterialize() + ")";
 	}
 	
 	private void makeRetrievalAfterMaterializationQuery(Node node){
@@ -230,7 +244,7 @@ public class QueryMaker {
 			i++;
 		}
 		
-		String from = "FROM " + tmpTables.get(node);
+		String from = "FROM \"" + tmpTables.get(node) + "\" ";
 		
 		return select + " " + from;
 	}
@@ -246,7 +260,8 @@ public class QueryMaker {
 				else list += ", ";
 				if(toBeMaterialized)
 					list += att.getMaterializationRepresentation() + " AS " + att.getAlias();
-				else list += att.getRetrievalRepresentation();
+				else list += att.getRetrievalRepresentation() + " AS " + att.getAlias();
+				mapNameAttribute.put(att.getAlias(), att);
 			}
 		}
 		

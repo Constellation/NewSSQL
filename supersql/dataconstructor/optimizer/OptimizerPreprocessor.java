@@ -1,6 +1,20 @@
 package supersql.dataconstructor.optimizer;
 
-import static supersql.parser.querytestParser.*;
+
+import static supersql.parser.querytestParser.RULE_any_name;
+import static supersql.parser.querytestParser.RULE_column_name;
+import static supersql.parser.querytestParser.RULE_compound_operator;
+import static supersql.parser.querytestParser.RULE_exp;
+import static supersql.parser.querytestParser.RULE_function;
+import static supersql.parser.querytestParser.RULE_function_name;
+import static supersql.parser.querytestParser.RULE_grouper;
+import static supersql.parser.querytestParser.RULE_join_clause;
+import static supersql.parser.querytestParser.RULE_operand;
+import static supersql.parser.querytestParser.RULE_sl;
+import static supersql.parser.querytestParser.RULE_table_alias;
+import static supersql.parser.querytestParser.RULE_table_name;
+import static supersql.parser.querytestParser.RULE_table_or_subquery;
+import static supersql.parser.querytestParser.ruleNames;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,6 +28,7 @@ import java.util.Set;
 import supersql.dataconstructor.optimizer.attributes.Attribute;
 import supersql.dataconstructor.optimizer.attributes.TfeAttribute;
 import supersql.dataconstructor.optimizer.attributes.TfePath;
+import supersql.dataconstructor.optimizer.database.DatabaseManager;
 import supersql.dataconstructor.optimizer.predicates.ElementaryBinaryPredicate;
 import supersql.dataconstructor.optimizer.predicates.ElementaryUnaryPredicate;
 import supersql.dataconstructor.optimizer.predicates.Predicate;
@@ -28,9 +43,8 @@ import supersql.parser.WhereParse;
 public class OptimizerPreprocessor {
 	private ExtList list_tfe, list_from;
 	private WhereInfo whereInfo;
-	private SQLManager sqlManager;
+	private DatabaseManager dbManager;
 	
-//	private Map<String, List<String>> mapAttributeTables; //map between an attribute name and a list of table containing this attribute name
 	private Map<String, Collection<String>> mapTablePrimaryKeys; //map between a table and its primary keys
 	
 	private Map<String, Table> mapAliasTable;
@@ -40,14 +54,11 @@ public class OptimizerPreprocessor {
 	private ArrayList<Table> fromClauseTables;
 	private Predicate whereClausePredicate;
 	
-//	private Collection<ExtList> joinClauses;
-	
-	
-	public OptimizerPreprocessor(ExtList tfe, ExtList from, WhereInfo where, SQLManager sqlm){
+	public OptimizerPreprocessor(ExtList tfe, ExtList from, WhereInfo where, DatabaseManager dbm){
 		list_tfe = tfe;
 		list_from = from;
 		whereInfo = where;
-		sqlManager = sqlm;
+		dbManager = dbm;
 		
 		mapTablePrimaryKeys = new Hashtable<String, Collection<String>>();
 		tfeAttributes = new ArrayList<TfeAttribute>();
@@ -92,257 +103,9 @@ public class OptimizerPreprocessor {
 		return whereClausePredicate;
 	}
 	
-//	private void getDBInfo(){
-//		//Get list of tables
-//		dbTables = sqlManager.getTables();
-//		
-//		//Get mapping table pks
-//		for(String table: dbTables){
-//			mapTablePrimaryKeys.put(table, sqlManager.getPrimaryKeys(table));
-//		}
-//		
-//	}
 	
-	private boolean setTfeAttributes() throws Exception{
-		if(!setTfeAttributes(list_tfe, new TfePath(), true))
-			return false;
-		
-		//Set the remaining primary key
-		for(Table table: fromClauseTables){
-			for(String pk: mapTablePrimaryKeys.get(table.getName())){
-				if(!table.containsPrimaryKey(pk))
-					table.addPrimaryKey(new Attribute(pk, table));
-			}
-		}
-		return true;
-	}
-	
-	//TODO: treat the case of concatenation
-	private boolean setTfeAttributes(ExtList componentList, TfePath currentPath, boolean isRoot) throws Exception{
-		List operands = componentList.getNodesInDepth(ruleNames[RULE_operand]);
-		int currentIndex = 0;
-		for(int i=0; i<operands.size(); i++){
-			ExtList operand = (ExtList) operands.get(i);
-			if(operand.contains("||"))
-				return false;
-			
-			ExtList operandFirstInfo = (ExtList)((ExtList) operand.get(1)).get(0);
-			String operandType = (String)operandFirstInfo.get(0);
-			
-			if((operandType).equals(ruleNames[RULE_grouper])){
-				if(!setTfeAttributes(operandFirstInfo, (new TfePath(currentPath)).addIndex(currentIndex++), false))
-					return false;
-			}
-			else if(operandType.equals(ruleNames[RULE_exp])){
-				if(!setTfeAttributes(operandFirstInfo, currentPath, false))
-					return false;
-			}	
-			else if((currentIndex = processAttributeWithoutSlTolerance(operand, currentPath, currentIndex)) == -1)
-				return false;
-//			else if(operandType.equals(ruleNames[RULE_table_alias]) || operandType.equals(ruleNames[RULE_column_name])){
-//				if(operandType.equals(ruleNames[RULE_table_alias])){
-//					TfePath path = (new TfePath(currentPath)).setLeafIndex(i);
-//					String name = (String)((ExtList)((ExtList)((ExtList) operand.getNodesInDepth(ruleNames[RULE_column_name]).get(0)).getNodesInDepth(ruleNames[RULE_any_name]).get(0)).get(1)).get(0);
-//
-//					String alias = (String) ((ExtList)((ExtList)operandFirstInfo.getNodesInDepth(ruleNames[RULE_any_name]).get(0)).get(1)).get(0);
-//					Table table = mapAliasTable.get(alias);
-//					TfeAttribute newAttribute = new TfeAttribute(name, table, path);
-//					tfeAttributes.add(newAttribute);
-//					
-//					//Add this attribute to the table
-//					if(mapTablePrimaryKeys.get(table.getName()).contains(name))
-//						table.addPrimaryKey(newAttribute);
-//					else table.addAttribute(newAttribute);
-//				} 
-//				else return false;
-//			}
-//			
-//			else if(operandType.equals(ruleNames[RULE_function])){
-//				ExtList functionNameNode = (ExtList) operand.getNodesInDepth(ruleNames[RULE_function_name]).get(0);
-//				ExtList anyNameNodeFunction = (ExtList) functionNameNode.getNodesInDepth(ruleNames[RULE_any_name]).get(0);
-//				String functionName = (String) ((ExtList) anyNameNodeFunction.get(1)).get(0);
-//				
-//				if(functionName.equalsIgnoreCase("imagefile") || functionName.equalsIgnoreCase("image")){
-//					ExtList functionTableInfoNode = (ExtList) operandFirstInfo.getNodesInDepth(ruleNames[RULE_operand]).get(0);
-//					ExtList functionTableInfoTypeNode = (ExtList) ((ExtList) functionTableInfoNode.get(1)).get(0);
-//					String functionTableInfoType = (String) functionTableInfoTypeNode.get(0);
-//					
-//					if(functionTableInfoType.equals(ruleNames[RULE_table_alias])){
-//						TfePath path = (new TfePath(currentPath)).setLeafIndex(i);
-//						String name = (String)((ExtList)((ExtList)((ExtList) functionTableInfoNode.getNodesInDepth(ruleNames[RULE_column_name]).get(0)).getNodesInDepth(ruleNames[RULE_any_name]).get(0)).get(1)).get(0);
-//
-//						String alias = (String) ((ExtList)((ExtList)functionTableInfoTypeNode.getNodesInDepth(ruleNames[RULE_any_name]).get(0)).get(1)).get(0);
-//						Table table = mapAliasTable.get(alias);
-//						TfeAttribute newAttribute = new TfeAttribute(name, table, path);
-//						tfeAttributes.add(newAttribute);
-//						
-//						//Add this attribute to the table
-//						if(mapTablePrimaryKeys.get(table.getName()).contains(name))
-//							table.addPrimaryKey(newAttribute);
-//						else table.addAttribute(newAttribute);
-//					} 
-//					else if(!functionTableInfoType.equals(ruleNames[RULE_sl]))
-//						return false;
-//				}
-//				
-//				else if(functionName.equalsIgnoreCase("link")){
-//					ArrayList subOperands = operandFirstInfo.getNodesInDepth(ruleNames[RULE_operand]);
-//					if(subOperands.size()<3)
-//						return false;
-//					
-//					ExtList firstOperand = (ExtList) subOperands.get(0);
-//					ExtList firstOperandTypeNode = (ExtList) ((ExtList) firstOperand.get(1)).get(0);
-//					String firstOperandType = (String)firstOperandTypeNode.get(0);
-//					if(firstOperandType.equals(ruleNames[RULE_table_alias])){
-//						TfePath path = (new TfePath(currentPath)).setLeafIndex(i);
-//						String name = (String)((ExtList)((ExtList)((ExtList) firstOperand.getNodesInDepth(ruleNames[RULE_column_name]).get(0)).getNodesInDepth(ruleNames[RULE_any_name]).get(0)).get(1)).get(0);
-//
-//						String alias = (String) ((ExtList)((ExtList)firstOperandTypeNode.getNodesInDepth(ruleNames[RULE_any_name]).get(0)).get(1)).get(0);
-//						Table table = mapAliasTable.get(alias);
-//						TfeAttribute newAttribute = new TfeAttribute(name, table, path);
-//						tfeAttributes.add(newAttribute);
-//						
-//						//Add this attribute to the table
-//						if(mapTablePrimaryKeys.get(table.getName()).contains(name))
-//							table.addPrimaryKey(newAttribute);
-//						else table.addAttribute(newAttribute);
-//					} 
-//					else if(!firstOperandType.equals(ruleNames[RULE_sl]))
-//						return false;
-//					
-//					ExtList thirdOperand = (ExtList) subOperands.get(2);
-//					ExtList thirdOperandTypeNode = (ExtList) ((ExtList) firstOperand.get(1)).get(0);
-//					String thirdOperandType = (String)firstOperandTypeNode.get(0);
-//					if(thirdOperandType.equals(ruleNames[RULE_table_alias])){
-//						TfePath path = (new TfePath(currentPath)).setLeafIndex(i);
-//						String name = (String)((ExtList)((ExtList)((ExtList) thirdOperand.getNodesInDepth(ruleNames[RULE_column_name]).get(0)).getNodesInDepth(ruleNames[RULE_any_name]).get(0)).get(1)).get(0);
-//
-//						String alias = (String) ((ExtList)((ExtList)thirdOperandTypeNode.getNodesInDepth(ruleNames[RULE_any_name]).get(0)).get(1)).get(0);
-//						Table table = mapAliasTable.get(alias);
-//						TfeAttribute newAttribute = new TfeAttribute(name, table, path);
-//						tfeAttributes.add(newAttribute);
-//						
-//						//Add this attribute to the table
-//						if(mapTablePrimaryKeys.get(table.getName()).contains(name))
-//							table.addPrimaryKey(newAttribute);
-//						else table.addAttribute(newAttribute);
-//					} 
-//					else return false;
-//				}
-//				else return false;
-//			}
-		}
-		return true;
-	}
-	
-	private boolean isACurlBracketOperand(ExtList operand){
-		ExtList operandContent = (ExtList) operand.get(1);
-		Object firstInfo = operandContent.get(0);
-		
-		return firstInfo.equals("{");
-	}
-	
-	private int processAttributeWithSlTolerance(ExtList operand, TfePath currentPath, int currentIndex) throws Exception{
-		if(operand.contains("||"))
-			return -1;
-		
-		ExtList operandFirstInfo = (ExtList)((ExtList) operand.get(1)).get(0);
-		String operandType = (String)operandFirstInfo.get(0);
-		if(operandType.equals(ruleNames[RULE_table_alias])){
-			TfePath path = (new TfePath(currentPath)).setLeafIndex(currentIndex++);
-			String name = (String)((ExtList)((ExtList)((ExtList) operand.getNodesInDepth(ruleNames[RULE_column_name]).get(0)).getNodesInDepth(ruleNames[RULE_any_name]).get(0)).get(1)).get(0);
-
-			String alias = (String) ((ExtList)((ExtList)operandFirstInfo.getNodesInDepth(ruleNames[RULE_any_name]).get(0)).get(1)).get(0);
-			Table table = mapAliasTable.get(alias);
-			TfeAttribute newAttribute = new TfeAttribute(name, table, path);
-			boolean alreadyHere = false;
-			for(TfeAttribute alreadyHereAttribute: tfeAttributes){
-				if(alreadyHereAttribute.equals(newAttribute)){
-					alreadyHereAttribute.addPath(path);
-					alreadyHere = true;
-					break;
-				}
-			}
-			if(!alreadyHere){
-				tfeAttributes.add(newAttribute);
-				//Add this attribute to the table
-				if(mapTablePrimaryKeys.get(table.getName()).contains(name))
-					table.addPrimaryKey(newAttribute);
-				else table.addAttribute(newAttribute);
-			}
-		}
-		else if(operandType.equals(ruleNames[RULE_function])){
-			currentIndex = processFunction(operand, currentPath, currentIndex);
-			if(currentIndex == -1)
-				return -1;
-		}
-		else if(!operandType.equals(ruleNames[RULE_sl]))
-			return -1;
-		
-		return currentIndex;
-	}
-	
-	private int processAttributeWithoutSlTolerance(ExtList operand, TfePath currentPath, int currentIndex) throws Exception{
-		if(operand.contains("||"))
-			return -1;
-		
-		ExtList operandFirstInfo = (ExtList)((ExtList) operand.get(1)).get(0);
-		String operandType = (String)operandFirstInfo.get(0);
-		
-		if(operandType.equals(ruleNames[RULE_table_alias])){
-			TfePath path = (new TfePath(currentPath)).setLeafIndex(currentIndex++);
-			String name = (String)((ExtList)((ExtList)((ExtList) operand.getNodesInDepth(ruleNames[RULE_column_name]).get(0)).getNodesInDepth(ruleNames[RULE_any_name]).get(0)).get(1)).get(0);
-
-			String alias = (String) ((ExtList)((ExtList)operandFirstInfo.getNodesInDepth(ruleNames[RULE_any_name]).get(0)).get(1)).get(0);
-			Table table = mapAliasTable.get(alias);
-			TfeAttribute newAttribute = new TfeAttribute(name, table, path);
-			tfeAttributes.add(newAttribute);
-			
-			
-			//Add this attribute to the table
-			if(mapTablePrimaryKeys.get(table.getName()).contains(name))
-				table.addPrimaryKey(newAttribute);
-			else table.addAttribute(newAttribute);
-		}
-		else if(operandType.equals(ruleNames[RULE_function])){
-			currentIndex = processFunction(operand, currentPath, currentIndex);
-			if(currentIndex == -1)
-				return -1;
-		}
-		else return -1;
-		return currentIndex;
-	}
-	
-	private int processFunction(ExtList operand, TfePath currentPath, int currentIndex) throws Exception{
-		ExtList operandFirstInfo = (ExtList)((ExtList) operand.get(1)).get(0);
-		ExtList functionNameNode = (ExtList) operand.getNodesInDepth(ruleNames[RULE_function_name]).get(0);
-		ExtList anyNameNodeFunction = (ExtList) functionNameNode.getNodesInDepth(ruleNames[RULE_any_name]).get(0);
-		String functionName = (String) ((ExtList) anyNameNodeFunction.get(1)).get(0);
-		
-		int newIndex = currentIndex;
-		if(functionName.equalsIgnoreCase("imagefile") || functionName.equalsIgnoreCase("image")){
-			ExtList functionTableInfoNode = (ExtList) operandFirstInfo.getNodesInDepth(ruleNames[RULE_operand]).get(0);
-			
-			newIndex = processAttributeWithSlTolerance(functionTableInfoNode, currentPath, currentIndex);
-			if(newIndex == -1)
-				return -1;
-		}
-		else if(functionName.equalsIgnoreCase("link")){
-			ArrayList subOperands = operandFirstInfo.getNodesInDepth(ruleNames[RULE_operand]);
-			if(subOperands.size()<3)
-				return -1;
-			
-			ExtList firstOperand = (ExtList) subOperands.get(0);
-			ExtList thirdOperand = (ExtList) subOperands.get(2);
-			int intermediateIndex = processAttributeWithSlTolerance(firstOperand, currentPath, currentIndex);
-			if(intermediateIndex == -1)
-				return -1;
-			newIndex = processAttributeWithoutSlTolerance(thirdOperand, currentPath, currentIndex);
-			if(newIndex == -1)
-				return -1;
-		}
-		
-		return newIndex;
+	private boolean preliminaryChecks(){
+		return !Preprocessor.isAggregate() && !Preprocessor.isOrderBy();
 	}
 	
 	private boolean setFromClauseTables() throws Exception{
@@ -374,11 +137,11 @@ public class OptimizerPreprocessor {
 				return false;
 			
 			//If the table does not exist in the db (need to check because need the primary keys)
-			if(!sqlManager.hasTable(name))
+			if(!dbManager.hasTable(name))
 				return false;
 			else{
 				//Get the primary keys
-				Collection<String> keys = sqlManager.getPrimaryKeys(name);
+				Collection<String> keys = dbManager.getPrimaryKeys(name);
 				if(keys.isEmpty())
 					return false;
 				mapTablePrimaryKeys.put(name, keys);
@@ -395,6 +158,215 @@ public class OptimizerPreprocessor {
 			}
 		}
 		return true;
+	}
+	
+	private boolean setTfeAttributes() throws Exception{
+		boolean result = setTfeAttribute(getNodeContent(list_tfe), new TfePath(), 0) >= 0;
+		
+		//Add remaning primary keys
+		for(Table table: fromClauseTables){
+			String tableName = table.getName();
+			for(String pk: mapTablePrimaryKeys.get(tableName)){
+				if(!table.containsPrimaryKey(pk)){
+					Attribute newPk = new Attribute(pk, table);
+					table.addPrimaryKey(newPk);
+				}
+			}
+		}
+		return result;
+	}
+	
+	private int setTfeAttribute(ExtList currentContent, TfePath currentPath, int initIndex) throws Exception{
+		List subOperands = getSubOperands(currentContent);
+		int localIndex = initIndex;
+		for(int i=0; i<subOperands.size(); i++){
+			ExtList subOperand = (ExtList) subOperands.get(i);
+			OperandType subOperandType = getOperandType(subOperand);
+			ExtList subOperandContent = getNodeContent(subOperand);
+			
+			switch(subOperandType){
+			case EXP:
+				localIndex = setTfeAttribute(subOperandContent, currentPath, localIndex);
+				if(localIndex < 0)
+					return -1;
+				break;
+			case GROUPER:
+				int checkIndex = setTfeAttribute(subOperandContent, new TfePath(currentPath).addIndex(localIndex), 0);
+				if(checkIndex < 0)
+					return -1;
+				localIndex++;
+				break;
+			case ALIAS:
+				if(!addAttribute(subOperand, new TfePath(currentPath).setLeafIndex(localIndex)))
+					return -1;
+				localIndex++;
+				break;
+				
+			case FUNCTION:
+				localIndex = processFunction(subOperand, currentPath, localIndex);
+				if(localIndex < 0)
+					return -1;
+				break;
+			case COLUMN:
+			case UNKNOWN:
+				return -1;
+			case SL:
+				break;
+			}
+		}
+		return localIndex;
+	}
+	
+	private int processFunction(ExtList functionOperand, TfePath currentPath, int localIndex) throws Exception{
+		String functionName = getFunctionName(functionOperand);
+		ExtList functionContent = getNodeContent(functionOperand);
+		ArrayList subOperands = getSubOperands(functionContent);
+		switch(functionName){
+		case "imagefile":
+		case "image":
+			ExtList subOperandIm = (ExtList) subOperands.get(0);
+			OperandType subOperandTypeIm = getOperandType(subOperandIm);
+			if(subOperandTypeIm.equals(OperandType.ALIAS)){
+				if(!addAttribute(subOperandIm, new TfePath(currentPath).setLeafIndex(localIndex)))
+					return -1;
+				localIndex++;
+				return localIndex;
+			}
+			else if(subOperandTypeIm.equals(OperandType.FUNCTION))
+				return processFunction(subOperandIm, currentPath, localIndex);
+			
+			else if(subOperandTypeIm.equals(OperandType.SL))
+				return localIndex;
+			else return -1;
+		case "foreach":
+			for(int i=0; i<subOperands.size(); i++){
+				ExtList subOperandFor = (ExtList) subOperands.get(0);
+				OperandType subOperandTypeFor = getOperandType(subOperandFor);
+				if(subOperandTypeFor.equals(OperandType.ALIAS)){
+					if(!addAttribute(subOperandFor, new TfePath(currentPath).setLeafIndex(localIndex)))
+						return -1;
+					localIndex++;
+				}
+				else return -1;
+			}
+			return localIndex;
+		case "link":
+			ExtList subOperand1 = (ExtList) subOperands.get(0);
+			OperandType subOperand1Type = getOperandType(subOperand1);
+			
+			
+			if(subOperand1Type.equals(OperandType.ALIAS)){
+				if(!addAttribute(subOperand1, new TfePath(currentPath).setLeafIndex(localIndex)))
+					return -1;
+				localIndex++;
+			}
+			else if(subOperand1Type.equals(OperandType.FUNCTION))
+				localIndex = processFunction(subOperand1, currentPath, localIndex);
+			
+			else if(!subOperand1Type.equals(OperandType.SL))
+				return -1;
+			
+			for(int i=2; i<subOperands.size(); i++){
+				ExtList subOperand3 = (ExtList) subOperands.get(i);
+				OperandType subOperand3Type = getOperandType(subOperand3);
+				if(subOperand3Type.equals(OperandType.ALIAS)){
+					if(!addAttribute(subOperand3, new TfePath(currentPath).setLeafIndex(localIndex)))
+						return -1;
+					localIndex++;
+				}
+				else if(subOperand3Type.equals(OperandType.FUNCTION))
+					localIndex = processFunction(subOperand3, currentPath, localIndex);
+				else return -1;
+			}
+			return localIndex;
+		
+		default:
+			return -1;
+		}
+	}
+	
+	private boolean addAttribute(ExtList aliasOperand, TfePath path) throws Exception{
+		String tableAlias = getTableAlias(aliasOperand);
+		if(!mapAliasTable.containsKey(tableAlias))
+			return false;
+		Table table = mapAliasTable.get(tableAlias);
+		String attributeName = getColumnName(aliasOperand);
+		
+		TfeAttribute newAttribute = new TfeAttribute(attributeName, table, path);
+		boolean alreadyExists = false;
+		for(TfeAttribute att: tfeAttributes){
+			if(att.equals(newAttribute)){
+				att.addPath(path);
+				alreadyExists = true;
+				break;
+			}
+		}
+		
+		if(!alreadyExists){
+			tfeAttributes.add(newAttribute);
+			
+			boolean foundPk = false;
+			for(String pk: mapTablePrimaryKeys.get(table.getName())){
+				if(pk.equals(newAttribute.getName())){
+					table.addPrimaryKey(newAttribute);
+					foundPk = true;
+					break;
+				}
+			}
+			if(!foundPk)
+				table.addAttribute(newAttribute);
+		}
+		return true;
+	}
+	
+	private ArrayList getSubOperands(ExtList node) throws Exception{
+		return node.getNodesInDepth(ruleNames[RULE_operand]);
+	}
+	
+	private ExtList getNodeContent(ExtList node) throws Exception{
+		return (ExtList) node.get(1);
+	}
+	
+	private OperandType getOperandType(ExtList operand) throws Exception{
+		ExtList operandContent = getNodeContent(operand);
+		ExtList firstInfo = (ExtList) operandContent.get(0);
+		String operandRule = (String) firstInfo.get(0);
+		return getOperandType(operandRule);
+	}
+	
+	private OperandType getOperandType(String rule){
+		if(rule.equals(ruleNames[RULE_table_alias]))
+			return OperandType.ALIAS;
+		if(rule.equals(ruleNames[RULE_column_name]))
+			return OperandType.COLUMN;
+		if(rule.equals(ruleNames[RULE_grouper]))
+			return OperandType.GROUPER;
+		if(rule.equals(ruleNames[RULE_sl]))
+			return OperandType.SL;
+		if(rule.equals(ruleNames[RULE_function]))
+			return OperandType.FUNCTION;
+		if(rule.equals(ruleNames[RULE_exp]))
+			return OperandType.EXP;
+		
+		return OperandType.UNKNOWN;
+	}
+	
+	private String getTableAlias(ExtList operand) throws Exception{
+		return getAnyName((ExtList) operand.getNodesInDepth(ruleNames[RULE_table_alias]).get(0));
+	}
+	
+	private String getColumnName(ExtList operand) throws Exception{
+		return getAnyName((ExtList) operand.getNodesInDepth(ruleNames[RULE_column_name]).get(0));
+	}
+	
+	private String getFunctionName(ExtList operand) throws Exception{
+		return getAnyName((ExtList) operand.getNodesInDepth(ruleNames[RULE_function_name]).get(0));
+	}
+	
+	private String getAnyName(ExtList nameNode) throws Exception{
+		ExtList anyNameNode = (ExtList) nameNode.getNodesInDepth(ruleNames[RULE_any_name]).get(0);
+		ExtList anyNameNodeContent = getNodeContent(anyNameNode);
+		return (String) anyNameNodeContent.get(0);
 	}
 	
 	private boolean setWhereClausePredicate() throws Exception{
@@ -472,54 +444,14 @@ public class OptimizerPreprocessor {
 		return true;
 	}
 	
-//	//TODO: don't forget the parenthesis
-//	private boolean addPredicates(boolean isClause, ExtList clauseOrExpression){
-//		if(isClause){
-//			
-//		}
-//		else{
-//			ExtList expr = clauseOrExpression;
-//			ExtList exprContent = (ExtList) expr.get(1);
-//			Object firstInfo = exprContent.get(0);
-//			if(!(firstInfo instanceof ExtList))
-//				return false;
-//			
-//			ExtList firstInfoList = (ExtList) firstInfo;
-//			String firstInfoType = (String) firstInfoList.get(0);
-//			
-//			if(firstInfoType.equals(ruleNames[RULE_raise_function]))
-//				return false;
-//			if(firstInfoType.equals(ruleNames[RULE_expr])){
-//				if(exprContent.size() >= 3){
-//					Object operator = exprContent.get(1);
-//					if(operator.equals("OR"))
-//						return false;
-//					if(operator.equals("||"))
-//						return false;
-//					if(operator.equals("COLLATE"))
-//						return false;
-//					if(operator.equals("AND")){
-//						if(!addPredicates(false, firstInfoList))
-//							return false;
-//						if(!addPredicates(false, (ExtList)exprContent.get(2)))
-//							return false;
-//					}
-//					
-//					
-//					else{
-//						String predicateText = "";
-//						
-//					}
-//				}
-//			}
-//		}
-//		return true;
-//	}
-	
-	
-	
-	private boolean preliminaryChecks(){
-		return !Preprocessor.isAggregate() && !Preprocessor.isOrderBy();
+	private enum OperandType{
+		EXP,
+		GROUPER,
+		ALIAS,
+		COLUMN,
+		FUNCTION,
+		SL,
+		UNKNOWN
 	}
 	
 	private class NameAlias{

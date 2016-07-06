@@ -67,4 +67,18 @@ public class ExtList<T> extends ArrayList<T> {
 				((ExtList)o).getNodesInDepth(s, nodes);
 		}
 	}
+	
+	public ExtList addObject(int index, T t){
+		if(index >= this.size()){
+			for(int i=this.size(); i<index; i++){
+				this.add(null);
+			}
+		
+			this.add(index, t);
+		}
+		else
+			this.set(index, t);
+		
+		return this;
+	}
 }

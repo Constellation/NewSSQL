@@ -17,9 +17,10 @@ import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.dataconstructor.optimizer.Optimizer;
 import supersql.dataconstructor.optimizer.OptimizerPreprocessor;
+import supersql.dataconstructor.optimizer.construction.RetrievalManager;
+import supersql.dataconstructor.optimizer.database.DatabaseManager;
 import supersql.db.ConnectDB;
 import supersql.db.GetFromDB;
-import supersql.db.SQLManager;
 import supersql.extendclass.ExtList;
 import supersql.parser.Start_Parse;
 
@@ -38,7 +39,7 @@ public class DataConstructor {
 	private boolean flag = true;
 	public static String SQL_string; // added by goto 20130306
 										// "FROM鐃淑わ申鐃緒申鐃緒申鐃緒申鐃出削申"
-	private SQLManager sqlManager;
+	private DatabaseManager dbManager = null;
 	private boolean optimize = GlobalEnv.getOptLevel() > 0 && GlobalEnv.isOptimizable()
 			&& !Start_Parse.isDbpediaQuery() && !Start_Parse.isJsonQuery();
 	private Optimizer optimizer;
@@ -47,20 +48,35 @@ public class DataConstructor {
 
 		ExtList sep_sch;
 		ExtList sep_data_info;
-		
-		System.out.println("Processing");
 
 		MakeSQL msql = null;
-		sqlManager = new SQLManager(GlobalEnv.geturl(), GlobalEnv.getusername(), GlobalEnv.getDriver(), GlobalEnv.getpassword());
+		
 		
 		if(optimize){
-			OptimizerPreprocessor optPreprocessor = new OptimizerPreprocessor(parser.list_tfe, parser.list_from, parser.whereInfo, sqlManager);
+			dbManager = new DatabaseManager(GlobalEnv.geturl(), GlobalEnv.getDriver(), GlobalEnv.getusername(), GlobalEnv.getpassword());
+			try{
+				dbManager.openConnection();
+			}catch(Exception e){
+				optimize = false;
+			}
+			OptimizerPreprocessor optPreprocessor = new OptimizerPreprocessor(parser.list_tfe, parser.list_from, parser.whereInfo, dbManager);
 			if(optimize &= optPreprocessor.setOptimizerInputFromParser()){
 				optimizer = new Optimizer(optPreprocessor.getTfeAttributes(), optPreprocessor.getFromClauseTables(), optPreprocessor.getWhereClausePredicate());
-				optimizer.optimize();
+				try{
+					optimizer.optimize();
+					Optimizer.infoOptimizer("Optimization: success");
+				}catch(Exception e){
+					Optimizer.errorOptimizer("Error in optimizer, can't process optimization.");
+					e.printStackTrace();
+					optimize = false;
+				}
 			}
 			else{
 				Log.info("Cannot process the optimization");
+				optimize = false;
+				try{
+					dbManager.closeConnection();
+				}catch(Exception e){}
 			}
 		}
 			
@@ -80,8 +96,16 @@ public class DataConstructor {
 		} else if (Start_Parse.isJsonQuery()) {
 //			sep_data_info = schemaToDataFromApi(parser, msql, sep_sch,
 //					sep_data_info);
-		} else {
-			sep_data_info = schemaToData(parser, msql, sep_sch, sep_data_info);
+		}  
+		else {
+			if(optimize){
+				sep_data_info = schemaToDataWithOptimizer();
+				if(sep_data_info == null){
+					sep_data_info = new ExtList();
+					sep_data_info = schemaToData(parser, msql, sep_sch, sep_data_info);
+				}
+			}
+			else sep_data_info = schemaToData(parser, msql, sep_sch, sep_data_info);
 		}
 		data_info = sep_data_info;
 
@@ -184,6 +208,19 @@ public class DataConstructor {
 //		sep_data_info = makeTree(sep_sch, sep_data_info);
 //		return sep_data_info;
 //	}
+	
+	private ExtList schemaToDataWithOptimizer(){
+		ExtList result = null;
+		RetrievalManager rm = new RetrievalManager(dbManager, optimizer.getNodes(), optimizer.getDirectQueries(), optimizer.getRetrievalQueries(), optimizer.getMaterializationQueries(), optimizer.getFullReducerQueries(), optimizer.getMapNameAttribute());
+		try{	
+			rm.dataConstruction();
+			result = rm.getConstructedData();
+		} catch(Exception e){
+			RetrievalManager.errRetrieval("Error in retrieval manager: process without optimizer: " + e.getMessage());
+			e.printStackTrace();
+		}
+		return result;
+	}
 
 	private ExtList schemaToData(Start_Parse parser, MakeSQL msql,
 			ExtList sep_sch, ExtList sep_data_info) {
@@ -238,8 +275,10 @@ public class DataConstructor {
 		end = System.nanoTime();
 		exectime[EXECSQL] = end - start;
 
-		Log.info("## DB result ##");
-		Log.info(sep_data_info);
+//		Log.info("## DB result ##");
+//		Log.info(sep_data_info);
+		Log.out("## DB result ##");
+		Log.out(sep_data_info);
 
 		return sep_data_info;
 
@@ -260,10 +299,10 @@ public class DataConstructor {
 		exectime[MKETREE] = end - start;
 
 		//TODO: when debug finished, remove Log.info!!!
-		Log.info("## constructed Data ##");
-		Log.info(sep_data_info);
-//		Log.out("## constructed Data ##");
-//		Log.out(sep_data_info);
+//		Log.info("## constructed Data ##");
+//		Log.info(sep_data_info);
+		Log.out("## constructed Data ##");
+		Log.out(sep_data_info);
 		return sep_data_info;
 	}
 

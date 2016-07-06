@@ -1,11 +1,12 @@
 package supersql.dataconstructor.optimizer.nodes;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import supersql.dataconstructor.optimizer.attributes.TfePath;
 
 public class NodeTfeCoordinate {
-	private HashSet<NodeTfeCoordinate> subCoordinates;
+	private Collection<NodeTfeCoordinate> subCoordinates;
 	private int localIndex;
 	private int depth;
 	private NodeTfeCoordinate parent;
@@ -15,12 +16,12 @@ public class NodeTfeCoordinate {
 	public NodeTfeCoordinate(){
 		localIndex = ROOT;
 		depth = ROOT;
-		subCoordinates = new HashSet<NodeTfeCoordinate>();
+		subCoordinates = new ArrayList<NodeTfeCoordinate>();
 	}
 	
 	public NodeTfeCoordinate(int li, NodeTfeCoordinate p){
 		localIndex = li;
-		subCoordinates = new HashSet<NodeTfeCoordinate>();
+		subCoordinates = new ArrayList<NodeTfeCoordinate>();
 		parent = p;
 		depth = p.depth + 1;
 	}
@@ -30,7 +31,7 @@ public class NodeTfeCoordinate {
 		return this;
 	}
 	
-	public HashSet<NodeTfeCoordinate> getSubCoordinates(){
+	public Collection<NodeTfeCoordinate> getSubCoordinates(){
 		return subCoordinates;
 	}
 	
@@ -159,8 +160,8 @@ public class NodeTfeCoordinate {
 	}
 
 	private static void fusionCoordinates(NodeTfeCoordinate coord1, NodeTfeCoordinate coord2, NodeTfeCoordinate newCoord){
-		HashSet<NodeTfeCoordinate> subCoordinates1 = coord1.subCoordinates;
-		HashSet<NodeTfeCoordinate> subCoordinates2 = coord2.subCoordinates;
+		Collection<NodeTfeCoordinate> subCoordinates1 = coord1.subCoordinates;
+		Collection<NodeTfeCoordinate> subCoordinates2 = coord2.subCoordinates;
 		
 		for(NodeTfeCoordinate subCoord1: subCoordinates1){
 			NodeTfeCoordinate newSubCoord = new NodeTfeCoordinate(subCoord1.localIndex, newCoord), subCoordToFusion = new NodeTfeCoordinate(subCoord1.localIndex, newCoord);
@@ -175,7 +176,7 @@ public class NodeTfeCoordinate {
 			fusionCoordinates(subCoord1, subCoordToFusion, newSubCoord);
 		}
 		
-		HashSet<NodeTfeCoordinate> newSubCoordinates = newCoord.subCoordinates;
+		Collection<NodeTfeCoordinate> newSubCoordinates = newCoord.subCoordinates;
 		for(NodeTfeCoordinate subCoord2: subCoordinates2){
 			
 			boolean alreadyFusioned = false;

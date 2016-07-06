@@ -55,13 +55,13 @@ public class NodeManager {
 					for(TfePath leafPath: mapLeafPathNode.keySet()){
 						if(leafPath.containsPath(path)){
 							foundAtLeastOneNode = true;
-							duplicateTableInNode(table, mapLeafPathNode.get(leafPath));
+							duplicateTableInNode(table, mapLeafPathNode.get(leafPath), path);
 						}
 					}
 					
 					if(!foundAtLeastOneNode){
 						Node newNode = newNode();
-						duplicateTableInNode(table, newNode);
+						duplicateTableInNode(table, newNode, path);
 						mapLeafPathNode.put(path, newNode);
 					}
 				}
@@ -72,7 +72,7 @@ public class NodeManager {
 		for(Table table: fromClauseTables){
 			if(table.isExternalTable()){
 				Node newNode = newNode();
-				duplicateTableInNode(table, newNode);
+				duplicateTableInNode(table, newNode, null);
 			}
 		}
 		return;
@@ -104,19 +104,23 @@ public class NodeManager {
 		return node;
 	}
 	
-	private void duplicateTableInNode(Table table, Node node){
+	private void duplicateTableInNode(Table table, Node node, TfePath path){
 		if(node != null){
 			if(!node.containsOriginalTable(table)){
 				OptimizerTable duplicatedTable = new OptimizerTable(table, node);
 				node.addTable(duplicatedTable);
 				table.addDuplicatedTable(duplicatedTable);
 			}
+			if(path != null)
+				node.addPath(path);
 		}
 	}	
 	
 	private Node unionNodes(Node node1, Node node2){
 		
 		Node newNode = new Node();
+		newNode.addPaths(node1.getPaths());
+		newNode.addPaths(node2.getPaths());
 		for(OptimizerTable table: node1.getTables()){
 			newNode.addTable(table);
 			table.setNode(newNode);

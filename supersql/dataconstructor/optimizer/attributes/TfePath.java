@@ -64,7 +64,7 @@ public class TfePath {
 	public TfePath getSubPath(){
 		if(path.size()>1)
 			return new TfePath(path.subList(1, path.size()), leafIndex);
-		else return new TfePath();
+		else return (new TfePath()).setLeafIndex(leafIndex);
 	}
 	
 	public int size(){

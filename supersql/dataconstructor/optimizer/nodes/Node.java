@@ -1,10 +1,9 @@
 package supersql.dataconstructor.optimizer.nodes;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
-import supersql.dataconstructor.optimizer.attributes.Attribute;
-import supersql.dataconstructor.optimizer.attributes.TfeAttribute;
 import supersql.dataconstructor.optimizer.attributes.TfePath;
 import supersql.dataconstructor.optimizer.tables.OptimizerTable;
 import supersql.dataconstructor.optimizer.tables.Table;
@@ -12,11 +11,13 @@ import supersql.dataconstructor.optimizer.tables.Table;
 public class Node {
 	
 	private HashSet<OptimizerTable> tables;
+	private Collection<TfePath> paths;
 	private NodeTfeCoordinate coordinates;
 	private boolean isExternalTable;
 	
 	public Node(){
 		tables = new HashSet<OptimizerTable>();
+		paths = new ArrayList<TfePath>();
 		coordinates = new NodeTfeCoordinate();
 		isExternalTable = true;
 	}
@@ -25,18 +26,33 @@ public class Node {
 		tables.add(table);
 		if(!table.isExternalTable())
 			isExternalTable = false;
-		for(Attribute att : table.getAttributes()){
-			if(att instanceof TfeAttribute){
-				for(TfePath tfePath : ((TfeAttribute) att).getTfePaths()){
-					coordinates.addPath(tfePath);
-				}
-			}		
-		}
+//		for(Attribute att : table.getAttributes()){
+//			if(att instanceof TfeAttribute){
+//				for(TfePath tfePath : ((TfeAttribute) att).getTfePaths()){
+//					coordinates.addPath(tfePath);
+//				}
+//			}		
+//		}
+		return this;
+	}
+	
+	public Node addPath(TfePath path){
+		paths.add(path);
+		coordinates.addPath(path);
+		return this;
+	}
+	
+	public Node addPaths(Collection<TfePath> paths){
+		paths.addAll(paths);
 		return this;
 	}
 	
 	public HashSet<OptimizerTable> getTables(){
 		return tables;
+	}
+	
+	public Collection<TfePath> getPaths(){
+		return paths;
 	}
 	
 	public NodeTfeCoordinate getCoordinates(){

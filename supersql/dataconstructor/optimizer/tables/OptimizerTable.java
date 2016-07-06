@@ -68,6 +68,10 @@ public class OptimizerTable extends Table{
 		node = n;
 	}
 	
+	public String getStringRepresentationBeforeMaterialization(){
+		return originalTable.toString();
+	}
+	
 	/**
 	 * Returns true if this tables has been duplicated, that is, if more than one tables has been built from the original table of this table
 	 * @return true if this tables has been duplicated
