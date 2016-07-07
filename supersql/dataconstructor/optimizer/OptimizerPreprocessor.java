@@ -131,22 +131,21 @@ public class OptimizerPreprocessor {
 			ExtList anyNameNode = (ExtList)(tableNameNode.getNodesInDepth(ruleNames[RULE_any_name])).get(0);
 			String name = (String) ((ExtList)anyNameNode.get(1)).get(0);
 			
-			ExtList aliasList = (ExtList) table.getNodesInDepth(ruleNames[RULE_table_alias]).get(0);
-			
-			if(aliasList.isEmpty())
-				return false;
-			
 			//If the table does not exist in the db (need to check because need the primary keys)
 			if(!dbManager.hasTable(name))
 				return false;
 			else{
+				ArrayList aliasList = table.getNodesInDepth(ruleNames[RULE_table_alias]);
+				if(aliasList.isEmpty())
+					return false;
+				ExtList aliasElement = (ExtList) aliasList.get(0);
 				//Get the primary keys
 				Collection<String> keys = dbManager.getPrimaryKeys(name);
 				if(keys.isEmpty())
 					return false;
 				mapTablePrimaryKeys.put(name, keys);
 				
-				ExtList anyNameNodeAlias = (ExtList)(aliasList.getNodesInDepth(ruleNames[RULE_any_name])).get(0);
+				ExtList anyNameNodeAlias = (ExtList)(aliasElement.getNodesInDepth(ruleNames[RULE_any_name])).get(0);
 				String alias = (String) ((ExtList) anyNameNodeAlias.get(1)).get(0);
 				
 				if(mapAliasTable.containsKey(alias))//Two different table can't have the same alias
