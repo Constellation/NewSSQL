@@ -28,7 +28,8 @@ public class TreeMaker {
 	
 	public void getConstructedData(){
 		for(Node node : node){
-			getConstructedData(node);
+			if(nodeResults.containsKey(node))
+				getConstructedData(node);
 		}
 		if(constructedData.isEmpty()){
 			for(Node node : node){
