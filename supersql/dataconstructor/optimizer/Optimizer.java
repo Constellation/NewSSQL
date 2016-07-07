@@ -102,7 +102,7 @@ public class Optimizer {
 	}
 	
 	public static void infoOptimizer(String message){
-		Log.info("[Query optimizer]: " + message);
+		Log.out("[Query optimizer]: " + message);
 	}
 	
 	public static void errorOptimizer(String message){

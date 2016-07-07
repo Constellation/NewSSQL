@@ -104,7 +104,7 @@ public class RetrievalManager {
 	}
 	
 	public static void infoRetrieval(String message){
-		Log.info("[Retrieval manager]: " + message);
+		Log.out("[Retrieval manager]: " + message);
 	}
 	
 	public static void errRetrieval(String message){
