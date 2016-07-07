@@ -147,9 +147,11 @@ public class RetrievalManager {
 	private void checkEmptiness(){
 		boolean isEmpty = false;
 		for(Node node : nonExternalNodes){
-			if(nodeResults.get(node).isEmpty()){
-				isEmpty = true;
-				break;
+			if(nodeResults.containsKey(node)){
+				if(nodeResults.get(node).isEmpty()){
+					isEmpty = true;
+					break;
+				}
 			}
 		}
 		if(isEmpty){
