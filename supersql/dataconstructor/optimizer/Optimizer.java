@@ -62,6 +62,8 @@ public class Optimizer {
 				infoOptimizer("Make queries");
 				queryMaker = new QueryMaker(nodeManager.getNodes(), predicateManager.getUnaryPredicates(), predicateManager.getBinaryPredicates(), queryGraph);
 				queryMaker.makeQueries();
+				
+				infoOptimizer("IRS number: " + nodeManager.getNodes().size());
 			}
 		}
 		return;
