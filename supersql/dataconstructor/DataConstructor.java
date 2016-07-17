@@ -22,6 +22,7 @@ import supersql.dataconstructor.optimizer.database.DatabaseManager;
 import supersql.db.ConnectDB;
 import supersql.db.GetFromDB;
 import supersql.extendclass.ExtList;
+import supersql.parser.Preprocessor;
 import supersql.parser.Start_Parse;
 
 public class DataConstructor {
@@ -99,7 +100,7 @@ public class DataConstructor {
 		}  
 		else {
 			if(optimize){
-				sep_data_info = schemaToDataWithOptimizer();
+				sep_data_info = schemaToDataWithOptimizer(sep_sch);
 				if(sep_data_info == null){
 					sep_data_info = new ExtList();
 					sep_data_info = schemaToData(parser, msql, sep_sch, sep_data_info);
@@ -109,8 +110,8 @@ public class DataConstructor {
 		}
 		data_info = sep_data_info;
 
-		Log.out("## Result ##");
-		Log.out(data_info);
+		Log.info("## Result ##");
+		Log.info(data_info);
 	}
 
 //	private ExtList schemaToDataFromApi(Start_Parse parser, MakeSQL msql,
@@ -209,16 +210,38 @@ public class DataConstructor {
 //		return sep_data_info;
 //	}
 	
-	private ExtList schemaToDataWithOptimizer(){
+	private ExtList schemaToDataWithOptimizer(ExtList sep_sch){
 		ExtList result = null;
 		RetrievalManager rm = new RetrievalManager(dbManager, optimizer.getNodes(), optimizer.getDirectQueries(), optimizer.getRetrievalQueries(), optimizer.getMaterializationQueries(), optimizer.getFullReducerQueries(), optimizer.getMapNameAttribute());
 		try{	
 			rm.dataConstruction();
 			result = rm.getConstructedData();
+			if(Preprocessor.isOrderBy())
+				result = processWithOrderBy(sep_sch, result);
 		} catch(Exception e){
 			RetrievalManager.errRetrieval("Error in retrieval manager: process without optimizer: " + e.getMessage());
 			e.printStackTrace();
 		}
+	
+		return result;
+	}
+	
+	private ExtList processWithOrderBy(ExtList sch, ExtList result){
+		ExtList info = new ExtList();
+		info = OrderBy.tableToList(Preprocessor.getOrderByTable(), sch.contain_itemnum());
+		OrderBy order_by = new OrderBy();
+		int a;
+		for (int i = 0; i < info.size(); i++) {
+			for (int j = 0; j < sch.size(); j++) {
+				a = info.get(i).toString().indexOf(" ");
+				if (info.get(i).toString().substring(0, a).equals(sch.get(j).toString())) {
+					
+					result = order_by.sort(info.get(i).toString(), sch, result);
+					
+				}
+			}
+		}
+		
 		return result;
 	}
 

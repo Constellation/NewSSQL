@@ -73,7 +73,7 @@ public class RetrievalManager {
 	}
 	
 	public void retrieveData() throws Exception{
-		Log.info("Data retireval...");
+		Log.info("Data retrieval...");
 		database.openConnection();
 		
 		for(Node currentNode: nonMaterializedNodes){
@@ -104,7 +104,7 @@ public class RetrievalManager {
 	}
 	
 	public static void infoRetrieval(String message){
-		Log.out("[Retrieval manager]: " + message);
+		Log.info("[Retrieval manager]: " + message);
 	}
 	
 	public static void errRetrieval(String message){
@@ -165,10 +165,9 @@ public class RetrievalManager {
 		Node currentNode = tree.getRoot();
 		if(!currentNode.isExternalNode()){
 			nodeResults.put(currentNode, database.executeQuery(retrievalQueries.get(currentNode), mapNameAttribute));
-			
-			for(QueryTree child: tree.getChildren()){
-				setNodeResult(child);
-			}
+		}
+		for(QueryTree child: tree.getChildren()){
+			setNodeResult(child);
 		}
 	}
 	

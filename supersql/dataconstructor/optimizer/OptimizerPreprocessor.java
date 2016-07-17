@@ -1,20 +1,6 @@
 package supersql.dataconstructor.optimizer;
 
-
-import static supersql.parser.querytestParser.RULE_any_name;
-import static supersql.parser.querytestParser.RULE_column_name;
-import static supersql.parser.querytestParser.RULE_compound_operator;
-import static supersql.parser.querytestParser.RULE_exp;
-import static supersql.parser.querytestParser.RULE_function;
-import static supersql.parser.querytestParser.RULE_function_name;
-import static supersql.parser.querytestParser.RULE_grouper;
-import static supersql.parser.querytestParser.RULE_join_clause;
-import static supersql.parser.querytestParser.RULE_operand;
-import static supersql.parser.querytestParser.RULE_sl;
-import static supersql.parser.querytestParser.RULE_table_alias;
-import static supersql.parser.querytestParser.RULE_table_name;
-import static supersql.parser.querytestParser.RULE_table_or_subquery;
-import static supersql.parser.querytestParser.ruleNames;
+import static supersql.parser.querytestParser.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -105,7 +91,7 @@ public class OptimizerPreprocessor {
 	
 	
 	private boolean preliminaryChecks(){
-		return !Preprocessor.isAggregate() && !Preprocessor.isOrderBy();
+		return !Preprocessor.isAggregate();
 	}
 	
 	private boolean setFromClauseTables() throws Exception{
@@ -187,6 +173,7 @@ public class OptimizerPreprocessor {
 			case EXP:
 				localIndex = setTfeAttribute(subOperandContent, currentPath, localIndex);
 				if(localIndex < 0)
+					
 					return -1;
 				break;
 			case GROUPER:
@@ -217,70 +204,87 @@ public class OptimizerPreprocessor {
 	}
 	
 	private int processFunction(ExtList functionOperand, TfePath currentPath, int localIndex) throws Exception{
-		String functionName = getFunctionName(functionOperand);
+		Object fn = getFunctionName(functionOperand);
 		ExtList functionContent = getNodeContent(functionOperand);
 		ArrayList subOperands = getSubOperands(functionContent);
-		switch(functionName){
-		case "imagefile":
-		case "image":
-			ExtList subOperandIm = (ExtList) subOperands.get(0);
-			OperandType subOperandTypeIm = getOperandType(subOperandIm);
-			if(subOperandTypeIm.equals(OperandType.ALIAS)){
-				if(!addAttribute(subOperandIm, new TfePath(currentPath).setLeafIndex(localIndex)))
-					return -1;
-				localIndex++;
+		if(fn instanceof String){
+			String functionName = (String) fn;
+			switch(functionName){
+			case "imagefile":
+			case "image":
+				ExtList subOperandIm = (ExtList) subOperands.get(0);
+				OperandType subOperandTypeIm = getOperandType(subOperandIm);
+				if(subOperandTypeIm.equals(OperandType.ALIAS)){
+					if(!addAttribute(subOperandIm, new TfePath(currentPath).setLeafIndex(localIndex)))
+						return -1;
+					localIndex++;
+					return localIndex;
+				}
+				else if(subOperandTypeIm.equals(OperandType.FUNCTION))
+					return processFunction(subOperandIm, currentPath, localIndex);
+				
+				else if(subOperandTypeIm.equals(OperandType.SL))
+					return localIndex;
+				else return -1;
+			case "foreach":
+				for(int i=0; i<subOperands.size(); i++){
+					ExtList subOperandFor = (ExtList) subOperands.get(0);
+					OperandType subOperandTypeFor = getOperandType(subOperandFor);
+					if(subOperandTypeFor.equals(OperandType.ALIAS)){
+						if(!addAttribute(subOperandFor, new TfePath(currentPath).setLeafIndex(localIndex)))
+							return -1;
+						localIndex++;
+					}
+					else return -1;
+				}
 				return localIndex;
-			}
-			else if(subOperandTypeIm.equals(OperandType.FUNCTION))
-				return processFunction(subOperandIm, currentPath, localIndex);
-			
-			else if(subOperandTypeIm.equals(OperandType.SL))
-				return localIndex;
-			else return -1;
-		case "foreach":
-			for(int i=0; i<subOperands.size(); i++){
-				ExtList subOperandFor = (ExtList) subOperands.get(0);
-				OperandType subOperandTypeFor = getOperandType(subOperandFor);
-				if(subOperandTypeFor.equals(OperandType.ALIAS)){
-					if(!addAttribute(subOperandFor, new TfePath(currentPath).setLeafIndex(localIndex)))
+			case "link":
+				ExtList subOperand1 = (ExtList) subOperands.get(0);
+				OperandType subOperand1Type = getOperandType(subOperand1);
+				
+				
+				if(subOperand1Type.equals(OperandType.ALIAS)){
+					if(!addAttribute(subOperand1, new TfePath(currentPath).setLeafIndex(localIndex)))
 						return -1;
 					localIndex++;
 				}
-				else return -1;
-			}
-			return localIndex;
-		case "link":
-			ExtList subOperand1 = (ExtList) subOperands.get(0);
-			OperandType subOperand1Type = getOperandType(subOperand1);
-			
-			
-			if(subOperand1Type.equals(OperandType.ALIAS)){
-				if(!addAttribute(subOperand1, new TfePath(currentPath).setLeafIndex(localIndex)))
+				else if(subOperand1Type.equals(OperandType.FUNCTION))
+					localIndex = processFunction(subOperand1, currentPath, localIndex);
+				
+				else if(!subOperand1Type.equals(OperandType.SL))
 					return -1;
-				localIndex++;
-			}
-			else if(subOperand1Type.equals(OperandType.FUNCTION))
-				localIndex = processFunction(subOperand1, currentPath, localIndex);
+				
+				for(int i=2; i<subOperands.size(); i++){
+					ExtList subOperand3 = (ExtList) subOperands.get(i);
+					OperandType subOperand3Type = getOperandType(subOperand3);
+					if(subOperand3Type.equals(OperandType.ALIAS)){
+						if(!addAttribute(subOperand3, new TfePath(currentPath).setLeafIndex(localIndex)))
+							return -1;
+						localIndex++;
+					}
+					else if(subOperand3Type.equals(OperandType.FUNCTION))
+						localIndex = processFunction(subOperand3, currentPath, localIndex);
+					else return -1;
+				}
+				return localIndex;
 			
-			else if(!subOperand1Type.equals(OperandType.SL))
+			default:
 				return -1;
-			
-			for(int i=2; i<subOperands.size(); i++){
-				ExtList subOperand3 = (ExtList) subOperands.get(i);
-				OperandType subOperand3Type = getOperandType(subOperand3);
-				if(subOperand3Type.equals(OperandType.ALIAS)){
-					if(!addAttribute(subOperand3, new TfePath(currentPath).setLeafIndex(localIndex)))
+			}
+		}else{
+			ExtList anyNameNode = (ExtList) fn;
+			ExtList keywordNode = (ExtList) anyNameNode.getNodesInDepth(ruleNames[RULE_keyword]).get(0);
+			String keyWord = (String) ((ExtList) keywordNode.get(1)).get(0);
+			if(keyWord.equals("null")){
+				for(Object so: subOperands){
+					ExtList subOperand = (ExtList) so;
+					if(!addAttribute(subOperand, new TfePath(currentPath).setLeafIndex(localIndex)))
 						return -1;
 					localIndex++;
 				}
-				else if(subOperand3Type.equals(OperandType.FUNCTION))
-					localIndex = processFunction(subOperand3, currentPath, localIndex);
-				else return -1;
+				return localIndex;
 			}
-			return localIndex;
-		
-		default:
-			return -1;
+			else return -1;
 		}
 	}
 	
@@ -351,21 +355,21 @@ public class OptimizerPreprocessor {
 	}
 	
 	private String getTableAlias(ExtList operand) throws Exception{
-		return getAnyName((ExtList) operand.getNodesInDepth(ruleNames[RULE_table_alias]).get(0));
+		return (String) getAnyName((ExtList) operand.getNodesInDepth(ruleNames[RULE_table_alias]).get(0));
 	}
 	
 	private String getColumnName(ExtList operand) throws Exception{
-		return getAnyName((ExtList) operand.getNodesInDepth(ruleNames[RULE_column_name]).get(0));
+		return (String) getAnyName((ExtList) operand.getNodesInDepth(ruleNames[RULE_column_name]).get(0));
 	}
 	
-	private String getFunctionName(ExtList operand) throws Exception{
+	private Object getFunctionName(ExtList operand) throws Exception{
 		return getAnyName((ExtList) operand.getNodesInDepth(ruleNames[RULE_function_name]).get(0));
 	}
 	
-	private String getAnyName(ExtList nameNode) throws Exception{
+	private Object getAnyName(ExtList nameNode) throws Exception{
 		ExtList anyNameNode = (ExtList) nameNode.getNodesInDepth(ruleNames[RULE_any_name]).get(0);
 		ExtList anyNameNodeContent = getNodeContent(anyNameNode);
-		return (String) anyNameNodeContent.get(0);
+		return anyNameNodeContent.get(0);
 	}
 	
 	private boolean setWhereClausePredicate() throws Exception{
@@ -422,8 +426,15 @@ public class OptimizerPreprocessor {
 				
 				Iterator itAtt = usedAttributes.iterator();
 				String att1 = (String) itAtt.next(), att2 = (String) itAtt.next();
-				String att1Name = att1.split("\\.")[1], att2Name = att2.split("\\.")[1];
+				String[] split1 = att1.split("\\."), split2 = att2.split("\\.");
+				String att1Name = split1[1], att2Name = split2[1];
+				String att1Alias = split1[0];
 				
+				if(att1Alias.equals(tableAlias2)){
+					String tmp = att1Name;
+					att1Name = att2Name;
+					att2Name = tmp;
+				}
 				Attribute att1InTable = involvedTable1.getAttribute(att1Name),
 						att2InTable = involvedTable2.getAttribute(att2Name);
 				if(att1InTable == null){
