@@ -499,10 +499,10 @@ public class Start_Parse {
 						list_from_where = (ExtList)(ExtList)((ExtList)list_from_where.get(1)).get(0);
 					}
 				}
-				System.out.println(list_media);
-				System.out.println(list_tfe);
-				System.out.println(list_from);
-				System.out.println(list_where);
+				Log.out(list_media);
+				Log.out(list_tfe);
+				Log.out(list_from);
+				Log.out(list_where);
 				list_table = set_fromInfo();
 				
 				after_from = b.substring(b.toLowerCase().indexOf("from") + 4).trim();

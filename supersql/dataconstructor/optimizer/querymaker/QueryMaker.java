@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 
 import supersql.dataconstructor.optimizer.attributes.Attribute;
@@ -36,6 +37,8 @@ public class QueryMaker {
 	private HashSet<Attribute> requiredAttributes;
 	private ArrayList<QueryTree> queryTrees;
 	
+	private Random randomGenerator;
+	
 	public QueryMaker(ArrayList<Node> nds, Hashtable<Node, UnaryPredicate> ups, Hashtable<NodePair, BinaryPredicate> bps, QueryGraph qg){
 		nodes = nds;
 		unaryPredicates = ups;
@@ -51,6 +54,8 @@ public class QueryMaker {
 		tmpTables = new Hashtable<Node, String>();
 		requiredAttributes = new HashSet<Attribute>();
 		queryTrees = queryGraph.getQueryTrees();
+		
+		randomGenerator = new Random();
 	}
 	
 	public void makeQueries(){
@@ -158,10 +163,11 @@ public class QueryMaker {
 	}
 	
 	private String getCreateClause(Node node){
-		String tmpTableName = UUID.randomUUID().toString();
+		String tmpTableName = "IRS" + Math.abs(randomGenerator.nextInt());
 		tmpTables.put(node, tmpTableName);
 		
-		return "CREATE TEMPORARY TABLE \"" + tmpTableName + "\" AS ";
+		//return "CREATE TEMPORARY TABLE \"" + tmpTableName + "\" AS ";
+		return "CREATE TEMPORARY TABLE " + tmpTableName + " AS ";
 	}
 	
 	private String getSelectClause(Node node, boolean toBeMaterialized){
@@ -205,13 +211,16 @@ public class QueryMaker {
 		String tmpTableNameTarget = tmpTables.get(target);
 		NodePair nodePair = new NodePair(root, target);
 		BinaryPredicate bp = binaryPredicates.get(nodePair);
-		String query = "DELETE FROM \"" + tmpTableNameRoot +"\"";
-		query += " WHERE NOT EXISTS (SELECT* FROM \"" + tmpTableNameTarget + "\" WHERE " + bp.getStringRepresentationAfterMaterialize() + ")"; 
+		//String query = "DELETE FROM \"" + tmpTableNameRoot +"\"";
+		String query = "DELETE FROM " + tmpTableNameRoot;
+		//query += " WHERE NOT EXISTS (SELECT* FROM \"" + tmpTableNameTarget + "\" WHERE " + bp.getStringRepresentationAfterMaterialize() + ")"; 
+		query += " WHERE NOT EXISTS (SELECT* FROM " + tmpTableNameTarget + " WHERE " + bp.getStringRepresentationAfterMaterialize() + ")"; 
+
 		queries.add(query);
 	}
 	
 	private void makeLeafRetrievalQuery(Node root, Node target){
-		String query =  getRetrievalAfterMaterializationQuery(root) + getWhereClauseAfterMaterializeForRetrieval(root, target);
+		String query =  getRetrievalAfterMaterializationQuery(root) + " " + getWhereClauseAfterMaterializeForRetrieval(root, target);
 		retrievalQueries.put(root, query);
 	}
 	
@@ -219,7 +228,8 @@ public class QueryMaker {
 		NodePair nodePair = new NodePair(node1, node2);
 		BinaryPredicate bp = binaryPredicates.get(nodePair);
 		String tmpTableNameTarget = tmpTables.get(node2);
-		return "WHERE EXISTS (SELECT* FROM \"" + tmpTableNameTarget + "\" WHERE " + bp.getStringRepresentationAfterMaterialize() + ")";
+		//return "WHERE EXISTS (SELECT* FROM \"" + tmpTableNameTarget + "\" WHERE " + bp.getStringRepresentationAfterMaterialize() + ")";
+		return "WHERE EXISTS (SELECT* FROM " + tmpTableNameTarget + " WHERE " + bp.getStringRepresentationAfterMaterialize() + ")";
 	}
 	
 	private void makeRetrievalAfterMaterializationQuery(Node node){
@@ -244,7 +254,8 @@ public class QueryMaker {
 			i++;
 		}
 		
-		String from = "FROM \"" + tmpTables.get(node) + "\" ";
+		//String from = "FROM \"" + tmpTables.get(node) + "\" ";
+		String from = "FROM " + tmpTables.get(node);
 		
 		return select + " " + from;
 	}

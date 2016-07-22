@@ -18,7 +18,7 @@ public class TreeGenerator {
 		ExtList result = new ExtList();
 		Log.out("= makeTree =");
 		Log.out("sch : " + sch);
-		Log.out("tuples : " + tuples);
+		//Log.out("tuples : " + tuples);
 
 		//hanki start
 		if (Preprocessor.isAggregate()) {

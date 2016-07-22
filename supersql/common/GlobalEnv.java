@@ -821,6 +821,7 @@ public class GlobalEnv {
     //added by goto 20141201
 	private static String getCurrentPath(){
 		String cp = System.getProperty("java.class.path");
+		System.out.println(cp);
 		if(cp.contains(OS_PS)){
 			String cps[] = cp.split(OS_PS);
 			for(int i=0; i<cps.length; i++){
@@ -831,9 +832,10 @@ public class GlobalEnv {
 			}
 		}
 		if(cp.endsWith(".jar")){
-			cp = new File(cp).getParent();
-			if(cp.endsWith("libs"))
-				cp = new File(cp).getParent();
+//			cp = new File(cp).getParent();
+//			if(cp.endsWith("libs"))
+//				cp = new File(cp).getParent();
+			cp = System.getProperty("user.dir");
 		}
 		return cp;
 	}

@@ -7,6 +7,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+import supersql.FrontEnd;
 import supersql.common.Log;
 import supersql.dataconstructor.optimizer.attributes.Attribute;
 import supersql.dataconstructor.optimizer.database.DatabaseManager;
@@ -59,7 +60,12 @@ public class RetrievalManager {
 	
 	public void dataConstruction() throws Exception{
 		printQueries();
+		
+		long begin = System.currentTimeMillis();
 		retrieveData();
+		long end = System.currentTimeMillis();
+		
+		FrontEnd.retrievaltime = end-begin;
 		checkEmptiness();
 		constructData();
 	}

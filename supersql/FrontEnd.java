@@ -8,6 +8,9 @@ import supersql.parser.Start_Parse;
 public class FrontEnd {
 //public class FrontEnd_ implements FrontEndService {
 	//Test comment 
+	
+	public static long dctime;
+	public static long retrievaltime=0;
 	public static void main(String[] args) {
 		new FrontEnd(args);
 	}
@@ -43,8 +46,10 @@ public class FrontEnd {
 
 				
 				Log.info("Processing");
+				long beforedc = System.currentTimeMillis();
 				DataConstructor dc = new DataConstructor(parsertree);
 				afterdc = System.currentTimeMillis();
+				dctime = afterdc - beforedc;
 
 				if (GlobalEnv.getErrFlag() == 0) {
 					codegenerator.generateCode(parsertree, dc.getData());
