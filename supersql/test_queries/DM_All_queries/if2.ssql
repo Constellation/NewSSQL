@@ -1,2 +1,0 @@
-GENERATE HTML [e.name, (e.salary> 10000) ? e.name : e.salary]!
-FROM employee e

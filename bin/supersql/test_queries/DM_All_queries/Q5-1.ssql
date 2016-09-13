@@ -1,3 +1,0 @@
-GENERATE HTML
-       [(asc)e.name, (desc)e.salary]!
-     FROM employee e

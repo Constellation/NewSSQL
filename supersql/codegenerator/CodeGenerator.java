@@ -1,6 +1,7 @@
 package supersql.codegenerator;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
@@ -31,6 +32,8 @@ public class CodeGenerator {
 	private static String media;
 
 	private static Factory factory;
+	
+	private static boolean decocheck = false;
 
 	public static TFE schemaTop;
 	public static ExtList sch;
@@ -251,78 +254,111 @@ public class CodeGenerator {
 		boolean add_deco = false;
 
 		Asc_Desc ascDesc = new Asc_Desc();
+		
+		
 		if(tfe_tree.get(0).toString().equals("operand")){
-
-			if( ((ExtList)tfe_tree.get(1)).get(0) instanceof String ){
+			
+			if( ((ExtList)tfe_tree.get(1)).get(((ExtList)tfe_tree.get(1)).size()-1) instanceof String  && !decocheck){
+				if( (decos = ((ExtList)tfe_tree.get(1)).get(((ExtList)tfe_tree.get(1)).size()-1).toString().trim()).startsWith("@")){
+					ExtList new_out = checkDecoration(tfe_tree, decos);
+					Log.info(new_out);
+					out_sch = read_attribute(new_out);
+				}
+			}
+			else if( ((ExtList)tfe_tree.get(1)).get(0) instanceof String ){
 				if(((ExtList)tfe_tree.get(1)).get(0).toString().equals("{")){
 					((ExtList)tfe_tree.get(1)).remove(0);
 					((ExtList)tfe_tree.get(1)).remove(((ExtList)tfe_tree.get(1)).indexOf("}"));
-				}
-				out_sch = read_attribute( (ExtList)((ExtList)tfe_tree.get(1)).get(0) );
-			}
-
-			if( ((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("sorting") ){
-				decos = ((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(1).toString();
-				add_deco = true;
-				((ExtList)tfe_tree.get(1)).remove(0);
-			}
-			if( ((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("aggregate") ){
-				decos = ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(0)).get(1)).get(0)).get(1)).get(0).toString();
-				add_deco = true;
-				ExtList att1 = new ExtList();
-				
-				if( ((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(2)).get(0).toString().equals("table_alias") ){
-					att1.add((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(2));
-					att1.add(((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(3));
-					att1.add((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(4));
+					out_sch = read_attribute( (ExtList)((ExtList)tfe_tree.get(1)).get(0) );
 				}else{
-					att1.add((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(2));
+					att =  ((ExtList)tfe_tree.get(1)).get(0).toString();
+					Attribute Att = makeAttribute(att);
+					out_sch = Att;
 				}
-				tfe_tree.remove(1);
-				tfe_tree.add(att1);
-				Log.info(tfe_tree);
-			}
-			if( ((ExtList)tfe_tree.get(1)).contains("||") ){
-				int idx = ((ExtList)tfe_tree.get(1)).indexOf("||");
-				String operand = join_operand((ExtList)tfe_tree.get(1), idx);
-				Attribute Att = makeAttribute(operand);
-				out_sch = Att;
-			}
-			else if(((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("table_alias")){
-				att = ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(0)).get(1)).get(0).toString();
-				att = att + ((ExtList)tfe_tree.get(1)).get(1).toString();
-				att = att + ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(2)).get(1)).get(0)).get(1)).get(0);
-				Attribute Att = makeAttribute(att);
-				out_sch = Att;
-			}else if(((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("column_name")){
-				att = ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(0)).get(1)).get(0).toString();
-				Attribute Att = makeAttribute(att);
-				out_sch = Att;
-			}else if( ((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("grouper") ){
-				out_sch = grouper((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1));
-			}else if( ((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("composite_iterator") ){
-				ExtList group = composite( (ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1) );
-				add_deco = true;
-				decos = (String) group.get(group.size() - 1);
-				group.remove(group.size() - 1);
-				out_sch = grouper(group);
-			}
-			else if( ((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("function") ){
-				out_sch = func_read((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1));
-			}
-			else if( ((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("sqlfunc") ){
-//				out_sch = ;
-			}
-			else if( ((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("if_then_else") ){
-				out_sch = IfCondition((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1));
-			}
-			else if(((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("sl")){
-				att = ((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(0).toString();
-				Attribute SL = makeAttribute(att);
-				out_sch = SL;
+				
 			}
 			else{
+				if( ((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("sorting") ){
+					decos = ((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(1).toString();
+					add_deco = true;
+					((ExtList)tfe_tree.get(1)).remove(0);
+				}
+				else if( ((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("aggregate") ){
+					decos = ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(0)).get(1)).get(0)).get(1)).get(0).toString();
+					add_deco = true;
+					ExtList att1 = new ExtList();
+					if( ((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(2)).get(0).toString().equals("table_alias") ){
+						att1.add((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(2));
+						att1.add(((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(3));
+						att1.add((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(4));
+					}else{
+						att1.add((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(2));
+					}
+					tfe_tree.remove(1);
+					tfe_tree.add(att1);
+					Log.info(tfe_tree);
+				}
 
+				if( ((ExtList)tfe_tree.get(1)).contains("||") ){
+					int idx = ((ExtList)tfe_tree.get(1)).indexOf("||");
+					String operand = join_operand((ExtList)tfe_tree.get(1), idx);
+					Attribute Att = makeAttribute(operand);
+					out_sch = Att;
+				}
+				else if(((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("table_alias")){
+					att = ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(0)).get(1)).get(0).toString();
+					att = att + ((ExtList)tfe_tree.get(1)).get(1).toString();
+					//					Log.info( ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(2)).get(1)).get(0)).get(1)).get(0) );
+					if( ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(2)).get(1)).get(0)).get(1)).get(0) instanceof ExtList){
+						att = att + ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(2)).get(1)).get(0)).get(1)).get(0)).get(1)).get(0);
+					}else{
+						att = att + ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(2)).get(1)).get(0)).get(1)).get(0);
+					}
+					Attribute Att = makeAttribute(att);
+					out_sch = Att;
+				}else if(((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("column_name")){
+					if( ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(0)).get(1)).get(0) instanceof ExtList){
+						//						Log.info( ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(0)).get(1)).get(0)).get(1)).get(0) );
+						att = ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(0)).get(1)).get(0)).get(1)).get(0).toString();
+					}else{
+						att = ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(0)).get(1)).get(0).toString();
+					}
+					//					att = ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(0)).get(1)).get(0).toString();
+					Attribute Att = makeAttribute(att);
+					out_sch = Att;
+				}else if( ((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("grouper") ){
+					out_sch = grouper((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1));
+				}else if( ((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("composite_iterator") ){
+					ExtList group = composite( (ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1) );
+					add_deco = true;
+					decos = (String) group.get(group.size() - 1);
+					group.remove(group.size() - 1);
+					out_sch = grouper(group);
+				}
+				else if( ((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("function") ){
+					out_sch = func_read((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1));
+				}
+				else if( ((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("sqlfunc") ){
+					String sqlfunc = new String();
+					//				Log.info((ExtList)tfe_tree.get(1));
+					sqlfunc = getText( (ExtList)tfe_tree.get(1), Start_Parse.ruleNames );
+					builder = new String();
+					//				sqlfunc = sqlfunc.replaceAll("&","").trim();
+					sqlfunc = sqlfunc.replaceAll("\"", "'");
+					Attribute func = makeAttribute(sqlfunc);
+					out_sch = func;
+				}
+				else if( ((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("if_then_else") ){
+					out_sch = IfCondition((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1));
+				}
+				else if(((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("sl")){
+					att = ((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(0).toString();
+					Attribute SL = makeAttribute(att);
+					out_sch = SL;
+				}
+				else{
+
+				}
 			}
 			if( !(((ExtList)tfe_tree.get(1)).get( ((ExtList)tfe_tree.get(1)).size() - 1 ) instanceof ExtList) ){
 				String deco = ((ExtList)tfe_tree.get(1)).get( ((ExtList)tfe_tree.get(1)).size() - 1 ).toString();
@@ -350,7 +386,7 @@ public class CodeGenerator {
 				out_sch = read_attribute( (ExtList)((ExtList)tfe_tree.get(1)).get(0) );
 			else if( ((ExtList)tfe_tree.get(1)).size() == 0 ){
 				((ExtList)tfe_tree.get(1)).add("\"\"");
-//				Log.info(tfe_tree);
+				//				Log.info(tfe_tree);
 				Attribute WS = makeAttribute(((ExtList)tfe_tree.get(1)).get(0).toString());
 				out_sch = WS;
 			}else
@@ -381,44 +417,65 @@ public class CodeGenerator {
 		if( ((ExtList)extList.get(0)).get(0).toString().equals("table_alias") ){
 			operand = ((ExtList)((ExtList)((ExtList)((ExtList)extList.get(0)).get(1)).get(0)).get(1)).get(0).toString();
 			operand = operand + extList.get(1).toString();
-			operand = operand + ((ExtList)((ExtList)((ExtList)((ExtList)extList.get(2)).get(1)).get(0)).get(1)).get(0).toString();
+			if( ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)extList).get(2)).get(1)).get(0)).get(1)).get(0) instanceof ExtList){
+				operand = operand + ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)extList).get(2)).get(1)).get(0)).get(1)).get(0)).get(1)).get(0);
+			}else{
+				operand = operand + ((ExtList)((ExtList)((ExtList)((ExtList)extList.get(2)).get(1)).get(0)).get(1)).get(0);
+			}
+			//			operand = operand + ((ExtList)((ExtList)((ExtList)((ExtList)extList.get(2)).get(1)).get(0)).get(1)).get(0).toString();
 		}else if( ((ExtList)extList.get(0)).get(0).toString().equals("column_name") ){
-			operand = ((ExtList)((ExtList)((ExtList)((ExtList)extList.get(0)).get(1)).get(0)).get(1)).get(0).toString();
+			if(  ((ExtList)((ExtList)((ExtList)((ExtList)extList.get(0)).get(1)).get(0)).get(1)).get(0) instanceof ExtList){
+				operand= ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)extList.get(0)).get(1)).get(0)).get(1)).get(0)).get(1)).get(0).toString();
+			}else{
+				operand = ((ExtList)((ExtList)((ExtList)((ExtList)extList.get(0)).get(1)).get(0)).get(1)).get(0).toString();
+			}
+			//			operand = ((ExtList)((ExtList)((ExtList)((ExtList)extList.get(0)).get(1)).get(0)).get(1)).get(0).toString();
 		}else if( ((ExtList)extList.get(0)).get(0).toString().equals("sl") ){
 			operand = ((ExtList)((ExtList)extList.get(0)).get(1)).get(0).toString();
 		}
-
-		operand = operand + extList.get(idx).toString();
-
-		extList = (ExtList)((ExtList)extList.get(idx + 1)).get(1);
-		if( ((ExtList)extList.get(0)).get(0).toString().equals("table_alias") ){
-			operand = operand + ((ExtList)((ExtList)((ExtList)((ExtList)extList.get(0)).get(1)).get(0)).get(1)).get(0).toString();
-			operand = operand + extList.get(1).toString();
-			operand = operand + ((ExtList)((ExtList)((ExtList)((ExtList)extList.get(2)).get(1)).get(0)).get(1)).get(0).toString();
-		}else if( ((ExtList)extList.get(0)).get(0).toString().equals("column_name") ){
-			operand = operand + ((ExtList)((ExtList)((ExtList)((ExtList)extList.get(0)).get(1)).get(0)).get(1)).get(0).toString();
-		}else if( ((ExtList)extList.get(0)).get(0).toString().equals("sl") ){
-			operand = operand + ((ExtList)((ExtList)extList.get(0)).get(1)).get(0).toString();
+		else if( ((ExtList)extList.get(0)).get(0).toString().equals("sqlfunc") ){
+			Log.info(extList);
+			operand = getText( (ExtList)extList.get(0), Start_Parse.ruleNames );
+			builder = new String();
+			operand = operand.replaceAll("\"", "'");
 		}
 
+		if(idx > -1){
+			operand = operand + extList.get(idx).toString();
+
+			extList = (ExtList)((ExtList)extList.get(idx + 1)).get(1);
+			//			Log.info(extList);
+
+			String a = join_operand(extList, extList.indexOf("||"));
+			//			operand = operand + join_operand(extList, extList.indexOf("||"));
+			operand = operand + a;
+		}
+		//		if( ((ExtList)extList.get(0)).get(0).toString().equals("table_alias") ){
+		//			operand = operand + ((ExtList)((ExtList)((ExtList)((ExtList)extList.get(0)).get(1)).get(0)).get(1)).get(0).toString();
+		//			operand = operand + extList.get(1).toString();
+		//			operand = operand + ((ExtList)((ExtList)((ExtList)((ExtList)extList.get(2)).get(1)).get(0)).get(1)).get(0).toString();
+		//		}else if( ((ExtList)extList.get(0)).get(0).toString().equals("column_name") ){
+		//			operand = operand + ((ExtList)((ExtList)((ExtList)((ExtList)extList.get(0)).get(1)).get(0)).get(1)).get(0).toString();
+		//		}else if( ((ExtList)extList.get(0)).get(0).toString().equals("sl") ){
+		//			operand = operand + ((ExtList)((ExtList)extList.get(0)).get(1)).get(0).toString();
+		//		}
 		return operand;
 	}
 
 	private static Connector connector_main(ExtList operand, int dim){
 		ExtList atts = new ExtList();
-
+		
 		for(int i = 0; i <= operand.size(); i++){
 			TFE att = read_attribute((ExtList)operand.get(i));
 			atts.add(att);
 			i++;
 		}
-
+		decocheck =false;
 		Connector con = createconnector(dim);
 
 		for (int i = 0; i < atts.size(); i++) {
 			con.setTFE((ITFE) (atts.get(i)));
 		}
-
 		return con;
 
 	}
@@ -606,8 +663,9 @@ public class CodeGenerator {
 		Log.out("[makeAttribute] name : " + name);
 
 		Attribute att = createAttribute();
+		Log.info(attno + ","+ name);
 		attno = att.setItem(attno, name, line, key, attp);
-
+		Log.info(attno + ","+ name);
 		return att;
 
 	}
@@ -680,12 +738,23 @@ public class CodeGenerator {
 		String att = null;
 		ExtList tfe_tree = (ExtList)((ExtList)((ExtList)expr.get(0)).get(1)).get(0);
 		if(tfe_tree.get(0).toString().equals("operand")){
-			if(((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("table_alias")){
+			if( ((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("table_alias") ){
 				att = ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(0)).get(1)).get(0).toString();
 				att = att + ((ExtList)tfe_tree.get(1)).get(1).toString();
-				att = att + ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(2)).get(1)).get(0)).get(1)).get(0);
-			}else if(((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("column_name")){
-				att = ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(0)).get(1)).get(0).toString();
+				if( ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(2)).get(1)).get(0)).get(1)).get(0) instanceof ExtList){
+					att = att + ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(2)).get(1)).get(0)).get(1)).get(0)).get(1)).get(0);
+				}else{
+					att = att + ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(2)).get(1)).get(0)).get(1)).get(0);
+				}
+				//				att = att + ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(2)).get(1)).get(0)).get(1)).get(0);
+			}else if( ((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("column_name") ){
+				if( ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(0)).get(1)).get(0) instanceof ExtList){
+					//					Log.info( ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(0)).get(1)).get(0)).get(1)).get(0) );
+					att = ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(0)).get(1)).get(0)).get(1)).get(0).toString();
+				}else{
+					att = ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(0)).get(1)).get(0).toString();
+				}
+				//				att = ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(0)).get(1)).get(0).toString();
 			}
 		}
 		str = att + expr.get(1).toString() + ((ExtList)((ExtList)((ExtList)((ExtList)expr.get(2)).get(1)).get(0)).get(1)).get(0).toString();
@@ -775,13 +844,52 @@ public class CodeGenerator {
 	//		return att;
 	//	}
 
+	private static ExtList checkDecoration(ExtList extList, String decos) {
+		String token = new String();
+		String name, value;
+		int equalidx;
+		String deco = decos.substring(decos.indexOf("{")+1, decos.lastIndexOf("}"));
+		String[] decolist = deco.split(",");
+		ExtList new_list = new ExtList();
+		ExtList med = new ExtList();
+		new_list.add("h_exp");
+		med.add(extList);
+		for(int i = 0; i < decolist.length; i++) {
+
+			name = new String();
+			value = new String();
+
+			// read name
+			token = decolist[i];
+			equalidx = token.indexOf('=');
+			if (equalidx != -1) {
+				// key = idx
+				name = token.substring(0, equalidx).trim();
+				value = token.substring(equalidx + 1).trim();
+				if(value.startsWith("\'") && value.endsWith("\'")){
+					continue;
+				}else{
+					//value:e.color->[operand, [e.color]]
+					ExtList a1 = new ExtList(), a2 = new ExtList();
+					a1.add("operand");
+					a1.add(a2);
+					((ExtList)a1.get(1)).add(value);
+					med.add(",");
+					med.add(a1);
+				}
+			}
+		}
+		new_list.add(med);
+		decocheck = true;
+		return new_list;
+	}
+
 	private static void setDecoration(ITFE tfe, String decos) {
 		String token = new String();
 		String name, value;
 		int equalidx;
 		decos = decos.substring(decos.indexOf("{")+1, decos.lastIndexOf("}"));
 		String[] decolist = decos.split(",");
-
 		for(int i = 0; i < decolist.length; i++) {
 
 			name = new String();
@@ -841,5 +949,44 @@ public class CodeGenerator {
 		tfe.addDeco(name, (String) value);
 		Log.out("[decoration name=" + name + " value=" + value + "]");
 
+	}
+
+	static String builder = new String();
+	public static String getText(ExtList tree, String[] ruleNames){
+		if(tree.size() != 1){
+			for(int i = 0; i < tree.size(); i++){
+				if(tree.get(i) instanceof String){
+					if(Arrays.asList(ruleNames).contains(tree.get(i).toString())){
+						continue;
+					}else{
+						if( tree.get(i).toString().equals(".") ){
+							builder = builder.trim();
+							builder += tree.get(i).toString();
+						}
+						else if(tree.get(i).toString().equals("&")){
+							continue;
+						}
+						else{
+							builder += tree.get(i).toString();
+							builder += " ";
+						}
+					}
+				}else {
+					getText((ExtList)tree.get(i), ruleNames);
+				}
+			}
+		}
+		else if(tree.size() == 1 && (tree.get(0) instanceof String)){
+			builder += tree.get(0).toString();
+			builder += " " ;
+			return builder.toString();
+		}
+		else if(tree.size() == 1 && ((ExtList)tree.get(0)).size() > 1 ){
+			return getText((ExtList)tree.get(0), ruleNames);
+		}
+		else if(tree.size() == 1 && ((ExtList)tree.get(0)).size() == 1 ){
+			return getText((ExtList)tree.get(0), ruleNames);
+		}
+		return builder.toString();
 	}
 }

@@ -10,7 +10,7 @@ public class ExtList<T> extends ArrayList<T> {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public ExtList () {
+	public ExtList() {
 		super();
 	}
 

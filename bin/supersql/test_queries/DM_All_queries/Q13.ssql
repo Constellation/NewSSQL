@@ -1,3 +1,0 @@
-GENERATE HTML
-[null((desc1)e.salary), e.name]!
-FROM employee e

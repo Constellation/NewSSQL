@@ -136,7 +136,6 @@ public class HTMLManager extends Manager {
 
 	@Override
 	public void generateCode(ITFE tfe_info, ExtList data_info) {
-
 		HTMLEnv.initAllFormFlg();
 
 		htmlEnv.countFile = 0;

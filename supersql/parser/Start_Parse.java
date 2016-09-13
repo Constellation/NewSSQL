@@ -70,6 +70,7 @@ public class Start_Parse {
 	public static ExtList schema;
 	public WhereInfo whereInfo = new WhereInfo();
 	public static boolean distinct = false;
+	public static String[] ruleNames;
 
 
 
@@ -487,17 +488,17 @@ public class Start_Parse {
 				Preprocessor preprocessor = new Preprocessor(b);
 
 				ANTLRInputStream input_b = new ANTLRInputStream(b);
-				querytestLexer lexer_b = new querytestLexer(input_b);
+				queryLexer lexer_b = new queryLexer(input_b);
 				CommonTokenStream tokens_b = new CommonTokenStream(lexer_b);
 
-				querytestParser parser_b = new querytestParser(tokens_b);
+				queryParser parser_b = new queryParser(tokens_b);
 				parser_b.setErrorHandler(new MyErrorStrategy());
 				ParseTree tree_b = parser_b.query(); // begin parsing at rule query
 				List_tree_b = TreeConst.createSSQLParseTree(tree_b, parser_b);
 				List_tree_b = (ExtList) List_tree_b.get(1);
 				list_media = (ExtList) List_tree_b.get(0);
 				list_tfe = (ExtList) List_tree_b.get(1);
-				String[] ruleNames = parser_b.getRuleNames();
+				ruleNames = parser_b.getRuleNames();
 //				Log.info(getText(list_tfe, ruleNames));
 				if(List_tree_b.size() > 2){
 					list_from_where = (ExtList) List_tree_b.get(2);
@@ -550,8 +551,8 @@ public class Start_Parse {
 			}
 		}
 	}
-	String builder = new String();
-	public String getText(ExtList tree, String[] ruleNames){
+	static String builder = new String();
+	public static String getText(ExtList tree, String[] ruleNames){
 		if(tree.size() != 1){
 			for(int i = 0; i < tree.size(); i++){
 				if(tree.get(i) instanceof String){

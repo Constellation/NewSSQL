@@ -22,7 +22,7 @@ public class TreeConst {
 	//	public static List<SSQLParseTree> tree;
 	public static boolean terminal_flag = false; // flag for if terminal node?
 
-	public static ExtList createSSQLParseTree(ParseTree t, querytestParser recog) {
+	public static ExtList createSSQLParseTree(ParseTree t, queryParser recog) {
 		String[] ruleNames = recog != null ? recog.getRuleNames() : null;
 		List<String> ruleNamesList = ruleNames != null ? Arrays.asList(ruleNames) : null;
 		return createSSQLParseTree(t, ruleNamesList);

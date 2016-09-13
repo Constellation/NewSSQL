@@ -87,7 +87,7 @@ public class DataConstructor {
 			// query cannot be divided
 			msql = new MakeSQL(parser);
 		}
-
+		
 		sep_data_info = new ExtList();
 		if (Start_Parse.isDbpediaQuery()) {
 //			sep_data_info = schemaToData(parser, sep_sch, sep_data_info);
@@ -207,7 +207,6 @@ public class DataConstructor {
 		if (msql != null) {
 			getFromDB(msql, sep_sch, sep_data_info);
 			sep_data_info = makeTree(sep_sch, sep_data_info);
-
 		} else {
 			getTuples(sep_sch, sep_data_info);
 			start = System.nanoTime();
@@ -314,7 +313,6 @@ public class DataConstructor {
 		else {
 			gfd = new GetFromDB();
 		}
-
 		gfd.execQuery(SQL_string, sep_data_info);
 
 		gfd.close();
@@ -324,7 +322,7 @@ public class DataConstructor {
 
 		Log.info("## DB result ##");
 		Log.info(sep_data_info);
-
+		
 		return sep_data_info;
 
 	}
