@@ -1,3 +1,0 @@
-GENERATE HTML
-[ e.name ]!, avg[e.salary]
-FROM employee e

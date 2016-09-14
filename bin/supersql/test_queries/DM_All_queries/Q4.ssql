@@ -1,3 +1,0 @@
-GENERATE HTML
-[link(e.name@{target=_new},file="Q3.ssql",att=e.id)]!
-FROM employee e

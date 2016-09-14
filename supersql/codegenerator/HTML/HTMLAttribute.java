@@ -438,7 +438,6 @@ public class HTMLAttribute extends Attribute {
 			}
 
 			if (htmlEnv.linkFlag > 0 || htmlEnv.sinvokeFlag) {
-
 				// tk start for draggable
 				// div///////////////////////////////////////
 				if (htmlEnv.draggable) {
@@ -532,14 +531,13 @@ public class HTMLAttribute extends Attribute {
 			}
 
 			// Log.out("data_info: "+this.getStr(data_info));
-
+			
 			createForm(data_info);
 
 			if (whichForm == 0) { // normal process (not form)
 				// ***APPEND DATABASE VALUE***//
 				Log.out(data_info);
 				htmlEnv.code.append(this.getStr(data_info));
-
 				Log.out(this.getStr(data_info));
 			}
 

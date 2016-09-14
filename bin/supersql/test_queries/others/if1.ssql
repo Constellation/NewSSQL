@@ -1,3 +1,0 @@
-GENERATE HTML 
-[if (e.salary>10000) then (e.name,e.salary) else (e.salary)]!
-FROM employee e

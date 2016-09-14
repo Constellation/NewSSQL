@@ -1,4 +1,0 @@
-FOREACH e.id
-GENERATE HTML
-	[e.salary, e.syear]!
-FROM employee e

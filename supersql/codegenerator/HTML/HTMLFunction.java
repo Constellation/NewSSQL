@@ -16,13 +16,16 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 
 import supersql.codegenerator.CodeGenerator;
 import supersql.codegenerator.DecorateList;
+import supersql.codegenerator.Ehtml;
 import supersql.codegenerator.FuncArg;
 import supersql.codegenerator.Function;
+import supersql.codegenerator.Incremental;
 import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
@@ -258,7 +261,7 @@ public class HTMLFunction extends Function {
 			if (decos.containsKey("class"))
 				htmlEnv.code.append(decos.getStr("class"));
 			else
-//				htmlEnv.code.append(HTMLEnv.getClassID(this));
+				htmlEnv.code.append(HTMLEnv.getClassID(this));
 
 			htmlEnv.code.append("\"");
 			htmlEnv.code.append("><tr><td>");
@@ -439,14 +442,15 @@ public class HTMLFunction extends Function {
 					// TODO 20140619_masato
 					if (!has_divid) {
 						int x = 0;
-						if (file.indexOf(".sql")>0) {
+						if (file.indexOf(".sql") > 0) {
 							x = file.indexOf(".sql");
-						} else if (file.indexOf(".ssql")>0) {
+						} else if (file.indexOf(".ssql") > 0) {
 							x = file.indexOf(".ssql");
 						}
 						// online file
 						if (file.contains("/")) {
-							divname = file.substring(file.lastIndexOf("/") + 1, x);
+							divname = file.substring(file.lastIndexOf("/") + 1,
+									x);
 						}
 						// ofline file
 						else if (file.contains("\\")) {
@@ -473,8 +477,8 @@ public class HTMLFunction extends Function {
 				// xml�����
 				if (!is_hidden) {
 					htmlEnv2.code.append("<EMBED>");
-//					htmlEnv.code.append(returnedcode);
-//					htmlEnv2.code.append(returnedcode);
+					htmlEnv.code.append(returnedcode);
+					htmlEnv2.code.append(returnedcode);
 					htmlEnv2.code.append("</EMBED>");
 				}
 
@@ -483,12 +487,12 @@ public class HTMLFunction extends Function {
 				// end ajax
 				// /////////////////////////////////////////////////////////////////
 
-//				if (htmlEnv.embedCount >= 1) {
-//					htmlEnv.css.append(codegenerator.generateCode3(parser,
-//							dc.getData()));
-//					htmlEnv.cssFile.append(codegenerator.generateCssfile(
-//							parser, dc.getData()));
-//				}
+				if (htmlEnv.embedCount >= 1) {
+					htmlEnv.css.append(codegenerator.generateCode3(parser,
+							dc.getData()));
+					htmlEnv.cssFile.append(codegenerator.generateCssfile(
+							parser, dc.getData()));
+				}
 
 				// restore original config
 				GlobalEnv.setEnv(tmphash);
@@ -514,7 +518,7 @@ public class HTMLFunction extends Function {
 								"UTF-8");
 
 						out.write(htmlEnv.header.toString());
-//						out.write(returnedcode.toString());
+						out.write(returnedcode.toString());
 						out.write(htmlEnv.footer.toString());
 
 						out.close();
@@ -714,7 +718,7 @@ public class HTMLFunction extends Function {
 
 		if (!this.getAtt("name").equals("")) {
 			HTMLEnv.setFormPartsName(this.getAtt("name"));
-//			HTMLEnv.exFormName();
+			HTMLEnv.exFormName();
 		} else {
 			HTMLEnv.setFormPartsName(null);
 		}
@@ -841,20 +845,19 @@ public class HTMLFunction extends Function {
 	private void Func_sinvoke(ExtList data_info) {
 		// link関数の仕様変更　link(att_name, url, value1, value2, ...)
 		String file = this.Args.get(1).toString();
-		if(file.startsWith("\'") || file.startsWith("\"")){
-			file = file.substring(1, file.length()-1);
+		String a = this.Args.get(0).toString();
+		if (file.startsWith("\'") || file.startsWith("\"")) {
+			file = file.substring(1, file.length() - 1);
 		}
 		String att = new String();
-		for(int i = 2; i < this.Args.size(); i++){
+		for (int i = 2; i < this.Args.size(); i++) {
 			att += "_" + this.Args.get(i).getStr();
 		}
-		
-		
-		
-//		String file = this.getAtt("file");
+
+		// String file = this.getAtt("file");
 		String action = this.getAtt("action");
-//		int attNo = 1;
-//		String att = new String();
+		// int attNo = 1;
+		// String att = new String();
 		Log.out("sinvoke file 3: " + file);
 
 		// tk start/////////////////////////////////////////////////////////////
@@ -863,14 +866,14 @@ public class HTMLFunction extends Function {
 		 * file.substring(file.lastIndexOf("/") + 1); }
 		 */
 		// tk end//////////////////////////////////////////////////////////////
-//		Log.out("1 att:" + att + " attNo:" + attNo + " att1:"
-//				+ this.getAtt("att1"));
-//
-//		while (!this.getAtt("att" + attNo).equals("")) {
-//			att = att + "_" + this.getAtt("att" + attNo);
-//			attNo++;
-//			Log.out("att:" + att + " attNo:" + attNo);
-//		}
+		// Log.out("1 att:" + att + " attNo:" + attNo + " att1:"
+		// + this.getAtt("att1"));
+		//
+		// while (!this.getAtt("att" + attNo).equals("")) {
+		// att = att + "_" + this.getAtt("att" + attNo);
+		// attNo++;
+		// Log.out("att:" + att + " attNo:" + attNo);
+		// }
 		try {
 			att = URLEncoder.encode(att, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -887,9 +890,10 @@ public class HTMLFunction extends Function {
 				}
 			} catch (Exception e) {
 				GlobalEnv.addErr("Error[HTMLFunction]: filename is invalid.");
-//				System.err.println("Error[HTMLFunction]: filename is invalid.");
+				// System.err.println("Error[HTMLFunction]: filename is invalid.");
 				Log.err("Error[HTMLFunction]: filename is invalid.");
-//				GlobalEnv.errorText += "Error[HTMLFunction]: filename is invalid.";
+				// GlobalEnv.errorText +=
+				// "Error[HTMLFunction]: filename is invalid.";
 			}
 
 			String filename = new String();
@@ -901,7 +905,7 @@ public class HTMLFunction extends Function {
 				else
 					filename = file + "_" + this.getAtt("att") + ".html";
 			} else {
-//				filename = file + "_" + ret + ".html"; masato
+				// filename = file + "_" + ret + ".html"; masato
 				filename = file + att + ".html";
 			}
 
@@ -1037,11 +1041,39 @@ public class HTMLFunction extends Function {
 		return;
 	}
 
+	// added by masato 20151124 for plink
+	// plink(属性名, '***.php', 受け渡す値1(*.id), 受け渡す値2(*.id)...)
+	private void Func_plink(ExtList data_info) {
+		// リンク先phpファイル
+		String target = this.Args.get(1).toString();
+		if (target.startsWith("\'") || target.startsWith("\"")) {
+			target = target.substring(1, target.length() - 1);
+		}
+
+		// value
+		htmlEnv.valueArray = new ArrayList<>();
+		for (int i = 2; i < this.Args.size(); i++) {
+			htmlEnv.valueArray.add(this.Args.get(i).getStr());
+		}
+
+		htmlEnv.linkUrl = target;
+		htmlEnv.plinkFlag = true;
+
+		if (this.Args.get(0) instanceof FuncArg) {
+			Log.out("ARGS are function");
+			FuncArg fa = this.Args.get(0);
+			fa.workAtt();
+		} else
+			this.workAtt("default");
+		// tk//////////////////////////////////////////////////
+
+		htmlEnv.plinkFlag = false;
+		return;
+	}
+
 	// not use
 	/*
-	 * private void Func_session() {
-	 * System.out.println("aaaaaaaaa"+this.getClassName());
-	 * html_env.code.append("b");
+	 * private void Func_session() { html_env.code.append("b");
 	 * html_env2.code.append("<VALUE type=\"form\">b</VALUE>"); return; }
 	 */
 
@@ -1052,12 +1084,12 @@ public class HTMLFunction extends Function {
 	}
 
 	// for educ2015
-	protected void Func_echo(){
+	protected void Func_echo() {
 		String target = this.Args.get(0).getStr().trim();
 		String statement = "<h1>" + target + "</h1>";
 		htmlEnv.code.append(statement);
 	}
-	
+
 	protected void Func_imagefile() {
 
 		/*
@@ -1065,14 +1097,14 @@ public class HTMLFunction extends Function {
 		 */
 		// little change by masato 20150623
 		String path = this.Args.get(1).toString();
-		if(path == null){
+		if (path == null) {
 			path = ".";
 		} else {
-			if(path.startsWith("'") || path.startsWith("\"")){
-				path = path.substring(1,  path.length()-1);
+			if (path.startsWith("'") || path.startsWith("\"")) {
+				path = path.substring(1, path.length() - 1);
 			}
 		}
-//		String path = this.getAtt("path", ".");
+		// String path = this.getAtt("path", ".");
 		if (!path.startsWith("/")) {
 			String basedir = GlobalEnv.getBaseDir();
 			if (basedir != null && basedir != "") {
@@ -1117,6 +1149,16 @@ public class HTMLFunction extends Function {
 
 			Log.out("<A href=\"" + htmlEnv.linkUrl + "\">");
 		}
+		// added by masato 20151124 for plink
+		if (htmlEnv.plinkFlag) {
+			String tmp = "";
+			for (int i = 0; i < htmlEnv.valueArray.size(); i++) {
+				tmp += " value" + (i + 1) + "='" + htmlEnv.valueArray.get(i)
+						+ "'";
+			}
+			Incremental.outXMLData(htmlEnv.xmlDepth, "<PostLink target='"
+					+ htmlEnv.linkUrl + "'" + tmp + ">\n");
+		}
 		// tk/////////////////////////////////////////////////////////////////////////////////
 
 		if (decos.containsKey("lightbox")) {
@@ -1125,49 +1167,61 @@ public class HTMLFunction extends Function {
 			String today = sdf.format(d1);
 
 			htmlEnv.code.append("<a href=\"" + path + "/"
-					+ this.Args.get(0).getStr() + "\" rel=\"lightbox[lb" + today
-					+ "]\">");
+					+ this.Args.get(0).getStr() + "\" rel=\"lightbox[lb"
+					+ today + "]\">");
 
-//			if (decos.getStr("lightbox").compareTo("root") == 0
-//					|| decos.getStr("lightbox").compareTo("thumb") == 0) {
-//				htmlEnv.code.append("<img class=\"" + HTMLEnv.getClassID(this)
-//						+ " ");
-//
-//				if (decos.containsKey("class"))
-//					htmlEnv.code.append(decos.getStr("class"));
-//
-//				htmlEnv.code.append(" \" src=\"" + path + "/"
-//						+ this.Args.get(0).getStr()
-//						+ "\" onLoad=\"initLightbox()\"/>");
-//
-//			}
+			if (decos.getStr("lightbox").compareTo("root") == 0
+					|| decos.getStr("lightbox").compareTo("thumb") == 0) {
+				htmlEnv.code.append("<img class=\"" + HTMLEnv.getClassID(this)
+						+ " ");
+
+				if (decos.containsKey("class"))
+					htmlEnv.code.append(decos.getStr("class"));
+
+				htmlEnv.code.append(" \" src=\"" + path + "/"
+						+ this.Args.get(0).getStr()
+						+ "\" onLoad=\"initLightbox()\"/>");
+
+			}
 			htmlEnv.code.append("</a>");
-//		} else {
-//			htmlEnv.code.append("<img class=\"" + HTMLEnv.getClassID(this)
-//					+ " ");
-//			htmlEnv2.code.append("<VALUE type=\"img\" class=\""
-//					+ HTMLEnv.getClassID(this) + " ");
-//			if (decos.containsKey("class"))
-//				htmlEnv.code.append(decos.getStr("class"));
-//
-//			htmlEnv.code.append(" \" src=\"" + path + "/"
-//					+ this.Args.get(0).getStr() + "\"/>");
-//			htmlEnv2.code.append(" \" src=\"" + path + "/"
-//					+ this.Args.get(0).getStr() + "\" ");
-//			if (decos.containsKey("width")) {
-//				htmlEnv2.code.append("width=\""
-//						+ decos.getStr("width").replace("\"", "") + "\" ");
-//			}
-//			if (decos.containsKey("height")) {
-//				htmlEnv2.code.append("height=\""
-//						+ decos.getStr("height").replace("\"", "") + "\" ");
-//			}
-//			htmlEnv2.code.append(" ></VALUE>");
+		} else {
+			// added by masato 20151124 image function for xml
+			if (Ehtml.flag || Incremental.flag) {
+				Incremental.outXMLData(htmlEnv.xmlDepth, "<Img class=\'"
+						+ HTMLEnv.getClassID(this) + "\' src='" + path + "/"
+						+ this.Args.get(0).getStr() + "'></Img>\n");
+
+			} else {
+				htmlEnv.code.append("<img class=\"" + HTMLEnv.getClassID(this)
+						+ " ");
+				htmlEnv2.code.append("<VALUE type=\"img\" class=\""
+						+ HTMLEnv.getClassID(this) + " ");
+				if (decos.containsKey("class"))
+					htmlEnv.code.append(decos.getStr("class"));
+
+				htmlEnv.code.append(" \" src=\"" + path + "/"
+						+ this.Args.get(0).getStr() + "\"/>");
+				htmlEnv2.code.append(" \" src=\"" + path + "/"
+						+ this.Args.get(0).getStr() + "\" ");
+				if (decos.containsKey("width")) {
+					htmlEnv2.code.append("width=\""
+							+ decos.getStr("width").replace("\"", "") + "\" ");
+				}
+				if (decos.containsKey("height")) {
+					htmlEnv2.code.append("height=\""
+							+ decos.getStr("height").replace("\"", "") + "\" ");
+				}
+				htmlEnv2.code.append(" ></VALUE>");
+			}
 		}
 		// tk to make hyper link to
 		// image///////////////////////////////////////////////////////////////////////////////////
 		if (htmlEnv.linkFlag > 0 || htmlEnv.sinvokeFlag) {
 			htmlEnv.code.append("</a>");
+		}
+		// added by masato 20151124 for plink
+		if (htmlEnv.plinkFlag) {
+			Incremental.outXMLData(htmlEnv.xmlDepth, "</PostLink>\n");
 		}
 		// tk///////////////////////////////////////////////////////////////////////////////////
 		return;
@@ -1213,138 +1267,191 @@ public class HTMLFunction extends Function {
 		return;
 	}
 
-	//added by goto 20130308 start  "anchor"  anchor(), a(), url(), mail()
-    /** anchor関数: anchor( name/button-name/button-url, url, type(bt/button/img/image) )
-     *          @{ width=~, height=~, transition=~ } 
-    /*    url("title", "detail/imgURL", int type), anchor(), a()    */
-    /*    <type:1> a(リンク元の名前, リンク先URL) <=> a(リンク元の名前, リンク先URL, 1)    */
-    /*    <type:2> a(画像URL, リンク先URL, 2)    	   	*/
-    /*    <type:3> a(ボタンの名前, リンク先URL, 3)        	*/
-    /*    mail()でも使用							        */
-    private void Func_url(boolean mailFncFlg, String t) {
-    	String statement = "";
-    	FuncArg fa1 = (FuncArg) this.Args.get(0), fa2, fa3;
-    	String url, name, type;
-    	
-    	try{					//引数2つ or 3つの場合
-    		fa2 = (FuncArg) this.Args.get(1);
-    		url = ((mailFncFlg)?("mailto:"):("")) + fa2.getStr();
-    		name = fa1.getStr();
-        	
-        	try{						//引数3つの場合
-        		if(!t.isEmpty()){
-        			type = t;
-        		} else {
-        			fa3 = (FuncArg) this.Args.get(2);
-        			type = fa3.getStr();
-        		}
-        		//type=1 -> 文字
-        		if(type.equals("1") || type.equals("text") || type.equals("")){
-        			statement = getTextAnchor(url, name);
-        			//statement = "<a href=\""+url+"\""+transition()+prefetch()+target(url)+">"+name+"</a>";
-        		
-        		//type=2 -> urlモバイルボタン
-        		}else if(type.equals("3") || type.equals("button") || type.equals("bt")){
-            		statement = "<a href=\""+url+"\" data-role=\"button\""+className()+transition()+prefetch()+target(url)+">"+name+"</a>";
+	// added by goto 20130308 start "anchor" anchor(), a(), url(), mail()
+	/**
+	 * anchor関数: anchor( name/button-name/button-url, url,
+	 * type(bt/button/img/image) )
+	 * 
+	 * @{ width=~, height=~, transition=~ } /* url("title", "detail/imgURL", int
+	 *    type), anchor(), a()
+	 */
+	/* <type:1> a(リンク元の名前, リンク先URL) <=> a(リンク元の名前, リンク先URL, 1) */
+	/* <type:2> a(画像URL, リンク先URL, 2) */
+	/* <type:3> a(ボタンの名前, リンク先URL, 3) */
+	/* mail()でも使用 */
+	private void Func_url(boolean mailFncFlg, String t) {
+		String statement = "";
+		FuncArg fa1 = (FuncArg) this.Args.get(0), fa2, fa3;
+		String url, name, type;
 
-            	//urlボタン(デスクトップ・モバイル共通)
-            	}else if(type.equals("dbutton") || type.equals("dbt")){
-            		statement = "<input type=\"button\" value=\""+name+"\" onClick=\"location.href='"+url+"'\""+className();
-            		
-            		//urlボタン width,height指定時の処理
-            		if(decos.containsKey("width") || decos.containsKey("height")){
-            			statement += " style=\"";
-            			if(decos.containsKey("width"))	statement += "WIDTH:"+decos.getStr("width").replace("\"", "")+"; ";
-            			if(decos.containsKey("height"))	statement += "HEIGHT:"+decos.getStr("height").replace("\"", "")+"; ";	//100; ";
-            			statement += "\"";
-                	}
-            		statement += ">";
-            	
-            	//type=3 -> url画像
-            	}else if(type.equals("2") || type.equals("image") || type.equals("img")){
-            		statement = "<a href=\""+url+"\""+className()+transition()+prefetch()+target(url)+"><img src=\""+name+"\"";
-    		        
-        			//url画像 width,height指定時の処理
-            		if(decos.containsKey("width"))	statement += " width="+decos.getStr("width").replace("\"", "");
-//            		else{
-//            	        //added by goto 20130312  "Default width: 100%"
-//            			statement += " width=\"100%\"";
-//            		}
-        			if(decos.containsKey("height"))	statement += " height="+decos.getStr("height").replace("\"", "");	//100; ";
-        			statement += "></a>";
-            	}
-        		
-        	}catch(Exception e){		//引数2つの場合
-    			statement = getTextAnchor(url, name);
-        		//statement = "<a href=\""+url+"\""+transition()+prefetch()+target(url)+">"+name+"</a>";
-        	}
-        	
-    	}catch(Exception e){	//引数1つの場合
-    		url = fa1.getStr();
-    		statement = "<a href=\""+((mailFncFlg)?("mailto:"):("")) + url+"\""+transition()+prefetch()+target(url)+">"+url+"</a>";
-    	}
-    	
-//    	// 各引数毎に処理した結果をHTMLに書きこむ
-    	htmlEnv.code.append(statement);
-//    	return statement;
-    }
-	
-    protected String className() {	//added 20130703
-    	if(decos.containsKey("class"))
-    		return " class=\""+decos.getStr("class")+"\" ";
-    	return "";
-    }
-    
-    private String transition() {
-    	//画面遷移アニメーション(data-transition)指定時の処理
-    	//※外部ページへの遷移には対応していない
-    	if (decos.containsKey("transition"))
-    		return " data-transition=\"" + decos.getStr("transition") + "\"";
-    	if (decos.containsKey("trans"))
-    		return " data-transition=\"" + decos.getStr("trans") + "\"";
-		return "";
-    }
-    
-    private String prefetch() {
-    	//遷移先ページプリフェッチ(data-prefetch)指定時の処理
-    	//※外部ページへの遷移に使用してはいけない決まりがある
-    	if (decos.containsKey("prefetch") || decos.containsKey("pref"))
-    		return " data-prefetch";
-		return "";
-    }
+		try { // 引数2つ or 3つの場合
+			fa2 = (FuncArg) this.Args.get(1);
+			url = ((mailFncFlg) ? ("mailto:") : ("")) + fa2.getStr();
+			name = fa1.getStr();
 
-    private String target(String url) {
-    	//新規ウィンドウで表示する場合(target="_blank")の処理　=> _blankはW3Cで禁止されているため、JS + rel=externalを使用
-    	//「外部ページに飛ぶ場合( http(s)://で始まる場合)」のみ新規ウィンドウ表示
-    	try{
-	    	if (url.matches("\\s*(http|https)://.*"))
-	    		return "  rel=\"external\"";
-	    		//return " target=\"_blank\"";
-    	}catch(Exception e){}
+			try { // 引数3つの場合
+				if (!t.isEmpty()) {
+					type = t;
+				} else {
+					fa3 = (FuncArg) this.Args.get(2);
+					type = fa3.getStr();
+				}
+
+				// type=1 -> 文字
+				if (type.equals("1") || type.equals("text") || type.equals("")) {
+					statement = getTextAnchor(url, name);
+					// statement =
+					// "<a href=\""+url+"\""+transition()+prefetch()+target(url)+">"+name+"</a>";
+
+					// type=2 -> urlモバイルボタン
+				} else if (type.equals("3") || type.equals("button")
+						|| type.equals("bt")) {
+					statement = "<a href=\"" + url + "\" data-role=\"button\""
+							+ className() + transition() + prefetch()
+							+ target(url) + ">" + name + "</a>";
+
+					// urlボタン(デスクトップ・モバイル共通)
+				} else if (type.equals("dbutton") || type.equals("dbt")) {
+					statement = "<input type=\"button\" value=\"" + name
+							+ "\" onClick=\"location.href='" + url + "'\""
+							+ className();
+
+					// urlボタン width,height指定時の処理
+					if (decos.containsKey("width")
+							|| decos.containsKey("height")) {
+						statement += " style=\"";
+						if (decos.containsKey("width"))
+							statement += "WIDTH:"
+									+ decos.getStr("width").replace("\"", "")
+									+ "; ";
+						if (decos.containsKey("height"))
+							statement += "HEIGHT:"
+									+ decos.getStr("height").replace("\"", "")
+									+ "; "; // 100; ";
+						statement += "\"";
+					}
+					statement += ">";
+
+					// type=3 -> url画像
+				} else if (type.equals("2") || type.equals("image")
+						|| type.equals("img")) {
+					statement = "<a href=\"" + url + "\"" + className()
+							+ transition() + prefetch() + target(url)
+							+ "><img src=\"" + name + "\"";
+
+					// url画像 width,height指定時の処理
+					if (decos.containsKey("width"))
+						statement += " width="
+								+ decos.getStr("width").replace("\"", "");
+					// else{
+					// //added by goto 20130312 "Default width: 100%"
+					// statement += " width=\"100%\"";
+					// }
+					if (decos.containsKey("height"))
+						statement += " height="
+								+ decos.getStr("height").replace("\"", ""); // 100;
+																			// ";
+					statement += "></a>";
+				}
+
+			} catch (Exception e) { // 引数2つの場合
+				// added by masato 20151124 anchor function for xml
+				if (Ehtml.flag || Incremental.flag) {
+					// statement = "<" + fa1 + " func='anchor' url='"+ url +
+					// "'>" + name + "</" + fa1 + ">\n";
+					statement = "<Anchor url='" + url + "'>" + "<" + fa1 + ">"
+							+ name + "</" + fa1 + "></Anchor>\n";
+				} else
+					statement = getTextAnchor(url, name);
+				// statement =
+				// "<a href=\""+url+"\""+transition()+prefetch()+target(url)+">"+name+"</a>";
+			}
+
+		} catch (Exception e) { // 引数1つの場合
+			url = fa1.getStr();
+			statement = "<a href=\"" + ((mailFncFlg) ? ("mailto:") : (""))
+					+ url + "\"" + transition() + prefetch() + target(url)
+					+ ">" + url + "</a>";
+		}
+
+		// // 各引数毎に処理した結果をHTMLに書きこむ
+		// added by masato 20151124 anchor function for xml
+		if (Ehtml.flag || Incremental.flag) {
+			Incremental.outXMLData(htmlEnv.xmlDepth, statement);
+		} else {
+			htmlEnv.code.append(statement);
+		}
+		// return statement;
+	}
+
+	protected String className() { // added 20130703
+		if (decos.containsKey("class"))
+			return " class=\"" + decos.getStr("class") + "\" ";
+		return "";
+	}
+
+	private String transition() {
+		// 画面遷移アニメーション(data-transition)指定時の処理
+		// ※外部ページへの遷移には対応していない
+		if (decos.containsKey("transition"))
+			return " data-transition=\"" + decos.getStr("transition") + "\"";
+		if (decos.containsKey("trans"))
+			return " data-transition=\"" + decos.getStr("trans") + "\"";
+		return "";
+	}
+
+	private String prefetch() {
+		// 遷移先ページプリフェッチ(data-prefetch)指定時の処理
+		// ※外部ページへの遷移に使用してはいけない決まりがある
+		if (decos.containsKey("prefetch") || decos.containsKey("pref"))
+			return " data-prefetch";
+		return "";
+	}
+
+	private String target(String url) {
+		// 新規ウィンドウで表示する場合(target="_blank")の処理　=> _blankはW3Cで禁止されているため、JS +
+		// rel=externalを使用
+		// 「外部ページに飛ぶ場合( http(s)://で始まる場合)」のみ新規ウィンドウ表示
+		try {
+			if (url.matches("\\s*(http|https)://.*"))
+				return "  rel=\"external\"";
+			// return " target=\"_blank\"";
+		} catch (Exception e) {
+		}
 		return " target=\"_self\"";
-		
-    }
-    
-    private String getTextAnchor(String url, String name) {
-    	//[ ]で囲われた部分をハイパーリンクにする
-    	//ex) a("[This] is anchor.","URL")
-    	String A="",notA1="",notA2="";
-    	int a1 = 0, a2 = name.length()-1;
-    	try{
-    		for(int i=0;i<name.length();i++){
-    			if(i>0 && name.charAt(i)=='[' && name.charAt(i-1)!='\\')		a1=i;
-    			else if(i>0 && name.charAt(i)==']' && name.charAt(i-1)!='\\')	a2=i;
-    		}
-    		if(a1==0 && a2==name.length()-1)	A=name.substring(a1,a2+1);
-    		else								A=name.substring(a1+1,a2);
-    		A=A.replaceAll("\\\\\\[", "[").replaceAll("\\\\\\]", "]");
-    		notA1=name.substring(0,a1).replaceAll("\\\\\\[", "[").replaceAll("\\\\\\]", "]");
-    		notA2=name.substring(a2+1).replaceAll("\\\\\\[", "[").replaceAll("\\\\\\]", "]");
-    	}catch(Exception e){}
-    	
-    	return notA1+"<a href=\""+url+"\""+className()+transition()+prefetch()+target(url)+">"+A+"</a>"+notA2;
-    }
-    
+
+	}
+
+	private String getTextAnchor(String url, String name) {
+		// [ ]で囲われた部分をハイパーリンクにする
+		// ex) a("[This] is anchor.","URL")
+		String A = "", notA1 = "", notA2 = "";
+		int a1 = 0, a2 = name.length() - 1;
+		try {
+			for (int i = 0; i < name.length(); i++) {
+				if (i > 0 && name.charAt(i) == '['
+						&& name.charAt(i - 1) != '\\')
+					a1 = i;
+				else if (i > 0 && name.charAt(i) == ']'
+						&& name.charAt(i - 1) != '\\')
+					a2 = i;
+			}
+			if (a1 == 0 && a2 == name.length() - 1)
+				A = name.substring(a1, a2 + 1);
+			else
+				A = name.substring(a1 + 1, a2);
+			A = A.replaceAll("\\\\\\[", "[").replaceAll("\\\\\\]", "]");
+			notA1 = name.substring(0, a1).replaceAll("\\\\\\[", "[")
+					.replaceAll("\\\\\\]", "]");
+			notA2 = name.substring(a2 + 1).replaceAll("\\\\\\[", "[")
+					.replaceAll("\\\\\\]", "]");
+		} catch (Exception e) {
+		}
+
+		return notA1 + "<a href=\"" + url + "\"" + className() + transition()
+				+ prefetch() + target(url) + ">" + A + "</a>" + notA2;
+	}
+
 	// Function��work�᥽�å�
 	@Override
 	public String work(ExtList data_info) {
@@ -1355,7 +1462,8 @@ public class HTMLFunction extends Function {
 
 		String FuncName = this.getFuncName();
 
-		if (FuncName.equalsIgnoreCase("imagefile") || FuncName.equalsIgnoreCase("image")) {
+		if (FuncName.equalsIgnoreCase("imagefile")
+				|| FuncName.equalsIgnoreCase("image")) {
 			Func_imagefile();
 		} else if (FuncName.equalsIgnoreCase("invoke")) {
 			Func_invoke();
@@ -1368,6 +1476,12 @@ public class HTMLFunction extends Function {
 		} else if (FuncName.equalsIgnoreCase("sinvoke")
 				|| FuncName.equalsIgnoreCase("link")) {
 			Func_sinvoke(data_info);
+		}
+		// added by masato 20151124 for plink in ehtml
+		else if (FuncName.equalsIgnoreCase("plink")) {
+			Func_plink(data_info);
+		} else if (FuncName.equalsIgnoreCase("glink")) {
+			// Func_glink(data_info);
 		} else if (FuncName.equalsIgnoreCase("null")) {
 			Func_null();
 		}
@@ -1399,22 +1513,22 @@ public class HTMLFunction extends Function {
 			Func_embed(data_info);
 		}
 		// tk end////////////////////////////////////
-		else if(FuncName.equalsIgnoreCase("anchor") 
-				|| FuncName.equalsIgnoreCase("a")){
-        	Func_url(false, "");
-        } else if(FuncName.equalsIgnoreCase("image_anchor") 
-        		|| FuncName.equalsIgnoreCase("img_anchor")
-        		|| FuncName.equalsIgnoreCase("img_a")
-        		|| FuncName.equalsIgnoreCase("image_a")){
+		else if (FuncName.equalsIgnoreCase("anchor")
+				|| FuncName.equalsIgnoreCase("a")) {
+			Func_url(false, "");
+		} else if (FuncName.equalsIgnoreCase("image_anchor")
+				|| FuncName.equalsIgnoreCase("img_anchor")
+				|| FuncName.equalsIgnoreCase("img_a")
+				|| FuncName.equalsIgnoreCase("image_a")) {
 			Func_url(false, "image");
-		} 
-        // for educ2015
-		else if(FuncName.equalsIgnoreCase("echo")){
+		}
+		// for educ2015
+		else if (FuncName.equalsIgnoreCase("echo")) {
 			Func_echo();
 		}
-		
-//		Log.out("TFEId = " + HTMLEnv.getClassID(this));
-//		htmlEnv.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
+
+		Log.out("TFEId = " + HTMLEnv.getClassID(this));
+		htmlEnv.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
 		return null;
 
 	}

@@ -1,2 +1,0 @@
-GENERATE HTML youtube("foo")
-
