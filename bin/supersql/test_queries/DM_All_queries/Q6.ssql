@@ -1,0 +1,4 @@
+GENERATE HTML
+[ (asc)d.name, [ (desc)e.name ]! ]!
+FROM dept d, employee e
+WHERE d.manager=e.manager

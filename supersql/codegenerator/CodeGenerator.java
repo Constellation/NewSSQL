@@ -8,7 +8,9 @@ import java.util.List;
 import supersql.codegenerator.Manager;
 import supersql.codegenerator.HTML.HTMLFactory;
 import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5Factory;
+import supersql.codegenerator.PDF.PDFFactory;
 import supersql.codegenerator.Web.WebFactory;
+import supersql.codegenerator.X3D.X3DFactory;
 import supersql.common.GlobalEnv;
 import supersql.common.LevenshteinDistance;
 import supersql.common.Log;
@@ -65,6 +67,10 @@ public class CodeGenerator {
 			factory = new Mobile_HTML5Factory();
 		}else if(media.toLowerCase().equals("web")) {
 			factory = new WebFactory();
+		}else if(media.toLowerCase().equals("x3d")){
+			factory = new X3DFactory();
+		}else if(media.toLowerCase().equals("pdf")){
+			factory = new PDFFactory();
 		}
 		else {
 			String m = media.toLowerCase();
@@ -180,7 +186,7 @@ public class CodeGenerator {
 			return manager.generateCode3(tfe_info, data_info);
 
 	};
-	
+
 	public StringBuffer generateCode4(Start_Parse parser, ExtList data_info) {
 		ITFE tfe_info = parser.get_TFEschema();
 
@@ -204,7 +210,7 @@ public class CodeGenerator {
 			return manager.generateCode4(tfe_info, data_info);
 
 	};
-	
+
 	public StringBuffer generateCssfile(Start_Parse parser, ExtList data_info) {
 		ITFE tfe_info = parser.get_TFEschema();
 
@@ -228,7 +234,7 @@ public class CodeGenerator {
 			return manager.generateCssfile(tfe_info, data_info);
 
 	}
-	
+
 	private static TFE makeschematop(ExtList list){
 		TFE tfe = null;
 		tfe = read_attribute(list);
@@ -244,8 +250,9 @@ public class CodeGenerator {
 		String iterator = new String();
 		boolean add_deco = false;
 
+		Asc_Desc ascDesc = new Asc_Desc();
 		if(tfe_tree.get(0).toString().equals("operand")){
-			
+
 			if( ((ExtList)tfe_tree.get(1)).get(0) instanceof String ){
 				if(((ExtList)tfe_tree.get(1)).get(0).toString().equals("{")){
 					((ExtList)tfe_tree.get(1)).remove(0);
@@ -263,11 +270,17 @@ public class CodeGenerator {
 				decos = ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(0)).get(1)).get(0)).get(1)).get(0).toString();
 				add_deco = true;
 				ExtList att1 = new ExtList();
-				att1.add((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(2));
-				att1.add(((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(3));
-				att1.add((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(4));
+				
+				if( ((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(2)).get(0).toString().equals("table_alias") ){
+					att1.add((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(2));
+					att1.add(((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(3));
+					att1.add((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(4));
+				}else{
+					att1.add((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(2));
+				}
 				tfe_tree.remove(1);
 				tfe_tree.add(att1);
+				Log.info(tfe_tree);
 			}
 			if( ((ExtList)tfe_tree.get(1)).contains("||") ){
 				int idx = ((ExtList)tfe_tree.get(1)).indexOf("||");
@@ -297,6 +310,9 @@ public class CodeGenerator {
 			else if( ((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("function") ){
 				out_sch = func_read((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1));
 			}
+			else if( ((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("sqlfunc") ){
+//				out_sch = ;
+			}
 			else if( ((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("if_then_else") ){
 				out_sch = IfCondition((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1));
 			}
@@ -311,6 +327,11 @@ public class CodeGenerator {
 			if( !(((ExtList)tfe_tree.get(1)).get( ((ExtList)tfe_tree.get(1)).size() - 1 ) instanceof ExtList) ){
 				String deco = ((ExtList)tfe_tree.get(1)).get( ((ExtList)tfe_tree.get(1)).size() - 1 ).toString();
 				if(deco.contains("@{")){
+					if(deco.contains("dynamic")){
+						ascDesc.add_asc_desc_Array();
+						ascDesc.dynamicCount++;
+						//TODO (asc)@{static}! (asc)@{dynamic}! 
+					}
 					if(add_deco){
 						deco = deco.substring(0, deco.lastIndexOf("}")) + "," + decos + "}";
 						setDecoration(out_sch, deco);
@@ -328,7 +349,8 @@ public class CodeGenerator {
 			if( ((ExtList)tfe_tree.get(1)).size() == 1 )
 				out_sch = read_attribute( (ExtList)((ExtList)tfe_tree.get(1)).get(0) );
 			else if( ((ExtList)tfe_tree.get(1)).size() == 0 ){
-				((ExtList)tfe_tree.get(1)).add("");
+				((ExtList)tfe_tree.get(1)).add("\"\"");
+//				Log.info(tfe_tree);
 				Attribute WS = makeAttribute(((ExtList)tfe_tree.get(1)).get(0).toString());
 				out_sch = WS;
 			}else
@@ -355,7 +377,7 @@ public class CodeGenerator {
 
 	private static String join_operand(ExtList extList, int idx) {
 		String operand = null;
-		
+
 		if( ((ExtList)extList.get(0)).get(0).toString().equals("table_alias") ){
 			operand = ((ExtList)((ExtList)((ExtList)((ExtList)extList.get(0)).get(1)).get(0)).get(1)).get(0).toString();
 			operand = operand + extList.get(1).toString();
@@ -367,7 +389,7 @@ public class CodeGenerator {
 		}
 
 		operand = operand + extList.get(idx).toString();
-		
+
 		extList = (ExtList)((ExtList)extList.get(idx + 1)).get(1);
 		if( ((ExtList)extList.get(0)).get(0).toString().equals("table_alias") ){
 			operand = operand + ((ExtList)((ExtList)((ExtList)((ExtList)extList.get(0)).get(1)).get(0)).get(1)).get(0).toString();
@@ -378,7 +400,7 @@ public class CodeGenerator {
 		}else if( ((ExtList)extList.get(0)).get(0).toString().equals("sl") ){
 			operand = operand + ((ExtList)((ExtList)extList.get(0)).get(1)).get(0).toString();
 		}
-		
+
 		return operand;
 	}
 
@@ -528,7 +550,7 @@ public class CodeGenerator {
 		String name;
 		String key = "";
 		int equalidx = token.indexOf('=');
-		
+
 		boolean equalSignOutsideDoubleQuote = false;
 		boolean equalSignOutsideSingleQuote = false;
 		if(token.contains("\"")){
@@ -551,8 +573,8 @@ public class CodeGenerator {
 				}
 			}
 		}else equalSignOutsideSingleQuote = true;
-		
-//		if (equalidx != -1 && !skipCondition) {
+
+		//		if (equalidx != -1 && !skipCondition) {
 		if (equalidx != -1 && !skipCondition && equalSignOutsideDoubleQuote && equalSignOutsideSingleQuote) {
 			// found key = att
 			key = token.substring(0, equalidx);
@@ -632,11 +654,9 @@ public class CodeGenerator {
 		}
 		else
 			fnc.addArg(makeFuncArg(read_tfe));
-		if (fn.equals("select")) {
+		if (func_name.toLowerCase().equals("select")) {
 			fnc.addDeco("select", att_tmp);
 		}
-
-		//		this.setDecoration(fnc);
 
 		return fnc;
 
@@ -654,7 +674,7 @@ public class CodeGenerator {
 
 		return out_fa;
 	}
-	
+
 	private static String exprtostring(ExtList expr){
 		String str = null;
 		String att = null;
@@ -671,38 +691,56 @@ public class CodeGenerator {
 		str = att + expr.get(1).toString() + ((ExtList)((ExtList)((ExtList)((ExtList)expr.get(2)).get(1)).get(0)).get(1)).get(0).toString();
 		return str;
 	}
-	
+
 	private static TFE IfCondition(ExtList if_then_else) {
 		String token = "";
 		ExtList firstTFE;
 		ExtList secondTFE;
 
-		token = exprtostring( (ExtList)((ExtList)if_then_else.get(2)).get(1) );
-		Attribute condition = makeAttribute(token, true);
+		if(if_then_else.get(0).equals("if")){
+			token = exprtostring( (ExtList)((ExtList)if_then_else.get(2)).get(1) );
+			Attribute condition = makeAttribute(token, true);
+			int t_idx = 0;
+			if( if_then_else.indexOf("then") != -1){
+				t_idx = if_then_else.indexOf("then");
+			}
+			firstTFE = (ExtList)if_then_else.get(t_idx + 2);
 
-		int t_idx = 0;
-		if( if_then_else.indexOf("then") != -1){
-			t_idx = if_then_else.indexOf("then");
-		}else if(if_then_else.indexOf("?") != -1){
-			t_idx = if_then_else.indexOf("?");
+			int e_idx = 0;
+			if( if_then_else.indexOf("else") != -1){
+				e_idx = if_then_else.indexOf("else");
+			}
+			secondTFE = (ExtList)if_then_else.get(e_idx + 2);
+
+			TFE thenTfe = initialize(firstTFE);
+			TFE elseTfe = initialize(secondTFE);
+
+			IfCondition out_tfe = makeIfCondition(condition, thenTfe, elseTfe );
+			return out_tfe;
+		}else{
+			token = exprtostring( (ExtList)((ExtList)if_then_else.get(1)).get(1) );
+			Attribute condition = makeAttribute(token, true);
+
+			int t_idx = 0;
+			if(if_then_else.indexOf("?") != -1){
+				t_idx = if_then_else.indexOf("?");
+			}
+			firstTFE = (ExtList)if_then_else.get(t_idx + 1);
+
+			int e_idx = 0;
+			if(if_then_else.indexOf("?") != -1){
+				e_idx = if_then_else.indexOf(":");
+			}
+			secondTFE = (ExtList)if_then_else.get(e_idx + 1);
+
+
+			TFE thenTfe = initialize(firstTFE);
+			TFE elseTfe = initialize(secondTFE);
+
+			IfCondition out_tfe = makeIfCondition(condition, thenTfe, elseTfe );
+			return out_tfe;
 		}
-		firstTFE = (ExtList)if_then_else.get(t_idx + 2);
 
-		int e_idx = 0;
-		if( if_then_else.indexOf("else") != -1){
-			e_idx = if_then_else.indexOf("else");
-		}else if(if_then_else.indexOf("?") != -1){
-			e_idx = if_then_else.indexOf(":");
-		}
-		secondTFE = (ExtList)if_then_else.get(e_idx + 2);
-
-		
-		TFE thenTfe = initialize(firstTFE);
-		TFE elseTfe = initialize(secondTFE);
-		
-		IfCondition out_tfe = makeIfCondition(condition, thenTfe, elseTfe );
-
-		return out_tfe;
 	}
 
 	private static IfCondition makeIfCondition(Attribute condition, TFE thenTfe, TFE elseTfe) {
@@ -720,28 +758,27 @@ public class CodeGenerator {
 		condAttribute.setId(TFEid++);
 		return condAttribute;
 	}
-	
-//	private Attribute makeConditionalAttribute(String condition,
-//			String[] attributes) {
-//
-//		Attribute att = cg.createConditionalAttribute();
-//		attno = att.setItem(attno, attributes[0], attributes[0], null, attp);
-//		if (attributes.length == 2) {
-//			attno = att.setItem(attno, attributes[1], attributes[1], null, attp);
-//		}
-//		att.setCondition(condition);
-//		attno = att.setItem(attno, condition, condition,
-//				null, attp);
-//		this.setDecoration(att);
-//
-//		return att;
-//	}
+
+	//	private Attribute makeConditionalAttribute(String condition,
+	//			String[] attributes) {
+	//
+	//		Attribute att = cg.createConditionalAttribute();
+	//		attno = att.setItem(attno, attributes[0], attributes[0], null, attp);
+	//		if (attributes.length == 2) {
+	//			attno = att.setItem(attno, attributes[1], attributes[1], null, attp);
+	//		}
+	//		att.setCondition(condition);
+	//		attno = att.setItem(attno, condition, condition,
+	//				null, attp);
+	//		this.setDecoration(att);
+	//
+	//		return att;
+	//	}
 
 	private static void setDecoration(ITFE tfe, String decos) {
 		String token = new String();
 		String name, value;
 		int equalidx;
-
 		decos = decos.substring(decos.indexOf("{")+1, decos.lastIndexOf("}"));
 		String[] decolist = decos.split(",");
 

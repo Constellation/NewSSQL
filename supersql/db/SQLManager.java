@@ -1,5 +1,15 @@
 package supersql.db;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -8,6 +18,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.codec.digest.DigestUtils;
+
+import supersql.FrontEnd;
+import supersql.codegenerator.Ehtml;
+import supersql.codegenerator.Incremental;
 
 import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5;
 import supersql.common.DB;
@@ -81,7 +97,52 @@ public class SQLManager {
 
 	    	conn = cdb.getConn();
     	}
+       	//exception
+//    	boolean isSession = false;
+    	if(query.toLowerCase().contains("$session (\"") && query.toLowerCase().contains("\" )")){
+    		if(query.contains(")OR"))	query = query.replace(")OR", ") OR");
+    		if(query.contains(")or"))	query = query.replace(")or", ") OR");
+    		
+    		String[] b = query.split(" ");
+    		boolean sq = false, s = false, w = false;
+    		for(int i=0; i<b.length; i++){
+    			//シングルクォート内かどうか
+    			if(b[i].contains("'")){
+    				for(int j=0; j<b[i].length(); j++){
+    					if(b[i].charAt(j)=='\'')	sq = !sq;
+    				}
+    			}
 
+    			if(!sq && s){
+    				if(b[i].contains(")")){
+    					s = false;
+    					if(w && (i+1)<b.length){
+    						if(b[i+1].equals("AND") || b[i+1].equals("OR"))
+    							b[i+1] = "WHERE";
+//    			    		isSession = true;
+    						w = false;
+    					}
+    				}
+    				b[i] = "";
+    			}
+    			else if(!sq && b[i].contains("$session")){
+    				for(int j=i; j>0; j--){
+    					if(b[j].equals("WHERE") || b[j].equals("AND") || b[j].equals("OR")){
+    						if(b[j].equals("WHERE")) w = true;
+    						b[j] = "";
+    						break;
+    					}
+    					b[j] = "";
+    				}
+    				s = true;
+    			}
+    		}
+    		query = "";
+    		for(int i=0; i<b.length; i++)
+    			if(!b[i].equals(""))	query += b[i]+" ";
+    		query = query.trim();
+    		if(!query.endsWith(";"))	query += ";";
+    	}
     	if(query.contains(" #"))	query = query.substring(0,query.indexOf(" #"));	//TODO
     	query = Mobile_HTML5.checkQuery(query);
         Log.out("[SQLManager ExecQuery]");
@@ -119,10 +180,12 @@ public class SQLManager {
 
             ExtList<String> tmplist;
             String val;
+            StringBuffer tmp = new StringBuffer();
             while (rs.next()) {
                 tmplist = new ExtList<String>();
                 for (int i = 1; i <= columnCount; i++) {
                     val = rs.getString(i);
+                    tmp.append(val);
                     if (val != null) {
                         tmplist.add(val.trim());
                     } else {
@@ -132,6 +195,89 @@ public class SQLManager {
                 }
                 tuples.add(tmplist);
             }
+            
+            // added by masato 20151221
+            if (Ehtml.flag) { // SQLã®çµæãä¿å­
+            	String outDir = GlobalEnv.getoutdirectory();
+            	String outFile = GlobalEnv.getoutfilename();
+            	String a = outFile.substring(0, outFile.toLowerCase().indexOf("."));
+            	String sqlResultFileName = a.substring(a.lastIndexOf(GlobalEnv.OS_FS) + 1, a.length());
+            	File sqlResultFileDir = new File(outDir + GlobalEnv.OS_FS + "Ssql" + GlobalEnv.OS_FS + "sqlResults" + GlobalEnv.OS_FS + sqlResultFileName);
+    			String name = "ssqlResult" + GlobalEnv.getQueryNum() + ".txt";
+            	File sqlResultFile = new File(sqlResultFileDir.toString() + GlobalEnv.OS_FS + name);
+
+            	if ( !sqlResultFileDir.exists() ) {
+    				sqlResultFileDir.mkdirs();
+    			}
+            	PrintWriter pw = null;
+    			try {
+    				pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
+    						new FileOutputStream(sqlResultFile), "UTF-8")));
+    			} catch (UnsupportedEncodingException e) {
+    				e.printStackTrace();
+    			} catch (FileNotFoundException e) {
+    				e.printStackTrace();
+    			}
+				String hexString = DigestUtils.md5Hex(tmp.toString());
+//    			pw.println(hexString);
+    			pw.close();
+            } else if (Incremental.flag) { // ååã®sqlã®çµæãç¢ºèª
+            	String outDir = GlobalEnv.getoutdirectory();
+            	String outFile = GlobalEnv.getoutfilename();
+            	String a = outFile.substring(0, outFile.toLowerCase().indexOf("."));
+            	String sqlResultFileName = a.substring(a.lastIndexOf(GlobalEnv.OS_FS) + 1, a.length());
+            	File sqlResultFileDir = new File(outDir + GlobalEnv.OS_FS + "Ssql" + GlobalEnv.OS_FS + "sqlResults" + GlobalEnv.OS_FS + sqlResultFileName);
+    			String name = "ssqlResult" + GlobalEnv.getQueryNum() + ".txt";
+            	File sqlResultFile = new File(sqlResultFileDir.toString() + GlobalEnv.OS_FS + name);
+            	StringBuffer sqlResultBuffer = new StringBuffer();
+                try {
+                    FileReader fr = new FileReader(sqlResultFile);
+                    BufferedReader br = new BufferedReader(fr);
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                    	sqlResultBuffer.append(line);
+                    }
+                    br.close();
+                    fr.close();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+				String hexString = DigestUtils.md5Hex(tmp.toString());
+                if(hexString.equals(sqlResultBuffer.toString())){
+                	// åãã ã£ãå ´å
+                	Log.ehtmlInfo("test");
+                	
+                	// è©ä¾¡ç¨åºå
+//                	long end = System.currentTimeMillis();
+//            		Log.ehtmlInfo("Parsing Time : " + (FrontEnd.afterparser - FrontEnd.start) + "msec<br>");
+//            		Log.ehtmlInfo("Data construction Time : " + (end - FrontEnd.afterparser) + "msec<br>");
+//            		Log.ehtmlInfo("Code generation Time : " + 0 + "msec<br>");
+//            		Log.ehtmlInfo("ExecTime: " + (end - FrontEnd.start) + "msec<br>");
+                	System.exit(0);
+                } else {
+                	// éã£ãå ´åã¯æ´æ°
+                	if ( !sqlResultFileDir.exists() ) {
+        				sqlResultFileDir.mkdirs();
+        			}
+                	PrintWriter pw = null;
+        			try {
+        				pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
+        						new FileOutputStream(sqlResultFile), "UTF-8")));
+        			} catch (UnsupportedEncodingException e) {
+        				e.printStackTrace();
+        			} catch (FileNotFoundException e) {
+        				e.printStackTrace();
+        			}
+//        			pw.println(hexString);
+        			pw.close();
+                }
+            }
+            
+            
+//            if(true){
+            	FrontEnd.aftersql = System.currentTimeMillis();
+//        		Log.info("SQL Time : " + (FrontEnd.aftersql - FrontEnd.afterparser) + "msec");
+//            }
             Log.out("[SQLManager:execQuerySQL] Result tuples count = "
                     + tuples.size());
             GlobalEnv.setTuplesNum(tuples.size());

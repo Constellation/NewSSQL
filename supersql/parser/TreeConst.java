@@ -106,19 +106,36 @@ public class TreeConst {
 		String att = new String();
 
 		if(((ExtList)tree.get(1)).get(0).toString().toLowerCase().equals("foreach")){
-			for(int i = 1; i < ((ExtList)tree.get(1)).size(); i+=2){
-				ExtList tfe_tree = (ExtList)((ExtList)tree.get(1)).get(i);
-				if(tfe_tree.get(0).toString().equals("operand")){
-					if(((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("table_alias")){
-						att = ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(0)).get(1)).get(0).toString();
-						att = att + ((ExtList)tfe_tree.get(1)).get(1).toString();
-						att = att + ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(2)).get(1)).get(0)).get(1)).get(0).toString();
-						Log.info(att);
-					}else if(((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("column_name")){
-						att = ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(0)).get(1)).get(0).toString();
+			if( ((ExtList)tree.get(1)).get(1) instanceof  String){
+				for(int i = 2; i < ((ExtList)tree.get(1)).size(); i+=2){
+					ExtList tfe_tree = (ExtList)((ExtList)tree.get(1)).get(i);
+					if(tfe_tree.get(0).toString().equals("operand")){
+						if(((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("table_alias")){
+							att = ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(0)).get(1)).get(0).toString();
+							att = att + ((ExtList)tfe_tree.get(1)).get(1).toString();
+							att = att + ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(2)).get(1)).get(0)).get(1)).get(0).toString();
+							Log.info(att);
+						}else if(((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("column_name")){
+							att = ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(0)).get(1)).get(0).toString();
+						}
 					}
+					atts.add(att);
 				}
-				atts.add(att);
+			}else{
+				for(int i = 1; i < ((ExtList)tree.get(1)).size(); i+=2){
+					ExtList tfe_tree = (ExtList)((ExtList)tree.get(1)).get(i);
+					if(tfe_tree.get(0).toString().equals("operand")){
+						if(((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("table_alias")){
+							att = ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(0)).get(1)).get(0).toString();
+							att = att + ((ExtList)tfe_tree.get(1)).get(1).toString();
+							att = att + ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(2)).get(1)).get(0)).get(1)).get(0).toString();
+							Log.info(att);
+						}else if(((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("column_name")){
+							att = ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(0)).get(1)).get(0).toString();
+						}
+					}
+					atts.add(att);
+				}
 			}
 		}
 

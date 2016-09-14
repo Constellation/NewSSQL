@@ -1,9 +1,11 @@
 package supersql.codegenerator;
 
+import java.io.Serializable;
+
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
 
-public class Connector extends Operator {
+public class Connector extends Operator implements Serializable{
 
 	public int tfeItems;
 	public ExtList<TFE> tfes;
@@ -152,7 +154,7 @@ public class Connector extends Operator {
 		return outsch;
 	}
 	//added by ria 20110913 end
-//
+
 	public void addDeco(String key, String val, String condition) {
 		decos.put(key, val, condition);
 		

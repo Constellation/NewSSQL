@@ -1,9 +1,10 @@
 package supersql.codegenerator;
 
+import java.io.Serializable;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
 
-public class Grouper extends Operator{
+public class Grouper extends Operator implements Serializable{
 
     public TFE tfe; // 引数TFE
 
@@ -86,7 +87,7 @@ public class Grouper extends Operator{
     	ExtList subdata = (ExtList) (data.get(dindex));
     	dindex++;
         if (tfe instanceof Connector || tfe instanceof Attribute
-                || tfe instanceof Function /*|| tfe instanceof IfCondition*/) {
+                || tfe instanceof Function || tfe instanceof IfCondition) {
             return tfe.createNode(subdata);
         } else {
             return tfe.createNode((ExtList) subdata.get(0));

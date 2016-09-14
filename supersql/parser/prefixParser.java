@@ -109,18 +109,6 @@ public class prefixParser extends Parser {
 		}
 		public TerminalNode OPEN_PARENTHESE() { return getToken(prefixParser.OPEN_PARENTHESE, 0); }
 		public TerminalNode CLOSE_PARENTHESE() { return getToken(prefixParser.CLOSE_PARENTHESE, 0); }
-		public List<Column_nameContext> column_name() {
-			return getRuleContexts(Column_nameContext.class);
-		}
-		public Column_nameContext column_name(int i) {
-			return getRuleContext(Column_nameContext.class,i);
-		}
-		public List<Table_aliasContext> table_alias() {
-			return getRuleContexts(Table_aliasContext.class);
-		}
-		public Table_aliasContext table_alias(int i) {
-			return getRuleContext(Table_aliasContext.class,i);
-		}
 		public PrefixContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -142,14 +130,14 @@ public class prefixParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(61);
+			setState(50);
 			switch (_input.LA(1)) {
 			case K_FOREACH:
 				{
 				setState(26);
 				match(K_FOREACH);
-				setState(57);
-				switch ( getInterpreter().adaptivePredict(_input,4,_ctx) ) {
+				setState(46);
+				switch ( getInterpreter().adaptivePredict(_input,2,_ctx) ) {
 				case 1:
 					{
 					setState(27);
@@ -176,51 +164,25 @@ public class prefixParser extends Parser {
 					{
 					setState(35);
 					match(OPEN_PARENTHESE);
-					{
-					setState(39);
-					switch ( getInterpreter().adaptivePredict(_input,1,_ctx) ) {
-					case 1:
-						{
-						setState(36);
-						table_alias();
-						setState(37);
-						match(T__1);
-						}
-						break;
-					}
+					setState(36);
+					operand();
 					setState(41);
-					column_name();
-					}
-					setState(52);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
 					while (_la==T__0) {
 						{
 						{
-						setState(43);
+						setState(37);
 						match(T__0);
-						{
-						setState(47);
-						switch ( getInterpreter().adaptivePredict(_input,2,_ctx) ) {
-						case 1:
-							{
-							setState(44);
-							table_alias();
-							setState(45);
-							match(T__1);
-							}
-							break;
-						}
-						setState(49);
-						column_name();
+						setState(38);
+						operand();
 						}
 						}
-						}
-						setState(54);
+						setState(43);
 						_errHandler.sync(this);
 						_la = _input.LA(1);
 					}
-					setState(55);
+					setState(44);
 					match(CLOSE_PARENTHESE);
 					}
 					break;
@@ -231,13 +193,13 @@ public class prefixParser extends Parser {
 			case IDENTIFIER:
 			case STRING_LITERAL:
 				{
-				setState(59);
+				setState(48);
 				function();
 				}
 				break;
 			case T__2:
 				{
-				setState(60);
+				setState(49);
 				exdef();
 				}
 				break;
@@ -284,18 +246,18 @@ public class prefixParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(66);
-			switch ( getInterpreter().adaptivePredict(_input,6,_ctx) ) {
+			setState(55);
+			switch ( getInterpreter().adaptivePredict(_input,4,_ctx) ) {
 			case 1:
 				{
-				setState(63);
+				setState(52);
 				table_alias();
-				setState(64);
+				setState(53);
 				match(T__1);
 				}
 				break;
 			}
-			setState(68);
+			setState(57);
 			column_name();
 			}
 		}
@@ -341,35 +303,35 @@ public class prefixParser extends Parser {
 		ExdefContext _localctx = new ExdefContext(_ctx, getState());
 		enterRule(_localctx, 4, RULE_exdef);
 		try {
-			setState(81);
-			switch ( getInterpreter().adaptivePredict(_input,7,_ctx) ) {
+			setState(70);
+			switch ( getInterpreter().adaptivePredict(_input,5,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(70);
+				setState(59);
 				match(T__2);
-				setState(71);
+				setState(60);
 				match(K_IMPORT);
-				setState(72);
+				setState(61);
 				match(IDENTIFIER);
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(73);
+				setState(62);
 				match(T__2);
-				setState(74);
+				setState(63);
 				match(K_DEFINE);
-				setState(75);
+				setState(64);
 				function_name();
-				setState(76);
+				setState(65);
 				any_name();
-				setState(77);
+				setState(66);
 				match(OPEN_BRACE);
-				setState(78);
+				setState(67);
 				match(DEF);
-				setState(79);
+				setState(68);
 				match(CLOSE_BRACE);
 				}
 				break;
@@ -419,29 +381,29 @@ public class prefixParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(83);
+			setState(72);
 			function_name();
-			setState(84);
+			setState(73);
 			match(OPEN_PARENTHESE);
-			setState(85);
+			setState(74);
 			expr();
-			setState(90);
+			setState(79);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==T__0) {
 				{
 				{
-				setState(86);
+				setState(75);
 				match(T__0);
-				setState(87);
+				setState(76);
 				expr();
 				}
 				}
-				setState(92);
+				setState(81);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(93);
+			setState(82);
 			match(CLOSE_PARENTHESE);
 			}
 		}
@@ -492,12 +454,12 @@ public class prefixParser extends Parser {
 		enterRule(_localctx, 8, RULE_expr);
 		try {
 			int _alt;
-			setState(116);
-			switch ( getInterpreter().adaptivePredict(_input,13,_ctx) ) {
+			setState(105);
+			switch ( getInterpreter().adaptivePredict(_input,11,_ctx) ) {
 			case 1:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(95);
+				setState(84);
 				match(STRING_LITERAL);
 				}
 				break;
@@ -505,33 +467,33 @@ public class prefixParser extends Parser {
 				enterOuterAlt(_localctx, 2);
 				{
 				{
-				setState(99);
-				switch ( getInterpreter().adaptivePredict(_input,9,_ctx) ) {
+				setState(88);
+				switch ( getInterpreter().adaptivePredict(_input,7,_ctx) ) {
 				case 1:
 					{
-					setState(96);
+					setState(85);
 					table_alias();
-					setState(97);
+					setState(86);
 					match(T__1);
 					}
 					break;
 				}
-				setState(101);
+				setState(90);
 				column_name();
 				}
-				setState(113);
+				setState(102);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,12,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,10,_ctx);
 				while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 					if ( _alt==1 ) {
 						{
-						setState(111);
+						setState(100);
 						switch (_input.LA(1)) {
 						case T__0:
 							{
-							setState(103);
+							setState(92);
 							match(T__0);
-							setState(104);
+							setState(93);
 							match(STRING_LITERAL);
 							}
 							break;
@@ -540,18 +502,18 @@ public class prefixParser extends Parser {
 						case STRING_LITERAL:
 							{
 							{
-							setState(108);
-							switch ( getInterpreter().adaptivePredict(_input,10,_ctx) ) {
+							setState(97);
+							switch ( getInterpreter().adaptivePredict(_input,8,_ctx) ) {
 							case 1:
 								{
-								setState(105);
+								setState(94);
 								table_alias();
-								setState(106);
+								setState(95);
 								match(T__1);
 								}
 								break;
 							}
-							setState(110);
+							setState(99);
 							column_name();
 							}
 							}
@@ -561,9 +523,9 @@ public class prefixParser extends Parser {
 						}
 						} 
 					}
-					setState(115);
+					setState(104);
 					_errHandler.sync(this);
-					_alt = getInterpreter().adaptivePredict(_input,12,_ctx);
+					_alt = getInterpreter().adaptivePredict(_input,10,_ctx);
 				}
 				}
 				break;
@@ -604,7 +566,7 @@ public class prefixParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(118);
+			setState(107);
 			any_name();
 			}
 		}
@@ -643,7 +605,7 @@ public class prefixParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(120);
+			setState(109);
 			any_name();
 			}
 		}
@@ -682,7 +644,7 @@ public class prefixParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(122);
+			setState(111);
 			any_name();
 			}
 		}
@@ -721,7 +683,7 @@ public class prefixParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(124);
+			setState(113);
 			_la = _input.LA(1);
 			if ( !(_la==IDENTIFIER || _la==STRING_LITERAL) ) {
 			_errHandler.recoverInline(this);
@@ -765,7 +727,7 @@ public class prefixParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(126);
+			setState(115);
 			any_name();
 			}
 		}
@@ -804,7 +766,7 @@ public class prefixParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(128);
+			setState(117);
 			any_name();
 			}
 		}
@@ -843,7 +805,7 @@ public class prefixParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(130);
+			setState(119);
 			any_name();
 			}
 		}
@@ -882,30 +844,30 @@ public class prefixParser extends Parser {
 		Any_nameContext _localctx = new Any_nameContext(_ctx, getState());
 		enterRule(_localctx, 24, RULE_any_name);
 		try {
-			setState(138);
+			setState(127);
 			switch (_input.LA(1)) {
 			case IDENTIFIER:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(132);
+				setState(121);
 				match(IDENTIFIER);
 				}
 				break;
 			case STRING_LITERAL:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(133);
+				setState(122);
 				match(STRING_LITERAL);
 				}
 				break;
 			case OPEN_PARENTHESE:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(134);
+				setState(123);
 				match(OPEN_PARENTHESE);
-				setState(135);
+				setState(124);
 				any_name();
-				setState(136);
+				setState(125);
 				match(CLOSE_PARENTHESE);
 				}
 				break;
@@ -925,42 +887,38 @@ public class prefixParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\25\u008f\4\2\t\2"+
+		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\25\u0084\4\2\t\2"+
 		"\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13"+
 		"\t\13\4\f\t\f\4\r\t\r\4\16\t\16\3\2\3\2\3\2\3\2\7\2!\n\2\f\2\16\2$\13"+
-		"\2\3\2\3\2\3\2\3\2\5\2*\n\2\3\2\3\2\3\2\3\2\3\2\3\2\5\2\62\n\2\3\2\7\2"+
-		"\65\n\2\f\2\16\28\13\2\3\2\3\2\5\2<\n\2\3\2\3\2\5\2@\n\2\3\3\3\3\3\3\5"+
-		"\3E\n\3\3\3\3\3\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\5\4T\n\4\3"+
-		"\5\3\5\3\5\3\5\3\5\7\5[\n\5\f\5\16\5^\13\5\3\5\3\5\3\6\3\6\3\6\3\6\5\6"+
-		"f\n\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\5\6o\n\6\3\6\7\6r\n\6\f\6\16\6u\13\6"+
-		"\5\6w\n\6\3\7\3\7\3\b\3\b\3\t\3\t\3\n\3\n\3\13\3\13\3\f\3\f\3\r\3\r\3"+
-		"\16\3\16\3\16\3\16\3\16\3\16\5\16\u008d\n\16\3\16\2\2\17\2\4\6\b\n\f\16"+
-		"\20\22\24\26\30\32\2\3\3\2\20\21\u0092\2?\3\2\2\2\4D\3\2\2\2\6S\3\2\2"+
-		"\2\bU\3\2\2\2\nv\3\2\2\2\fx\3\2\2\2\16z\3\2\2\2\20|\3\2\2\2\22~\3\2\2"+
-		"\2\24\u0080\3\2\2\2\26\u0082\3\2\2\2\30\u0084\3\2\2\2\32\u008c\3\2\2\2"+
-		"\34;\7\7\2\2\35\"\5\4\3\2\36\37\7\3\2\2\37!\5\4\3\2 \36\3\2\2\2!$\3\2"+
-		"\2\2\" \3\2\2\2\"#\3\2\2\2#<\3\2\2\2$\"\3\2\2\2%)\7\n\2\2&\'\5\26\f\2"+
-		"\'(\7\4\2\2(*\3\2\2\2)&\3\2\2\2)*\3\2\2\2*+\3\2\2\2+,\5\24\13\2,\66\3"+
-		"\2\2\2-\61\7\3\2\2./\5\26\f\2/\60\7\4\2\2\60\62\3\2\2\2\61.\3\2\2\2\61"+
-		"\62\3\2\2\2\62\63\3\2\2\2\63\65\5\24\13\2\64-\3\2\2\2\658\3\2\2\2\66\64"+
-		"\3\2\2\2\66\67\3\2\2\2\679\3\2\2\28\66\3\2\2\29:\7\13\2\2:<\3\2\2\2;\35"+
-		"\3\2\2\2;%\3\2\2\2<@\3\2\2\2=@\5\b\5\2>@\5\6\4\2?\34\3\2\2\2?=\3\2\2\2"+
-		"?>\3\2\2\2@\3\3\2\2\2AB\5\26\f\2BC\7\4\2\2CE\3\2\2\2DA\3\2\2\2DE\3\2\2"+
-		"\2EF\3\2\2\2FG\5\24\13\2G\5\3\2\2\2HI\7\5\2\2IJ\7\b\2\2JT\7\20\2\2KL\7"+
-		"\5\2\2LM\7\t\2\2MN\5\f\7\2NO\5\32\16\2OP\7\16\2\2PQ\7\6\2\2QR\7\17\2\2"+
-		"RT\3\2\2\2SH\3\2\2\2SK\3\2\2\2T\7\3\2\2\2UV\5\f\7\2VW\7\n\2\2W\\\5\n\6"+
-		"\2XY\7\3\2\2Y[\5\n\6\2ZX\3\2\2\2[^\3\2\2\2\\Z\3\2\2\2\\]\3\2\2\2]_\3\2"+
-		"\2\2^\\\3\2\2\2_`\7\13\2\2`\t\3\2\2\2aw\7\21\2\2bc\5\26\f\2cd\7\4\2\2"+
-		"df\3\2\2\2eb\3\2\2\2ef\3\2\2\2fg\3\2\2\2gh\5\24\13\2hs\3\2\2\2ij\7\3\2"+
-		"\2jr\7\21\2\2kl\5\26\f\2lm\7\4\2\2mo\3\2\2\2nk\3\2\2\2no\3\2\2\2op\3\2"+
-		"\2\2pr\5\24\13\2qi\3\2\2\2qn\3\2\2\2ru\3\2\2\2sq\3\2\2\2st\3\2\2\2tw\3"+
-		"\2\2\2us\3\2\2\2va\3\2\2\2ve\3\2\2\2w\13\3\2\2\2xy\5\32\16\2y\r\3\2\2"+
-		"\2z{\5\32\16\2{\17\3\2\2\2|}\5\32\16\2}\21\3\2\2\2~\177\t\2\2\2\177\23"+
-		"\3\2\2\2\u0080\u0081\5\32\16\2\u0081\25\3\2\2\2\u0082\u0083\5\32\16\2"+
-		"\u0083\27\3\2\2\2\u0084\u0085\5\32\16\2\u0085\31\3\2\2\2\u0086\u008d\7"+
-		"\20\2\2\u0087\u008d\7\21\2\2\u0088\u0089\7\n\2\2\u0089\u008a\5\32\16\2"+
-		"\u008a\u008b\7\13\2\2\u008b\u008d\3\2\2\2\u008c\u0086\3\2\2\2\u008c\u0087"+
-		"\3\2\2\2\u008c\u0088\3\2\2\2\u008d\33\3\2\2\2\21\")\61\66;?DS\\enqsv\u008c";
+		"\2\3\2\3\2\3\2\3\2\7\2*\n\2\f\2\16\2-\13\2\3\2\3\2\5\2\61\n\2\3\2\3\2"+
+		"\5\2\65\n\2\3\3\3\3\3\3\5\3:\n\3\3\3\3\3\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3"+
+		"\4\3\4\3\4\3\4\5\4I\n\4\3\5\3\5\3\5\3\5\3\5\7\5P\n\5\f\5\16\5S\13\5\3"+
+		"\5\3\5\3\6\3\6\3\6\3\6\5\6[\n\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\5\6d\n\6\3"+
+		"\6\7\6g\n\6\f\6\16\6j\13\6\5\6l\n\6\3\7\3\7\3\b\3\b\3\t\3\t\3\n\3\n\3"+
+		"\13\3\13\3\f\3\f\3\r\3\r\3\16\3\16\3\16\3\16\3\16\3\16\5\16\u0082\n\16"+
+		"\3\16\2\2\17\2\4\6\b\n\f\16\20\22\24\26\30\32\2\3\3\2\20\21\u0085\2\64"+
+		"\3\2\2\2\49\3\2\2\2\6H\3\2\2\2\bJ\3\2\2\2\nk\3\2\2\2\fm\3\2\2\2\16o\3"+
+		"\2\2\2\20q\3\2\2\2\22s\3\2\2\2\24u\3\2\2\2\26w\3\2\2\2\30y\3\2\2\2\32"+
+		"\u0081\3\2\2\2\34\60\7\7\2\2\35\"\5\4\3\2\36\37\7\3\2\2\37!\5\4\3\2 \36"+
+		"\3\2\2\2!$\3\2\2\2\" \3\2\2\2\"#\3\2\2\2#\61\3\2\2\2$\"\3\2\2\2%&\7\n"+
+		"\2\2&+\5\4\3\2\'(\7\3\2\2(*\5\4\3\2)\'\3\2\2\2*-\3\2\2\2+)\3\2\2\2+,\3"+
+		"\2\2\2,.\3\2\2\2-+\3\2\2\2./\7\13\2\2/\61\3\2\2\2\60\35\3\2\2\2\60%\3"+
+		"\2\2\2\61\65\3\2\2\2\62\65\5\b\5\2\63\65\5\6\4\2\64\34\3\2\2\2\64\62\3"+
+		"\2\2\2\64\63\3\2\2\2\65\3\3\2\2\2\66\67\5\26\f\2\678\7\4\2\28:\3\2\2\2"+
+		"9\66\3\2\2\29:\3\2\2\2:;\3\2\2\2;<\5\24\13\2<\5\3\2\2\2=>\7\5\2\2>?\7"+
+		"\b\2\2?I\7\20\2\2@A\7\5\2\2AB\7\t\2\2BC\5\f\7\2CD\5\32\16\2DE\7\16\2\2"+
+		"EF\7\6\2\2FG\7\17\2\2GI\3\2\2\2H=\3\2\2\2H@\3\2\2\2I\7\3\2\2\2JK\5\f\7"+
+		"\2KL\7\n\2\2LQ\5\n\6\2MN\7\3\2\2NP\5\n\6\2OM\3\2\2\2PS\3\2\2\2QO\3\2\2"+
+		"\2QR\3\2\2\2RT\3\2\2\2SQ\3\2\2\2TU\7\13\2\2U\t\3\2\2\2Vl\7\21\2\2WX\5"+
+		"\26\f\2XY\7\4\2\2Y[\3\2\2\2ZW\3\2\2\2Z[\3\2\2\2[\\\3\2\2\2\\]\5\24\13"+
+		"\2]h\3\2\2\2^_\7\3\2\2_g\7\21\2\2`a\5\26\f\2ab\7\4\2\2bd\3\2\2\2c`\3\2"+
+		"\2\2cd\3\2\2\2de\3\2\2\2eg\5\24\13\2f^\3\2\2\2fc\3\2\2\2gj\3\2\2\2hf\3"+
+		"\2\2\2hi\3\2\2\2il\3\2\2\2jh\3\2\2\2kV\3\2\2\2kZ\3\2\2\2l\13\3\2\2\2m"+
+		"n\5\32\16\2n\r\3\2\2\2op\5\32\16\2p\17\3\2\2\2qr\5\32\16\2r\21\3\2\2\2"+
+		"st\t\2\2\2t\23\3\2\2\2uv\5\32\16\2v\25\3\2\2\2wx\5\32\16\2x\27\3\2\2\2"+
+		"yz\5\32\16\2z\31\3\2\2\2{\u0082\7\20\2\2|\u0082\7\21\2\2}~\7\n\2\2~\177"+
+		"\5\32\16\2\177\u0080\7\13\2\2\u0080\u0082\3\2\2\2\u0081{\3\2\2\2\u0081"+
+		"|\3\2\2\2\u0081}\3\2\2\2\u0082\33\3\2\2\2\17\"+\60\649HQZcfhk\u0081";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

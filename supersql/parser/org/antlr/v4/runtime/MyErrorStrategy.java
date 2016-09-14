@@ -75,7 +75,6 @@ public class MyErrorStrategy extends DefaultErrorStrategy{
 	}
 	
 	protected void reportNoViableAlternative(Parser recognizer,NoViableAltException e){
-		System.err.println("NoViableAlt");
 		TokenStream tokens = recognizer.getInputStream();
 		String input;
 		String before_offending = null;
@@ -107,60 +106,60 @@ public class MyErrorStrategy extends DefaultErrorStrategy{
 			if(before_offending.trim().substring(before_offending.trim().length()-1).equals(";")){
 				msg_detail = "****query is end with ';'.*****";
 				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
-				+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" + msg_detail ;
+				+ msg_detail + before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n"  ;
 			}
 			else if(offendingtoken.equals("{")){
 				msg_detail = "****in from clause, use '( )' not '{ }'.*****";
 				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
-				+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" + msg_detail ;
+						+ msg_detail + before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n"  ;
 			}
 			else{
 				msg_detail = "****error in FROM clause.*****";
 				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
-				+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" + msg_detail ;
+						+ msg_detail + before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" ;
 			}
 		}
 		else if(offendingtoken.matches("[0-9]+") && before_offending.trim().substring(before_offending.trim().length()-1).equals("]")){
 			msg_detail = "****composite iterator wasn't described correctly : '[ ],NUMBER!' or '[ ],NUMBER!NUMBER%' or '[ ],NUMBER% or '[ ]!NUMBER,' or '[ ]!NUMBER,NUMBER%' or '[ ]!NUMBER%''*****";
-			msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + 
-					"'\n" + before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" + msg_detail ;
+			msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
+			+ msg_detail + before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n"  ;
 		}
 		else if(before_offending.trim().substring(before_offending.trim().length()-1).equals("]")){///////////////find error grouper//////////
 			msg_detail = "*****did you mean ']!' or '],' ?*****";
 			msg = "parse error detected. \nThe OffendingToken is : "+ 
 			"'" + e.getOffendingToken().getText() + "'\n" 
-					+ before_offending.trim().substring(0, before_offending.trim().length()-1) + 
+					+ before_offending.trim().substring(0, before_offending.trim().length()-1) + msg_detail +
 					" >>>>>" + before_offending.trim().substring(before_offending.trim().length()-1) + "<<<<< " 
-					+ offendingtoken + after_offending + "\n" + msg_detail ;
+					+ offendingtoken + after_offending + "\n" ;
 		}
-		else if(offendingtoken.contains("@{")){///////////////find error the place of decolator //////////////////////
-			msg_detail = "*****decolator can't appear here*****";
+		else if(offendingtoken.contains("@{")){///////////////find error the place of decorator //////////////////////
+			msg_detail = "*****decorator can't appear here*****";
 			msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + 
-					"'\n" + before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" + msg_detail ;
+					"'\n"+ msg_detail + before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" ;
 		}
-		else if(offendingtoken.contains("@")){///////////////find error in decolator//////////////////////
-			msg_detail = "*****decolator doesn't describe correctly : @{ }*****";
+		else if(offendingtoken.contains("@")){///////////////find error in decorator//////////////////////
+			msg_detail = "*****decorator doesn't describe correctly : @{ }*****";
 			msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + 
-					"'\n" + before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" + msg_detail ;
+					"'\n"+ msg_detail + before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" ;
 		}
 		else if(offendingtoken.equals("}") && before_offending.trim().substring(before_offending.trim().length()-1).equals("{")){
 			msg_detail = "*****nothing described in '{ }'*****";
-			msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
+			msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" + msg_detail
 					+ before_offending.substring(0, before_offending.trim().lastIndexOf("{")) 
 					+ " >>>>>" + before_offending.substring(before_offending.trim().lastIndexOf("{"), before_offending.length()) + offendingtoken + "<<<<< " 
-					+ after_offending + "\n" + msg_detail ;
+					+ after_offending + "\n" ;
 		}else if(offendingtoken.equals("]") && before_offending.trim().substring(before_offending.trim().length()-1).equals("[")){
 			msg_detail = "*****nothing described in '[ ] : grouper'*****";
-			msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
+			msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" + msg_detail
 					+ before_offending.substring(0, before_offending.lastIndexOf("[")) 
 					+ " >>>>>" + before_offending.substring(before_offending.trim().lastIndexOf("["), before_offending.length()) + offendingtoken + "<<<<< " 
-					+ after_offending + "\n" + msg_detail ;
+					+ after_offending + "\n" ;
 		}else if(offendingtoken.equals(")") && before_offending.trim().substring(before_offending.trim().length()-1).equals("(")){
 			msg_detail = "*****nothing described in '( )'*****";
-			msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
+			msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" + msg_detail
 					+ before_offending.substring(0, before_offending.lastIndexOf("(")) 
 					+ " >>>>>" + before_offending.substring(before_offending.trim().lastIndexOf("("), before_offending.length()) + offendingtoken + "<<<<< " 
-					+ after_offending + "\n" + msg_detail ;
+					+ after_offending + "\n" ;
 		}
 		else if(offendingtoken.toLowerCase().equals("from") 
 				&& (before_offending.trim().substring(before_offending.trim().length()-1).equals(",") 
@@ -168,8 +167,8 @@ public class MyErrorStrategy extends DefaultErrorStrategy{
 				){
 			if(before_offending.trim().substring(before_offending.trim().length()-2,before_offending.trim().length()-1).equals("]")){
 				msg_detail = "*****lacks token before '"+ offendingtoken +"' : '}' or ']' or ')'*****";
-				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
-						+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" + msg_detail ;
+				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n"  + msg_detail
+						+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" ;
 			}
 //			else{
 //				msg_detail = "*****extra connector detected. before '"+ offendingtoken +"'*****";
@@ -190,40 +189,40 @@ public class MyErrorStrategy extends DefaultErrorStrategy{
 				){
 			msg_detail = "*****extra '" + before_offending.trim().substring(before_offending.trim().length()-1) + "' detected before '"+ offendingtoken +"'*****";
 			msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
-			+ before_offending.trim().substring(0, before_offending.trim().length()-1) + 
-			" >>>>>" + before_offending.trim().substring(before_offending.trim().length()-1) + "<<<<< " + offendingtoken + after_offending + "\n" + msg_detail ;
+			+ before_offending.trim().substring(0, before_offending.trim().length()-1) + msg_detail  + 
+			" >>>>>" + before_offending.trim().substring(before_offending.trim().length()-1) + "<<<<< " + offendingtoken + after_offending + "\n" ;
 		}
 		else if(offendingtoken.equals("}")){
 			if(!before_offending.contains("{")){
 				msg_detail = "*****dosen't exist the the pair of '}' : did you mean ']' or ')' ?*****";
 				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
-						+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" + msg_detail ;
+						+ msg_detail + before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" ;
 			}else{
 				msg_detail = "*****extra parenthis detected : '}'. did you mean ']' or ')' ?*****";
 				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
-						+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" + msg_detail ;
+						+ msg_detail + before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" ;
 			}
 		}
 		else if(offendingtoken.equals("]")){
 			if(!before_offending.contains("[")){
 				msg_detail = "*****dosen't exist the the pair of ']' : did you mean '}' or ')' ?*****";
 				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
-						+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" + msg_detail ;
+						+ msg_detail + before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" ;
 			}else{
 				msg_detail = "*****extra bracket detected : ']'. did you mean '}' or ')' ?*****";
 				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
-						+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" + msg_detail ;
+						+ msg_detail + before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" ;
 			}
 		}
 		else if(offendingtoken.equals(")")){
 			if(!before_offending.contains("(")){
 				msg_detail = "*****dosen't exist the the pair of '}' : did you mean ']' or '}' ?*****";
 				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
-						+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" + msg_detail ;
+						 + msg_detail + before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" ;
 			}else{
 				msg_detail = "*****extra brace detected : ')'. did you mean ']' or '}' ?*****";
 				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
-						+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" + msg_detail ;
+						+ msg_detail + before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n"  ;
 			}
 		}
 		else if((offendingtoken.equals("{") || offendingtoken.equals("[") || offendingtoken.equals("(")) 
@@ -235,9 +234,9 @@ public class MyErrorStrategy extends DefaultErrorStrategy{
 			if(m_p.find() || m_q.find()){
 				msg_detail = "****did you mistake the place of '(asc)' or '(desc)' ?*****";
 				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
-				+ before_offending.trim().substring(0, before_offending.trim().lastIndexOf("("))
+				+ before_offending.trim().substring(0, before_offending.trim().lastIndexOf("(")) + msg_detail 
 				+ " >>>>>" + before_offending.trim().substring(before_offending.trim().lastIndexOf("("), before_offending.trim().length()) + "<<<<< " 
-				+ offendingtoken + after_offending + "\n" + msg_detail ;
+				+ offendingtoken + after_offending + "\n" ;
 			}else if(before_offending.trim().substring(before_offending.trim().length()-1).equals(")")){
 				Pattern q1 = Pattern.compile("[a-zA-Z0-9]+\\(.+\\)$");
 				Pattern q2 = Pattern.compile("[a-zA-Z0-9]+\\(\\)$");
@@ -246,13 +245,13 @@ public class MyErrorStrategy extends DefaultErrorStrategy{
 				if(m_q1.find() || m_q2.find()){
 					msg_detail = "*****lack ',' or '!' before '" + offendingtoken + "' *****";
 					msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
-							+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" + msg_detail ;
+							+ msg_detail + before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n";
 				}else{
 				msg_detail = "*****did you mean '(asc)' or '(desc)' or 'IF function:( )?' ?*****";
 				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
-				+ before_offending.trim().substring(0, before_offending.trim().lastIndexOf("(")) 
+						+ msg_detail  + before_offending.trim().substring(0, before_offending.trim().lastIndexOf("(")) 
 				+ " >>>>>" + before_offending.trim().substring(before_offending.trim().lastIndexOf("("), before_offending.trim().length()) + "<<<<< " 
-				+ offendingtoken + after_offending + "\n" + msg_detail ;
+				+ offendingtoken + after_offending + "\n" ;
 				}
 			}
 		}
@@ -260,13 +259,13 @@ public class MyErrorStrategy extends DefaultErrorStrategy{
 			Pattern d = Pattern.compile(".+=.+}");
 			Matcher m_d = d.matcher(after_offending.substring(0,after_offending.indexOf("}")+1));
 			if(m_d.find()){
-				msg_detail = "****decolator should describe : '@" + offendingtoken + after_offending.substring(0, after_offending.indexOf("}")+1) +"'*****";
+				msg_detail = "****decorator should describe : '@" + offendingtoken + after_offending.substring(0, after_offending.indexOf("}")+1) +"'*****";
 				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
-				+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" + msg_detail ;
+						+ msg_detail + before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" ;
 			}else{
 				msg_detail = "****lack a connector before '" + offendingtoken +"'*****";
 				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
-				+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" + msg_detail ;
+						+ msg_detail  + before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n";
 			}
 		}
 		else if(offendingtoken.equals("{") || offendingtoken.equals("[") || offendingtoken.equals("(")){
@@ -274,30 +273,30 @@ public class MyErrorStrategy extends DefaultErrorStrategy{
 				|| !before_offending.trim().substring(before_offending.trim().length()-1).equals("!")){
 				msg_detail = "****lack a connector before '" + offendingtoken +"'*****";
 				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
-				+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" + msg_detail ;
+						 + msg_detail + before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" ;
 			}else if(before_offending.trim().matches(".*(asc[0-9]*)")
 					|| before_offending.trim().matches(".*(desc[0-9]*)")){
 				msg_detail = "****did you mistake the place of '(asc)' or '(desc)' ?*****";
 				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
-				+ before_offending.trim().substring(0, before_offending.trim().lastIndexOf("("))
+				+ before_offending.trim().substring(0, before_offending.trim().lastIndexOf("(")) + msg_detail 
 				+ " >>>>>" + before_offending.trim().substring(before_offending.trim().lastIndexOf("("), before_offending.trim().length()) + "<<<<< " 
-				+ offendingtoken + after_offending + "\n" + msg_detail ;
+				+ offendingtoken + after_offending + "\n";
 			}
 		}
 		else if(e.getOffendingToken().getText().equals("<EOF>")){
 			msg_detail = "*****Input is not enough after " + tokens.getText(e.getStartToken(), e.getOffendingToken()) + "*****";
-			msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + 
-					"'\n" + before_offending + "\n" + msg_detail ;
+			msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "\n"+
+					 msg_detail +"'\n" + before_offending;
 		}
 		else if(offendingtoken.equals(".")){
 			msg_detail = "*****'.' is not need here. OR did you mistake ',' to '.' ? *****";
-			msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + 
-				"'\n" + before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" + msg_detail ;
+			msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "\n" + 
+					 msg_detail +"'\n" + before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending ;
 		}
 		else if(offendingtoken.equals("=") || offendingtoken.equals(">=") || offendingtoken.equals("=<")){
-			msg_detail = "*****Inequality formula should appear in decolator:@{} or if_then_else.*****";
-			msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + 
-				"'\n" + before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" + msg_detail ;
+			msg_detail = "*****Inequality formula should appear in decorator:@{} or if_then_else.*****";
+			msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "\n" + msg_detail  + 
+				"'\n" + before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n";
 		}
 		else if((offendingtoken.equals(",") || offendingtoken.equals("!") )&& before_offending.trim().substring(before_offending.trim().length()-1).matches("[0-9]+")){
 			if(before_offending.substring(before_offending.lastIndexOf("]") + 1, before_offending.lastIndexOf("]") + 2).equals(",")){
@@ -305,13 +304,13 @@ public class MyErrorStrategy extends DefaultErrorStrategy{
 			}else if(before_offending.substring(before_offending.lastIndexOf("]") + 1, before_offending.lastIndexOf("]") + 2).equals("!")){
 				msg_detail = "****composite iterator wasn't described correctly : '[ ]!NUMBER,' or '[ ]!NUMBER,NUMBER%' or '[ ]!NUMBER%'*****";
 			}
-			msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + 
-					"'\n" + before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" + msg_detail ;
+			msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText()+ "\n" + msg_detail  + 
+					"'\n" + before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n";
 		}
 		else if(offendingtoken.equals("\"")){
 			msg_detail = "****STRING LITERAL didn't describe correctly: ' \" string literal \" '*****";
-			msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
-			+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" + msg_detail ;
+			msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n"  + msg_detail 
+			+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n";
 		}
 		else if(offendingtoken.equals(";") 
 				|| offendingtoken.equals(":") 
@@ -324,13 +323,13 @@ public class MyErrorStrategy extends DefaultErrorStrategy{
 				|| offendingtoken.equals("*")
 				){
 			msg_detail = "****this input may not be need here.*****";
-			msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
-			+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" + msg_detail ;
+			msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n"  + msg_detail 
+			+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" ;
 		}
 		else if(offendingtoken.matches("[^a-zA-Z0-9]+")){
 			msg_detail = "****this token should be in string literal.*****";
-			msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
-			+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" + msg_detail ;
+			msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n"  + msg_detail
+			+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" ;
 		}
 		else{
 			Pattern p1 = Pattern.compile("\\(asc[0-9]*\\)$");
@@ -344,31 +343,31 @@ public class MyErrorStrategy extends DefaultErrorStrategy{
 			Matcher m_p4 = p4.matcher(before_offending.trim());
 			if(m_p1.find() || m_p2.find()){
 				msg_detail = "****error around (asc) or (desc).*****";
-				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
+				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n"  + msg_detail
 				+ before_offending.trim().substring(0, before_offending.trim().lastIndexOf("("))
 				+ " >>>>>" + before_offending.trim().substring(before_offending.trim().lastIndexOf("("), before_offending.trim().length()) + "<<<<< " 
-				+ offendingtoken + after_offending + "\n" + msg_detail ;
+				+ offendingtoken + after_offending + "\n";
 			}
 			else if(before_offending.trim().substring(before_offending.trim().length()-1).equals(")")){
 				Pattern q1 = Pattern.compile("[a-zA-Z0-9]+\\(.+\\)\\$");
 				Matcher m_q1 = q1.matcher(before_offending.trim());
 				if(m_q1.find()){
 					msg_detail = "*****lack ',' or '!' before '" + offendingtoken + "' *****";
-					msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
-							+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" + msg_detail ;
+					msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n"  + msg_detail
+							+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n";
 				}else{
 				msg_detail = "*****did you mean '(asc)' or '(desc)' or 'IF function:( )?' ?*****";
-				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
+				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n"  + msg_detail
 				+ before_offending.trim().substring(0, before_offending.trim().lastIndexOf("(")) 
 				+ " >>>>>" + before_offending.trim().substring(before_offending.trim().lastIndexOf("("), before_offending.trim().length()) + "<<<<< " 
-				+ offendingtoken + after_offending + "\n" + msg_detail ;
+				+ offendingtoken + after_offending + "\n" ;
 				}
 			}
 			else if(m_p3.find() || m_p4.find()){
 				msg_detail = "****did you mean '(asc)' or '(desc)' before '" + offendingtoken + "' *****";
-				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
+				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n"  + msg_detail 
 						+ before_offending + 
-						" >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" + msg_detail ;
+						" >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n";
 			}else if((offendingtoken.equals(",") || offendingtoken.equals("%")) &&
 						(before_offending.trim().substring(before_offending.trim().length()-1).equals(",") 
 							|| before_offending.trim().substring(before_offending.trim().length()-1).equals("!")
@@ -376,19 +375,19 @@ public class MyErrorStrategy extends DefaultErrorStrategy{
 						)
 					){
 				msg_detail = "*****extra '" + offendingtoken + "' detected.*****";
-				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
+				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n"  + msg_detail 
 				+ before_offending.trim().substring(0, before_offending.trim().length()-1) + 
-				" >>>>>" + before_offending.trim().substring(before_offending.trim().length()-1) + "<<<<< " + offendingtoken + after_offending + "\n" + msg_detail ;
+				" >>>>>" + before_offending.trim().substring(before_offending.trim().length()-1) + "<<<<< " + offendingtoken + after_offending + "\n";
 			}
 			else if(!before_offending.trim().substring(before_offending.trim().length()-1).equals(",")
 					|| !before_offending.trim().substring(before_offending.trim().length()-1).equals("!")){
 				msg_detail = "****lack a connector before '" + offendingtoken +"'*****";
-				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
-				+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" + msg_detail ;
+				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n"  + msg_detail 
+				+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n";
 			}else{
 			msg_detail = "*****query is wrong around the token*****";
 			msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + 
-				"'\n" + before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" + msg_detail ;
+				"'\n" + msg_detail  + before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n";
 		
 			}
 		}
@@ -397,7 +396,6 @@ public class MyErrorStrategy extends DefaultErrorStrategy{
 	}
 	
 	protected void reportInputMismatch(Parser recognizer, InputMismatchException e){
-		System.err.println("InputMismatch");
 		TokenStream tokens = recognizer.getInputStream();
 		String before_offending = null;
 		String offendingtoken = null;
@@ -411,46 +409,46 @@ public class MyErrorStrategy extends DefaultErrorStrategy{
 		if(before_offending.toLowerCase().contains("from")){
 			if(before_offending.trim().substring(before_offending.trim().length()-1).equals(";")){
 				msg_detail = "****query is end with ';'.*****";
-				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
-				+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" + msg_detail ;
+				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" + msg_detail 
+				+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n";
 			}else{
 				msg_detail = "****error in FROM clause.*****";
-				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
-				+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" + msg_detail ;
+				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" + msg_detail 
+				+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" ;
 			}
 		}
 		else if(offendingtoken.toLowerCase().contains("from")){
 			String from[] = offendingtoken.toLowerCase().split("from"); 
 			msg_detail = "*****did you mean'" + from[0] +" FROM "+ from[1] +"'*****";
-			msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
-			+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" + msg_detail ;
+			msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" + msg_detail 
+			+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n";
 		}
 		else if(before_offending.trim().substring(before_offending.trim().length()-1).equals("]")){///////////////find error grouper//////////
 			msg_detail = "*****did you mean ']!' or '],' ?*****";
 			msg = "parse error detected. \nThe OffendingToken is : "+ 
-			"'" + e.getOffendingToken().getText() + "'\n" 
+			"'" + e.getOffendingToken().getText() + "'\n" + msg_detail 
 					+ before_offending.trim().substring(0, before_offending.trim().length()-1) + 
 					" >>>>>" + before_offending.trim().substring(before_offending.trim().length()-1) + "<<<<< " 
-					+ offendingtoken + after_offending + "\n" + msg_detail ;
+					+ offendingtoken + after_offending + "\n";
 		}
 		else if(offendingtoken.equals("{")){
 			Pattern d = Pattern.compile(".+=.+}");
 			Matcher m_d = d.matcher(after_offending);
 			if(m_d.find()){
-				msg_detail = "****decolator should describe : '@" + offendingtoken + after_offending.substring(0, after_offending.indexOf("}")+1) +"'*****";
-				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
-				+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" + msg_detail ;
+				msg_detail = "****decorator should describe : '@" + offendingtoken + after_offending.substring(0, after_offending.indexOf("}")+1) +"'*****";
+				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" + msg_detail 
+				+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n";
 			}
 		}
 		else if(e.getOffendingToken().getText().equals("{") || e.getOffendingToken().getText().equals("[")){
 			msg_detail = "*****',' or '!' is lack before " + "'" + e.getOffendingToken().getText() + "'*****";
-			msg = "unexpected token detected.\nThe Offending token is : " + "'" + e.getOffendingToken().getText() + "'\n"
-					+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" + msg_detail;
+			msg = "unexpected token detected.\nThe Offending token is : " + "'" + e.getOffendingToken().getText() + "'\n" + msg_detail 
+					+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n";
 		}
 		else if(offendingtoken.toLowerCase().equals("where") && !before_offending.toLowerCase().contains("from")){
 			msg_detail = "*****FROM clause is need before WHERE clause.";
-			msg = "parse error detected.\nThe Offending token is : " + "'" + e.getOffendingToken().getText() + "'\n"
-					+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" + msg_detail;
+			msg = "parse error detected.\nThe Offending token is : " + "'" + e.getOffendingToken().getText() + "'\n"+ msg_detail 
+					+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n";
 		}
 		else if(before_offending.trim().substring(before_offending.trim().length()-4).toLowerCase().equals("from")
 				&&
@@ -463,43 +461,43 @@ public class MyErrorStrategy extends DefaultErrorStrategy{
 				)
 				){
 			msg_detail = "*****extra '"+ before_offending.trim().substring(0, before_offending.trim().length()-4).trim().substring(before_offending.trim().substring(0, before_offending.trim().length()-4).trim().length()-1) +"'before FROM" ;
-			msg = "parse error detected.\nThe Offending token is : " + "'" + e.getOffendingToken().getText() + "'\n"
+			msg = "parse error detected.\nThe Offending token is : " + "'" + e.getOffendingToken().getText() + "'\n" + msg_detail
 					+ before_offending.trim().substring(0, before_offending.trim().length()-4).trim().substring(0, before_offending.trim().substring(0, before_offending.trim().length()-4).trim().length()-1) + 
 					" >>>>>" + before_offending.trim().substring(0, before_offending.trim().length()-4).trim().substring(before_offending.trim().substring(0, before_offending.trim().length()-4).trim().length()-1) + "<<<<< " + 
 					before_offending.trim().substring(before_offending.trim().length()-4) + " " + offendingtoken + " " + after_offending +
-					"\n" + msg_detail;
+					"\n";
 		}
 		else if(offendingtoken.equals("}")){
 			if(!before_offending.contains("{")){
 				msg_detail = "*****dosen't exist the the pair of '}' : did you mean ']' or ')' ?*****";
-				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
-						+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" + msg_detail ;
+				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" + msg_detail 
+						+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n";
 			}else{
 				msg_detail = "*****extra parenthis detected : '}'. did you mean ']' or ')' ?*****";
-				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
-						+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" + msg_detail ;
+				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" + msg_detail
+						+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" ;
 			}
 		}
 		else if(offendingtoken.equals("]")){
 			if(!before_offending.contains("[")){
 				msg_detail = "*****dosen't exist the the pair of ']' : did you mean '}' or ')' ?*****";
-				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
-						+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" + msg_detail ;
+				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n"  + msg_detail
+						+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n";
 			}else{
 				msg_detail = "*****extra bracket detected : ']'. did you mean '}' or ')' ?*****";
-				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
-						+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" + msg_detail ;
+				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n"  + msg_detail
+						+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" ;
 			}
 		}
 		else if(offendingtoken.equals(")")){
 			if(!before_offending.contains("(")){
 				msg_detail = "*****dosen't exist the the pair of '}' : did you mean ']' or '}' ?*****";
-				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
-						+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" + msg_detail ;
+				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n"  + msg_detail 
+						+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n";
 			}else{
 				msg_detail = "*****extra brace detected : ')'. did you mean ']' or '}' ?*****";
-				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
-						+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" + msg_detail ;
+				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n"  + msg_detail
+						+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" ;
 			}
 		}
 		else{
@@ -509,35 +507,35 @@ public class MyErrorStrategy extends DefaultErrorStrategy{
 			Matcher m_q = q.matcher(before_offending.trim());
 			if(m_p.find() || m_q.find()){
 				msg_detail = "****error around (asc) or (desc).*****";
-				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
+				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n"  + msg_detail 
 				+ before_offending.trim().substring(0, before_offending.trim().lastIndexOf("("))
 				+ " >>>>>" + before_offending.trim().substring(before_offending.trim().lastIndexOf("("), before_offending.trim().length()) + "<<<<< " 
-				+ offendingtoken + after_offending + "\n" + msg_detail ;
+				+ offendingtoken + after_offending + "\n";
 			}
 			else if(before_offending.trim().substring(before_offending.trim().length()-1).equals(")")){
 				Pattern q1 = Pattern.compile("[a-zA-Z0-9]+\\(.+\\)$");
 				Matcher m_q1 = q1.matcher(before_offending.trim());
 				if(m_q1.find()){
 					msg_detail = "*****lack ',' or '!' before '" + offendingtoken + "' *****";
-					msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
-							+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" + msg_detail ;
+					msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n"  + msg_detail 
+							+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n";
 				}else{
 				msg_detail = "*****did you mean '(asc)' or '(desc)' or 'IF function:( )?' ?*****";
-				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
+				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n"  + msg_detail
 				+ before_offending.trim().substring(0, before_offending.trim().lastIndexOf("(")) 
 				+ " >>>>>" + before_offending.trim().substring(before_offending.trim().lastIndexOf("("), before_offending.trim().length()) + "<<<<< " 
-				+ offendingtoken + after_offending + "\n" + msg_detail ;
+				+ offendingtoken + after_offending + "\n" ;
 				}
 			}
 			else if(!before_offending.trim().substring(before_offending.trim().length()-1).equals(",")
 					|| !before_offending.trim().substring(before_offending.trim().length()-1).equals("!")){
 				msg_detail = "****lack a connector before '" + offendingtoken +"'*****";
-				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n" 
-				+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" + msg_detail ;
+				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + "'\n"  + msg_detail
+				+ before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n";
 			}else{
 			msg_detail = "*****query is wrong around the token*****";
 			msg = "parse error detected. \nThe OffendingToken is : "+ "'" + e.getOffendingToken().getText() + 
-				"'\n" + before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n" + msg_detail ;
+				"'\n" + msg_detail + before_offending + " >>>>>" + offendingtoken + "<<<<< " + after_offending + "\n";
 		
 			}
 		}
@@ -569,17 +567,18 @@ public class MyErrorStrategy extends DefaultErrorStrategy{
 		IntervalSet expecting = getExpectedTokens(recognizer);
 		if(t.getText().equals(":")){
 			String msg_detail = "did you mistake ';' to ':' ?";
-			msg = "unexpected input is detected : " + "'" + tokenName +"'\n" + before_offending + " >>>>>" + t.getText() + "<<<<< " + after_offending
-					+ "\n*****"+msg_detail+"*****";
+			msg = "unexpected input is detected : " + "'" + tokenName + "\n*****"+msg_detail+"*****" 
+			+"'\n" + before_offending + " >>>>>" + t.getText() + "<<<<< " + after_offending;
 		}
 		if(before_offending.toLowerCase().contains("from")){
 			if(before_offending.trim().substring(before_offending.trim().length()-1).equals(";")){
-				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + tokenName + "'\n" 
-				+ before_offending + " >>>>>" + t.getText() + "<<<<< " + after_offending + "\n" + "****query is end with ';'.*****" ;
+				msg = "parse error detected. \nThe OffendingToken is : "+ "'" + tokenName + "'\n" + "****query is end with ';'.'\n*****" 
+				+ before_offending + " >>>>>" + t.getText() + "<<<<< " + after_offending + "\n" ;
 			}
 		}else{
-			msg = "unexpected input is detected : " + "'" + tokenName +"'\n" + before_offending + " >>>>>" + t.getText() + "<<<<< " + after_offending
-				+ "\n*****This input may not be necessary. OR This input should not be writen here*****";
+			msg = "unexpected input is detected : " + "'" + tokenName+ "\n*****This input may not be necessary. OR This input should not be writen here*****"
+		+"'\n" + before_offending + " >>>>>" + t.getText() + "<<<<< " + after_offending
+				;
 		}
 		GlobalEnv.addErr(msg);
 		recognizer.notifyErrorListeners(t, msg, null);

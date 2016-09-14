@@ -36,7 +36,7 @@ public class MakeGroup {
 					.getUseTables());
 		}
 
-		Log.info("[makeGroup] table_ExtList : " + table_list);
+		Log.out("[makeGroup] table_ExtList : " + table_list);
 			
 
 		Iterator table_e = table_list.iterator();

@@ -80,6 +80,9 @@ public class GlobalEnv {
 
 	//foreach��
 	public static boolean foreach_flag;
+	
+	//sessionなど
+	public static boolean session_flag = false;
 
 	//added by ria 20110704 start
 	private static boolean optimizable = true;
@@ -845,6 +848,15 @@ public class GlobalEnv {
 		if (outdir == null)
 			outdir = GlobalEnv.getfileparent();
 		return outdir;
+	}
+	// added by masato 20150525
+	public static String getLinkValue(){
+		return seek("-ehtmlarg");
+	}
+	
+	// added by masato 20151128 for execute multiple query in ehtml or incremental
+	public static Integer getQueryNum(){
+		return Integer.parseInt(seek("-querynum"));
 	}
 
 }

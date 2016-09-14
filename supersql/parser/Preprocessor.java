@@ -72,7 +72,7 @@ public class Preprocessor {
 		return is_aggregate = true;
 	}
 
-	/* push "order by" into the decoration */
+//	/* push "order by" into the decoration */
 //    public StringBuffer pushOrderBy() {
 //
 //    	boolean order_flag = false;
@@ -85,14 +85,25 @@ public class Preprocessor {
 //    	StringBuffer order_by_string = new StringBuffer();
 //
 //    	TFEtokenizer st = new TFEtokenizer(tmp.toString());
+//    	
+//    	Asc_Desc ascDesc = new Asc_Desc();
+////    	ascDesc.preProcess();
 //
 //    	while (st.hasMoreTokens()) {
 //
 //    		token = st.nextToken();
+//    		
+//    		
+//    		if(token.equals("dynamic")){
+//    			ascDesc.add_asc_desc_Array();
+//    			ascDesc.dynamicCount++;
+//    			
+//    			//TODO (asc)@{static}! (asc)@{dynamic}! 
+//    		}
 //
 //    		/* 3. convert if there exist "order by" */
 //    		if (order_flag) {
-//    			new Asc_Desc().addOrderBy(order, token);
+//    			ascDesc.addOrderBy(order, token);
 //    			/* decoration exists originally */
 //    			if (st.lookToken().equals("@")) {
 //    					token = token + st.nextToken();
@@ -149,7 +160,7 @@ public class Preprocessor {
 //    	return order_by_string;
 //
 //    }
-
+//
 //    /* push "aggregate functions" into the decoration */
 //    public StringBuffer pushAggregate() {
 //
@@ -256,5 +267,6 @@ public class Preprocessor {
 //    	tmp.replace(0, tmp.length(), tfe);
 //
 //    }
-//
+
+
 }

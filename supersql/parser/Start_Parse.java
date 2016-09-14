@@ -11,6 +11,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.StringTokenizer;
 import java.util.TreeSet;
 
 import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.*;
 
 import supersql.codegenerator.AttributeItem;
@@ -58,7 +60,7 @@ public class Start_Parse {
 	private static String fromInfoString;
 	private String QueryImage;
 
-	
+
 	public static String att = null;
 	public static String media = null;
 	public ExtList List_tree_a, List_tree_b, list_tfe, list_from_where, list_from, list_where, list_media, list_table;
@@ -69,8 +71,8 @@ public class Start_Parse {
 	public WhereInfo whereInfo = new WhereInfo();
 	public static boolean distinct = false;
 
-	
-	
+
+
 	public Start_Parse() {
 		parseSSQL(this.getSSQLQuery(), 10000);
 	}
@@ -101,15 +103,15 @@ public class Start_Parse {
 	public static void setJsonQuery(boolean jsonQuery) {
 		Start_Parse.jsonQuery = jsonQuery;
 	}
-    public FromInfo get_from_info() {
-        return fromInfo;
-    }
+	public FromInfo get_from_info() {
+		return fromInfo;
+	}
 	public CodeGenerator getcodegenerator(){
 		codegenerator.TFEid = 10000;
 		return codegenerator;
-		
+
 	}
-	
+
 	public static boolean isDbpediaQuery() {
 		return dbpediaQuery;
 	}
@@ -117,99 +119,99 @@ public class Start_Parse {
 	public static boolean isJsonQuery() {
 		return jsonQuery;
 	}
-    
-    public TFE get_TFEschema(){
-    	TFE sch = codegenerator.schemaTop;
+
+	public TFE get_TFEschema(){
+		TFE sch = codegenerator.schemaTop;
 		return sch;    	
-    }
-    
-    public Hashtable get_att_info(){
-    	Hashtable attp = codegenerator.get_attp();
+	}
+
+	public Hashtable get_att_info(){
+		Hashtable attp = codegenerator.get_attp();
 		return attp;
-    }
+	}
 
-    public String getTFEsig(ExtList sep_sch) {
+	public String getTFEsig(ExtList sep_sch) {
 
-        Hashtable atts = this.get_att_info();
-        FromInfo from = this.get_from_info();
-        WhereInfo where = this.whereInfo;
+		Hashtable atts = this.get_att_info();
+		FromInfo from = this.get_from_info();
+		WhereInfo where = this.whereInfo;
 
-        int i, idx;
-        Object o;
-        Integer itemno;
-        StringBuffer buf = new StringBuffer();
-        for (idx = 0; idx < sep_sch.size(); idx++) {
-            o = sep_sch.get(idx);
-            if (o instanceof Integer) {
+		int i, idx;
+		Object o;
+		Integer itemno;
+		StringBuffer buf = new StringBuffer();
+		for (idx = 0; idx < sep_sch.size(); idx++) {
+			o = sep_sch.get(idx);
+			if (o instanceof Integer) {
 
-                itemno = (Integer) (sep_sch.get(idx));
-                AttributeItem att1 = (AttributeItem) (atts.get(itemno));
-                buf.append(att1.getAttributeSig(from) + "@@");
-            } else if (o instanceof ExtList) {
-                buf.append("(");
-                buf.append(getTFEsig((ExtList) o));
-                buf.append(")");
-            }
-        }
+				itemno = (Integer) (sep_sch.get(idx));
+				AttributeItem att1 = (AttributeItem) (atts.get(itemno));
+				buf.append(att1.getAttributeSig(from) + "@@");
+			} else if (o instanceof ExtList) {
+				buf.append("(");
+				buf.append(getTFEsig((ExtList) o));
+				buf.append(")");
+			}
+		}
 
-        // Where
-        buf.append(where.getWhereSig(from));
+		// Where
+		buf.append(where.getWhereSig(from));
 
-        return buf.toString();
+		return buf.toString();
 
-    }
-    public String getSSQLsig() {
-        StringBuffer sig = new StringBuffer();
-        //		sig.append(QueryImage.replaceAll("\\s",""));
-        sig.append(QueryImage);
-        String addCondition = GlobalEnv.getCondition();
-        if (addCondition != null) {
-            sig.append("@@");
-            sig.append(addCondition);
-        }
-        //Log.out("[SSQL sig] = " +sig);
-        return sig.toString();
-    }
-	
-    public Object[] getSQLsig(ExtList sep_sch) {
+	}
+	public String getSSQLsig() {
+		StringBuffer sig = new StringBuffer();
+		//		sig.append(QueryImage.replaceAll("\\s",""));
+		sig.append(QueryImage);
+		String addCondition = GlobalEnv.getCondition();
+		if (addCondition != null) {
+			sig.append("@@");
+			sig.append(addCondition);
+		}
+		//Log.out("[SSQL sig] = " +sig);
+		return sig.toString();
+	}
 
-        Hashtable atts = this.get_att_info();
-        FromInfo from = this.get_from_info();
-        WhereInfo where = this.whereInfo;
+	public Object[] getSQLsig(ExtList sep_sch) {
 
-        int idx;
-        Integer itemno;
-        ExtList schf = sep_sch.unnest();
-        StringBuffer buf = new StringBuffer();
+		Hashtable atts = this.get_att_info();
+		FromInfo from = this.get_from_info();
+		WhereInfo where = this.whereInfo;
 
-        Hashtable sig2idx = new Hashtable();
-        TreeSet sorter = new TreeSet();
-        String attsig;
-        ExtList ordersig = new ExtList();
+		int idx;
+		Integer itemno;
+		ExtList schf = sep_sch.unnest();
+		StringBuffer buf = new StringBuffer();
 
-        for (idx = 0; idx < schf.size(); idx++) {
-            itemno = (Integer) (schf.get(idx));
-            attsig = ((AttributeItem) (atts.get(itemno))).getAttributeSig(from);
-            sig2idx.put(attsig, new Integer(idx));
-            sorter.add(attsig);
-        }
+		Hashtable sig2idx = new Hashtable();
+		TreeSet sorter = new TreeSet();
+		String attsig;
+		ExtList ordersig = new ExtList();
 
-        Iterator ite = sorter.iterator();
-        while (ite.hasNext()) {
-            attsig = (String) ite.next();
-            buf.append(attsig + "@@");
-            ordersig.add(sig2idx.get(attsig).toString());
-        }
+		for (idx = 0; idx < schf.size(); idx++) {
+			itemno = (Integer) (schf.get(idx));
+			attsig = ((AttributeItem) (atts.get(itemno))).getAttributeSig(from);
+			sig2idx.put(attsig, new Integer(idx));
+			sorter.add(attsig);
+		}
 
-        Log.out("sig:" + buf);
-        Log.out("ordersig:" + ordersig);
+		Iterator ite = sorter.iterator();
+		while (ite.hasNext()) {
+			attsig = (String) ite.next();
+			buf.append(attsig + "@@");
+			ordersig.add(sig2idx.get(attsig).toString());
+		}
 
-        buf.append(where.getWhereSig(from));
-        Object[] ret = { buf.toString(), ordersig };
+		Log.out("sig:" + buf);
+		Log.out("ordersig:" + ordersig);
 
-        return ret;
-    }
-	
+		buf.append(where.getWhereSig(from));
+		Object[] ret = { buf.toString(), ordersig };
+
+		return ret;
+	}
+
 	private String getSSQLQuery()
 	{
 		//read file & query
@@ -244,7 +246,7 @@ public class Start_Parse {
 		//parse query
 
 	}
-	
+
 	private String getSSQLQuery2() {
 
 		String query = GlobalEnv.getQuery();
@@ -292,24 +294,24 @@ public class Start_Parse {
 						line = line1 + line.substring(t + 2);
 					}
 					// added by goto 20130412
-//					if (line != null && line.contains(commentOutLetters)) {	//commentOutLetters = "--"
-//						boolean dqFlg = false;
-//						int i = 0;
-//
-//						for (i = 0; i < line.length(); i++) {
-//							if (line.charAt(i) == '"' && !dqFlg)
-//								dqFlg = true;
-//							else if (line.charAt(i) == '"' && dqFlg)
-//								dqFlg = false;
-//
-//							if (!dqFlg
-//									&& i < line.length() - 1
-//									&& (line.charAt(i) == GlobalEnv.COMMENT_OUT_LETTER && line
-//									.charAt(i + 1) == GlobalEnv.COMMENT_OUT_LETTER))
-//								break;
-//						}
-//						line = line.substring(0, i);
-//					}
+					//					if (line != null && line.contains(commentOutLetters)) {	//commentOutLetters = "--"
+					//						boolean dqFlg = false;
+					//						int i = 0;
+					//
+					//						for (i = 0; i < line.length(); i++) {
+					//							if (line.charAt(i) == '"' && !dqFlg)
+					//								dqFlg = true;
+					//							else if (line.charAt(i) == '"' && dqFlg)
+					//								dqFlg = false;
+					//
+					//							if (!dqFlg
+					//									&& i < line.length() - 1
+					//									&& (line.charAt(i) == GlobalEnv.COMMENT_OUT_LETTER && line
+					//									.charAt(i + 1) == GlobalEnv.COMMENT_OUT_LETTER))
+					//								break;
+					//						}
+					//						line = line.substring(0, i);
+					//					}
 
 					if (line != null)
 						tmp.append(" " + line);
@@ -333,22 +335,22 @@ public class Start_Parse {
 		Log.info("[Parser:Parser] ssql statement = " + query);
 		return query;
 	}
-	
-    
-    private ExtList set_fromInfo(){
-    	ExtList from_tables = new ExtList();
-//    	ExtList from_table = new ExtList();
-    	for(int i = 0; i < list_from.size(); i++){
-    		if(list_from.get(i) instanceof ExtList){
-    			from_tables.add(((ExtList)list_from.get(i)).get(1));
-    		}else{
-    			continue;
-    		}
-    	}
-    	
-    	return from_tables;
-    }
-    
+
+
+	private ExtList set_fromInfo(){
+		ExtList from_tables = new ExtList();
+		//    	ExtList from_table = new ExtList();
+		for(int i = 0; i < list_from.size(); i++){
+			if(list_from.get(i) instanceof ExtList){
+				from_tables.add(((ExtList)list_from.get(i)).get(1));
+			}else{
+				continue;
+			}
+		}
+
+		return from_tables;
+	}
+
 	private void processKeywords(String where){
 		StringBuffer buffer = new StringBuffer();
 		buffer = from_c;
@@ -372,7 +374,7 @@ public class Start_Parse {
 			}
 			Mobile_HTML5Function.after_from_string += nt+" ";	//added by goto 20130515  "search"
 		}
-		Log.info(from_c);
+		Log.out(from_c);
 	}
 
 	private void postProcess() {
@@ -384,11 +386,11 @@ public class Start_Parse {
 		groupStatement = group_c.toString();
 		Log.out("[Paeser:Group] group = " + groupStatement);
 		group_c.append(embedGroup + " ");
-		
+
 		havingStatement = having_c.toString();
 		Log.out("[Paeser:Having] having = " + havingStatement);
 		having_c.append(embedGroup + " ");
-		
+
 		fromInfo = new FromInfo(from_c.toString().trim());
 		Log.out("[Parser:From] from = " + fromInfo);
 		if (!(foreachFrom.equals(""))) {
@@ -418,10 +420,10 @@ public class Start_Parse {
 		}
 		Log.out("[Paeser:Where] where = " + whereInfo);
 	}
-	
+
 	private void parseSSQL(String query, int id){
 		String after_from = "";
-		
+
 		if(!query.toLowerCase().contains("generate")){
 			GlobalEnv.addErr("didn't find 'GENERATE'. please start with 'GENERATE'.");
 			System.err.println("didn't find 'GENERATE'. please start with 'GENERATE'.");
@@ -434,7 +436,7 @@ public class Start_Parse {
 
 				if(a.equals(" ") || a.equals("") || a.equals("\r")){
 				}else{
-					
+
 					ANTLRInputStream input_a = new ANTLRInputStream(a);
 					prefixLexer lexer_a = new prefixLexer(input_a);
 					CommonTokenStream tokens_a = new CommonTokenStream(lexer_a);
@@ -443,9 +445,16 @@ public class Start_Parse {
 					ParseTree tree_a = parser_a.prefix(); // begin parsing at rule query
 					List_tree_a = TreeConst.createSSQLParseTree(tree_a, parser_a);
 					Log.info(List_tree_a);
-					if(((ExtList)List_tree_a.get(1)).get(0).toString().toLowerCase().equals("foreach"))
+					String pre = ((ExtList)List_tree_a.get(1)).get(0).toString();
+					if(pre.toLowerCase().equals("foreach")){
 						foreachFlag = true;
-					foreachinfo = TreeConst.getforeach(List_tree_a);
+						foreachinfo = TreeConst.getforeach(List_tree_a);
+					}
+					else if( ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)List_tree_a.get(1)).get(0)).get(1)).get(0)).get(1)).get(0)).get(1)).get(0).toString().toUpperCase().matches("SESSION.*") 
+							|| ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)List_tree_a.get(1)).get(0)).get(1)).get(0)).get(1)).get(0)).get(1)).get(0).toString().toUpperCase().matches("LOGIN.*")){
+						sessionString = a;
+						sessionFlag = true;
+					}
 					prefix = true;
 
 				}
@@ -470,13 +479,13 @@ public class Start_Parse {
 					generate = generate + ")?";
 					String b1 = b.substring(0, b.toLowerCase().indexOf("from"));
 					String b2 = b.substring(b.toLowerCase().indexOf("from"));
-					
-					
+
+
 					b = generate + b1 + "]%" + b2;
-					Log.info(b);
 				}
 				GlobalEnv.foreach_flag = foreachFlag;
 				Preprocessor preprocessor = new Preprocessor(b);
+
 				ANTLRInputStream input_b = new ANTLRInputStream(b);
 				querytestLexer lexer_b = new querytestLexer(input_b);
 				CommonTokenStream tokens_b = new CommonTokenStream(lexer_b);
@@ -484,48 +493,95 @@ public class Start_Parse {
 				querytestParser parser_b = new querytestParser(tokens_b);
 				parser_b.setErrorHandler(new MyErrorStrategy());
 				ParseTree tree_b = parser_b.query(); // begin parsing at rule query
-
 				List_tree_b = TreeConst.createSSQLParseTree(tree_b, parser_b);
 				List_tree_b = (ExtList) List_tree_b.get(1);
 				list_media = (ExtList) List_tree_b.get(0);
 				list_tfe = (ExtList) List_tree_b.get(1);
-				list_from_where = (ExtList) List_tree_b.get(2);
-				list_from = new ExtList();
-				list_where = new ExtList();
+				String[] ruleNames = parser_b.getRuleNames();
+//				Log.info(getText(list_tfe, ruleNames));
+				if(List_tree_b.size() > 2){
+					list_from_where = (ExtList) List_tree_b.get(2);
+					list_from = new ExtList();
+					list_where = new ExtList();
 
-				while(true){
-					if(((ExtList)((ExtList)list_from_where.get(1)).get(0)).get(0).toString().equals("select_core")){
-						list_from_where = (ExtList) ((ExtList)((ExtList)list_from_where.get(1)).get(0)).get(1);
-						if(((ExtList)list_from_where.get(list_from_where.size() - 1)).get(0).toString().equals("where")){
-							list_where = (ExtList) ((ExtList)list_from_where.get(list_from_where.size() - 1)).get(1);
-							for(int i = 0; i < list_from_where.size() - 1; i++){
-								list_from.add(list_from_where.get(i));
+					while(true){
+						if(((ExtList)((ExtList)list_from_where.get(1)).get(0)).get(0).toString().equals("select_core")){
+							list_from_where = (ExtList) ((ExtList)((ExtList)list_from_where.get(1)).get(0)).get(1);
+							if(((ExtList)list_from_where.get(list_from_where.size() - 1)).get(0).toString().equals("where")){
+								list_where = (ExtList) ((ExtList)list_from_where.get(list_from_where.size() - 1)).get(1);
+								for(int i = 0; i < list_from_where.size() - 1; i++){
+									list_from.add(list_from_where.get(i));
+								}
+							}else{
+								for(int i = 0; i < list_from_where.size(); i++){
+									list_from.add(list_from_where.get(i));
+								}
 							}
+							break;
 						}else{
-							for(int i = 0; i < list_from_where.size(); i++){
-								list_from.add(list_from_where.get(i));
-							}
+							list_from_where = (ExtList)(ExtList)((ExtList)list_from_where.get(1)).get(0);
 						}
-						break;
-					}else{
-						list_from_where = (ExtList)(ExtList)((ExtList)list_from_where.get(1)).get(0);
 					}
+					list_table = set_fromInfo();
+
+					after_from = b.substring(b.toLowerCase().indexOf("from") + 4).trim();
+					Log.info( getText( list_from_where, ruleNames ) );
+					String from = new String();
+					while(after_from.contains("/*")){
+						from = after_from.substring(0, after_from.indexOf("/*"));
+						from += after_from.substring(after_from.indexOf("*/") +2);
+						after_from = from;
+					}
+
+					processKeywords(after_from);
+
 				}
-				Log.info(list_media);
-				Log.info(list_tfe);
-				Log.info(list_from);
-				Log.info(list_where);
-				list_table = set_fromInfo();
-				
-				after_from = b.substring(b.toLowerCase().indexOf("from") + 4).trim();
-				processKeywords(after_from);
+				//				Log.info(List_tree_b);
+				//				Log.info(list_media);
+								Log.info(list_tfe);
+				//				Log.info(list_from);
+				//				Log.info(list_where);
 				postProcess();
-				
+
 				codegenerator = new CodeGenerator();
-				
+
 			}catch(Exception e){
 
 			}
 		}
+	}
+	String builder = new String();
+	public String getText(ExtList tree, String[] ruleNames){
+		if(tree.size() != 1){
+			for(int i = 0; i < tree.size(); i++){
+				if(tree.get(i) instanceof String){
+					if(Arrays.asList(ruleNames).contains(tree.get(i).toString())){
+						continue;
+					}else{
+						if( tree.get(i).toString().equals(".") ){
+							builder = builder.trim();
+							builder += tree.get(i).toString();
+						}else{
+							builder += tree.get(i).toString();
+							builder += " ";
+						}
+					}
+				}else {
+					getText((ExtList)tree.get(i), ruleNames);
+				}
+			}
+		}
+		else if(tree.size() == 1 && (tree.get(0) instanceof String)){
+			builder += tree.get(0).toString();
+			builder += " " ;
+			return builder.toString();
+		}
+		else if(tree.size() == 1 && ((ExtList)tree.get(0)).size() > 1 ){
+			return getText((ExtList)tree.get(0), ruleNames);
+		}
+		else if(tree.size() == 1 && ((ExtList)tree.get(0)).size() == 1 ){
+			return getText((ExtList)tree.get(0), ruleNames);
+		}
+		return builder.toString();
 	}
 }

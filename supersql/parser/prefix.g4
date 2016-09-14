@@ -8,7 +8,7 @@ prefix	:	(
 					(
 						operand (',' operand)* 
 					| 
-						OPEN_PARENTHESE ((table_alias '.')? column_name) (',' ((table_alias '.')? column_name))*CLOSE_PARENTHESE 
+						OPEN_PARENTHESE operand (',' operand)*CLOSE_PARENTHESE 
 					) 
 				|
 				function
