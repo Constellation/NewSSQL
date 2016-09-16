@@ -5,7 +5,7 @@ import java.io.Serializable;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
 
-public class Connector extends Operator implements Serializable{
+public class Decorator extends Operator implements Serializable{
 
 	public int tfeItems;
 	public ExtList<TFE> tfes;
@@ -20,14 +20,14 @@ public class Connector extends Operator implements Serializable{
 
 	protected int sindex, dindex;
 
-	public Connector() {
+	public Decorator() {
 		super();
 		Dimension = -1;
 		tfeItems = 0;
 		tfes = new ExtList<TFE>();
 	}
 
-	public Connector(int d) {
+	public Decorator(int d) {
 		super();
 		Dimension = d;
 		tfeItems = 0;
@@ -45,7 +45,7 @@ public class Connector extends Operator implements Serializable{
 
 	public void debugout(int count) {
 		Debug dbgout = new Debug();
-		dbgout.prt(count, "<Connector type=" + getSymbol() + " tfeitems="
+		dbgout.prt(count, "<Decorator type=" + getSymbol() + " tfeitems="
 				+ tfeItems + " decoitems=" + decos.size() + " id=" + id + ">");
 
 		decos.debugout(count + 1);
@@ -53,7 +53,7 @@ public class Connector extends Operator implements Serializable{
 		for (int i = 0; i < tfeItems; i++) {
 			((ITFE) tfes.get(i)).debugout(count + 1);
 		}
-		dbgout.prt(count, "</Connector>");
+		dbgout.prt(count, "</Decorator>");
 	}
 
 	public ExtList<Integer> makesch() {
@@ -71,12 +71,12 @@ public class Connector extends Operator implements Serializable{
 			le0.add(((ITFE) tfes.get(i)).makele0());
 		}
 
-		Log.out("Con le0:" + le0);
+		Log.out("Deco le0:" + le0);
 		return le0;
 	}
 
 	public String getSymbol() {
-		return "C?";
+		return "Deco?";
 	}
 
 	public int countconnectitem() {
@@ -104,8 +104,8 @@ public class Connector extends Operator implements Serializable{
 		ExtList subdata = data.ExtsubList(dindex, dindex + ci);
 		sindex++;
 		dindex += ci;
-		if (tfe instanceof Connector || tfe instanceof Attribute
-				|| tfe instanceof Function || tfe instanceof IfCondition || tfe instanceof Decorator) {
+		if (tfe instanceof Decorator || tfe instanceof Attribute
+				|| tfe instanceof Function || tfe instanceof IfCondition || tfe instanceof Connector) {
 			return tfe.createNode(subdata);
 		}
 		else {
@@ -119,12 +119,12 @@ public class Connector extends Operator implements Serializable{
 
 		ExtList subdata = data.ExtsubList(dindex, dindex + ci);
 
-		if (tfe instanceof Connector || tfe instanceof Attribute
-				|| tfe instanceof Function || tfe instanceof IfCondition || tfe instanceof Decorator) {
+		if (tfe instanceof Decorator || tfe instanceof Attribute
+				|| tfe instanceof Function || tfe instanceof IfCondition || tfe instanceof Connector) {
 			
 //			//20131118 dynamic
 //			if(Mobile_HTML5.dynamicDisplay){
-//				subdata = Mobile_HTML5.dynamicConnectorProcess(tfe, subdata);
+//				subdata = Mobile_HTML5.dynamicDecoratorProcess(tfe, subdata);
 //			}
 			
 			tfe.work(subdata);

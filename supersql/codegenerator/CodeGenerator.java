@@ -261,7 +261,7 @@ public class CodeGenerator {
 			if( ((ExtList)tfe_tree.get(1)).get(((ExtList)tfe_tree.get(1)).size()-1) instanceof String  && !decocheck){
 				if( (decos = ((ExtList)tfe_tree.get(1)).get(((ExtList)tfe_tree.get(1)).size()-1).toString().trim()).startsWith("@")){
 					ExtList new_out = checkDecoration(tfe_tree, decos);
-					Log.info(new_out);
+//					Log.info(new_out);
 					out_sch = read_attribute(new_out);
 				}
 			}
@@ -379,6 +379,17 @@ public class CodeGenerator {
 				String deco = "@{" + decos + "}";
 				setDecoration(out_sch, deco);
 			}
+		}else if(tfe_tree.get(0).toString().equals("Decoration")){
+			if( ((ExtList)tfe_tree.get(1)).size() == 1 )
+				out_sch = read_attribute( (ExtList)((ExtList)tfe_tree.get(1)).get(0) );
+			else if( ((ExtList)tfe_tree.get(1)).size() == 0 ){
+				((ExtList)tfe_tree.get(1)).add("\"\"");
+				//				Log.info(tfe_tree);
+				Attribute WS = makeAttribute(((ExtList)tfe_tree.get(1)).get(0).toString());
+				out_sch = WS;
+			}else{
+				out_sch = decoration((ExtList)tfe_tree.get(1), 1);
+			}
 		}else if(tfe_tree.get(0).toString().equals("n_exp")){
 			out_sch = connector_main((ExtList)tfe_tree.get(1), 0);
 		}else if(tfe_tree.get(0).toString().equals("h_exp")){
@@ -462,6 +473,24 @@ public class CodeGenerator {
 		return operand;
 	}
 
+	private static Decorator decoration(ExtList operand, int dim) {
+		ExtList atts = new ExtList();
+		Log.info(operand);
+		for(int i = 0; i <= operand.size(); i++){
+			TFE att = read_attribute((ExtList)operand.get(i));
+			atts.add(att);
+			i++;
+		}
+		decocheck =false;
+		Decorator deco = createdecorator(1);
+
+		for (int i = 0; i < atts.size(); i++) {
+			deco.setTFE((ITFE) (atts.get(i)));
+		}
+		return deco;
+
+	}
+	
 	private static Connector connector_main(ExtList operand, int dim){
 		ExtList atts = new ExtList();
 		
@@ -550,6 +579,16 @@ public class CodeGenerator {
 		return operand;
 	}
 
+	private static Decorator createdecorator(int dim){
+		Decorator decorator = new Decorator();
+		if(dim == 1){
+			//factory and manager
+			decorator = factory.createDecoration(manager);
+		}
+		decorator.setId(TFEid++);
+		return decorator;
+	}
+	
 	private static Connector createconnector(int dim){
 		Connector connector = new Connector();
 		if(dim == 3){
@@ -663,9 +702,9 @@ public class CodeGenerator {
 		Log.out("[makeAttribute] name : " + name);
 
 		Attribute att = createAttribute();
-		Log.info(attno + ","+ name);
+		
 		attno = att.setItem(attno, name, line, key, attp);
-		Log.info(attno + ","+ name);
+		
 		return att;
 
 	}
@@ -692,6 +731,8 @@ public class CodeGenerator {
 			}
 		}
 
+		
+		
 		func_atts.add("h_exp");
 		func_atts.add(atts);
 		fnc.setFname( func_name );
@@ -852,7 +893,7 @@ public class CodeGenerator {
 		String[] decolist = deco.split(",");
 		ExtList new_list = new ExtList();
 		ExtList med = new ExtList();
-		new_list.add("h_exp");
+		new_list.add("Decoration");
 		med.add(extList);
 		for(int i = 0; i < decolist.length; i++) {
 
