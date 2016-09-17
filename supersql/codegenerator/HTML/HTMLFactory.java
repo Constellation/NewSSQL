@@ -2,6 +2,7 @@ package supersql.codegenerator.HTML;
 
 import supersql.codegenerator.Attribute;
 import supersql.codegenerator.Connector;
+import supersql.codegenerator.Decorator;
 import supersql.codegenerator.Factory;
 import supersql.codegenerator.Function;
 import supersql.codegenerator.Grouper;
@@ -70,6 +71,11 @@ public class HTMLFactory extends Factory {
 	public Grouper createG4(Manager manager) {
 		return new HTMLG1(manager, htmlEnv, htmlEnv2);
 		// return new HTMLG4(manager, html_env);
+	}
+	
+	@Override
+	public Decorator createDecoration(Manager manager) {
+		return new HTMLDecoration(manager, htmlEnv, htmlEnv2);
 	}
 
 	@Override

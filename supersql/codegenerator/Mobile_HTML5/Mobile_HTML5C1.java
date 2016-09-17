@@ -4,6 +4,7 @@ import supersql.codegenerator.Connector;
 import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.Manager;
+import supersql.codegenerator.TFE;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
@@ -164,7 +165,6 @@ public class Mobile_HTML5C1 extends Connector {
         	
             ITFE tfe = (ITFE) tfes.get(i);
             String classid2 = Mobile_HTML5Env.getClassID(tfe);
-            
             //20130309
             Count = ( (gridInt>=jj)? jj:gridInt );
             

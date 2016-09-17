@@ -57,6 +57,15 @@ public class WebC1 extends Connector {
 				webEnv.code.append("<td>\n");
 			} else if (listul_event || listol_event) {
 				webEnv.code.append("<li>\n");
+			} else if (webEnv.decorationStartFlag) {
+				WebDecoration.divFront.append("<div class=\"");
+				WebDecoration.divEnd.append(WebEnv.getClassID(this));
+				WebDecoration.divEnd.append(" row\">\n");
+				webEnv.decorationStartFlag = false;
+			} else if (webEnv.decorationFlag) {
+				WebDecoration.divEnd.append("<div class=\"");
+				WebDecoration.divEnd.append(WebEnv.getClassID(this));
+				WebDecoration.divEnd.append(" row\">\n");
 			} else {
 				webEnv.code.append("<div class=\"");
 				webEnv.code.append(WebEnv.getClassID(this));
@@ -117,6 +126,8 @@ public class WebC1 extends Connector {
 			webEnv.code.append("</td>\n");
 		} else if (listul_event || listol_event) {
 			webEnv.code.append("</li>\n");
+		} else if (webEnv.decorationFlag) {
+			WebDecoration.divEnd.append("</div>\n");
 		} else {
 			webEnv.code.append("</div>\n");
 		}

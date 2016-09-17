@@ -21,6 +21,10 @@ public class WebEnv extends LocalEnv {
 	public StringBuffer code;
 	public int countFile = 0; // C3, G3
 	public static StringBuffer css;
+//	public String decorateAttribute = null;
+	public boolean decorationFlag = false;
+	public boolean decorationStartFlag = false;
+	public boolean decorationEndFlag = false;
 	public String fileName;
 	public StringBuffer footer;
 	public static boolean footerFlag = false;

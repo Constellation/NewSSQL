@@ -34,4 +34,5 @@ public interface ITFE {
 	ExtList makeschImage();
 
 	void addDeco(String name, String value, String condition);
+
 }
