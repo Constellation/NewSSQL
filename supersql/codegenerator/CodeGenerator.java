@@ -51,7 +51,7 @@ public class CodeGenerator {
 		TFE out_sch = null;
 		int dim;
 		out_sch = makeschematop(tfe);
-
+		
 		return out_sch;
 	}
 
@@ -258,12 +258,12 @@ public class CodeGenerator {
 		
 		if(tfe_tree.get(0).toString().equals("operand")){
 			
-			if( ((ExtList)tfe_tree.get(1)).get(((ExtList)tfe_tree.get(1)).size()-1) instanceof String  && !decocheck){
-				if( (decos = ((ExtList)tfe_tree.get(1)).get(((ExtList)tfe_tree.get(1)).size()-1).toString().trim()).startsWith("@")){
+			if( ((ExtList)tfe_tree.get(1)).get(((ExtList)tfe_tree.get(1)).size()-1) instanceof String  && !decocheck
+					&& (decos = ((ExtList)tfe_tree.get(1)).get(((ExtList)tfe_tree.get(1)).size()-1).toString().trim()).startsWith("@")
+					){
 					ExtList new_out = checkDecoration(tfe_tree, decos);
 //					Log.info(new_out);
 					out_sch = read_attribute(new_out);
-				}
 			}
 			else if( ((ExtList)tfe_tree.get(1)).get(0) instanceof String ){
 				if(((ExtList)tfe_tree.get(1)).get(0).toString().equals("{")){

@@ -165,7 +165,6 @@ public class Mobile_HTML5C1 extends Connector {
         	
             ITFE tfe = (ITFE) tfes.get(i);
             String classid2 = Mobile_HTML5Env.getClassID(tfe);
-            Log.info("aaa:" +((TFE)tfe).decos + " ,bbb:" + classid2 );
             //20130309
             Count = ( (gridInt>=jj)? jj:gridInt );
             
