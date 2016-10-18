@@ -425,9 +425,7 @@ public class HTMLAttribute extends Attribute {
 				}
 				if (decos.containsKey("class")) {
 					// class����(ex.class=menu)������Ȥ�
-					htmlEnv.code.append(" " + decos.getStr("class"));// added by
-																		// masato
-																		// 20140711　属性が一つのときにclassを指定しても機能しなかった問題を解決
+					htmlEnv.code.append(" " + decos.getStr("class"));// added by masato 20140711　属性が一つのときにclassを指定しても機能しなかった問題を解決
 				}
 				if (decos.getConditions().size() > 0) {
 					htmlEnv.code.append(" "
@@ -445,7 +443,6 @@ public class HTMLAttribute extends Attribute {
 			}
 
 			if (htmlEnv.linkFlag > 0 || htmlEnv.sinvokeFlag) {
-
 				// tk start for draggable
 				// div///////////////////////////////////////
 				if (htmlEnv.draggable) {

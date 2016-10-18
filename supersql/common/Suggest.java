@@ -23,7 +23,6 @@ public class Suggest {
 			if(!ans.equals(tName)){
 				//Log.err("\nもしかして.. "+ans+" ?");
 				Log.err("\nDid you mean... '"+ans+"' ?");
-				// 20140624_masato
 //				GlobalEnv.errorText += "\nDid you mean... '"+ans+"' ?";
 				return true;
 			}
@@ -219,12 +218,10 @@ public class Suggest {
 				if(aliasIsWrong && !errorTableNameAlias.isEmpty()){
 					if(!errorColumnName.isEmpty()){
 						Log.err("\n## Wrong alias: >>>> "+errorTableNameAlias+" <<<< ."+errorColumnName+"  ##");
-						// 20140624_masato
 //						GlobalEnv.errorText += "\n## Wrong alias: >>>> "+errorTableNameAlias+" <<<< ."+errorColumnName+"  ##";
 					}
 					else {
 						Log.err("\n## Wrong alias: >>>> "+errorTableNameAlias+" <<<<  ##");
-						// 20140624_masato
 //						GlobalEnv.errorText += "\n## Wrong alias: >>>> "+errorTableNameAlias+" <<<<  ##";
 					}
 						
@@ -234,7 +231,6 @@ public class Suggest {
 				}
 				else if(columnNameIsWrong && !errorTableNameAlias.isEmpty()){
 					Log.err("\n## Wrong column name: "+errorTableNameAlias+". >>>> "+errorColumnName+" <<<< ##");
-					// 20140624_masato
 //					GlobalEnv.errorText += "\n## Wrong column name: "+errorTableNameAlias+". >>>> "+errorColumnName+" <<<< ##";
 			  	  	try{
 			  	  		suggested = checkAndSuggest(errorColumnName, columnNames);
@@ -245,7 +241,6 @@ public class Suggest {
 				}
 				if(!fromPhrase.get(0).isEmpty() && aliasIsWrong && !errorTableNameAlias.isEmpty()){
 					Log.err("\n## From phrase is ##\n"+fromPhrase.get(0).trim());
-					// 20140624_masato
 //					GlobalEnv.errorText += "\n## From phrase is ##\n"+fromPhrase.get(0).trim();
 				}
 				

@@ -106,7 +106,7 @@ public class SortNesting {
 		int a;
 		
 		ExtList result = new ExtList();
-		ExtList buffer, buffer1;
+		ExtList buffer, buffer1 = null;
 
 		Enumeration e = BufferedData.elements();
 		
@@ -114,7 +114,14 @@ public class SortNesting {
 			buffer = (ExtList) e.nextElement();
 			for (int i = 0; i < buffer.size(); i++) {
 				if (buffer.get(i) instanceof SortNesting) {
-					buffer1 = ((SortNesting) (buffer.get(i))).GetResultWithOrderBy(info, (ExtList)sch.get(i));
+					if(!(sch.get(i) instanceof ExtList)){
+						ExtList test = new ExtList();
+						test.add(sch.get(i));
+						buffer1 = ((SortNesting) (buffer.get(i))).GetResultWithOrderBy(info, test);
+					}else{
+						buffer1 = ((SortNesting) (buffer.get(i))).GetResultWithOrderBy(info, (ExtList)sch.get(i));
+					}
+					
 					buffer.set(i, buffer1);
 				}
 			}

@@ -34,6 +34,8 @@ public class Mobile_HTML5C1 extends Connector {
     //C1��work�᥽�å�
     public String work(ExtList data_info) {
     	Mobile_HTML5.preProcess(getSymbol(), decos, html_env);	//Pre-process (前処理)
+    	//Log.i("C1 start");
+    	//html_env.code.append(" C1:("+Mobile_HTML5.Gdepth+" "+Mobile_HTML5.Gnum+") ");
     	
     	//20131001 tableDivHeader
     	if(decos.containsKey("header") && Mobile_HTML5G2.tableDivHeader_Count2<1){
@@ -190,6 +192,7 @@ public class Mobile_HTML5C1 extends Connector {
 //	            //☆★
 //	      		Log.info("	C1 tfeItems : " + this.tfeItems);
 //	      	}
+        	//Log.info(this.dindex);
 	      	
 	      	//20130914  "text"
 	        if(decos.containsKey("text")){

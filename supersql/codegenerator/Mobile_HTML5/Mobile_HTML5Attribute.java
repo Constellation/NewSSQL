@@ -228,7 +228,7 @@ public class Mobile_HTML5Attribute extends Attribute {
 				if(Mobile_HTML5.dynamicDisplay || Mobile_HTML5.form){
 					//20131118 dynamic
 					if(Mobile_HTML5.dynamicDisplay){
-						html_env.code.append( Mobile_HTML5.dynamicAttributeProcess(this) );
+						html_env.code.append( Mobile_HTML5.dynamicAttributeProcess(this, html_env) );
 					}
 					//20131127 form
 					if(Mobile_HTML5.form){

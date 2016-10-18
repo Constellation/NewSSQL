@@ -31,7 +31,7 @@ import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.dataconstructor.DataConstructor;
 import supersql.extendclass.ExtList;
-import supersql.parser.SSQLparser;
+import supersql.parser.Start_Parse;
 //tk start///////////////////////////////////////
 
 //tk end//////////////////////////////////////////
@@ -634,7 +634,7 @@ public class Mobile_HTML5Function extends Function {
     	}else if(button_media.equals("logout") || key.contains("logout")){		//ex. button("logout") || logout()
     		//added by goto 20130508  "Login&Logout"
     		//Logoutボタンを設置
-            if(SSQLparser.sessionFlag){
+            if(Start_Parse.sessionFlag){
             	statement += "<a href=\"\" onclick=\"document.LOGOUTpanel1.submit();return falese;\" data-role=\"button\">Logout</a>\n";
             	logoutButtonFlg = true;
             }
@@ -946,7 +946,7 @@ public class Mobile_HTML5Function extends Function {
 		    	"			<input type=\"button\" data-icon=\"forward\" data-iconpos=\"notext\" data-mini=\"true\" onClick=\"history.forward()\" >\n" +
 		    	"		</form>\n" +
 		    	"	</td>\n";
-    	if(SSQLparser.sessionFlag || url.size()>0){
+    	if(Start_Parse.sessionFlag || url.size()>0){
 	    	headerString += 
 			    	"	<td>\n" +
 			    	"		<a href=\"#popupMenu\" data-rel=\"popup\" data-role=\"button\" data-icon=\"grid\" data-iconpos=\"notext\" data-mini=\"true\"></a>\n" +
@@ -965,7 +965,7 @@ public class Mobile_HTML5Function extends Function {
 	    	}
 	    	//added by goto 20130508  "Login&Logout"
 	    	//Logoutボタン
-	        if(SSQLparser.sessionFlag){
+	        if(Start_Parse.sessionFlag){
 	        	headerString += "				<li><a href=\"\" data-rel=\"back\" onclick=\"document.LOGOUTpanel1.submit();return falese;\">Logout</a></li>\n";
 	        }
 	        headerString += 
@@ -2718,7 +2718,7 @@ public class Mobile_HTML5Function extends Function {
 							
 							if(isSQL){
 								String b = "require_once '"+fn+"';";
-								if(!SSQLparser.sessionFlag)
+								if(!Start_Parse.sessionFlag)
 									b = "<?php "+b+" ?>\n";
 								else
 									b = "EOF;\n"+b+"\n		echo <<<EOF\n";
@@ -3765,7 +3765,7 @@ public class Mobile_HTML5Function extends Function {
     /*  $session("SESSION関数(第3引数)でセッション変数へ格納した属性")  */
     /*  $session("name")など  */
     private String Func_$session() {
-    	if(!SSQLparser.sessionFlag){
+    	if(!Start_Parse.sessionFlag){
     		Log.info("<Warning> $session関数は、SESSION()使用時のみ使用可能です。");
     		return "";
     	}else{
@@ -4240,7 +4240,7 @@ public class Mobile_HTML5Function extends Function {
 			str = ((FuncArg) this.Args.get(0)).getStr();
 			if(str.startsWith("#TextLabel_"))
 				textNum = Integer.parseInt( str.substring("#TextLabel_".length()) );
-			str = SSQLparser.textString.get(textNum);
+			str = Start_Parse.textString.get(textNum);
 		}catch(Exception e){ }
     	
 		
@@ -4844,14 +4844,14 @@ public class Mobile_HTML5Function extends Function {
     			GlobalEnv.setGlobalEnvEmbed(args);
 
 
-    			SSQLparser parser;
+    			Start_Parse parser;
     			if(file.contains("http"))
     			{
-    				parser = new SSQLparser("online");
+    				parser = new Start_Parse("online");
     			}
     			else
     			{
-	    			parser = new SSQLparser(10000*(html_env.embedcount+1));
+	    			parser = new Start_Parse(10000*(html_env.embedcount+1));
 	    		}
 
 	    		CodeGenerator codegenerator = parser.getcodegenerator();

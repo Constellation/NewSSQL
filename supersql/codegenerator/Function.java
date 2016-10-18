@@ -2,8 +2,6 @@ package supersql.codegenerator;
 
 import java.util.Hashtable;
 
-import supersql.codegenerator.HTML_Flexbox.HTML_FlexboxEnv;
-import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5Env;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
 
@@ -84,7 +82,6 @@ public class Function extends Operand {
 		for (int i = 0; i < Args.size(); i++) {
 			items += ((FuncArg) Args.get(i)).countconnectitem();
 		}
-
 		return items;
 	}
 

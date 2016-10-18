@@ -17,7 +17,7 @@ import supersql.codegenerator.CodeGenerator;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.dataconstructor.DataConstructor;
-import supersql.parser.SSQLparser;
+import supersql.parser.Start_Parse;
 
 public class FormServlet3 extends HttpServlet {
 	
@@ -99,7 +99,7 @@ public class FormServlet3 extends HttpServlet {
     
     GlobalEnv.setGlobalEnv(args);
     
-    SSQLparser parser = new SSQLparser(QueryBuffer);
+    Start_Parse parser = new Start_Parse(QueryBuffer);
 
 	if(GlobalEnv.getErrFlag() == 0)
 	{

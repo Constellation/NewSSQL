@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
+import sun.awt.X11.Depth;
 import supersql.codegenerator.Grouper;
 import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
@@ -59,6 +60,10 @@ public class Mobile_HTML5G2 extends Grouper {
     	Mobile_HTML5G2.tableDivHeader_Count2 = 0;
 
     	Mobile_HTML5G1.G1_count = 0;
+    	
+    	Mobile_HTML5.Gdepth = 0;
+    	Mobile_HTML5.Gnum++;
+    	Mobile_HTML5.dyamicWhileString = "";
     	
         //G2Flg = true;
         int panelFlg = 0;	//20130503  Panel
@@ -184,6 +189,7 @@ public class Mobile_HTML5G2 extends Grouper {
         Mobile_HTML5.beforeWhileProcess(getSymbol(), decos, html_env);
         while (this.hasMoreItems()) {
         	Mobile_HTML5Function.glvl = html_env.glevel;	//added by goto 20130914  "SEQ_NUM"
+        	Mobile_HTML5.Gdepth++;
         	
         	
         	//[重要] For [ [], ]!        	

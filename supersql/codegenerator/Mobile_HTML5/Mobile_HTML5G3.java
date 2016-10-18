@@ -144,7 +144,7 @@ public class Mobile_HTML5G3 extends Grouper {
 					pw.close();
                 }
                 html_env.header = new StringBuffer();
-				Jscss.process();	//masato 20150101
+				Jscss.process();
                 html_env.footer = new StringBuffer();
                 html_env2.header = new StringBuffer();
                 html_env2.footer = new StringBuffer();

@@ -21,50 +21,63 @@ public class GlobalEnv {
 	
     /* [����] getProperty�᥽�åɤˤ�äơ������ƥ�ץ�ѥƥ�����(OS���ե�������ڤ�ʸ��ۡ��ࡢ����ʤ�)����� */
     /* �����ƥ�ץ�ѥƥ��Ͱ����μ���: System.getProperties().list(System.out); */
-    public final static String USER_HOME = System.getProperty("user.home");				//ユーザのホームディレクトリの取得
-    public final static String OS = System.getProperty("os.name");						//OS名の取得("Mac OS X" など)
-    public final static String OS_LS = System.getProperty("line.separator");			//OSごとの行区切り文字(Windows:"\r\n",Mac:"\r",UNIX:"\n" など)
-    public final static String OS_FS = System.getProperty("file.separator");			//OSごとのファイル区切り文字(Windows:"\" , MacとLinux:"/" など)
-    public final static String OS_PS = System.getProperty("path.separator");			//OSごとのパス区切り文字(Windows";" , MacとLinux":" など)
-    public final static String EXE_FILE_PATH = getCurrentPath();	// TODO
-    public final static String USER_LANGUAGE = System.getProperty("user.language");		//使用言語(日本:ja)
-    public final static String USER_COUNTRY = System.getProperty("user.country");		//国̾(日本:JP)
+    public final static String USER_HOME = System.getProperty("user.home");				//�桼���Υۡ���ǥ��쥯�ȥ�
+    public final static String OS = System.getProperty("os.name");						//OS��̾��("Mac OS X" ��)
+    public final static String OS_LS = System.getProperty("line.separator");			//OS���Ȥβ��ԥ�����(Windows:"\r\n",Mac:"\r",UNIX:"\n" ��)
+    public final static String OS_FS = System.getProperty("file.separator");			//OS���ȤΥե�������ڤ�ʸ��(Windows:"\" , Mac��Linux:"/" ��)
+    public final static String OS_PS = System.getProperty("path.separator");			//OS���ȤΥѥ����ڤ�ʸ��(Windows";" , Mac��Linux":" ��)
+    public final static String EXE_FILE_PATH = getCurrentPath();	//�¹ԥե�����Υѥ�(�¹�jar�ե�������ɤ��ˤ��뤫)����� (�����:���Хѥ����֤äƤ����礢��)
+    public final static String USER_LANGUAGE = System.getProperty("user.language");		//�桼���θ���(���ܸ�:ja)  ���ܸ졦�Ѹ��ڤ��ؤ���ǽ���դ���Ȥ��˻��ѡ�
+    public final static String USER_COUNTRY = System.getProperty("user.country");		//�桼���ι�̾(����:JP)   ���ܸ졦�Ѹ��ڤ��ؤ���ǽ���դ���Ȥ��˻��ѡ�
 
-    public final static String MEDIA_XML = System.getProperty("user.dir")+OS_FS+"XML"+OS_FS+"ssql_medias.xml"; // このファイルは存在しないのでは？ //TODO 
+    public final static String MEDIA_XML = System.getProperty("user.dir")+OS_FS+"XML"+OS_FS+"ssql_medias.xml";
 
-	public final static String DEFAULT_CHARACTER_CODE = "UTF-8";
+	public static final String DEFAULT_CHARACTER_CODE = "UTF-8";
     
     public static String query = "";
     
-	private static Hashtable<String, String> envs; //引数の情報を格納
+	private static Hashtable<String, String> envs;
 	
 	// 20140624_masato
-	public static String errorText = ""; // エラーログの格納
+	public static String errorText = "";
 	public static String errorText_main = "";
 	public static String queryInfo = "";
 	public static String queryLog = "";
 	public static String queryName = "";
 
+	//����ե�����ξ���
 	private static String layout = "";
 	
 	private static String host;
+
 	private static String db;
+
 	private static String user;
+
 	private static String home;
+
 	private static String outdir;
+
 	private static String password;
+
 	private static String encode;
-	private static String apiServerUrl; // 使っているのか?
+	
+	private static String apiServerUrl;
 
 	//chie start
 	private static String driver;
+
 	private static String optimizer;
+
 	private static String invokeServletPath; //used by online
+
 	private static String fileDirectory; //used by online
+
 	private static int tupleNum;
+
 	//chie end
 
-	//swfなど
+	//swf��
 	public static String table_name;
 	public static String where_line;
 
@@ -77,7 +90,7 @@ public class GlobalEnv {
 	//optimizerなど
 	private static boolean optimizable = true;
 
-	//tk embedなど
+	//tk embed��
 	public static StringBuffer err = new StringBuffer();
 	public static int online_flag = 0;
 	public static int err_flag = 0;

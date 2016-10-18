@@ -3,14 +3,19 @@ package supersql.codegenerator;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-/**
- * Operator, Manager を生成するクラス
- */
-public class Factory {
+import supersql.codegenerator.Attribute;
+import supersql.codegenerator.Connector;
+import supersql.codegenerator.Decorator;
+import supersql.codegenerator.Grouper;
+import supersql.codegenerator.Function;
+import supersql.codegenerator.LocalEnv;
+import supersql.codegenerator.Manager;
+import supersql.common.Log;
 
+public class Factory {
 	private LocalEnv env;
 	private LocalEnv env2;
-	private String classPrefix;
+	private String classPrefix = new String();
 	private Class[] args;
 	
 	private void initializeArgs() {
@@ -40,9 +45,7 @@ public class Factory {
 		// TODO remove method initializeArgs
 		initializeArgs();
 		try {
-
 			return Class.forName(getClassPrefix() + postfix).getConstructor(args);
-
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (SecurityException e) {
@@ -87,7 +90,6 @@ public class Factory {
 
 	public Connector createC0(Manager manager) {
 		try {
-			
 			Constructor connectorConstructor = getConstructor("C0");
 			return (Connector) connectorConstructor.newInstance(manager, getEnv(), getEnv2());
 
@@ -107,7 +109,6 @@ public class Factory {
 
 	public Connector createC1(Manager manager) {
 		try {
-			
 			Constructor connectorConstructor = getConstructor("C1");
 			return (Connector) connectorConstructor.newInstance(manager, getEnv(), getEnv2());
 
@@ -127,7 +128,6 @@ public class Factory {
 
 	public Connector createC2(Manager manager) {
 		try {
-			
 			Constructor connectorConstructor = getConstructor("C2");
 			return (Connector) connectorConstructor.newInstance(manager, getEnv(), getEnv2());
 
@@ -147,7 +147,6 @@ public class Factory {
 
 	public Connector createC3(Manager manager) {
 		try {
-			
 			Constructor connectorConstructor = getConstructor("C3");
 			return (Connector) connectorConstructor.newInstance(manager, getEnv(), getEnv2());
 
@@ -227,7 +226,6 @@ public class Factory {
 
 	public Grouper createG2(Manager manager) {
 		try {
-			
 			Constructor connectorConstructor = getConstructor("G2");
 			return (Grouper) connectorConstructor.newInstance(manager, getEnv(), getEnv2());
 
@@ -285,6 +283,25 @@ public class Factory {
 		return null;
 	}
 
+	public Decorator createDecoration(Manager manager) {
+		try {
+			Constructor decoratorConstructor = getConstructor("Decoration");
+			return (Decorator) decoratorConstructor.newInstance(manager, getEnv(), getEnv2());
+
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public Attribute createAttribute(Manager manager) {
 		try {
 			
@@ -307,10 +324,8 @@ public class Factory {
 
 	public Function createFunction(Manager manager) {
 		try {
-			
 			Constructor connectorConstructor = getConstructor("Function");
 			return (Function) connectorConstructor.newInstance(manager, getEnv(), getEnv2());
-
 		} catch (SecurityException e) {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
@@ -324,16 +339,15 @@ public class Factory {
 		}
 		return null;
 	}
-
+	
 	public Attribute createConditionalAttribute(Manager manager) {
 		return null;
 	}
-
+	
 	public IfCondition createIfCondition(Manager manager, Attribute condition,
 			TFE thenTfe, TFE elseTfe) {
 		return null;
 	}
-
 /*********************
 * Getters and Setters
 *********************/

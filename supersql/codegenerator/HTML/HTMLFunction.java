@@ -31,7 +31,7 @@ import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.dataconstructor.DataConstructor;
 import supersql.extendclass.ExtList;
-import supersql.parser.SSQLparser;
+import supersql.parser.Start_Parse;
 
 public class HTMLFunction extends Function {
 
@@ -423,11 +423,11 @@ public class HTMLFunction extends Function {
 
 				GlobalEnv.setGlobalEnvEmbed(args);
 
-				SSQLparser parser;
+				Start_Parse parser;
 				if (file.contains("http")) {
-					parser = new SSQLparser("online");
+					parser = new Start_Parse("online");
 				} else {
-					parser = new SSQLparser(10000 * (htmlEnv.embedCount + 1));
+					parser = new Start_Parse(10000 * (htmlEnv.embedCount + 1));
 				}
 
 				CodeGenerator codegenerator = parser.getcodegenerator();

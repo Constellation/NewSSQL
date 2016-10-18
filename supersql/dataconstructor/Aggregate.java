@@ -267,22 +267,20 @@ public class Aggregate {
 		StringBuffer tmp = new StringBuffer();
 		ExtList result = new ExtList();
 		
-		if (way.equals("count")) {
-			//chie commentout
-			//tmp.append("cnt");
-		} else {
-			tmp.append(way);	
-		}
+//		if (way.equals("count")) {
+//			//chie commentout
+//			//tmp.append("cnt");
+//		} else {
+//			tmp.append(way);	
+//		}
 		
-		tmp.append(" ");
 		tmp.append(value);
 		target = new ExtList();
-		target.add(tmp.toString());
 		
-		tuple.set(position, target);
+		tuple.set(position, tmp.toString());
 		
 		result.add(tuple);
-		
+
 		return result;
 	
 	}
@@ -294,13 +292,13 @@ public class Aggregate {
 		StringBuffer tmp = new StringBuffer();
 		ExtList result = new ExtList();
 		
-		tmp.append(way); tmp.append(" "); tmp.append(value);
-		target = new ExtList();		
-		target.add(tmp.toString());
+		tmp.append(value);
+		target = new ExtList();
 		
-		tuple.set(position, target);
+		tuple.set(position, tmp.toString());
 		
 		result.add(tuple);
+
 		
 		return result;
 	

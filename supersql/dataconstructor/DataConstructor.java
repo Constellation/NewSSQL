@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+//import org.json.JSONArray;
+//import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -23,8 +23,7 @@ import supersql.db.ConnectDB;
 import supersql.db.GetFromDB;
 import supersql.db.SQLManager;
 import supersql.extendclass.ExtList;
-import supersql.parser.FromInfo;
-import supersql.parser.SSQLparser;
+import supersql.parser.Start_Parse;
 
 public class DataConstructor {
 
@@ -44,7 +43,7 @@ public class DataConstructor {
 	public static String SQL_string; // added by goto 20130306
 										// "FROM鐃淑わ申鐃緒申鐃緒申鐃緒申鐃出削申"
 
-	public DataConstructor(SSQLparser parser) {
+	public DataConstructor(Start_Parse parser) {
 
 		ExtList sep_sch;
 		ExtList sep_data_info;
@@ -52,29 +51,29 @@ public class DataConstructor {
 		MakeSQL msql = null;
 
 		// Make schema
-		sep_sch = parser.get_TFEschema().makesch();
+		sep_sch = parser.sch;
 		Log.info("Schema: " + sep_sch);
 
 		// Check Optimization Parameters
 		if (GlobalEnv.getOptLevel() == 0 || !GlobalEnv.isOptimizable()
-				|| SSQLparser.isDbpediaQuery() || SSQLparser.isJsonQuery()) {
+				|| Start_Parse.isDbpediaQuery() || Start_Parse.isJsonQuery()) {
 			sqlQueries = null;
 		} else {
-			// Initialize QueryDivider
+		// Initialize QueryDivider
 			long start = System.nanoTime();
 
-			try {
-				qd = new QueryDivider(parser);
-
-				if (qd.MakeGraph()) {
-					// if graph was made successfully, divide
-					sqlQueries = qd.divideQuery();
-				}
-			} catch (Exception e) {
-				;
-				// System.out.println( e.getMessage() ); //commented out by goto
-				// 20120620
-			}
+//			try {
+//				qd = new QueryDivider(parser);
+//
+//				if (qd.MakeGraph()) {
+//					// if graph was made successfully, divide
+//					sqlQueries = qd.divideQuery();
+//				}
+//			} catch (Exception e) {
+//				;
+//				// System.out.println( e.getMessage() ); //commented out by goto
+//				// 20120620
+//			}
 
 			long end = System.nanoTime();
 			exectime[ISDIVIS] = end - start;
@@ -82,19 +81,19 @@ public class DataConstructor {
 
 		// Make SQL
 		if ((sqlQueries == null || sqlQueries.size() < 2)
-				&& !SSQLparser.isDbpediaQuery()) {
+				&& !Start_Parse.isDbpediaQuery()) {
 			// if graph was not made successfully or
 			// if graph has only one connected component
 			// query cannot be divided
 			msql = new MakeSQL(parser);
 		}
-
+		
 		sep_data_info = new ExtList();
-		if (SSQLparser.isDbpediaQuery()) {
-			sep_data_info = schemaToData(parser, sep_sch, sep_data_info);
-		} else if (SSQLparser.isJsonQuery()) {
-			sep_data_info = schemaToDataFromApi(parser, msql, sep_sch,
-					sep_data_info);
+		if (Start_Parse.isDbpediaQuery()) {
+//			sep_data_info = schemaToData(parser, sep_sch, sep_data_info);
+		} else if (Start_Parse.isJsonQuery()) {
+//			sep_data_info = schemaToDataFromApi(parser, msql, sep_sch,
+//					sep_data_info);
 		} else {
 			sep_data_info = schemaToData(parser, msql, sep_sch, sep_data_info);
 		}
@@ -104,103 +103,103 @@ public class DataConstructor {
 		Log.out(data_info);
 	}
 
-	private ExtList schemaToDataFromApi(SSQLparser parser, MakeSQL msql,
-			ExtList sep_sch, ExtList sep_data_info) {
-		String[] fromInfos = SSQLparser.get_from_info_st()
-				.split("api\\(|,|\\)");
-		String url = fromInfos[1];
-		url = url.substring(url.indexOf("'") + 1,
-				url.indexOf("'", url.indexOf("'") + 1));
-		int attno = parser.get_att_info().size();
-		String[] array = new String[attno];
-		int i = 0;
-		for (Object info : parser.get_att_info().values()) {
-			String infoText = ((AttributeItem) info).toString();
-			array[i] = infoText;
-			i++;
-		}
-		sep_data_info = getDataFromApi(url, array, msql, sep_sch);
-		sep_data_info = makeTree(sep_sch, sep_data_info);
-		return sep_data_info;
-	}
+//	private ExtList schemaToDataFromApi(Start_Parse parser, MakeSQL msql,
+//			ExtList sep_sch, ExtList sep_data_info) {
+//		String[] fromInfos = Start_Parse.get_from_info_st()
+//				.split("api\\(|,|\\)");
+//		String url = fromInfos[1];
+//		url = url.substring(url.indexOf("'") + 1,
+//				url.indexOf("'", url.indexOf("'") + 1));
+//		int attno = parser.get_att_info().size();
+//		String[] array = new String[attno];
+//		int i = 0;
+//		for (Object info : parser.get_att_info().values()) {
+//			String infoText = ((AttributeItem) info).toString();
+//			array[i] = infoText;
+//			i++;
+//		}
+//		sep_data_info = getDataFromApi(url, array, msql, sep_sch);
+//		sep_data_info = makeTree(sep_sch, sep_data_info);
+//		return sep_data_info;
+//	}
 
-	private ExtList getDataFromApi(String url,
-			String[] array, MakeSQL msql, ExtList sep_sch) {
-		ExtList<ExtList<String>> data = new ExtList<ExtList<String>>();
-		String createSql = "";
-		String insertSql = "";
-		try {
-			ArrayList<String> newArray = new ArrayList<String>();
-			String fromLine = "";
-			for(int i = 0; i < array.length; i++){
-				String tableName = array[i].split("\\.")[0];
-				if(!newArray.contains(tableName)){
-					newArray.add(tableName);
-					fromLine += " " + tableName + ",";
-				}
-			}
-			fromLine = fromLine.substring(0, fromLine.length() - 1);
-			for (int i = 0; i < newArray.size(); i++) {
-				ArrayList<String> elements = new ArrayList<String>();
-				String element = newArray.get(i);
-				String itemsUrl = url.replaceAll(":table_name", element);
-				String itemsJson = Utils.sendGet(itemsUrl);
-				JSONArray items = new JSONArray(itemsJson);
-				for (int j = 0; j < items.length(); j++) {
-					JSONObject item = items.getJSONObject(j);
-					Iterator<String> keyIterator = item.keys();
-					if (j == 0) {
-						createSql += "CREATE TABLE " + element + "(";
-						while (keyIterator.hasNext()) {
-							String key = keyIterator.next();
-							createSql += key + ",";
-						}
-						createSql = createSql.substring(0, createSql.length() - 1) + ");\n";
-					}
-					insertSql += "INSERT INTO " + element + " VALUES " + "(";
-					keyIterator = item.keys();
-					while(keyIterator.hasNext()){
-						String key = keyIterator.next();
-						insertSql += "'" + item.get(key).toString() + "',";
-					}
-					insertSql = insertSql.substring(0, insertSql.length() - 1) + ");\n";
-				}
-			}
+//	private ExtList getDataFromApi(String url,
+//			String[] array, MakeSQL msql, ExtList sep_sch) {
+//		ExtList<ExtList<String>> data = new ExtList<ExtList<String>>();
+//		String createSql = "";
+//		String insertSql = "";
+//		try {
+//			ArrayList<String> newArray = new ArrayList<String>();
+//			String fromLine = "";
+//			for(int i = 0; i < array.length; i++){
+//				String tableName = array[i].split("\\.")[0];
+//				if(!newArray.contains(tableName)){
+//					newArray.add(tableName);
+//					fromLine += " " + tableName + ",";
+//				}
+//			}
+//			fromLine = fromLine.substring(0, fromLine.length() - 1);
+//			for (int i = 0; i < newArray.size(); i++) {
+//				ArrayList<String> elements = new ArrayList<String>();
+//				String element = newArray.get(i);
+//				String itemsUrl = url.replaceAll(":table_name", element);
+//				String itemsJson = Utils.sendGet(itemsUrl);
+//				JSONArray items = new JSONArray(itemsJson);
+//				for (int j = 0; j < items.length(); j++) {
+//					JSONObject item = items.getJSONObject(j);
+//					Iterator<String> keyIterator = item.keys();
+//					if (j == 0) {
+//						createSql += "CREATE TABLE " + element + "(";
+//						while (keyIterator.hasNext()) {
+//							String key = keyIterator.next();
+//							createSql += key + ",";
+//						}
+//						createSql = createSql.substring(0, createSql.length() - 1) + ");\n";
+//					}
+//					insertSql += "INSERT INTO " + element + " VALUES " + "(";
+//					keyIterator = item.keys();
+//					while(keyIterator.hasNext()){
+//						String key = keyIterator.next();
+//						insertSql += "'" + item.get(key).toString() + "',";
+//					}
+//					insertSql = insertSql.substring(0, insertSql.length() - 1) + ");\n";
+//				}
+//			}
+//
+//			msql.setFrom(new FromInfo(fromLine));
+//			
+//			String sqlString = msql.makeSQL(sep_sch);
+//
+//			SQLManager manager = new SQLManager("jdbc:sqlite::memory:",
+//					GlobalEnv.getusername(), "org.sqlite.JDBC", GlobalEnv.getpassword());
+//			manager.ExecSQL(sqlString, createSql, insertSql);
+//			data = manager.GetBody();
+//
+//			return data;
+//		} catch (Exception e) {
+//			Log.err("Could not connect to the Api server");
+//			e.printStackTrace();
+//			throw new IllegalStateException();
+//		}
+//	}
+//
+//	private ExtList schemaToData(Start_Parse parser, ExtList sep_sch,
+//			ExtList sep_data_info) {
+//		int attno = parser.get_att_info().size();
+//		String[] array = new String[attno];
+//		int i = 0;
+//		for (Object info : parser.get_att_info().values()) {
+//			String infoText = ((AttributeItem) info).toString();
+//			array[i] = infoText;
+//			i++;
+//		}
+//		sep_data_info = getDataFromDBPedia(parser.get_where_info()
+//				.getSparqlWhereQuery(), array);
+//		sep_data_info = makeTree(sep_sch, sep_data_info);
+//		return sep_data_info;
+//	}
 
-			msql.setFrom(new FromInfo(fromLine));
-			
-			String sqlString = msql.makeSQL(sep_sch);
-
-			SQLManager manager = new SQLManager("jdbc:sqlite::memory:",
-					GlobalEnv.getusername(), "org.sqlite.JDBC", GlobalEnv.getpassword());
-			manager.ExecSQL(sqlString, createSql, insertSql);
-			data = manager.GetBody();
-
-			return data;
-		} catch (Exception e) {
-			Log.err("Could not connect to the Api server");
-			e.printStackTrace();
-			throw new IllegalStateException();
-		}
-	}
-
-	private ExtList schemaToData(SSQLparser parser, ExtList sep_sch,
-			ExtList sep_data_info) {
-		int attno = parser.get_att_info().size();
-		String[] array = new String[attno];
-		int i = 0;
-		for (Object info : parser.get_att_info().values()) {
-			String infoText = ((AttributeItem) info).toString();
-			array[i] = infoText;
-			i++;
-		}
-		sep_data_info = getDataFromDBPedia(parser.get_where_info()
-				.getSparqlWhereQuery(), array);
-		sep_data_info = makeTree(sep_sch, sep_data_info);
-		return sep_data_info;
-	}
-
-	private ExtList schemaToData(SSQLparser parser, MakeSQL msql,
+	private ExtList schemaToData(Start_Parse parser, MakeSQL msql,
 			ExtList sep_sch, ExtList sep_data_info) {
 
 		long start, end;
@@ -208,7 +207,6 @@ public class DataConstructor {
 		if (msql != null) {
 			getFromDB(msql, sep_sch, sep_data_info);
 			sep_data_info = makeTree(sep_sch, sep_data_info);
-
 		} else {
 			getTuples(sep_sch, sep_data_info);
 			start = System.nanoTime();
@@ -317,7 +315,6 @@ public class DataConstructor {
 		}
 		gfd.execQuery(SQL_string, sep_data_info);
 
-		
 		gfd.close();
 
 		end = System.nanoTime();
@@ -325,7 +322,7 @@ public class DataConstructor {
 
 		Log.info("## DB result ##");
 		Log.info(sep_data_info);
-
+		
 		return sep_data_info;
 
 	}

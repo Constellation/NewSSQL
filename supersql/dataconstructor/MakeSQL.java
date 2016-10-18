@@ -5,17 +5,16 @@ import java.util.Hashtable;
 import java.util.Iterator;
 
 import supersql.codegenerator.AttributeItem;
-import supersql.codegenerator.XML.XMLFunction;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
 import supersql.parser.FromInfo;
 import supersql.parser.FromParse;
 import supersql.parser.Preprocessor;
-import supersql.parser.SSQLparser;
+import supersql.parser.Start_Parse;
+//ryuryu
 import supersql.parser.WhereInfo;
 import supersql.parser.WhereParse;
-//ryuryu
 
 public class MakeSQL {
 
@@ -28,9 +27,9 @@ public class MakeSQL {
 
 	private ExtList table_group;
 
-	public MakeSQL(SSQLparser p) {
+	public MakeSQL(Start_Parse p) {
 		setFrom(p.get_from_info());
-		where = p.get_where_info();
+		where = p.whereInfo;
 		atts = p.get_att_info();
 
 		MakeGroup mg = new MakeGroup(atts, where);
@@ -55,8 +54,9 @@ public class MakeSQL {
 
 		if (Preprocessor.isAggregate()) {
 			buf = new StringBuffer("SELECT ALL ");
-		} else {
-			if(SSQLparser.isDistinct()){
+		} 
+		{
+			if(Start_Parse.distinct){
 				buf = new StringBuffer("SELECT DISTINCT ");
 			}
 			else{
@@ -81,66 +81,64 @@ public class MakeSQL {
 			}*/
 
 			//ryuryu(start)//////////////////////////////////////////////////////////////////////////////////////////
-			if(SSQLparser.xpathExist == 0){
-				if (idx != 0) {
-					buf.append(", " + att1.getSQLimage());
-				}
-				else{
-					buf.append(att1.getSQLimage());
-				}
+			if (idx != 0) {
+				buf.append(", " + att1.getSQLimage());
+			}
+			else{
+				buf.append(att1.getSQLimage());
 			}
 
 
-			else if(SSQLparser.xpathExist == 1){
-
-				if (idx != 0) {
-					if(att1.getSQLimage().equals(SSQLparser.tmpXpath1)){
-						buf.append(", " + SSQLparser.Xpath.replace("\"", "'"));
-						tmp_flag = 1;
-					}
-
-					else if(att1.getSQLimage().equals(SSQLparser.tmpXmlQuery1)){
-						String tmp_xmlquery = new String();
-						tmp_xmlquery = (SSQLparser.DB2_XQUERY.replace("\"", "'")).replace((SSQLparser.tmpXmlQuery2 + "',"), (SSQLparser.tmpXmlQuery2 + "' PASSING "));
-						tmp_xmlquery = tmp_xmlquery.replace((SSQLparser.tmpXmlQuery1 + ")"), (SSQLparser.tmpXmlQuery1 + " AS \"a\")"));
-						buf.append(", " + tmp_xmlquery);
-						tmp_flag = 1;
-					}
-
-					else{
-						if(tmp_flag==0){
-							buf.append(", " + att1.getSQLimage());
-						}
-						else{
-							buf.append(" " + att1.getSQLimage());
-							tmp_flag=0;
-						}
-					}
-				}
-
-				else {
-					if(att1.getSQLimage().equals(SSQLparser.tmpXpath1)){
-						String tmp = SSQLparser.Xpath.replace("\"", "'");
-						tmp = tmp.replace("),", ")");
-						buf.append(tmp);
-
-						XMLFunction.xpath_first = 1;
-					}
-
-					else if(att1.getSQLimage().equals(SSQLparser.tmpXmlQuery1)){
-						String tmp_xmlquery = new String();
-						tmp_xmlquery = (SSQLparser.DB2_XQUERY.replace("\"", "'")).replace((SSQLparser.tmpXmlQuery2 + "',"), (SSQLparser.tmpXmlQuery2 + "' PASSING "));
-						tmp_xmlquery = tmp_xmlquery.replace((SSQLparser.tmpXmlQuery1 + ")"), (SSQLparser.tmpXmlQuery1 + " AS \"a\")"));
-						buf.append(tmp_xmlquery);
-
-						XMLFunction.xpath_first = 1;
-					}
-
-					else{
-						buf.append(att1.getSQLimage());
-					}
-				}
-			}
+			////			else if(SSQLparser.xpathExist == 1){
+			////
+			////				if (idx != 0) {
+			////					if(att1.getSQLimage().equals(SSQLparser.tmpXpath1)){
+			////						buf.append(", " + SSQLparser.Xpath.replace("\"", "'"));
+			////						tmp_flag = 1;
+			////					}
+			////
+			////					else if(att1.getSQLimage().equals(SSQLparser.tmpXmlQuery1)){
+			////						String tmp_xmlquery = new String();
+			////						tmp_xmlquery = (SSQLparser.DB2_XQUERY.replace("\"", "'")).replace((SSQLparser.tmpXmlQuery2 + "',"), (SSQLparser.tmpXmlQuery2 + "' PASSING "));
+			////						tmp_xmlquery = tmp_xmlquery.replace((SSQLparser.tmpXmlQuery1 + ")"), (SSQLparser.tmpXmlQuery1 + " AS \"a\")"));
+			////						buf.append(", " + tmp_xmlquery);
+			////						tmp_flag = 1;
+			////					}
+			////
+			////					else{
+			////						if(tmp_flag==0){
+			////							buf.append(", " + att1.getSQLimage());
+			////						}
+			////						else{
+			////							buf.append(" " + att1.getSQLimage());
+			////							tmp_flag=0;
+			////						}
+			////					}
+			////				}
+			//
+			//				else {
+			//					if(att1.getSQLimage().equals(SSQLparser.tmpXpath1)){
+			//						String tmp = SSQLparser.Xpath.replace("\"", "'");
+			//						tmp = tmp.replace("),", ")");
+			//						buf.append(tmp);
+			//
+			//						XMLFunction.xpath_first = 1;
+			//					}
+			//
+			//					else if(att1.getSQLimage().equals(SSQLparser.tmpXmlQuery1)){
+			//						String tmp_xmlquery = new String();
+			//						tmp_xmlquery = (SSQLparser.DB2_XQUERY.replace("\"", "'")).replace((SSQLparser.tmpXmlQuery2 + "',"), (SSQLparser.tmpXmlQuery2 + "' PASSING "));
+			//						tmp_xmlquery = tmp_xmlquery.replace((SSQLparser.tmpXmlQuery1 + ")"), (SSQLparser.tmpXmlQuery1 + " AS \"a\")"));
+			//						buf.append(tmp_xmlquery);
+			//
+			//						XMLFunction.xpath_first = 1;
+			//					}
+			//
+			//					else{
+			//						buf.append(att1.getSQLimage());
+			//					}
+			//				}
+			//			}
 			//ryuryu(end)//////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -187,8 +185,8 @@ public class MakeSQL {
 				}
 			}*/
 			//changed by goto 20120523 end
-			
-		//tk to use outer join//////////////
+
+			//tk to use outer join//////////////
 		}catch(NullPointerException e){
 			buf.append(getFrom().getLine());
 		}
@@ -196,7 +194,7 @@ public class MakeSQL {
 
 		// Where
 		flag = false;
-		
+
 		Iterator e2 = where.getWhereClause().iterator();
 		while (e2.hasNext()) {
 			WhereParse whe = (WhereParse) e2.next();
@@ -205,20 +203,14 @@ public class MakeSQL {
 					buf.append(" AND " + whe.getLine());
 				} else {
 					flag = true;
-					// added by masato 20151125 for parameter clause
-					// WHERE句付け足すときに末尾に;があったら削除
-					if(buf.toString().endsWith(";")){
-						buf.deleteCharAt(buf.length()-1);
-					}
 					buf.append(" WHERE " + whe.getLine());
 				}
 			}
 		}
 
-
 		if (! GlobalEnv.getdbms().equals("db2")){
-    		buf.append(";");
-    	}
+			buf.append(";");
+		}
 
 		return buf.toString();
 
@@ -228,8 +220,8 @@ public class MakeSQL {
 		return from;
 	}
 
-	public void setFrom(FromInfo from) {
-		this.from = from;
+	public void setFrom(FromInfo fromInfo) {
+		this.from = fromInfo;
 	}
 
 }

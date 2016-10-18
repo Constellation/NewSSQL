@@ -18,7 +18,7 @@ import java.util.Set;
 
 import supersql.codegenerator.HTML.HTMLEnv;
 import supersql.common.GlobalEnv;
-import supersql.parser.SSQLparser;
+import supersql.parser.Start_Parse;
 
 public class Incremental {
 	public static boolean flag = false;
@@ -72,7 +72,7 @@ public class Incremental {
 	}
 	
 	// save ssqlparser instance
-	public static void save(SSQLparser parser) {
+	public static void save(Start_Parse parser) {
 		// オブジェクトをファイルに保存
 		try {
 			FileOutputStream outFile = new FileOutputStream("/Users/masato/saveData.dat");
@@ -86,13 +86,13 @@ public class Incremental {
 	}
 	
 	// road ssqlparser instance
-	public static SSQLparser road() {
+	public static Start_Parse road() {
 		// オブジェクトの読み込み
-		SSQLparser parser = null;
+		Start_Parse parser = null;
 		try {
 			FileInputStream inFile = new FileInputStream("/Users/masato/saveData.dat");
 			ObjectInputStream ois = new ObjectInputStream(inFile);
-			parser = (SSQLparser)ois.readObject();
+			parser = (Start_Parse)ois.readObject();
 		    ois.close();
 		} catch (Exception ex) {
 			ex.printStackTrace();

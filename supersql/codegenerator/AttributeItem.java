@@ -1,6 +1,5 @@
 package supersql.codegenerator;
 
-
 import java.io.Serializable;
 import java.util.StringTokenizer;
 
@@ -9,7 +8,7 @@ import supersql.extendclass.ExtHashSet;
 import supersql.extendclass.ExtList;
 import supersql.parser.FromInfo;
 
-public class AttributeItem implements Serializable {
+public class AttributeItem implements Serializable{
 
 	private int AttNo;
 
@@ -57,6 +56,7 @@ public class AttributeItem implements Serializable {
 	}
 
 	public void debugout(int count) {
+
 		Debug dbgout = new Debug();
 		dbgout.prt(count, "<AttributeItem No=" + AttNo + " AttName=\"" + Image
 				+ "\">");

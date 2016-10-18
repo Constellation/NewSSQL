@@ -18,8 +18,6 @@ public class HTMLC1 extends Connector implements Serializable {
 	private HTMLEnv htmlEnv;
 	private HTMLEnv htmlEnv2;
 
-	// added by masato 20151209
-
 	// ���󥹥ȥ饯��
 	public HTMLC1(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
 		this.htmlEnv = henv;

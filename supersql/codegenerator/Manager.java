@@ -27,8 +27,6 @@ public abstract class Manager implements Serializable{
 	public void addDeco(String key, Object val) {
 		decos.put(key, val);
 	}
-	
-	//インスタンス移行プ?前ラムの生成
 	public void generateCode(ITFE tfe_info, ExtList data_info) {
 	}
 	
@@ -70,6 +68,4 @@ public abstract class Manager implements Serializable{
 
 	//後処?
 	public abstract void finish();
-
 }
-

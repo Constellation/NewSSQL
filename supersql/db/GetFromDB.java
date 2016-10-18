@@ -20,7 +20,7 @@ public class GetFromDB {
         String password = GlobalEnv.getpassword();
         
 
-        Log.out("[hostname : " + hostname + "]");
+        Log.out ("[hostname : " + hostname + "]");
         Log.out("[dbname   : " + dbname + "]");
         Log.out("[user : " + user + "]");
         Log.out("[driver : " + driver + "]");

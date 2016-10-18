@@ -13,6 +13,7 @@ import java.util.Map;
 
 import supersql.codegenerator.Asc_Desc;
 import supersql.codegenerator.Asc_Desc.AscDesc;
+import supersql.codegenerator.Connector;
 import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.TFE;
@@ -20,7 +21,7 @@ import supersql.common.DB;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
-import supersql.parser.SSQLparser;
+import supersql.parser.Start_Parse;
 
 public class Mobile_HTML5 {
 	
@@ -29,6 +30,10 @@ public class Mobile_HTML5 {
 	
 	public static boolean preProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
 		//Pre-process (前処理)
+		if(!symbol.contains("G1") && !symbol.contains("G2")){
+			dyamicPreStringProcess(symbol, decos, html_env);
+		}
+		
 		showProcess(decos, html_env);	//TODO この位置でOKか確認
 		
 		if(symbol.contains("G1") || symbol.contains("G2")){
@@ -40,6 +45,10 @@ public class Mobile_HTML5 {
 		return true;
 	}
 	public static boolean beforeWhileProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
+//		if(!symbol.contains("G1") && !symbol.contains("G2")){
+//			dyamicPreStringProcess(symbol, decos, html_env);
+//		}
+		
 		if(!symbol.contains("G1") && !symbol.contains("G2")){
 			dynamicPreProcess(symbol, decos, html_env);//最終的には不要
 			
@@ -69,9 +78,12 @@ public class Mobile_HTML5 {
 		if(symbol.contains("G1") || symbol.contains("G2")){
 			dynamicStringGetProcess(symbol, decos, html_env);
 		}
+		dyamicWhileStringProcess(symbol, decos, html_env);
 		return true;
 	}
 	public static boolean afterWhileProcess(String symbol, String tfeID, DecorateList decos, Mobile_HTML5Env html_env){
+		dyamicAfterWhileStringProcess(symbol, decos, html_env);
+		
 		if(!symbol.contains("G1") && !symbol.contains("G2")){
 			dynamicStringGetProcess(symbol, decos, html_env);//最終的には不要
 			dynamicProcess(tfeID, symbol, decos, html_env);//最終的には不要
@@ -86,6 +98,11 @@ public class Mobile_HTML5 {
 		return true;
 	}
 	public static boolean postProcess(String symbol, String tfeID, DecorateList decos, Mobile_HTML5Env html_env){
+//		//if(symbol.contains("G1") || symbol.contains("G2")){
+//		if(symbol.contains("C1") || !symbol.contains("C2")){
+		dyamicPostStringProcess(symbol, decos, html_env);
+//		}
+		
 		if(symbol.contains("G1") || symbol.contains("G2")){
 			dynamicProcess(symbol, tfeID, decos, html_env);
 		}
@@ -1045,30 +1062,151 @@ public class Mobile_HTML5 {
 	static int dynamicCount = 1;
 	static String dynamicFuncCountLabel = "___SSQL_DynamicFunc_CountLabel___";
 	public static boolean dynamicDisplay = false;
-	public static String dynamicFuncArgProcess(ITFE tfe){
+	static ArrayList<String> dyamicAttributes = new ArrayList<>();
+	public static int Gdepth = 0;
+	public static int Gnum = 0;
+//	static int Gdepth_old = 0;
+//	static int Gnum_old = 0;
+	static boolean dynamicAttributeFlg = true;
+	public static String dyamicWhileString = "";
+	static ArrayList<String> dyamicWhileStrings = new ArrayList<>();
+	static int dyamicWhileCount = 0;
+	public static String dynamicFuncArgProcess(ITFE tfe, Mobile_HTML5Env html_env){
 		//For Function
-		return createDynamicAttribute(tfe);
+		return createDynamicAttribute(tfe, html_env);
 	}
-	public static String dynamicAttributeProcess(ITFE tfe){
+	public static String dynamicAttributeProcess(ITFE tfe, Mobile_HTML5Env html_env){
 		//For Attribute (C1, C2, G1, G2)
-		return createDynamicAttribute(tfe);
+		return createDynamicAttribute(tfe, html_env);
 	}
-	private static String createDynamicAttribute(ITFE tfe){
+	private static String createDynamicAttribute(ITFE tfe, Mobile_HTML5Env html_env){
 		String s = ""+tfe;
 		s = s.trim();
 		if(s.startsWith("\"") && s.endsWith("\"")){
 			//not attribute, not number
-			s = s.substring(1,s.length()-1);
+			s = s.substring(1, s.length()-1);
 		}else if(isNumber(s)){
 			//number
 		}else{
 			//attribute
-			//CAST(a AS varchar)
-			s = "COALESCE(CAST("+s+" AS varchar), '')";	//for displaying rows which include NULL values (common to postgresql, sqlie, mysql)
-			s = "'||"+s+"||'";
+			
+			if(Gdepth>1)	dynamicAttributeFlg = false;
+			if(dynamicAttributeFlg){
+				//TODO d
+				int i = Gnum-1;
+				int j = Connector.sindex;				//CAST(a AS varchar)
+				String a = "'COALESCE(CAST("+s+" AS varchar), \\'\\')'";	//for displaying rows which include NULL values (common to postgresql, sqlie, mysql)
+				String b = "'.$row"+Gnum+"["+j+"].'";
+				s = b;
+				//b = "$b .= '<div>"+b+"</div>';\n";
+				
+				//add dyamicAttributes
+				try {
+					String a0 = dyamicAttributes.get(i);
+					if(!a0.isEmpty()) a = a0+", "+a;
+					dyamicAttributes.set(i, a);
+				} catch (Exception e) {
+					dyamicAttributes.add(i, a);
+				}
+//				//add dyamicWhileString
+////				try {
+////					String b0 = dyamicWhileStrings.get(i);
+////					if(!b0.isEmpty()) b = b0+" "+b;
+////					dyamicWhileStrings.set(i, b);
+////				} catch (Exception e) {
+////					b = "";
+//					if(i>=1 && j==0){
+//						int x = i+1;
+//						b = 	"';\n"+
+//								"  		$sql"+x+" = getSQL($sql_a"+x+", $table, $where0, $sql_g, $limit, $sql_a1, $row1);\n" +		//TODO d 指定値
+//								"  		$result"+x+" = pg_query($dynamic_db1, $sql"+x+");\n" +
+//								"  		while($row"+x+" = pg_fetch_row($result"+x+")){\n" +
+//								"  $b='";
+//						//dyamicWhileString += b;
+//						html_env.code.append(b);
+//					}
+////					b += "$b = '"+dyamicWhileString+"';";
+////					dyamicWhileStrings.add(i, b);
+////				}
+				Log.i(Gdepth+" "+i+" "+j+" "+s+"  "/*+b*/);
+				Log.i(dyamicWhileString);
+			}
+			
+//			if(Gdepth>1 || Gnum<Gdepth_old){
+//				dynamicAttributeFlg = false;
+//			}
+//			Gdepth_old = Gdepth;
+//			Gnum_old = Gnum;
 		}
 		return s;
 	}
+	public static void dyamicPreStringProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
+		int i = Gnum-1;
+		int j = Connector.sindex;
+//		if(dynamicAttributeFlg)
+//			Log.i(dynamicAttributeFlg+"  "+i+"  "+j);
+		if(dynamicAttributeFlg && i==1 && j==2){	//TODO d jの値を可変に
+			int x = i+1;
+			String b = 	"';\n"+
+					"  		$sql"+x+" = getSQL($sql_a"+x+", $table, $where0, $sql_g, $limit, $sql_a1, $row1);\n" +		//TODO d 指定値
+					"  		$result"+x+" = pg_query($dynamic_db1, $sql"+x+");\n" +
+					"  		while($row"+x+" = pg_fetch_row($result"+x+")){\n" +
+					"  			$b .= '";
+			//dyamicWhileString += b;
+			html_env.code.append(b);
+			dyamicWhileCount++;
+
+//			Log.i("---");
+		}
+	}
+	public static void dyamicWhileStringProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
+		//TODO d
+		if(Gdepth<=1){
+			if(symbol.contains("G1") || symbol.contains("G2")){
+				//dyamicWhileString = "";
+				if(dynamicAttributeFlg){
+					Log.i("!!!! "+Gnum+" "+dyamicWhileString);
+					dyamicWhileStrings.add(dyamicWhileString);
+				}
+			}
+			if(symbol.contains("C1") || symbol.contains("C2")){
+				String s = html_env.code.toString();
+				dyamicWhileString = "$b .= '"+s.replaceAll("\r\n|\r|\n", "")+"';\n";
+				//Log.i(s);
+			}
+		}
+	}
+	public static void dyamicAfterWhileStringProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
+		//dyamicWhileString += "\n";
+		//if(Gdepth<=1 && (symbol.contains("G1") || symbol.contains("G2"))){
+//			String s = html_env.code.toString();
+//			dyamicWhileString = "$b = '"+s.replaceAll("\r\n|\r|\n", "")+"';\n";
+//			Log.i("---- ");
+//			dyamicWhileString += " $$$$$$$$ \n";
+//			html_env.code.append(" XXXXXXXXXXX ");
+		//}
+
+	}
+	public static void dyamicPostStringProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
+//		if(Gdepth<=1 && (symbol.contains("G1") || symbol.contains("G2"))){
+//		if(dynamicAttributeFlg && (symbol.contains("G1") || symbol.contains("G2"))){
+		if(dynamicAttributeFlg){
+//			String s = html_env.code.toString();
+//			dyamicWhileString = "$b = '"+s.replaceAll("\r\n|\r|\n", "")+"';\n";
+			//html_env.code.append(" XXXXXXXXXXX ");
+//			if((symbol.contains("G1") || symbol.contains("G2"))){
+//			if(dyamicWhileCount>0){
+//				html_env.code.append(" XXXXXXXXXXX ");
+//				dyamicWhileCount--;
+//			}
+//			}
+			
+			String s = html_env.code.toString();
+			dyamicWhileString = "$b .= '"+s.replaceAll("\r\n|\r|\n", "")+"';\n";
+			Log.i("---- ");
+		}
+	}
+	
 	public static String getDynamicLabel(){	//+Mobile_HTML5.getDinamicLabel()
 		//For function's count
 		//※ Count付きのfunc()には、+Mobile_HTML5.getDinamicLabel()を付加する
@@ -1150,7 +1288,9 @@ public class Mobile_HTML5 {
 			//TODO div, table以外の場合
 			int numberOfColumns = 1;
 			String php_str1 = "", php_str2 = "", php_str3 = "", php_str4 = "";
+			Log.i("!! "+symbol);
 			if(!symbol.contains("G1") && !symbol.contains("G2")){
+				
 				if(decos.containsKey("table")){
 					dynamicString = "'<table border=\"1\"><tr>"+dynamicString+"</tr></table>'";
 				}else if(decos.containsKey("table0")){
@@ -1390,8 +1530,8 @@ public class Mobile_HTML5 {
     			statement += getDynamicPagingHTML(tfeID, dynamicRow, dynamicPagingCount, dynamicPHPfileName);
     		}
     		php += 
-					"$ret = array();\n" +
-					"$ret['result'] = \"\";\n\n";
+					"    $ret = array();\n" +
+					"    $ret['result'] = \"\";\n\n";
     		if(dynamicRowFlg){
     			php += 
 						"if ($_POST['currentPage'] != \"\") {\n" +
@@ -1405,12 +1545,12 @@ public class Mobile_HTML5 {
     		php +=
 						"    //ユーザ定義\n" +
 						((DBMS.equals("sqlite") || DBMS.equals("sqlite3"))? ("    $sqlite3_DB = '"+DB+"';\n"):"") +
-						"    $dynamic_col = \""+dynamic_col+"\";\n" +
-						"    $col_num = "+col_num+";                          //カラム数(Java側で指定)\n" +
+						"    //$dynamic_col = \""+dynamic_col+"\";\n" +
+						"    //$col_num = "+col_num+";                          //カラム数(Java側で指定)\n" +
 						"    $table = '"+from+"';\n" +
 						"    $where0 = \""+where+"\";\n" +
 						//"    $dynamic_col_array = array("+dynamic_col_array+");\n" +
-						"    $dynamic_col_num = 1;\n" +//count($dynamic_col_array);\n" +
+						"    //$dynamic_col_num = 1;\n" +//count($dynamic_col_array);\n" +
 						"    $dynamic_a_Flg = array("+dynamic_aFlg+");\n" +
 						"    $dynamic_mail_Flg = array("+dynamic_mailFlg+");\n" +
 						"    $dynamic_pop_Flg = array("+dynamic_popFlg+");\n" +
@@ -1428,121 +1568,155 @@ public class Mobile_HTML5 {
 //						"\n" +
 //						"    if($dynamicWord"+dynamicCount+" != \"\"){\n";
     		if(DBMS.equals("sqlite") || DBMS.equals("sqlite3")){
-    			php +=	"        $dynamic_db"+dynamicCount+" = new SQLite3($sqlite3_DB);\n";
+    			php +=	"    $dynamic_db"+dynamicCount+" = new SQLite3($sqlite3_DB);\n";
     		} else if(DBMS.equals("postgresql") || DBMS.equals("postgres")){
-    			php +=	"        $dynamic_db"+dynamicCount+" = pg_connect (\"host="+HOST+" dbname="+DB+" user="+USER+""+(!PASSWD.isEmpty()? (" password="+PASSWD):"")+"\");\n";
+    			php +=	"    $dynamic_db"+dynamicCount+" = pg_connect (\"host="+HOST+" dbname="+DB+" user="+USER+""+(!PASSWD.isEmpty()? (" password="+PASSWD):"")+"\");\n";
+    		}
+//    		php +=
+////						"    $sql = \"SELECT DISTINCT \".$dynamic_col.\" FROM \".$table;\n" +
+////						"    if($where0 != \"\")	$sql .= \" WHERE \".$where0.\" \";\n" +
+////						"    if($groupby != \"\")	$sql .= \" GROUP BY \".$groupby.\" \";\n" +
+////						"    if($having0 != \"\")	$sql .= \" HAVING \".$having0.\" \";\n" +
+////						"    $sql .= \" \".$orderby.\" \".$limit;\n" +
+//    				"	$sql_a1 = array('d.id', 'd.name');\n" +		//TODO d
+//    				"	$sql_a2 = array('e.id', 'e.name');\n";
+    		for(int i=0; i<dyamicAttributes.size(); i++){
+	    		php +=	"	$sql_a"+(i+1)+" = array("+dyamicAttributes.get(i)+");\n";
     		}
     		php +=
-						"        $sql = \"SELECT \".$dynamic_col.\" FROM \".$table;\n" +
-						"        if($where0 != \"\")	$sql .= \" WHERE \".$where0.\" \";\n" +
-						"        if($groupby != \"\")	$sql .= \" GROUP BY \".$groupby.\" \";\n" +
-						"        if($having0 != \"\")	$sql .= \" HAVING \".$having0.\" \";\n" +
-//						"    \n" +
-//						"    	//左辺の作成（※Java側でOK?)\n" +
-//						"        $sw = $dynamicWord"+dynamicCount+";\n" +
-//						"        $sw_buf = \"\";\n" +
-//						"        $l_str = \"\";\n" +
-//						"        foreach($dynamic_col_array as $val)    $l_str .= \""+IFNULL+"(\".$val.\",'')||\";\n" +
-//						"        $l_str = substr($l_str, 0, -2);      //substring   最後の||をカット\n" +
-//						"        $l_str .= \" LIKE '%\";\n" +
-//						"        //右辺の作成\n" +
-//						"        while(strpos($sw,'%')){		//%を含んでいる間\n" +
-//						"            $pos = strpos($sw,'%');          //indxOf  		%が最初に現れる位置\n" +
-//						"            $rest = substr($sw, 0, $pos);    //substring    最初の%以降をカット\n" +
-//						"            $sw = substr($sw, $pos+1);       //substring    最初の%までカット\n" +
-//						"            $sw_buf .= $l_str.$rest.\"%' AND \";\n" +
-//						"        }\n" +
-//						"        $sw_buf .= $l_str.$sw.\"%' \";         //最後のswを結合\n" +
-//						"        \n" +
-//						"        if($groupby == \"\"){    //null => WHERE句にlikeを書く／ not null => HAVING句に～\n" +
-//						"            /*** WHERE句の作成 start ***/\n" +
-//						"            //WHERE  ifnull(id,'')||ifnull(name,'')||ifnull(r_year,'') LIKE '%sw[1]%'\n" +
-//						"            //   AND ifnull(id,'')||ifnull(name,'')||ifnull(r_year,'') LIKE '%sw[2]%'...\n" +
-//						"            \n" +
-//						"            $WHERE = \"\";\n" +
-//						"            if($where0 == \"\")   $WHERE = \" WHERE \";\n" +
-//						"            else                $WHERE = \" AND \";\n" +
-//						"            $WHERE .= $sw_buf;\n" +
-//						"            \n" +
-//						"            $sql .= \" \".$WHERE.\" \";\n" +
-//						"            //$sql .= $WHERE.\" \".$groupby.\" \";\n" +
-//						"            /*** WHERE句の作成 end ***/\n" +
-//						"        }else{                        //null => WHERE句にlikeを書く／ not null => HAVING句に～\n" +
-//						"            /*** HAVING句の作成 start ***/\n" +
-//						"            //HAVING  ifnull(id,'')||ifnull(name,'')||ifnull(r_year,'') LIKE '%sw[1]%'\n" +
-//						"            //    AND ifnull(id,'')||ifnull(name,'')||ifnull(r_year,'') LIKE '%sw[2]%'...\n" +
-//						"            \n" +
-//						"            $HAVING = \"\";\n" +
-//						"            if($having0 == \"\")  $HAVING = \" HAVING \";\n" +
-//						"            else	            $HAVING = \" HAVING \".$having0.\" AND \";\n" +
-//						"    		$HAVING .= $sw_buf;\n" +
-//						"            \n" +
-//						"            $sql .= \" GROUP BY \".$groupby.\" \".$HAVING;\n" +
-//						"            /*** HAVING句の作成 end ***/\n" +
-//						"        }\n" +
-						"        $sql .= \" \".$orderby.\" \".$limit;\n" +
-						"\n";
+						"	$sql_g = getG($groupby, $having0, $orderby);\n" +
+						"\n" +
+						"	$sql1 = getSQL($sql_a1, $table, $where0, $sql_g, $limit, null, null);\n";
     		if(DBMS.equals("sqlite") || DBMS.equals("sqlite3")){
 	    		php +=
-							"        $result = $dynamic_db"+dynamicCount+"->query($sql);\n" +
+							"    $result1 = $dynamic_db"+dynamicCount+"->query($sql1);\n" +
 							"\n" +
-							"        $i = 0;\n" +
-							"        $pop_num = 0;\n" +
-							"        $b = \"\";\n" +
+							"    //$i = 0;\n" +
+							"    $pop_num = 0;\n" +
+							"    $b = \"\";\n" +
 							php_str1 +
-							"        while($row = $result->fetchArray()){\n" +
-							"              $i++;\n" +
-							((dynamicRowFlg)? "              if($i>=$start && $i<=$end){	//New\n":"") +
+							"    while($row1 = $result->fetchArray()){\n" +
+							//"          //$i++;\n" +
+							"          //$b .= str_replace('"+dynamicFuncCountLabel+"', '_'.$i, $row[$j]);\n";	//For function's count
+							
+							/* nest dynamic string  start */
+							//TODO d
+							
+							
+							
+							
+							/* nest dynamic string  end */
+							
+	    		php +=	
+							((dynamicRowFlg)? "          if($i>=$start && $i<=$end){	//New\n":"") +
 							php_str2 +
-							"              for($j=0; $j<$dynamic_col_num; $j++){\n" +
-							"              		$b .= str_replace('"+dynamicFuncCountLabel+"', '_'.$i, $row[$j]);\n" +	//For function's count
-							"              }\n" +
+//							"          for($j=0; $j<$dynamic_col_num; $j++){\n" +
+//							"          		$b .= str_replace('"+dynamicFuncCountLabel+"', '_'.$i, $row[$j]);\n" +	//For function's count
+//							"          }\n" +
 							php_str3 +
-							((dynamicRowFlg)? "              }\n":"") +
-							"        }\n" +
+							((dynamicRowFlg)? "          }\n":"") +
+							"    }\n" +
 							php_str4 +
 //							"    }\n" +
 							"    unset($dynamic_db"+dynamicCount+");\n\n";
     		} else if(DBMS.equals("postgresql") || DBMS.equals("postgres")){
 	    		php +=
-							"        $result = pg_query($dynamic_db"+dynamicCount+", $sql);\n" +
+							"    $result1 = pg_query($dynamic_db"+dynamicCount+", $sql1);\n" +
 							"\n" +
-							"        $i = 0;\n" +
-							"        $pop_num = 0;\n" +
-							"        $b = \"\";\n" +
+							"    //$i = 0;\n" +
+							"    $pop_num = 0;\n" +
+							"    $b = \"\";\n" +
 							php_str1 +
-							"        while($row = pg_fetch_row($result)){\n" +
-							"              $i++;\n" +
-							((dynamicRowFlg)? "              if($i>=$start && $i<=$end){	//New\n":"") +
+							"    while($row1 = pg_fetch_row($result1)){\n" +
+							//"          //$i++;\n" +
+							"          //$b .= str_replace('"+dynamicFuncCountLabel+"', '_'.$i, $row[$j]);\n";	//For function's count
+							
+							/* nest dynamic string  start */
+							//TODO d
+				    		for(int i=0; i<dyamicWhileStrings.size(); i++){
+					    		php +=	dyamicWhileStrings.get(i);
+				    		}
+				    		for(int i=dyamicWhileCount; i>1; i--){		//TODO d 処理の位置
+				    			php += " }\n";
+				    		}
+				    		php += "$b .= '</div></div></div></div>';\n";		//TODO d 4つ固定でOK?
+							//php += dyamicWhileString;
+				    		
+							
+							/* nest dynamic string  end */
+	    		
+	    		php +=	
+							((dynamicRowFlg)? "          if($i>=$start && $i<=$end){	//New\n":"") +
 							php_str2 +
-//							"              foreach($row as $key => $value) {\n" +
-//							"              		$b .=  str_replace('"+dynamicFuncCountLabel+"', '_'.$i, $value);\n" +	//For function's count
-//							"              }\n" +
-							"              for($j=0; $j<$dynamic_col_num; $j++){\n" +
-							"              		$b .= str_replace('"+dynamicFuncCountLabel+"', '_'.$i, $row[$j]);\n" +	//For function's count
-							"              }\n" +
+//							"          for($j=0; $j<$dynamic_col_num; $j++){\n" +
+//							"          		$b .= str_replace('"+dynamicFuncCountLabel+"', '_'.$i, $row[$j]);\n" +	//For function's count
+//							"          }\n" +
 							php_str3 +
-							((dynamicRowFlg)? "              }\n":"") +
-							"        }\n" +
+							((dynamicRowFlg)? "          }\n":"") +
+							"    }\n" +
 							php_str4 +
 //							"    }\n" +
 							"    pg_close($dynamic_db"+dynamicCount+");\n\n";
     		}
     		php +=
     					((dynamicRowFlg)? "}\n":"") +
-    					"$ret['result'] = $b;\n";
+    					"    $ret['result'] = $b;\n";
     		if(dynamicRowFlg){
     			php += 
-						"$ret['start'] = $start;\n" +
-						"$ret['end'] = ($end<$i)? $end:$i;\n" +
-						"$ret['all'] = $i;\n" +
-						"$ret['info'] = (($ret['start']!=$ret['end'])? ($ret['start'].\" - \") : (\"\")) .$ret['end'].\" / \".$ret['all'];\n" +
-						"$ret['currentItems'] = ceil($i/$r);\n";
+						"    $ret['start'] = $start;\n" +
+						"    $ret['end'] = ($end<$i)? $end:$i;\n" +
+						"    $ret['all'] = $i;\n" +
+						"    $ret['info'] = (($ret['start']!=$ret['end'])? ($ret['start'].\" - \") : (\"\")) .$ret['end'].\" / \".$ret['all'];\n" +
+						"    $ret['currentItems'] = ceil($i/$r);\n";
     		}
     		php += 
 						"\n" +
-						"header(\"Content-Type: application/json; charset=utf-8\");\n" +
-						"echo json_encode($ret);\n" +
+						"    header(\"Content-Type: application/json; charset=utf-8\");\n" +
+						"    echo json_encode($ret);\n" +
+						"\n" +
+						"\n" +
+						"function getSQL($sql_a, $table, $where0, $sql_g, $limit, $sql_a2, $row){\n"+ 
+						"	$sql = getSF($sql_a, $table);\n" +
+						"	if(is_null($sql_a2)){\n" +
+						"		if($where0 != '')	$sql .= ' WHERE '.$where0.' ';\n" +
+						"		$sql .= $sql_g.' '.$limit;\n" +
+						"	}else{\n" +
+						"		$sql .= ' WHERE ';\n" +
+						"		if($where0 != '')	$sql .= $where0.' AND ';\n" +
+						"		$sql .= getW($sql_a2, $row).$sql_g;\n" +
+						"	}\n" +
+						"	return $sql;\n" +
+						"}\n" +
+						"function getSF($sql_a, $table){\n" +
+						"	return 'SELECT DISTINCT '.getAs($sql_a).' FROM '.$table;\n" +
+						"}\n" +
+						"function getAs($atts){\n" +
+						"	$r = '';\n" +
+						"	foreach($atts as $val){\n" +
+						"    	$r .= getA($val).',';\n" +
+						"    }\n" +
+						"	return substr($r, 0, -1);\n" +
+						"}\n" +
+						"function getA($att){\n" +
+						"	$sql_as = 'COALESCE(CAST(';\n" +	//TODO d  SQLite
+						"	$sql_ae = \" AS varchar), '')\";\n" +
+						"	return $sql_as.$att.$sql_ae;\n" +
+						"}\n" +
+						"function getW($al, $ar){\n" +
+						"	$r = '';\n" +
+						"	$and = ' AND ';\n" +
+						"	for($i=0 ; $i<count($al); $i++){\n" +
+						"		$r .= $al[$i].\" = '\".$ar[$i].\"'\".$and;\n" +
+						"	}\n" +
+						"	return rtrim($r, $and);\n" +
+						"}\n" +
+						"function getG($groupby, $having0, $orderby){\n" +
+						"	$r = '';\n" +
+						"	if($groupby != '')	$r .= ' GROUP BY '.$groupby.' ';\n" +
+						"	if($having0 != '')	$r .= ' HAVING '.$having0.' ';\n" +
+						"	$r .= ' '.$orderby;\n" +
+						"	return $r;\n" +
+						"}\n" +
 						"\n" +
 						"//XSS対策\n" +
 						"function checkHTMLsc($str){\n" +
@@ -1826,7 +2000,7 @@ public class Mobile_HTML5 {
 	//////////////////////////////////////////////////////////////////////////////////////////
 	//return session_start string
 	public static String getSessionStartString(){
-		if(SSQLparser.sessionFlag){
+		if(Start_Parse.sessionFlag){
 			return "<?php\n" +
 					"	session_start();\n" +
 					//"	session_regenerate_id(TRUE);\n" +	//これがあると、phpファイルへのアクセスごとにセッションが切れる？

@@ -12,7 +12,7 @@ import supersql.codegenerator.CodeGenerator;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.dataconstructor.DataConstructor;
-import supersql.parser.SSQLparser;
+import supersql.parser.Start_Parse;
 
 public class InvokeSSQL {
 
@@ -68,7 +68,7 @@ public class InvokeSSQL {
 
 		GlobalEnv.setGlobalEnv(args);
 		
-		SSQLparser parser = new SSQLparser("online");
+		Start_Parse parser = new Start_Parse("online");
 
 		String sig = CacheData.getSSQLsig(parser);
 		

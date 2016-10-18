@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 
+import supersql.common.Log;
 import supersql.extendclass.ExtList;
 
 public class WhereInfo implements Serializable {
@@ -13,7 +14,7 @@ public class WhereInfo implements Serializable {
 	private String sparqlWhereQuery;
 
 	public WhereInfo() {
-		if(SSQLparser.isDbpediaQuery() || SSQLparser.isJsonQuery())
+		if(Start_Parse.isDbpediaQuery() || Start_Parse.isJsonQuery())
 			setSparqlWhereQuery("");
 		else{
 			this.where_clause = new ExtList();
@@ -21,7 +22,7 @@ public class WhereInfo implements Serializable {
 	}
 
 	public WhereInfo(String line) {
-		if(SSQLparser.isDbpediaQuery() || SSQLparser.isJsonQuery())
+		if(Start_Parse.isDbpediaQuery() || Start_Parse.isJsonQuery())
 			setSparqlWhereQuery(line);
 		else{
 			this.where_clause = new ExtList();

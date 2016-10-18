@@ -18,7 +18,7 @@ import supersql.codegenerator.Jscss;
 import supersql.codegenerator.LocalEnv;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
-import supersql.parser.SSQLparser;
+import supersql.parser.Start_Parse;
 
 public class Mobile_HTML5Env extends LocalEnv {
     String data;
@@ -167,7 +167,7 @@ public class Mobile_HTML5Env extends LocalEnv {
 	        Log.out("<head>");
 	        
 	        //added by goto 20130508  "Login&Logout"
-	        if(SSQLparser.sessionFlag){
+	        if(Start_Parse.sessionFlag){
 	        	//header.insert(index,"<?php\n	session_start();\n	session_regenerate_id(TRUE);\n?>\n");
 	        	String s = "<?php\n	session_start();\n";
 	        	if(headerFlag == 1)	s += "	session_regenerate_id(TRUE);\n";
@@ -324,8 +324,8 @@ public class Mobile_HTML5Env extends LocalEnv {
 	        
 	        //added by goto 20130508  "Login&Logout" start
 	        //ログイン・ログアウト・新規登録
-	        if(SSQLparser.sessionFlag){
-	        	String s = SSQLparser.sessionString.trim();
+	        if(Start_Parse.sessionFlag){
+	        	String s = Start_Parse.sessionString.trim();
 	        	
 	        	//置換 ( " , "  ->  " ; " )
 	        	boolean dqFlg = false;
@@ -1227,7 +1227,7 @@ public class Mobile_HTML5Env extends LocalEnv {
 	        }
 	        //data-role="content"
 	        header.append("<!-- data-role=content start -->\n<div data-role=\"content\" style=\"padding:0\" id=\"content1\">\n");
-	        if(SSQLparser.sessionFlag){
+	        if(Start_Parse.sessionFlag){
 	        	header.append("\n<div id=\"showValues\"><!-- ユーザ名等を表示 --></div>\n");	//ユーザ名
 	        }
 	        	
@@ -1238,14 +1238,14 @@ public class Mobile_HTML5Env extends LocalEnv {
         if(Connector.loginFlag ){
         	header.append("<form action = \""+ GlobalEnv.getFileDirectory() + "/servlet/supersql.form.Session\" method = \"post\" name=\"theForm\">\n");
         	//header.append("<form action = \""+ GlobalEnv.getFileDirectory() + "/supersql.form.Session\" method = \"post\" name=\"theForm\">\n");
-        	header.append("<input type=\"hidden\" name=\"tableinfo\" value=\"" + SSQLparser.get_from_info_st() + "\" >");
+        	header.append("<input type=\"hidden\" name=\"tableinfo\" value=\"" + Start_Parse.get_from_info_st() + "\" >");
         	header.append("<input type=\"hidden\" name=\"configfile\" value=\"" + GlobalEnv.getconfigfile() + "\" >");
         }
 
         if(Connector.logoutFlag ){
         	header.append("<form action = \""+ GlobalEnv.getFileDirectory() + "/servlet/supersql.form.Session\" method = \"post\" name=\"theForm\">\n");
         	//header.append("<form action = \""+ GlobalEnv.getFileDirectory() + "/supersql.form.Session\" method = \"post\" name=\"theForm\">\n");
-        	//header.append("<input type=\"hidden\" name=\"tableinfo\" value=\"" + SSQLparser.get_from_info_st() + "\" >");
+        	//header.append("<input type=\"hidden\" name=\"tableinfo\" value=\"" + Start_Parse.get_from_info_st() + "\" >");
         	header.append("<input type=\"hidden\" name=\"configfile\" value=\"" + GlobalEnv.getconfigfile() + "\" >");
         }
 
@@ -1253,7 +1253,7 @@ public class Mobile_HTML5Env extends LocalEnv {
         if(Connector.insertFlag || Connector.deleteFlag || Connector.updateFlag){
         	header.append("<form action = \""+ GlobalEnv.getFileDirectory() + "/servlet/supersql.form.Update\" method = \"post\" name=\"theForm\">\n");
         	//header.append("<form action = \""+ GlobalEnv.getFileDirectory() + "/supersql.form.Update\" method = \"post\" name=\"theForm\">\n");
-        	header.append("<input type=\"hidden\" name=\"tableinfo\" value=\"" + SSQLparser.get_from_info_st() + "\" >");
+        	header.append("<input type=\"hidden\" name=\"tableinfo\" value=\"" + Start_Parse.get_from_info_st() + "\" >");
         	header.append("<input type=\"hidden\" name=\"configfile\" value=\"" + GlobalEnv.getconfigfile() + "\" >");
         	if(Connector.insertFlag)
         		header.append("<input type=\"hidden\" name=\"sql_param\" value=\"insert\" >");
@@ -1325,7 +1325,7 @@ public class Mobile_HTML5Env extends LocalEnv {
     		if(panel.length() != 0)															//20130503  Panel
     			footer.append("\n<!-- Panel start -->\n"+panel+"\n<!-- Panel end -->\n\n");	//Add panel contents.	
     		//added by goto 20130508  "Login&Logout"
-    		if(SSQLparser.sessionFlag){
+    		if(Start_Parse.sessionFlag){
     			footer.append("\n" +
     					"EOF;\n" +
     					"	}//end if\n" +
@@ -1335,7 +1335,7 @@ public class Mobile_HTML5Env extends LocalEnv {
     		}//else
     		footer.append("<iframe name=\"dummy_ifr\" style=\"display:none;\"><!-- dummy iframe for Form target --></iframe>\n");	//dummy iframe
     		//TODO: 下記でOK?
-    		if(SSQLparser.sessionFlag || Mobile_HTML5Function.searchCount>1 || Mobile_HTML5Function.selectCount>1){
+    		if(Start_Parse.sessionFlag || Mobile_HTML5Function.searchCount>1 || Mobile_HTML5Function.selectCount>1){
     			footer.append(Mobile_HTML5Env.PHP);			//PHPストリングを付加			//added by goto 20130515  "search"
     		}
     		if(footerFlag==1)		//通常時のみ（Prev/Nextでは行わない）

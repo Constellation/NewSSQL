@@ -44,7 +44,6 @@ public class Attribute extends Operand {
 
 	public int setItem(int no, String nm, String attimg, String key,
 			Hashtable<Integer, AttributeItem> attp) {
-
 		if(conditional){
 			AttNames.add(nm);
 		}else
@@ -151,7 +150,6 @@ public class Attribute extends Operand {
 			Preprocessor.putAggregateList(outsch, aggregate);
 			aggregateFlag = false;
 		}
-
 		return outsch;
 	}
 
@@ -251,7 +249,7 @@ public class Attribute extends Operand {
 		
 		return outsch;
 	}
-	//added by ria 20110913 end
+//	added by ria 20110913 end
 
 	public String getCondition() {
 		return condition;

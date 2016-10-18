@@ -4,8 +4,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import supersql.codegenerator.Asc_Desc.AscDesc;
+import supersql.codegenerator.Asc_Desc.AscDescComparator;
+import supersql.common.Log;
+
 public class Asc_Desc {
-	
+
 	public static ArrayList<ArrayList<AscDesc>> asc_desc_Array = new ArrayList<>();
 	public static ArrayList<AscDesc> asc_desc = new ArrayList<>();
 
@@ -13,27 +17,10 @@ public class Asc_Desc {
 	public Asc_Desc() {
 		
 	}
-	
 	public static int dynamicCount = 0;
-//	private static int dynamicCount_old = 0;
-//	private static int dCount_old = 1;
-//	private static int ascDescArrayCount = 0;
 	private static int ascCount = 0;
 	private static int descCount = 0;
-	
-//	public void preProcess() {
-//		asc_desc = new ArrayList<AscDesc>();
-//		//ascCount = 0;
-//		//descCount = 0;
-//	}
-//	public int getAscDescArrayCount(int dCount) {
-//		if(dCount != dCount_old)
-//			ascDescArrayCount++;
-//		dCount_old = dCount;
-//		System.out.println(ascDescArrayCount);
-//		return ascDescArrayCount;
-//	}
-	
+
 	//addOrderBy
 	public void addOrderBy(String order, String token) {
 		//Log.info("order="+order+", token="+token);

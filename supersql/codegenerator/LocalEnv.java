@@ -7,10 +7,7 @@ public abstract class LocalEnv implements Serializable {
 	
 	//tk start/////////////////////////////////////////////////
 	public static  DecorateList cssclass = new DecorateList();
-	//tk end///////////////////////////////////////////////////
-	
 	public LocalEnv() {
 
 	}
-
 }

@@ -10,7 +10,7 @@ import supersql.extendclass.ExtList;
 
 public class TFEtokenizer implements Serializable {
 
-	public static StringTokenizer st;
+	private StringTokenizer st;
 
 	private ExtList st_list;
 
@@ -27,6 +27,7 @@ public class TFEtokenizer implements Serializable {
         try {
             while (st.hasMoreTokens()) {
                 buffer = this.next(buffer);
+                
             }
         } catch (IllegalStateException e) {
         	Log.err("Error[TFEtokenizer]: Syntax Error in TFE");
@@ -68,7 +69,7 @@ public class TFEtokenizer implements Serializable {
     public String nextToken() {
         if (ind < st_list.size()) {
         	String ret = (String) (st_list.get(ind++));
-        	TFEmatcher.tokenCounter(ret, ind);	//halken TFEmatcher
+//        	TFEmatcher.tokenCounter(ret, ind);	//halken TFEmatcher
             return ret;
         } else {
             ind++;

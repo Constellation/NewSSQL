@@ -3,7 +3,6 @@ package supersql.codegenerator;
 import java.io.Serializable;
 
 import supersql.extendclass.ExtList;
-import supersql.parser.TFEmatcher;
 
 public class TFE implements ITFE,Serializable {
 
@@ -39,15 +38,6 @@ public class TFE implements ITFE,Serializable {
 	}
 
 	@Override
-	@Deprecated
-	public String work(ExtList<ExtList<String>> data_info) {
-		return null;
-//		return aggregate;
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public int countconnectitem() {
 		// TODO Auto-generated method stub
 		return 0;
@@ -55,7 +45,7 @@ public class TFE implements ITFE,Serializable {
 
 	@Override
 	public void setId(int id) {
-		TFEmatcher.addTFEid_and_TokenPlace(id);	//halken TFEmatcher
+//		TFEmatcher.addTFEid_and_TokenPlace(id);	//halken TFEmatcher
 		this.id = id;
 	}
 
@@ -78,6 +68,12 @@ public class TFE implements ITFE,Serializable {
 		this.aggregate = aggregate;
 	}
 
+
+	@Override
+	public String work(ExtList<ExtList<String>> data_info) {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
 
 	@Override
 	public ExtList makeschImage() {
@@ -105,5 +101,5 @@ public class TFE implements ITFE,Serializable {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 }

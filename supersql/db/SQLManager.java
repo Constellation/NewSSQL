@@ -24,8 +24,10 @@ import org.apache.commons.codec.digest.DigestUtils;
 import supersql.FrontEnd;
 import supersql.codegenerator.Ehtml;
 import supersql.codegenerator.Incremental;
+
 import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5;
 import supersql.common.DB;
+
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.common.Suggest;
@@ -95,8 +97,7 @@ public class SQLManager {
 
 	    	conn = cdb.getConn();
     	}
-
-    	//exception
+       	//exception
 //    	boolean isSession = false;
     	if(query.toLowerCase().contains("$session (\"") && query.toLowerCase().contains("\" )")){
     		if(query.contains(")OR"))	query = query.replace(")OR", ") OR");

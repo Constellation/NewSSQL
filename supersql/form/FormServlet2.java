@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import supersql.codegenerator.CodeGenerator;
 import supersql.common.GlobalEnv;
 import supersql.dataconstructor.DataConstructor;
-import supersql.parser.SSQLparser;
+import supersql.parser.Start_Parse;
 
 public class FormServlet2 extends HttpServlet {
 	
@@ -273,7 +273,7 @@ public void doPost(HttpServletRequest req,
         GlobalEnv.setGlobalEnv(args);
         GlobalEnv.setOnlineFlag();
 
-        SSQLparser parser = new SSQLparser("online");
+        Start_Parse parser = new Start_Parse("online");
 	
 		if(GlobalEnv.getErrFlag() == 0)
 		{

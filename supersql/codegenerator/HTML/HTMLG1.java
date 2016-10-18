@@ -14,8 +14,8 @@ public class HTMLG1 extends Grouper implements Serializable {
 
 	private HTMLEnv html_env;
 	private HTMLEnv html_env2;
-	boolean retFlag = false; // 20140602_masato pagenationフラグ
-	boolean pageFlag = false; // 20140602_masato pagenationフラグ
+	boolean retFlag = false;	// 20140602_masato pagenationフラグ
+	boolean pageFlag = false;	// 20140602_masato pagenationフラグ
 
 	// ���󥹥ȥ饯��
 	public HTMLG1(Manager manager, HTMLEnv henv, HTMLEnv henv2) {

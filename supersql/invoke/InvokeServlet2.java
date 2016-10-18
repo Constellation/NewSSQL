@@ -23,7 +23,7 @@ import supersql.common.Log;
 import supersql.dataconstructor.DataConstructor;
 import supersql.form.FormEnv;
 import supersql.form.FormServlet;
-import supersql.parser.SSQLparser;
+import supersql.parser.Start_Parse;
 
 public class InvokeServlet2 extends HttpServlet {
 
@@ -190,7 +190,7 @@ public class InvokeServlet2 extends HttpServlet {
 
 
 
-		SSQLparser parser = new SSQLparser("online");
+		Start_Parse parser = new Start_Parse("online");
 
 		if(GlobalEnv.getErrFlag() == 0)
 		{

@@ -18,7 +18,7 @@ public class Connector extends Operator implements Serializable{
     public static boolean loginFlag;
     public static boolean logoutFlag;
 
-	protected int sindex, dindex;
+	public static int dindex, sindex;
 
 	public Connector() {
 		super();
@@ -105,7 +105,7 @@ public class Connector extends Operator implements Serializable{
 		sindex++;
 		dindex += ci;
 		if (tfe instanceof Connector || tfe instanceof Attribute
-				|| tfe instanceof Function || tfe instanceof IfCondition) {
+				|| tfe instanceof Function || tfe instanceof IfCondition || tfe instanceof Decorator) {
 			return tfe.createNode(subdata);
 		}
 		else {
@@ -120,7 +120,7 @@ public class Connector extends Operator implements Serializable{
 		ExtList subdata = data.ExtsubList(dindex, dindex + ci);
 
 		if (tfe instanceof Connector || tfe instanceof Attribute
-				|| tfe instanceof Function || tfe instanceof IfCondition) {
+				|| tfe instanceof Function || tfe instanceof IfCondition || tfe instanceof Decorator) {
 			
 //			//20131118 dynamic
 //			if(Mobile_HTML5.dynamicDisplay){

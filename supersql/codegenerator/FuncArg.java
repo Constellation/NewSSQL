@@ -4,7 +4,6 @@ import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5;
 import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5Function;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
-//import common.Log;
 
 
 public class FuncArg {
@@ -78,11 +77,12 @@ public class FuncArg {
 			Function.nestingLevel++;
 			return tfe.work(Data);	//recursive call
 
-		} else if (tfe instanceof Attribute) {
+		} 
+		else if (tfe instanceof Attribute) {
 			
 			//20131118 dynamic
 			if(Mobile_HTML5.dynamicDisplay){
-				return Mobile_HTML5.dynamicFuncArgProcess(tfe);
+				return Mobile_HTML5.dynamicFuncArgProcess(tfe, null);
 			}
 //			//20131127 form
 //			if(Mobile_HTML5.form){
@@ -90,7 +90,8 @@ public class FuncArg {
 //			}
 
 			return ((Attribute) tfe).getStr(Data);
-		} else {
+		} 
+		else {
 			return null;
 		}
 	}

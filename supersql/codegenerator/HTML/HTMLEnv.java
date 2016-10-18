@@ -23,7 +23,7 @@ import supersql.codegenerator.LocalEnv;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.common.Utils;
-import supersql.parser.SSQLparser;
+import supersql.parser.Start_Parse;
 
 public class HTMLEnv extends LocalEnv implements Serializable{
 	static String formPartsName = null;
@@ -442,7 +442,7 @@ public class HTMLEnv extends LocalEnv implements Serializable{
 		Element form = new Element(Tag.valueOf("form"), "", formAttributes);
 
 		form.appendChild(createInput("hidden", "tableinfo",
-				SSQLparser.get_from_info_st()));
+				Start_Parse.get_from_info_st()));
 		form.appendChild(createInput("hidden", "configfile",
 				GlobalEnv.getconfigfile()));
 
@@ -479,7 +479,7 @@ public class HTMLEnv extends LocalEnv implements Serializable{
 		Attributes firstInputAttributes = new Attributes();
 		firstInputAttributes.put(hidden);
 		firstInputAttributes.put("name", "tableinfo");
-		firstInputAttributes.put("value", SSQLparser.get_from_info_st());
+		firstInputAttributes.put("value", Start_Parse.get_from_info_st());
 		Element firstInput = new Element(input, "", firstInputAttributes);
 
 		Attributes secondInputAttributes = new Attributes();
@@ -1187,7 +1187,7 @@ public class HTMLEnv extends LocalEnv implements Serializable{
 					+ GlobalEnv.getFileDirectory()
 					+ "/servlet/supersql.form.Session\" method = \"post\" name=\"theForm\">\n";
 			code_tmp += "<input type=\"hidden\" name=\"tableinfo\" value=\""
-					+ SSQLparser.get_from_info_st() + "\" >";
+					+ Start_Parse.get_from_info_st() + "\" >";
 			code_tmp += "<input type=\"hidden\" name=\"configfile\" value=\""
 					+ GlobalEnv.getconfigfile() + "\" >";
 		}
@@ -1206,7 +1206,7 @@ public class HTMLEnv extends LocalEnv implements Serializable{
 					+ GlobalEnv.getFileDirectory()
 					+ "/servlet/supersql.form.Update\" method = \"post\" name=\"theForm\">\n";
 			code_tmp += "<input type=\"hidden\" name=\"tableinfo\" value=\""
-					+ SSQLparser.get_from_info_st() + "\" >";
+					+ Start_Parse.get_from_info_st() + "\" >";
 			code_tmp += "<input type=\"hidden\" name=\"configfile\" value=\""
 					+ GlobalEnv.getconfigfile() + "\" >";
 			if (Connector.insertFlag)

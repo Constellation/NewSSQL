@@ -12,7 +12,7 @@ import supersql.codegenerator.CodeGenerator;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.dataconstructor.DataConstructor;
-import supersql.parser.SSQLparser;
+import supersql.parser.Start_Parse;
 
 public class EmbedServlet extends HttpServlet {
 	
@@ -71,7 +71,7 @@ public void doGet(HttpServletRequest req,
 		    GlobalEnv.setGlobalEnv(args);
 		    GlobalEnv.err_flag = 0;
 		    
-		    SSQLparser parser = new SSQLparser("online");
+		    Start_Parse parser = new Start_Parse("online");
 
 			if(GlobalEnv.getErrFlag() == 0)
 			{
