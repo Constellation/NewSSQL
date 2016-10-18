@@ -322,7 +322,6 @@ public class SQLManager {
 			    	  }
 			    	  if(!list.isEmpty()){
 			    		  Log.err("\n## Column list ##\n" + list);
-			    		  // 20140624_masato
 //			    		  GlobalEnv.errorText += "\n## Column list ##\n" + list;
 			    	  }
 			    	  
@@ -334,7 +333,6 @@ public class SQLManager {
 		    			 ){
 			    	  list = Suggest.getTableNameList(conn, errorContents[1]);
 			    	  Log.err("\n## Table list ##\n" + list + "\n");
-			    	  // 20140624_masato
 //		    		  GlobalEnv.errorText += "\n## Table list ##\n" + list + "\n";
 			      }
 			      //added by goto 20131016 end
