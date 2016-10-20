@@ -1,0 +1,7 @@
+GENERATE HTML
+    [link(e1.name, file="Q31.ssql", att=e1.id)]! !
+    "========================"!
+    [link(e2.name, file="Q31.ssql", att=e2.id)]! !
+    "========================"!
+    [link(s.city, file="Q32.ssql", att=s.id)]!
+FROM employee e1, employee e2, shop s
