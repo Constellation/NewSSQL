@@ -11,6 +11,8 @@ import org.htmlcleaner.PrettyXmlSerializer;
 import org.htmlcleaner.TagNode;
 import org.htmlcleaner.XmlSerializer;
 
+import supersql.common.Log;
+
 public class FileFormatter {
 	
 	public FileFormatter() {
@@ -18,23 +20,37 @@ public class FileFormatter {
 	}
 
     public static String process(String html) {
+    	Log.i(html);
     	String r = "";
     	
     	// Create an instance of HtmlCleaner
         HtmlCleaner cleaner = new HtmlCleaner();
+        // take default cleaner properties
         CleanerProperties props = cleaner.getProperties();
         
         //TODO CDATAのescape http://htmlcleaner.sourceforge.net/parameters.php
+        // customize cleaner's behaviour with property setters
         props.setUseCdataFor("style");	
 
         try {
             // Exec the Cleaner
+        	
+        	// Clean HTML taken from simple string, file, URL, input stream, 
+        	// input source or reader. Result is root node of created 
+        	// tree-like structure. Single cleaner instance may be safely used
+        	// multiple times.
             TagNode node = cleaner.clean( html );
 
-            // XMLに変換してStringWriterに
-            XmlSerializer serializer = new PrettyXmlSerializer( props );
+            
+//        	// serialize a node to a file, output stream, DOM, JDom...
+//        	new XXXSerializer(props).writeXmlXXX(aNode, ...);
             StringWriter writer = new StringWriter();
-            serializer.writeXml(node, writer, "utf-8");
+        	new PrettyXmlSerializer(props).writeXml(node, writer, "utf-8");
+            
+//            // XMLに変換してStringWriterに
+//            XmlSerializer serializer = new PrettyXmlSerializer( props );
+//            StringWriter writer = new StringWriter();
+//            serializer.writeXml(node, writer, "utf-8");
 
             r = writer.getBuffer().toString();
             writer.close();
