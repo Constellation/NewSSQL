@@ -682,11 +682,12 @@ public class HTMLFunction extends Function {
 		}
 		// String filename = html_env.outfile + "_" + this.getAtt("default") +
 		// ".html";
-		att = URLEncoder.encode(att, "UTF-8");
-		String filename = htmlEnv.outFile + att + ".html";
-
-		htmlEnv.fileName = filename;
-		// System.out.println(filename);
+		
+		//changed by goto 20161019 for new foreach
+		//att = URLEncoder.encode(att, "UTF-8");
+		//String filename = htmlEnv.outFile + att + ".html";
+		//htmlEnv.fileName = filename;
+		HTMLG3.foreachID = att;
 		return;
 	}
 
@@ -845,7 +846,6 @@ public class HTMLFunction extends Function {
 	private void Func_sinvoke(ExtList data_info) {
 		// link関数の仕様変更　link(att_name, url, value1, value2, ...)
 		String file = this.Args.get(1).toString();
-		String a = this.Args.get(0).toString();
 		if (file.startsWith("\'") || file.startsWith("\"")) {
 			file = file.substring(1, file.length() - 1);
 		}
@@ -854,31 +854,16 @@ public class HTMLFunction extends Function {
 			att += "_" + this.Args.get(i).getStr();
 		}
 
-		// String file = this.getAtt("file");
 		String action = this.getAtt("action");
-		// int attNo = 1;
-		// String att = new String();
 		Log.out("sinvoke file 3: " + file);
 
-		// tk start/////////////////////////////////////////////////////////////
-		/*
-		 * if (file.indexOf("/") > 0) { file =
-		 * file.substring(file.lastIndexOf("/") + 1); }
-		 */
-		// tk end//////////////////////////////////////////////////////////////
-		// Log.out("1 att:" + att + " attNo:" + attNo + " att1:"
-		// + this.getAtt("att1"));
-		//
-		// while (!this.getAtt("att" + attNo).equals("")) {
-		// att = att + "_" + this.getAtt("att" + attNo);
-		// attNo++;
-		// Log.out("att:" + att + " attNo:" + attNo);
-		// }
-		try {
-			att = URLEncoder.encode(att, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
+		//changed by goto 20161019 for new foreach
+//		try {
+//			att = URLEncoder.encode(att, "UTF-8");
+//		} catch (UnsupportedEncodingException e) {
+//			e.printStackTrace();
+//		}
+		
 		if (this.getAtt("action").equals("")) {
 			try {
 				if (file.toLowerCase().contains(".sql")) {
@@ -905,8 +890,9 @@ public class HTMLFunction extends Function {
 				else
 					filename = file + "_" + this.getAtt("att") + ".html";
 			} else {
-				// filename = file + "_" + ret + ".html"; masato
-				filename = file + att + ".html";
+				//changed by goto 20161019 for new foreach
+				filename = file+".html?"+att.substring(1);
+//				filename = file + ""+att + ".html";
 			}
 
 			filename.replace("\\\\", "\\");

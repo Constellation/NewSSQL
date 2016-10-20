@@ -1,12 +1,5 @@
 package supersql.codegenerator;
 
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-
 import supersql.codegenerator.HTML.HTMLEnv;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;

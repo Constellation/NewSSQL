@@ -92,8 +92,8 @@ public class Mobile_HTML5G3 extends Grouper {
             html_env.glevel--;
             html_env.getHeader(1);
             html_env.getFooter(1);
-            html_env2.header.append("<?xml version=\"1.0\" encoding=\""+html_env.getEncode()+"\"?><SSQL>");
-            html_env2.footer.append("</SSQL>");
+//            html_env2.header.append("<?xml version=\"1.0\" encoding=\""+html_env.getEncode()+"\"?><SSQL>");
+//            html_env2.footer.append("</SSQL>");
 
             try {
         		//changed by goto 20120715_2 start

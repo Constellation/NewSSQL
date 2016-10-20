@@ -4,9 +4,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map.Entry;
+import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.Vector;
 
 import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.Attributes;
@@ -1062,6 +1062,9 @@ public class HTMLEnv extends LocalEnv implements Serializable{
 //			header.append(css);
 //			Log.out(css.toString());
 //			header.append("\n-->\n</STYLE>\n");
+			
+	        //Generator
+	        header.append("<meta name=\"GENERATOR\" content=\" SuperSQL (Generate HTML) \">\n");
 		}
 	}
 
@@ -1170,16 +1173,19 @@ public class HTMLEnv extends LocalEnv implements Serializable{
 			header.append("<!-- Generated CSS -->\n");
 			header.append("<link rel=\"stylesheet\" type=\"text/css\" href=\""+ Jscss.getGenerateCssFileName(0) + "\">\n");
 			header.append("</HEAD>\n");
-
 			
+			//changed by goto 20161019
 			Log.out("<body>");
+			code_tmp = "";
 			code_tmp += "<BODY class=\"body\">\n";
-			code_tmp += "<div";
-			code_tmp += div;
-			code_tmp += titleClass;
-			code_tmp += ">";
-			code_tmp += title;
-			code_tmp += "</div>";
+			if(!title.toString().trim().equals("")){
+				code_tmp += "<div";
+				code_tmp += div;
+				code_tmp += titleClass;
+				code_tmp += ">";
+				code_tmp += title;
+				code_tmp += "</div>";
+			}
 		}
 
 		if (Connector.loginFlag) {

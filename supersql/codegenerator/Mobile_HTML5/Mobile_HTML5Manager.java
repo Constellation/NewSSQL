@@ -117,8 +117,8 @@ public class Mobile_HTML5Manager extends Manager{
 
         html_env.getHeader(1);
         html_env.getFooter(1);
-        html_env2.header.append("<?xml version=\"1.0\" encoding=\""+html_env.getEncode()+"\"?><SSQL>");
-        html_env2.footer.append("</SSQL>");
+//        html_env2.header.append("<?xml version=\"1.0\" encoding=\""+html_env.getEncode()+"\"?><SSQL>");
+//        html_env2.footer.append("</SSQL>");
         try {
         	if(!GlobalEnv.isOpt()){
         		//changed by goto 20120715 start
@@ -250,8 +250,8 @@ public class Mobile_HTML5Manager extends Manager{
         html_env.setOutlineMode();
         tfe_info.work(data_info);
 
-        html_env2.header.append("<?xml version=\"1.0\" encoding=\"Shift_JIS\"?><SSQL>");
-        html_env2.footer.append("</SSQL>");
+//        html_env2.header.append("<?xml version=\"1.0\" encoding=\"Shift_JIS\"?><SSQL>");
+//        html_env2.footer.append("</SSQL>");
 
 
         if(GlobalEnv.isOpt()){

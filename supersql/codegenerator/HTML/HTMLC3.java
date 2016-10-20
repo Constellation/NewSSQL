@@ -9,6 +9,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
 import supersql.codegenerator.Connector;
+import supersql.codegenerator.FileFormatter;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
@@ -118,9 +119,8 @@ public class HTMLC3 extends Connector {
 				htmlEnv.getHeader();
 				htmlEnv.getFooter();
 				// html_env2.header.append("<?xml version=\"1.0\" encoding=\"Shift_JIS\"?><SSQL>");
-				htmlEnv2.header.append("<?xml version=\"1.0\" encoding=\""
-						+ Utils.getEncode() + "\"?><SSQL>");
-				htmlEnv2.footer.append("</SSQL>");
+//				htmlEnv2.header.append("<?xml version=\"1.0\" encoding=\""+ Utils.getEncode() + "\"?><SSQL>");
+//				htmlEnv2.footer.append("</SSQL>");
 				try {
 					// changed by goto 20120715_2 start
 					// This is for '%'.
@@ -139,9 +139,15 @@ public class HTMLC3 extends Connector {
 					// Log.info("File encoding: "+((html_env.charset!=null)?
 					// html_env.charset : "UTF-8"));
 					// changed by goto 20120715_2 end
-					pw.println(htmlEnv.header);
-					pw.println(htmlEnv.code);
-					pw.println(htmlEnv.footer);
+					
+					//changed by goto 20161019 for HTML Formatter
+					String html = "";
+					html += htmlEnv.header;
+					html += htmlEnv.code;
+					html += htmlEnv.footer;
+					html = FileFormatter.process(html);
+					pw.println(html);
+					
 					pw.close();
 					// html_env.header = new StringBuffer();
 					// html_env.footer = new StringBuffer();

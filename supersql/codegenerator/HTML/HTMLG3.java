@@ -1,3 +1,4 @@
+//changed by goto 20161019 for new foreach
 /*
  * Created on 2004/07/25
  */
@@ -11,15 +12,17 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
+import supersql.codegenerator.FileFormatter;
 import supersql.codegenerator.Grouper;
 import supersql.codegenerator.Jscss;
 import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
-import supersql.common.Utils;
 import supersql.extendclass.ExtList;
 
 public class HTMLG3 extends Grouper {
+	
+	public static String foreachID = "";	//added by goto 20161019 for new foreach
 
 	private String backfile = new String();
 	private int countinstance = 0;
@@ -64,6 +67,28 @@ public class HTMLG3 extends Grouper {
 	// G3��work�᥽�å�
 	@Override
 	public String work(ExtList data_info) {
+		//added by goto 20161019 for new foreach
+		final String ID = "ssql_foreach";
+		StringBuffer foreachContents = new StringBuffer(
+				"<script type=\"text/javascript\">\n" +
+				"<!--\n" +
+				"window.onload = function(){\n" +
+				"	if(location.search.length<1){\n" +
+				"		document.write(\"SuperSQL Foreach Page\");\n" +
+				"	}else{\n" +
+				"		var id = location.search.substring(1, location.search.length);\n" +
+				//"		id = id.replace(/\\+/g,\" \");\n" +
+				"		id = decodeURI(id);\n" +
+				"		var elementID = document.getElementById(\""+ID+"_\"+id);\n" +
+				"		if(elementID)\n" +
+				"			elementID.style.display=\"block\";\n" +
+				"		else\n" +
+				"			document.write(\"No Data Found\");\n" +
+				"	}\n" +
+				"}\n" +
+				"//-->\n" +
+				"</script>\n\n");
+		
 		String parentfile = html_env.fileName;
 		String parentnextbackfile = html_env.nextBackFile;
 		StringBuffer parentcode = html_env.code;
@@ -87,7 +112,6 @@ public class HTMLG3 extends Grouper {
 		this.setDataList(data_info);
 		while (this.hasMoreItems()) {
 			html_env.gLevel++;
-
 			html_env.code = new StringBuffer();
 			html_env2.code = new StringBuffer();
 
@@ -106,100 +130,145 @@ public class HTMLG3 extends Grouper {
 
 			html_env.setOutlineMode();
 			this.worknextItem();
+			
+			//added by goto 20161019 for new foreach
+			html_env.code.insert(0, "<DIV id=\""+ID+foreachID+"\" style=\"display:none\">\n");
+			html_env.code.append("</DIV>\n\n");
+			foreachContents.append(html_env.code);
 
 			if (!html_env.foreachFlag) {
 				setLinkButton();
 			}
 			html_env.gLevel--;
-			html_env.getHeader();
-			html_env.getFooter();
-			html_env2.header.append("<?xml version=\"1.0\" encoding=\""
-					+ Utils.getEncode() + "\"?><SSQL>");
-			html_env2.footer.append("</SSQL>");
-
-			try {
-				// changed by goto 20120715_2 start
-				// This is for 'link/foreach'.
-				// PrintWriter pw2 = new PrintWriter(new BufferedWriter(new
-				// FileWriter(
-				// html_env.fileName)));
-				PrintWriter pw;
-				if (html_env.charset != null) {
-					pw = new PrintWriter(new BufferedWriter(
-							new OutputStreamWriter(new FileOutputStream(
-									html_env.fileName), html_env.charset)));
-					// Log.info("File encoding: "+html_env.charset);
-				} else
-					pw = new PrintWriter(new BufferedWriter(new FileWriter(
-							html_env.fileName)));
-				// Log.info("File encoding: "+((html_env.charset!=null)?
-				// html_env.charset : "UTF-8"));
-				// changed by goto 20120715_2 end
-				pw.println(html_env.header);
-				pw.println(html_env.code);
-				pw.println(html_env.footer);
-				pw.close();
-				if (GlobalEnv.isOpt()) {
-					html_env2.fileName = html_env.fileName.substring(0,
-							html_env.fileName.lastIndexOf(".html")) + ".xml";
-					// changed by goto 20120715_2 start
-					// PrintWriter pw2 = new PrintWriter(new BufferedWriter(new
-					// FileWriter(
-					// html_env2.filename)));
-					PrintWriter pw2;
-					if (html_env.charset != null) {
-						pw2 = new PrintWriter(new BufferedWriter(
-								new OutputStreamWriter(new FileOutputStream(
-										html_env2.fileName), html_env.charset)));
-						// Log.info("File encoding: "+html_env.charset);
-					} else
-						pw2 = new PrintWriter(new BufferedWriter(
-								new FileWriter(html_env2.fileName)));
-					// Log.info("File encoding: "+((html_env.charset!=null)?
-					// html_env.charset : "UTF-8"));
-					// changed by goto 20120715_2 end
-
-					pw2.println(html_env2.header);
-					pw2.println(html_env2.code);
-					pw2.println(html_env2.footer);
-					pw2.close();
-					HTMLoptimizer xml = new HTMLoptimizer();
-					String xml_str = xml.generateHtml(html_env2.fileName);
-					pw = new PrintWriter(new BufferedWriter(new FileWriter(
-							html_env.fileName)));
-					pw.println(html_env.header);
-					pw.println(xml_str);
-					StringBuffer footer = new StringBuffer(
-							"</div></body></html>");
-					pw.println(footer);
-					pw.close();
-				}
-				html_env.header = new StringBuffer();
-				Jscss.process();	//masato 20141231
-				html_env.footer = new StringBuffer();
-				html_env2.header = new StringBuffer();
-				html_env2.footer = new StringBuffer();
-			} catch (FileNotFoundException fe) {
-//				System.err.println("Error: specified outdirectory \""
+			
+			
+//			html_env.getHeader();
+//			html_env.getFooter();
+////			html_env2.header.append("<?xml version=\"1.0\" encoding=\""
+////					+ Utils.getEncode() + "\"?><SSQL>");
+////			html_env2.footer.append("</SSQL>");
+//
+//			try {
+//				// changed by goto 20120715_2 start
+//				// This is for 'link/foreach'.
+//				// PrintWriter pw2 = new PrintWriter(new BufferedWriter(new
+//				// FileWriter(
+//				// html_env.fileName)));
+//				PrintWriter pw;
+//				if (html_env.charset != null) {
+//					pw = new PrintWriter(new BufferedWriter(
+//							new OutputStreamWriter(new FileOutputStream(
+//									html_env.fileName), html_env.charset)));
+//					// Log.info("File encoding: "+html_env.charset);
+//				} else
+//					pw = new PrintWriter(new BufferedWriter(new FileWriter(
+//							html_env.fileName)));
+//				// Log.info("File encoding: "+((html_env.charset!=null)?
+//				// html_env.charset : "UTF-8"));
+//				// changed by goto 20120715_2 end
+//				pw.println(html_env.header);
+//				pw.println(html_env.code);
+//				pw.println(html_env.footer);
+//				pw.close();
+//				if (GlobalEnv.isOpt()) {
+//					html_env2.fileName = html_env.fileName.substring(0,
+//							html_env.fileName.lastIndexOf(".html")) + ".xml";
+//					// changed by goto 20120715_2 start
+//					// PrintWriter pw2 = new PrintWriter(new BufferedWriter(new
+//					// FileWriter(
+//					// html_env2.filename)));
+//					PrintWriter pw2;
+//					if (html_env.charset != null) {
+//						pw2 = new PrintWriter(new BufferedWriter(
+//								new OutputStreamWriter(new FileOutputStream(
+//										html_env2.fileName), html_env.charset)));
+//						// Log.info("File encoding: "+html_env.charset);
+//					} else
+//						pw2 = new PrintWriter(new BufferedWriter(
+//								new FileWriter(html_env2.fileName)));
+//					// Log.info("File encoding: "+((html_env.charset!=null)?
+//					// html_env.charset : "UTF-8"));
+//					// changed by goto 20120715_2 end
+//
+//					pw2.println(html_env2.header);
+//					pw2.println(html_env2.code);
+//					pw2.println(html_env2.footer);
+//					pw2.close();
+//					HTMLoptimizer xml = new HTMLoptimizer();
+//					String xml_str = xml.generateHtml(html_env2.fileName);
+//					pw = new PrintWriter(new BufferedWriter(new FileWriter(
+//							html_env.fileName)));
+//					pw.println(html_env.header);
+//					pw.println(xml_str);
+//					StringBuffer footer = new StringBuffer(
+//							"</div></body></html>");
+//					pw.println(footer);
+//					pw.close();
+//				}
+//				html_env.header = new StringBuffer();
+//				Jscss.process();	//masato 20141231
+//				html_env.footer = new StringBuffer();
+//				html_env2.header = new StringBuffer();
+//				html_env2.footer = new StringBuffer();
+//			} catch (FileNotFoundException fe) {
+////				System.err.println("Error: specified outdirectory \""
+////						+ html_env.outDir + "\" is not found");
+//				Log.err("Error: specified outdirectory \""
 //						+ html_env.outDir + "\" is not found");
-				Log.err("Error: specified outdirectory \""
-						+ html_env.outDir + "\" is not found");
-//				GlobalEnv.errorText += "Error: specified outdirectory \""
-//						+ html_env.outDir + "\" is not found";
-				GlobalEnv.addErr("Error: specified outdirectory \""
-						+ html_env.outDir + "\" is not found");
-				// comment out by chie
-				// System.exit(-1);
-			} catch (IOException e) {
-				Log.err("Error[HTMLG3]: File IO Error in HTMLG3");
-//				GlobalEnv.errorText += "Error[HTMLG3]: File IO Error in HTMLG3";
-				e.printStackTrace();
-				GlobalEnv.addErr("Error[HTMLG3]: File IO Error in HTMLG3");
-				// comment out by chie
-				// System.exit(-1);
-			}
+////				GlobalEnv.errorText += "Error: specified outdirectory \""
+////						+ html_env.outDir + "\" is not found";
+//				GlobalEnv.addErr("Error: specified outdirectory \""
+//						+ html_env.outDir + "\" is not found");
+//				// comment out by chie
+//				// System.exit(-1);
+//			} catch (IOException e) {
+//				Log.err("Error[HTMLG3]: File IO Error in HTMLG3");
+////				GlobalEnv.errorText += "Error[HTMLG3]: File IO Error in HTMLG3";
+//				e.printStackTrace();
+//				GlobalEnv.addErr("Error[HTMLG3]: File IO Error in HTMLG3");
+//				// comment out by chie
+//				// System.exit(-1);
+//			}
+		}
+		
+		
+		//added by goto 20161019 for new foreach
+		html_env.getHeader();
+		html_env.getFooter();
+		try {
+			PrintWriter pw;
+			if (html_env.charset != null) {
+				pw = new PrintWriter(new BufferedWriter(
+						new OutputStreamWriter(new FileOutputStream(
+								html_env.outFile+".html"), html_env.charset)));
+			} else
+				pw = new PrintWriter(new BufferedWriter(new FileWriter(
+						html_env.fileName+".html")));
+			
+			//changed by goto 20161019 for HTML Formatter
+			String html = "";
+			html += html_env.header;
+			html += html_env.code_tmp;
+			html += foreachContents;
+			html += html_env.footer;
+			html = FileFormatter.process(html);
+			pw.println(html);
+
+			pw.close();
+			
+			Jscss.process();
+		} catch (FileNotFoundException fe) {
+			Log.err("Error: specified outdirectory \""
+					+ html_env.outDir + "\" is not found");
+			GlobalEnv.addErr("Error: specified outdirectory \""
+					+ html_env.outDir + "\" is not found");
+		} catch (Exception e) {
+			Log.err("Error[HTMLG3]: File IO Error in HTMLG3");
+			e.printStackTrace();
+			GlobalEnv.addErr("Error[HTMLG3]: File IO Error in HTMLG3");
 		}
 
+		
 		html_env.fileName = parentfile;
 		html_env.code = parentcode;
 		html_env.css = parentcss;

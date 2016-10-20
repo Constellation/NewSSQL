@@ -243,7 +243,7 @@ public class Mobile_HTML5 {
 	    	String insertFlag = "";
 	    	for(String s:formColumn0){
 	    		columns += s+",";
-	    		Log.i(s);
+	    		//Log.i(s);
 	    	}
 	    	columns = columns.substring(0,columns.length()-1);
 	    	after_from = formColumnTable.get(0);	//TODO 複数テーブルへのinsert
@@ -1094,7 +1094,7 @@ public class Mobile_HTML5 {
 			if(dynamicAttributeFlg){
 				//TODO d
 				int i = Gnum-1;
-				int j = Connector.sindex;				//CAST(a AS varchar)
+				int j = new Connector().getSindex();				//CAST(a AS varchar)
 				String a = "'COALESCE(CAST("+s+" AS varchar), \\'\\')'";	//for displaying rows which include NULL values (common to postgresql, sqlie, mysql)
 				String b = "'.$row"+Gnum+"["+j+"].'";
 				s = b;
@@ -1142,7 +1142,7 @@ public class Mobile_HTML5 {
 	}
 	public static void dyamicPreStringProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
 		int i = Gnum-1;
-		int j = Connector.sindex;
+		int j = new Connector().getSindex();
 //		if(dynamicAttributeFlg)
 //			Log.i(dynamicAttributeFlg+"  "+i+"  "+j);
 		if(dynamicAttributeFlg && i==1 && j==2){	//TODO d jの値を可変に
@@ -1165,7 +1165,7 @@ public class Mobile_HTML5 {
 			if(symbol.contains("G1") || symbol.contains("G2")){
 				//dyamicWhileString = "";
 				if(dynamicAttributeFlg){
-					Log.i("!!!! "+Gnum+" "+dyamicWhileString);
+					//Log.i("!!!! "+Gnum+" "+dyamicWhileString);
 					dyamicWhileStrings.add(dyamicWhileString);
 				}
 			}
@@ -1203,7 +1203,7 @@ public class Mobile_HTML5 {
 			
 			String s = html_env.code.toString();
 			dyamicWhileString = "$b .= '"+s.replaceAll("\r\n|\r|\n", "")+"';\n";
-			Log.i("---- ");
+			//Log.i("---- ");
 		}
 	}
 	
@@ -1288,7 +1288,7 @@ public class Mobile_HTML5 {
 			//TODO div, table以外の場合
 			int numberOfColumns = 1;
 			String php_str1 = "", php_str2 = "", php_str3 = "", php_str4 = "";
-			Log.i("!! "+symbol);
+			//Log.i("!! "+symbol);
 			if(!symbol.contains("G1") && !symbol.contains("G2")){
 				
 				if(decos.containsKey("table")){
