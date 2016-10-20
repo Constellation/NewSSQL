@@ -14,7 +14,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -859,25 +858,12 @@ public class HTMLFunction extends Function {
 		// String att = new String();
 		Log.out("sinvoke file 3: " + file);
 
-		// tk start/////////////////////////////////////////////////////////////
-		/*
-		 * if (file.indexOf("/") > 0) { file =
-		 * file.substring(file.lastIndexOf("/") + 1); }
-		 */
-		// tk end//////////////////////////////////////////////////////////////
-		// Log.out("1 att:" + att + " attNo:" + attNo + " att1:"
-		// + this.getAtt("att1"));
-		//
-		// while (!this.getAtt("att" + attNo).equals("")) {
-		// att = att + "_" + this.getAtt("att" + attNo);
-		// attNo++;
-		// Log.out("att:" + att + " attNo:" + attNo);
-		// }
-		try {
-			att = URLEncoder.encode(att, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
+		//changed by goto 20161019 for new foreach
+//		try {
+//			att = URLEncoder.encode(att, "UTF-8");
+//		} catch (UnsupportedEncodingException e) {
+//			e.printStackTrace();
+//		}
 		
 		if (this.getAtt("action").equals("")) {
 			try {

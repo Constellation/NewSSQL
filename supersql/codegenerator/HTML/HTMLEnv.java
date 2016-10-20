@@ -1051,11 +1051,9 @@ public class HTMLEnv extends LocalEnv implements Serializable{
 	}
 
 	public void getHeader() {
-		int index = 0;
 		if (GlobalEnv.getframeworklist() == null) {
-			header.insert(index, "<HEAD>\n");
-			header.insert(index, "<HTML>\n");
-			Log.out("<HTML>");
+			header.insert(0, "<!DOCTYPE html>\n<HTML>\n<HEAD>\n");
+			Log.out("<HTML>\n<head>");
 //			header.append("<STYLE TYPE=\"text/css\">\n");
 //			header.append("<!--\n");
 //			commonCSS();

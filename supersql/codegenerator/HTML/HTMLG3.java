@@ -8,7 +8,6 @@ import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
@@ -18,7 +17,6 @@ import supersql.codegenerator.Jscss;
 import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
-import supersql.common.Utils;
 import supersql.extendclass.ExtList;
 
 public class HTMLG3 extends Grouper {
@@ -84,11 +82,11 @@ public class HTMLG3 extends Grouper {
 				"		if(elementID)\n" +
 				"			elementID.style.display=\"block\";\n" +
 				"		else\n" +
-				"			document.write(\"No Data Found\");\n" +
+				"			document.write(\"No Data Found : \"+id);\n" +
 				"	}\n" +
 				"}\n" +
-				"//-->\n" +
-				"</script>\n\n");
+				"//-->" +
+				"</script>\n");
 		
 		String parentfile = html_env.fileName;
 		String parentnextbackfile = html_env.nextBackFile;

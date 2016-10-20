@@ -160,12 +160,9 @@ public class Mobile_HTML5Env extends LocalEnv {
     }
 
     public void getHeader(int headerFlag) {		//[headerFlag] 1:通常、2:Prev/Next
-   		int index = 0;
    		if(GlobalEnv.getframeworklist() == null){
-	        header.insert(index,"<HEAD>\n");
-	        header.insert(index,"<HTML>\n");
-	        Log.out("<HTML>");
-	        Log.out("<head>");
+			header.insert(0, "<!DOCTYPE html>\n<HTML>\n<HEAD>\n");
+	        Log.out("<HTML>\n<head>");
 	        
 	        //added by goto 20130508  "Login&Logout"
 	        if(Start_Parse.sessionFlag){
@@ -173,7 +170,7 @@ public class Mobile_HTML5Env extends LocalEnv {
 	        	String s = "<?php\n	session_start();\n";
 	        	if(headerFlag == 1)	s += "	session_regenerate_id(TRUE);\n";
 	        	s += "?>\n";
-	        	header.insert(index, s);
+	        	header.insert(0, s);
 	        }
 	        
 	        //Generator
