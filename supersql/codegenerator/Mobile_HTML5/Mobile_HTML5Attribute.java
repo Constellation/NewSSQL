@@ -247,9 +247,6 @@ public class Mobile_HTML5Attribute extends Attribute {
 		        			Sass.makeClass(classid);
 		        			Sass.defineGridBasic(classid, decos);
 		        			Sass.closeBracket();
-		        			//set grid column to number of tfes
-//		            		int tfesItemNum = tfes.size();
-//		            		Sass.defineGrid(tfesItemNum - Mobile_HTML5Function.func_null_count);
 			      		}
 					}
 				}

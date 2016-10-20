@@ -13,6 +13,7 @@ import java.util.Vector;
 
 import supersql.codegenerator.CodeGenerator;
 import supersql.codegenerator.Ehtml;
+import supersql.codegenerator.FileFormatter;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.Incremental;
 import supersql.codegenerator.Jscss;
@@ -234,9 +235,9 @@ public class HTMLManager extends Manager implements Serializable {
 		} else {
 			htmlEnv.getHeader();
 			htmlEnv.getFooter();
-			htmlEnv2.header.append("<?xml version=\"1.0\" encoding=\""
-					+ Utils.getEncode() + "\"?><SSQL>");
-			htmlEnv2.footer.append("</SSQL>");
+//			htmlEnv2.header.append("<?xml version=\"1.0\" encoding=\""
+//					+ Utils.getEncode() + "\"?><SSQL>");
+//			htmlEnv2.footer.append("</SSQL>");
 			try {
 				if (CodeGenerator.getMedia().equalsIgnoreCase("html")) {
 					if (!GlobalEnv.isOpt()) {
@@ -259,12 +260,19 @@ public class HTMLManager extends Manager implements Serializable {
 						// Log.info("File encoding: "+((html_env.charset!=null)?
 						// html_env.charset : "UTF-8"));
 						// changed by goto 20120715 end
-
+	
+						//changed by goto 20161019 for HTML Formatter
+						String html = "";
 						if (GlobalEnv.cssout() == null)
-							pw.println(htmlEnv.header);
-
-						pw.println(htmlEnv.code);
-						pw.println(htmlEnv.footer);
+							html += htmlEnv.header;
+						html += htmlEnv.code;
+						html += htmlEnv.footer;
+						html = FileFormatter.process(html);
+						pw.println(html);
+//						if (GlobalEnv.cssout() == null)
+//							pw.println(htmlEnv.header);
+//						pw.println(htmlEnv.code);
+//						pw.println(htmlEnv.footer);
 						pw.close();
 					}
 					// xml
@@ -369,9 +377,9 @@ public class HTMLManager extends Manager implements Serializable {
 		htmlEnv.setOutlineMode();
 		tfe_info.work(data_info);
 
-		htmlEnv2.header
-				.append("<?xml version=\"1.0\" encoding=\"Shift_JIS\"?><SSQL>");
-		htmlEnv2.footer.append("</SSQL>");
+//		htmlEnv2.header
+//				.append("<?xml version=\"1.0\" encoding=\"Shift_JIS\"?><SSQL>");
+//		htmlEnv2.footer.append("</SSQL>");
 
 		if (GlobalEnv.isOpt()) {
 			int i = 0;

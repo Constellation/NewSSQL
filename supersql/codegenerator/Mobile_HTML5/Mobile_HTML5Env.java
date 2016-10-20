@@ -291,7 +291,6 @@ public class Mobile_HTML5Env extends LocalEnv {
     			header.append("<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js\"></script>\n");
     			header.append("<script src=\"jscss/bootstrap.js\"></script>\n");
     		}
-
     		//added by goto 20130512  "max-width"
 			header.append(
 					"<script type=\"text/javascript\">\n" +
@@ -337,6 +336,7 @@ public class Mobile_HTML5Env extends LocalEnv {
 	        }else if(Sass.isBootstrapFlg()){
 	        	header.append("<!-- container start -->\n<div class=\"container-fluid\">\n\n");
 	        }
+
 	        //added by goto 20130508  "Login&Logout" start
 	        //ログイン・ログアウト・新規登録
 	        if(Start_Parse.sessionFlag){
@@ -1329,13 +1329,11 @@ public class Mobile_HTML5Env extends LocalEnv {
 					footer.append("</div>\n\n");
 	    		}
     		}
-
     		//20160601 bootstrap
     		if(!Sass.isBootstrapFlg()){
     			footer.append("</div><!-- Close <div data-role=\"content\"> -->\n<!-- data-role=content end -->\n");		//Close <div data-role="content">
     			//data-role="footer"
     		}
-
     		if(footerFlag==1 && Mobile_HTML5Function.footerString.equals("") && flickBarFlg)	//通常時のみ（Prev/Nextでは行わない）
     			Mobile_HTML5Function.footerString
     			+= "<div data-role=\"footer\" data-position=\"fixed\" style=\"padding:11px 0px; background:gray; filter: alpha(opacity=25); -moz-opacity:0.25; opacity:0.25;\" id=\"footer1\">\n" +
@@ -2162,5 +2160,4 @@ public class Mobile_HTML5Env extends LocalEnv {
 		//file path (/home/---/)
 		return new File(filename).getParent();
 	}
-
 }

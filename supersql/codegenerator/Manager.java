@@ -2,7 +2,7 @@ package supersql.codegenerator;
 
 
 import java.io.Serializable;
-
+import supersql.codegenerator.ITFE;
 import supersql.extendclass.ExtList;
 
 /**

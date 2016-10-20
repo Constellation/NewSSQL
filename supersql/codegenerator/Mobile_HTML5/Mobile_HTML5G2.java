@@ -7,7 +7,6 @@ import java.io.FileWriter;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
-
 import supersql.codegenerator.Grouper;
 import supersql.codegenerator.Manager;
 import supersql.codegenerator.Sass;
@@ -99,7 +98,6 @@ public class Mobile_HTML5G2 extends Grouper {
         	data_info = (ExtList) data_info.get(0);
 
         String classid = Mobile_HTML5Env.getClassID(this);
-//        String clasid = Mobile_HTML5Env.getClassID(tfe);
         html_env.append_css_def_td(classid, this.decos);
 
         //20130325  table0
@@ -324,19 +322,15 @@ public class Mobile_HTML5G2 extends Grouper {
     	      		}
                 }
 
-
-
                 html_env.code = Embed.postProcess(html_env.code);	//goto 20130915-2  "<$  $>"
                 
                 //20130312 collapsible
     	      	if(decos.containsKey("collapse"))
     	          	html_env.code.append("</p>\n");
             }
-
             //20160527 bootstrap
             if(Sass.isBootstrapFlg()){
             	Sass.afterFirstLoop();
-//            	Sass.outofloopFlg.peekFirst() = false;
             }
 
             html_env.glevel--;
@@ -370,7 +364,7 @@ public class Mobile_HTML5G2 extends Grouper {
         		}
         	}
         }
-
+        
         //added by goto 20130413  "row Prev/Next"
         if(rowFlg){
         	if(rowNum%row!=0){	//最後の child HTML を create
@@ -443,9 +437,9 @@ public class Mobile_HTML5G2 extends Grouper {
         	Mobile_HTML5Function.textFlg2 = false;
         }
 
-        if(Sass.isBootstrapFlg()){
-
-        }
+//        if(Sass.isBootstrapFlg()){
+//
+//        }
 
         Mobile_HTML5.postProcess(getSymbol(), classid, decos, html_env);	//Post-process (後処理)
 

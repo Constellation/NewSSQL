@@ -306,7 +306,6 @@ public class Mobile_HTML5C1 extends Connector {
         }	// /while
         Mobile_HTML5.afterWhileProcess(getSymbol(), classid, decos, html_env);
 
-
         if(!Sass.isBootstrapFlg()){
 	        //20130309
 	        if(!tableFlg)	html_env.code.append("\n</DIV>\n");			//20130309
@@ -356,6 +355,7 @@ public class Mobile_HTML5C1 extends Connector {
         		}
         	}
         }
+
         Mobile_HTML5.postProcess(getSymbol(), classid, decos, html_env);	//Post-process (後処理)
 
         //20131001 tableDivHeader

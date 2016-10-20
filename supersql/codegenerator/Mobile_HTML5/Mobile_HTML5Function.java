@@ -151,7 +151,7 @@ public class Mobile_HTML5Function extends Function {
         else if(FuncName.equalsIgnoreCase("navbar")){
         	Func_navbar();
         }
-    	//added by ryosuke 20161010  "navbar"
+    	//added by ryosuke 20161010  "dropdown"
         else if(FuncName.equalsIgnoreCase("dropdown")){
         	ret = Func_dropdown();
         }
@@ -470,7 +470,6 @@ public class Mobile_HTML5Function extends Function {
         				html_env.code.append("<div class=\"" + Mobile_HTML5Env.getClassID(this) + "\">");
         				html_env.code.append("<img ");
         			}
-
                 }
         		
     	        //added by goto 20130312  "Default width: 100%"
@@ -479,7 +478,6 @@ public class Mobile_HTML5Function extends Function {
     	        		html_env.code.append("\" width=\"100% " );
     	        	}
     	        }
-
 //        		//20130205
 //        		if (decos.containsKey("display-type") && decos.getStr("display-type").matches("fisheye")){
 //	                //String display_type = decos.getStr("display-type");//.replace("\"", "") +"\" " );
@@ -1007,84 +1005,8 @@ public class Mobile_HTML5Function extends Function {
     }
     //added by goto 20130313 end
 
-    private void Func_navbar1() {
-    	//TODO: 第2引数で画像のURL,リンク先等
-
-    	String title = getValue(1).trim();
-//    	if(title.isEmpty())	return;
-    	String home = getValue(2).trim();
-    	String menus = getValue(3).trim();
-
-//    	Log.info(""+this.Args.size());
-//    	for(int i=1; i<this.Args.size(); i++){
-//    		FuncArg fa = (FuncArg) this.Args.get(i);
-//    		Log.info(""+ fa.getStr());
-//    	}
-
-    	ArrayList<String> menuTitle = new ArrayList<String>();
-    	ArrayList<String> url = new ArrayList<String>();
-    	if(!menus.isEmpty()){
-    		//create menu list
-    		menus += ",";
-    		int i = 0;
-    		String s = "";
-    		while(menus.contains(",")){
-    			s = menus.substring(0,menus.indexOf(",")).trim();
-    			if(s.contains(":") && !s.startsWith("'")){
-    				menuTitle.add(i, s.substring(0, s.indexOf(":")));
-    				url.add(i, s.substring(s.indexOf(":")+1).replaceAll("'", ""));
-    			}else{
-	    			menuTitle.add(i, "");
-	    			url.add(i, s.replaceAll("'", ""));
-    			}
-    			menus = menus.substring(menus.indexOf(",")+1);
-    			i++;
-    		}
-    	}
-
-    	headerString += "<nav class=\"navbar navbar-default\" role=\"navigation\">\n" +
-		    	"	<div class=\"container-fluid\">\n" +
-		    	"		<div class=\"navbar-header\">\n" +
-		    	"			<button type=\"button\" class=\"navbar-toggle\" data-toggle=\"collapse\" data-target=\"#nav-menu-1\">\n" +
-		    	"				<span class=\"sr-only\">Toggle navigation</span>\n" +
-		    	"				<span class=\"icon-bar\"></span>\n" +
-		    	"				<span class=\"icon-bar\"></span>\n" +
-		    	"				<span class=\"icon-bar\"></span>\n" +
-		    	"			</button>\n";
-    	if(!title.isEmpty()){
-	    	if(!home.isEmpty()){
-		    	headerString +=
-				    "			<a class=\"navbar-brand\" href=\""+home+"\">"+title+"</a>\n";
-	    	}else{
-	    		headerString +=
-					    "		<div class=\"navbar-brand\">"+title+"</div>\n";
-	    	}
-    	}
-    	headerString +=
-		    	"		</div>" +
-		    	"		<div class=\"collapse navbar-collapse\" id=\"nav-menu-1\">\n" +
-		    	"			<ul class=\"nav navbar-nav\">\n";
-    	if(url.size()>0){
-    		for(int i=0; i<url.size(); i++){
-    			if(menuTitle.get(i).isEmpty()){
-    				headerString += "				<li><a href=\""+url.get(i)+"\">"+url.get(i)+"</a></li>\n";
-    			}else{
-    				headerString += "				<li><a href=\""+url.get(i)+"\">"+menuTitle.get(i)+"</a></li>\n";
-    			}
-    		}
-    	}
-        headerString +=
-        		"			</ul>\n" +
-		    	"		</div>\n" +
-		    	"	</div>\n" +
-		    	"</nav>\n";
-
-        return;
-    }
     //added by ryosuke 20161010
-
     private void Func_navbar() {
-    	//TODO: 第2引数で画像のURL,リンク先等
     	try{
     		String title = getValue(1).trim();
 
@@ -1110,9 +1032,7 @@ public class Mobile_HTML5Function extends Function {
         			"	</div>"+
     		    	"		<div class=\"collapse navbar-collapse\" id=\"nav-menu-1\">\n" +
     		    	"			<ul class=\"nav navbar-nav\">\n";
-
-//        	ArrayList<String> menuTitle = new ArrayList<String>();
-//        	ArrayList<String> url = new ArrayList<String>();
+        	
         	for(int i=1; i<this.Args.size(); i++){
         		FuncArg menu_arg = (FuncArg) this.Args.get(i);
         		String menu = menu_arg.getStr().trim();
@@ -1131,16 +1051,6 @@ public class Mobile_HTML5Function extends Function {
     			}
         	}
 
-
-//        	if(url.size()>0){
-//        		for(int i=0; i<url.size(); i++){
-//        			if(menuTitle.get(i).isEmpty()){
-//        				headerString += "				<li><a href=\""+url.get(i)+"\">"+url.get(i)+"</a></li>\n";
-//        			}else{
-//        				headerString += "				<li><a href=\""+url.get(i)+"\">"+menuTitle.get(i)+"</a></li>\n";
-//        			}
-//        		}
-//        	}
             headerString +=
             		"			</ul>\n" +
     		    	"		</div>\n" +
@@ -1149,10 +1059,6 @@ public class Mobile_HTML5Function extends Function {
     	}catch(Exception e){
     		Log.info("<Warning> navbar関数の引数が不足しています。 ex. navbar(title:'URL', menu:'URL',...)");
     	}
-
-//    	// 各引数毎に処理した結果をHTMLに書きこむ
-//    	html_env.code.append(statement);
-
         return;
     }
     //added by ryosuke 20161010
@@ -1195,11 +1101,9 @@ public class Mobile_HTML5Function extends Function {
     	}catch(Exception e){
     		statement += "1";
     	}
-//    	Log.info(statement);
     	return statement;
 
     }
-
     //added by goto 20130313 start  "footer"
     /*	footer("title")	*/
     private void Func_footer() {

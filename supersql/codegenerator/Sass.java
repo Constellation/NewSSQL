@@ -38,8 +38,8 @@ public class Sass {
 
 	public static StringBuffer sass = new StringBuffer();;
 
-	private static final String fs = Jscss.fs;
-	private static final String outdirPath = Jscss.outdirPath;
+	private static final String fs = GlobalEnv.OS_FS;
+	private static final String outdirPath = GlobalEnv.getOutputDirPath();
 	private static final String generateCssFileDir = Jscss.generateCssFileDir;
 
 	public static boolean loopFlg = true;

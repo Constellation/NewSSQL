@@ -22,9 +22,7 @@ public class Mobile_HTML5C2 extends Connector {
     static boolean tableFlg = false;		//20130314  table
     static boolean table0Flg = false;		//20130325  table0
     static boolean divFlg = false;			//20130326  div
-
-    static boolean bootstrapFlg = false;	//20160222 bootstrap
-
+    
     //���󥹥ȥ饯��
     public Mobile_HTML5C2(Manager manager, Mobile_HTML5Env henv, Mobile_HTML5Env henv2) {
         this.manager = manager;
@@ -236,6 +234,7 @@ public class Mobile_HTML5C2 extends Connector {
 	      			Sass.closeBracket();
 	      		}
 	        }
+
             html_env.code.append("\n");		//20130309
             
             html_env.code = Embed.postProcess(html_env.code);	//goto 20130915-2  "<$  $>"

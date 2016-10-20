@@ -218,7 +218,6 @@ public class Mobile_HTML5G1 extends Grouper {
         			Sass.makeRowClass();
 	      		}
         		Sass.beforeLoop();
-//        		Sass.defineGrid(numberOfColumns - Mobile_HTML5Function.func_null_count);
         	}
         }
         
@@ -298,6 +297,7 @@ public class Mobile_HTML5G1 extends Grouper {
             }else if(Sass.isBootstrapFlg()){
             	(tfe).decos.put("G1",""+(numberOfColumns - Mobile_HTML5Function.func_null_count));
             }
+
 	        Mobile_HTML5.whileProcess1(getSymbol(), decos, html_env, data, data_info, tfe, null, -1);
     	    
             this.worknextItem();
@@ -327,6 +327,7 @@ public class Mobile_HTML5G1 extends Grouper {
 //        		Sass.outofloopFlg.peekFirst() = false;
             	Sass.afterFirstLoop();
         	}
+
             html_env.glevel--;
 
             Mobile_HTML5G2.tableDivHeader_Count1++;	//20131001 tableDivHeader
@@ -342,10 +343,12 @@ public class Mobile_HTML5G1 extends Grouper {
                 rowNum++;
             }
         }	// /while
+
         //20160527 bootstrap
         if (Sass.isBootstrapFlg()){
         	Sass.afterLoop();
         }
+
         Mobile_HTML5.afterWhileProcess(getSymbol(), classid2, decos, html_env);
         
         //added by goto 20130413  "row Prev/Next"
@@ -448,5 +451,4 @@ public class Mobile_HTML5G1 extends Grouper {
 	public String getSymbol() {
         return "Mobile_HTML5G1";
     }
-
 }

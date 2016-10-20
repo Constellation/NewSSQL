@@ -682,11 +682,11 @@ public class HTMLFunction extends Function {
 		}
 		// String filename = html_env.outfile + "_" + this.getAtt("default") +
 		// ".html";
-		att = URLEncoder.encode(att, "UTF-8");
-		String filename = htmlEnv.outFile + att + ".html";
-
-		htmlEnv.fileName = filename;
-		// System.out.println(filename);
+		//changed by goto 20161019 for new foreach
+		//att = URLEncoder.encode(att, "UTF-8");
+		//String filename = htmlEnv.outFile + att + ".html";
+		//htmlEnv.fileName = filename;
+		HTMLG3.foreachID = att;
 		return;
 	}
 
@@ -845,7 +845,6 @@ public class HTMLFunction extends Function {
 	private void Func_sinvoke(ExtList data_info) {
 		// link関数の仕様変更　link(att_name, url, value1, value2, ...)
 		String file = this.Args.get(1).toString();
-		String a = this.Args.get(0).toString();
 		if (file.startsWith("\'") || file.startsWith("\"")) {
 			file = file.substring(1, file.length() - 1);
 		}
@@ -879,6 +878,7 @@ public class HTMLFunction extends Function {
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
+		
 		if (this.getAtt("action").equals("")) {
 			try {
 				if (file.toLowerCase().contains(".sql")) {
@@ -905,8 +905,9 @@ public class HTMLFunction extends Function {
 				else
 					filename = file + "_" + this.getAtt("att") + ".html";
 			} else {
-				// filename = file + "_" + ret + ".html"; masato
-				filename = file + att + ".html";
+				//changed by goto 20161019 for new foreach
+				filename = file+".html?"+att.substring(1);
+//				filename = file + ""+att + ".html";
 			}
 
 			filename.replace("\\\\", "\\");
