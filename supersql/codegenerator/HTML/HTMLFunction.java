@@ -14,6 +14,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -35,6 +36,7 @@ import supersql.parser.Start_Parse;
 public class HTMLFunction extends Function {
 
 	protected static String updateFile;
+	private boolean link1 = false; //added by goto 20161025 for link1/foreach1
 
 	public static String createForm(DecorateList decos) {
 		new String();
@@ -679,13 +681,16 @@ public class HTMLFunction extends Function {
 		for (int i = 0; i < this.countconnectitem(); i++) {
 			att = att + "_" + this.getAtt(Integer.toString(i));
 		}
-		// String filename = html_env.outfile + "_" + this.getAtt("default") +
-		// ".html";
-		//changed by goto 20161019 for new foreach
-		//att = URLEncoder.encode(att, "UTF-8");
-		//String filename = htmlEnv.outFile + att + ".html";
-		//htmlEnv.fileName = filename;
-		HTMLG3.foreachID = att;
+		
+		if(!Start_Parse.foreach1Flag){
+			//added by goto 20161019 for new foreach
+			HTMLG3.foreachID = att;
+		}else{
+			//added by goto 20161025 for link1/foreach1
+			att = URLEncoder.encode(att, "UTF-8");
+			String filename = htmlEnv.outFile + att + ".html";
+			htmlEnv.fileName = filename;
+		}
 		return;
 	}
 
@@ -859,11 +864,14 @@ public class HTMLFunction extends Function {
 		Log.out("sinvoke file 3: " + file);
 
 		//changed by goto 20161019 for new foreach
-//		try {
-//			att = URLEncoder.encode(att, "UTF-8");
-//		} catch (UnsupportedEncodingException e) {
-//			e.printStackTrace();
-//		}
+		if(link1){
+			//added by goto 20161025 for link1/foreach1
+			try {
+				att = URLEncoder.encode(att, "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+		}
 		
 		if (this.getAtt("action").equals("")) {
 			try {
@@ -891,9 +899,13 @@ public class HTMLFunction extends Function {
 				else
 					filename = file + "_" + this.getAtt("att") + ".html";
 			} else {
-				//changed by goto 20161019 for new foreach
-				filename = file+".html?"+att.substring(1);
-//				filename = file + ""+att + ".html";
+				if(!link1){
+					//added by goto 20161019 for new foreach
+					filename = file+".html?"+att.substring(1);
+				}else{
+					//added by goto 20161025 for link1/foreach1
+					filename = file + att + ".html";
+				}
 			}
 
 			filename.replace("\\\\", "\\");
@@ -1025,6 +1037,7 @@ public class HTMLFunction extends Function {
 		// tk//////////////////////////////////////////////////
 
 		htmlEnv.sinvokeFlag = false;
+		link1 = false;
 		return;
 	}
 
@@ -1454,14 +1467,19 @@ public class HTMLFunction extends Function {
 			Func_imagefile();
 		} else if (FuncName.equalsIgnoreCase("invoke")) {
 			Func_invoke();
-		} else if (FuncName.equalsIgnoreCase("foreach")) {
+		} else if (FuncName.equalsIgnoreCase("foreach")
+				//added by goto 20161025 for link1/foreach1
+				|| FuncName.equalsIgnoreCase("foreach1")) {
 			try {
 				Func_foreach(data_info);
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
 			}
 		} else if (FuncName.equalsIgnoreCase("sinvoke")
-				|| FuncName.equalsIgnoreCase("link")) {
+				|| FuncName.equalsIgnoreCase("link")
+				//added by goto 20161025 for link1/foreach1
+				|| FuncName.equalsIgnoreCase("link1")) {
+			if(FuncName.equalsIgnoreCase("link1")) link1 = true;
 			Func_sinvoke(data_info);
 		}
 		// added by masato 20151124 for plink in ehtml
