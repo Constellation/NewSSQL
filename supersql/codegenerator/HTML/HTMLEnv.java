@@ -1044,7 +1044,11 @@ public class HTMLEnv extends LocalEnv implements Serializable{
 		}
 
 		if (GlobalEnv.getframeworklist() == null) {
-			footer.append("<BR><BR>\n</BODY>\n</HTML>\n");
+			footer.append("<BR><BR>\n");
+			footer.append("</div>\n");
+			footer.append("<!-- SuperSQL Body  End -->");
+			footer.append(LinkForeach.getC3contents());	//added by goto 20161019 for new foreach
+			footer.append("</BODY>\n</HTML>\n");
 			Log.out("</body>\n</html>");
 		}
 		header_creation();
@@ -1175,6 +1179,8 @@ public class HTMLEnv extends LocalEnv implements Serializable{
 			Log.out("<body>");
 			code_tmp = "";
 			code_tmp += "<BODY class=\"body\">\n";
+			code_tmp += "<!-- SuperSQL Body  Start -->";
+			code_tmp += "<div id=\"ssql_body_contents\">\n";	//added by goto 20161019 for new foreach
 			if(!title.toString().trim().equals("")){
 				code_tmp += "<div";
 				code_tmp += div;

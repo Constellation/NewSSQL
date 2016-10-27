@@ -69,25 +69,8 @@ public class HTMLG3 extends Grouper {
 	@Override
 	public String work(ExtList data_info) {
 		//added by goto 20161019 for new foreach
-		final String ID = "ssql_foreach";
-		StringBuffer foreachContents = new StringBuffer(
-				"<script type=\"text/javascript\">\n" +
-				"<!--\n" +
-				"window.onload = function(){\n" +
-				"	if(location.search.length<1){\n" +
-				"		document.write(\"SuperSQL Foreach Page\");\n" +
-				"	}else{\n" +
-				"		var id = location.search.substring(1, location.search.length);\n" +
-				"		id = decodeURI(id);\n" +
-				"		var elementID = document.getElementById(\""+ID+"_\"+id);\n" +
-				"		if(elementID)\n" +
-				"			elementID.style.display=\"block\";\n" +
-				"		else\n" +
-				"			document.write(\"No Data Found : \"+id);\n" +
-				"	}\n" +
-				"}\n" +
-				"//-->" +
-				"</script>\n");
+		final String ID = LinkForeach.ID;
+		StringBuffer foreachContents = new StringBuffer(LinkForeach.getJS("G3"));
 		
 		String parentfile = html_env.fileName;
 		String parentnextbackfile = html_env.nextBackFile;
