@@ -471,7 +471,7 @@ public class Mobile_HTML5Function extends Function {
 		        			Sass.closeBracket();
 			      		}
         				html_env.code.append("<div class=\"" + Mobile_HTML5Env.getClassID(this) + "\">");
-        				html_env.code.append("<img ");
+        				html_env.code.append("<img class=\"img-responsive\"");
         			}
                 }
         		
