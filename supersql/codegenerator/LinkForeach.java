@@ -1,5 +1,5 @@
 //added by goto 20161019 for new foreach
-package supersql.codegenerator.HTML;
+package supersql.codegenerator;
 
 
 public class LinkForeach {

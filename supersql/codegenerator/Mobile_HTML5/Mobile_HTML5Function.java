@@ -28,6 +28,7 @@ import supersql.codegenerator.FuncArg;
 import supersql.codegenerator.Function;
 import supersql.codegenerator.Manager;
 import supersql.codegenerator.Sass;
+import supersql.codegenerator.HTML.HTMLG3;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.dataconstructor.DataConstructor;
@@ -75,6 +76,8 @@ public class Mobile_HTML5Function extends Function {
 	static boolean textFlg = false;	//20130914  "text"
     
     static String updateFile;
+    
+	private boolean link1 = false; //added by goto 20161025 for link1/foreach1
 
     public Mobile_HTML5Function()
     {
@@ -4713,16 +4716,19 @@ public class Mobile_HTML5Function extends Function {
 
     private void Func_foreach(ExtList data_info) throws UnsupportedEncodingException {
     	String att = new String();
-    	String attkey;
     	for (int i = 0; i < this.countconnectitem(); i++) {
     		att = att + "_" + this.getAtt(Integer.toString(i));
     	}
-        //String filename = html_env.outfile + "_" + this.getAtt("default") + ".html";
-    	att = URLEncoder.encode(att, "UTF-8");
-    	String filename = html_env.outfile + att + ".html";
-
-        html_env.filename = filename;
-        //System.out.println(filename);
+		
+		if(!Start_Parse.foreach1Flag){
+			//added by goto 20161019 for new foreach
+			Mobile_HTML5G3.foreachID = att;
+		}else{
+			//added by goto 20161025 for link1/foreach1
+	    	att = URLEncoder.encode(att, "UTF-8");
+	    	String filename = html_env.outfile + att + ".html";
+	        html_env.filename = filename;
+		}
         return;
     }
 
@@ -5213,32 +5219,39 @@ public class Mobile_HTML5Function extends Function {
     //tk end////////////////////////////////////////////////////////////////////////////
 
     private void Func_sinvoke(ExtList data_info) {
-        String file = this.getAtt("file");
-        String action = this.getAtt("action");
-        int attNo = 1;
-        String att = new String();
-        Log.out("sinvoke file 3: "+file);
-
-        //tk start/////////////////////////////////////////////////////////////
-        /*
-        if (file.indexOf("/") > 0) {
-            file = file.substring(file.lastIndexOf("/") + 1);
-        }
-*/
-        //tk end//////////////////////////////////////////////////////////////
-      	Log.out("1 att:" + att + " attNo:" + attNo + " att1:" + this.getAtt("att1"));
-
-        while (!this.getAtt("att"+attNo).equals("")){
-        	att = att + "_" + this.getAtt("att"+attNo);
-        	attNo ++;
-        	Log.out("att:" + att + " attNo:" + attNo);
-        	//System.out.println(att);
-        }
-    	try {
-			att = URLEncoder.encode(att, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+		// link関数の仕様変更　link(att_name, url, value1, value2, ...)
+		String file = this.Args.get(1).toString();
+		if (file.startsWith("\'") || file.startsWith("\"")) {
+			file = file.substring(1, file.length() - 1);
 		}
+		String att = new String();
+		for (int i = 2; i < this.Args.size(); i++) {
+			att += "_" + this.Args.get(i).getStr();
+		}
+		String action = this.getAtt("action");
+		Log.out("sinvoke file 3: " + file);
+//        String file = this.getAtt("file");
+//        String action = this.getAtt("action");
+//        int attNo = 1;
+//        String att = new String();
+//        Log.out("sinvoke file 3: "+file);
+//      	Log.out("1 att:" + att + " attNo:" + attNo + " att1:" + this.getAtt("att1"));
+//        while (!this.getAtt("att"+attNo).equals("")){
+//        	att = att + "_" + this.getAtt("att"+attNo);
+//        	attNo ++;
+//        	Log.out("att:" + att + " attNo:" + attNo);
+//        }
+        
+		//changed by goto 20161019 for new foreach
+		if(link1){
+			//added by goto 20161025 for link1/foreach1
+	        try {
+				att = URLEncoder.encode(att, "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+		}
+    	
 		if(this.getAtt("action").equals("")){
 		try{
 			if(file.toLowerCase().contains(".sql")){
@@ -5262,7 +5275,13 @@ public class Mobile_HTML5Function extends Function {
             else
             	filename = file + "_" + this.getAtt("att") + ".html";
         }else{
-        	filename = file + att + ".html";
+			if(!link1){
+				//added by goto 20161019 for new foreach
+				filename = file+".html?"+att.substring(1);
+			}else{
+				//added by goto 20161025 for link1/foreach1
+	        	filename = file + att + ".html";
+			}
         }
 
         filename.replace("\\\\","\\");

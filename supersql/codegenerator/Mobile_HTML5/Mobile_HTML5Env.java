@@ -15,6 +15,7 @@ import supersql.codegenerator.Connector;
 import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.Jscss;
+import supersql.codegenerator.LinkForeach;
 import supersql.codegenerator.LocalEnv;
 import supersql.codegenerator.Sass;
 import supersql.common.GlobalEnv;
@@ -296,7 +297,7 @@ public class Mobile_HTML5Env extends LocalEnv {
 					"var landscapeWidth = "+landscapeWidth+";\n" +
 					"var pcWidth = "+pcWidth+";\n" +
 					"var bootstrap = "+Sass.isBootstrapFlg()+";\n" +	//20160603 bootstrap
-					"-->\n" +
+					"-->" +
 					"</script>\n");
     		header.append("<script src=\"jscss/supersql.js\"></script>\n");
             //added by goto 20121217 end
@@ -327,6 +328,7 @@ public class Mobile_HTML5Env extends LocalEnv {
 
 	        
 	        header.append("<BODY>\n");
+	        header.append("<!-- SuperSQL Body  Start -->\n");
 	        //20160603 bootstrap
 	        if(!Sass.isBootstrapFlg()){
 	        	header.append("<!-- data-role=page start -->\n<div data-role=\"page\" id=\"p-top1\" >\n\n");
@@ -1362,6 +1364,8 @@ public class Mobile_HTML5Env extends LocalEnv {
     		}else if(Sass.isBootstrapFlg()){
     			footer.append("</div><!-- Close container -->\n");
     		}
+			footer.append("<!-- SuperSQL Body  End -->");
+			footer.append(LinkForeach.getC3contents());	//added by goto 20161019 for new foreach
     		footer.append("\n</BODY>\n</HTML>\n");
 	        Log.out("</body></html>");
     	}

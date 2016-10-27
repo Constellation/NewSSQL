@@ -148,7 +148,8 @@ public class Mobile_HTML5Attribute extends Attribute {
 						String relative_path = html_env.linkurl.substring(fileDir.length()+1);
 						html_env.code.append("<A href=\"" + relative_path + "\" ");
 					}else
-						html_env.code.append("<A href=\"" + html_env.linkurl + "\" ");
+						//changed by goto 20161019 for new foreach
+						html_env.code.append("<A href=\"" + html_env.linkurl + "\" data-ajax=\"false\" ");
 					
 					//html_env.code.append("<A href=\"" + html_env.linkurl + "\" ");
 					//added by goto 20120614 end

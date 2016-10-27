@@ -15,6 +15,7 @@ import java.io.PrintWriter;
 import supersql.codegenerator.FileFormatter;
 import supersql.codegenerator.Grouper;
 import supersql.codegenerator.Jscss;
+import supersql.codegenerator.LinkForeach;
 import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;

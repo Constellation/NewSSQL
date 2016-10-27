@@ -20,7 +20,6 @@ import supersql.codegenerator.Jscss;
 import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
-import supersql.common.Utils;
 import supersql.dataconstructor.DataConstructor;
 import supersql.extendclass.ExtList;
 
@@ -242,10 +241,6 @@ public class HTMLManager extends Manager implements Serializable {
 				if (CodeGenerator.getMedia().equalsIgnoreCase("html")) {
 					if (!GlobalEnv.isOpt()) {
 						// changed by goto 20120715 start
-						// PrintWriter pw = new PrintWriter(new
-						// BufferedWriter(new
-						// FileWriter(
-						// html_env.filename)));
 						PrintWriter pw;
 						if (htmlEnv.charset != null) {
 							pw = new PrintWriter(new BufferedWriter(
@@ -269,10 +264,7 @@ public class HTMLManager extends Manager implements Serializable {
 						html += htmlEnv.footer;
 						html = FileFormatter.process(html);
 						pw.println(html);
-//						if (GlobalEnv.cssout() == null)
-//							pw.println(htmlEnv.header);
-//						pw.println(htmlEnv.code);
-//						pw.println(htmlEnv.footer);
+
 						pw.close();
 					}
 					// xml

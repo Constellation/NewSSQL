@@ -2,6 +2,7 @@ package supersql.codegenerator.HTML;
 
 import supersql.codegenerator.Connector;
 import supersql.codegenerator.ITFE;
+import supersql.codegenerator.LinkForeach;
 import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
