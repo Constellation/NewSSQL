@@ -1244,6 +1244,7 @@ public class Mobile_HTML5Env extends LocalEnv {
 	        if(!Sass.isBootstrapFlg()){
 	        	header.append("<!-- data-role=content start -->\n<div data-role=\"content\" style=\"padding:0\" id=\"content1\">\n");
 	        }
+	        header.append("<div id=\"ssql_body_contents\">\n");	//added by goto 20161019 for new foreach
 	        if(Start_Parse.sessionFlag){
 	        	header.append("\n<div id=\"showValues\"><!-- ユーザ名等を表示 --></div>\n");	//ユーザ名
 	        }
@@ -1312,6 +1313,10 @@ public class Mobile_HTML5Env extends LocalEnv {
     	}
 
     	if(GlobalEnv.getframeworklist() == null){
+    		//added by goto 20161019 for new foreach
+    		footer.append("</div><!-- Close id=\"ssql_body_contents\" -->\n");
+			footer.append(LinkForeach.getC3contents());			
+    		
     		if(footerFlag==1){		//通常時のみ（Prev/Nextでは行わない）
     			if(!noAd || !copyright.isEmpty())
     				footer.append("<hr size=\"1\">\n");
@@ -1328,6 +1333,8 @@ public class Mobile_HTML5Env extends LocalEnv {
 					footer.append("</div>\n\n");
 	    		}
     		}
+    		
+
     		//20160601 bootstrap
     		if(!Sass.isBootstrapFlg()){
     			footer.append("</div><!-- Close <div data-role=\"content\"> -->\n<!-- data-role=content end -->\n");		//Close <div data-role="content">
@@ -1365,7 +1372,6 @@ public class Mobile_HTML5Env extends LocalEnv {
     			footer.append("</div><!-- Close container -->\n");
     		}
 			footer.append("<!-- SuperSQL Body  End -->");
-			footer.append(LinkForeach.getC3contents());	//added by goto 20161019 for new foreach
     		footer.append("\n</BODY>\n</HTML>\n");
 	        Log.out("</body></html>");
     	}

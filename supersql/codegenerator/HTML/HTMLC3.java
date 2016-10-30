@@ -86,7 +86,6 @@ public class HTMLC3 extends Connector {
 				htmlEnv.code = new StringBuffer();
 				htmlEnv.header = new StringBuffer();
 				htmlEnv.footer = new StringBuffer();
-//
 //				parentcode2 = htmlEnv2.code;
 //				parentcss2 = htmlEnv2.css;
 //				parentheader2 = htmlEnv2.header;

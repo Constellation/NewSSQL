@@ -11,11 +11,11 @@ public class LinkForeach {
 	}
 	
 	public static String getJS(String tfe){
-		String r = "";
+		String r = "<script type=\"text/javascript\">\n" +
+				   "<!--\n";
 		if(tfe.equals("C3")){
-			r = 	"<script type=\"text/javascript\">\n" +
-					"<!--\n" +
-					"var ssqlForeach_currentID = \"\";\n" +
+			String bodyDivID = "ssql_body_contents";
+			r += 	"var ssqlForeach_currentID = \"\";\n" +
 					"$(function(){\n" +
 					"	window.onload = function(){ ssqlForeach(); }\n" +
 					"	window.onhashchange = function(){ ssqlForeach(); }\n" +
@@ -23,9 +23,9 @@ public class LinkForeach {
 					"function ssqlForeach(){\n" +
 					"	if (location.hash == \"\") {\n" +
 					"		document.getElementById(ssqlForeach_currentID).style.display=\"none\";\n" +
-					"		document.getElementById(\"ssql_body_contents\").style.display=\"block\";\n" +
+					"		document.getElementById(\""+bodyDivID+"\").style.display=\"block\";\n" +
 					"	}else{\n" +
-					"		document.getElementById(\"ssql_body_contents\").style.display=\"none\";\n" +
+					"		document.getElementById(\""+bodyDivID+"\").style.display=\"none\";\n" +
 					"		var id = location.hash.substring(location.search.length+1);\n" +
 					"		id = decodeURI(id);\n" +
 					"		var elementID = document.getElementById(id);\n" +
@@ -34,16 +34,10 @@ public class LinkForeach {
 					"		else\n" +
 					"			document.write(\"No Data Found : \"+id);\n" +
 					"		\n" +
-					"		ssqlForeach_currentID = id;\n" +
-					"	}\n" +
-					"}\n" +
-					"//-->" +
-					"</script>\n";
+					"		ssqlForeach_currentID = id;\n";
 
 		}else if(tfe.equals("G3")){
-			r = 	"<script type=\"text/javascript\">\n" +
-					"<!--\n" +
-					"window.onload = function(){\n" +
+			r += 	"window.onload = function(){\n" +
 					"	if(location.search.length<1){\n" +
 					"		document.write(\"SuperSQL Foreach Page\");\n" +
 					"	}else{\n" +
@@ -53,12 +47,12 @@ public class LinkForeach {
 					"		if(elementID)\n" +
 					"			elementID.style.display=\"block\";\n" +
 					"		else\n" +
-					"			document.write(\"No Data Found : \"+id);\n" +
-					"	}\n" +
-					"}\n" +
-					"//-->" +
-					"</script>\n";
+					"			document.write(\"No Data Found : \"+id);\n";
 		}
+		r += 	"	}\n" +
+				"}\n" +
+				"//-->" +
+				"</script>\n";
 		return r;
 	}
 	
