@@ -2,11 +2,11 @@ package supersql.codegenerator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.List;
 
-import supersql.codegenerator.Manager;
+import supersql.codegenerator.Compiler.JSP.JSPFactory;
+import supersql.codegenerator.Compiler.PHP.PHPFactory;
+import supersql.codegenerator.Compiler.Rails.RailsFactory;
 import supersql.codegenerator.HTML.HTMLFactory;
 import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5Factory;
 import supersql.codegenerator.PDF.PDFFactory;
@@ -77,6 +77,12 @@ public class CodeGenerator {
 			factory = new X3DFactory();
 		}else if(media.toLowerCase().equals("pdf")){
 			factory = new PDFFactory();
+		}else if(media.toLowerCase().equals("php")){	//added by goto 20161104
+			factory = new PHPFactory();
+		}else if(media.toLowerCase().equals("rails")){	//added by goto 20161104
+			factory = new RailsFactory();
+		}else if(media.toLowerCase().equals("jsp")){	//added by goto 20161104
+			factory = new JSPFactory();
 		}
 		else {
 			String m = media.toLowerCase();
