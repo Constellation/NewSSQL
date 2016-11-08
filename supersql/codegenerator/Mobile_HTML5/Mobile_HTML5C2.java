@@ -1,7 +1,5 @@
 package supersql.codegenerator.Mobile_HTML5;
 
-import com.sun.xml.internal.ws.api.ha.StickyFeature;
-
 import supersql.codegenerator.Connector;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.Manager;
