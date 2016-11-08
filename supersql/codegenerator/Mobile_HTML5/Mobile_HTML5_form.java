@@ -30,6 +30,7 @@ public class Mobile_HTML5_form {
 	static ArrayList<String> formColumnTable = new ArrayList<>();
 	
 	static boolean G2 = false;
+//	static int G2_dataQuantity = 0;
 	
 //	public static String formFuncArgProcess(ITFE tfe, DecorateList decos){
 //		//For Function

@@ -21,9 +21,6 @@ import supersql.parser.Start_Parse;
 
 public class Mobile_HTML5 {
 	
-
-//	static int G2_dataQuantity = 0;
-	
 	public Mobile_HTML5() {
 
 	}
@@ -57,7 +54,7 @@ public class Mobile_HTML5 {
 		}
 		if(symbol.contains("G2")){
 			Mobile_HTML5_form.G2 = true;
-			//Log.e(G2_dataQuantity);
+			//Log.e(Mobile_HTML5_form.G2_dataQuantity);
 		}
 		if(symbol.contains("G1") || symbol.contains("G2")){
 			Mobile_HTML5_dynamic.sindex = 0;
@@ -96,7 +93,7 @@ public class Mobile_HTML5 {
 		Mobile_HTML5Function.func_null_count = 0;	//null()
 		if(symbol.contains("G2")){
 			Mobile_HTML5_form.G2 = false;
-//			G2_dataQuantity = 0;
+//			Mobile_HTML5_form.G2_dataQuantity = 0;
 			Mobile_HTML5Function.G2_form_count = 0;
 		}
 		return true;

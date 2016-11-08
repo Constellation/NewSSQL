@@ -2323,7 +2323,7 @@ public class Mobile_HTML5Function extends Function {
     		//for [ form() ]!
     		G2_form = true;
     		G2_form_count++;
-    		//Log.e(Mobile_HTML5.G2_dataQuantity+"  "+G2_form_count);
+    		//Log.e(Mobile_HTML5_form.G2_dataQuantity+"  "+G2_form_count);
     	}
     	
     	String title = "";

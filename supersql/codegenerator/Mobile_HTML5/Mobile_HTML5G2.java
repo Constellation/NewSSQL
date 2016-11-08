@@ -198,7 +198,7 @@ public class Mobile_HTML5G2 extends Grouper {
         	}
         }
         
-//        Mobile_HTML5.G2_dataQuantity = this.data.size();
+//        Mobile_HTML5_form.G2_dataQuantity = this.data.size();
         Mobile_HTML5.beforeWhileProcess(getSymbol(), decos, html_env);
         while (this.hasMoreItems()) {
         	String classid2 = Mobile_HTML5Env.getClassID(tfe);
