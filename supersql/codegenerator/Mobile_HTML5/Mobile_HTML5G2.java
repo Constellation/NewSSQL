@@ -61,9 +61,9 @@ public class Mobile_HTML5G2 extends Grouper {
 
     	Mobile_HTML5G1.G1_count = 0;
     	
-    	Mobile_HTML5.Gdepth = 0;
-    	Mobile_HTML5.Gnum++;
-    	Mobile_HTML5.dyamicWhileString = "";
+    	Mobile_HTML5_dynamic.Gdepth = 0;
+    	Mobile_HTML5_dynamic.Gnum++;
+    	Mobile_HTML5_dynamic.dyamicWhileString = "";
     	
         //G2Flg = true;
         int panelFlg = 0;	//20130503  Panel
@@ -76,7 +76,7 @@ public class Mobile_HTML5G2 extends Grouper {
         StringBuffer parentcss = null;
         StringBuffer parentheader = null;
         StringBuffer parentfooter = null;
-        if(decos.containsKey("row") && !Mobile_HTML5.dynamicDisplay){
+        if(decos.containsKey("row") && !Mobile_HTML5_dynamic.dynamicDisplay){
         	row = Integer.parseInt(decos.getStr("row").replace("\"", ""));
         	if(row<1){	//範囲外のとき
         		Log.err("<<Warning>> row指定の範囲は、1〜です。指定された「row="+row+"」は使用できません。");
@@ -198,13 +198,13 @@ public class Mobile_HTML5G2 extends Grouper {
         	}
         }
         
-        Mobile_HTML5.G2_dataQuantity = this.data.size();
+//        Mobile_HTML5.G2_dataQuantity = this.data.size();
         Mobile_HTML5.beforeWhileProcess(getSymbol(), decos, html_env);
         while (this.hasMoreItems()) {
         	String classid2 = Mobile_HTML5Env.getClassID(tfe);
 
         	Mobile_HTML5Function.glvl = html_env.glevel;	//added by goto 20130914  "SEQ_NUM"
-        	Mobile_HTML5.Gdepth++;
+        	Mobile_HTML5_dynamic.Gdepth++;
         	
         	
         	//[重要] For [ [], ]!        	
@@ -243,10 +243,10 @@ public class Mobile_HTML5G2 extends Grouper {
 
 	            	//20130309
 	            	if(!tableFlg)
-	            		html_env.code.append("\n<div class=\""+classid+" "+Mobile_HTML5.addShowCountClassName(decos)+"\">\n");	//20130309  div
+	            		html_env.code.append("\n<div class=\""+classid+" "+Mobile_HTML5_show.addShowCountClassName(decos)+"\">\n");	//20130309  div
 	            	else if(tableFlg){
 	            		//20130314  table
-			            html_env.code.append("<TR><TD class=\"" + classid + " "+Mobile_HTML5.addShowCountClassName(decos)+" nest\">\n");
+			            html_env.code.append("<TR><TD class=\"" + classid + " "+Mobile_HTML5_show.addShowCountClassName(decos)+" nest\">\n");
 			            Log.out("<TR><TD class=\"" + classid + " nest\">");
 	            	}
             	}else if(Sass.isBootstrapFlg()){

@@ -2319,7 +2319,7 @@ public class Mobile_HTML5Function extends Function {
     static boolean formFileUpload = false;
     private String Func_insert(boolean update, boolean insert_update) {
     	
-    	if(Mobile_HTML5.G2){
+    	if(Mobile_HTML5_form.G2){
     		//for [ form() ]!
     		G2_form = true;
     		G2_form_count++;
@@ -2531,7 +2531,7 @@ public class Mobile_HTML5Function extends Function {
 		    		}
 	    		}
 	    		if(str.contains("notnull"))	notnullFlg[i] = true;
-	    		validationType[i] = Mobile_HTML5.checkFormValidationType(str);	//form validation
+	    		validationType[i] = Mobile_HTML5_form.checkFormValidationType(str);	//form validation
 	    		
 	    		s_array[i] = s_array[i].substring(0,s_array[i].lastIndexOf("@"));
 	    		//Log.i(s_array[i]);
@@ -2921,7 +2921,7 @@ public class Mobile_HTML5Function extends Function {
 								" type=\""+((!hiddenFlg[i])?("text"):("hidden"))+"\"" +
 								" id=\"SSQL_insert"+insertCount+"_words"+(++insertWordCount)+"\"" +
 								" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\"" +
-								" placeholder=\""+s_name_array[i]+"\""+Mobile_HTML5.getFormClass(notnullFlg[i], "")+">" +
+								" placeholder=\""+s_name_array[i]+"\""+Mobile_HTML5_form.getFormClass(notnullFlg[i], "")+">" +
 								""+((!textareaFlg[i])?(""):("</textarea>")) +
 								"</span>"+( (!textareaFlg[i])? "" : "</span>" )+"\n";
 						update_statement += 
@@ -2932,14 +2932,14 @@ public class Mobile_HTML5Function extends Function {
 								" id=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\"" +
 								" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\"" +
 								" "+((!textareaFlg[i])?("value=\""+updateFromValue+"\""):(""))+
-								" placeholder=\""+s_name_array[i]+"\""+Mobile_HTML5.getFormClass(notnullFlg[i], "")+">" +
+								" placeholder=\""+s_name_array[i]+"\""+Mobile_HTML5_form.getFormClass(notnullFlg[i], "")+">" +
 								""+((!textareaFlg[i])?(""):(updateFromValue+"</textarea>")) +
 								"</span>"+( (!textareaFlg[i])? "" : "</span>" )+"\n";
 						//statement += "    <input type=\"text\" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\" placeholder=\""+s_name_array[i]+"\">\n";
 					}else{
-						statement += Mobile_HTML5.getFormValidationString(validationType[i], notnullFlg[i], "SSQL_insert"+insertCount+"_words"+(++insertWordCount), s_name_array[i], updateFromValue, outTitle);
+						statement += Mobile_HTML5_form.getFormValidationString(validationType[i], notnullFlg[i], "SSQL_insert"+insertCount+"_words"+(++insertWordCount), s_name_array[i], updateFromValue, outTitle);
 						update_statement
-						          += Mobile_HTML5.getFormValidationString(validationType[i], notnullFlg[i], "SSQL_insert"+insertCount+"_words"+(insertWordCount), s_name_array[i], updateFromValue, outTitle);
+						          += Mobile_HTML5_form.getFormValidationString(validationType[i], notnullFlg[i], "SSQL_insert"+insertCount+"_words"+(insertWordCount), s_name_array[i], updateFromValue, outTitle);
 					}
 				}
 			}else{
@@ -3629,7 +3629,7 @@ public class Mobile_HTML5Function extends Function {
     //20131127 form
     //result start
     private String Func_result() {
-    	int count = Mobile_HTML5.formCount;
+    	int count = Mobile_HTML5_form.formCount;
     	//if(!Mobile_HTML5.form)	count -= 1;
 	    String s =
 	    	"\n" +
@@ -5472,7 +5472,7 @@ public class Mobile_HTML5Function extends Function {
     
     //20131118 dynamic
     private String getCount(int count){
-    	return count+Mobile_HTML5.getDynamicLabel();
+    	return count+Mobile_HTML5_dynamic.getDynamicLabel();
     }
     
 }
