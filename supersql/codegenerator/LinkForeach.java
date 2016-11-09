@@ -4,6 +4,7 @@ package supersql.codegenerator;
 
 public class LinkForeach {
 	public final static String ID = "ssql_foreach";
+	public final static String ID2 = "att";
 	public final static StringBuffer C3contents = new StringBuffer();
 	
 	public LinkForeach() {
@@ -42,6 +43,7 @@ public class LinkForeach {
 					"		document.write(\"SuperSQL Foreach Page\");\n" +
 					"	}else{\n" +
 					"		var id = location.search.substring(1, location.search.length);\n" +
+					"		id = id.substring(\""+ID2+"\".length+1);\n" +
 					"		id = decodeURI(id);\n" +
 					"		var elementID = document.getElementById(\""+ID+"_\"+id);\n" +
 					"		if(elementID)\n" +

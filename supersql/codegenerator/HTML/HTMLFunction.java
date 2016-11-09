@@ -26,6 +26,7 @@ import supersql.codegenerator.Ehtml;
 import supersql.codegenerator.FuncArg;
 import supersql.codegenerator.Function;
 import supersql.codegenerator.Incremental;
+import supersql.codegenerator.LinkForeach;
 import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
@@ -901,7 +902,7 @@ public class HTMLFunction extends Function {
 			} else {
 				if(!link1){
 					//added by goto 20161019 for new foreach
-					filename = file+".html?"+att.substring(1);
+					filename = file+".html?"+LinkForeach.ID2+"="+att.substring(1);
 				}else{
 					//added by goto 20161025 for link1/foreach1
 					filename = file + att + ".html";

@@ -26,6 +26,7 @@ import supersql.codegenerator.CodeGenerator;
 import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.FuncArg;
 import supersql.codegenerator.Function;
+import supersql.codegenerator.LinkForeach;
 import supersql.codegenerator.Manager;
 import supersql.codegenerator.Sass;
 import supersql.codegenerator.HTML.HTMLG3;
@@ -115,6 +116,10 @@ public class Mobile_HTML5Function extends Function {
 			}
         } else if (FuncName.equalsIgnoreCase("sinvoke") || FuncName.equalsIgnoreCase("link")) {
             Func_sinvoke(data_info);
+        } else if (FuncName.equalsIgnoreCase("glink")) {	//added by goto 20161109 for plink/glink
+        	Func_sinvoke(data_info);
+        } else if (FuncName.equalsIgnoreCase("plink")) {	//added by goto 20161109 for plink/glink
+        	Func_sinvoke(data_info);
         } else if (FuncName.equalsIgnoreCase("null")) {
             Func_null();
         }
@@ -5277,7 +5282,7 @@ public class Mobile_HTML5Function extends Function {
         }else{
 			if(!link1){
 				//added by goto 20161019 for new foreach
-				filename = file+".html?"+att.substring(1);
+				filename = file+".html?"+LinkForeach.ID2+"="+att.substring(1);
 			}else{
 				//added by goto 20161025 for link1/foreach1
 	        	filename = file + att + ".html";
@@ -5421,7 +5426,6 @@ public class Mobile_HTML5Function extends Function {
         }
         else
             this.workAtt("default");
-        //tk//////////////////////////////////////////////////
 
         html_env.sinvoke_flag = false;
         return;
