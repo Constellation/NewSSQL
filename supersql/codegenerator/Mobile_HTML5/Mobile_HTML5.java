@@ -58,6 +58,7 @@ public class Mobile_HTML5 {
 		}
 		if(symbol.contains("G1") || symbol.contains("G2")){
 			Mobile_HTML5_dynamic.sindex = 0;
+	    	Mobile_HTML5_dynamic.dyamicWhileString = "";
 		}
 		return true;
 	}
@@ -67,6 +68,7 @@ public class Mobile_HTML5 {
 		//C1, C2:    decos, html_env, data, data_info, tfe, tfes, tfeItems
 		//G1, G2:    decos, html_env, data, data_info, tfe
 		if(symbol.contains("G1") || symbol.contains("G2")){
+	    	Mobile_HTML5_dynamic.html_env_code_length = html_env.code.toString().length();
 			Mobile_HTML5_dynamic.dynamicPreProcess(symbol, decos, html_env);
 		}
 		return true;

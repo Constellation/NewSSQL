@@ -235,7 +235,6 @@ public class Mobile_HTML5C1 extends Connector {
 
 		      	//20130914  "text"
 		        if(decos.containsKey("text")){
-		        	Log.e("	C1 in!");
 		        	Mobile_HTML5Function.textFlg2 = true;
 		        }
             }else if(Sass.isBootstrapFlg()){

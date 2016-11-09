@@ -145,13 +145,6 @@ public class Connector extends Operator implements Serializable{
 		return tfes.get(i);
 	}
 	
-	public int getSindex() {
-		return sindex;
-	}
-	public int getDindex() {
-		return dindex;
-	}
-
 	//added by ria 20110913 start
 	public ExtList makeschImage() {
 		ExtList outsch = new ExtList();

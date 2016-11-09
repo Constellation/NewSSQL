@@ -33,7 +33,7 @@ public class Mobile_HTML5_dynamic {
 //	static int Gnum_old = 0;
 	static boolean dynamicAttributeFlg = true;
 	public static String dyamicWhileString = "";
-	static ArrayList<String> dyamicWhileStrings = new ArrayList<>();
+	private static ArrayList<String> dyamicWhileStrings = new ArrayList<>();
 	static int dyamicWhileCount = 0;
 	
 	//Process
@@ -60,9 +60,9 @@ public class Mobile_HTML5_dynamic {
 			if(dynamicAttributeFlg){
 				//TODO d
 				int i = Gnum-1;
-//				int j = new Connector().getSindex();				//CAST(a AS varchar)
+//				int j = new Connector().getSindex();
 				int j = sindex++;
-				System.err.println(j);
+				//Log.e(j);
 				String a = "'COALESCE(CAST("+s+" AS varchar), \\'\\')'";	//for displaying rows which include NULL values (common to postgresql, sqlie, mysql)
 				String b = "'.$row"+Gnum+"["+j+"].'";
 				s = b;
@@ -96,8 +96,8 @@ public class Mobile_HTML5_dynamic {
 ////					b += "$b = '"+dyamicWhileString+"';";
 ////					dyamicWhileStrings.add(i, b);
 ////				}
-				Log.i(Gdepth+" "+i+" "+j+" "+s+"  "/*+b*/);
-				Log.i(dyamicWhileString);
+				//Log.i(Gdepth+" "+i+" "+j+" "+s+"  "/*+b*/);
+				//Log.i(dyamicWhileString);
 			}
 			
 //			if(Gdepth>1 || Gnum<Gdepth_old){
@@ -114,7 +114,8 @@ public class Mobile_HTML5_dynamic {
 		int j = sindex;
 //		if(dynamicAttributeFlg)
 //			Log.i(dynamicAttributeFlg+"  "+i+"  "+j);
-		if(dynamicAttributeFlg && i==1 && j==2){	//TODO d jの値を可変に
+//		if(dynamicAttributeFlg && i==1){	//TODO d jの値を可変に
+		if(dynamicAttributeFlg && i==1 && j==1){	//TODO d jの値を可変に
 			int x = i+1;
 			String b = 	"';\n"+
 					"  		$sql"+x+" = getSQL($sql_a"+x+", $table, $where0, $sql_g, $limit, $sql_a1, $row1);\n" +		//TODO d 指定値
@@ -138,12 +139,20 @@ public class Mobile_HTML5_dynamic {
 					dyamicWhileStrings.add(dyamicWhileString);
 				}
 			}
-			if(symbol.contains("C1") || symbol.contains("C2")){
-				String s = html_env.code.toString();
-				dyamicWhileString = "$b .= '"+s.replaceAll("\r\n|\r|\n", "")+"';\n";
-				//Log.i(s);
-			}
+//			//else{
+//			if(symbol.contains("C1") || symbol.contains("C2")){
+//				Log.i(html_env_code_length);
+////				String s = html_env.code.toString().substring(html_env_code_length, html_env.code.toString().length());
+////				String s = html_env.code.toString().substring(10, 15);
+//				String s = "xxx";
+//				dyamicWhileString = "$b .= '"+s.replaceAll("\r\n|\r|\n", "")+"';\n";
+//				//Log.i(s);
+//			}
 		}
+//		if(symbol.contains("C1") || symbol.contains("C2")){
+//			html_env_code_length = html_env.code.toString().length();
+//			//Log.e(html_env_code_length);
+//		}
 	}
 	public static void dyamicAfterWhileStringProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
 		//dyamicWhileString += "\n";
@@ -156,6 +165,7 @@ public class Mobile_HTML5_dynamic {
 		//}
 
 	}
+	public static int html_env_code_length = 0;
 	public static void dyamicPostStringProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
 //		if(Gdepth<=1 && (symbol.contains("G1") || symbol.contains("G2"))){
 //		if(dynamicAttributeFlg && (symbol.contains("G1") || symbol.contains("G2"))){
@@ -170,8 +180,9 @@ public class Mobile_HTML5_dynamic {
 //			}
 //			}
 			
-			String s = html_env.code.toString();
-			dyamicWhileString = "$b .= '"+s.replaceAll("\r\n|\r|\n", "")+"';\n";
+			String s = html_env.code.toString().substring(html_env_code_length);
+			//dyamicWhileString = "		$b .= '"+s.replaceAll("\r\n|\r|\n", "")+"';\n";
+			dyamicWhileString = "		$b .= '\n"+s+"';\n";
 			//Log.i("---- ");
 		}
 	}
@@ -276,10 +287,10 @@ public class Mobile_HTML5_dynamic {
 					int border = 1;
 					if(decos.containsKey("table0"))	border = 0;
 					//table
-					php_str1 = "        $b .= '<table border=\""+border+"\">';\n";
-					php_str2 = "              $b .= '<tr><td>';\n";
-					php_str3 = "              $b .= '</td></tr>';\n";
-					php_str4 = "        $b .= '</table>';\n";
+					php_str1 = "	$b .= '<table border=\""+border+"\">';\n";
+					php_str2 = "		$b .= '<tr><td>';\n";
+					php_str3 = "		$b .= '</td></tr>';\n";
+					php_str4 = "	$b .= '</table>';\n";
 				}
 
 				//decos contains Key("column")
@@ -514,12 +525,12 @@ public class Mobile_HTML5_dynamic {
     		php +=
 						"    //ユーザ定義\n" +
 						((DBMS.equals("sqlite") || DBMS.equals("sqlite3"))? ("    $sqlite3_DB = '"+DB+"';\n"):"") +
-						"    //$dynamic_col = \""+dynamic_col+"\";\n" +
-						"    //$col_num = "+col_num+";                          //カラム数(Java側で指定)\n" +
+						//"    //$dynamic_col = \""+dynamic_col+"\";\n" +
+						//"    //$col_num = "+col_num+";                          //カラム数(Java側で指定)\n" +
 						"    $table = '"+from+"';\n" +
 						"    $where0 = \""+where+"\";\n" +
 						//"    $dynamic_col_array = array("+dynamic_col_array+");\n" +
-						"    //$dynamic_col_num = 1;\n" +//count($dynamic_col_array);\n" +
+						//"    //$dynamic_col_num = 1;\n" +//count($dynamic_col_array);\n" +
 						"    $dynamic_a_Flg = array("+dynamic_aFlg+");\n" +
 						"    $dynamic_mail_Flg = array("+dynamic_mailFlg+");\n" +
 						"    $dynamic_pop_Flg = array("+dynamic_popFlg+");\n" +
@@ -578,11 +589,11 @@ public class Mobile_HTML5_dynamic {
 							
 	    		php +=	
 							((dynamicRowFlg)? "          if($i>=$start && $i<=$end){	//New\n":"") +
-							php_str2 +
+//							php_str2 +
 //							"          for($j=0; $j<$dynamic_col_num; $j++){\n" +
 //							"          		$b .= str_replace('"+dynamicFuncCountLabel+"', '_'.$i, $row[$j]);\n" +	//For function's count
 //							"          }\n" +
-							php_str3 +
+//							php_str3 +
 							((dynamicRowFlg)? "          }\n":"") +
 							"    }\n" +
 							php_str4 +
@@ -603,24 +614,24 @@ public class Mobile_HTML5_dynamic {
 							/* nest dynamic string  start */
 							//TODO d
 				    		for(int i=0; i<dyamicWhileStrings.size(); i++){
-					    		php +=	dyamicWhileStrings.get(i)+"\n";
+					    		php +=	dyamicWhileStrings.get(i);
 				    		}
 				    		for(int i=dyamicWhileCount; i>1; i--){		//TODO d 処理の位置
 				    			php += " }\n";
 				    		}
-				    		php += "$b .= '</div></div></div></div>';\n";		//TODO d 4つ固定でOK?
-							//php += dyamicWhileString;
+//				    		if(!decos.containsKey("table"))
+//				    			php += "$b .= '</div></div></div></div>';\n";		//TODO d 4つ固定でOK?
 				    		
 							
 							/* nest dynamic string  end */
 	    		
 	    		php +=	
 							((dynamicRowFlg)? "          if($i>=$start && $i<=$end){	//New\n":"") +
-							php_str2 +
+//							php_str2 +
 //							"          for($j=0; $j<$dynamic_col_num; $j++){\n" +
 //							"          		$b .= str_replace('"+dynamicFuncCountLabel+"', '_'.$i, $row[$j]);\n" +	//For function's count
 //							"          }\n" +
-							php_str3 +
+//							php_str3 +
 							((dynamicRowFlg)? "          }\n":"") +
 							"    }\n" +
 							php_str4 +
