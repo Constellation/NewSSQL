@@ -70,7 +70,7 @@ public class Jscss implements Serializable {
 		// add 20141204 masato for ehtml
 		if (media.equalsIgnoreCase("html") || media.equalsIgnoreCase("ehtml") || media.equalsIgnoreCase("web"))
 			from = new File(ep+fs+"jscss"+fs+"forHTML"+fs+"jscss");
-		else if (media.equalsIgnoreCase("mobile_html5") || media.equalsIgnoreCase("bhtml") || media.equalsIgnoreCase("html_bootstrap"))
+		else if (media.equalsIgnoreCase("mobile_html5") || media.equalsIgnoreCase("bhtml") || media.equalsIgnoreCase("html_bootstrap") || media.equalsIgnoreCase("php"))
 			from = new File(ep+fs+"jscss");
 		
 		if (!directoryCopy(from, new File(outdirPath)))
@@ -138,7 +138,7 @@ public class Jscss implements Serializable {
 		String css = "";
 		if(media.equals("html") || media.equals("ehtml"))
 			css = HTMLEnv.commonCSS() + HTMLEnv.css;
-		else if(media.equals("mobile_html5"))
+		else if(media.equals("mobile_html5") || media.equals("php"))
 			css = Mobile_HTML5Env.commonCSS() + Mobile_HTML5Env.css;
 		else if (media.equals("web"))
 			css = WebEnv.commonCSS() + WebEnv.css;

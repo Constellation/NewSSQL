@@ -78,7 +78,8 @@ public class CodeGenerator {
 		}else if(media.toLowerCase().equals("pdf")){
 			factory = new PDFFactory();
 		}else if(media.toLowerCase().equals("php")){	//added by goto 20161104
-			factory = new PHPFactory();
+			factory = new Mobile_HTML5Factory();
+			//factory = new PHPFactory();
 		}else if(media.toLowerCase().equals("rails")){	//added by goto 20161104
 			factory = new RailsFactory();
 		}else if(media.toLowerCase().equals("jsp")){	//added by goto 20161104

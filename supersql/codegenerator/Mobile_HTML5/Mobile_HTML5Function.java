@@ -115,11 +115,11 @@ public class Mobile_HTML5Function extends Function {
 				e.printStackTrace();
 			}
         } else if (FuncName.equalsIgnoreCase("sinvoke") || FuncName.equalsIgnoreCase("link")) {
-            Func_sinvoke(data_info);
+            Func_sinvoke(data_info, 1);
         } else if (FuncName.equalsIgnoreCase("glink")) {	//added by goto 20161109 for plink/glink
-        	Func_sinvoke(data_info);
+        	Func_sinvoke(data_info, 2);
         } else if (FuncName.equalsIgnoreCase("plink")) {	//added by goto 20161109 for plink/glink
-        	Func_sinvoke(data_info);
+        	Func_sinvoke(data_info, 3);
         } else if (FuncName.equalsIgnoreCase("null")) {
             Func_null();
         }
@@ -5223,7 +5223,8 @@ public class Mobile_HTML5Function extends Function {
     }
     //tk end////////////////////////////////////////////////////////////////////////////
 
-    private void Func_sinvoke(ExtList data_info) {
+    //int ltype : 1=link, 2=glink, 3=plink
+    private void Func_sinvoke(ExtList data_info, int ltype) {
 		// link関数の仕様変更　link(att_name, url, value1, value2, ...)
 		String file = this.Args.get(1).toString();
 		if (file.startsWith("\'") || file.startsWith("\"")) {
@@ -5258,40 +5259,49 @@ public class Mobile_HTML5Function extends Function {
 		}
     	
 		if(this.getAtt("action").equals("")){
-		try{
-			if(file.toLowerCase().contains(".sql")){
-				file = file.substring(0, file.indexOf(".sql"));
-			}else if(file.toLowerCase().contains(".ssql")){
-				file = file.substring(0, file.indexOf(".ssql"));
-			}else if(file.toLowerCase().contains(".html")){
-				file = file.substring(0, file.indexOf(".html"));
+			try{
+				if(file.toLowerCase().contains(".sql")){
+					file = file.substring(0, file.indexOf(".sql"));
+				}else if(file.toLowerCase().contains(".ssql")){
+					file = file.substring(0, file.indexOf(".ssql"));
+				}else if(file.toLowerCase().contains(".html")){
+					file = file.substring(0, file.indexOf(".html"));
+				}
+			}catch(Exception e){
+				GlobalEnv.addErr("Error[HTMLFunction]: filename is invalid.");
+				System.err.println("Error[HTMLFunction]: filename is invalid.");
 			}
-		}catch(Exception e){
-			GlobalEnv.addErr("Error[HTMLFunction]: filename is invalid.");
-			System.err.println("Error[HTMLFunction]: filename is invalid.");
-		}
-
-        String filename = new String();
-        if(!this.getAtt("att").equals("")){
-        	if(this.getAtt("att").toLowerCase().startsWith("http://"))
-            	filename = this.getAtt("att");
-        	else if(this.getAtt("att").toLowerCase().endsWith(".html"))
-            	filename = this.getAtt("att");
-            else
-            	filename = file + "_" + this.getAtt("att") + ".html";
-        }else{
-			if(!link1){
-				//added by goto 20161019 for new foreach
-				filename = file+".html?"+LinkForeach.ID2+"="+att.substring(1);
-			}else{
-				//added by goto 20161025 for link1/foreach1
-	        	filename = file + att + ".html";
-			}
-        }
-
-        filename.replace("\\\\","\\");
-        html_env.linkurl = filename;
-        html_env.sinvoke_flag = true;
+	
+	        String filename = new String();
+	        if(!this.getAtt("att").equals("")){
+	        	if(this.getAtt("att").toLowerCase().startsWith("http://"))
+	            	filename = this.getAtt("att");
+	        	else if(this.getAtt("att").toLowerCase().endsWith(".html"))
+	            	filename = this.getAtt("att");
+	            else
+	            	filename = file + "_" + this.getAtt("att") + ".html";
+	        }else{
+				if(!link1){
+					//added by goto 20161019 for new foreach
+					filename = file;
+					//added by goto 20161109 for plink/glink
+					if(!file.endsWith(".php") && !file.endsWith(".rb") && !file.endsWith(".erb") && !file.endsWith(".jsp"))
+						filename += ".html";
+					if(ltype == 1)
+						filename += "?"+LinkForeach.ID2+"="+att.substring(1);
+					else if(ltype==2 || ltype==3){
+			        	html_env.plink_glink_onclick = "'"+(ltype==2? "GET" : "POST")+"', '"+filename+"', '"+att.substring(1)+"'";
+			        	LinkForeach.plink_glink = true;
+			        }
+				}else{
+					//added by goto 20161025 for link1/foreach1
+		        	filename = file + att + ".html";
+				}
+	        }
+	
+	        filename.replace("\\\\","\\");
+	        html_env.linkurl = filename;
+	        html_env.sinvoke_flag = true;
 
 		}else{
 			String filename = new String();

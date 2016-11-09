@@ -7,6 +7,8 @@ public class LinkForeach {
 	public final static String ID2 = "att";
 	public final static StringBuffer C3contents = new StringBuffer();
 	
+	public static boolean plink_glink = false;	//added by goto 20161109 for plink/glink
+	
 	public LinkForeach() {
 
 	}
@@ -48,8 +50,14 @@ public class LinkForeach {
 					"		var elementID = document.getElementById(\""+ID+"_\"+id);\n" +
 					"		if(elementID)\n" +
 					"			elementID.style.display=\"block\";\n" +
-					"		else\n" +
-					"			document.write(\"No Data Found : \"+id);\n";
+					"		else{\n" +
+					"			id = id.replace(/\\+/g, \" \");\n" +
+					"			elementID = document.getElementById(\""+ID+"_\"+id);\n" +
+					"			if(elementID)\n" +
+					"				elementID.style.display=\"block\";\n" +
+					"			else\n" +
+					"				document.write(\"No Data Found : \"+id);\n" +
+					"		}\n";
 		}
 		r += 	"	}\n" +
 				"}\n" +
@@ -64,6 +72,35 @@ public class LinkForeach {
 			r += "<!-- SuperSQL C3(%) Contents  Start -->";
 			r += getJS("C3")+C3contents;
 			r += "<!-- SuperSQL C3(%) Contents  End -->";
+		}
+		return r;
+	}
+	
+	//added by goto 20161109 for plink/glink
+	//plink()/glink() JS and HTML
+	public static String getPlinkGlinkContents(){
+		String r = "";
+		if(plink_glink){
+			r =	"<!-- SuperSQL plink/glink Contents  Start -->\n" +
+				"<script type=\"text/javascript\">\n" +
+				"function "+ID+"(formMethod, filename, value){\n" +
+				"	var e1 = document.createElement('form');\n" +
+				"	e1.setAttribute('name', '"+ID+"_form');\n" +
+				"	e1.setAttribute('method', formMethod);\n" +
+				"	e1.setAttribute('action', filename);\n" +
+				"	\n" +
+				"	var e2 = document.createElement('input');\n" +
+				"	e2.setAttribute('type', 'hidden');\n" +
+				"	e2.setAttribute('name', '"+ID2+"');\n" +
+				"	e2.setAttribute('value', value);\n" +
+				"	\n" +
+				"	document.body.appendChild(e1);\n" +
+				"	document."+ID+"_form.appendChild(e2);\n" +
+				"	document."+ID+"_form.submit();\n" +
+				"}" +
+				"</script>\n" +
+				//"<form name=\""+ID+"_form\" method=\""+formType+"\" action=\""+filename+"\"> </form>\n" +
+				"<!-- SuperSQL plink/glink Contents  End -->";
 		}
 		return r;
 	}

@@ -4,6 +4,7 @@ import java.io.File;
 
 import supersql.codegenerator.Attribute;
 import supersql.codegenerator.Connector;
+import supersql.codegenerator.LinkForeach;
 import supersql.codegenerator.Manager;
 import supersql.codegenerator.Sass;
 import supersql.common.GlobalEnv;
@@ -149,7 +150,12 @@ public class Mobile_HTML5Attribute extends Attribute {
 						html_env.code.append("<A href=\"" + relative_path + "\" ");
 					}else
 						//changed by goto 20161019 for new foreach
-						html_env.code.append("<A href=\"" + html_env.linkurl + "\" data-ajax=\"false\" ");
+						//added by goto 20161109 for plink/glink
+						if(html_env.plink_glink_onclick.isEmpty())
+							html_env.code.append("<A href=\"" + html_env.linkurl + "\" data-ajax=\"false\" ");
+						else
+							html_env.code.append("<A href=\"\" onclick=\""+LinkForeach.ID+"("+html_env.plink_glink_onclick+"); return false;\" data-ajax=\"false\" ");
+					
 					
 					//html_env.code.append("<A href=\"" + html_env.linkurl + "\" ");
 					//added by goto 20120614 end
