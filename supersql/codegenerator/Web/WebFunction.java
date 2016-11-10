@@ -28,6 +28,14 @@ public class WebFunction extends Function {
 		// connector カウント初期化
 		this.setDataList(data_info);
 		
+		// クラス名の取得
+		String classname;
+		if (this.decos.containsKey("class")) {
+			classname = WebEnv.stringsub(this.decos.getStr("class"));
+		} else {
+			classname = WebEnv.getClassID(this);
+		}
+		
 		// cssの情報を取得
 		webEnv.append_css_def_att(WebEnv.getClassID(this), this.decos);
 		
@@ -36,7 +44,7 @@ public class WebFunction extends Function {
 		
 		// anchor関数の発動
 		if (FuncName.equalsIgnoreCase("anchor") || FuncName.equalsIgnoreCase("a")) {
-			Func_url();
+			Func_url(classname);
 		}
 		
 		// footer関数の発動
@@ -51,7 +59,7 @@ public class WebFunction extends Function {
 		
 		// image関数の発動
 		if (FuncName.equalsIgnoreCase("image")) {
-			Func_image();
+			Func_image(classname);
 		}
 		
 		// line関数の発動
@@ -102,7 +110,7 @@ public class WebFunction extends Function {
 	}
 	
 	// image関数
-	protected void Func_image() {
+	protected void Func_image(String classname) {
 		// 引数の取得
 		FuncArg arg1 = (FuncArg) this.Args.get(0);
 		FuncArg arg2 = (FuncArg) this.Args.get(1);
@@ -114,7 +122,8 @@ public class WebFunction extends Function {
 			webEnv.code.append("<td>\n");
 		}
 		webEnv.code.append("<img class=\"");
-		webEnv.code.append(WebEnv.getClassID(this));
+//		webEnv.code.append(WebEnv.getClassID(this));
+		webEnv.code.append(classname);
 		webEnv.code.append(" att\" src=\"" + path + "\">\n");
 		if (webEnv.tableFlag) {
 			webEnv.code.append("</td>\n");
@@ -161,7 +170,7 @@ public class WebFunction extends Function {
 	}
 	
 	// anchor関数 and a関数
-	protected void Func_url() {
+	protected void Func_url(String classname) {
 		// 引数の取得
 		FuncArg arg1 = (FuncArg) this.Args.get(0);
 		FuncArg arg2 = (FuncArg) this.Args.get(1);
@@ -175,11 +184,13 @@ public class WebFunction extends Function {
 			// HTMLに書き込み
 			if (webEnv.tableFlag) {
 				webEnv.code.append("<td class=\"");
-				webEnv.code.append(WebEnv.getClassID(this));
+//				webEnv.code.append(WebEnv.getClassID(this));
+				webEnv.code.append(classname);
 				webEnv.code.append(" att\">");
 			} else {
 				webEnv.code.append("<div class=\"");
-				webEnv.code.append(WebEnv.getClassID(this));
+//				webEnv.code.append(WebEnv.getClassID(this));
+				webEnv.code.append(classname);
 				webEnv.code.append(" att\">");
 			}
 			webEnv.code.append("<a href=\"" + url + "\">");
@@ -196,11 +207,13 @@ public class WebFunction extends Function {
 			// HTMLに書き込み
 			if (webEnv.tableFlag) {
 				webEnv.code.append("<td class=\"");
-				webEnv.code.append(WebEnv.getClassID(this));
+//				webEnv.code.append(WebEnv.getClassID(this));
+				webEnv.code.append(classname);
 				webEnv.code.append(" att\">");
 			} else {
 				webEnv.code.append("<div class=\"");
-				webEnv.code.append(WebEnv.getClassID(this));
+//				webEnv.code.append(WebEnv.getClassID(this));
+				webEnv.code.append(classname);
 				webEnv.code.append(" att\">");
 			}
 			webEnv.code.append("<a href=\"" + url + "\">" + name + "</a>");
