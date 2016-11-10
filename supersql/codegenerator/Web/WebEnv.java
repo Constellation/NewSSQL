@@ -1154,10 +1154,12 @@ public class WebEnv extends LocalEnv {
 			// JDBCドライバの登録
 			String driver = "org.postgresql.Driver";
 			// データベースの指定
-			String host = "localhost";
-			String dbname = "halken"; // データベース名
-			String url = "jdbc:postgresql://" + host + "/" + dbname;
-			String user = "halken";
+			String host = GlobalEnv.gethost();
+			String dbname = GlobalEnv.getdbname();
+//			String url = "jdbc:postgresql://" + host + "/" + dbname;
+			String url = GlobalEnv.geturl();
+			String user = GlobalEnv.getusername();
+			
 			Class.forName(driver);
 			// データベースとの接続
 			Connection con = DriverManager.getConnection(url, user, null);
@@ -1176,7 +1178,7 @@ public class WebEnv extends LocalEnv {
 //			} else {
 //				return "";
 //			}
-			if (!style.isEmpty() && (css.size() != 0)) {
+			if (style != null && (css.size() != 0)) {
 				sql = sql + "SELECT c.name as selector, d.property, d.value "
 						+ "FROM template t, component c, declaration d, tem_com tc, com_dec cd "
 						+ "WHERE t.id=tc.tem_id AND c.id=tc.com_id AND c.id=cd.com_id AND d.id=cd.dec_id ";
