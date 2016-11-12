@@ -11,12 +11,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 
 import supersql.codegenerator.FileFormatter;
 import supersql.codegenerator.Grouper;
 import supersql.codegenerator.Jscss;
 import supersql.codegenerator.LinkForeach;
 import supersql.codegenerator.Manager;
+import supersql.codegenerator.Compiler.Compiler;
+import supersql.codegenerator.Compiler.PHP.PHP;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
@@ -25,6 +28,12 @@ import supersql.parser.Start_Parse;
 public class Mobile_HTML5G3 extends Grouper {
 	
 	public static String foreachID = "";	//added by goto 20161019 for new foreach
+	
+	//added by goto 20161112 for dynamic foreach
+	public static boolean G3 = false;
+	public static boolean dynamic_G3 = false;
+	public static ArrayList<String> dynamic_G3_atts = new ArrayList<>();
+//	static int G3_while_i = 0;
 
     Manager manager;
 
@@ -45,9 +54,14 @@ public class Mobile_HTML5G3 extends Grouper {
     //G3��work�᥽�å�
     @Override
 	public String work(ExtList data_info) {
+    	//added by goto 20161112 for dynamic foreach
+    	G3 = true;
+    	dynamic_G3 = false;
+//    	G3_while_i = 0;
+    	
 		//added by goto 20161019 for new foreach
 		final String ID = LinkForeach.ID;
-		StringBuffer foreachContents = new StringBuffer(LinkForeach.getJS("G3"));
+		StringBuffer foreachContents = new StringBuffer((!PHP.isPHP)? LinkForeach.getJS("G3", "") : "");	//added by goto 20161112 for dynamic foreach
 		
         String parentfile = html_env.filename;
         String parentnextbackfile = html_env.nextbackfile;
@@ -71,6 +85,10 @@ public class Mobile_HTML5G3 extends Grouper {
 //        html_env2.footer = new StringBuffer();
         this.setDataList(data_info);
         while (this.hasMoreItems()) {
+        	//Log.e(G3_and_dynamic);
+        	//added by goto 20161112 for dynamic foreach
+        	if(dynamic_G3)	break;
+        	
             html_env.glevel++;
 
 //            boolean b = tfe instanceof Attribute;
@@ -85,9 +103,9 @@ public class Mobile_HTML5G3 extends Grouper {
                 html_env.countfile++;
                 countinstance++;
                 html_env.filename = html_env.outfile
-                        + String.valueOf(html_env.countfile) + ".html";
+                        + String.valueOf(html_env.countfile) + Compiler.getExtension();
                 html_env.nextbackfile = html_env.linkoutfile
-                        + String.valueOf(html_env.countfile) + ".html";
+                        + String.valueOf(html_env.countfile) + Compiler.getExtension();
             }
 
             html_env.setOutlineMode();
@@ -95,8 +113,10 @@ public class Mobile_HTML5G3 extends Grouper {
             
 			if(!Start_Parse.foreach1Flag){
 				//added by goto 20161019 for new foreach
-				html_env.code.insert(0, "<DIV id=\""+ID+foreachID+"\" style=\"display:none\">\n");
-				html_env.code.append("</DIV>\n\n");
+				if(!dynamic_G3){	//added by goto 20161112 for dynamic foreach
+					html_env.code.insert(0, "<DIV G3 id=\""+ID+foreachID+"\" style=\"display:none\">\n");
+					html_env.code.append("</DIV>\n\n");
+				}
 				foreachContents.append(html_env.code);
 			}
 
@@ -186,10 +206,10 @@ public class Mobile_HTML5G3 extends Grouper {
 				if (html_env.charset != null) {
 					pw = new PrintWriter(new BufferedWriter(
 							new OutputStreamWriter(new FileOutputStream(
-									html_env.outfile+".html"), html_env.charset)));
+									html_env.outfile+Compiler.getExtension()), html_env.charset)));
 				} else
 					pw = new PrintWriter(new BufferedWriter(new FileWriter(
-							html_env.filename+".html")));
+							html_env.filename+Compiler.getExtension())));
 				
 				//changed by goto 20161019 for HTML Formatter
 				String html = "" + html_env.header + foreachContents + html_env.footer;
@@ -227,7 +247,11 @@ public class Mobile_HTML5G3 extends Grouper {
 
         Log.out("TFEId = " + Mobile_HTML5Env.getClassID(this));
         html_env.append_css_def_td(Mobile_HTML5Env.getClassID(this), this.decos);
-		
+        
+        //added by goto 20161112 for dynamic foreach
+        G3 = false;
+        dynamic_G3 = false;
+//        G3_while_i = 0;
         return null;
     }
 

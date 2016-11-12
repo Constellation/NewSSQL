@@ -3,6 +3,7 @@ package supersql.codegenerator.Mobile_HTML5;
 import supersql.codegenerator.Grouper;
 import supersql.codegenerator.Manager;
 import supersql.codegenerator.Sass;
+import supersql.codegenerator.Compiler.Compiler;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
@@ -47,6 +48,8 @@ public class Mobile_HTML5G1 extends Grouper {
     //G1��work�᥽�å�
     @Override
 	public String work(ExtList data_info) {
+    	//if(Mobile_HTML5G3.G3 && Mobile_HTML5G3.G3_while_i>0)  	return null;	//TODO
+    	
     	G1_count++;
     	Mobile_HTML5Attribute.attributeHasWidth = false;
     	
@@ -238,8 +241,8 @@ public class Mobile_HTML5G1 extends Grouper {
             if(rowFlg){
             	html_env.code = new StringBuffer();
             	html_env.countfile++;
-                html_env.filename = html_env.outfile + "_row" + Mobile_HTML5G2.rowFileNum + "_" + j + ".html";
-                html_env.nextbackfile = html_env.linkoutfile + "_row" + Mobile_HTML5G2.rowFileNum + "_" + j + ".html";
+                html_env.filename = html_env.outfile + "_row" + Mobile_HTML5G2.rowFileNum + "_" + j + Compiler.getExtension();
+                html_env.nextbackfile = html_env.linkoutfile + "_row" + Mobile_HTML5G2.rowFileNum + "_" + j + Compiler.getExtension();
                 html_env.setOutlineMode();
             }
             
@@ -342,6 +345,8 @@ public class Mobile_HTML5G1 extends Grouper {
                 }
                 rowNum++;
             }
+
+	        Mobile_HTML5.whileProcess2_2(getSymbol(), decos, html_env, data, data_info, tfe, null, -1);
         }	// /while
 
         //20160527 bootstrap

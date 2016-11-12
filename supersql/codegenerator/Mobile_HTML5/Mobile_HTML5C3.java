@@ -13,6 +13,7 @@ import supersql.codegenerator.Connector;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.LinkForeach;
 import supersql.codegenerator.Manager;
+import supersql.codegenerator.Compiler.Compiler;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
@@ -108,7 +109,7 @@ public class Mobile_HTML5C3 extends Connector {
                 if (k < c3items - 1) {
                     html_env.countfile++;
                     html_env.linkurl = html_env.linkoutfile
-                            + String.valueOf(html_env.countfile) + ".html";
+                            + String.valueOf(html_env.countfile) + Compiler.getExtension();
                     html_env.link_flag++;
                     Log.out("linkflag =" + html_env.link_flag);
                 }

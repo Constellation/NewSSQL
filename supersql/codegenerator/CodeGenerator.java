@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Hashtable;
 
 import supersql.codegenerator.Compiler.JSP.JSPFactory;
+import supersql.codegenerator.Compiler.PHP.PHP;
 import supersql.codegenerator.Compiler.PHP.PHPFactory;
 import supersql.codegenerator.Compiler.Rails.RailsFactory;
 import supersql.codegenerator.HTML.HTMLFactory;
@@ -79,6 +80,8 @@ public class CodeGenerator {
 			factory = new PDFFactory();
 		}else if(media.toLowerCase().equals("php")){	//added by goto 20161104
 			factory = new Mobile_HTML5Factory();
+			PHP.isPHP = true;
+			supersql.codegenerator.Compiler.Compiler.isCompiler = true;
 			//factory = new PHPFactory();
 		}else if(media.toLowerCase().equals("rails")){	//added by goto 20161104
 			factory = new RailsFactory();

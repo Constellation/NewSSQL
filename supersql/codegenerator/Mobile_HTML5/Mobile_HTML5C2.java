@@ -238,6 +238,8 @@ public class Mobile_HTML5C2 extends Connector {
             html_env.code = Embed.postProcess(html_env.code);	//goto 20130915-2  "<$  $>"
 
             i++;
+            
+	        Mobile_HTML5.whileProcess2_2(getSymbol(), decos, html_env, data, data_info, tfe, null, -1);
         }	//	/while
         Mobile_HTML5.afterWhileProcess(getSymbol(), classid, decos, html_env);
 

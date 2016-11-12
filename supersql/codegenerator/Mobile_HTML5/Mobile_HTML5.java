@@ -1,21 +1,14 @@
 package supersql.codegenerator.Mobile_HTML5;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Iterator;
 
-import supersql.codegenerator.Asc_Desc;
-import supersql.codegenerator.Asc_Desc.AscDesc;
 import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.TFE;
-import supersql.common.GlobalEnv;
-import supersql.common.Log;
 import supersql.extendclass.ExtList;
 import supersql.parser.Start_Parse;
 
@@ -46,6 +39,7 @@ public class Mobile_HTML5 {
 //		if(!symbol.contains("G1") && !symbol.contains("G2")){
 //			dyamicPreStringProcess(symbol, decos, html_env);
 //		}
+	
 		
 		if(!symbol.contains("G1") && !symbol.contains("G2")){
 			Mobile_HTML5_dynamic.dynamicPreProcess(symbol, decos, html_env);//最終的には不要
@@ -82,6 +76,20 @@ public class Mobile_HTML5 {
 			Mobile_HTML5_dynamic.dynamicStringGetProcess(symbol, decos, html_env);
 		}
 		Mobile_HTML5_dynamic.dyamicWhileStringProcess(symbol, decos, html_env);
+		return true;
+	}
+	public static boolean whileProcess2_2(String symbol, DecorateList decos, Mobile_HTML5Env html_env, ExtList data, ExtList data_info, ITFE tfe, ExtList<TFE> tfes, int tfeItems){
+		//while process 2_2 (while内の処理2_2)
+		//Attribute: decos, html_env, data_info
+		//C1, C2:    decos, html_env, data, data_info, tfe, tfes, tfeItems
+		//G1, G2:    decos, html_env, data, data_info, tfe
+//		if(symbol.contains("G1") || symbol.contains("G2")){
+//			//added by goto 20161112 for dynamic foreach
+////            if(Mobile_HTML5G3.G3){
+////            	Mobile_HTML5G3.G3_while_i++;
+////                //Log.i(Mobile_HTML5G3.G3_while_i);
+////            }
+//		}
 		return true;
 	}
 	public static boolean afterWhileProcess(String symbol, String tfeID, DecorateList decos, Mobile_HTML5Env html_env){

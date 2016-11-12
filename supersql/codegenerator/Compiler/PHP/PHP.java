@@ -6,4 +6,5 @@ public class PHP {
 
 	}
 	
+	public static boolean isPHP = false;
 }
