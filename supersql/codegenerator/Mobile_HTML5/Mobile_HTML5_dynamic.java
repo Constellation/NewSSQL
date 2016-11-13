@@ -570,7 +570,7 @@ public class Mobile_HTML5_dynamic {
     			Mobile_HTML5G3.dynamic_G3_atts.clear();
     			
     			php += 	"    //for dynamic foreach\n" +
-    					"    if(!empty($where))	$where .= \" and \";\n" +
+    					"    if(!empty($where))	$where = '('.$where.') and ';\n" +		//added by goto 20161114  'where () and ...' for dynamic foreach
     					"    $where .= "+att+"='\".$_POST['att'].\"'\";\n" +
     					"\n";
     		}
