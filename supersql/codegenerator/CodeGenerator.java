@@ -7,7 +7,6 @@ import java.util.Hashtable;
 import supersql.codegenerator.Compiler.Compiler;
 import supersql.codegenerator.Compiler.JSP.JSPFactory;
 import supersql.codegenerator.Compiler.PHP.PHP;
-import supersql.codegenerator.Compiler.PHP.PHPFactory;
 import supersql.codegenerator.Compiler.Rails.RailsFactory;
 import supersql.codegenerator.HTML.HTMLFactory;
 import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5Factory;

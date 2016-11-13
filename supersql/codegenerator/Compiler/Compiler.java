@@ -3,7 +3,6 @@ package supersql.codegenerator.Compiler;
 import supersql.codegenerator.Compiler.JSP.JSP;
 import supersql.codegenerator.Compiler.PHP.PHP;
 import supersql.codegenerator.Compiler.Rails.Rails;
-import supersql.common.Log;
 import supersql.extendclass.ExtList;
 
 public class Compiler {
