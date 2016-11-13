@@ -28,7 +28,7 @@ public class HTMLC3 extends Connector {
 	@Override
 	public String work(ExtList data_info) {
 		//added by goto 20161019 for new foreach
-		final String ID = LinkForeach.ID;
+		final String ID = LinkForeach.ID1;
 		
 		String parentfile = htmlEnv.fileName;
 //		String parentfile2 = htmlEnv2.fileName;

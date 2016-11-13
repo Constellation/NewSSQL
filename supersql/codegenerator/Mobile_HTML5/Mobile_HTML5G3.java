@@ -60,7 +60,7 @@ public class Mobile_HTML5G3 extends Grouper {
 //    	G3_while_i = 0;
     	
 		//added by goto 20161019 for new foreach
-		final String ID = LinkForeach.ID;
+		final String ID = LinkForeach.ID1;
 		StringBuffer foreachContents = new StringBuffer((!PHP.isPHP)? LinkForeach.getJS("G3", "") : "");	//added by goto 20161112 for dynamic foreach
 		
         String parentfile = html_env.filename;

@@ -144,7 +144,7 @@ public class Mobile_HTML5Attribute extends Attribute {
 						if(html_env.plink_glink_onclick.isEmpty())
 							html_env.code.append("<A href=\"" + html_env.linkurl + "\" data-ajax=\"false\" ");
 						else
-							html_env.code.append("<A href=\"\" onclick=\""+LinkForeach.ID+"("+html_env.plink_glink_onclick+"); return false;\" data-ajax=\"false\" ");
+							html_env.code.append("<A href=\"\" onclick=\""+LinkForeach.ID1+"("+html_env.plink_glink_onclick+"); return false;\" data-ajax=\"false\" ");
 					
 					
 					//html_env.code.append("<A href=\"" + html_env.linkurl + "\" ");

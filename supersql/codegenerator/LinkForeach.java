@@ -5,7 +5,7 @@ import supersql.codegenerator.Compiler.PHP.PHP;
 
 
 public class LinkForeach {
-	public final static String ID = "ssql_foreach";
+	public final static String ID1 = "ssql_foreach";
 	public final static String ID2 = "att";
 	public final static StringBuffer C3contents = new StringBuffer();
 	
@@ -19,15 +19,16 @@ public class LinkForeach {
 		String r = "<script type=\"text/javascript\">\n" +
 				   "<!--\n";
 		if(tfe.equals("C3")){
-			String bodyDivID = "ssql_body_contents";
-			r += 	"var ssqlForeach_currentID = \"\";\n" +
+			final String bodyDivID = "ssql_body_contents";
+			final String ID3 = "ssqlForeach";
+			r += 	"var "+ID3+"_currentID = \"\";\n" +
 					"$(function(){\n" +
-					"	window.onload = function(){ ssqlForeach(); }\n" +
-					"	window.onhashchange = function(){ ssqlForeach(); }\n" +
+					"	window.onload = function(){ "+ID3+"(); }\n" +
+					"	window.onhashchange = function(){ "+ID3+"(); }\n" +
 					"});\n" +
-					"function ssqlForeach(){\n" +
+					"function "+ID3+"(){\n" +
 					"	if (location.hash == \"\") {\n" +
-					"		document.getElementById(ssqlForeach_currentID).style.display=\"none\";\n" +
+					"		document.getElementById("+ID3+"_currentID).style.display=\"none\";\n" +
 					"		document.getElementById(\""+bodyDivID+"\").style.display=\"block\";\n" +
 					"	}else{\n" +
 					"		document.getElementById(\""+bodyDivID+"\").style.display=\"none\";\n" +
@@ -39,7 +40,7 @@ public class LinkForeach {
 					"		else\n" +
 					"			document.write(\"No Data Found : \"+id);\n" +
 					"		\n" +
-					"		ssqlForeach_currentID = id;\n";
+					"		"+ID3+"_currentID = id;\n";
 
 		}else if(tfe.equals("G3")){
 			r += 	"window.onload = function(){\n" +
@@ -65,12 +66,12 @@ public class LinkForeach {
 						"		"+G3_dynamic_funcname+"(id);\n";
 			else
 				r +=
-						"		var elementID = document.getElementById(\""+ID+"_\"+id);\n" +
+						"		var elementID = document.getElementById(\""+ID1+"_\"+id);\n" +
 						"		if(elementID)\n" +
 						"			elementID.style.display=\"block\";\n" +
 						"		else{\n" +
 						"			id = id.replace(/\\+/g, \" \");\n" +
-						"			elementID = document.getElementById(\""+ID+"_\"+id);\n" +
+						"			elementID = document.getElementById(\""+ID1+"_\"+id);\n" +
 						"			if(elementID)\n" +
 						"				elementID.style.display=\"block\";\n" +
 						"			else\n" +
@@ -102,9 +103,9 @@ public class LinkForeach {
 			r =	"<!-- SuperSQL plink/glink Contents  Start -->\n" +
 				"<script type=\"text/javascript\">\n" +
 				"<!--\n" +
-				"function "+ID+"(formMethod, filename, value){\n" +
+				"function "+ID1+"(formMethod, filename, value){\n" +
 				"	var e1 = document.createElement('form');\n" +
-				"	e1.setAttribute('name', '"+ID+"_form');\n" +
+				"	e1.setAttribute('name', '"+ID1+"_form');\n" +
 				"	e1.setAttribute('method', formMethod);\n" +
 				"	e1.setAttribute('action', filename);\n" +
 				"	\n" +
@@ -114,8 +115,8 @@ public class LinkForeach {
 				"	e2.setAttribute('value', value);\n" +
 				"	\n" +
 				"	document.body.appendChild(e1);\n" +
-				"	document."+ID+"_form.appendChild(e2);\n" +
-				"	document."+ID+"_form.submit();\n" +
+				"	document."+ID1+"_form.appendChild(e2);\n" +
+				"	document."+ID1+"_form.submit();\n" +
 				"}\n"	+
 				"//-->" +
 				"</script>\n" +

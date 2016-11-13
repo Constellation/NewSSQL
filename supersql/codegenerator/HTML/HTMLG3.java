@@ -70,7 +70,7 @@ public class HTMLG3 extends Grouper {
 	@Override
 	public String work(ExtList data_info) {
 		//added by goto 20161019 for new foreach
-		final String ID = LinkForeach.ID;
+		final String ID = LinkForeach.ID1;
 		StringBuffer foreachContents = new StringBuffer(LinkForeach.getJS("G3", ""));
 		
 		String parentfile = html_env.fileName;

@@ -902,7 +902,11 @@ public class HTMLFunction extends Function {
 			} else {
 				if(!link1){
 					//added by goto 20161019 for new foreach
-					filename = file+".html?"+LinkForeach.ID2+"="+att.substring(1);
+					filename = file;
+					//added by goto 20161109
+					if(!file.endsWith(".php") && !file.endsWith(".rb") && !file.endsWith(".erb") && !file.endsWith(".jsp"))
+						filename += ".html";
+					filename += "?"+LinkForeach.ID2+"="+att.substring(1);
 				}else{
 					//added by goto 20161025 for link1/foreach1
 					filename = file + att + ".html";

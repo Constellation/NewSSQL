@@ -5296,7 +5296,7 @@ public class Mobile_HTML5Function extends Function {
 						filename += "?"+LinkForeach.ID2+"="+att.substring(1);
 					else if(ltype==2 || ltype==3){
 						//<A href="" onclick="ssql_foreach(\'GET\', \'test04_php-foreach.html\', \''.$row1[1].'_'.$row1[2].'_'.$row1[3].'\'); return false;" data-ajax="false" >
-			        	if(!PHP.isPHP)
+						if(!PHP.isPHP && !Mobile_HTML5_dynamic.dynamicDisplay)
 			        		html_env.plink_glink_onclick = "'"+(ltype==2? "GET" : "POST")+"', '"+filename+"', '"+att.substring(1)+"'";
 			        	else
 			        		html_env.plink_glink_onclick = "\\'"+(ltype==2? "GET" : "POST")+"\\', \\'"+filename+"\\', \\'"+att.substring(1)+"\\'";

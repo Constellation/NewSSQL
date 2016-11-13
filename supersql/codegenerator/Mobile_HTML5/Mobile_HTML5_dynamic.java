@@ -4,8 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import com.ibm.db2.jcc.sqlj.m;
-
 import supersql.codegenerator.Asc_Desc;
 import supersql.codegenerator.Asc_Desc.AscDesc;
 import supersql.codegenerator.DecorateList;
@@ -22,12 +20,13 @@ public class Mobile_HTML5_dynamic {
 
 	}
 	
+	public static boolean dynamicDisplay = false;
+	
 	public static String dynamicString = "";
 	private static String dynamicHTMLbuf0 = "";
 	private static String dynamicHTMLbuf = "";
 	private static int dynamicCount = 1;
 	private static String dynamicFuncCountLabel = "___SSQL_DynamicFunc_CountLabel___";
-	public static boolean dynamicDisplay = false;
 	private static ArrayList<String> dyamicAttributes = new ArrayList<>();
 	public static int Gdepth = 0;
 	public static int Gnum = 0;
