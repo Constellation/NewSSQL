@@ -11,11 +11,16 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.Vector;
 
+import supersql.codegenerator.CodeGenerator;
 import supersql.codegenerator.Connector;
 import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.Jscss;
+import supersql.codegenerator.LinkForeach;
 import supersql.codegenerator.LocalEnv;
+import supersql.codegenerator.Sass;
+import supersql.codegenerator.Compiler.PHP.PHP;
+import supersql.codegenerator.HTML.HTMLEnv;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.parser.Start_Parse;
@@ -50,7 +55,7 @@ public class Mobile_HTML5Env extends LocalEnv {
 
     int glevel = 0;
 
-    String filename;
+    String filename = "";
 
     String outfile;
 
@@ -128,6 +133,8 @@ public class Mobile_HTML5Env extends LocalEnv {
     int link_flag;
 
     String linkurl;
+
+    String plink_glink_onclick = "";		//added by goto 20161109 for plink/glink
     
     static int uiGridCount = 0;		//20130314  C1 ui-Grid用
     static int uiGridCount2 = 0;	//20130314  G1 ui-Grid用
@@ -159,12 +166,9 @@ public class Mobile_HTML5Env extends LocalEnv {
     }
 
     public void getHeader(int headerFlag) {		//[headerFlag] 1:通常、2:Prev/Next
-   		int index = 0;
    		if(GlobalEnv.getframeworklist() == null){
-	        header.insert(index,"<HEAD>\n");
-	        header.insert(index,"<HTML>\n");
-	        Log.out("<HTML>");
-	        Log.out("<head>");
+			header.insert(0, "<!DOCTYPE html>\n<HTML>\n<HEAD>\n");
+	        Log.out("<HTML>\n<head>");
 	        
 	        //added by goto 20130508  "Login&Logout"
 	        if(Start_Parse.sessionFlag){
@@ -172,7 +176,7 @@ public class Mobile_HTML5Env extends LocalEnv {
 	        	String s = "<?php\n	session_start();\n";
 	        	if(headerFlag == 1)	s += "	session_regenerate_id(TRUE);\n";
 	        	s += "?>\n";
-	        	header.insert(index, s);
+	        	header.insert(0, s);
 	        }
 	        
 	        //Generator
@@ -260,8 +264,11 @@ public class Mobile_HTML5Env extends LocalEnv {
 //	        header.append("\n-->\n</STYLE>\n");
 
 	        header.append("<!-- SuperSQL JavaScript & CSS -->\n");
-	        header.append("<link rel=\"stylesheet\" href=\"jscss/jquery-ui.css\"/>\n");
-            header.append("<link rel=\"stylesheet\" href=\"jscss/jquery.mobile-1.3.1.min.css\"/>\n");
+	        //20160603 bootstrap
+	        if(!Sass.isBootstrapFlg()){
+	        	header.append("<link rel=\"stylesheet\" href=\"jscss/jquery-ui.css\"/>\n");
+	        	header.append("<link rel=\"stylesheet\" href=\"jscss/jquery.mobile-1.3.1.min.css\"/>\n");
+	        }
             header.append("<link rel=\"stylesheet\" href=\"jscss/jqm-datebox.min.css\"/>\n");
             header.append("<link rel=\"stylesheet\" href=\"jscss/jqm-icon-pack-2.0-original.css\"/>\n");
             header.append("<link rel=\"stylesheet\" href=\"jscss/jquery.simplePagination.css\"/>\n");
@@ -269,9 +276,11 @@ public class Mobile_HTML5Env extends LocalEnv {
             //※※　要注意　※※　 jquery.jsより先にjquerymobile.jsをインポートすると、ボタン等の表示がうまくいかなくなる!!
             header.append("<script src=\"jscss/jquery-1.7.1.min.js\"></script>\n");
             header.append(Mobile_HTML5Function.updateFormJS);
-            header.append("<script src=\"jscss/jquery-ui.min.js\"></script>\n");
-            header.append("<script src=\"jscss/supersql.showmore.js\"></script>\n");
-            header.append("<script src=\"jscss/jquery.mobile-1.3.1.min.js\"></script>\n");
+            if(!Sass.isBootstrapFlg()){
+            	header.append("<script src=\"jscss/jquery-ui.min.js\"></script>\n");
+            	header.append("<script src=\"jscss/supersql.showmore.js\"></script>\n");
+            	header.append("<script src=\"jscss/jquery.mobile-1.3.1.min.js\"></script>\n");
+            }
             header.append("<script src=\"jscss/jqm-datebox.core.min.js\"></script>\n");
             header.append("<script src=\"jscss/jqm-datebox.mode.calbox.min.js\"></script>\n");
             header.append("<script src=\"jscss/jqm-datebox.mode.datebox.min.js\"></script>\n");
@@ -281,7 +290,11 @@ public class Mobile_HTML5Env extends LocalEnv {
     		header.append("<script src=\"jscss/jquery.iframe-auto-height_re.plugin.js\"></script>\n");
     		header.append("<script src=\"jscss/jquery.validate.min.js\"></script>\n");
     		header.append("<script src=\"jscss/supersql.prev-next.js\"></script>\n");
-    		
+
+    		if(Sass.isBootstrapFlg()){
+    			header.append("<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js\"></script>\n");
+    			header.append("<script src=\"jscss/bootstrap.js\"></script>\n");
+    		}
     		//added by goto 20130512  "max-width"
 			header.append(
 					"<script type=\"text/javascript\">\n" +
@@ -289,7 +302,8 @@ public class Mobile_HTML5Env extends LocalEnv {
 					"var portraitWidth = "+portraitWidth+";\n" +
 					"var landscapeWidth = "+landscapeWidth+";\n" +
 					"var pcWidth = "+pcWidth+";\n" +
-					"-->\n" +
+					"var bootstrap = "+Sass.isBootstrapFlg()+";\n" +	//20160603 bootstrap
+					"-->" +
 					"</script>\n");
     		header.append("<script src=\"jscss/supersql.js\"></script>\n");
             //added by goto 20121217 end
@@ -320,8 +334,14 @@ public class Mobile_HTML5Env extends LocalEnv {
 
 	        
 	        header.append("<BODY>\n");
-	        header.append("<!-- data-role=page start -->\n<div data-role=\"page\" id=\"p-top1\" >\n\n");
-	        
+	        header.append("<!-- SuperSQL Body  Start -->\n");
+	        //20160603 bootstrap
+	        if(!Sass.isBootstrapFlg()){
+	        	header.append("<!-- data-role=page start -->\n<div data-role=\"page\" id=\"p-top1\" >\n\n");
+	        }else if(Sass.isBootstrapFlg()){
+	        	header.append("<!-- container start -->\n<div class=\"container-fluid\">\n\n");
+	        }
+
 	        //added by goto 20130508  "Login&Logout" start
 	        //ログイン・ログアウト・新規登録
 	        if(Start_Parse.sessionFlag){
@@ -1226,7 +1246,11 @@ public class Mobile_HTML5Env extends LocalEnv {
 		        }
 	        }
 	        //data-role="content"
-	        header.append("<!-- data-role=content start -->\n<div data-role=\"content\" style=\"padding:0\" id=\"content1\">\n");
+	        //20160603 bootstrap
+	        if(!Sass.isBootstrapFlg()){
+	        	header.append("<!-- data-role=content start -->\n<div data-role=\"content\" style=\"padding:0\" id=\"content1\">\n");
+	        }
+	        header.append("<div id=\"ssql_body_contents\">\n");	//added by goto 20161019 for new foreach
 	        if(Start_Parse.sessionFlag){
 	        	header.append("\n<div id=\"showValues\"><!-- ユーザ名等を表示 --></div>\n");	//ユーザ名
 	        }
@@ -1295,15 +1319,23 @@ public class Mobile_HTML5Env extends LocalEnv {
     	}
 
     	if(GlobalEnv.getframeworklist() == null){
+    		//added by goto 20161019 for new foreach
+    		footer.append("</div><!-- Close id=\"ssql_body_contents\" -->\n");
+			footer.append(LinkForeach.getC3contents());
+			
+			//added by goto 20161109 for plink/glink
+			if(!plink_glink_onclick.isEmpty())
+				footer.append(LinkForeach.getPlinkGlinkContents());
+    		
     		if(footerFlag==1){		//通常時のみ（Prev/Nextでは行わない）
-    			if(!noAd || !copyright.isEmpty())
+    			if((!noAd || !copyright.isEmpty()) && !CodeGenerator.getMedia().toLowerCase().equals("php"))
     				footer.append("<hr size=\"1\">\n");
 	    		if(!copyright.equals("")){	//copyrightを付加
 	    			footer.append("<div>\n");
 	    			footer.append("Copyright &COPY; "+copyright+" All Rights Reserved.\n");
 	    			footer.append("</div>\n\n");
 	    		}
-	    		if(!noAd){
+	    		if(!noAd && !supersql.codegenerator.Compiler.PHP.PHP.isPHP){
 		    		//SuperSQLの宣伝を付加
 		    		footer.append("<div style=\"font-size:11;\">\n");
 		    		if(fff.equals(""))	footer.append("This HTML was generated by <a href=\"http://ssql.db.ics.keio.ac.jp/\" rel=\"external\">SuperSQL</a>\n");
@@ -1311,10 +1343,12 @@ public class Mobile_HTML5Env extends LocalEnv {
 					footer.append("</div>\n\n");
 	    		}
     		}
-    		
-    		footer.append("</div><!-- Close <div data-role=\"content\"> -->\n<!-- data-role=content end -->\n");		//Close <div data-role="content">
-    		//data-role="footer"
-    		
+
+    		//20160601 bootstrap
+    		if(!Sass.isBootstrapFlg()){
+    			footer.append("</div><!-- Close <div data-role=\"content\"> -->\n<!-- data-role=content end -->\n");		//Close <div data-role="content">
+    			//data-role="footer"
+    		}
     		if(footerFlag==1 && Mobile_HTML5Function.footerString.equals("") && flickBarFlg)	//通常時のみ（Prev/Nextでは行わない）
     			Mobile_HTML5Function.footerString
     			+= "<div data-role=\"footer\" data-position=\"fixed\" style=\"padding:11px 0px; background:gray; filter: alpha(opacity=25); -moz-opacity:0.25; opacity:0.25;\" id=\"footer1\">\n" +
@@ -1340,7 +1374,13 @@ public class Mobile_HTML5Env extends LocalEnv {
     		}
     		if(footerFlag==1)		//通常時のみ（Prev/Nextでは行わない）
     			footer.append("\n\n");
-    		footer.append("</div><!-- Close <div data-role=\"page\"> -->\n<!-- data-role=page end -->\n");			//Close <div data-role="page">
+    		//20160603 bootstrap
+    		if(!Sass.isBootstrapFlg()){
+    			footer.append("</div><!-- Close <div data-role=\"page\"> -->\n<!-- data-role=page end -->\n");			//Close <div data-role="page">
+    		}else if(Sass.isBootstrapFlg()){
+    			footer.append("</div><!-- Close container -->\n");
+    		}
+			footer.append("<!-- SuperSQL Body  End -->");
     		footer.append("\n</BODY>\n</HTML>\n");
 	        Log.out("</body></html>");
     	}
@@ -1629,6 +1669,8 @@ public class Mobile_HTML5Env extends LocalEnv {
 	        if (decos.containsKey("pc-width"))
 	        	pcWidth = Integer.parseInt(decos.getStr("pc-width"));
         }catch(Exception e){ /*数値以外*/ }
+        if(supersql.codegenerator.Compiler.PHP.PHP.isPHP && pcWidth<0)
+        	pcWidth = 1000;
         
         if (decos.containsKey("description"))
             metabuf.append("\n<meta name=\"Description\" content=\"" + decos.getStr("description") + "\">");
@@ -2114,7 +2156,8 @@ public class Mobile_HTML5Env extends LocalEnv {
 	//goto 20131123
 	public String getFileName(){
 		//absolute path filename (/home/---/XXX.html)
-		return filename;
+		if(!filename.isEmpty())	return filename;
+		else 					return GlobalEnv.getfilename();
 	}
 	public String getFileName1(){
 		//absolute path filename (/home/---/XXX.html)
@@ -2136,5 +2179,4 @@ public class Mobile_HTML5Env extends LocalEnv {
 		//file path (/home/---/)
 		return new File(filename).getParent();
 	}
-
 }

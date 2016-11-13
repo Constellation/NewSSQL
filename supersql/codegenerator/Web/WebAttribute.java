@@ -31,7 +31,6 @@ public class WebAttribute extends Attribute {
 		} else {
 			classname = WebEnv.getClassID(this);
 		}
-		
 		// css情報書き込み
 		webEnv.append_css_def_att(WebEnv.getClassID(this), this.decos);
 		

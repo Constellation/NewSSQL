@@ -1,9 +1,10 @@
 package supersql.codegenerator;
 
-import supersql.common.Log;
+import java.io.Serializable;
+
 import supersql.extendclass.ExtList;
 
-public class TFE implements ITFE{
+public class TFE implements ITFE,Serializable {
 
 	protected int id; // SchemaID
 	protected boolean orderFlag;

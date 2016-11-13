@@ -19,10 +19,10 @@ public class prefixParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__0=1, T__1=2, T__2=3, DEF=4, K_FOREACH=5, K_IMPORT=6, K_DEFINE=7, OPEN_PARENTHESE=8, 
-		CLOSE_PARENTHESE=9, OPEN_BRACKET=10, CLOSE_BRACKET=11, OPEN_BRACE=12, 
-		CLOSE_BRACE=13, IDENTIFIER=14, STRING_LITERAL=15, MULTI_LINE_COMMENT=16, 
-		SINGLE_LINE_COMMENT=17, WS=18, UNEXPECTED_CHAR=19;
+		T__0=1, T__1=2, T__2=3, DEF=4, K_FOREACH=5, K_FOREACH1=6, K_IMPORT=7, 
+		K_DEFINE=8, OPEN_PARENTHESE=9, CLOSE_PARENTHESE=10, OPEN_BRACKET=11, CLOSE_BRACKET=12, 
+		OPEN_BRACE=13, CLOSE_BRACE=14, IDENTIFIER=15, STRING_LITERAL=16, MULTI_LINE_COMMENT=17, 
+		SINGLE_LINE_COMMENT=18, WS=19, UNEXPECTED_CHAR=20;
 	public static final int
 		RULE_prefix = 0, RULE_operand = 1, RULE_exdef = 2, RULE_function = 3, 
 		RULE_expr = 4, RULE_function_name = 5, RULE_database_name = 6, RULE_table_name = 7, 
@@ -35,14 +35,14 @@ public class prefixParser extends Parser {
 	};
 
 	private static final String[] _LITERAL_NAMES = {
-		null, "','", "'.'", "'#'", null, null, null, null, "'('", "')'", "'['", 
-		"']'", "'{'", "'}'"
+		null, "','", "'.'", "'#'", null, null, null, null, null, "'('", "')'", 
+		"'['", "']'", "'{'", "'}'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
-		null, null, null, null, "DEF", "K_FOREACH", "K_IMPORT", "K_DEFINE", "OPEN_PARENTHESE", 
-		"CLOSE_PARENTHESE", "OPEN_BRACKET", "CLOSE_BRACKET", "OPEN_BRACE", "CLOSE_BRACE", 
-		"IDENTIFIER", "STRING_LITERAL", "MULTI_LINE_COMMENT", "SINGLE_LINE_COMMENT", 
-		"WS", "UNEXPECTED_CHAR"
+		null, null, null, null, "DEF", "K_FOREACH", "K_FOREACH1", "K_IMPORT", 
+		"K_DEFINE", "OPEN_PARENTHESE", "CLOSE_PARENTHESE", "OPEN_BRACKET", "CLOSE_BRACKET", 
+		"OPEN_BRACE", "CLOSE_BRACE", "IDENTIFIER", "STRING_LITERAL", "MULTI_LINE_COMMENT", 
+		"SINGLE_LINE_COMMENT", "WS", "UNEXPECTED_CHAR"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
@@ -94,13 +94,14 @@ public class prefixParser extends Parser {
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 	public static class PrefixContext extends ParserRuleContext {
-		public TerminalNode K_FOREACH() { return getToken(prefixParser.K_FOREACH, 0); }
 		public FunctionContext function() {
 			return getRuleContext(FunctionContext.class,0);
 		}
 		public ExdefContext exdef() {
 			return getRuleContext(ExdefContext.class,0);
 		}
+		public TerminalNode K_FOREACH() { return getToken(prefixParser.K_FOREACH, 0); }
+		public TerminalNode K_FOREACH1() { return getToken(prefixParser.K_FOREACH1, 0); }
 		public List<OperandContext> operand() {
 			return getRuleContexts(OperandContext.class);
 		}
@@ -133,9 +134,15 @@ public class prefixParser extends Parser {
 			setState(50);
 			switch (_input.LA(1)) {
 			case K_FOREACH:
+			case K_FOREACH1:
 				{
 				setState(26);
-				match(K_FOREACH);
+				_la = _input.LA(1);
+				if ( !(_la==K_FOREACH || _la==K_FOREACH1) ) {
+				_errHandler.recoverInline(this);
+				} else {
+					consume();
+				}
 				setState(46);
 				switch ( getInterpreter().adaptivePredict(_input,2,_ctx) ) {
 				case 1:
@@ -887,7 +894,7 @@ public class prefixParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\25\u0084\4\2\t\2"+
+		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\26\u0084\4\2\t\2"+
 		"\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13"+
 		"\t\13\4\f\t\f\4\r\t\r\4\16\t\16\3\2\3\2\3\2\3\2\7\2!\n\2\f\2\16\2$\13"+
 		"\2\3\2\3\2\3\2\3\2\7\2*\n\2\f\2\16\2-\13\2\3\2\3\2\5\2\61\n\2\3\2\3\2"+
@@ -896,29 +903,29 @@ public class prefixParser extends Parser {
 		"\5\3\5\3\6\3\6\3\6\3\6\5\6[\n\6\3\6\3\6\3\6\3\6\3\6\3\6\3\6\5\6d\n\6\3"+
 		"\6\7\6g\n\6\f\6\16\6j\13\6\5\6l\n\6\3\7\3\7\3\b\3\b\3\t\3\t\3\n\3\n\3"+
 		"\13\3\13\3\f\3\f\3\r\3\r\3\16\3\16\3\16\3\16\3\16\3\16\5\16\u0082\n\16"+
-		"\3\16\2\2\17\2\4\6\b\n\f\16\20\22\24\26\30\32\2\3\3\2\20\21\u0085\2\64"+
-		"\3\2\2\2\49\3\2\2\2\6H\3\2\2\2\bJ\3\2\2\2\nk\3\2\2\2\fm\3\2\2\2\16o\3"+
-		"\2\2\2\20q\3\2\2\2\22s\3\2\2\2\24u\3\2\2\2\26w\3\2\2\2\30y\3\2\2\2\32"+
-		"\u0081\3\2\2\2\34\60\7\7\2\2\35\"\5\4\3\2\36\37\7\3\2\2\37!\5\4\3\2 \36"+
-		"\3\2\2\2!$\3\2\2\2\" \3\2\2\2\"#\3\2\2\2#\61\3\2\2\2$\"\3\2\2\2%&\7\n"+
-		"\2\2&+\5\4\3\2\'(\7\3\2\2(*\5\4\3\2)\'\3\2\2\2*-\3\2\2\2+)\3\2\2\2+,\3"+
-		"\2\2\2,.\3\2\2\2-+\3\2\2\2./\7\13\2\2/\61\3\2\2\2\60\35\3\2\2\2\60%\3"+
-		"\2\2\2\61\65\3\2\2\2\62\65\5\b\5\2\63\65\5\6\4\2\64\34\3\2\2\2\64\62\3"+
-		"\2\2\2\64\63\3\2\2\2\65\3\3\2\2\2\66\67\5\26\f\2\678\7\4\2\28:\3\2\2\2"+
-		"9\66\3\2\2\29:\3\2\2\2:;\3\2\2\2;<\5\24\13\2<\5\3\2\2\2=>\7\5\2\2>?\7"+
-		"\b\2\2?I\7\20\2\2@A\7\5\2\2AB\7\t\2\2BC\5\f\7\2CD\5\32\16\2DE\7\16\2\2"+
-		"EF\7\6\2\2FG\7\17\2\2GI\3\2\2\2H=\3\2\2\2H@\3\2\2\2I\7\3\2\2\2JK\5\f\7"+
-		"\2KL\7\n\2\2LQ\5\n\6\2MN\7\3\2\2NP\5\n\6\2OM\3\2\2\2PS\3\2\2\2QO\3\2\2"+
-		"\2QR\3\2\2\2RT\3\2\2\2SQ\3\2\2\2TU\7\13\2\2U\t\3\2\2\2Vl\7\21\2\2WX\5"+
-		"\26\f\2XY\7\4\2\2Y[\3\2\2\2ZW\3\2\2\2Z[\3\2\2\2[\\\3\2\2\2\\]\5\24\13"+
-		"\2]h\3\2\2\2^_\7\3\2\2_g\7\21\2\2`a\5\26\f\2ab\7\4\2\2bd\3\2\2\2c`\3\2"+
-		"\2\2cd\3\2\2\2de\3\2\2\2eg\5\24\13\2f^\3\2\2\2fc\3\2\2\2gj\3\2\2\2hf\3"+
-		"\2\2\2hi\3\2\2\2il\3\2\2\2jh\3\2\2\2kV\3\2\2\2kZ\3\2\2\2l\13\3\2\2\2m"+
-		"n\5\32\16\2n\r\3\2\2\2op\5\32\16\2p\17\3\2\2\2qr\5\32\16\2r\21\3\2\2\2"+
-		"st\t\2\2\2t\23\3\2\2\2uv\5\32\16\2v\25\3\2\2\2wx\5\32\16\2x\27\3\2\2\2"+
-		"yz\5\32\16\2z\31\3\2\2\2{\u0082\7\20\2\2|\u0082\7\21\2\2}~\7\n\2\2~\177"+
-		"\5\32\16\2\177\u0080\7\13\2\2\u0080\u0082\3\2\2\2\u0081{\3\2\2\2\u0081"+
-		"|\3\2\2\2\u0081}\3\2\2\2\u0082\33\3\2\2\2\17\"+\60\649HQZcfhk\u0081";
+		"\3\16\2\2\17\2\4\6\b\n\f\16\20\22\24\26\30\32\2\4\3\2\7\b\3\2\21\22\u0085"+
+		"\2\64\3\2\2\2\49\3\2\2\2\6H\3\2\2\2\bJ\3\2\2\2\nk\3\2\2\2\fm\3\2\2\2\16"+
+		"o\3\2\2\2\20q\3\2\2\2\22s\3\2\2\2\24u\3\2\2\2\26w\3\2\2\2\30y\3\2\2\2"+
+		"\32\u0081\3\2\2\2\34\60\t\2\2\2\35\"\5\4\3\2\36\37\7\3\2\2\37!\5\4\3\2"+
+		" \36\3\2\2\2!$\3\2\2\2\" \3\2\2\2\"#\3\2\2\2#\61\3\2\2\2$\"\3\2\2\2%&"+
+		"\7\13\2\2&+\5\4\3\2\'(\7\3\2\2(*\5\4\3\2)\'\3\2\2\2*-\3\2\2\2+)\3\2\2"+
+		"\2+,\3\2\2\2,.\3\2\2\2-+\3\2\2\2./\7\f\2\2/\61\3\2\2\2\60\35\3\2\2\2\60"+
+		"%\3\2\2\2\61\65\3\2\2\2\62\65\5\b\5\2\63\65\5\6\4\2\64\34\3\2\2\2\64\62"+
+		"\3\2\2\2\64\63\3\2\2\2\65\3\3\2\2\2\66\67\5\26\f\2\678\7\4\2\28:\3\2\2"+
+		"\29\66\3\2\2\29:\3\2\2\2:;\3\2\2\2;<\5\24\13\2<\5\3\2\2\2=>\7\5\2\2>?"+
+		"\7\t\2\2?I\7\21\2\2@A\7\5\2\2AB\7\n\2\2BC\5\f\7\2CD\5\32\16\2DE\7\17\2"+
+		"\2EF\7\6\2\2FG\7\20\2\2GI\3\2\2\2H=\3\2\2\2H@\3\2\2\2I\7\3\2\2\2JK\5\f"+
+		"\7\2KL\7\13\2\2LQ\5\n\6\2MN\7\3\2\2NP\5\n\6\2OM\3\2\2\2PS\3\2\2\2QO\3"+
+		"\2\2\2QR\3\2\2\2RT\3\2\2\2SQ\3\2\2\2TU\7\f\2\2U\t\3\2\2\2Vl\7\22\2\2W"+
+		"X\5\26\f\2XY\7\4\2\2Y[\3\2\2\2ZW\3\2\2\2Z[\3\2\2\2[\\\3\2\2\2\\]\5\24"+
+		"\13\2]h\3\2\2\2^_\7\3\2\2_g\7\22\2\2`a\5\26\f\2ab\7\4\2\2bd\3\2\2\2c`"+
+		"\3\2\2\2cd\3\2\2\2de\3\2\2\2eg\5\24\13\2f^\3\2\2\2fc\3\2\2\2gj\3\2\2\2"+
+		"hf\3\2\2\2hi\3\2\2\2il\3\2\2\2jh\3\2\2\2kV\3\2\2\2kZ\3\2\2\2l\13\3\2\2"+
+		"\2mn\5\32\16\2n\r\3\2\2\2op\5\32\16\2p\17\3\2\2\2qr\5\32\16\2r\21\3\2"+
+		"\2\2st\t\3\2\2t\23\3\2\2\2uv\5\32\16\2v\25\3\2\2\2wx\5\32\16\2x\27\3\2"+
+		"\2\2yz\5\32\16\2z\31\3\2\2\2{\u0082\7\21\2\2|\u0082\7\22\2\2}~\7\13\2"+
+		"\2~\177\5\32\16\2\177\u0080\7\f\2\2\u0080\u0082\3\2\2\2\u0081{\3\2\2\2"+
+		"\u0081|\3\2\2\2\u0081}\3\2\2\2\u0082\33\3\2\2\2\17\"+\60\649HQZcfhk\u0081";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

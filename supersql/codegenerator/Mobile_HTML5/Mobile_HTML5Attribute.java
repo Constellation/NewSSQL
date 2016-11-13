@@ -4,7 +4,9 @@ import java.io.File;
 
 import supersql.codegenerator.Attribute;
 import supersql.codegenerator.Connector;
+import supersql.codegenerator.LinkForeach;
 import supersql.codegenerator.Manager;
+import supersql.codegenerator.Sass;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
@@ -82,6 +84,7 @@ public class Mobile_HTML5Attribute extends Attribute {
 			if(Mobile_HTML5Env.getFormItemFlg() && Mobile_HTML5Env.getFormItemName().equals(formHtml[2])){
 
 			}else{
+
 				Mobile_HTML5.preProcess("Mobile_HTML5Attribute", decos, html_env);	//Pre-process (前処理)	//TODO この位置でOK?
 				
 				//20130309
@@ -145,7 +148,12 @@ public class Mobile_HTML5Attribute extends Attribute {
 						String relative_path = html_env.linkurl.substring(fileDir.length()+1);
 						html_env.code.append("<A href=\"" + relative_path + "\" ");
 					}else
-						html_env.code.append("<A href=\"" + html_env.linkurl + "\" ");
+						//changed by goto 20161019 for new foreach
+						//added by goto 20161109 for plink/glink
+						if(html_env.plink_glink_onclick.isEmpty())
+							html_env.code.append("<A href=\"" + html_env.linkurl + "\" data-ajax=\"false\" ");
+						else
+							html_env.code.append("<A href=\"\" onclick=\""+LinkForeach.ID+"("+html_env.plink_glink_onclick+"); return false;\" data-ajax=\"false\" ");
 					
 					//html_env.code.append("<A href=\"" + html_env.linkurl + "\" ");
 					//added by goto 20120614 end
@@ -223,20 +231,32 @@ public class Mobile_HTML5Attribute extends Attribute {
 			if(whichForm == 0){ //normal process (not form)
 				//***APPEND DATABASE VALUE***//
 				Log.out(data_info);
-				if(Mobile_HTML5.dynamicDisplay || Mobile_HTML5.form){
+				if(Mobile_HTML5_dynamic.dynamicDisplay || Mobile_HTML5_form.form){
 					//20131118 dynamic
-					if(Mobile_HTML5.dynamicDisplay){
-						html_env.code.append( Mobile_HTML5.dynamicAttributeProcess(this) );
+					if(Mobile_HTML5_dynamic.dynamicDisplay){
+						html_env.code.append( Mobile_HTML5_dynamic.dynamicAttributeProcess(this, html_env) );
 					}
 					//20131127 form
-					if(Mobile_HTML5.form){
-						html_env.code.append( Mobile_HTML5.formAttributeProcess(this, decos) );
+					if(Mobile_HTML5_form.form){
+						html_env.code.append( Mobile_HTML5_form.formAttributeProcess(this, decos) );
 					}
 					
 				}else{
-					html_env.code.append(this.getStr(data_info));
+					if(!Sass.isBootstrapFlg()){
+						html_env.code.append(this.getStr(data_info));
+					}else if(Sass.isBootstrapFlg()){
+						html_env.code.append("<div class=\"" + classid +"\">");
+						html_env.code.append(this.getStr(data_info));
+						html_env.code.append("</div>");
+						if(Sass.outofloopFlg.peekFirst()){
+		        			Sass.makeClass(classid);
+		        			Sass.defineGridBasic(classid, decos);
+		        			Sass.closeBracket();
+			      		}
+					}
 				}
 			}
+			
 			Mobile_HTML5.whileProcess2("Mobile_HTML5Attribute", decos, html_env, null, data_info, null, null, -1);	//TODO ここでOK?
 			Mobile_HTML5.afterWhileProcess("Mobile_HTML5Attribute", classid, decos, html_env);
 			

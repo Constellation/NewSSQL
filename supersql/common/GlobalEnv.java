@@ -11,10 +11,12 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import supersql.codegenerator.Ehtml;
+import supersql.codegenerator.Incremental;
 
 public class GlobalEnv {
 	
-	public static final char COMMENT_OUT_LETTER = '-';	//�����ȥ����Ȥ˻��Ѥ���ʸ��(ex: -- )
+	public static final char COMMENT_OUT_LETTER = '-';	//コメントアウト等による利用(ex: -- )
 	
     /* [����] getProperty�᥽�åɤˤ�äơ������ƥ�ץ�ѥƥ�����(OS���ե�������ڤ�ʸ��ۡ��ࡢ����ʤ�)����� */
     /* �����ƥ�ץ�ѥƥ��Ͱ����μ���: System.getProperties().list(System.out); */
@@ -78,15 +80,14 @@ public class GlobalEnv {
 	public static String table_name;
 	public static String where_line;
 
-	//foreach��
-	public static boolean foreach_flag;
+	//foreachなど
+	public static boolean foreach_flag = false;
 	
 	//sessionなど
 	public static boolean session_flag = false;
 
-	//added by ria 20110704 start
+	//optimizerなど
 	private static boolean optimizable = true;
-	//added by ria 20110704 end
 
 	//tk embed��
 	public static StringBuffer err = new StringBuffer();
@@ -101,9 +102,9 @@ public class GlobalEnv {
 	public static int startnum = 0;
 	public static int endnum = 0;
 
-	public static void setGlobalEnv(String[] args) {
-		err_flag = 0;
-		err = new StringBuffer();
+	public static void setGlobalEnv(String[] args) { // 引数のファイル名やオプション等を取得
+		// err_flag = 0; // TODO 最初に初期化されているから必要ない？
+		// err = new StringBuffer(); // TODO 上と同様？
 		envs = new Hashtable<String, String>();
 		String key = null;
 
@@ -114,16 +115,48 @@ public class GlobalEnv {
 				}
 				key = args[i];
 			} else {
+				// modifed by masato 20151118 for ehtml
+				if(key.equals("-query")){
+					String q = "";
+					for(int j = i; j < args.length; j++){
+						if(!args[j].startsWith("-")){
+							q += args[j] + " ";
+						} else {
+							envs.put(key, q);
+							i = j;
+							j = args.length-1;
+						}
+						if(j==args.length-1){
+							envs.put(key, q);
+							i = j;
+							j = args.length-1;
+						}
+					}
+				} else {
+				//
 				envs.put(key, args[i]);
+				}
 				key = null;
 			}
 		}
+//		for (int i = 0; i < args.length; i++) {
+//			if (args[i].startsWith("-")) {
+//				if (key != null) {
+//					envs.put(key, "");
+//				}
+//				key = args[i];
+//			} else {
+//				envs.put(key, args[i]);
+//				key = null;
+//			}
+//		}
 		if (key != null) {
 			envs.put(key, "");
 		}
 		
 		//added by goto 20120707 start
-		//optimize level���ꥪ�ץ����"-O0,-O1,-O2,-O3"����Ѳ�ǽ��
+		//optimize level　"-O0,-O1,-O2,-O3"
+		//optimize level が設定されていればオプションを書き直す
 		for (int i = 0; i <= 3; i++)
 			if(envs.containsKey("-O"+i)){
 				envs.remove("-O"+i);
@@ -133,7 +166,17 @@ public class GlobalEnv {
 		//added by goto 20120707 end
 
 		setQuietLog();
+		
+		// added by masato 20150915 start
+		setIncremental();
+		// added by masato 20150915 end
+		
+		// added by masato 20151118 start
+		setEhtml();
+		// added by masato 20151118 end
+
 		getConfig();
+
 		Log.out("GlobalEnv is " + envs);
 	}
 
@@ -166,14 +209,14 @@ public class GlobalEnv {
 	public static void getConfig() {
 		host = null;
 		db = null;
-		user = System.getProperty("user.name");
-		home = System.getProperty("user.home");
+		user = USER_HOME;
+		home = USER_HOME;
 		outdir = null;
 		driver = null;
 		password = null;
 		encode = null;
 		optimizer = null;
-		String config = getconfigfile();
+		String config = getconfigfile(); // -cでconfigファイルを指定できる
 		String[] c_value;
 
 		//tk
@@ -197,7 +240,7 @@ public class GlobalEnv {
 
 		if (c_value[0] == null && c_value[1] == null && c_value[2] == null
 				&& c_value[3] == null) {
-			     Log.out("No config file("+config+")!!");
+			     Log.err("No config file("+config+")");
 			return;
 		}
 		try {
@@ -245,7 +288,7 @@ public class GlobalEnv {
 		} catch (Exception ex) {
 		}
 
-		if(embedtmp == null)
+		if(embedtmp == null) //TODO
 			embedtmp = "/tmp";
 
 		Log.out("Config is {host=" + host + ", db=" + db + ", user=" + user
@@ -269,7 +312,7 @@ public class GlobalEnv {
 	}
 
 	/**
-	 * SuperSQL����ʸ����Ǽ����Ƥ���ե�����̾
+	 * SuperSQLの基本的読み込み方法
 	 */
 	public static String getfilename() {
 		return seek("-f");
@@ -426,7 +469,7 @@ public class GlobalEnv {
 
 
 	/*
-	 * -debug������Ȥ�������Log.out����Ϥ���
+	 * -debugでLog.outの出力、-quietでLog.infoも出力しない
 	 */
 	public static void setQuietLog() {
 		if (seek("-debug") == null) {
@@ -441,9 +484,27 @@ public class GlobalEnv {
 			Log.setLog(0);
 		}
 	}
-
+	
+	// added by masato 20150915 for incremental update data
+	private static void setIncremental(){
+		if(seek("-incremental") != null){
+			Incremental.setIncremental();
+		} else {
+			return;
+		}
+	}
+	
+	// added by masato 20151118 for embedding
+	private static void setEhtml(){
+		if(seek("-ehtml") != null){
+			Ehtml.setEhtml();
+		} else {
+			return;
+		}
+	}
+	
 	/*
-	 * ����ʸ��������ʸ�Ȥ���(-f������)
+	 * -queryによるクエリの入力(-f以外のパターン)
 	 */
 	public static String getQuery() {
 		return seek("-query");
@@ -490,8 +551,9 @@ public class GlobalEnv {
 			}
 			filein.close();
 		} catch (FileNotFoundException e1) {
-			Log.out("Configuration file " + config + " not found.");
+			Log.err("Configuration file " + config + " not found.");
 		} catch (IOException e) {
+			Log.err("IOEXception error from supersql.common.GlobalEnv.getConfigValue.");
 		}
 
 		return c_value;
@@ -594,7 +656,6 @@ public class GlobalEnv {
 	public static void addErr(String errMsg)
 	{
 		err.append(errMsg);
-		Log.out("env:"+err);
 		err_flag = 1;
 	}
 
@@ -849,6 +910,7 @@ public class GlobalEnv {
 			outdir = GlobalEnv.getfileparent();
 		return outdir;
 	}
+
 	// added by masato 20150525
 	public static String getLinkValue(){
 		return seek("-ehtmlarg");
@@ -858,5 +920,4 @@ public class GlobalEnv {
 	public static Integer getQueryNum(){
 		return Integer.parseInt(seek("-querynum"));
 	}
-
 }

@@ -1,10 +1,11 @@
 package supersql.codegenerator;
 
-import supersql.codegenerator.IOperator;
-import supersql.codegenerator.TFE;
+
+import java.io.Serializable;
+
 import supersql.extendclass.ExtList;
 
-public abstract class Operator extends TFE implements IOperator{
+public abstract class Operator extends TFE implements IOperator, Serializable{
 
 	protected int Dimension;
 	public int getDimension() {

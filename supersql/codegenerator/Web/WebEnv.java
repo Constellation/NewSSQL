@@ -1062,7 +1062,7 @@ public class WebEnv extends LocalEnv {
 		if (decos.containsKey("style")) {
 			style = stringsub(decos.getStr("style"));
 		}
-		
+
 		// tableタグで生成
 		if (decos.containsKey("table")) { // TODO
 			Log.out("********table start********");
@@ -1340,7 +1340,7 @@ public class WebEnv extends LocalEnv {
 		String str = cssbuf.toString();
  		return str;
 	}
-	
+
 	public boolean isNumber(String val) { // 文字列が全部数字であるかチェック
 		String regex = "^\\-?[0-9]*\\.?[0-9]+$";
 	    Pattern p = Pattern.compile(regex);

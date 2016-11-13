@@ -94,7 +94,8 @@ public class Function extends Operand {
 			fa = Args.get(i);
 			ci = fa.countconnectitem();
 			fa.setData(data.ExtsubList(dindex, dindex + ci));
-			if (Name.equalsIgnoreCase("foreach")){
+			if (Name.equalsIgnoreCase("foreach") 
+					|| Name.equalsIgnoreCase("foreach1")){	//added by goto 20161025 for link1/foreach1
 				ArgHash.put(Integer.toString(i), fa);
 			}
 			dindex += ci;

@@ -66,12 +66,12 @@ public class WebFunction extends Function {
 		if (FuncName.equalsIgnoreCase("line")) {
 			Func_line();
 		}
-		
+
 		// null関数の発動
 		if (FuncName.equalsIgnoreCase("null")) {
 			Func_null();
 		}
-		
+
 		// text関数の発動
 		if (FuncName.equalsIgnoreCase("text")) {
 			Func_text();

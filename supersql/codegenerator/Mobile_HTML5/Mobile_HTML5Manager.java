@@ -10,9 +10,12 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.Vector;
 
+import supersql.codegenerator.FileFormatter;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.Jscss;
 import supersql.codegenerator.Manager;
+import supersql.codegenerator.Compiler.Compiler;
+import supersql.codegenerator.Compiler.PHP.PHP;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.dataconstructor.DataConstructor;
@@ -97,9 +100,9 @@ public class Mobile_HTML5Manager extends Manager{
         }
 
         // ?�ֳ�¦��G3�Ǥʤ�??]
-        html_env.filename = html_env.outfile + ".html";
+        html_env.filename = html_env.outfile + Compiler.getExtension();
         html_env2.filename = html_env.outfile + ".xml";
-
+        
         html_env.setOutlineMode();
 
         if(data_info.size() == 0
@@ -117,8 +120,8 @@ public class Mobile_HTML5Manager extends Manager{
 
         html_env.getHeader(1);
         html_env.getFooter(1);
-        html_env2.header.append("<?xml version=\"1.0\" encoding=\""+html_env.getEncode()+"\"?><SSQL>");
-        html_env2.footer.append("</SSQL>");
+//        html_env2.header.append("<?xml version=\"1.0\" encoding=\""+html_env.getEncode()+"\"?><SSQL>");
+//        html_env2.footer.append("</SSQL>");
         try {
         	if(!GlobalEnv.isOpt()){
         		//changed by goto 20120715 start
@@ -131,42 +134,48 @@ public class Mobile_HTML5Manager extends Manager{
 	            	pw = new PrintWriter(new BufferedWriter(new FileWriter(
 	        	                    html_env.filename)));
         		//changed by goto 20120715 end
-	        	if(GlobalEnv.cssout()==null)
-	        		pw.println(html_env.header);
-	            pw.println(html_env.code);
-	            pw.println(html_env.footer);
+	            
+				//changed by goto 20161019 for HTML Formatter
+				String html = "";
+				if (GlobalEnv.cssout() == null)
+					html += html_env.header;
+				html += html_env.code;
+				html += html_env.footer;
+				html = FileFormatter.process(html);
+				pw.println(html);
+	            
 	            pw.close();
         	}
-            //xml
-	        if(GlobalEnv.isOpt()){
-
-            	/*
-            	int i=0;
-	            while(html_env2.code.indexOf("&",i) != -1){
-	            	i = html_env2.code.indexOf("&",i);
-	            	html_env2.code = html_env2.code.replace(i,i+1, "&amp;");
-	            	i++;
-	            }
-	            */
-
-	            html_env2.filename = html_env.outfile + ".xml";
-	            PrintWriter pw2 = new PrintWriter(new BufferedWriter(new FileWriter(
-	                    html_env2.filename)));
-	            if(GlobalEnv.cssout()==null)
-	            	pw2.println(html_env2.header);
-	            pw2.println(html_env2.code);
-	            pw2.println(html_env2.footer);
-	            pw2.close();
-	            Mobile_HTML5optimizer xml = new Mobile_HTML5optimizer();
-	            String xml_str =  xml.generateHtml(html_env2.filename);
-	        	PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(
-	                    html_env.filename)));
-				pw.println(html_env.header);
-				pw.println(xml_str);
-				//StringBuffer footer = new StringBuffer("</div></body></html>");
-				pw.println(html_env.footer);
-				pw.close();
-            }
+//            //xml
+//	        if(GlobalEnv.isOpt()){
+//
+//            	/*
+//            	int i=0;
+//	            while(html_env2.code.indexOf("&",i) != -1){
+//	            	i = html_env2.code.indexOf("&",i);
+//	            	html_env2.code = html_env2.code.replace(i,i+1, "&amp;");
+//	            	i++;
+//	            }
+//	            */
+//
+//	            html_env2.filename = html_env.outfile + ".xml";
+//	            PrintWriter pw2 = new PrintWriter(new BufferedWriter(new FileWriter(
+//	                    html_env2.filename)));
+//	            if(GlobalEnv.cssout()==null)
+//	            	pw2.println(html_env2.header);
+//	            pw2.println(html_env2.code);
+//	            pw2.println(html_env2.footer);
+//	            pw2.close();
+//	            Mobile_HTML5optimizer xml = new Mobile_HTML5optimizer();
+//	            String xml_str =  xml.generateHtml(html_env2.filename);
+//	        	PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(
+//	                    html_env.filename)));
+//				pw.println(html_env.header);
+//				pw.println(xml_str);
+//				//StringBuffer footer = new StringBuffer("</div></body></html>");
+//				pw.println(html_env.footer);
+//				pw.close();
+//            }
 
 	        if(GlobalEnv.cssout()!=null){
 	        	PrintWriter pw3 = new PrintWriter(new BufferedWriter(new FileWriter(
@@ -250,8 +259,8 @@ public class Mobile_HTML5Manager extends Manager{
         html_env.setOutlineMode();
         tfe_info.work(data_info);
 
-        html_env2.header.append("<?xml version=\"1.0\" encoding=\"Shift_JIS\"?><SSQL>");
-        html_env2.footer.append("</SSQL>");
+//        html_env2.header.append("<?xml version=\"1.0\" encoding=\"Shift_JIS\"?><SSQL>");
+//        html_env2.footer.append("</SSQL>");
 
 
         if(GlobalEnv.isOpt()){
@@ -363,7 +372,7 @@ public class Mobile_HTML5Manager extends Manager{
 
 
         // ?�ֳ�¦��G3�Ǥʤ�??
-        html_env.filename = html_env.outfile + ".html";
+    	html_env.filename = html_env.outfile + Compiler.getExtension();
         html_env2.filename = html_env.outfile + ".xml";
 
         html_env.setOutlineMode();

@@ -1,8 +1,11 @@
 package supersql.parser;
 
+
+import java.io.Serializable;
+
 import supersql.common.Log;
 
-public class FromParse {
+public class FromParse implements Serializable {
 
 	private String line;
 

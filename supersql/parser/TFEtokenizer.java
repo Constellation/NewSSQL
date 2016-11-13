@@ -1,12 +1,14 @@
 package supersql.parser;
 
+
+import java.io.Serializable;
 import java.util.StringTokenizer;
 
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
 
-public class TFEtokenizer {
+public class TFEtokenizer implements Serializable {
 
 	private StringTokenizer st;
 

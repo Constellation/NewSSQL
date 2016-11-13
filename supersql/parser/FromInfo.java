@@ -1,11 +1,13 @@
 package supersql.parser;
 
+
+import java.io.Serializable;
 import java.util.Hashtable;
 import java.util.StringTokenizer;
 
 import supersql.common.Log;
 
-public class FromInfo {
+public class FromInfo implements Serializable {
 
 	private String line;
 

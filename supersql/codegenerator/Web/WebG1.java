@@ -62,7 +62,7 @@ public class WebG1 extends Grouper {
 			i = Integer.parseInt(decos.getStr("column"));
 			retFlag = true;
 		}
-		
+
 		// htmlコード書き込み
 		if (!GlobalEnv.isOpt()) {
 			if (table_event) {
