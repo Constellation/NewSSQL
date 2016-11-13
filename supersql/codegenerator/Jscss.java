@@ -154,7 +154,7 @@ public class Jscss implements Serializable {
 	//createFile
 	//create a new file to the fileName directory 
 	private static boolean createFile(String fileName, String content) {
-		
+
 		if(flag || Ehtml.flag){
 			File file = new File(fileName.substring(0, fileName.lastIndexOf(GlobalEnv.OS_FS)));
 			if ( !file.exists() ) {

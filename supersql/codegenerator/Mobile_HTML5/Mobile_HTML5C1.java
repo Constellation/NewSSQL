@@ -6,6 +6,7 @@ import supersql.codegenerator.Connector;
 import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.Manager;
+
 import supersql.codegenerator.Sass;
 import supersql.codegenerator.TFE;
 import supersql.common.GlobalEnv;
@@ -462,4 +463,5 @@ public class Mobile_HTML5C1 extends Connector {
     public String getSymbol() {
     	return "Mobile_HTML5C1";
     }
+
 }

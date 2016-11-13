@@ -20,7 +20,6 @@ public class Mobile_HTML5C2 extends Connector {
     static boolean tableFlg = false;		//20130314  table
     static boolean table0Flg = false;		//20130325  table0
     static boolean divFlg = false;			//20130326  div
-    
     //���󥹥ȥ饯��
     public Mobile_HTML5C2(Manager manager, Mobile_HTML5Env henv, Mobile_HTML5Env henv2) {
         this.manager = manager;

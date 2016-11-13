@@ -100,5 +100,4 @@ public class WhereInfo implements Serializable {
 		this.sparqlWhereQuery = sparqlWhereQuery;
 	}
 
-	
 }

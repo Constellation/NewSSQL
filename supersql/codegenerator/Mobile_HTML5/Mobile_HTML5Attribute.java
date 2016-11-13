@@ -61,7 +61,6 @@ public class Mobile_HTML5Attribute extends Attribute {
 //				decos.put("width", HTMLEnv.divWidth);
 //	  	}
 //		HTMLEnv.divWidth = "";
-		
 		html_env.code = Embed.preProcess(html_env.code, decos);	//goto 20130915-2  "<$  $>"
 		
 		String classid = Mobile_HTML5Env.getClassID(this);
@@ -75,7 +74,7 @@ public class Mobile_HTML5Attribute extends Attribute {
 			if(Mobile_HTML5Env.getFormItemFlg() && Mobile_HTML5Env.getFormItemName().equals(formHtml[2])){
 
 			}else{
-				
+
 				Mobile_HTML5.preProcess("Mobile_HTML5Attribute", decos, html_env);	//Pre-process (前処理)	//TODO この位置でOK?
 				
 				//20130309
@@ -145,7 +144,6 @@ public class Mobile_HTML5Attribute extends Attribute {
 							html_env.code.append("<A href=\"" + html_env.linkurl + "\" data-ajax=\"false\" ");
 						else
 							html_env.code.append("<A href=\"\" onclick=\""+LinkForeach.ID1+"("+html_env.plink_glink_onclick+"); return false;\" data-ajax=\"false\" ");
-					
 					
 					//html_env.code.append("<A href=\"" + html_env.linkurl + "\" ");
 					//added by goto 20120614 end

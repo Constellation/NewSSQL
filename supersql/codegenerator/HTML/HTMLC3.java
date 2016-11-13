@@ -86,6 +86,7 @@ public class HTMLC3 extends Connector {
 				htmlEnv.code = new StringBuffer();
 				htmlEnv.header = new StringBuffer();
 				htmlEnv.footer = new StringBuffer();
+
 //				parentcode2 = htmlEnv2.code;
 //				parentcss2 = htmlEnv2.css;
 //				parentheader2 = htmlEnv2.header;
@@ -104,7 +105,7 @@ public class HTMLC3 extends Connector {
 
 				htmlEnv.setOutlineMode();
 				this.worknextItem();
-				
+	
 				//added by goto 20161019 for new foreach
 				htmlEnv.code.insert(0, "<DIV id=\""+ID+"_"+foreachID+"\" style=\"display:none\">\n");
 				htmlEnv.code.append("</DIV>\n\n");
@@ -203,10 +204,12 @@ public class HTMLC3 extends Connector {
 //					// comment out by chie
 //					// System.exit(-1);
 //				}
+
 				htmlEnv.code = parentcode;
 				htmlEnv.css = parentcss;
 				htmlEnv.header = parentheader;
 				htmlEnv.footer = parentfooter;
+
 //				htmlEnv2.code = parentcode2;
 //				htmlEnv2.css = parentcss2;
 //				htmlEnv2.header = parentheader2;

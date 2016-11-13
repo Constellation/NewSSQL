@@ -128,8 +128,7 @@ public class Mobile_HTML5 {
 		Mobile_HTML5_form.formString = "";
 		return true;
 	}
-	
-	
+
 	
 	
 	/////////////////////////////////////////////////////////////////////////////////////////
@@ -210,5 +209,4 @@ public class Mobile_HTML5 {
             return false;
         }
     }
-
 }

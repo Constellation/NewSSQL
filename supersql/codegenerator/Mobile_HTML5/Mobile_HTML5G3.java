@@ -1,3 +1,4 @@
+
 //changed by goto 20161019 for new foreach
 /*
  * Created on 2004/07/25
@@ -231,7 +232,6 @@ public class Mobile_HTML5G3 extends Grouper {
 			}
 		}
 
-        
         html_env.filename = parentfile;
         html_env.code = parentcode;
         html_env.css = parentcss;

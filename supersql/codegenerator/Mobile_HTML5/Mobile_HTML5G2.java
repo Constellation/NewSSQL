@@ -333,7 +333,6 @@ public class Mobile_HTML5G2 extends Grouper {
             if(Sass.isBootstrapFlg()){
             	Sass.afterFirstLoop();
             }
-
             html_env.glevel--;
             
             Mobile_HTML5G2.tableDivHeader_Count1++;	//20131001 tableDivHeader

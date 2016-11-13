@@ -900,6 +900,7 @@ public class HTMLFunction extends Function {
 				else
 					filename = file + "_" + this.getAtt("att") + ".html";
 			} else {
+
 				if(!link1){
 					//added by goto 20161019 for new foreach
 					filename = file;

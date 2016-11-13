@@ -1,3 +1,4 @@
+
 //changed by goto 20161019 for new foreach
 /*
  * Created on 2004/07/25
@@ -69,6 +70,7 @@ public class HTMLG3 extends Grouper {
 	// G3��work�᥽�å�
 	@Override
 	public String work(ExtList data_info) {
+
 		//added by goto 20161019 for new foreach
 		final String ID = LinkForeach.ID1;
 		StringBuffer foreachContents = new StringBuffer(LinkForeach.getJS("G3", ""));
@@ -114,7 +116,7 @@ public class HTMLG3 extends Grouper {
 
 			html_env.setOutlineMode();
 			this.worknextItem();
-			
+
 			if(!Start_Parse.foreach1Flag){
 				//added by goto 20161019 for new foreach
 				html_env.code.insert(0, "<DIV id=\""+ID+foreachID+"\" style=\"display:none\">\n");

@@ -411,7 +411,6 @@ public class Mobile_HTML5G1 extends Grouper {
         		}
         	}
         }
-
         if(divFlg)	divFlg = false;		//20130326  div
         
         G1Flg=false;

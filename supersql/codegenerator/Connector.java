@@ -144,7 +144,7 @@ public class Connector extends Operator implements Serializable{
 	public TFE gettfe(int i) {
 		return tfes.get(i);
 	}
-	
+
 	//added by ria 20110913 start
 	public ExtList makeschImage() {
 		ExtList outsch = new ExtList();

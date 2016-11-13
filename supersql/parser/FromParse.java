@@ -1,7 +1,6 @@
 package supersql.parser;
 
 
-
 import java.io.Serializable;
 
 import supersql.common.Log;

@@ -78,7 +78,7 @@ public class Mobile_HTML5Function extends Function {
 	static boolean textFlg = false;	//20130914  "text"
     
     static String updateFile;
-    
+
 	private boolean link1 = false; //added by goto 20161025 for link1/foreach1
 
     public Mobile_HTML5Function()

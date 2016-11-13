@@ -133,6 +133,7 @@ public class Mobile_HTML5Env extends LocalEnv {
     int link_flag;
 
     String linkurl;
+
     String plink_glink_onclick = "";		//added by goto 20161109 for plink/glink
     
     static int uiGridCount = 0;		//20130314  C1 ui-Grid用
@@ -289,6 +290,7 @@ public class Mobile_HTML5Env extends LocalEnv {
     		header.append("<script src=\"jscss/jquery.iframe-auto-height_re.plugin.js\"></script>\n");
     		header.append("<script src=\"jscss/jquery.validate.min.js\"></script>\n");
     		header.append("<script src=\"jscss/supersql.prev-next.js\"></script>\n");
+
     		if(Sass.isBootstrapFlg()){
     			header.append("<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js\"></script>\n");
     			header.append("<script src=\"jscss/bootstrap.js\"></script>\n");
@@ -1341,7 +1343,6 @@ public class Mobile_HTML5Env extends LocalEnv {
 					footer.append("</div>\n\n");
 	    		}
     		}
-    		
 
     		//20160601 bootstrap
     		if(!Sass.isBootstrapFlg()){
