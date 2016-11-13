@@ -9,6 +9,7 @@ import supersql.codegenerator.Asc_Desc.AscDesc;
 import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.LinkForeach;
+import supersql.codegenerator.Compiler.Compiler;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 
@@ -208,6 +209,12 @@ public class Mobile_HTML5_dynamic {
 	static int ajax_loadInterval = 0;
 	
 	public static boolean dynamicPreProcess0(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
+		
+		//TODO
+		if(Compiler.isCompiler)
+			decos.put("dynamic", "");
+		
+		
 		if(decos.containsKey("dynamic")){
 			dynamicHTMLbuf0 = html_env.code.toString();
 			dynamicDisplay = true;

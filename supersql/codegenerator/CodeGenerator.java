@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
 
+import supersql.codegenerator.Compiler.Compiler;
 import supersql.codegenerator.Compiler.JSP.JSPFactory;
 import supersql.codegenerator.Compiler.PHP.PHP;
 import supersql.codegenerator.Compiler.PHP.PHPFactory;
@@ -341,6 +342,9 @@ public class CodeGenerator {
 					out_sch = Att;
 				}else if( ((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("grouper") ){
 					out_sch = grouper((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1));
+					
+					//Added by goto 20161113  for Compiler:[ ] -> [ ]@{dynamic}
+					Compiler.addDynamicModifier(tfe_tree);
 				}else if( ((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("composite_iterator") ){
 					ExtList group = composite( (ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1) );
 					add_deco = true;
