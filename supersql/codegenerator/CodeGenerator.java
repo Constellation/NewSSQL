@@ -987,6 +987,8 @@ public class CodeGenerator {
 					decoration_out(tfe, name, value);
 				} else {
 					// key only
+					// 20161113 halken
+					token = token.trim();
 					decoration_out(tfe, token, "");
 				}
 			}
