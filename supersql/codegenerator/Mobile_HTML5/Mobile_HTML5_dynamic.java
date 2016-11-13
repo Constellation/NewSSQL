@@ -90,7 +90,7 @@ public class Mobile_HTML5_dynamic {
 //					if(i>=1 && j==0){
 //						int x = i+1;
 //						b = 	"';\n"+
-//								"  		$sql"+x+" = getSQL($sql_a"+x+", $table, $where0, $sql_g, $limit, $sql_a1, $row1);\n" +		//TODO d 指定値
+//								"  		$sql"+x+" = getSQL($sql_a"+x+", $table, $where, $sql_g, $limit, $sql_a1, $row1);\n" +		//TODO d 指定値
 //								"  		$result"+x+" = pg_query($dynamic_db1, $sql"+x+");\n" +
 //								"  		while($row"+x+" = pg_fetch_row($result"+x+")){\n" +
 //								"  $b='";
@@ -122,7 +122,7 @@ public class Mobile_HTML5_dynamic {
 		if(dynamicAttributeFlg && i==1 && j==1){	//TODO d jの値を可変に
 			int x = i+1;
 			String b = 	"';\n"+
-					"  		$sql"+x+" = getSQL($sql_a"+x+", $table, $where0, $sql_g, $limit, $sql_a1, $row1);\n" +		//TODO d 指定値
+					"  		$sql"+x+" = getSQL($sql_a"+x+", $table, $where, $sql_g, $limit, $sql_a1, $row1);\n" +		//TODO d 指定値
 					"  		$result"+x+" = pg_query($dynamic_db1, $sql"+x+");\n" +
 					"  		while($row"+x+" = pg_fetch_row($result"+x+")){\n" +
 					"  			$b .= '";
@@ -349,10 +349,10 @@ public class Mobile_HTML5_dynamic {
 			    $dynamic_col = "w.name, pr.name, count(*), w.r_year, ko.kind";
 			    $col_num = 5;                          //カラム数(Java側で指定)
 	    	 *    $table = 'world_heritage w, prefectures pr, wh_prefectures wpr, kind_of_wh ko';
-	    	 *    $where0 = 'w.wh_id=wpr.wh_id and wpr.p_id=pr.p_id and w.k_id=ko.k_id';
+	    	 *    $where = 'w.wh_id=wpr.wh_id and wpr.p_id=pr.p_id and w.k_id=ko.k_id';
 			    $dynamic_col_array = array("w.name","pr.name", "count(*)", "w.r_year", "ko.kind");
 	    	 *    $groupby = " pr.name "; 	           //null => WHERE句にlikeを書く／ not null => HAVING句に～    //[要] Java側で、列名に予約語から始まるものがあるかチェック
-	    	 *    $having0 = " count(*)>1 ";
+	    	 *    $having = " count(*)>1 ";
 	    	 *    $orderby = " ORDER BY w.name asc ";
 	    	 *    $limit = " LIMIT 10 ";
 	    	 */
@@ -539,15 +539,16 @@ public class Mobile_HTML5_dynamic {
 						//"    //$dynamic_col = \""+dynamic_col+"\";\n" +
 						//"    //$col_num = "+col_num+";                          //カラム数(Java側で指定)\n" +
 						"    $table = '"+from+"';\n" +
-						"    $where0 = \""+where+"\";\n" +
+						"    $where = \""+where+"\";\n" +
 						//"    $dynamic_col_array = array("+dynamic_col_array+");\n" +
 						//"    //$dynamic_col_num = 1;\n" +//count($dynamic_col_array);\n" +
 						"    $dynamic_a_Flg = array("+dynamic_aFlg+");\n" +
 						"    $dynamic_mail_Flg = array("+dynamic_mailFlg+");\n" +
 						"    $dynamic_pop_Flg = array("+dynamic_popFlg+");\n" +
 						"    $groupby = \""+groupby+"\";\n" +
-						"    $having0 = \""+having+"\";\n" +
+						"    $having = \""+having+"\";\n" +
 						"    $orderby = \""+((!orderby.isEmpty())?(" ORDER BY "+orderby+" "):("")) +"\";\n" +
+						"    $orderby_atts = \""+Asc_Desc.asc_desc_Array2.get(dynamicCount-1)+"\";\n" +	//added by goto 20161113  for @dynamic: distinct order by
 						"    $limit = \""+((limit!="")?(" LIMIT "+limit+" "):("")) +"\";\n" +
 						((limit!="")?("    $limitNum = "+limit+";\n"):("")) +	//TODO dynamicPaging時にLIMITが指定されていた場合
 						"\n";
@@ -569,8 +570,8 @@ public class Mobile_HTML5_dynamic {
     			Mobile_HTML5G3.dynamic_G3_atts.clear();
     			
     			php += 	"    //for dynamic foreach\n" +
-    					"    if(!empty($where0))	$where0 .= \" and \";\n" +
-    					"    $where0 .= "+att+"='\".$_POST['att'].\"'\";\n" +
+    					"    if(!empty($where))	$where .= \" and \";\n" +
+    					"    $where .= "+att+"='\".$_POST['att'].\"'\";\n" +
     					"\n";
     		}
     		
@@ -581,9 +582,9 @@ public class Mobile_HTML5_dynamic {
     		}
 //    		php +=
 ////						"    $sql = \"SELECT DISTINCT \".$dynamic_col.\" FROM \".$table;\n" +
-////						"    if($where0 != \"\")	$sql .= \" WHERE \".$where0.\" \";\n" +
+////						"    if($where != \"\")	$sql .= \" WHERE \".$where.\" \";\n" +
 ////						"    if($groupby != \"\")	$sql .= \" GROUP BY \".$groupby.\" \";\n" +
-////						"    if($having0 != \"\")	$sql .= \" HAVING \".$having0.\" \";\n" +
+////						"    if($having != \"\")	$sql .= \" HAVING \".$having.\" \";\n" +
 ////						"    $sql .= \" \".$orderby.\" \".$limit;\n" +
 //    				"	$sql_a1 = array('d.id', 'd.name');\n" +		//TODO d
 //    				"	$sql_a2 = array('e.id', 'e.name');\n";
@@ -591,9 +592,9 @@ public class Mobile_HTML5_dynamic {
 	    		php +=	"	$sql_a"+(i+1)+" = array("+dyamicAttributes.get(i)+");\n";
     		}
     		php +=
-						"	$sql_g = getG($groupby, $having0, $orderby);\n" +
+						"	$sql_g = getG($groupby, $having, $orderby);\n" +
 						"\n" +
-						"	$sql1 = getSQL($sql_a1, $table, $where0, $sql_g, $limit, null, null);\n";
+						"	$sql1 = getSQL($sql_a1, $orderby_atts, $table, $where, $sql_g, $limit, null, null);\n";	//changed by goto 20161113  for @dynamic: distinct order by
     		if(DBMS.equals("sqlite") || DBMS.equals("sqlite3")){
 	    		php +=
 							"    $result1 = $dynamic_db"+dynamicCount+"->query($sql1);\n" +
@@ -687,20 +688,20 @@ public class Mobile_HTML5_dynamic {
 						"    echo json_encode($ret);\n" +
 						"\n" +
 						"\n" +
-						"function getSQL($sql_a, $table, $where0, $sql_g, $limit, $sql_a2, $row){\n"+ 
-						"	$sql = getSF($sql_a, $table);\n" +
+						"function getSQL($sql_a, $orderby_atts, $table, $where, $sql_g, $limit, $sql_a2, $row){\n"+ 	//changed by goto 20161113  for @dynamic: distinct order by
+						"	$sql = getSF($sql_a, $orderby_atts, $table);\n" +											//changed by goto 20161113  for @dynamic: distinct order by
 						"	if(is_null($sql_a2)){\n" +
-						"		if($where0 != '')	$sql .= ' WHERE '.$where0.' ';\n" +
+						"		if($where != '')	$sql .= ' WHERE '.$where.' ';\n" +
 						"		$sql .= $sql_g.' '.$limit;\n" +
 						"	}else{\n" +
 						"		$sql .= ' WHERE ';\n" +
-						"		if($where0 != '')	$sql .= $where0.' AND ';\n" +
+						"		if($where != '')	$sql .= $where.' AND ';\n" +
 						"		$sql .= getW($sql_a2, $row).$sql_g;\n" +
 						"	}\n" +
 						"	return $sql;\n" +
 						"}\n" +
-						"function getSF($sql_a, $table){\n" +
-						"	return 'SELECT DISTINCT '.getAs($sql_a).' FROM '.$table;\n" +
+						"function getSF($sql_a, $orderby_atts, $table){\n" +											//changed by goto 20161113  for @dynamic: distinct order by
+						"	return 'SELECT DISTINCT '.getAs($sql_a).$orderby_atts.' FROM '.$table;\n" +					//changed by goto 20161113  for @dynamic: distinct order by
 						"}\n" +
 						"function getAs($atts){\n" +
 						"	$r = '';\n" +
@@ -723,10 +724,10 @@ public class Mobile_HTML5_dynamic {
 						"	}\n" +
 						"	return rtrim($r, $and);\n" +
 						"}\n" +
-						"function getG($groupby, $having0, $orderby){\n" +
+						"function getG($groupby, $having, $orderby){\n" +
 						"	$r = '';\n" +
 						"	if($groupby != '')	$r .= ' GROUP BY '.$groupby.' ';\n" +
-						"	if($having0 != '')	$r .= ' HAVING '.$having0.' ';\n" +
+						"	if($having != '')	$r .= ' HAVING '.$having.' ';\n" +
 						"	$r .= ' '.$orderby;\n" +
 						"	return $r;\n" +
 						"}\n" +
@@ -767,10 +768,10 @@ public class Mobile_HTML5_dynamic {
 		try {
 			Asc_Desc ad = new Asc_Desc();
 			//System.out.println(dynamicCount-1);
-			ad.asc_desc = ad.asc_desc_Array.get(dynamicCount-1);
+			ad.asc_desc = ad.asc_desc_Array1.get(dynamicCount-1);
 			ad.sorting();
 			
-			Iterator<AscDesc> it = Asc_Desc.asc_desc.iterator();
+			Iterator<AscDesc> it = ad.asc_desc.iterator();
 			while (it.hasNext()) {
 				AscDesc data = it.next();
 				s += data.getAscDesc()+", ";

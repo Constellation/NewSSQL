@@ -4,14 +4,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-import supersql.codegenerator.Asc_Desc.AscDesc;
-import supersql.codegenerator.Asc_Desc.AscDescComparator;
-import supersql.common.Log;
-
 public class Asc_Desc {
 
-	public static ArrayList<ArrayList<AscDesc>> asc_desc_Array = new ArrayList<>();
+	public static ArrayList<ArrayList<AscDesc>> asc_desc_Array1 = new ArrayList<>();	//order by strings
+	public static ArrayList<String> asc_desc_Array2 = new ArrayList<>();				//asc,desc attributes	 //added by goto 20161113  for distinct order by
 	public static ArrayList<AscDesc> asc_desc = new ArrayList<>();
+	public static String asc_desc_attributes = "";
 
 	//Asc_Desc
 	public Asc_Desc() {
@@ -40,6 +38,7 @@ public class Asc_Desc {
 			}
 			add_asc_desc(no, token+" DESC");
 		}
+		asc_desc_attributes += ", "+token;		//added by goto 20161113  for @dynamic: distinct order by
 //		try{
 //			if(order.toLowerCase().startsWith("asc")){
 //				int no = Integer.parseInt(order.substring(3));
@@ -53,8 +52,10 @@ public class Asc_Desc {
 	
 	//add
 	public void add_asc_desc_Array() {
-		asc_desc_Array.add(dynamicCount, asc_desc);
+		asc_desc_Array1.add(dynamicCount, asc_desc);
+		asc_desc_Array2.add(dynamicCount, asc_desc_attributes);	//added by goto 20161113  for @dynamic: distinct order by
 		asc_desc = new ArrayList<AscDesc>();
+		asc_desc_attributes = "";
 	}
 	//add
 	private void add_asc_desc(int no, String AscDesc) {
@@ -62,7 +63,7 @@ public class Asc_Desc {
 		asc_desc.add(new AscDesc(no, AscDesc));
 	}
 
-	//sorting
+	//sorting for (asc1)/(desc1)
 	public void sorting() {
 		Collections.sort(asc_desc, new AscDescComparator());
 	}
