@@ -41,6 +41,9 @@ public interface ITFE extends Serializable {
 	void setOrderBy(String order);
 	void setAggregate(String aggregate);
 
+//	void setcheckdeco(boolean decocheck);
+//	boolean getcheckdeco();
+	
 	ExtList makeschImage();
 
 	void addDeco(String name, String value, String condition);

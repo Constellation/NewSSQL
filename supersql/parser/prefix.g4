@@ -4,7 +4,7 @@ grammar	prefix;
 package supersql.parser;
 }
 prefix	:	( 
-				(K_FOREACH | K_FOREACH1) 
+				(K_FOREACH | K_FOREACH1)
 					(
 						operand (',' operand)* 
 					| 
@@ -77,8 +77,8 @@ any_name
 DEF	:	'{' .+? '}'
 	;
 
-K_FOREACH	:	F O R E A C H	;  
-K_FOREACH1	:	K_FOREACH [0-9]+	;  
+K_FOREACH	:	F O R E A C H	;
+K_FOREACH1 : K_FOREACH [0-9]+; 
 K_IMPORT	:	I M P O R T	;
 K_DEFINE	:	D E F I N E	;
 
