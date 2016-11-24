@@ -89,12 +89,12 @@ composite_iterator	:
 	;
 
 exp :	
-	d_exp 
+	d_exp
 	;
 
 d_exp :
-	v_exp 
-	(C3 operand)?
+	v_exp
+	(C3 (v_exp | operand) )*
     ;
     
 v_exp :

@@ -36,7 +36,7 @@ public class CodeGenerator {
 
 	private static Factory factory;
 	
-	private static boolean decocheck = false;
+//	private static boolean decocheck = false;
 
 	public static TFE schemaTop;
 	public static ExtList sch;
@@ -272,12 +272,11 @@ public class CodeGenerator {
 		
 		
 		if(tfe_tree.get(0).toString().equals("operand")){
-			
-			if( ((ExtList)tfe_tree.get(1)).get(((ExtList)tfe_tree.get(1)).size()-1) instanceof String  && !decocheck
+			if( ((ExtList)tfe_tree.get(1)).get(((ExtList)tfe_tree.get(1)).size()-1) instanceof String  && !tfe_tree.contains("true")
 					&& (decos = ((ExtList)tfe_tree.get(1)).get(((ExtList)tfe_tree.get(1)).size()-1).toString().trim()).startsWith("@")
 					){
 					ExtList new_out = checkDecoration(tfe_tree, decos);
-//					Log.info(new_out);
+					Log.info(new_out);
 					out_sch = read_attribute(new_out);
 			}
 			else if( ((ExtList)tfe_tree.get(1)).get(0) instanceof String ){
@@ -290,7 +289,6 @@ public class CodeGenerator {
 					Attribute Att = makeAttribute(att);
 					out_sch = Att;
 				}
-				
 			}
 			else{
 				if( ((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("sorting") ){
@@ -493,20 +491,18 @@ public class CodeGenerator {
 
 	private static Decorator decoration(ExtList operand, int dim) {
 		ExtList atts = new ExtList();
-		Log.info(operand);
 		for(int i = 0; i <= operand.size(); i++){
+			Log.info(operand.get(i));
 			TFE att = read_attribute((ExtList)operand.get(i));
 			atts.add(att);
 			i++;
 		}
-		decocheck =false;
 		Decorator deco = createdecorator(1);
 
 		for (int i = 0; i < atts.size(); i++) {
 			deco.setTFE((ITFE) (atts.get(i)));
 		}
 		return deco;
-
 	}
 	
 	private static Connector connector_main(ExtList operand, int dim){
@@ -517,9 +513,9 @@ public class CodeGenerator {
 			atts.add(att);
 			i++;
 		}
-		decocheck =false;
+//		decocheck =false;
 		Connector con = createconnector(dim);
-
+		
 		for (int i = 0; i < atts.size(); i++) {
 			con.setTFE((ITFE) (atts.get(i)));
 		}
@@ -911,7 +907,7 @@ public class CodeGenerator {
 		String[] decolist = deco.split(",");
 		ExtList new_list = new ExtList();
 		ExtList med = new ExtList();
-		new_list.add("Decoration");
+		extList.add("true");
 		med.add(extList);
 		for(int i = 0; i < decolist.length; i++) {
 
@@ -929,7 +925,11 @@ public class CodeGenerator {
 					continue;
 				}else if(value.startsWith("\"") && value.endsWith("\"")){
 					continue;
+				}else if(isNumber(value)){
+					continue;
 				}else{
+					if(!new_list.contains("Decoration"))
+						new_list.add("Decoration");
 					//value:e.color->[operand, [e.color]]
 					ExtList a1 = new ExtList(), a2 = new ExtList();
 					a1.add("operand");
@@ -941,8 +941,12 @@ public class CodeGenerator {
 			}
 		}
 		new_list.add(med);
-		decocheck = true;
-		return new_list;
+//		decocheck = true;
+		if(!new_list.contains("Decoration")){
+			return extList;
+		}else{
+			return new_list;
+		}
 	}
 
 	private static void setDecoration(ITFE tfe, String decos) {
@@ -986,6 +990,9 @@ public class CodeGenerator {
 					// key = idx
 					name = token.substring(0, equalidx).trim();
 					value = token.substring(equalidx + 1).trim();
+					if(value.startsWith("'")){
+						value = value.replaceAll("'", "\"");
+					}
 					decoration_out(tfe, name, value);
 				} else {
 					// key only
@@ -1051,5 +1058,14 @@ public class CodeGenerator {
 			return getText((ExtList)tree.get(0), ruleNames);
 		}
 		return builder.toString();
+	}
+	
+	public static boolean isNumber(String val) {
+		try {
+			Integer.parseInt(val);
+			return true;
+		} catch (NumberFormatException nfex) {
+			return false;
+		}
 	}
 }
