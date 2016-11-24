@@ -193,6 +193,7 @@ public class Mobile_HTML5C1 extends Connector {
 
         if(Sass.outofloopFlg.peekFirst()){
         	gridMap = Sass.beforeC1WhileProcess(tfes);
+//        	Log.info(gridMap);
         }
         Mobile_HTML5.beforeWhileProcess(getSymbol(), decos, html_env);
         while (this.hasMoreItems()) {
