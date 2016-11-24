@@ -202,6 +202,8 @@ public class Mobile_HTML5G2 extends Grouper {
 //        Mobile_HTML5_form.G2_dataQuantity = this.data.size();
         Mobile_HTML5.beforeWhileProcess(getSymbol(), decos, html_env);
         while (this.hasMoreItems()) {
+        	Mobile_HTML5.gLevel++;
+        	
         	String classid2 = Mobile_HTML5Env.getClassID(tfe);
 
         	Mobile_HTML5Function.glvl = html_env.glevel;	//added by goto 20130914  "SEQ_NUM"
@@ -349,6 +351,8 @@ public class Mobile_HTML5G2 extends Grouper {
             }
 
 	        Mobile_HTML5.whileProcess2_2(getSymbol(), decos, html_env, data, data_info, tfe, null, -1);
+	        
+	        Mobile_HTML5.gLevel--;
         }	// /while
         //20160527 bootstrap
         Mobile_HTML5.afterWhileProcess(getSymbol(), classid, decos, html_env);
