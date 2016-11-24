@@ -14,6 +14,7 @@ import java.util.Vector;
 import supersql.codegenerator.CodeGenerator;
 import supersql.codegenerator.Connector;
 import supersql.codegenerator.DecorateList;
+import supersql.codegenerator.Ehtml;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.Jscss;
 import supersql.codegenerator.LinkForeach;
@@ -1506,7 +1507,7 @@ public class Mobile_HTML5Env extends LocalEnv {
 
 		// ��??
         if (decos.containsKey("width")) {
-        	if(GlobalEnv.getframeworklist() == null)
+			if(GlobalEnv.getframeworklist() == null && !Ehtml.flag && !GlobalEnv.isNumber(decos.getStr("width")))
         		cssbuf.append(" width:" + decos.getStr("width") + ";");
         	else
         		cssbuf.append(" width:" + decos.getStr("width") + "px;");
@@ -1514,7 +1515,7 @@ public class Mobile_HTML5Env extends LocalEnv {
 
         // ��??
         if (decos.containsKey("height")){
-        	if(GlobalEnv.getframeworklist() == null)
+			if(GlobalEnv.getframeworklist() == null && !Ehtml.flag && !GlobalEnv.isNumber(decos.getStr("height")))
         		cssbuf.append(" height:" + decos.getStr("height") + ";");
         	else
         		cssbuf.append(" height:" + decos.getStr("height") + "px;");

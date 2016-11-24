@@ -691,7 +691,7 @@ public class HTMLEnv extends LocalEnv implements Serializable{
 
 		// width
 		if (decos.containsKey("width")) {
-			if (GlobalEnv.getframeworklist() == null && !Ehtml.flag && !isNumber(decos.getStr("width")))
+			if (GlobalEnv.getframeworklist() == null && !Ehtml.flag && !GlobalEnv.isNumber(decos.getStr("width")))
 				cssbuf.append(" width:" + decos.getStr("width") + ";");
 			else
 				cssbuf.append(" width:" + decos.getStr("width") + "px;");
@@ -699,7 +699,7 @@ public class HTMLEnv extends LocalEnv implements Serializable{
 
 		// height
 		if (decos.containsKey("height")) {
-			if (GlobalEnv.getframeworklist() == null && !Ehtml.flag && !isNumber(decos.getStr("height")))
+			if (GlobalEnv.getframeworklist() == null && !Ehtml.flag && !GlobalEnv.isNumber(decos.getStr("height")))
 				cssbuf.append(" height:" + decos.getStr("height") + ";");
 			else
 				cssbuf.append(" height:" + decos.getStr("height") + "px;");
@@ -1341,13 +1341,6 @@ public class HTMLEnv extends LocalEnv implements Serializable{
 		OutlineMode = true;
 	}
 	
-	public boolean isNumber(String val) { // 文字列が全部数字であるかチェック
-		String regex = "^\\-?[0-9]*\\.?[0-9]+$";
-	    Pattern p = Pattern.compile(regex);
-	    Matcher m = p.matcher(val);
-	    return m.find();
-	}
-
 	public static void initXML(){
 		xmlCode = new StringBuffer();
 		xmlCode.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
