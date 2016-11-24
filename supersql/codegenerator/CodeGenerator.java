@@ -276,7 +276,7 @@ public class CodeGenerator {
 					&& (decos = ((ExtList)tfe_tree.get(1)).get(((ExtList)tfe_tree.get(1)).size()-1).toString().trim()).startsWith("@")
 					){
 					ExtList new_out = checkDecoration(tfe_tree, decos);
-					Log.info(new_out);
+//					Log.info(new_out);
 					out_sch = read_attribute(new_out);
 			}
 			else if( ((ExtList)tfe_tree.get(1)).get(0) instanceof String ){
@@ -309,7 +309,7 @@ public class CodeGenerator {
 					}
 					tfe_tree.remove(1);
 					tfe_tree.add(att1);
-					Log.info(tfe_tree);
+//					Log.info(tfe_tree);
 				}
 
 				if( ((ExtList)tfe_tree.get(1)).contains("||") ){
@@ -492,7 +492,7 @@ public class CodeGenerator {
 	private static Decorator decoration(ExtList operand, int dim) {
 		ExtList atts = new ExtList();
 		for(int i = 0; i <= operand.size(); i++){
-			Log.info(operand.get(i));
+//			Log.info(operand.get(i));
 			TFE att = read_attribute((ExtList)operand.get(i));
 			atts.add(att);
 			i++;
