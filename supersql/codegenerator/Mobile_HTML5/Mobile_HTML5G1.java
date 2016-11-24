@@ -226,6 +226,8 @@ public class Mobile_HTML5G1 extends Grouper {
         
         Mobile_HTML5.beforeWhileProcess(getSymbol(), decos, html_env);
         while (this.hasMoreItems()) {
+        	Mobile_HTML5.gLevel++;
+        	
         	Mobile_HTML5Function.glvl = html_env.glevel;	//added by goto 20130914  "SEQ_NUM"
         	
             if(decos.containsKey("table0") || Mobile_HTML5C1.table0Flg || Mobile_HTML5C2.table0Flg || Mobile_HTML5G2.table0Flg)	table0Flg = true;
@@ -347,6 +349,7 @@ public class Mobile_HTML5G1 extends Grouper {
             }
 
 	        Mobile_HTML5.whileProcess2_2(getSymbol(), decos, html_env, data, data_info, tfe, null, -1);
+        	Mobile_HTML5.gLevel--;
         }	// /while
 
         //20160527 bootstrap

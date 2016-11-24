@@ -745,13 +745,12 @@ public class Mobile_HTML5_dynamic {
 	    	
 	    	if(!dynamicRowFlg){
 	    		Mobile_HTML5.createFile(html_env, dynamicPHPfileName, php);//PHPファイルの作成
-	    		dynamicCount++;
+	    		dynamicCount++;		//TODO d
     		}else{
     			Mobile_HTML5.createFile(html_env, dynamicPHPfileName, php);//PHPファイルの作成
 				dynamicPagingCount++;
 				dynamicRowFlg = false;
 			}
-	    	//dynamicCount++;
 	    	dynamicDisplay = false;
 	    	ajax_loadInterval = 0;
 	    	

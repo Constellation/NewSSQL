@@ -14,6 +14,8 @@ import supersql.parser.Start_Parse;
 
 public class Mobile_HTML5 {
 	
+	public static int gLevel = 0;
+	
 	public Mobile_HTML5() {
 
 	}

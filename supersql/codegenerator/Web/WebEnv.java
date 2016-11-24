@@ -127,7 +127,7 @@ public class WebEnv extends LocalEnv {
 		// background-size (CSS3)
 		if (decos.containsKey("background-size")) { // TODO
 			String str = stringsub(decos.getStr("background-size"));
-			if (isNumber(str)) {
+			if (GlobalEnv.isNumber(str)) {
 				cssbuf.append("\tbackground-size: " + str + "px;\n");
 			} else {
 				cssbuf.append("\tbackground-size: " + str + ";\n");
@@ -190,7 +190,7 @@ public class WebEnv extends LocalEnv {
 		// border-radius (CSS3)
 		if (decos.containsKey("border-radius")) { // TODO
 			String str = stringsub(decos.getStr("border-radius"));
-			if (isNumber(str)) {
+			if (GlobalEnv.isNumber(str)) {
 				cssbuf.append("\tborder-radius: " + str + "px;\n");
 			} else {
 				cssbuf.append("\tborder-radius: " + str + ";\n");
@@ -200,7 +200,7 @@ public class WebEnv extends LocalEnv {
 		// border-spacing (only table element)
 		if (decos.containsKey("border-spacing")) { // TODO
 			String str = stringsub(decos.getStr("border-spacing"));
-			if (isNumber(str)) {
+			if (GlobalEnv.isNumber(str)) {
 				cssbuf.append("\tborder-spacing: " + str + "px;\n");
 			} else {
 				cssbuf.append("\tborder-spacing: " + str + ";\n");
@@ -251,7 +251,7 @@ public class WebEnv extends LocalEnv {
 		// border-width
 		if (decos.containsKey("border-width")) { // TODO
 			String str = stringsub(decos.getStr("border-width"));
-			if (isNumber(str)) {
+			if (GlobalEnv.isNumber(str)) {
 				cssbuf.append("\tborder-width: " + str + "px;\n");
 			} else {
 				cssbuf.append("\tborder-width: " + str + ";\n");
@@ -263,14 +263,14 @@ public class WebEnv extends LocalEnv {
 		// border-bottom-width & border-width-bottom
 		if (decos.containsKey("border-bottom-width")) { // TODO
 			String str = stringsub(decos.getStr("border-bottom-width"));
-			if (isNumber(str)) {
+			if (GlobalEnv.isNumber(str)) {
 				cssbuf.append("\tborder-bottom-width: " + str + "px;\n");
 			} else {
 				cssbuf.append("\tborder-bottom-width: " + str + ";\n");
 			}
 		} else if (decos.containsKey("border-width-bottom")) {
 			String str = stringsub(decos.getStr("border-width-bottom"));
-			if (isNumber(str)) {
+			if (GlobalEnv.isNumber(str)) {
 				cssbuf.append("\tborder-bottom-width: " + str + "px;\n");
 			} else {
 				cssbuf.append("\tborder-bottom-width: " + str + ";\n");
@@ -279,14 +279,14 @@ public class WebEnv extends LocalEnv {
 		// border-left-width & border-width-left
 		if (decos.containsKey("border-left-width")) { // TODO
 			String str = stringsub(decos.getStr("border-left-width"));
-			if (isNumber(str)) {
+			if (GlobalEnv.isNumber(str)) {
 				cssbuf.append("\tborder-left-width: " + str + "px;\n");
 			} else {
 				cssbuf.append("\tborder-left-width: " + str + ";\n");
 			}
 		} else if (decos.containsKey("border-width-left")) {
 			String str = stringsub(decos.getStr("border-width-left"));
-			if (isNumber(str)) {
+			if (GlobalEnv.isNumber(str)) {
 				cssbuf.append("\tborder-left-width: " + str + "px;\n");
 			} else {
 				cssbuf.append("\tborder-left-width: " + str + ";\n");
@@ -295,14 +295,14 @@ public class WebEnv extends LocalEnv {
 		// border-right-width & border-width-right
 		if (decos.containsKey("border-right-width")) { // TODO
 			String str = stringsub(decos.getStr("border-right-width"));
-			if (isNumber(str)) {
+			if (GlobalEnv.isNumber(str)) {
 				cssbuf.append("\tborder-right-width: " + str + "px;\n");
 			} else {
 				cssbuf.append("\tborder-right-width: " + str + ";\n");
 			}
 		} else if (decos.containsKey("border-width-right")) { 
 			String str = stringsub(decos.getStr("border-width-right"));
-			if (isNumber(str)) {
+			if (GlobalEnv.isNumber(str)) {
 				cssbuf.append("\tborder-right-width: " + str + "px;\n");
 			} else {
 				cssbuf.append("\tborder-right-width: " + str + ";\n");
@@ -311,14 +311,14 @@ public class WebEnv extends LocalEnv {
 		// border-top-width & border-width-top
 		if (decos.containsKey("border-top-width")) { // TODO
 			String str = stringsub(decos.getStr("border-top-width"));
-			if (isNumber(decos.getStr("border-top-width"))) {
+			if (GlobalEnv.isNumber(decos.getStr("border-top-width"))) {
 				cssbuf.append("\tborder-top-width: " + str + "px;\n");
 			} else {
 				cssbuf.append("\tborder-top-width: " + str + ";\n");
 			}
 		} else if (decos.containsKey("border-width-top")) { 
 			String str = stringsub(decos.getStr("border-width-top"));
-			if (isNumber(str)) {
+			if (GlobalEnv.isNumber(str)) {
 				cssbuf.append("\tborder-top-width: " + str + "px;\n");
 			} else {
 				cssbuf.append("\tborder-top-width: " + str + ";\n");
@@ -374,7 +374,7 @@ public class WebEnv extends LocalEnv {
 		// column-gap (CSS3)
 		if (decos.containsKey("column-gap")) { // TODO
 			String str = stringsub(decos.getStr("column-gap"));
-			if (isNumber(str)) {
+			if (GlobalEnv.isNumber(str)) {
 				cssbuf.append("\t-moz-column-gap: " + str + "px;\n");
 				cssbuf.append("\t-webkit-column-gap: " + str + "px;\n");
 				cssbuf.append("\tcolumn-gap: " + str + "px;\n");
@@ -404,7 +404,7 @@ public class WebEnv extends LocalEnv {
 		// column-rule-width (CSS3)
 		if (decos.containsKey("column-rule-width")) { // TODO
 			String str = stringsub(decos.getStr("column-rule-width"));
-			if (isNumber(str)) {
+			if (GlobalEnv.isNumber(str)) {
 				cssbuf.append("\t-moz-column-rule-width: " + str + "px;\n");
 				cssbuf.append("\t-webkit-column-rule-width: " + str + "px;\n");
 				cssbuf.append("\tcolumn-rule-width: " + str + "px;\n");
@@ -425,7 +425,7 @@ public class WebEnv extends LocalEnv {
 		// column-width (CSS3)
 		if (decos.containsKey("column-width")) { // TODO
 			String str = stringsub(decos.getStr("column-width"));
-			if (isNumber(str)) {
+			if (GlobalEnv.isNumber(str)) {
 				cssbuf.append("\t-moz-column-width: " + str + "px;\n");
 				cssbuf.append("\t-webkit-column-width: " + str + "px;\n");
 				cssbuf.append("\tcolumn-width: " + str + "px;\n");
@@ -487,14 +487,14 @@ public class WebEnv extends LocalEnv {
 		// font-size & size
 		if (decos.containsKey("font-size")) { // TODO
 			String str = stringsub(decos.getStr("font-size"));
-			if (isNumber(str)) {
+			if (GlobalEnv.isNumber(str)) {
 				cssbuf.append("\tfont-size: " + str + "px;\n");
 			} else {
 				cssbuf.append("\tfont-size: " + str + ";\n");
 			}
 		} else if (decos.containsKey("size")) {
 			String str = stringsub(decos.getStr("size"));
-			if (isNumber(str)) {
+			if (GlobalEnv.isNumber(str)) {
 				cssbuf.append("\tfont-size: " + str + "px;\n");
 			} else {
 				cssbuf.append("\tfont-size: " + str + ";\n");
@@ -534,7 +534,7 @@ public class WebEnv extends LocalEnv {
 		// height
 		if (decos.containsKey("height")) { // TODO
 			String str = stringsub(decos.getStr("height"));
-			if (isNumber(str)) {
+			if (GlobalEnv.isNumber(str)) {
 				cssbuf.append("\theight: " + str + "px;\n");
 			} else {
 				cssbuf.append("\theight: " + str + ";\n");
@@ -544,7 +544,7 @@ public class WebEnv extends LocalEnv {
 		// letter-spacing
 		if (decos.containsKey("letter-spacing")) { // TODO
 			String str = stringsub(decos.getStr("letter-spacing"));
-			if (isNumber(str)) {
+			if (GlobalEnv.isNumber(str)) {
 				cssbuf.append("\tletter-spacing: " + str + "px;\n");
 			} else {
 				cssbuf.append("\tletter-spacing: " + str + ";\n");
@@ -560,7 +560,7 @@ public class WebEnv extends LocalEnv {
 		// line-height
 		if (decos.containsKey("line-height")) { // TODO
 			String str = stringsub(decos.getStr("line-height"));
-			if (isNumber(str)) {
+			if (GlobalEnv.isNumber(str)) {
 				cssbuf.append("\tline-height: " + str + "px;\n");
 			} else {
 				cssbuf.append("\tline-height: " + str + ";\n");
@@ -639,7 +639,7 @@ public class WebEnv extends LocalEnv {
 		// margin
 		if (decos.containsKey("margin")) { // TODO
 			String str = stringsub(decos.getStr("margin"));
-			if (isNumber(str)) {
+			if (GlobalEnv.isNumber(str)) {
 				cssbuf.append("\tmargin: " + str + "px;\n");
 			} else {
 				cssbuf.append("\tmargin: " + str + ";\n");
@@ -648,7 +648,7 @@ public class WebEnv extends LocalEnv {
 		// margin-bottom
 		if (decos.containsKey("margin-bottom")) { // TODO
 			String str = stringsub(decos.getStr("margin-bottom"));
-			if (isNumber(str)) {
+			if (GlobalEnv.isNumber(str)) {
 				cssbuf.append("\tmargin-bottom: " + str + "px;\n");
 			} else {
 				cssbuf.append("\tmargin-bottom: " + str + ";\n");
@@ -657,7 +657,7 @@ public class WebEnv extends LocalEnv {
 		// margin-left
 		if (decos.containsKey("margin-left")) { // TODO
 			String str = stringsub(decos.getStr("margin-left"));
-			if (isNumber(str)) {
+			if (GlobalEnv.isNumber(str)) {
 				cssbuf.append("\tmargin-left: " + str + "px;\n");
 			} else {
 				cssbuf.append("\tmargin-left: " + str + ";\n");
@@ -669,7 +669,7 @@ public class WebEnv extends LocalEnv {
 		// margin-right
 		if (decos.containsKey("margin-right")) { // TODO
 			String str = stringsub(decos.getStr("margin-right"));
-			if (isNumber(str)) {
+			if (GlobalEnv.isNumber(str)) {
 				cssbuf.append("\tmargin-right: " + str + "px;\n");
 			} else {
 				cssbuf.append("\tmargin-right: " + str + ";\n");
@@ -681,7 +681,7 @@ public class WebEnv extends LocalEnv {
 		// margin-top
 		if (decos.containsKey("margin-top")) { // TODO
 			String str = stringsub(decos.getStr("margin-top"));
-			if (isNumber(str)) {
+			if (GlobalEnv.isNumber(str)) {
 				cssbuf.append("\tmargin-top: " + str + "px;\n");
 			} else {
 				cssbuf.append("\tmargin-top: " + str + ";\n");
@@ -691,7 +691,7 @@ public class WebEnv extends LocalEnv {
 		// max-height
 		if (decos.containsKey("max-height")) { // TODO
 			String str = stringsub(decos.getStr("max-height"));
-			if (isNumber(str)) {
+			if (GlobalEnv.isNumber(str)) {
 				cssbuf.append("\tmax-height: " + str + "px;\n");
 			} else {
 				cssbuf.append("\tmax-height: " + str + ";\n");
@@ -700,7 +700,7 @@ public class WebEnv extends LocalEnv {
 		// max-width
 		if (decos.containsKey("max-width")) { // TODO
 			String str = stringsub(decos.getStr("max-width"));
-			if (isNumber(str)) {
+			if (GlobalEnv.isNumber(str)) {
 				cssbuf.append("\tmax-width: " + str + "px;\n");
 			} else {
 				cssbuf.append("\tmax-width: " + str + ";\n");
@@ -710,7 +710,7 @@ public class WebEnv extends LocalEnv {
 		// min-height
 		if (decos.containsKey("min-height")) { // TODO
 			String str = stringsub(decos.getStr("min-height"));
-			if (isNumber(str)) {
+			if (GlobalEnv.isNumber(str)) {
 				cssbuf.append("\tmin-height: " + str + "px;\n");
 			} else {
 				cssbuf.append("\tmin-height: " + str + ";\n");
@@ -719,7 +719,7 @@ public class WebEnv extends LocalEnv {
 		// min-width
 		if (decos.containsKey("min-width")) { // TODO
 			String str = stringsub(decos.getStr("min-width"));
-			if (isNumber(str)) {
+			if (GlobalEnv.isNumber(str)) {
 				cssbuf.append("\tmin-width: " + str + "px;\n");
 			} else {
 				cssbuf.append("\tmin-width: " + str + ";\n");
@@ -747,7 +747,7 @@ public class WebEnv extends LocalEnv {
 		// outline-width
 		if (decos.containsKey("outline-width")) { // TODO
 			String str = stringsub(decos.getStr("outline-width"));
-			if (isNumber(str)) {
+			if (GlobalEnv.isNumber(str)) {
 				cssbuf.append("\toutline-width: " + str + "px;\n");
 			} else {
 				cssbuf.append("\toutline-width: " + str + ";\n");
@@ -763,7 +763,7 @@ public class WebEnv extends LocalEnv {
 		// padding
 		if (decos.containsKey("padding")) { // TODO
 			String str = stringsub(decos.getStr("padding"));
-			if (isNumber(str)) {
+			if (GlobalEnv.isNumber(str)) {
 				cssbuf.append("\tpadding: " + str + "px;\n");
 			} else {
 				cssbuf.append("\tpadding: " + str + ";\n");
@@ -772,7 +772,7 @@ public class WebEnv extends LocalEnv {
 		// padding-bottom
 		if (decos.containsKey("padding-bottom")) { // TODO
 			String str = stringsub(decos.getStr("padding-bottom"));
-			if (isNumber(str)) {
+			if (GlobalEnv.isNumber(str)) {
 				cssbuf.append("\tpadding-bottom: " + str + "px;\n");
 			} else {
 				cssbuf.append("\tpadding-bottom: " + str + ";\n");
@@ -781,7 +781,7 @@ public class WebEnv extends LocalEnv {
 		// padding-left
 		if (decos.containsKey("padding-left")) { // TODO
 			String str = stringsub(decos.getStr("padding-left"));
-			if (isNumber(str)) {
+			if (GlobalEnv.isNumber(str)) {
 				cssbuf.append("\tpadding-left: " + str + "px;\n");
 			} else {
 				cssbuf.append("\tpadding-left: " + str + ";\n");
@@ -790,7 +790,7 @@ public class WebEnv extends LocalEnv {
 		// padding-right
 		if (decos.containsKey("padding-right")) { // TODO
 			String str = stringsub(decos.getStr("padding-right"));
-			if (isNumber(str)) {
+			if (GlobalEnv.isNumber(str)) {
 				cssbuf.append("\tpadding-right: " + str + "px;\n");
 			} else {
 				cssbuf.append("\tpadding-right: " + str + ";\n");
@@ -799,7 +799,7 @@ public class WebEnv extends LocalEnv {
 		// padding-top
 		if (decos.containsKey("padding-top")) { // TODO
 			String str = stringsub(decos.getStr("padding-top"));
-			if (isNumber(str)) {
+			if (GlobalEnv.isNumber(str)) {
 				cssbuf.append("\tpadding-top: " + str + "px;\n");
 			} else {
 				cssbuf.append("\tpadding-top: " + str + ";\n");
@@ -814,7 +814,7 @@ public class WebEnv extends LocalEnv {
 		// top (set position)
 		if (decos.containsKey("position") && decos.containsKey("top")) { // TODO
 			String str = stringsub(decos.getStr("top"));
-			if (isNumber(str)) {
+			if (GlobalEnv.isNumber(str)) {
 				cssbuf.append("\ttop: " + str + "px;\n");
 			} else {
 				cssbuf.append("\ttop: " + str + ";\n");
@@ -823,7 +823,7 @@ public class WebEnv extends LocalEnv {
 		// right (set position)
 		if (decos.containsKey("position") && decos.containsKey("right")) { // TODO
 			String str = stringsub(decos.getStr("right"));
-			if (isNumber(str)) {
+			if (GlobalEnv.isNumber(str)) {
 				cssbuf.append("\tright: " + str + "px;\n");
 			} else {
 				cssbuf.append("\tright: " + str + ";\n");
@@ -832,7 +832,7 @@ public class WebEnv extends LocalEnv {
 		// bottom (set position)
 		if (decos.containsKey("position") && decos.containsKey("bottom")) { // TODO
 			String str = stringsub(decos.getStr("bottom"));
-			if (isNumber(str)) {
+			if (GlobalEnv.isNumber(str)) {
 				cssbuf.append("\tbottom: " + str + "px;\n");
 			} else {
 				cssbuf.append("\tbottom: " + str + ";\n");
@@ -841,7 +841,7 @@ public class WebEnv extends LocalEnv {
 		// left (set position)
 		if (decos.containsKey("position") && decos.containsKey("left")) { // TODO
 			String str = stringsub(decos.getStr("left"));
-			if (isNumber(str)) {
+			if (GlobalEnv.isNumber(str)) {
 				cssbuf.append("\tleft: " + str + "px;\n");
 			} else {
 				cssbuf.append("\tleft: " + str + ";\n");
@@ -914,14 +914,14 @@ public class WebEnv extends LocalEnv {
 		// text-indent & indent
 		if (decos.containsKey("text-indent")) { // TODO
 			String str = stringsub(decos.getStr("text-indent"));
-			if (isNumber(str)) {
+			if (GlobalEnv.isNumber(str)) {
 				cssbuf.append("\ttext-indent: " + str + "px;\n");
 			} else {
 				cssbuf.append("\ttext-indent: " + str + ";\n");
 			}
 		} else if (decos.containsKey("indent")) {
 			String str = stringsub(decos.getStr("indent"));
-			if (isNumber(str)) {
+			if (GlobalEnv.isNumber(str)) {
 				cssbuf.append("\ttext-indent: " + str + "px;\n");
 			} else {
 				cssbuf.append("\ttext-indent: " + str + ";\n");
@@ -1004,7 +1004,7 @@ public class WebEnv extends LocalEnv {
 		// width
 		if (decos.containsKey("width")) { // TODO
 			String str = stringsub(decos.getStr("width"));
-			if (isNumber(str)) {
+			if (GlobalEnv.isNumber(str)) {
 				cssbuf.append("\twidth: " + str + "px;\n");
 			} else {
 				cssbuf.append("\twidth: " + str + ";\n");
@@ -1028,7 +1028,7 @@ public class WebEnv extends LocalEnv {
 		// word-spacing
 		if (decos.containsKey("word-spacing")) { // TODO
 			String str = stringsub(decos.getStr("word-spacing"));
-			if (isNumber(str)) {
+			if (GlobalEnv.isNumber(str)) {
 				cssbuf.append("\tword-spacing: " + str + "px;\n");
 			} else {
 				cssbuf.append("\tword-spacing: " + str + ";\n");
@@ -1339,13 +1339,6 @@ public class WebEnv extends LocalEnv {
 		}
 		String str = cssbuf.toString();
  		return str;
-	}
-
-	public boolean isNumber(String val) { // 文字列が全部数字であるかチェック
-		String regex = "^\\-?[0-9]*\\.?[0-9]+$";
-	    Pattern p = Pattern.compile(regex);
-	    Matcher m = p.matcher(val);
-	    return m.find();
 	}
 
 }
