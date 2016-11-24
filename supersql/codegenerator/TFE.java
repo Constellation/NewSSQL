@@ -12,6 +12,7 @@ public class TFE implements ITFE,Serializable {
 	protected String order;
 	protected String aggregate;    
 	public DecorateList decos;
+	public static boolean decocheck;
 	
 	public TFE() {
 		orderFlag = false;
@@ -67,6 +68,16 @@ public class TFE implements ITFE,Serializable {
 		this.aggregate = new String();
 		this.aggregate = aggregate;
 	}
+	
+//	@Override
+//	public void setcheckdeco(boolean decocheck) {
+////		TFEmatcher.addTFEid_and_TokenPlace(id);	//halken TFEmatcher
+//		this.decocheck = decocheck;
+//	}
+//
+//	public boolean getcheckdeco() {
+//		return decocheck;
+//	}
 
 
 	@Override

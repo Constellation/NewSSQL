@@ -14,6 +14,8 @@ import supersql.codegenerator.FileFormatter;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.Jscss;
 import supersql.codegenerator.Manager;
+import supersql.codegenerator.Compiler.Compiler;
+import supersql.codegenerator.Compiler.PHP.PHP;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.dataconstructor.DataConstructor;
@@ -98,9 +100,9 @@ public class Mobile_HTML5Manager extends Manager{
         }
 
         // ?�ֳ�¦��G3�Ǥʤ�??]
-        html_env.filename = html_env.outfile + ".html";
+        html_env.filename = html_env.outfile + Compiler.getExtension();
         html_env2.filename = html_env.outfile + ".xml";
-
+        
         html_env.setOutlineMode();
 
         if(data_info.size() == 0
@@ -370,7 +372,7 @@ public class Mobile_HTML5Manager extends Manager{
 
 
         // ?�ֳ�¦��G3�Ǥʤ�??
-        html_env.filename = html_env.outfile + ".html";
+    	html_env.filename = html_env.outfile + Compiler.getExtension();
         html_env2.filename = html_env.outfile + ".xml";
 
         html_env.setOutlineMode();

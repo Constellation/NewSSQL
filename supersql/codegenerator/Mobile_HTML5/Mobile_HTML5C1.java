@@ -1,12 +1,12 @@
 package supersql.codegenerator.Mobile_HTML5;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import supersql.codegenerator.Connector;
 import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.Manager;
+
 import supersql.codegenerator.Sass;
 import supersql.codegenerator.TFE;
 import supersql.common.GlobalEnv;
@@ -215,8 +215,10 @@ public class Mobile_HTML5C1 extends Connector {
 	            	//20131002
 	        		int tfesItemNum = tfes.size();
 	        		Mobile_HTML5Attribute.attributeDivWidth = Mobile_HTML5.getDivWidth("C1", decos, tfesItemNum - Mobile_HTML5Function.func_null_count);	//null()
-	            	//html_env.code.append("\n<div class=\"ui-block "+classid2+"\" style=\"width:"+divWidth+"\">\n");	//20130309
 	            	html_env.code.append("\n<div class=\"ui-block "+classid2+"\">\n");	//20130309
+	            	
+	            	//added by goto 20161113  for function class width
+	            	Mobile_HTML5Attribute.setWidth(classid2, this.decos, this.html_env);
 	            }
 
 	            //20130314  table
@@ -303,6 +305,8 @@ public class Mobile_HTML5C1 extends Connector {
         	}
 
             i++;
+            
+	        Mobile_HTML5.whileProcess2_2(getSymbol(), decos, html_env, data, data_info, tfe, null, -1);
         }	// /while
         Mobile_HTML5.afterWhileProcess(getSymbol(), classid, decos, html_env);
 
@@ -460,4 +464,5 @@ public class Mobile_HTML5C1 extends Connector {
     public String getSymbol() {
     	return "Mobile_HTML5C1";
     }
+
 }

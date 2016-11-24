@@ -29,7 +29,8 @@ import supersql.codegenerator.Function;
 import supersql.codegenerator.LinkForeach;
 import supersql.codegenerator.Manager;
 import supersql.codegenerator.Sass;
-import supersql.codegenerator.HTML.HTMLG3;
+import supersql.codegenerator.Compiler.Compiler;
+import supersql.codegenerator.Compiler.PHP.PHP;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.dataconstructor.DataConstructor;
@@ -77,7 +78,7 @@ public class Mobile_HTML5Function extends Function {
 	static boolean textFlg = false;	//20130914  "text"
     
     static String updateFile;
-    
+
 	private boolean link1 = false; //added by goto 20161025 for link1/foreach1
 
     public Mobile_HTML5Function()
@@ -4723,6 +4724,10 @@ public class Mobile_HTML5Function extends Function {
     	String att = new String();
     	for (int i = 0; i < this.countconnectitem(); i++) {
     		att = att + "_" + this.getAtt(Integer.toString(i));
+    		
+    		//added by goto 20161112 for dynamic foreach
+    		if(PHP.isPHP)
+	    		Mobile_HTML5G3.dynamic_G3_atts.add(""+this.Args.get(i)); //add attribute name
     	}
 		
 		if(!Start_Parse.foreach1Flag){
@@ -4731,7 +4736,7 @@ public class Mobile_HTML5Function extends Function {
 		}else{
 			//added by goto 20161025 for link1/foreach1
 	    	att = URLEncoder.encode(att, "UTF-8");
-	    	String filename = html_env.outfile + att + ".html";
+	    	String filename = html_env.outfile + att + Compiler.getExtension();
 	        html_env.filename = filename;
 		}
         return;
@@ -5290,7 +5295,11 @@ public class Mobile_HTML5Function extends Function {
 					if(ltype == 1)
 						filename += "?"+LinkForeach.ID2+"="+att.substring(1);
 					else if(ltype==2 || ltype==3){
-			        	html_env.plink_glink_onclick = "'"+(ltype==2? "GET" : "POST")+"', '"+filename+"', '"+att.substring(1)+"'";
+						//<A href="" onclick="ssql_foreach(\'GET\', \'test04_php-foreach.html\', \''.$row1[1].'_'.$row1[2].'_'.$row1[3].'\'); return false;" data-ajax="false" >
+						if(!PHP.isPHP && !Mobile_HTML5_dynamic.dynamicDisplay)
+			        		html_env.plink_glink_onclick = "'"+(ltype==2? "GET" : "POST")+"', '"+filename+"', '"+att.substring(1)+"'";
+			        	else
+			        		html_env.plink_glink_onclick = "\\'"+(ltype==2? "GET" : "POST")+"\\', \\'"+filename+"\\', \\'"+att.substring(1)+"\\'";
 			        	LinkForeach.plink_glink = true;
 			        }
 				}else{

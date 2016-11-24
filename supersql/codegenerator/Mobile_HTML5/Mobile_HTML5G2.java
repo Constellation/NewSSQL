@@ -10,6 +10,7 @@ import java.io.PrintWriter;
 import supersql.codegenerator.Grouper;
 import supersql.codegenerator.Manager;
 import supersql.codegenerator.Sass;
+import supersql.codegenerator.Compiler.Compiler;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
@@ -51,6 +52,7 @@ public class Mobile_HTML5G2 extends Grouper {
     //G2��work�᥽�å�
     @Override
 	public String work(ExtList data_info) {
+    	//if(Mobile_HTML5G3.G3 && Mobile_HTML5G3.G3_while_i>0)  	return null;	//TODO
     	Mobile_HTML5.preProcess(getSymbol(), decos, html_env);	//Pre-process (前処理)
     	
     	//20131001 tableDivHeader
@@ -200,6 +202,8 @@ public class Mobile_HTML5G2 extends Grouper {
 //        Mobile_HTML5_form.G2_dataQuantity = this.data.size();
         Mobile_HTML5.beforeWhileProcess(getSymbol(), decos, html_env);
         while (this.hasMoreItems()) {
+        	Mobile_HTML5.gLevel++;
+        	
         	String classid2 = Mobile_HTML5Env.getClassID(tfe);
 
         	Mobile_HTML5Function.glvl = html_env.glevel;	//added by goto 20130914  "SEQ_NUM"
@@ -223,8 +227,8 @@ public class Mobile_HTML5G2 extends Grouper {
             if(rowFlg){
             	html_env.code = new StringBuffer();
                 html_env.countfile++;
-                html_env.filename = html_env.outfile + "_row" + rowFileNum + "_" + j + ".html";
-                html_env.nextbackfile = html_env.linkoutfile + "_row" + rowFileNum + "_" + j + ".html";
+                html_env.filename = html_env.outfile + "_row" + rowFileNum + "_" + j + Compiler.getExtension();
+                html_env.nextbackfile = html_env.linkoutfile + "_row" + rowFileNum + "_" + j + Compiler.getExtension();
                 html_env.setOutlineMode();
             }
             
@@ -331,7 +335,6 @@ public class Mobile_HTML5G2 extends Grouper {
             if(Sass.isBootstrapFlg()){
             	Sass.afterFirstLoop();
             }
-
             html_env.glevel--;
             
             Mobile_HTML5G2.tableDivHeader_Count1++;	//20131001 tableDivHeader
@@ -346,6 +349,10 @@ public class Mobile_HTML5G2 extends Grouper {
                 }
                 rowNum++;
             }
+
+	        Mobile_HTML5.whileProcess2_2(getSymbol(), decos, html_env, data, data_info, tfe, null, -1);
+	        
+	        Mobile_HTML5.gLevel--;
         }	// /while
         //20160527 bootstrap
         Mobile_HTML5.afterWhileProcess(getSymbol(), classid, decos, html_env);
@@ -483,7 +490,7 @@ public class Mobile_HTML5G2 extends Grouper {
         //parent HTMLへ<iframe>等を埋め込む
         String divID="rowDiv"+rowFileNum+"-";
         String iframeName ="rowIframe"+rowFileNum;
-        String HTMLfilename=html_env.filename.substring(0,html_env.filename.indexOf(".html"));
+        String HTMLfilename=html_env.filename.substring(0,html_env.filename.indexOf(Compiler.getExtension()));
 		//added by goto 20130417 start
 		//HTMLfilenameを絶対パスから「相対パス形式」へ変更
 		String fileDir = new File(HTMLfilename).getAbsoluteFile().getParent();

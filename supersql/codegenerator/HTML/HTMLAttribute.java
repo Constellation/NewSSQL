@@ -25,7 +25,6 @@ public class HTMLAttribute extends Attribute {
 
 	// private boolean tableFlg = false;
 	// private boolean divFlg = false;
-
 	// 鐃緒申鐃藷ストラク鐃緒申
 	public HTMLAttribute(Manager manager, HTMLEnv henv, HTMLEnv henv2) {
 		super();

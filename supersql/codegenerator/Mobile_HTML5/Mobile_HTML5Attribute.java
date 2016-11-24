@@ -4,6 +4,7 @@ import java.io.File;
 
 import supersql.codegenerator.Attribute;
 import supersql.codegenerator.Connector;
+import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.LinkForeach;
 import supersql.codegenerator.Manager;
 import supersql.codegenerator.Sass;
@@ -63,21 +64,10 @@ public class Mobile_HTML5Attribute extends Attribute {
 
 		html_env.code = Embed.preProcess(html_env.code, decos);	//goto 20130915-2  "<$  $>"
 		
-		//TODO
-        if(!this.decos.containsKey("width") && (!attributeDivWidth.equals("") || !attributeDivWidth2.equals(""))){
-        	//attributeDivWidth, attributeDivWidth2
-        	if(!attributeDivWidth2.equals("") && !attributeHasWidth){
-        		html_env.css.append(attributeDivWidth2);
-        	}else if(!attributeDivWidth.equals("")){
-        		this.decos.put("width", attributeDivWidth);
-        	}
-        	attributeDivWidth2 = "";
-        }
-		attributeDivWidth = "";
 		String classid = Mobile_HTML5Env.getClassID(this);
-		if(this.decos.containsKey("width"))	attributeHasWidth = true;
-		else								attributeHasWidth = false;
-		html_env.append_css_def_td(classid, this.decos);
+		
+		//changed by goto 20161113  for function class width
+		setWidth(classid, this.decos, this.html_env);
 
 		if(GlobalEnv.isOpt()){
 			work_opt(data_info);
@@ -85,7 +75,7 @@ public class Mobile_HTML5Attribute extends Attribute {
 			if(Mobile_HTML5Env.getFormItemFlg() && Mobile_HTML5Env.getFormItemName().equals(formHtml[2])){
 
 			}else{
-				
+
 				Mobile_HTML5.preProcess("Mobile_HTML5Attribute", decos, html_env);	//Pre-process (前処理)	//TODO この位置でOK?
 				
 				//20130309
@@ -154,8 +144,7 @@ public class Mobile_HTML5Attribute extends Attribute {
 						if(html_env.plink_glink_onclick.isEmpty())
 							html_env.code.append("<A href=\"" + html_env.linkurl + "\" data-ajax=\"false\" ");
 						else
-							html_env.code.append("<A href=\"\" onclick=\""+LinkForeach.ID+"("+html_env.plink_glink_onclick+"); return false;\" data-ajax=\"false\" ");
-					
+							html_env.code.append("<A href=\"\" onclick=\""+LinkForeach.ID1+"("+html_env.plink_glink_onclick+"); return false;\" data-ajax=\"false\" ");
 					
 					//html_env.code.append("<A href=\"" + html_env.linkurl + "\" ");
 					//added by goto 20120614 end
@@ -312,6 +301,24 @@ public class Mobile_HTML5Attribute extends Attribute {
 		return null;
 	}
 
+	//setWidth
+	//added by goto 20161113  for function class width
+	public static void setWidth(String classid, DecorateList decos, Mobile_HTML5Env html_env) {
+        if(!decos.containsKey("width") && (!attributeDivWidth.equals("") || !attributeDivWidth2.equals(""))){
+        	//attributeDivWidth, attributeDivWidth2
+        	if(!attributeDivWidth2.equals("") && !attributeHasWidth){
+        		html_env.css.append(attributeDivWidth2);
+        	}else if(!attributeDivWidth.equals("")){
+        		decos.put("width", attributeDivWidth);
+        	}
+        	attributeDivWidth2 = "";
+        }
+		attributeDivWidth = "";
+		if(decos.containsKey("width"))	attributeHasWidth = true;
+		else							attributeHasWidth = false;
+		html_env.append_css_def_td(classid, decos);
+	}
+	
 	//optimizer
 	public void work_opt(ExtList data_info){
 		String classid = Mobile_HTML5Env.getClassID(this);
