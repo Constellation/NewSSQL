@@ -61,6 +61,7 @@ public class Mobile_HTML5Attribute extends Attribute {
 //				decos.put("width", HTMLEnv.divWidth);
 //	  	}
 //		HTMLEnv.divWidth = "";
+
 		html_env.code = Embed.preProcess(html_env.code, decos);	//goto 20130915-2  "<$  $>"
 		
 		String classid = Mobile_HTML5Env.getClassID(this);
@@ -221,6 +222,7 @@ public class Mobile_HTML5Attribute extends Attribute {
 			if(whichForm == 0){ //normal process (not form)
 				//***APPEND DATABASE VALUE***//
 				Log.out(data_info);
+				Log.info(data_info);
 				if(Mobile_HTML5_dynamic.dynamicDisplay || Mobile_HTML5_form.form){
 					//20131118 dynamic
 					if(Mobile_HTML5_dynamic.dynamicDisplay){
