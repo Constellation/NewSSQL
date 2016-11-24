@@ -26,6 +26,7 @@ import supersql.codegenerator.Ehtml;
 import supersql.codegenerator.FuncArg;
 import supersql.codegenerator.Function;
 import supersql.codegenerator.Incremental;
+import supersql.codegenerator.LinkForeach;
 import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
@@ -36,6 +37,7 @@ import supersql.parser.Start_Parse;
 public class HTMLFunction extends Function {
 
 	protected static String updateFile;
+	private boolean link1 = false; //added by goto 20161025 for link1/foreach1
 
 	public static String createForm(DecorateList decos) {
 		new String();
@@ -680,13 +682,16 @@ public class HTMLFunction extends Function {
 		for (int i = 0; i < this.countconnectitem(); i++) {
 			att = att + "_" + this.getAtt(Integer.toString(i));
 		}
-		// String filename = html_env.outfile + "_" + this.getAtt("default") +
-		// ".html";
-		att = URLEncoder.encode(att, "UTF-8");
-		String filename = htmlEnv.outFile + att + ".html";
-
-		htmlEnv.fileName = filename;
-		// System.out.println(filename);
+		
+		if(!Start_Parse.foreach1Flag){
+			//added by goto 20161019 for new foreach
+			HTMLG3.foreachID = att;
+		}else{
+			//added by goto 20161025 for link1/foreach1
+			att = URLEncoder.encode(att, "UTF-8");
+			String filename = htmlEnv.outFile + att + ".html";
+			htmlEnv.fileName = filename;
+		}
 		return;
 	}
 
@@ -845,7 +850,6 @@ public class HTMLFunction extends Function {
 	private void Func_sinvoke(ExtList data_info) {
 		// link関数の仕様変更　link(att_name, url, value1, value2, ...)
 		String file = this.Args.get(1).toString();
-		String a = this.Args.get(0).toString();
 		if (file.startsWith("\'") || file.startsWith("\"")) {
 			file = file.substring(1, file.length() - 1);
 		}
@@ -860,25 +864,16 @@ public class HTMLFunction extends Function {
 		// String att = new String();
 		Log.out("sinvoke file 3: " + file);
 
-		// tk start/////////////////////////////////////////////////////////////
-		/*
-		 * if (file.indexOf("/") > 0) { file =
-		 * file.substring(file.lastIndexOf("/") + 1); }
-		 */
-		// tk end//////////////////////////////////////////////////////////////
-		// Log.out("1 att:" + att + " attNo:" + attNo + " att1:"
-		// + this.getAtt("att1"));
-		//
-		// while (!this.getAtt("att" + attNo).equals("")) {
-		// att = att + "_" + this.getAtt("att" + attNo);
-		// attNo++;
-		// Log.out("att:" + att + " attNo:" + attNo);
-		// }
-		try {
-			att = URLEncoder.encode(att, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+		//changed by goto 20161019 for new foreach
+		if(link1){
+			//added by goto 20161025 for link1/foreach1
+			try {
+				att = URLEncoder.encode(att, "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
 		}
+		
 		if (this.getAtt("action").equals("")) {
 			try {
 				if (file.toLowerCase().contains(".sql")) {
@@ -905,8 +900,18 @@ public class HTMLFunction extends Function {
 				else
 					filename = file + "_" + this.getAtt("att") + ".html";
 			} else {
-				// filename = file + "_" + ret + ".html"; masato
-				filename = file + att + ".html";
+
+				if(!link1){
+					//added by goto 20161019 for new foreach
+					filename = file;
+					//added by goto 20161109
+					if(!file.endsWith(".php") && !file.endsWith(".rb") && !file.endsWith(".erb") && !file.endsWith(".jsp"))
+						filename += ".html";
+					filename += "?"+LinkForeach.ID2+"="+att.substring(1);
+				}else{
+					//added by goto 20161025 for link1/foreach1
+					filename = file + att + ".html";
+				}
 			}
 
 			filename.replace("\\\\", "\\");
@@ -1038,6 +1043,7 @@ public class HTMLFunction extends Function {
 		// tk//////////////////////////////////////////////////
 
 		htmlEnv.sinvokeFlag = false;
+		link1 = false;
 		return;
 	}
 
@@ -1467,14 +1473,19 @@ public class HTMLFunction extends Function {
 			Func_imagefile();
 		} else if (FuncName.equalsIgnoreCase("invoke")) {
 			Func_invoke();
-		} else if (FuncName.equalsIgnoreCase("foreach")) {
+		} else if (FuncName.equalsIgnoreCase("foreach")
+				//added by goto 20161025 for link1/foreach1
+				|| FuncName.equalsIgnoreCase("foreach1")) {
 			try {
 				Func_foreach(data_info);
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
 			}
 		} else if (FuncName.equalsIgnoreCase("sinvoke")
-				|| FuncName.equalsIgnoreCase("link")) {
+				|| FuncName.equalsIgnoreCase("link")
+				//added by goto 20161025 for link1/foreach1
+				|| FuncName.equalsIgnoreCase("link1")) {
+			if(FuncName.equalsIgnoreCase("link1")) link1 = true;
 			Func_sinvoke(data_info);
 		}
 		// added by masato 20151124 for plink in ehtml

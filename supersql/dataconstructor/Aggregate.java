@@ -54,7 +54,6 @@ public class Aggregate {
 
 		/* calculate "aggregate functions" in this current level, if there is any */
 		while (process_set.size() > 0) {
-
 			tuples = calculate(criteria_set, process_set.get(0), tuples);
 
 			Log.out("    aggregate process : " + process_set.get(0).toString().substring(0, 1) + " with " + process_set.get(0).toString().substring(2));			
@@ -131,6 +130,7 @@ public class Aggregate {
 
 			/* calculate "max" */
 			if (way.equals("max")) {
+
 				/* obtain the maximum value */				
 				int max = Integer.parseInt(((ExtList)(buffer.get(0))).get(Integer.parseInt(target)).toString());
 			
@@ -253,6 +253,7 @@ public class Aggregate {
 			buffer.clear();
 
 		}
+
 		return tuples_buffer;
 	
 	}
@@ -295,7 +296,6 @@ public class Aggregate {
 		tuple.set(position, tmp.toString());
 		
 		result.add(tuple);
-
 		
 		return result;
 	

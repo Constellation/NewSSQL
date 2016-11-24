@@ -197,7 +197,7 @@ public class SQLManager {
             }
             
             // added by masato 20151221
-            if (Ehtml.flag) { // SQLã®çµæãä¿å­
+            if (Ehtml.flag) { // SQLの結果を保存
             	String outDir = GlobalEnv.getoutdirectory();
             	String outFile = GlobalEnv.getoutfilename();
             	String a = outFile.substring(0, outFile.toLowerCase().indexOf("."));
@@ -221,7 +221,7 @@ public class SQLManager {
 				String hexString = DigestUtils.md5Hex(tmp.toString());
 //    			pw.println(hexString);
     			pw.close();
-            } else if (Incremental.flag) { // ååã®sqlã®çµæãç¢ºèª
+            } else if (Incremental.flag) { // 前回のsqlの結果を確認
             	String outDir = GlobalEnv.getoutdirectory();
             	String outFile = GlobalEnv.getoutfilename();
             	String a = outFile.substring(0, outFile.toLowerCase().indexOf("."));
@@ -244,10 +244,10 @@ public class SQLManager {
                 }
 				String hexString = DigestUtils.md5Hex(tmp.toString());
                 if(hexString.equals(sqlResultBuffer.toString())){
-                	// åãã ã£ãå ´å
+                	// 同じだった場合
                 	Log.ehtmlInfo("test");
                 	
-                	// è©ä¾¡ç¨åºå
+                	// 評価用出力
 //                	long end = System.currentTimeMillis();
 //            		Log.ehtmlInfo("Parsing Time : " + (FrontEnd.afterparser - FrontEnd.start) + "msec<br>");
 //            		Log.ehtmlInfo("Data construction Time : " + (end - FrontEnd.afterparser) + "msec<br>");
@@ -255,7 +255,7 @@ public class SQLManager {
 //            		Log.ehtmlInfo("ExecTime: " + (end - FrontEnd.start) + "msec<br>");
                 	System.exit(0);
                 } else {
-                	// éã£ãå ´åã¯æ´æ°
+                	// 違った場合は更新
                 	if ( !sqlResultFileDir.exists() ) {
         				sqlResultFileDir.mkdirs();
         			}
@@ -322,7 +322,6 @@ public class SQLManager {
 			    	  }
 			    	  if(!list.isEmpty()){
 			    		  Log.err("\n## Column list ##\n" + list);
-			    		  // 20140624_masato
 //			    		  GlobalEnv.errorText += "\n## Column list ##\n" + list;
 			    	  }
 			    	  
@@ -334,7 +333,6 @@ public class SQLManager {
 		    			 ){
 			    	  list = Suggest.getTableNameList(conn, errorContents[1]);
 			    	  Log.err("\n## Table list ##\n" + list + "\n");
-			    	  // 20140624_masato
 //		    		  GlobalEnv.errorText += "\n## Table list ##\n" + list + "\n";
 			      }
 			      //added by goto 20131016 end

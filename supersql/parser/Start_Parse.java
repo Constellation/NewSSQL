@@ -71,6 +71,7 @@ public class Start_Parse {
 	public WhereInfo whereInfo = new WhereInfo();
 	public static boolean distinct = false;
 	public static String[] ruleNames;
+	public static boolean foreach1Flag = false;	//added by goto 20161025 for link1/foreach1
 
 
 
@@ -446,9 +447,10 @@ public class Start_Parse {
 					ParseTree tree_a = parser_a.prefix(); // begin parsing at rule query
 					List_tree_a = TreeConst.createSSQLParseTree(tree_a, parser_a);
 					Log.info(List_tree_a);
-					String pre = ((ExtList)List_tree_a.get(1)).get(0).toString();
-					if(pre.toLowerCase().equals("foreach")){
+					String pre = ((ExtList)List_tree_a.get(1)).get(0).toString().toLowerCase();
+					if(pre.equals("foreach") || pre.equals("foreach1")){
 						foreachFlag = true;
+						if(pre.equals("foreach1"))	foreach1Flag = true;	//added by goto 20161025 for link1/foreach1
 						foreachinfo = TreeConst.getforeach(List_tree_a);
 					}
 					else if( ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)List_tree_a.get(1)).get(0)).get(1)).get(0)).get(1)).get(0)).get(1)).get(0).toString().toUpperCase().matches("SESSION.*") 

@@ -2,6 +2,8 @@ package supersql.codegenerator.Mobile_HTML5;
 
 import supersql.codegenerator.Grouper;
 import supersql.codegenerator.Manager;
+import supersql.codegenerator.Sass;
+import supersql.codegenerator.Compiler.Compiler;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
@@ -46,6 +48,8 @@ public class Mobile_HTML5G1 extends Grouper {
     //G1��work�᥽�å�
     @Override
 	public String work(ExtList data_info) {
+    	//if(Mobile_HTML5G3.G3 && Mobile_HTML5G3.G3_while_i>0)  	return null;	//TODO
+    	
     	G1_count++;
     	Mobile_HTML5Attribute.attributeHasWidth = false;
     	
@@ -63,7 +67,7 @@ public class Mobile_HTML5G1 extends Grouper {
         boolean columnFlg = false;
     	if(tableFlg)	numberOfColumns = -1;	//@{table}時のDefault	//20130917  [ ],10@{table}
     	else			numberOfColumns = data_info.size();	//div
-    	if(decos.containsKey("column") && !Mobile_HTML5.dynamicDisplay){
+    	if(decos.containsKey("column") && !Mobile_HTML5_dynamic.dynamicDisplay){
         	try{
             	numberOfColumns = Integer.parseInt(decos.getStr("column").replace("\"", ""));
             	if(numberOfColumns<2){
@@ -81,7 +85,7 @@ public class Mobile_HTML5G1 extends Grouper {
         StringBuffer parentcode = null;
         StringBuffer parentheader = null;
         StringBuffer parentfooter = null;
-        if(decos.containsKey("row") && columnFlg && !Mobile_HTML5.dynamicDisplay){
+        if(decos.containsKey("row") && columnFlg && !Mobile_HTML5_dynamic.dynamicDisplay){
         	row = Integer.parseInt(decos.getStr("row").replace("\"", ""));
         	if(row<1){	//範囲外のとき
         		Log.err("<<Warning>> row指定の範囲は、1〜です。指定された「row="+row+"」は使用できません。");
@@ -130,78 +134,94 @@ public class Mobile_HTML5G1 extends Grouper {
         }
         
         if(!GlobalEnv.isOpt()){
-        	//20130503  Panel
-    	    panelFlg = Mobile_HTML5C1.panelProcess1(decos, html_env);
-        	
-        	//20130330 tab
-        	//tab1
-        	if(decos.containsKey("tab1")){
-            	html_env.code.append("<div data-role=\"content\"> <div id=\"tabs\">\n<ul>\n");
-            	html_env.code.append("	<li><a href=\"#tabs-"+Mobile_HTML5Env.tabCount+"\">");
-            	if(!decos.getStr("tab1").equals(""))	html_env.code.append(decos.getStr("tab1"));
-            	else          							html_env.code.append("tab1");
-            	html_env.code.append("</a></li>\n");
-            	html_env.code.append("</ul>\n<div id=\"tabs-"+Mobile_HTML5Env.tabCount+"\">\n");
-            }
-        	//tab2〜tab15
-        	else{
-        		int i=2;
-        		while(i<=Mobile_HTML5Env.maxTab){		//HTMLEnv.maxTab=15
-        			if(decos.containsKey("tab"+i) || (i==2 && decos.containsKey("tab"))){
-    	        		//replace: </ul>の前に<li>〜</li>を付加
-    	        		String a = "</ul>";
-    	        		String b = "	<li><a href=\"#tabs-"+Mobile_HTML5Env.tabCount+"\">";
-    	        		if(decos.containsKey("tab"+i))
-	    	        		if(!decos.getStr("tab"+i).equals(""))	b += decos.getStr("tab"+i);
-	    	            	else				            		b += "tab"+i;
-    	        		else
-    	        			if(!decos.getStr("tab").equals(""))		b += decos.getStr("tab");
-	    	            	else				            		b += "tab";
-    	            	b += "</a></li>\n";
-    	            	Mobile_HTML5Manager.replaceCode(html_env, a, b+a);
-    	            	
-    	            	//replace: 最後の</div></div></div>カット
-    	        		Mobile_HTML5Manager.replaceCode(html_env, "</div></div></div>", "");
-    	        		
-    	        		//replace: 不要な「<div class=〜」をカット
-    	        		Mobile_HTML5Manager.replaceCode(html_env, "<div class=\""+classid+" \">", "");
-    	            	
-    	        		html_env.code.append("<div id=\"tabs-"+Mobile_HTML5Env.tabCount+"\">\n");
-    	            	break;
-    	        	}
-        			i++;
-        		}
+	        	if(!Sass.isBootstrapFlg()){
+	        	//20130503  Panel
+	    	    panelFlg = Mobile_HTML5C1.panelProcess1(decos, html_env);
+
+	        	//20130330 tab
+	        	//tab1
+	        	if(decos.containsKey("tab1")){
+	            	html_env.code.append("<div data-role=\"content\"> <div id=\"tabs\">\n<ul>\n");
+	            	html_env.code.append("	<li><a href=\"#tabs-"+Mobile_HTML5Env.tabCount+"\">");
+	            	if(!decos.getStr("tab1").equals(""))	html_env.code.append(decos.getStr("tab1"));
+	            	else          							html_env.code.append("tab1");
+	            	html_env.code.append("</a></li>\n");
+	            	html_env.code.append("</ul>\n<div id=\"tabs-"+Mobile_HTML5Env.tabCount+"\">\n");
+	            }
+	        	//tab2〜tab15
+	        	else{
+	        		int i=2;
+	        		while(i<=Mobile_HTML5Env.maxTab){		//HTMLEnv.maxTab=15
+	        			if(decos.containsKey("tab"+i) || (i==2 && decos.containsKey("tab"))){
+	    	        		//replace: </ul>の前に<li>〜</li>を付加
+	    	        		String a = "</ul>";
+	    	        		String b = "	<li><a href=\"#tabs-"+Mobile_HTML5Env.tabCount+"\">";
+	    	        		if(decos.containsKey("tab"+i))
+		    	        		if(!decos.getStr("tab"+i).equals(""))	b += decos.getStr("tab"+i);
+		    	            	else				            		b += "tab"+i;
+	    	        		else
+	    	        			if(!decos.getStr("tab").equals(""))		b += decos.getStr("tab");
+		    	            	else				            		b += "tab";
+	    	            	b += "</a></li>\n";
+	    	            	Mobile_HTML5Manager.replaceCode(html_env, a, b+a);
+
+	    	            	//replace: 最後の</div></div></div>カット
+	    	        		Mobile_HTML5Manager.replaceCode(html_env, "</div></div></div>", "");
+
+	    	        		//replace: 不要な「<div class=〜」をカット
+	    	        		Mobile_HTML5Manager.replaceCode(html_env, "<div class=\""+classid+" \">", "");
+
+	    	        		html_env.code.append("<div id=\"tabs-"+Mobile_HTML5Env.tabCount+"\">\n");
+	    	            	break;
+	    	        	}
+	        			i++;
+	        		}
+	        	}
+
+	        	//20130312 collapsible
+	        	if(decos.containsKey("collapse")){
+	            	html_env.code.append("<DIV data-role=\"collapsible\" data-content-theme=\"c\" style=\"padding: 0px 12px;\">\n");
+
+	            	//header
+	            	if(!decos.getStr("collapse").equals(""))
+	            		html_env.code.append("	<h1>"+decos.getStr("collapse")+"</h1>\n");
+	            	else
+	            		html_env.code.append("<h1>Contents</h1>\n");
+	            }
+	            //20130309
+	        	if(!tableFlg){
+	//        		if(html_env.written_classid.contains(classid))
+	        			html_env.code.append("\n<DIV Class=\"ui-grid ##"+Mobile_HTML5Env.uiGridCount2+" "+classid+"\"");
+	//        		else
+	//        			html_env.code.append("\n<DIV Class=\"ui-grid ##"+Mobile_HTML5Env.uiGridCount2+"\"");
+	        		html_env.code.append(">\n");
+	        		Mobile_HTML5Env.uiGridCount2++;
+	        	}
+
+	            //20130314  table
+	            if(tableFlg){
+	            	//added by goto 20130318  横スクロール
+	            	if(numberOfColumns < 0)	html_env.code.append("<div style=\"overflow:auto;\">\n");	//20130917  [ ],10@{table}
+
+	            	if(row>1 && tableFlg)	Mobile_HTML5G2.tableStartTag = Mobile_HTML5C1.getTableStartTag(html_env, decos, this)+"<TR>";
+	            	else					html_env.code.append(Mobile_HTML5C1.getTableStartTag(html_env, decos, this)+"<TR>");
+	            }
+        	}else if(Sass.isBootstrapFlg()){
+        		if(!decos.containsKey("C1") && !decos.containsKey("G1")){
+            		html_env.code.append("<DIV Class=\"row\">");
+            		if(Sass.outofloopFlg.peekFirst()){
+            			Sass.makeRowClass();
+            		}
+            	}
+        		html_env.code.append("<DIV Class=\""+classid+"\">");
+        		html_env.code.append("<DIV Class=\"row\">");
+        		if(Sass.outofloopFlg.peekFirst()){
+        			Sass.makeClass(classid);
+        			Sass.defineGridBasic(classid, decos);
+        			Sass.makeRowClass();
+	      		}
+        		Sass.beforeLoop();
         	}
-        	
-        	//20130312 collapsible
-        	if(decos.containsKey("collapse")){
-            	html_env.code.append("<DIV data-role=\"collapsible\" data-content-theme=\"c\" style=\"padding: 0px 12px;\">\n");
-            	
-            	//header
-            	if(!decos.getStr("collapse").equals(""))
-            		html_env.code.append("	<h1>"+decos.getStr("collapse")+"</h1>\n");
-            	else
-            		html_env.code.append("<h1>Contents</h1>\n");
-            }
-            //20130309
-        	if(!tableFlg){
-//        		if(html_env.written_classid.contains(classid))
-        			html_env.code.append("\n<DIV Class=\"ui-grid ##"+Mobile_HTML5Env.uiGridCount2+" "+classid+"\"");
-//        		else
-//        			html_env.code.append("\n<DIV Class=\"ui-grid ##"+Mobile_HTML5Env.uiGridCount2+"\"");
-        		html_env.code.append(">\n");
-        		Mobile_HTML5Env.uiGridCount2++;
-        	}
-            
-            //20130314  table
-            if(tableFlg){
-            	//added by goto 20130318  横スクロール
-            	if(numberOfColumns < 0)	html_env.code.append("<div style=\"overflow:auto;\">\n");	//20130917  [ ],10@{table}
-            	
-            	if(row>1 && tableFlg)	Mobile_HTML5G2.tableStartTag = Mobile_HTML5C1.getTableStartTag(html_env, decos, this)+"<TR>";
-            	else					html_env.code.append(Mobile_HTML5C1.getTableStartTag(html_env, decos, this)+"<TR>");
-            }
-            
         }
         
         Mobile_HTML5.beforeWhileProcess(getSymbol(), decos, html_env);
@@ -221,8 +241,8 @@ public class Mobile_HTML5G1 extends Grouper {
             if(rowFlg){
             	html_env.code = new StringBuffer();
             	html_env.countfile++;
-                html_env.filename = html_env.outfile + "_row" + Mobile_HTML5G2.rowFileNum + "_" + j + ".html";
-                html_env.nextbackfile = html_env.linkoutfile + "_row" + Mobile_HTML5G2.rowFileNum + "_" + j + ".html";
+                html_env.filename = html_env.outfile + "_row" + Mobile_HTML5G2.rowFileNum + "_" + j + Compiler.getExtension();
+                html_env.nextbackfile = html_env.linkoutfile + "_row" + Mobile_HTML5G2.rowFileNum + "_" + j + Compiler.getExtension();
                 html_env.setOutlineMode();
             }
             
@@ -237,44 +257,50 @@ public class Mobile_HTML5G1 extends Grouper {
             	if(table_column_num>0)	html_env.code.append("</TR><TR>\n");
             	else					table_column_num++;
             }
-            
-    		//20130309
-    	    if(!tableFlg){
-    	    	//20131002
-    	    	//TODO style=を.cssへ
-    	    	String divWidth = Mobile_HTML5.getDivWidth("G1", decos, numberOfColumns - Mobile_HTML5Function.func_null_count);	//null()
-    	    	if(!decos.containsKey("column")){
-//    	    		if(Count!=0)	html_env.code.append("\n<div class=\"ui-block"+" "+classid2+" "+classid2+"-"+G1_count+"\" style=\"width:"+divWidth+"\">\n");
-//    	    		else			html_env.code.append("\n<div class=\"ui-block"+" "+classid2+" "+classid2+"-"+G1_count+"\" style=\"width:"+divWidth+"; clear:left;\">\n");
-//    	    		if(!decos.containsKey("width")){
-    	    			if(Count!=0)	html_env.code.append("\n<div class=\"ui-block"+" "+classid2+" "+classid2+"-"+G1_count+"\">\n");
-    	    			else			html_env.code.append("\n<div class=\"ui-block"+" "+classid2+" "+classid2+"-"+G1_count+"\" style=\"clear:left;\">\n");
-    	    			if(gridInt<1)	Mobile_HTML5Attribute.attributeDivWidth2 += "."+classid2+"-"+G1_count+"{ width:"+divWidth+"; }\n";
-//    	    		}else {
-//    	    			if(Count!=0)	html_env.code.append("\n<div class=\"ui-block"+" "+classid2+"\">\n");
-//    	    			else			html_env.code.append("\n<div class=\"ui-block"+" "+classid2+"\" style=\"clear:left;\">\n");
-//					}
-    	    	}else{
-    	    		if(Count!=0)	html_env.code.append("\n<div class=\"ui-block"+" "+classid2+"\">\n");
-    	    		else			html_env.code.append("\n<div class=\"ui-block"+" "+classid2+"\" style=\"clear:left;\">\n");
-    	    		Mobile_HTML5Attribute.attributeDivWidth = divWidth;
-    	    	}
-    	    	//System.out.println(this.decos+ " "+ divWidth+" "+gridInt);
-    	    }
-    	    //20130314  table
-    	    else{
-	            html_env.code.append("<TD class=\"" + classid2 + " nest\">\n");       
-    	    }
-    	    classid = classid2;
-            	
-//    	    if(Mobile_HTML5Env.dynamicFlg){	//20130529 dynamic
-//	      		//☆★
-//	      		Log.info("★★G1-1 tfe : " + tfe);
-//	    		//☆★            Log.info("G1 tfe : " + tfe);
-//	            //☆★            Log.info("G1 tfes : " + this.tfes);
-//	            //☆★            Log.info("G1 tfeItems : " + this.tfeItems);
-//	      	}
-            
+
+            if(!Sass.isBootstrapFlg()){
+	    		//20130309
+	    	    if(!tableFlg){
+	    	    	//20131002
+	    	    	//TODO style=を.cssへ
+	    	    	String divWidth = Mobile_HTML5.getDivWidth("G1", decos, numberOfColumns - Mobile_HTML5Function.func_null_count);	//null()
+	    	    	if(!decos.containsKey("column")){
+	//    	    		if(Count!=0)	html_env.code.append("\n<div class=\"ui-block"+" "+classid2+" "+classid2+"-"+G1_count+"\" style=\"width:"+divWidth+"\">\n");
+	//    	    		else			html_env.code.append("\n<div class=\"ui-block"+" "+classid2+" "+classid2+"-"+G1_count+"\" style=\"width:"+divWidth+"; clear:left;\">\n");
+	//    	    		if(!decos.containsKey("width")){
+	    	    			if(Count!=0)	html_env.code.append("\n<div class=\"ui-block"+" "+classid2+" "+classid2+"-"+G1_count+"\">\n");
+	    	    			else			html_env.code.append("\n<div class=\"ui-block"+" "+classid2+" "+classid2+"-"+G1_count+"\" style=\"clear:left;\">\n");
+	    	    			if(gridInt<1)	Mobile_HTML5Attribute.attributeDivWidth2 += "."+classid2+"-"+G1_count+"{ width:"+divWidth+"; }\n";
+	//    	    		}else {
+	//    	    			if(Count!=0)	html_env.code.append("\n<div class=\"ui-block"+" "+classid2+"\">\n");
+	//    	    			else			html_env.code.append("\n<div class=\"ui-block"+" "+classid2+"\" style=\"clear:left;\">\n");
+	//					}
+	    	    	}else{
+	    	    		if(Count!=0)	html_env.code.append("\n<div class=\"ui-block"+" "+classid2+"\">\n");
+	    	    		else			html_env.code.append("\n<div class=\"ui-block"+" "+classid2+"\" style=\"clear:left;\">\n");
+	    	    		Mobile_HTML5Attribute.attributeDivWidth = divWidth;
+	    	    	}
+	    	    	//System.out.println(this.decos+ " "+ divWidth+" "+gridInt);
+	    	    }
+	    	    //20130314  table
+	    	    //20160527 bootstrap
+	    	    else if(tableFlg){
+		            html_env.code.append("<TD class=\"" + classid2 + " nest\">\n");
+	    	    }
+
+	    	    classid = classid2;
+
+	//    	    if(Mobile_HTML5Env.dynamicFlg){	//20130529 dynamic
+	//	      		//☆★
+	//	      		Log.info("★★G1-1 tfe : " + tfe);
+	//	    		//☆★            Log.info("G1 tfe : " + tfe);
+	//	            //☆★            Log.info("G1 tfes : " + this.tfes);
+	//	            //☆★            Log.info("G1 tfeItems : " + this.tfeItems);
+	//	      	}
+            }else if(Sass.isBootstrapFlg()){
+            	(tfe).decos.put("G1",""+(numberOfColumns - Mobile_HTML5Function.func_null_count));
+            }
+
 	        Mobile_HTML5.whileProcess1(getSymbol(), decos, html_env, data, data_info, tfe, null, -1);
     	    
             this.worknextItem();
@@ -291,11 +317,20 @@ public class Mobile_HTML5G1 extends Grouper {
             ii++;
             jj++;
             gridInt++;
-            
 
-            if(!tableFlg)	html_env.code.append("</div>");	//20130309
-        	else	        html_env.code.append("</TD>\n");    //20130314 table
-            
+            //20160527 bootstrap
+            if(!Sass.isBootstrapFlg()){
+            	if(!tableFlg)	html_env.code.append("</div>");	//20130309
+        		else if(tableFlg)	        html_env.code.append("</TD>\n");    //20130314 table
+            }else if(Sass.isBootstrapFlg()){
+//        		html_env.code.append("</div>");
+//        		if(Sass.outofloopFlg.peekFirst()){
+//        			Sass.closeBracket();
+//        		}
+//        		Sass.outofloopFlg.peekFirst() = false;
+            	Sass.afterFirstLoop();
+        	}
+
             html_env.glevel--;
 
             Mobile_HTML5G2.tableDivHeader_Count1++;	//20131001 tableDivHeader
@@ -310,7 +345,15 @@ public class Mobile_HTML5G1 extends Grouper {
                 }
                 rowNum++;
             }
+
+	        Mobile_HTML5.whileProcess2_2(getSymbol(), decos, html_env, data, data_info, tfe, null, -1);
         }	// /while
+
+        //20160527 bootstrap
+        if (Sass.isBootstrapFlg()){
+        	Sass.afterLoop();
+        }
+
         Mobile_HTML5.afterWhileProcess(getSymbol(), classid2, decos, html_env);
         
         //added by goto 20130413  "row Prev/Next"
@@ -346,14 +389,28 @@ public class Mobile_HTML5G1 extends Grouper {
 	        Mobile_HTML5Env.incrementFormPartsNumber();
 		}
 
-        if(!tableFlg)	html_env.code.append("\n</DIV>\n");			//20130309
-        else{
-        	if(!(row>1 && tableFlg))	html_env.code.append("</TR></TABLE>\n");	//20130314  table
-        	tableFlg = false;
-        	table0Flg = false;		//20130325 table0
-        	if(numberOfColumns < 0)	html_env.code.append("</div>\n");	//added by goto 20130318  横スクロール		//20130917  [ ],10@{table}
+        if(!Sass.isBootstrapFlg()){
+	        if(!tableFlg)	html_env.code.append("\n</DIV>\n");			//20130309	//20160527 bootstrap
+	        else if (tableFlg){	//20160527 bootstrap
+	        	if(!(row>1 && tableFlg))	html_env.code.append("</TR></TABLE>\n");	//20130314  table
+	        	tableFlg = false;
+	        	table0Flg = false;		//20130325 table0
+	        	if(numberOfColumns < 0)	html_env.code.append("</div>\n");	//added by goto 20130318  横スクロール		//20130917  [ ],10@{table}
+	        }
+        }else if(Sass.isBootstrapFlg()){
+        	html_env.code.append("\n</DIV>\n");//.row
+        	html_env.code.append("\n</DIV>\n");//.TFE
+      		if(Sass.outofloopFlg.peekFirst()){
+      			Sass.closeBracket();
+      			Sass.closeBracket();
+      		}
+      		if(!decos.containsKey("C1") && !decos.containsKey("G1")){
+        		html_env.code.append("\n</DIV>\n");
+        		if(Sass.outofloopFlg.peekFirst()){
+        			Sass.closeBracket();
+        		}
+        	}
         }
-        
         if(divFlg)	divFlg = false;		//20130326  div
         
         G1Flg=false;
@@ -398,5 +455,4 @@ public class Mobile_HTML5G1 extends Grouper {
 	public String getSymbol() {
         return "Mobile_HTML5G1";
     }
-
 }

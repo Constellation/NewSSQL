@@ -7,8 +7,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.nio.channels.FileChannel;
 
+import supersql.codegenerator.Compiler.PHP.PHP;
 import supersql.codegenerator.HTML.HTMLEnv;
 import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5Env;
 import supersql.codegenerator.Web.WebEnv;
@@ -16,11 +18,11 @@ import supersql.common.GlobalEnv;
 import supersql.common.Log;
 
 //added by goto 20141201
-public class Jscss {
+public class Jscss implements Serializable {
 	private static final String fs = GlobalEnv.OS_FS;
 	private static final String outdirPath = GlobalEnv.getOutputDirPath();
-	private static final String generateCssFileDir = "jscss";
-	private static final String media = CodeGenerator.getMedia().toLowerCase();
+	public static final String generateCssFileDir = "jscss";
+	public static final String media = CodeGenerator.getMedia().toLowerCase();
 	private static boolean flag = false; // masato 20150101
 	
 	
@@ -69,7 +71,7 @@ public class Jscss {
 		// add 20141204 masato for ehtml
 		if (media.equalsIgnoreCase("html") || media.equalsIgnoreCase("ehtml") || media.equalsIgnoreCase("web"))
 			from = new File(ep+fs+"jscss"+fs+"forHTML"+fs+"jscss");
-		else if (media.equalsIgnoreCase("mobile_html5"))
+		else if (media.equalsIgnoreCase("mobile_html5") || media.equalsIgnoreCase("bhtml") || media.equalsIgnoreCase("html_bootstrap") || PHP.isPHP)
 			from = new File(ep+fs+"jscss");
 		
 		if (!directoryCopy(from, new File(outdirPath)))
@@ -137,10 +139,12 @@ public class Jscss {
 		String css = "";
 		if(media.equals("html") || media.equals("ehtml"))
 			css = HTMLEnv.commonCSS() + HTMLEnv.css;
-		else if(media.equals("mobile_html5"))
+		else if(media.equals("mobile_html5") || PHP.isPHP)
 			css = Mobile_HTML5Env.commonCSS() + Mobile_HTML5Env.css;
-		else if(media.equals("web"))
+		else if (media.equals("web"))
 			css = WebEnv.commonCSS() + WebEnv.css;
+		else if (media.equals("bhtml") || media.equals("html_bootstrap")) // 20160603 bootstrap
+			css = Mobile_HTML5Env.commonCSS() + Mobile_HTML5Env.css + Sass.compile();
 		String outputCssFileName = outdirPath+fs+fs+getGenerateCssFileName(1);
 		
 		if(!createFile(outputCssFileName, css))
@@ -150,6 +154,14 @@ public class Jscss {
 	//createFile
 	//create a new file to the fileName directory 
 	private static boolean createFile(String fileName, String content) {
+
+		if(flag || Ehtml.flag){
+			File file = new File(fileName.substring(0, fileName.lastIndexOf(GlobalEnv.OS_FS)));
+			if ( !file.exists() ) {
+				file.mkdirs();
+			}
+		}
+		
 		try {
 			PrintWriter pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter
 					(new FileOutputStream(fileName), "UTF-8")));

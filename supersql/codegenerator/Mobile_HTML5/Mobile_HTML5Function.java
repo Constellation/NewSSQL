@@ -26,7 +26,11 @@ import supersql.codegenerator.CodeGenerator;
 import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.FuncArg;
 import supersql.codegenerator.Function;
+import supersql.codegenerator.LinkForeach;
 import supersql.codegenerator.Manager;
+import supersql.codegenerator.Sass;
+import supersql.codegenerator.Compiler.Compiler;
+import supersql.codegenerator.Compiler.PHP.PHP;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.dataconstructor.DataConstructor;
@@ -75,6 +79,8 @@ public class Mobile_HTML5Function extends Function {
     
     static String updateFile;
 
+	private boolean link1 = false; //added by goto 20161025 for link1/foreach1
+
     public Mobile_HTML5Function()
     {
 
@@ -110,7 +116,11 @@ public class Mobile_HTML5Function extends Function {
 				e.printStackTrace();
 			}
         } else if (FuncName.equalsIgnoreCase("sinvoke") || FuncName.equalsIgnoreCase("link")) {
-            Func_sinvoke(data_info);
+            Func_sinvoke(data_info, 1);
+        } else if (FuncName.equalsIgnoreCase("glink")) {	//added by goto 20161109 for plink/glink
+        	Func_sinvoke(data_info, 2);
+        } else if (FuncName.equalsIgnoreCase("plink")) {	//added by goto 20161109 for plink/glink
+        	Func_sinvoke(data_info, 3);
         } else if (FuncName.equalsIgnoreCase("null")) {
             Func_null();
         }
@@ -145,6 +155,14 @@ public class Mobile_HTML5Function extends Function {
         //added by goto 20130313  "header"
         else if(FuncName.equalsIgnoreCase("header")){
         	Func_header();
+        }
+    	//added by ryosuke 20161010  "navbar"
+        else if(FuncName.equalsIgnoreCase("navbar")){
+        	Func_navbar();
+        }
+    	//added by ryosuke 20161010  "dropdown"
+        else if(FuncName.equalsIgnoreCase("dropdown")){
+        	ret = Func_dropdown();
         }
         //added by goto 20130313  "footer"
         else if(FuncName.equalsIgnoreCase("footer")){
@@ -450,14 +468,25 @@ public class Mobile_HTML5Function extends Function {
 	                html_env.code.append("<div id=\"bounce\" class=\"ui-widget-content ui-corner-all\">" +
 	                		"<img class=\"" + Mobile_HTML5Env.getClassID(this) +" ");
         		}else{
-                	html_env.code.append("<img class=\"" + Mobile_HTML5Env.getClassID(this) +" ");
+        			if(!Sass.isBootstrapFlg()){
+        				html_env.code.append("<img class=\"" + Mobile_HTML5Env.getClassID(this) +" ");
+        			}else if(Sass.isBootstrapFlg()){
+        				if(Sass.outofloopFlg.peekFirst()){
+		        			Sass.makeClass(Mobile_HTML5Env.getClassID(this));
+		        			Sass.defineGridBasic(Mobile_HTML5Env.getClassID(this), decos);
+		        			Sass.closeBracket();
+			      		}
+        				html_env.code.append("<div class=\"" + Mobile_HTML5Env.getClassID(this) + "\">");
+        				html_env.code.append("<img class=\"img-responsive\"");
+        			}
                 }
         		
     	        //added by goto 20130312  "Default width: 100%"
     	        if(!decos.containsKey("width")){
-            		html_env.code.append("\" width=\"100% " );
+    	        	if(!Sass.isBootstrapFlg()){
+    	        		html_env.code.append("\" width=\"100% " );
+    	        	}
     	        }
-        		
 //        		//20130205
 //        		if (decos.containsKey("display-type") && decos.getStr("display-type").matches("fisheye")){
 //	                //String display_type = decos.getStr("display-type");//.replace("\"", "") +"\" " );
@@ -504,6 +533,9 @@ public class Mobile_HTML5Function extends Function {
     	        	html_env.code.append(" \" src=\"" + url + "\"/>");
             	}else{
     	        	html_env.code.append(" \" src=\"" + path + "/" + url + "\"/>");
+    	        	if(Sass.isBootstrapFlg()){
+    	        		html_env.code.append("\n</DIV>\n");
+    	        	}
             	}
         		
         		//20130206
@@ -981,7 +1013,106 @@ public class Mobile_HTML5Function extends Function {
         return;
     }
     //added by goto 20130313 end
-    
+
+    //added by ryosuke 20161010
+    private void Func_navbar() {
+    	try{
+    		String title = getValue(1).trim();
+
+    		headerString += "<nav class=\"navbar navbar-default\" role=\"navigation\">\n" +
+    		    	"	<div class=\"container-fluid\">\n" +
+    		    	"		<div class=\"navbar-header\">\n" +
+    		    	"			<button type=\"button\" class=\"navbar-toggle\" data-toggle=\"collapse\" data-target=\"#nav-menu-1\">\n" +
+    		    	"				<span class=\"sr-only\">Toggle navigation</span>\n" +
+    		    	"				<span class=\"icon-bar\"></span>\n" +
+    		    	"				<span class=\"icon-bar\"></span>\n" +
+    		    	"				<span class=\"icon-bar\"></span>\n" +
+    		    	"			</button>\n";
+        	if(!title.isEmpty()){
+        		if(title.contains(":")){
+        			headerString +=
+        					"		<a class=\"navbar-brand\" href=\""+title.substring(title.indexOf(":")+1).replaceAll("'", "")+"\">"+title.substring(0, title.indexOf(":"))+"</a>\n";
+    	    	}else{
+    	    		headerString +=
+    					    "		<div class=\"navbar-brand\">"+title+"</div>\n";
+    	    	}
+        	}
+        	headerString +=
+        			"	</div>"+
+    		    	"		<div class=\"collapse navbar-collapse\" id=\"nav-menu-1\">\n" +
+    		    	"			<ul class=\"nav navbar-nav\">\n";
+        	
+        	for(int i=1; i<this.Args.size(); i++){
+        		FuncArg menu_arg = (FuncArg) this.Args.get(i);
+        		String menu = menu_arg.getStr().trim();
+        		String menuTitle = "";
+        		String url = "";
+        		if(menu.startsWith("<li class=\"dropdown\">")){
+        			headerString += menu;
+        		}
+        		else if(menu.contains(":") && !menu.startsWith("'")){
+        			menuTitle = menu.substring(0, menu.indexOf(":"));
+        			url = menu.substring(menu.indexOf(":")+1).replaceAll("'", "");
+        			headerString += "				<li><a href=\""+url+"\">"+menuTitle+"</a></li>\n";
+    			}else{
+    				url = menu.substring(menu.indexOf(":")+1).replaceAll("'", "");
+    				headerString += "				<li><a href=\""+url+"\">Menu"+i+"</a></li>\n";
+    			}
+        	}
+
+            headerString +=
+            		"			</ul>\n" +
+    		    	"		</div>\n" +
+    		    	"	</div>\n" +
+    		    	"</nav>\n";
+    	}catch(Exception e){
+    		Log.info("<Warning> navbar関数の引数が不足しています。 ex. navbar(title:'URL', menu:'URL',...)");
+    	}
+        return;
+    }
+    //added by ryosuke 20161010
+
+    private String Func_dropdown() {
+    	String statement = "";
+    	ArrayList<String> menuTitle = new ArrayList<String>();
+    	ArrayList<String> url = new ArrayList<String>();
+    	try{
+    		//dropdownmenu
+    		FuncArg fa1 = (FuncArg) this.Args.get(0);
+    		String d_menu = fa1.getStr();
+    		statement += "<li class=\"dropdown\">\n" +
+    			"	<a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">"+d_menu+"</a>\n" +
+    			"	<ul class=\"dropdown-menu\">\n";
+    		//menu
+    		for(int i=1; i<this.Args.size(); i++){
+        		FuncArg menu_arg = (FuncArg) this.Args.get(i);
+        		String menu = menu_arg.getStr().trim();
+        		if(menu.contains(":") && !menu.startsWith("'")){
+    				menuTitle.add(i-1, menu.substring(0, menu.indexOf(":")));
+    				url.add(i-1, menu.substring(menu.indexOf(":")+1).replaceAll("'", ""));
+    			}else{
+	    			menuTitle.add(i-1, "");
+	    			url.add(i-1, menu.replaceAll("'", ""));
+    			}
+        	}
+    		if(url.size()>0){
+        		for(int i=0; i<url.size(); i++){
+        			if(menuTitle.get(i).isEmpty()){
+        				statement += "		<li><a href=\""+url.get(i)+"\">"+url.get(i)+"</a></li>\n";
+        			}else{
+        				statement += "		<li><a href=\""+url.get(i)+"\">"+menuTitle.get(i)+"</a></li>\n";
+        			}
+        		}
+        	}
+    		statement +=
+    			"	</ul>\n"+
+    			"</li>";
+    	}catch(Exception e){
+    		statement += "1";
+    	}
+    	return statement;
+
+    }
     //added by goto 20130313 start  "footer"
     /*	footer("title")	*/
     private void Func_footer() {
@@ -2194,11 +2325,11 @@ public class Mobile_HTML5Function extends Function {
     static boolean formFileUpload = false;
     private String Func_insert(boolean update, boolean insert_update) {
     	
-    	if(Mobile_HTML5.G2){
+    	if(Mobile_HTML5_form.G2){
     		//for [ form() ]!
     		G2_form = true;
     		G2_form_count++;
-    		//Log.e(Mobile_HTML5.G2_dataQuantity+"  "+G2_form_count);
+    		//Log.e(Mobile_HTML5_form.G2_dataQuantity+"  "+G2_form_count);
     	}
     	
     	String title = "";
@@ -2406,7 +2537,7 @@ public class Mobile_HTML5Function extends Function {
 		    		}
 	    		}
 	    		if(str.contains("notnull"))	notnullFlg[i] = true;
-	    		validationType[i] = Mobile_HTML5.checkFormValidationType(str);	//form validation
+	    		validationType[i] = Mobile_HTML5_form.checkFormValidationType(str);	//form validation
 	    		
 	    		s_array[i] = s_array[i].substring(0,s_array[i].lastIndexOf("@"));
 	    		//Log.i(s_array[i]);
@@ -2796,7 +2927,7 @@ public class Mobile_HTML5Function extends Function {
 								" type=\""+((!hiddenFlg[i])?("text"):("hidden"))+"\"" +
 								" id=\"SSQL_insert"+insertCount+"_words"+(++insertWordCount)+"\"" +
 								" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\"" +
-								" placeholder=\""+s_name_array[i]+"\""+Mobile_HTML5.getFormClass(notnullFlg[i], "")+">" +
+								" placeholder=\""+s_name_array[i]+"\""+Mobile_HTML5_form.getFormClass(notnullFlg[i], "")+">" +
 								""+((!textareaFlg[i])?(""):("</textarea>")) +
 								"</span>"+( (!textareaFlg[i])? "" : "</span>" )+"\n";
 						update_statement += 
@@ -2807,14 +2938,14 @@ public class Mobile_HTML5Function extends Function {
 								" id=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\"" +
 								" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\"" +
 								" "+((!textareaFlg[i])?("value=\""+updateFromValue+"\""):(""))+
-								" placeholder=\""+s_name_array[i]+"\""+Mobile_HTML5.getFormClass(notnullFlg[i], "")+">" +
+								" placeholder=\""+s_name_array[i]+"\""+Mobile_HTML5_form.getFormClass(notnullFlg[i], "")+">" +
 								""+((!textareaFlg[i])?(""):(updateFromValue+"</textarea>")) +
 								"</span>"+( (!textareaFlg[i])? "" : "</span>" )+"\n";
 						//statement += "    <input type=\"text\" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\" placeholder=\""+s_name_array[i]+"\">\n";
 					}else{
-						statement += Mobile_HTML5.getFormValidationString(validationType[i], notnullFlg[i], "SSQL_insert"+insertCount+"_words"+(++insertWordCount), s_name_array[i], updateFromValue, outTitle);
+						statement += Mobile_HTML5_form.getFormValidationString(validationType[i], notnullFlg[i], "SSQL_insert"+insertCount+"_words"+(++insertWordCount), s_name_array[i], updateFromValue, outTitle);
 						update_statement
-						          += Mobile_HTML5.getFormValidationString(validationType[i], notnullFlg[i], "SSQL_insert"+insertCount+"_words"+(insertWordCount), s_name_array[i], updateFromValue, outTitle);
+						          += Mobile_HTML5_form.getFormValidationString(validationType[i], notnullFlg[i], "SSQL_insert"+insertCount+"_words"+(insertWordCount), s_name_array[i], updateFromValue, outTitle);
 					}
 				}
 			}else{
@@ -3504,7 +3635,7 @@ public class Mobile_HTML5Function extends Function {
     //20131127 form
     //result start
     private String Func_result() {
-    	int count = Mobile_HTML5.formCount;
+    	int count = Mobile_HTML5_form.formCount;
     	//if(!Mobile_HTML5.form)	count -= 1;
 	    String s =
 	    	"\n" +
@@ -4591,16 +4722,23 @@ public class Mobile_HTML5Function extends Function {
 
     private void Func_foreach(ExtList data_info) throws UnsupportedEncodingException {
     	String att = new String();
-    	String attkey;
     	for (int i = 0; i < this.countconnectitem(); i++) {
     		att = att + "_" + this.getAtt(Integer.toString(i));
+    		
+    		//added by goto 20161112 for dynamic foreach
+    		if(PHP.isPHP)
+	    		Mobile_HTML5G3.dynamic_G3_atts.add(""+this.Args.get(i)); //add attribute name
     	}
-        //String filename = html_env.outfile + "_" + this.getAtt("default") + ".html";
-    	att = URLEncoder.encode(att, "UTF-8");
-    	String filename = html_env.outfile + att + ".html";
-
-        html_env.filename = filename;
-        //System.out.println(filename);
+		
+		if(!Start_Parse.foreach1Flag){
+			//added by goto 20161019 for new foreach
+			Mobile_HTML5G3.foreachID = att;
+		}else{
+			//added by goto 20161025 for link1/foreach1
+	    	att = URLEncoder.encode(att, "UTF-8");
+	    	String filename = html_env.outfile + att + Compiler.getExtension();
+	        html_env.filename = filename;
+		}
         return;
     }
 
@@ -5090,62 +5228,89 @@ public class Mobile_HTML5Function extends Function {
     }
     //tk end////////////////////////////////////////////////////////////////////////////
 
-    private void Func_sinvoke(ExtList data_info) {
-        String file = this.getAtt("file");
-        String action = this.getAtt("action");
-        int attNo = 1;
-        String att = new String();
-        Log.out("sinvoke file 3: "+file);
-
-        //tk start/////////////////////////////////////////////////////////////
-        /*
-        if (file.indexOf("/") > 0) {
-            file = file.substring(file.lastIndexOf("/") + 1);
-        }
-*/
-        //tk end//////////////////////////////////////////////////////////////
-      	Log.out("1 att:" + att + " attNo:" + attNo + " att1:" + this.getAtt("att1"));
-
-        while (!this.getAtt("att"+attNo).equals("")){
-        	att = att + "_" + this.getAtt("att"+attNo);
-        	attNo ++;
-        	Log.out("att:" + att + " attNo:" + attNo);
-        	//System.out.println(att);
-        }
-    	try {
-			att = URLEncoder.encode(att, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+    //int ltype : 1=link, 2=glink, 3=plink
+    private void Func_sinvoke(ExtList data_info, int ltype) {
+		// link関数の仕様変更　link(att_name, url, value1, value2, ...)
+		String file = this.Args.get(1).toString();
+		if (file.startsWith("\'") || file.startsWith("\"")) {
+			file = file.substring(1, file.length() - 1);
 		}
-		if(this.getAtt("action").equals("")){
-		try{
-			if(file.toLowerCase().contains(".sql")){
-				file = file.substring(0, file.indexOf(".sql"));
-			}else if(file.toLowerCase().contains(".ssql")){
-				file = file.substring(0, file.indexOf(".ssql"));
-			}else if(file.toLowerCase().contains(".html")){
-				file = file.substring(0, file.indexOf(".html"));
+		String att = new String();
+		for (int i = 2; i < this.Args.size(); i++) {
+			att += "_" + this.Args.get(i).getStr();
+		}
+		String action = this.getAtt("action");
+		Log.out("sinvoke file 3: " + file);
+//        String file = this.getAtt("file");
+//        String action = this.getAtt("action");
+//        int attNo = 1;
+//        String att = new String();
+//        Log.out("sinvoke file 3: "+file);
+//      	Log.out("1 att:" + att + " attNo:" + attNo + " att1:" + this.getAtt("att1"));
+//        while (!this.getAtt("att"+attNo).equals("")){
+//        	att = att + "_" + this.getAtt("att"+attNo);
+//        	attNo ++;
+//        	Log.out("att:" + att + " attNo:" + attNo);
+//        }
+        
+		//changed by goto 20161019 for new foreach
+		if(link1){
+			//added by goto 20161025 for link1/foreach1
+	        try {
+				att = URLEncoder.encode(att, "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
 			}
-		}catch(Exception e){
-			GlobalEnv.addErr("Error[HTMLFunction]: filename is invalid.");
-			System.err.println("Error[HTMLFunction]: filename is invalid.");
 		}
-
-        String filename = new String();
-        if(!this.getAtt("att").equals("")){
-        	if(this.getAtt("att").toLowerCase().startsWith("http://"))
-            	filename = this.getAtt("att");
-        	else if(this.getAtt("att").toLowerCase().endsWith(".html"))
-            	filename = this.getAtt("att");
-            else
-            	filename = file + "_" + this.getAtt("att") + ".html";
-        }else{
-        	filename = file + att + ".html";
-        }
-
-        filename.replace("\\\\","\\");
-        html_env.linkurl = filename;
-        html_env.sinvoke_flag = true;
+    	
+		if(this.getAtt("action").equals("")){
+			try{
+				if(file.toLowerCase().contains(".sql")){
+					file = file.substring(0, file.indexOf(".sql"));
+				}else if(file.toLowerCase().contains(".ssql")){
+					file = file.substring(0, file.indexOf(".ssql"));
+				}else if(file.toLowerCase().contains(".html")){
+					file = file.substring(0, file.indexOf(".html"));
+				}
+			}catch(Exception e){
+				GlobalEnv.addErr("Error[HTMLFunction]: filename is invalid.");
+				System.err.println("Error[HTMLFunction]: filename is invalid.");
+			}
+	
+	        String filename = new String();
+	        if(!this.getAtt("att").equals("")){
+	        	if(this.getAtt("att").toLowerCase().startsWith("http://"))
+	            	filename = this.getAtt("att");
+	        	else if(this.getAtt("att").toLowerCase().endsWith(".html"))
+	            	filename = this.getAtt("att");
+	            else
+	            	filename = file + "_" + this.getAtt("att") + ".html";
+	        }else{
+				if(!link1){
+					//added by goto 20161019 for new foreach
+					filename = file;
+					//added by goto 20161109 for plink/glink
+					if(!file.endsWith(".php") && !file.endsWith(".rb") && !file.endsWith(".erb") && !file.endsWith(".jsp"))
+						filename += ".html";
+					if(ltype == 1)
+						filename += "?"+LinkForeach.ID2+"="+att.substring(1);
+					else if(ltype==2 || ltype==3){
+						//<A href="" onclick="ssql_foreach(\'GET\', \'test04_php-foreach.html\', \''.$row1[1].'_'.$row1[2].'_'.$row1[3].'\'); return false;" data-ajax="false" >
+						if(!PHP.isPHP && !Mobile_HTML5_dynamic.dynamicDisplay)
+			        		html_env.plink_glink_onclick = "'"+(ltype==2? "GET" : "POST")+"', '"+filename+"', '"+att.substring(1)+"'";
+			        	else
+			        		html_env.plink_glink_onclick = "\\'"+(ltype==2? "GET" : "POST")+"\\', \\'"+filename+"\\', \\'"+att.substring(1)+"\\'";
+			        	LinkForeach.plink_glink = true;
+			        }
+				}else{
+					//added by goto 20161025 for link1/foreach1
+		        	filename = file + att + ".html";
+				}
+	        }
+	
+	        filename.replace("\\\\","\\");
+	        html_env.linkurl = filename;
+	        html_env.sinvoke_flag = true;
 
 		}else{
 			String filename = new String();
@@ -5280,7 +5445,6 @@ public class Mobile_HTML5Function extends Function {
         }
         else
             this.workAtt("default");
-        //tk//////////////////////////////////////////////////
 
         html_env.sinvoke_flag = false;
         return;
@@ -5331,7 +5495,7 @@ public class Mobile_HTML5Function extends Function {
     
     //20131118 dynamic
     private String getCount(int count){
-    	return count+Mobile_HTML5.getDynamicLabel();
+    	return count+Mobile_HTML5_dynamic.getDynamicLabel();
     }
     
 }

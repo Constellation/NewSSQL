@@ -1,12 +1,23 @@
 package supersql.codegenerator;
 
+import java.io.Serializable;
 import supersql.codegenerator.ITFE;
-import supersql.common.Log;
 import supersql.extendclass.ExtList;
 
-public abstract class Manager {
-	//インスタンス移行プ?前ラムの生成
-	
+/**
+ * ?象クラスManager。ソース生成にあたっての共通な機能をまとめた。 前処?、スキーマ生成、インスタンス移行、後処?。
+ */
+public abstract class Manager implements Serializable{
+	/*
+	 * 必要ならばコメントアウトを外す = 要?談 =
+	 * 
+	 * //前処? public void preProcess(TFE tfe_info, ExtList data_info, LocalEnv
+	 * localenv ){ }
+	 * 
+	 * //クラス?義の生成 public void createSchema(TFE tfe_info, ExtList data_info,
+	 * LocalEnv localenv ){ }
+	 *  
+	 */
 	public DecorateList decos = new DecorateList();
 	public void setDeco(DecorateList d) {
 		decos = d;

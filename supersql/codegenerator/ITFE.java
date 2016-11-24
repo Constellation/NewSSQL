@@ -1,8 +1,18 @@
+/* TFE abstract class */
+
 package supersql.codegenerator;
+
+import java.io.Serializable;
 
 import supersql.extendclass.ExtList;
 
-public interface ITFE {
+/**
+ *
+ *
+ *
+ */
+public interface ITFE extends Serializable {
+
 	/**
 	 *
 	 * @param count
@@ -31,8 +41,10 @@ public interface ITFE {
 	void setOrderBy(String order);
 	void setAggregate(String aggregate);
 
+//	void setcheckdeco(boolean decocheck);
+//	boolean getcheckdeco();
+	
 	ExtList makeschImage();
 
 	void addDeco(String name, String value, String condition);
-
 }

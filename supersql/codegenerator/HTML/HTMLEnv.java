@@ -4,9 +4,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map.Entry;
+import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.Vector;
 
 import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.Attributes;
@@ -19,6 +19,7 @@ import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.Ehtml;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.Jscss;
+import supersql.codegenerator.LinkForeach;
 import supersql.codegenerator.LocalEnv;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
@@ -1044,24 +1045,29 @@ public class HTMLEnv extends LocalEnv implements Serializable{
 		}
 
 		if (GlobalEnv.getframeworklist() == null) {
-			footer.append("<BR><BR>\n</BODY>\n</HTML>\n");
+			footer.append("<BR><BR>\n");
+			footer.append("</div>\n");
+			footer.append("<!-- SuperSQL Body  End -->");
+			footer.append(LinkForeach.getC3contents());	//added by goto 20161019 for new foreach
+			footer.append("</BODY>\n</HTML>\n");
 			Log.out("</body>\n</html>");
 		}
 		header_creation();
 	}
 
 	public void getHeader() {
-		int index = 0;
 		if (GlobalEnv.getframeworklist() == null) {
-			header.insert(index, "<HEAD>\n");
-			header.insert(index, "<HTML>\n");
-			Log.out("<HTML>");
+			header.insert(0, "<!DOCTYPE html>\n<HTML>\n<HEAD>\n");
+			Log.out("<HTML>\n<head>");
 //			header.append("<STYLE TYPE=\"text/css\">\n");
 //			header.append("<!--\n");
 //			commonCSS();
 //			header.append(css);
 //			Log.out(css.toString());
 //			header.append("\n-->\n</STYLE>\n");
+			
+	        //Generator
+	        header.append("<meta name=\"GENERATOR\" content=\" SuperSQL (Generate HTML) \">\n");
 		}
 	}
 
@@ -1170,16 +1176,20 @@ public class HTMLEnv extends LocalEnv implements Serializable{
 			header.append("<!-- Generated CSS -->\n");
 			header.append("<link rel=\"stylesheet\" type=\"text/css\" href=\""+ Jscss.getGenerateCssFileName(0) + "\">\n");
 			header.append("</HEAD>\n");
-
-			
+			//changed by goto 20161019
 			Log.out("<body>");
+			code_tmp = "";
 			code_tmp += "<BODY class=\"body\">\n";
-			code_tmp += "<div";
-			code_tmp += div;
-			code_tmp += titleClass;
-			code_tmp += ">";
-			code_tmp += title;
-			code_tmp += "</div>";
+			code_tmp += "<!-- SuperSQL Body  Start -->";
+			code_tmp += "<div id=\"ssql_body_contents\">\n";	//added by goto 20161019 for new foreach
+			if(!title.toString().trim().equals("")){
+				code_tmp += "<div";
+				code_tmp += div;
+				code_tmp += titleClass;
+				code_tmp += ">";
+				code_tmp += title;
+				code_tmp += "</div>";
+			}
 		}
 
 		if (Connector.loginFlag) {

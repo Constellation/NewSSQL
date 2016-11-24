@@ -1,9 +1,10 @@
 package supersql.codegenerator;
 
-import supersql.common.Log;
+import java.io.Serializable;
+
 import supersql.extendclass.ExtList;
 
-public class TFE implements ITFE{
+public class TFE implements ITFE,Serializable {
 
 	protected int id; // SchemaID
 	protected boolean orderFlag;
@@ -11,6 +12,7 @@ public class TFE implements ITFE{
 	protected String order;
 	protected String aggregate;    
 	public DecorateList decos;
+	public static boolean decocheck;
 	
 	public TFE() {
 		orderFlag = false;
@@ -66,6 +68,16 @@ public class TFE implements ITFE{
 		this.aggregate = new String();
 		this.aggregate = aggregate;
 	}
+	
+//	@Override
+//	public void setcheckdeco(boolean decocheck) {
+////		TFEmatcher.addTFEid_and_TokenPlace(id);	//halken TFEmatcher
+//		this.decocheck = decocheck;
+//	}
+//
+//	public boolean getcheckdeco() {
+//		return decocheck;
+//	}
 
 
 	@Override
