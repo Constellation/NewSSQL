@@ -1,8 +1,10 @@
 package supersql.codegenerator.Mobile_HTML5;
 
 import supersql.codegenerator.Grouper;
+import supersql.codegenerator.ITFE;
 import supersql.codegenerator.Manager;
 import supersql.codegenerator.Sass;
+import supersql.codegenerator.TFE;
 import supersql.codegenerator.Compiler.Compiler;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
@@ -213,6 +215,7 @@ public class Mobile_HTML5G1 extends Grouper {
             			Sass.makeRowClass();
             		}
             	}
+        		
         		html_env.code.append("<DIV Class=\""+classid+"\">");
         		html_env.code.append("<DIV Class=\"row\">");
         		if(Sass.outofloopFlg.peekFirst()){
@@ -221,6 +224,24 @@ public class Mobile_HTML5G1 extends Grouper {
         			Sass.makeRowClass();
 	      		}
         		Sass.beforeLoop();
+        		
+        		//added 161125 taji for @slide
+        		if(decos.containsKey("slide")){
+        			html_env.code.append("<div id=\"carousel-example-generic\" class=\"carousel slide\" data-ride=\"carousel\">"
+        					+ "<!-- Indicators -->"
+        					+ "<ol class=\"carousel-indicators\">");
+        			for(int i = 0; i < this.numberOfColumns; i++){
+        				if(i == 0){
+        					html_env.code.append("<li data-target=\"#carousel-example-generic\" data-slide-to=\""+ i +"\" class=\"active\"></li>");
+        				}else{
+        					html_env.code.append("<li data-target=\"#carousel-example-generic\" data-slide-to=\""+ i +"\"></li>");
+        				}
+        			}
+        			html_env.code.append("</ol>"
+        					+ "<!-- Wrapper for slides -->"
+        					+ "<div class=\"carousel-inner\" role=\"listbox\">");
+        		}
+        		//added 161125 taji for @slide	
         	}
         }
         
@@ -302,10 +323,17 @@ public class Mobile_HTML5G1 extends Grouper {
             }else if(Sass.isBootstrapFlg()){
             	(tfe).decos.put("G1",""+(numberOfColumns - Mobile_HTML5Function.func_null_count));
             }
-
+            
 	        Mobile_HTML5.whileProcess1(getSymbol(), decos, html_env, data, data_info, tfe, null, -1);
     	    
+	        if(this.dindex == 0 && decos.containsKey("slide")){
+	        	tfe.decos.put("slide","true");
+	        }
             this.worknextItem();
+//            if(this.dindex == 0 && decos.containsKey("slide")){
+//	        	html_env.code.append("</div\">");
+//	        }
+            tfe.decos.put("slide", "false");
             
 	        Mobile_HTML5.whileProcess2(getSymbol(), decos, html_env, data, data_info, tfe, null, -1);
 	        
@@ -401,6 +429,19 @@ public class Mobile_HTML5G1 extends Grouper {
 	        	if(numberOfColumns < 0)	html_env.code.append("</div>\n");	//added by goto 20130318  横スクロール		//20130917  [ ],10@{table}
 	        }
         }else if(Sass.isBootstrapFlg()){
+        	if(decos.containsKey("slide")){
+        	html_env.code.append("</div>");
+        	html_env.code.append("<!-- Controls -->"
+        			+ "<a class=\"left carousel-control\" href=\"#carousel-example-generic\" role=\"button\" data-slide=\"prev\">"
+        			+ "<span class=\"glyphicon glyphicon-chevron-left\" aria-hidden=\"true\"></span>"
+        			+ "<span class=\"sr-only\">Previous</span>"
+        			+ "</a>"
+        			+ "<a class=\"right carousel-control\" href=\"#carousel-example-generic\" role=\"button\" data-slide=\"next\">"
+        			+ "<span class=\"glyphicon glyphicon-chevron-right\" aria-hidden=\"true\"></span>"
+        			+ "<span class=\"sr-only\">Next</span>"
+        			+ "</a>"
+        			+ "</div>");
+        	}
         	html_env.code.append("\n</DIV>\n");//.row
         	html_env.code.append("\n</DIV>\n");//.TFE
       		if(Sass.outofloopFlg.peekFirst()){
