@@ -526,7 +526,8 @@ public class Start_Parse {
 					}
 					list_table = set_fromInfo();
 
-					after_from = b.substring(b.toLowerCase().indexOf("from") + 4).trim();
+//					after_from = b.substring(b.toLowerCase().indexOf("from") + 4).trim();
+					after_from = getText( list_from_where, ruleNames );
 					Log.info( getText( list_from_where, ruleNames ) );
 					String from = new String();
 					while(after_from.contains("/*")){
