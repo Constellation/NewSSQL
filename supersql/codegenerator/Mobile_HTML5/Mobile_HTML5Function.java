@@ -168,6 +168,7 @@ public class Mobile_HTML5Function extends Function {
         else if(FuncName.equalsIgnoreCase("footer")){
         	Func_footer();
         }
+    	
         //added by goto 20130313  "popup"
         else if(FuncName.equalsIgnoreCase("pop")
         		|| FuncName.equalsIgnoreCase("pop_anchor")
@@ -175,21 +176,30 @@ public class Mobile_HTML5Function extends Function {
         		|| FuncName.equalsIgnoreCase("popup")
         		|| FuncName.equalsIgnoreCase("popup_anchor")
         		|| FuncName.equalsIgnoreCase("popup_a")){
-        	ret = Func_pop(1);
+        	if(!Sass.isBootstrapFlg())
+        		ret = Func_pop(1);
+        	else
+        		ret = Func_pop_bs(1);
         }
     	//added by goto 20140120  "popup_button"
         else if(FuncName.equalsIgnoreCase("pop_button")
         		|| FuncName.equalsIgnoreCase("pop_bt")
         		|| FuncName.equalsIgnoreCase("popup_button")
         		|| FuncName.equalsIgnoreCase("popup_bt")){
-        	ret = Func_pop(2);
+        	if(!Sass.isBootstrapFlg())
+        		ret = Func_pop(2);
+        	else
+        		ret = Func_pop_bs(2);
         }
     	//added by goto 20140120  "popup_image"
         else if(FuncName.equalsIgnoreCase("pop_image")
         		|| FuncName.equalsIgnoreCase("pop_img")
         		|| FuncName.equalsIgnoreCase("popup_image")
         		|| FuncName.equalsIgnoreCase("popup_img")){
-        	ret = Func_pop(3);
+        	if(!Sass.isBootstrapFlg())
+        		ret = Func_pop(3);
+        	else
+        		ret = Func_pop_bs(3);
         }
         //added by goto 20130515  "search"
         else if(FuncName.equalsIgnoreCase("search")){
@@ -1265,6 +1275,67 @@ public class Mobile_HTML5Function extends Function {
     	popCount++;
     	return statement;
     }
+    
+    private String Func_pop_bs(int popupType) {	//popupType: 1=anchor, 2=button, 3=image    	
+    	String statement = "";
+    	String title = getValue(1);
+    	String header = getValue(2);
+		String detailORurl = getValue(3);
+		if(header.equals("")){
+			if(title.isEmpty()){
+				Log.info("<Warning> popup関数の引数が不足しています。 ex. popup(title, header, Detail/URL)");
+				return "";
+			}else{
+				header = title;
+			}
+		}
+		
+		if(Sass.outofloopFlg.peekFirst()){
+			Sass.makeClass(Mobile_HTML5Env.getClassID(this));
+			Sass.defineGridBasic(Mobile_HTML5Env.getClassID(this), decos);
+			Sass.closeBracket();
+  		}
+		statement += "<div class=\"" + Mobile_HTML5Env.getClassID(this) + "\">";
+
+		if(popupType==1){
+			statement += "<a data-toggle=\"modal\" data-target=\"#myModal"+getCount(popCount)+"\">" + title + "</a>\n";
+		}else if(popupType==2){
+			statement += "<button type=\"button\" class=\"btn btn-info btn-lg\"  data-toggle=\"modal\" data-target=\"#myModal"+getCount(popCount)+"\">" + title + "</button>\n";
+		}else if(popupType==3){
+			statement += "<a data-toggle=\"modal\" data-target=\"#myModal" + getCount(popCount)+"\">" + 
+							"<img src=\"" + title + "\" class=\"img-responsive\">" + 
+						"</a>\n";
+		}
+		
+		statement += "<div class=\"modal fade\" id=\"myModal"+ getCount(popCount) +"\" role=\"dialog\">\n"
+					+ "<div class=\"modal-dialog\">\n"
+						+ "<div class=\"modal-content\">\n"
+							+ "<div class=\"modal-header\">\n"
+								+ "<button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\n"
+								+ "<h4 class=\"modal-title\">" + header + "</h4>\n"
+							+ "</div>";
+		
+		if(!isImage(detailORurl)){
+			//string
+			statement += "<div class=\"modal-body\">\n"
+						+ "<p>" + detailORurl + "<p>\n"
+						+ "</div>\n";
+		}else{
+			//imageFile
+			statement += "<div class=\"modal-body\">\n"
+					+ "<img src=\"" + detailORurl + "\" class=\"img-responsive\">\n"
+					+ "</div>\n";
+		}
+		
+		statement += "</div>\n" +
+				"</div>\n" + 
+				"</div>\n" +
+				"</div>\n";
+
+    	popCount++;
+    	return statement;
+    }
+    
 	private String getPopupTitle(String title, String defaultTitle, int popupType) {
     	title = (!title.equals(""))? title : defaultTitle ;
     	if(popupType==3){	//popup image
