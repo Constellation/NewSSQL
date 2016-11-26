@@ -140,6 +140,30 @@ public class WebEnv extends LocalEnv {
 			borderFlag = true;
 		}
 		
+		// border-top
+		if (decos.containsKey("border-top")) {
+			String str = stringsub(decos.getStr("border-top"));
+			cssbuf.append("\tborder-top: " + str + ";\n");
+		}
+		
+		// border-right
+		if (decos.containsKey("border-right")) {
+			String str = stringsub(decos.getStr("border-right"));
+			cssbuf.append("\tborder-right: " + str + ";\n");
+		}
+		
+		// border-bottom
+		if (decos.containsKey("border-bottom")) {
+			String str = stringsub(decos.getStr("border-bottom"));
+			cssbuf.append("\tborder-bottom: " + str + ";\n");
+		}
+		
+		// border-left
+		if (decos.containsKey("border-left")) { // TODO
+			String str = stringsub(decos.getStr("border-left"));
+			cssbuf.append("\tborder-left: " + str + ";\n");
+		}
+		
 		// border-collapse (only table element)
 		if (decos.containsKey("border-collapse")) { // TODO
 			String str = stringsub(decos.getStr("border-collapse"));

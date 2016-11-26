@@ -2,6 +2,7 @@ package supersql.codegenerator.Mobile_HTML5;
 
 import supersql.codegenerator.Attribute;
 import supersql.codegenerator.Connector;
+import supersql.codegenerator.Decorator;
 import supersql.codegenerator.Factory;
 import supersql.codegenerator.Function;
 import supersql.codegenerator.Grouper;
@@ -85,6 +86,11 @@ public class Mobile_HTML5Factory extends Factory {
 	@Override
 	public Attribute createAttribute(Manager manager) {
 		return new Mobile_HTML5Attribute(manager, html_env,html_env2);
+	}
+	
+	@Override
+	public Decorator createDecoration(Manager manager) {
+		return new Mobile_HTML5Decoration(manager, html_env,html_env2);
 	}
 
 	@Override
