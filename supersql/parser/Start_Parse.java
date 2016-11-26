@@ -527,15 +527,16 @@ public class Start_Parse {
 					list_table = set_fromInfo();
 
 //					after_from = b.substring(b.toLowerCase().indexOf("from") + 4).trim();
-					after_from = getText( list_from_where, ruleNames );
-					Log.info( getText( list_from_where, ruleNames ) );
+					String from1 = getText( list_from_where, ruleNames );
+					after_from = from1.substring(from1.toLowerCase().indexOf("from") + 4);
+//					Log.info( getText( list_from_where, ruleNames ) );
 					String from = new String();
 					while(after_from.contains("/*")){
 						from = after_from.substring(0, after_from.indexOf("/*"));
 						from += after_from.substring(after_from.indexOf("*/") +2);
 						after_from = from;
 					}
-
+					Log.info(after_from);
 					processKeywords(after_from);
 
 				}
