@@ -67,35 +67,47 @@ public class WebC1 extends Connector {
 				webEnv.code.append("<li>\n");
 			} else if (webEnv.decorationStartFlag) {
 				WebDecoration.divFront.append("<div class=\"");
-//				WebDecoration.divEnd.append(WebEnv.getClassID(this));
 				WebDecoration.divEnd.append(classname);
+				if (WebEnv.style != null) {
+					WebDecoration.divEnd.append(" style-row");
+				}
 				WebDecoration.divEnd.append(" row\">\n");
 				webEnv.decorationStartFlag = false;
 			} else if (webEnv.decorationFlag) {
 				WebDecoration.divEnd.append("<div class=\"");
-//				WebDecoration.divEnd.append(WebEnv.getClassID(this));
 				WebDecoration.divEnd.append(classname);
+				if (WebEnv.style != null) {
+					WebDecoration.divEnd.append(" style-row");
+				}
 				WebDecoration.divEnd.append(" row\">\n");
 			} else {
 				webEnv.code.append("<div class=\"");
-//				webEnv.code.append(WebEnv.getClassID(this));
 				webEnv.code.append(classname);
+				if (WebEnv.style != null) {
+					webEnv.code.append(" style-row");
+				}
 				webEnv.code.append(" row\">\n");
 			}
 			if (webEnv.tableFlag) { // table
 				webEnv.code.append("<table class=\"");
-//				webEnv.code.append(WebEnv.getClassID(this));
 				webEnv.code.append(classname);
+				if (WebEnv.style != null) {
+					webEnv.code.append(" style-table-row");
+				}
 				webEnv.code.append(" row\"><tr>\n");
 			} else if (webEnv.listUlFlag) { // list-ul
 				webEnv.code.append("<ul class=\"");
-//				webEnv.code.append(WebEnv.getClassID(this));
 				webEnv.code.append(classname);
+				if (WebEnv.style != null) {
+					webEnv.code.append(" style-list-row");
+				}
 				webEnv.code.append(" row\">\n");
 			} else if (webEnv.listOlFlag) { // list-ol
 				webEnv.code.append("<ol class=\"");
-//				webEnv.code.append(WebEnv.getClassID(this));
 				webEnv.code.append(classname);
+				if (WebEnv.style != null) {
+					webEnv.code.append(" style-list-row");
+				}
 				webEnv.code.append(" row\">\n");
 			}
 		}

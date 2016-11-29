@@ -37,30 +37,40 @@ public class WebAttribute extends Attribute {
 		// HTMLコード書き込み
 		if (webEnv.tableFlag) {
 			webEnv.code.append("<td class=\"");
-//			webEnv.code.append(WebEnv.getClassID(this));
 			webEnv.code.append(classname);
+			if (WebEnv.style != null) {
+				webEnv.code.append(" style-table-att");
+			}
 			webEnv.code.append(" att\">");
 		} else if (webEnv.listUlFlag || webEnv.listOlFlag) {
 			webEnv.code.append("<li class=\"");
-//			webEnv.code.append(WebEnv.getClassID(this));
 			webEnv.code.append(classname);
+			if (WebEnv.style != null) {
+				webEnv.code.append(" style-list-att");
+			}
 			webEnv.code.append(" att\">");
 		} else if (webEnv.decorationEndFlag) {
 			// nothing
 		} else if (webEnv.decorationStartFlag) {
 			WebDecoration.divFront.append("<div class=\"");
-//			WebDecoration.divEnd.append(WebEnv.getClassID(this));
 			WebDecoration.divEnd.append(classname);
+			if (WebEnv.style != null) {
+				WebDecoration.divEnd.append(" style-att");
+			}
 			WebDecoration.divEnd.append(" att\">");
 		} else if (webEnv.decorationFlag) {
 			WebDecoration.divEnd.append("<div class=\"");
-//			WebDecoration.divEnd.append(WebEnv.getClassID(this));
 			WebDecoration.divEnd.append(classname);
+			if (WebEnv.style != null) {
+				WebDecoration.divEnd.append(" style-att");
+			}
 			WebDecoration.divEnd.append(" att\">");
 		} else {
 			webEnv.code.append("<div class=\"");
-//			webEnv.code.append(WebEnv.getClassID(this));
 			webEnv.code.append(classname);
+			if (WebEnv.style != null) {
+				webEnv.code.append(" style-att");
+			}
 			webEnv.code.append(" att\">");
 		}
 		

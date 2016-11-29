@@ -66,35 +66,47 @@ public class WebC2 extends Connector{
 				webEnv.code.append("<li>\n");
 			} else if (webEnv.decorationStartFlag) {
 				WebDecoration.divFront.append("<div class=\"");
-//				WebDecoration.divEnd.append(WebEnv.getClassID(this));
 				WebDecoration.divEnd.append(classname);
+				if (WebEnv.style != null) {
+					WebDecoration.divEnd.append(" style-col");
+				}
 				WebDecoration.divEnd.append(" col\">\n");
 				webEnv.decorationStartFlag = false;
 			} else if (webEnv.decorationFlag) {
 				WebDecoration.divEnd.append("<div class=\"");
-//				WebDecoration.divEnd.append(WebEnv.getClassID(this));
 				WebDecoration.divEnd.append(classname);
+				if (WebEnv.style != null) {
+					WebDecoration.divEnd.append(" style-col");
+				}
 				WebDecoration.divEnd.append(" col\">\n");
 			} else {
 				webEnv.code.append("<div class=\"");
-//				webEnv.code.append(WebEnv.getClassID(this));
 				webEnv.code.append(classname);
+				if (WebEnv.style != null) {
+					webEnv.code.append(" style-col");
+				}
 				webEnv.code.append(" col\">\n");
 			}
 			if (webEnv.tableFlag) { // table
 				webEnv.code.append("<table class=\"");
-//				webEnv.code.append(WebEnv.getClassID(this));
 				webEnv.code.append(classname);
+				if (WebEnv.style != null) {
+					webEnv.code.append(" style-table-col");
+				}
 				webEnv.code.append(" col\">\n");
 			} else if (webEnv.listUlFlag) { // list-ul
 				webEnv.code.append("<ul class=\"");
-//				webEnv.code.append(WebEnv.getClassID(this));
 				webEnv.code.append(classname);
+				if (WebEnv.style != null) {
+					webEnv.code.append(" style-list-col");
+				}
 				webEnv.code.append(" col\">\n");
 			} else if (webEnv.listOlFlag) { // list-ol
 				webEnv.code.append("<ol class=\"");
-//				webEnv.code.append(WebEnv.getClassID(this));
 				webEnv.code.append(classname);
+				if (WebEnv.style != null) {
+					webEnv.code.append(" style-list-col");
+				}
 				webEnv.code.append(" col\">\n");
 			}
 		}
