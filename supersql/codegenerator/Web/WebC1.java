@@ -65,21 +65,24 @@ public class WebC1 extends Connector {
 				webEnv.code.append("<td>\n");
 			} else if (listul_event || listol_event) {
 				webEnv.code.append("<li>\n");
-			} else if (webEnv.decorationStartFlag) {
-				WebDecoration.divFront.append("<div class=\"");
-				WebDecoration.divEnd.append(classname);
-				if (WebEnv.style != null) {
-					WebDecoration.divEnd.append(" style-row");
+			} else if (webEnv.decorationStartFlag.size() > 0) {
+				if (webEnv.decorationStartFlag.get(0)) {
+					WebDecoration.divFront.get(0).append("<div");
+					WebDecoration.divclass.get(0).append(" class=\"");
+					WebDecoration.divEnd.get(0).append(classname);
+					if (WebEnv.style != null) {
+						WebDecoration.divEnd.get(0).append(" style-row");
+					}
+					WebDecoration.divEnd.get(0).append(" row\">\n");
+					webEnv.decorationStartFlag.set(0, false);
+				} else {
+					WebDecoration.divEnd.get(0).append("<div class=\"");
+					WebDecoration.divEnd.get(0).append(classname);
+					if (WebEnv.style != null) {
+						WebDecoration.divEnd.get(0).append(" style-row");
+					}
+					WebDecoration.divEnd.get(0).append(" row\">\n");
 				}
-				WebDecoration.divEnd.append(" row\">\n");
-				webEnv.decorationStartFlag = false;
-			} else if (webEnv.decorationFlag) {
-				WebDecoration.divEnd.append("<div class=\"");
-				WebDecoration.divEnd.append(classname);
-				if (WebEnv.style != null) {
-					WebDecoration.divEnd.append(" style-row");
-				}
-				WebDecoration.divEnd.append(" row\">\n");
 			} else {
 				webEnv.code.append("<div class=\"");
 				webEnv.code.append(classname);
@@ -152,8 +155,13 @@ public class WebC1 extends Connector {
 			webEnv.code.append("</td>\n");
 		} else if (listul_event || listol_event) {
 			webEnv.code.append("</li>\n");
-		} else if (webEnv.decorationFlag) {
-			WebDecoration.divEnd.append("</div>\n");
+		} else if (webEnv.decorationStartFlag.size() > 0) {
+			if (webEnv.decorationStartFlag.get(0)) {
+				WebDecoration.divEnd.get(0).append("</div>\n");
+				webEnv.decorationStartFlag.set(0, false);
+			} else {
+				WebDecoration.divEnd.get(0).append("</div>\n");
+			}
 		} else {
 			webEnv.code.append("</div>\n");
 		}

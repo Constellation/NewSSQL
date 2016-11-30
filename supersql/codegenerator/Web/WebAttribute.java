@@ -49,22 +49,25 @@ public class WebAttribute extends Attribute {
 				webEnv.code.append(" style-list-att");
 			}
 			webEnv.code.append(" att\">");
-		} else if (webEnv.decorationEndFlag) {
-			// nothing
-		} else if (webEnv.decorationStartFlag) {
-			WebDecoration.divFront.append("<div class=\"");
-			WebDecoration.divEnd.append(classname);
-			if (WebEnv.style != null) {
-				WebDecoration.divEnd.append(" style-att");
+		} else if (webEnv.decorationStartFlag.size() > 0) {
+			if (webEnv.decorationEndFlag.get(0)) {
+				// nothing
+			} else if (webEnv.decorationStartFlag.get(0)) {
+				WebDecoration.divFront.get(0).append("<div");
+				WebDecoration.divclass.get(0).append(" class=\"");
+				WebDecoration.divEnd.get(0).append(classname);
+				if (WebEnv.style != null) {
+					WebDecoration.divEnd.get(0).append(" style-att");
+				}
+				WebDecoration.divEnd.get(0).append(" att\">");
+			} else {
+				WebDecoration.divEnd.get(0).append("<div class=\"");
+				WebDecoration.divEnd.get(0).append(classname);
+				if (WebEnv.style != null) {
+					WebDecoration.divEnd.get(0).append(" style-att");
+				}
+				WebDecoration.divEnd.get(0).append(" att\">");
 			}
-			WebDecoration.divEnd.append(" att\">");
-		} else if (webEnv.decorationFlag) {
-			WebDecoration.divEnd.append("<div class=\"");
-			WebDecoration.divEnd.append(classname);
-			if (WebEnv.style != null) {
-				WebDecoration.divEnd.append(" style-att");
-			}
-			WebDecoration.divEnd.append(" att\">");
 		} else {
 			webEnv.code.append("<div class=\"");
 			webEnv.code.append(classname);
@@ -96,11 +99,19 @@ public class WebAttribute extends Attribute {
 		Log.out("replace data = " + data);
 		// webEnv.code.append(this.getStr(data_info));
 
-		if (webEnv.decorationEndFlag) {
-			WebEnv.cssClass.add(data);
-			WebDecoration.divclass.append(data + " ");
-		} else if (webEnv.decorationFlag) {
-			WebDecoration.divEnd.append(data);
+		if (webEnv.decorationEndFlag.size() > 0) {
+			if (webEnv.decorationEndFlag.get(0)) {
+				String property = webEnv.decorationProperty.get(0).get(0);
+				if (property.equals("class")) {
+					WebEnv.cssClass.add(data);
+					WebDecoration.divclass.get(0).append(data + " ");
+				} else {
+					WebDecoration.divStyle.get(0).append(property + ":" + data + ";");
+				}
+				webEnv.decorationProperty.get(0).remove(0);
+			} else {
+				WebDecoration.divEnd.get(0).append(data);
+			}
 		} else {
 			webEnv.code.append(data);
 		}
@@ -116,13 +127,15 @@ public class WebAttribute extends Attribute {
 			webEnv.code.append("</td>\n");
 		} else if (webEnv.listUlFlag || webEnv.listOlFlag) {
 			webEnv.code.append("</li>\n");
-		} else if (webEnv.decorationEndFlag) {
-			// nothing
-		} else if (webEnv.decorationStartFlag) {
-			WebDecoration.divEnd.append("</div>\n");
-			webEnv.decorationStartFlag = false;
-		} else if (webEnv.decorationFlag) {
-			WebDecoration.divEnd.append("</div>\n");
+		} else if (webEnv.decorationEndFlag.size() > 0) {
+			if (webEnv.decorationEndFlag.get(0)) {
+				// nothing
+			} else if (webEnv.decorationStartFlag.get(0)) {
+				WebDecoration.divEnd.get(0).append("</div>\n");
+				webEnv.decorationStartFlag.set(0, false);
+			} else {
+				WebDecoration.divEnd.get(0).append("</div>\n");
+			}
 		} else {
 			webEnv.code.append("</div>\n");
 		}

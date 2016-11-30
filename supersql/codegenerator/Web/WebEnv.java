@@ -36,9 +36,12 @@ public class WebEnv extends LocalEnv {
 	public static StringBuffer css;
 	public static ArrayList<String> cssClass = new ArrayList<String>();
 //	public String decorateAttribute = null;
-	public boolean decorationFlag = false;
-	public boolean decorationStartFlag = false;
-	public boolean decorationEndFlag = false;
+//	public boolean decorationFlag = false;
+	public ArrayList<ArrayList<String>> decorationProperty = new ArrayList<ArrayList<String>>();
+//	public boolean decorationStartFlag = false;
+	public ArrayList<Boolean> decorationStartFlag = new ArrayList<Boolean>();
+//	public boolean decorationEndFlag = false;
+	public ArrayList<Boolean> decorationEndFlag = new ArrayList<Boolean>();
 	public String fileName;
 	public StringBuffer footer;
 	public static boolean footerFlag = false;
@@ -63,9 +66,34 @@ public class WebEnv extends LocalEnv {
 		new Document("");
 	}
 	
-	public void append_css_def_att(String classid, DecorateList decos) {
+	public void append_css_def_att(String classid, DecorateList decolist) {
+		DecorateList decos = new DecorateList();
+		for (String key : decolist.keySet()) {
+			decos.put(key, decolist.get(key));
+		}
+		
 		Log.out("[Web append_css_def_att] classid = " + classid);
 		Log.out("decos = " + decos);
+		
+		if (decorationStartFlag.size() > 0) {
+//			if (decorationStartFlag && !decorationEndFlag) {
+			if (decorationStartFlag.get(0) && !decorationEndFlag.get(0)) {
+//				decorationProperty = new ArrayList<String>();
+				for (String key : decos.keySet()) {
+					Log.out("decos-[" + key + "] -> " + decos.get(key).toString());
+					if (!(decos.get(key).toString().startsWith("\"") && decos.get(key).toString().endsWith("\""))
+							&& !(decos.get(key).toString().startsWith("\'") && decos.get(key).toString().endsWith("\'"))) {
+//						decorationProperty.add(0, key);
+						decorationProperty.get(0).add(0, key);
+					}
+				}
+//				for (int i = 0; i < decorationProperty.size(); i++) {
+				for (int i = 0; i < decorationProperty.get(0).size(); i++) {
+					Log.out("decos property [" + i + "] -> " + decorationProperty.get(0).get(i));
+					decos.remove(decorationProperty.get(0).get(i));
+				}
+			}
+		}
 		
 		haveClass = 0;
 		if (writtenClassId.contains(classid)) {
