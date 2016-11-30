@@ -529,7 +529,7 @@ public class CodeGenerator {
 		String iterator = new String();
 		int dim = 0;
 		TFE operand1 = read_attribute((ExtList)operand.get(1));
-
+		
 		if(operand.get(operand.size() - 1).toString().equals("%")){
 			dim = 3;
 		}else if(operand.get(operand.size() - 1).toString().equals("!")){
