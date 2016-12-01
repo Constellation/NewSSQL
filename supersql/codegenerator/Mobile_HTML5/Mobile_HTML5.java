@@ -9,6 +9,7 @@ import java.io.PrintWriter;
 import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.TFE;
+import supersql.common.Log;
 import supersql.extendclass.ExtList;
 import supersql.parser.Start_Parse;
 
@@ -58,6 +59,18 @@ public class Mobile_HTML5 {
 		}
 		return true;
 	}
+	public static boolean whileProcess1_1(String symbol, DecorateList decos, Mobile_HTML5Env html_env, ExtList data, ExtList data_info, ITFE tfe, ExtList<TFE> tfes, int tfeItems){
+		//while process 1 (while内の処理1)
+		//Attribute: decos, html_env, data_info
+		//C1, C2:    decos, html_env, data, data_info, tfe, tfes, tfeItems
+		//G1, G2:    decos, html_env, data, data_info, tfe
+		if(symbol.contains("G1") || symbol.contains("G2")){
+        	if(Mobile_HTML5.gLevel<=1){
+        		Mobile_HTML5_dynamic.dyamicWhileCount0++;
+        	}
+		}
+		return true;
+	}
 	public static boolean whileProcess1(String symbol, DecorateList decos, Mobile_HTML5Env html_env, ExtList data, ExtList data_info, ITFE tfe, ExtList<TFE> tfes, int tfeItems){
 		//while process 1 (while内の処理1)
 		//Attribute: decos, html_env, data_info
@@ -86,12 +99,25 @@ public class Mobile_HTML5 {
 		//C1, C2:    decos, html_env, data, data_info, tfe, tfes, tfeItems
 		//G1, G2:    decos, html_env, data, data_info, tfe
 //		if(symbol.contains("G1") || symbol.contains("G2")){
+//			Log.i(Mobile_HTML5_dynamic.dynamicCount);
+//			Mobile_HTML5_dynamic.dynamicCount--;
+//		}
+//		if(symbol.contains("G1") || symbol.contains("G2")){
 //			//added by goto 20161112 for dynamic foreach
 ////            if(Mobile_HTML5G3.G3){
 ////            	Mobile_HTML5G3.G3_while_i++;
 ////                //Log.i(Mobile_HTML5G3.G3_while_i);
 ////            }
 //		}
+		
+		if(symbol.contains("G1") || symbol.contains("G2")){
+	        if(Mobile_HTML5_dynamic.dynamicDisplay && Mobile_HTML5.gLevel<=1){
+	    		Mobile_HTML5_dynamic.dyamicWhileCount0--;
+	        }
+	        if(Mobile_HTML5_dynamic.dynamicDisplay && Mobile_HTML5_dynamic.dyamicWhileCount0<1){
+	        	return false;
+	        }
+		}
 		return true;
 	}
 	public static boolean afterWhileProcess(String symbol, String tfeID, DecorateList decos, Mobile_HTML5Env html_env){
@@ -123,6 +149,11 @@ public class Mobile_HTML5 {
 			Mobile_HTML5_form.formStringGetProcess(symbol, decos, html_env);
 			Mobile_HTML5_form.formProcess(symbol, decos, html_env);
 		}
+		
+//		if(symbol.contains("G1") || symbol.contains("G2")){
+//			Log.i(Mobile_HTML5_dynamic.dynamicCount);
+//			Mobile_HTML5_dynamic.dynamicCount--;
+//		}
 		
 		//Post-process (後処理)
 		Mobile_HTML5_show.showCloseProcess(decos, html_env);

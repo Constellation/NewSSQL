@@ -69,37 +69,51 @@ public class WebG1 extends Grouper {
 				webEnv.code.append("<td>\n");
 			} else if (listul_event || listol_event) {
 				webEnv.code.append("<li>\n");
-			} else if (webEnv.decorationStartFlag) {
-				WebDecoration.divFront.append("<div class=\"");
-//				WebDecoration.divEnd.append(WebEnv.getClassID(this));
-				WebDecoration.divEnd.append(classname);
-				WebDecoration.divEnd.append(" row\">\n");
-				webEnv.decorationStartFlag = false;
-			} else if (webEnv.decorationFlag) {
-				WebDecoration.divEnd.append("<div class=\"");
-//				WebDecoration.divEnd.append(WebEnv.getClassID(this));
-				WebDecoration.divEnd.append(classname);
-				WebDecoration.divEnd.append(" row\">\n");
+			} else if (webEnv.decorationStartFlag.size() > 0) {
+				if (webEnv.decorationStartFlag.get(0)) {
+					WebDecoration.divFront.get(0).append("<div class=\"");
+					WebDecoration.divEnd.get(0).append(classname);
+					if (WebEnv.style != null) {
+						WebDecoration.divEnd.get(0).append(" style-row");
+					}
+					WebDecoration.divEnd.get(0).append(" row\">\n");
+					webEnv.decorationStartFlag.set(0, false);
+				} else {
+					WebDecoration.divEnd.get(0).append("<div class=\"");
+					WebDecoration.divEnd.get(0).append(classname);
+					if (WebEnv.style != null) {
+						WebDecoration.divEnd.get(0).append(" style-row");
+					}
+					WebDecoration.divEnd.get(0).append(" row\">\n");
+				}
 			} else {
 				webEnv.code.append("<div class=\"");
-//				webEnv.code.append(WebEnv.getClassID(this));
 				webEnv.code.append(classname);
+				if (WebEnv.style != null) {
+					webEnv.code.append(" style-row");
+				}
 				webEnv.code.append(" row\">\n");
 			}
 			if (webEnv.tableFlag) { // table
 				webEnv.code.append("<table class=\"");
-//				webEnv.code.append(WebEnv.getClassID(this));
 				webEnv.code.append(classname);
+				if (WebEnv.style != null) {
+					webEnv.code.append(" style-table-row");
+				}
 				webEnv.code.append(" row\"><tr>\n");
 			} else if (webEnv.listUlFlag) { // list-ul
 				webEnv.code.append("<ul class=\"");
-//				webEnv.code.append(WebEnv.getClassID(this));
 				webEnv.code.append(classname);
+				if (WebEnv.style != null) {
+					webEnv.code.append(" style-list-row");
+				}
 				webEnv.code.append(" row\">\n");
 			} else if (webEnv.listOlFlag) { // list-ol
 				webEnv.code.append("<ol class=\"");
-//				webEnv.code.append(WebEnv.getClassID(this));
 				webEnv.code.append(classname);
+				if (WebEnv.style != null) {
+					webEnv.code.append(" style-list-row");
+				}
 				webEnv.code.append(" row\">\n");
 			}
 		}
@@ -115,8 +129,10 @@ public class WebG1 extends Grouper {
 				if ((count % i) == 0) {
 					webEnv.code.append("</div>\n");
 					webEnv.code.append("<div class=\"");
-//					webEnv.code.append(WebEnv.getClassID(this));
 					webEnv.code.append(classname);
+					if (WebEnv.style != null) {
+						webEnv.code.append(" style-row");
+					}
 					webEnv.code.append(" row\">\n");
 				}
 			}
@@ -151,8 +167,9 @@ public class WebG1 extends Grouper {
 			webEnv.code.append("</td>\n");
 		} else if (listul_event || listol_event) {
 			webEnv.code.append("</li>\n");
-		} else if (webEnv.decorationFlag) {
-			WebDecoration.divEnd.append("</div>\n");
+//		} else if (webEnv.decorationFlag) {
+		} else if (webEnv.decorationStartFlag.size() > 0) {
+			WebDecoration.divEnd.get(0).append("</div>\n");
 		} else {
 			webEnv.code.append("</div>\n");
 		}

@@ -64,7 +64,7 @@ public class WebFunction extends Function {
 		
 		// line関数の発動
 		if (FuncName.equalsIgnoreCase("line")) {
-			Func_line();
+			Func_line(classname);
 		}
 
 		// null関数の発動
@@ -92,7 +92,7 @@ public class WebFunction extends Function {
 		webEnv.code.append(title);
 		webEnv.code.append("</div>\n");
 		
-		webEnv.footerFlag = true;
+		WebEnv.footerFlag = true;
 	}
 	
 	// header関数
@@ -106,7 +106,7 @@ public class WebFunction extends Function {
 		webEnv.code.append(title);
 		webEnv.code.append("</div>\n");
 		
-		webEnv.headerFlag = true;
+		WebEnv.headerFlag = true;
 	}
 	
 	// image関数
@@ -122,8 +122,10 @@ public class WebFunction extends Function {
 			webEnv.code.append("<td>\n");
 		}
 		webEnv.code.append("<img class=\"");
-//		webEnv.code.append(WebEnv.getClassID(this));
 		webEnv.code.append(classname);
+		if (WebEnv.style != null) {
+			webEnv.code.append(" style-img");
+		}
 		webEnv.code.append(" att\" src=\"" + path + "\">\n");
 		if (webEnv.tableFlag) {
 			webEnv.code.append("</td>\n");
@@ -131,26 +133,41 @@ public class WebFunction extends Function {
 	}
 	
 	// line関数
-	protected void Func_line() {
+	protected void Func_line(String classname) {
 		try {
 			FuncArg arg1 = (FuncArg) this.Args.get(0);
 			try { // 引数2つ(色と太さ)
 				FuncArg arg2 = (FuncArg) this.Args.get(1);
 				String color = arg1.getStr();
 				String size = arg2.getStr();
-				webEnv.code.append("<hr width=\"100%\" color=\"");
+				webEnv.code.append("<hr class=\"");
+				webEnv.code.append(classname);
+				if (WebEnv.style != null) {
+					webEnv.code.append(" style-line");
+				}
+				webEnv.code.append("\" width=\"100%\" color=\"");
 				webEnv.code.append(color);
 				webEnv.code.append("\" size=\"");
 				webEnv.code.append(size);
 				webEnv.code.append("\">\n");
 			} catch (Exception e) { // 引数1つ(色のみ)
 				String color = arg1.getStr();
-				webEnv.code.append("<hr width=\"100%\" color=\"");
+				webEnv.code.append("<hr class=\"");
+				webEnv.code.append(classname);
+				if (WebEnv.style != null) {
+					webEnv.code.append(" style-line");
+				}
+				webEnv.code.append("\" width=\"100%\" color=\"");
 				webEnv.code.append(color);
 				webEnv.code.append("\">\n");
 			}
 		} catch (Exception e) { // 引数なし(デフォルト)
-			webEnv.code.append("<hr width=\"100%\" color=\"#000000\" size=\"10\">");
+			webEnv.code.append("<hr class=\"");
+			webEnv.code.append(classname);
+			if (WebEnv.style != null) {
+				webEnv.code.append(" style-line");
+			}
+			webEnv.code.append("\" width=\"100%\" color=\"#000000\" size=\"10\">");
 		}
 	}
 	
@@ -184,17 +201,29 @@ public class WebFunction extends Function {
 			// HTMLに書き込み
 			if (webEnv.tableFlag) {
 				webEnv.code.append("<td class=\"");
-//				webEnv.code.append(WebEnv.getClassID(this));
 				webEnv.code.append(classname);
+				if (WebEnv.style != null) {
+					webEnv.code.append(" style-table-att");
+				}
 				webEnv.code.append(" att\">");
 			} else {
 				webEnv.code.append("<div class=\"");
-//				webEnv.code.append(WebEnv.getClassID(this));
 				webEnv.code.append(classname);
+				if (WebEnv.style != null) {
+					webEnv.code.append(" style-att");
+				}
 				webEnv.code.append(" att\">");
 			}
-			webEnv.code.append("<a href=\"" + url + "\">");
-			webEnv.code.append("<img src=\"" + path + "\"></a>");
+			webEnv.code.append("<a");
+			if (WebEnv.style != null) {
+				webEnv.code.append(" class=\"style-anchor\"");
+			}
+			webEnv.code.append(" href=\"" + url + "\">");
+			webEnv.code.append("<img");
+			if (WebEnv.style != null) {
+				webEnv.code.append(" class=\"style-img\"");
+			}
+			webEnv.code.append(" src=\"" + path + "\"></a>");
 			if (webEnv.tableFlag) {
 				webEnv.code.append("</td>\n");
 			} else {
@@ -207,16 +236,24 @@ public class WebFunction extends Function {
 			// HTMLに書き込み
 			if (webEnv.tableFlag) {
 				webEnv.code.append("<td class=\"");
-//				webEnv.code.append(WebEnv.getClassID(this));
 				webEnv.code.append(classname);
+				if (WebEnv.style != null) {
+					webEnv.code.append(" style-table-att");
+				}
 				webEnv.code.append(" att\">");
 			} else {
 				webEnv.code.append("<div class=\"");
-//				webEnv.code.append(WebEnv.getClassID(this));
 				webEnv.code.append(classname);
+				if (WebEnv.style != null) {
+					webEnv.code.append(" style-att");
+				}
 				webEnv.code.append(" att\">");
 			}
-			webEnv.code.append("<a href=\"" + url + "\">" + name + "</a>");
+			webEnv.code.append("<a");
+			if (WebEnv.style != null) {
+				webEnv.code.append(" class=\"style-anchor\"");
+			}
+			webEnv.code.append(" href=\"" + url + "\">" + name + "</a>");
 			if (webEnv.tableFlag) {
 				webEnv.code.append("</td>\n");
 			} else {
