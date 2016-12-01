@@ -931,4 +931,19 @@ public class GlobalEnv {
 	    Matcher m = p.matcher(val);
 	    return m.find();
 	}
+
+	private static boolean c_tab_flag = false;
+	
+	// tbt embed
+	public static void setCtabflag(){
+		c_tab_flag = true;
+	}
+	public static void unsetCtabflag(){
+		c_tab_flag = false;
+	}
+		
+	public static boolean getCtabflag(){
+		return c_tab_flag;
+	}
+
 }

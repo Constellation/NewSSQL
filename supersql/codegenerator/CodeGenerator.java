@@ -13,12 +13,14 @@ import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5;
 import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5Factory;
 import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5_dynamic;
 import supersql.codegenerator.PDF.PDFFactory;
+import supersql.codegenerator.VR.VRFactory;
 import supersql.codegenerator.Web.WebFactory;
 import supersql.codegenerator.X3D.X3DFactory;
 import supersql.common.GlobalEnv;
 import supersql.common.LevenshteinDistance;
 import supersql.common.Log;
 import supersql.common.ParseXML;
+import supersql.ctab.Ctab3;
 import supersql.extendclass.ExtList;
 import supersql.parser.Preprocessor;
 import supersql.parser.Start_Parse;
@@ -79,7 +81,7 @@ public class CodeGenerator {
 		}else if(media.toLowerCase().equals("x3d")){
 			factory = new X3DFactory();
 		}else if(media.toLowerCase().equals("vr") || media.toLowerCase().equals("unity")){
-//			factory = new VRFactory();
+			factory = new VRFactory();
 		}else if(media.toLowerCase().equals("pdf")){
 			factory = new PDFFactory();
 		}else if(media.toLowerCase().equals("php")){	//added by goto 20161104
@@ -354,7 +356,23 @@ public class CodeGenerator {
 					out_sch = grouper(group);
 				}
 				else if( ((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("function") ){
-					out_sch = func_read((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1));
+					String func_name;
+					ExtList fn = new ExtList();
+					fn = (ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1);
+					func_name = ((ExtList)((ExtList)((ExtList)((ExtList)fn.get(0)).get(1)).get(0)).get(1)).get(0).toString();
+					if(func_name.equals("cross_tab")){
+						GlobalEnv env = new GlobalEnv();
+						env.setCtabflag();
+						Ctab3 ctab = new Ctab3();
+						out_sch = read_attribute(ctab.read_tfe(fn));
+						
+////						out_sch = func_read((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).tfe;
+////						System.err.println(tfe_tree);
+//						
+					}else{
+						out_sch = func_read((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1));
+//						out_sch = func_read((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).fnc;
+					}
 				}
 				else if( ((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("sqlfunc") ){
 					String sqlfunc = new String();
@@ -529,7 +547,7 @@ public class CodeGenerator {
 		String iterator = new String();
 		int dim = 0;
 		TFE operand1 = read_attribute((ExtList)operand.get(1));
-
+		
 		if(operand.get(operand.size() - 1).toString().equals("%")){
 			dim = 3;
 		}else if(operand.get(operand.size() - 1).toString().equals("!")){
