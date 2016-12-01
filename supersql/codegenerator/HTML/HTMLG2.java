@@ -35,6 +35,7 @@ public class HTMLG2 extends Grouper implements Serializable {
 	// G2��work�᥽�å�
 	@Override
 	public String work(ExtList data_info) {
+
 		Log.out("------- G2 -------");
 		this.setDataList(data_info);
 
@@ -133,7 +134,7 @@ public class HTMLG2 extends Grouper implements Serializable {
 				html_env.code.append("<TR><TD class=\""
 						+ HTMLEnv.getClassID(tfe) + " nest\">\n");
 			}
-
+			
 			if (decos.containsKey("row") && decos.containsKey("column")) {
 				retFlag = false;
 				pageFlag = true;
@@ -247,7 +248,7 @@ public class HTMLG2 extends Grouper implements Serializable {
 					}
 					html_env2.code.append(">");
 				}
-
+				
 				this.worknextItem();
 
 				// if (html_env.notWrittenClassId.contains(classid)
@@ -328,6 +329,7 @@ public class HTMLG2 extends Grouper implements Serializable {
 							html_env.code.append("class=\"");
 							html_env.code.append("nest\"");
 							html_env.code.append(html_env.getOutlineMode());
+
 							html_env.code.append(">");
 							// }
 						} else {
@@ -339,6 +341,7 @@ public class HTMLG2 extends Grouper implements Serializable {
 							html_env.code.append("nest\"");
 							html_env.code.append(html_env.getOutlineMode());
 							html_env.code.append(">");
+
 						}
 					}
 				}

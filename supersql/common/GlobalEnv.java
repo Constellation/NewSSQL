@@ -11,6 +11,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import supersql.codegenerator.Ehtml;
 import supersql.codegenerator.Incremental;
@@ -920,5 +922,27 @@ public class GlobalEnv {
 	// added by masato 20151128 for execute multiple query in ehtml or incremental
 	public static Integer getQueryNum(){
 		return Integer.parseInt(seek("-querynum"));
+	}
+	
+	//isNumber
+	public static boolean isNumber(String val) {
+		String regex = "^\\-?[0-9]*\\.?[0-9]+$";
+	    Pattern p = Pattern.compile(regex);
+	    Matcher m = p.matcher(val);
+	    return m.find();
+	}
+	
+	private static boolean c_tab_flag = false;
+	
+	// tbt embed
+	public static void setCtabflag(){
+		c_tab_flag = true;
+	}
+	public static void unsetCtabflag(){
+		c_tab_flag = false;
+	}
+		
+	public static boolean getCtabflag(){
+		return c_tab_flag;
 	}
 }

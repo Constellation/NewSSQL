@@ -1,7 +1,5 @@
 package supersql.codegenerator.Mobile_HTML5;
 
-import com.sun.xml.internal.ws.api.ha.StickyFeature;
-
 import supersql.codegenerator.Connector;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.Manager;
@@ -22,7 +20,6 @@ public class Mobile_HTML5C2 extends Connector {
     static boolean tableFlg = false;		//20130314  table
     static boolean table0Flg = false;		//20130325  table0
     static boolean divFlg = false;			//20130326  div
-    
     //���󥹥ȥ饯��
     public Mobile_HTML5C2(Manager manager, Mobile_HTML5Env henv, Mobile_HTML5Env henv2) {
         this.manager = manager;
@@ -240,6 +237,8 @@ public class Mobile_HTML5C2 extends Connector {
             html_env.code = Embed.postProcess(html_env.code);	//goto 20130915-2  "<$  $>"
 
             i++;
+            
+	        Mobile_HTML5.whileProcess2_2(getSymbol(), decos, html_env, data, data_info, tfe, null, -1);
         }	//	/while
         Mobile_HTML5.afterWhileProcess(getSymbol(), classid, decos, html_env);
 

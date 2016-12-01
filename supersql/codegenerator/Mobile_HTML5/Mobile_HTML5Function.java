@@ -26,9 +26,11 @@ import supersql.codegenerator.CodeGenerator;
 import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.FuncArg;
 import supersql.codegenerator.Function;
+import supersql.codegenerator.LinkForeach;
 import supersql.codegenerator.Manager;
 import supersql.codegenerator.Sass;
-import supersql.codegenerator.HTML.HTMLG3;
+import supersql.codegenerator.Compiler.Compiler;
+import supersql.codegenerator.Compiler.PHP.PHP;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.dataconstructor.DataConstructor;
@@ -76,7 +78,7 @@ public class Mobile_HTML5Function extends Function {
 	static boolean textFlg = false;	//20130914  "text"
     
     static String updateFile;
-    
+
 	private boolean link1 = false; //added by goto 20161025 for link1/foreach1
 
     public Mobile_HTML5Function()
@@ -114,7 +116,11 @@ public class Mobile_HTML5Function extends Function {
 				e.printStackTrace();
 			}
         } else if (FuncName.equalsIgnoreCase("sinvoke") || FuncName.equalsIgnoreCase("link")) {
-            Func_sinvoke(data_info);
+            Func_sinvoke(data_info, 1);
+        } else if (FuncName.equalsIgnoreCase("glink")) {	//added by goto 20161109 for plink/glink
+        	Func_sinvoke(data_info, 2);
+        } else if (FuncName.equalsIgnoreCase("plink")) {	//added by goto 20161109 for plink/glink
+        	Func_sinvoke(data_info, 3);
         } else if (FuncName.equalsIgnoreCase("null")) {
             Func_null();
         }
@@ -2319,11 +2325,11 @@ public class Mobile_HTML5Function extends Function {
     static boolean formFileUpload = false;
     private String Func_insert(boolean update, boolean insert_update) {
     	
-    	if(Mobile_HTML5.G2){
+    	if(Mobile_HTML5_form.G2){
     		//for [ form() ]!
     		G2_form = true;
     		G2_form_count++;
-    		//Log.e(Mobile_HTML5.G2_dataQuantity+"  "+G2_form_count);
+    		//Log.e(Mobile_HTML5_form.G2_dataQuantity+"  "+G2_form_count);
     	}
     	
     	String title = "";
@@ -2531,7 +2537,7 @@ public class Mobile_HTML5Function extends Function {
 		    		}
 	    		}
 	    		if(str.contains("notnull"))	notnullFlg[i] = true;
-	    		validationType[i] = Mobile_HTML5.checkFormValidationType(str);	//form validation
+	    		validationType[i] = Mobile_HTML5_form.checkFormValidationType(str);	//form validation
 	    		
 	    		s_array[i] = s_array[i].substring(0,s_array[i].lastIndexOf("@"));
 	    		//Log.i(s_array[i]);
@@ -2921,7 +2927,7 @@ public class Mobile_HTML5Function extends Function {
 								" type=\""+((!hiddenFlg[i])?("text"):("hidden"))+"\"" +
 								" id=\"SSQL_insert"+insertCount+"_words"+(++insertWordCount)+"\"" +
 								" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\"" +
-								" placeholder=\""+s_name_array[i]+"\""+Mobile_HTML5.getFormClass(notnullFlg[i], "")+">" +
+								" placeholder=\""+s_name_array[i]+"\""+Mobile_HTML5_form.getFormClass(notnullFlg[i], "")+">" +
 								""+((!textareaFlg[i])?(""):("</textarea>")) +
 								"</span>"+( (!textareaFlg[i])? "" : "</span>" )+"\n";
 						update_statement += 
@@ -2932,14 +2938,14 @@ public class Mobile_HTML5Function extends Function {
 								" id=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\"" +
 								" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\"" +
 								" "+((!textareaFlg[i])?("value=\""+updateFromValue+"\""):(""))+
-								" placeholder=\""+s_name_array[i]+"\""+Mobile_HTML5.getFormClass(notnullFlg[i], "")+">" +
+								" placeholder=\""+s_name_array[i]+"\""+Mobile_HTML5_form.getFormClass(notnullFlg[i], "")+">" +
 								""+((!textareaFlg[i])?(""):(updateFromValue+"</textarea>")) +
 								"</span>"+( (!textareaFlg[i])? "" : "</span>" )+"\n";
 						//statement += "    <input type=\"text\" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\" placeholder=\""+s_name_array[i]+"\">\n";
 					}else{
-						statement += Mobile_HTML5.getFormValidationString(validationType[i], notnullFlg[i], "SSQL_insert"+insertCount+"_words"+(++insertWordCount), s_name_array[i], updateFromValue, outTitle);
+						statement += Mobile_HTML5_form.getFormValidationString(validationType[i], notnullFlg[i], "SSQL_insert"+insertCount+"_words"+(++insertWordCount), s_name_array[i], updateFromValue, outTitle);
 						update_statement
-						          += Mobile_HTML5.getFormValidationString(validationType[i], notnullFlg[i], "SSQL_insert"+insertCount+"_words"+(insertWordCount), s_name_array[i], updateFromValue, outTitle);
+						          += Mobile_HTML5_form.getFormValidationString(validationType[i], notnullFlg[i], "SSQL_insert"+insertCount+"_words"+(insertWordCount), s_name_array[i], updateFromValue, outTitle);
 					}
 				}
 			}else{
@@ -3629,7 +3635,7 @@ public class Mobile_HTML5Function extends Function {
     //20131127 form
     //result start
     private String Func_result() {
-    	int count = Mobile_HTML5.formCount;
+    	int count = Mobile_HTML5_form.formCount;
     	//if(!Mobile_HTML5.form)	count -= 1;
 	    String s =
 	    	"\n" +
@@ -4718,6 +4724,10 @@ public class Mobile_HTML5Function extends Function {
     	String att = new String();
     	for (int i = 0; i < this.countconnectitem(); i++) {
     		att = att + "_" + this.getAtt(Integer.toString(i));
+    		
+    		//added by goto 20161112 for dynamic foreach
+    		if(PHP.isPHP)
+	    		Mobile_HTML5G3.dynamic_G3_atts.add(""+this.Args.get(i)); //add attribute name
     	}
 		
 		if(!Start_Parse.foreach1Flag){
@@ -4726,7 +4736,7 @@ public class Mobile_HTML5Function extends Function {
 		}else{
 			//added by goto 20161025 for link1/foreach1
 	    	att = URLEncoder.encode(att, "UTF-8");
-	    	String filename = html_env.outfile + att + ".html";
+	    	String filename = html_env.outfile + att + Compiler.getExtension();
 	        html_env.filename = filename;
 		}
         return;
@@ -5218,7 +5228,8 @@ public class Mobile_HTML5Function extends Function {
     }
     //tk end////////////////////////////////////////////////////////////////////////////
 
-    private void Func_sinvoke(ExtList data_info) {
+    //int ltype : 1=link, 2=glink, 3=plink
+    private void Func_sinvoke(ExtList data_info, int ltype) {
 		// link関数の仕様変更　link(att_name, url, value1, value2, ...)
 		String file = this.Args.get(1).toString();
 		if (file.startsWith("\'") || file.startsWith("\"")) {
@@ -5253,40 +5264,53 @@ public class Mobile_HTML5Function extends Function {
 		}
     	
 		if(this.getAtt("action").equals("")){
-		try{
-			if(file.toLowerCase().contains(".sql")){
-				file = file.substring(0, file.indexOf(".sql"));
-			}else if(file.toLowerCase().contains(".ssql")){
-				file = file.substring(0, file.indexOf(".ssql"));
-			}else if(file.toLowerCase().contains(".html")){
-				file = file.substring(0, file.indexOf(".html"));
+			try{
+				if(file.toLowerCase().contains(".sql")){
+					file = file.substring(0, file.indexOf(".sql"));
+				}else if(file.toLowerCase().contains(".ssql")){
+					file = file.substring(0, file.indexOf(".ssql"));
+				}else if(file.toLowerCase().contains(".html")){
+					file = file.substring(0, file.indexOf(".html"));
+				}
+			}catch(Exception e){
+				GlobalEnv.addErr("Error[HTMLFunction]: filename is invalid.");
+				System.err.println("Error[HTMLFunction]: filename is invalid.");
 			}
-		}catch(Exception e){
-			GlobalEnv.addErr("Error[HTMLFunction]: filename is invalid.");
-			System.err.println("Error[HTMLFunction]: filename is invalid.");
-		}
-
-        String filename = new String();
-        if(!this.getAtt("att").equals("")){
-        	if(this.getAtt("att").toLowerCase().startsWith("http://"))
-            	filename = this.getAtt("att");
-        	else if(this.getAtt("att").toLowerCase().endsWith(".html"))
-            	filename = this.getAtt("att");
-            else
-            	filename = file + "_" + this.getAtt("att") + ".html";
-        }else{
-			if(!link1){
-				//added by goto 20161019 for new foreach
-				filename = file+".html?"+att.substring(1);
-			}else{
-				//added by goto 20161025 for link1/foreach1
-	        	filename = file + att + ".html";
-			}
-        }
-
-        filename.replace("\\\\","\\");
-        html_env.linkurl = filename;
-        html_env.sinvoke_flag = true;
+	
+	        String filename = new String();
+	        if(!this.getAtt("att").equals("")){
+	        	if(this.getAtt("att").toLowerCase().startsWith("http://"))
+	            	filename = this.getAtt("att");
+	        	else if(this.getAtt("att").toLowerCase().endsWith(".html"))
+	            	filename = this.getAtt("att");
+	            else
+	            	filename = file + "_" + this.getAtt("att") + ".html";
+	        }else{
+				if(!link1){
+					//added by goto 20161019 for new foreach
+					filename = file;
+					//added by goto 20161109 for plink/glink
+					if(!file.endsWith(".php") && !file.endsWith(".rb") && !file.endsWith(".erb") && !file.endsWith(".jsp"))
+						filename += ".html";
+					if(ltype == 1)
+						filename += "?"+LinkForeach.ID2+"="+att.substring(1);
+					else if(ltype==2 || ltype==3){
+						//<A href="" onclick="ssql_foreach(\'GET\', \'test04_php-foreach.html\', \''.$row1[1].'_'.$row1[2].'_'.$row1[3].'\'); return false;" data-ajax="false" >
+						if(!PHP.isPHP && !Mobile_HTML5_dynamic.dynamicDisplay)
+			        		html_env.plink_glink_onclick = "'"+(ltype==2? "GET" : "POST")+"', '"+filename+"', '"+att.substring(1)+"'";
+			        	else
+			        		html_env.plink_glink_onclick = "\\'"+(ltype==2? "GET" : "POST")+"\\', \\'"+filename+"\\', \\'"+att.substring(1)+"\\'";
+			        	LinkForeach.plink_glink = true;
+			        }
+				}else{
+					//added by goto 20161025 for link1/foreach1
+		        	filename = file + att + ".html";
+				}
+	        }
+	
+	        filename.replace("\\\\","\\");
+	        html_env.linkurl = filename;
+	        html_env.sinvoke_flag = true;
 
 		}else{
 			String filename = new String();
@@ -5421,7 +5445,6 @@ public class Mobile_HTML5Function extends Function {
         }
         else
             this.workAtt("default");
-        //tk//////////////////////////////////////////////////
 
         html_env.sinvoke_flag = false;
         return;
@@ -5472,7 +5495,7 @@ public class Mobile_HTML5Function extends Function {
     
     //20131118 dynamic
     private String getCount(int count){
-    	return count+Mobile_HTML5.getDynamicLabel();
+    	return count+Mobile_HTML5_dynamic.getDynamicLabel();
     }
     
 }

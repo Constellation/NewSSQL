@@ -3,6 +3,7 @@ package supersql.codegenerator.Mobile_HTML5;
 import supersql.codegenerator.Grouper;
 import supersql.codegenerator.Manager;
 import supersql.codegenerator.Sass;
+import supersql.codegenerator.Compiler.Compiler;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
@@ -47,6 +48,8 @@ public class Mobile_HTML5G1 extends Grouper {
     //G1��work�᥽�å�
     @Override
 	public String work(ExtList data_info) {
+    	//if(Mobile_HTML5G3.G3 && Mobile_HTML5G3.G3_while_i>0)  	return null;	//TODO
+    	
     	G1_count++;
     	Mobile_HTML5Attribute.attributeHasWidth = false;
     	
@@ -64,7 +67,7 @@ public class Mobile_HTML5G1 extends Grouper {
         boolean columnFlg = false;
     	if(tableFlg)	numberOfColumns = -1;	//@{table}時のDefault	//20130917  [ ],10@{table}
     	else			numberOfColumns = data_info.size();	//div
-    	if(decos.containsKey("column") && !Mobile_HTML5.dynamicDisplay){
+    	if(decos.containsKey("column") && !Mobile_HTML5_dynamic.dynamicDisplay){
         	try{
             	numberOfColumns = Integer.parseInt(decos.getStr("column").replace("\"", ""));
             	if(numberOfColumns<2){
@@ -82,7 +85,7 @@ public class Mobile_HTML5G1 extends Grouper {
         StringBuffer parentcode = null;
         StringBuffer parentheader = null;
         StringBuffer parentfooter = null;
-        if(decos.containsKey("row") && columnFlg && !Mobile_HTML5.dynamicDisplay){
+        if(decos.containsKey("row") && columnFlg && !Mobile_HTML5_dynamic.dynamicDisplay){
         	row = Integer.parseInt(decos.getStr("row").replace("\"", ""));
         	if(row<1){	//範囲外のとき
         		Log.err("<<Warning>> row指定の範囲は、1〜です。指定された「row="+row+"」は使用できません。");
@@ -223,6 +226,8 @@ public class Mobile_HTML5G1 extends Grouper {
         
         Mobile_HTML5.beforeWhileProcess(getSymbol(), decos, html_env);
         while (this.hasMoreItems()) {
+        	Mobile_HTML5.gLevel++;
+        	
         	Mobile_HTML5Function.glvl = html_env.glevel;	//added by goto 20130914  "SEQ_NUM"
         	
             if(decos.containsKey("table0") || Mobile_HTML5C1.table0Flg || Mobile_HTML5C2.table0Flg || Mobile_HTML5G2.table0Flg)	table0Flg = true;
@@ -238,8 +243,8 @@ public class Mobile_HTML5G1 extends Grouper {
             if(rowFlg){
             	html_env.code = new StringBuffer();
             	html_env.countfile++;
-                html_env.filename = html_env.outfile + "_row" + Mobile_HTML5G2.rowFileNum + "_" + j + ".html";
-                html_env.nextbackfile = html_env.linkoutfile + "_row" + Mobile_HTML5G2.rowFileNum + "_" + j + ".html";
+                html_env.filename = html_env.outfile + "_row" + Mobile_HTML5G2.rowFileNum + "_" + j + Compiler.getExtension();
+                html_env.nextbackfile = html_env.linkoutfile + "_row" + Mobile_HTML5G2.rowFileNum + "_" + j + Compiler.getExtension();
                 html_env.setOutlineMode();
             }
             
@@ -342,6 +347,9 @@ public class Mobile_HTML5G1 extends Grouper {
                 }
                 rowNum++;
             }
+
+	        Mobile_HTML5.whileProcess2_2(getSymbol(), decos, html_env, data, data_info, tfe, null, -1);
+        	Mobile_HTML5.gLevel--;
         }	// /while
 
         //20160527 bootstrap
@@ -406,7 +414,6 @@ public class Mobile_HTML5G1 extends Grouper {
         		}
         	}
         }
-
         if(divFlg)	divFlg = false;		//20130326  div
         
         G1Flg=false;

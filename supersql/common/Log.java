@@ -1,5 +1,4 @@
 package supersql.common;
-
 import supersql.codegenerator.Ehtml;
 import supersql.codegenerator.Incremental;
 

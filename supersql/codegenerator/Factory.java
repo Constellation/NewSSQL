@@ -21,6 +21,7 @@ public class Factory {
 	private void initializeArgs() {
 		args = new Class[3];
 		try {
+			Log.info(getClassPrefix());
 			Class argsClass = Class.forName(getClassPrefix() + "Env");
 			args[0] = Class.forName("supersql.codegenerator.Manager");
 			args[1] = argsClass;
@@ -108,6 +109,7 @@ public class Factory {
 	}
 
 	public Connector createC1(Manager manager) {
+		Log.info("test");
 		try {
 			Constructor connectorConstructor = getConstructor("C1");
 			return (Connector) connectorConstructor.newInstance(manager, getEnv(), getEnv2());

@@ -1,6 +1,5 @@
 package supersql.parser;
 
-
 import java.io.Serializable;
 import java.util.StringTokenizer;
 
