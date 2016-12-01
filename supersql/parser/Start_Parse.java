@@ -242,10 +242,13 @@ public class Start_Parse {
 		} catch (IOException e) {
 			GlobalEnv.addErr("Error[SQLparser]:" + e);
 		}
-//		return query;
 
 		//161109 yhac
-		return Ssedit.getMedia_and_From(query);
+		if (GlobalEnv.isSsedit_autocorrect()) {
+			return Ssedit.getMedia_and_From(query);
+		}else{
+			return query;
+		}
 
 		//parse query
 
