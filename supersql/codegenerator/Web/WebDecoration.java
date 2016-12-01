@@ -14,10 +14,6 @@ public class WebDecoration extends Decorator {
 	private WebEnv webEnv;
 	private WebEnv webEnv2;
 	
-//	public static StringBuffer divFront;
-//	public static StringBuffer divclass;
-//	public static StringBuffer divStyle;
-//	public static StringBuffer divEnd;
 	public static ArrayList<StringBuffer> divFront = new ArrayList<StringBuffer>();
 	public static ArrayList<StringBuffer> divclass = new ArrayList<StringBuffer>();
 	public static ArrayList<StringBuffer> divStyle = new ArrayList<StringBuffer>();
@@ -35,10 +31,6 @@ public class WebDecoration extends Decorator {
 		Log.out("tfes.size = " + tfes.size());
 		Log.out("countconnectitem = " + countconnectitem());
 		
-//		divFront = new StringBuffer();
-//		divclass = new StringBuffer();
-//		divStyle = new StringBuffer();
-//		divEnd = new StringBuffer();
 		StringBuffer Front = new StringBuffer();
 		StringBuffer classname = new StringBuffer();
 		StringBuffer Style = new StringBuffer();
@@ -94,7 +86,7 @@ public class WebDecoration extends Decorator {
 			divEnd.get(1).append(divEnd.get(0));
 		} else {
 			webEnv.code.append(divFront.get(0));
-			if (!divStyle.equals("")) {
+			if (!divStyle.get(0).equals("")) {
 				webEnv.code.append(" style=\"");
 				webEnv.code.append(divStyle.get(0));
 				webEnv.code.append("\"");

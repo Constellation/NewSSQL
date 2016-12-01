@@ -90,40 +90,66 @@ public class HTMLC1 extends Connector implements Serializable {
 			if (decos.containsKey("delete")) {
 				HTMLEnv.setIDU("delete");
 			}
+			
+			String classname;
+			if (this.decos.containsKey("class")) {
+				classname = this.decos.getStr("class");
+			} else {
+				classname = HTMLEnv.getClassID(this);
+			}
 
 			// tk
 			// start///////////////////////////////////////////////////////////////////////
 			htmlEnv.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
 
 			if (!GlobalEnv.isOpt()) {
-				htmlEnv.code
-						.append("<TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
-				htmlEnv.code.append(htmlEnv.tableBorder + "\"");
-				htmlEnv.code.append(htmlEnv.getOutlineMode());
-				/*
-				 * if(decos.containsKey("outborder")){
-				 * html_env.code.append(" noborder ");
-				 * html_env2.code.append(" noborder "); }
-				 */
-				// classid������Ȥ��ˤ�������
-				if (htmlEnv.writtenClassId.contains(HTMLEnv.getClassID(this))) {
-					htmlEnv.code.append(" class=\"");
-					htmlEnv.code.append(HTMLEnv.getClassID(this));
-				}
-
-				if (decos.containsKey("class")) {
-					if (!htmlEnv.writtenClassId.contains(HTMLEnv
-							.getClassID(this))) {
-						htmlEnv.code.append(" class=\"");
+				if (htmlEnv.decorationStartFlag.size() > 0) {
+					if (htmlEnv.decorationStartFlag.get(0)) {
+						HTMLDecoration.fronts.get(0).append("<TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
+						HTMLDecoration.fronts.get(0).append(htmlEnv.tableBorder + "\"");
+						HTMLDecoration.fronts.get(0).append(htmlEnv.getOutlineMode());
+						HTMLDecoration.classes.get(0).append(" class=\"");
+						HTMLDecoration.ends.get(0).append(classname);
+						HTMLDecoration.ends.get(0).append("\"><TR>");
+						htmlEnv.decorationStartFlag.set(0, false);
 					} else {
-						htmlEnv.code.append(" ");
+						HTMLDecoration.ends.get(0).append("<TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
+						HTMLDecoration.ends.get(0).append(htmlEnv.tableBorder + "\"");
+						HTMLDecoration.ends.get(0).append(htmlEnv.getOutlineMode());
+						HTMLDecoration.ends.get(0).append(" class=\"");
+						HTMLDecoration.ends.get(0).append(classname);
+						HTMLDecoration.ends.get(0).append("\"><TR>");
 					}
-					htmlEnv.code.append(decos.getStr("class") + "\" ");
-				} else if (htmlEnv.writtenClassId.contains(HTMLEnv
-						.getClassID(this))) {
-					htmlEnv.code.append("\" ");
+				} else {
+					htmlEnv.code
+							.append("<TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
+					htmlEnv.code.append(htmlEnv.tableBorder + "\"");
+					htmlEnv.code.append(htmlEnv.getOutlineMode());
+					/*
+					 * if(decos.containsKey("outborder")){
+					 * html_env.code.append(" noborder ");
+					 * html_env2.code.append(" noborder "); }
+					 */
+					// classid������Ȥ��ˤ�������
+					if (htmlEnv.writtenClassId.contains(HTMLEnv.getClassID(this))) {
+						htmlEnv.code.append(" class=\"");
+						htmlEnv.code.append(HTMLEnv.getClassID(this));
+					}
+	
+					if (decos.containsKey("class")) {
+						if (!htmlEnv.writtenClassId.contains(HTMLEnv
+								.getClassID(this))) {
+							htmlEnv.code.append(" class=\"");
+						} else {
+							htmlEnv.code.append(" ");
+						}
+						htmlEnv.code.append(decos.getStr("class") + "\" ");
+					} else if (htmlEnv.writtenClassId.contains(HTMLEnv
+							.getClassID(this))) {
+						htmlEnv.code.append("\" ");
+					}
+					htmlEnv.code.append("><TR>");
 				}
-				htmlEnv.code.append("><TR>");
 			}
 
 			// xml
@@ -210,8 +236,13 @@ public class HTMLC1 extends Connector implements Serializable {
 				htmlEnv.cNum++;
 				htmlEnv.xmlDepth++;
 				ITFE tfe = tfes.get(i);
-				htmlEnv.code.append("<TD class=\"" + HTMLEnv.getClassID(tfe)
-						+ " nest\">\n");
+				
+				if (htmlEnv.decorationStartFlag.size() > 0) {
+					HTMLDecoration.ends.get(0).append("<TD class=\"" + classname + " nest\">\n");
+				} else {
+					htmlEnv.code.append("<TD class=\"" + HTMLEnv.getClassID(tfe)
+							+ " nest\">\n");
+				}
 				String classid = HTMLEnv.getClassID(tfe);
 
 				// Log.out("<TD class=\""
@@ -224,9 +255,12 @@ public class HTMLC1 extends Connector implements Serializable {
 				// + 1);
 				// }
 
-				htmlEnv.code.append("</TD>\n");
-				// Log.out("</TD>");
-
+				if (htmlEnv.decorationStartFlag.size() > 0) {
+					HTMLDecoration.ends.get(0).append("</TD>\n");
+				} else {
+					htmlEnv.code.append("</TD>\n");
+					// Log.out("</TD>");
+				}
 				i++;
 				htmlEnv.cNum--;
 				htmlEnv.xmlDepth--;
@@ -245,13 +279,23 @@ public class HTMLC1 extends Connector implements Serializable {
 					HTMLEnv.setSearch(false);
 			}
 
-			htmlEnv.code.append("</TR></TABLE>\n");
+			if (htmlEnv.decorationStartFlag.size() > 0) {
+				if (htmlEnv.decorationStartFlag.get(0)) {
+					HTMLDecoration.ends.get(0).append("</TR></TABLE>\n");
+					htmlEnv.decorationStartFlag.set(0, false);
+				} else {
+					HTMLDecoration.ends.get(0).append("</TR></TABLE>\n");
+				}
+			} else {
+				htmlEnv.code.append("</TR></TABLE>\n");
+			}
 			// Log.out("</TR></TABLE>");
 
 			// Log.out("TFEId = " + HTMLEnv.getClassID(this));
 			// html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
 			// System.out.println("</Connector" + htmlEnv.cNum + ">");
 			// htmlEnv.xmlCode.append("</Connector" + htmlEnv.cNum + ">\n");
+			Log.out("+++++++ C1 +++++++");
 			return null;
 		}
 	}

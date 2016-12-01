@@ -4,6 +4,7 @@ import java.io.File;
 
 import supersql.codegenerator.Attribute;
 import supersql.codegenerator.Manager;
+import supersql.codegenerator.Modifier;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
@@ -102,11 +103,12 @@ public class WebAttribute extends Attribute {
 		if (webEnv.decorationEndFlag.size() > 0) {
 			if (webEnv.decorationEndFlag.get(0)) {
 				String property = webEnv.decorationProperty.get(0).get(0);
+				String value = Modifier.replaceModifierValues(property, data);
 				if (property.equals("class")) {
-					WebEnv.cssClass.add(data);
-					WebDecoration.divclass.get(0).append(data + " ");
+					WebEnv.cssClass.add(value);
+					WebDecoration.divclass.get(0).append(value + " ");
 				} else {
-					WebDecoration.divStyle.get(0).append(property + ":" + data + ";");
+					WebDecoration.divStyle.get(0).append(property + ":" + value + ";");
 				}
 				webEnv.decorationProperty.get(0).remove(0);
 			} else {

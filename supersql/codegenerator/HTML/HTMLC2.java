@@ -88,33 +88,59 @@ public class HTMLC2 extends Connector implements Serializable {
 				HTMLEnv.setIDU("delete");
 			}
 
+			String classname;
+			if (this.decos.containsKey("class")) {
+				classname = this.decos.getStr("class");
+			} else {
+				classname = HTMLEnv.getClassID(this);
+			}
+			
 			// tk
 			// start////////////////////////////////////////////////////////////////
 			htmlEnv.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
 
 			if (!GlobalEnv.isOpt()) {
-				htmlEnv.code
-						.append("<TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
-				htmlEnv.code.append(htmlEnv.tableBorder + "\" ");
-				htmlEnv.code.append(htmlEnv.getOutlineMode());
-				if (htmlEnv.writtenClassId.contains(HTMLEnv.getClassID(this))) {
-					htmlEnv.code.append(" class=\"");
-					htmlEnv.code.append(HTMLEnv.getClassID(this));
-				}
-
-				if (decos.containsKey("class")) {
-					if (!htmlEnv.writtenClassId.contains(HTMLEnv
-							.getClassID(this))) {
-						htmlEnv.code.append(" class=\"");
+				if (htmlEnv.decorationStartFlag.size() > 0) {
+					if (htmlEnv.decorationStartFlag.get(0)) {
+						HTMLDecoration.fronts.get(0).append("<TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
+						HTMLDecoration.fronts.get(0).append(htmlEnv.tableBorder + "\"");
+						HTMLDecoration.fronts.get(0).append(htmlEnv.getOutlineMode());
+						HTMLDecoration.classes.get(0).append(" class=\"");
+						HTMLDecoration.ends.get(0).append(classname);
+						HTMLDecoration.ends.get(0).append("\">");
+						htmlEnv.decorationStartFlag.set(0, false);
 					} else {
-						htmlEnv.code.append(" ");
+						HTMLDecoration.ends.get(0).append("<TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
+						HTMLDecoration.ends.get(0).append(htmlEnv.tableBorder + "\"");
+						HTMLDecoration.ends.get(0).append(htmlEnv.getOutlineMode());
+						HTMLDecoration.ends.get(0).append(" class=\"");
+						HTMLDecoration.ends.get(0).append(classname);
+						HTMLDecoration.ends.get(0).append("\">");
 					}
-					htmlEnv.code.append(decos.getStr("class") + "\" ");
-				} else if (htmlEnv.writtenClassId.contains(HTMLEnv
-						.getClassID(this))) {
-					htmlEnv.code.append("\" ");
+				} else {
+					htmlEnv.code
+							.append("<TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
+					htmlEnv.code.append(htmlEnv.tableBorder + "\" ");
+					htmlEnv.code.append(htmlEnv.getOutlineMode());
+					if (htmlEnv.writtenClassId.contains(HTMLEnv.getClassID(this))) {
+						htmlEnv.code.append(" class=\"");
+						htmlEnv.code.append(HTMLEnv.getClassID(this));
+					}
+	
+					if (decos.containsKey("class")) {
+						if (!htmlEnv.writtenClassId.contains(HTMLEnv
+								.getClassID(this))) {
+							htmlEnv.code.append(" class=\"");
+						} else {
+							htmlEnv.code.append(" ");
+						}
+						htmlEnv.code.append(decos.getStr("class") + "\" ");
+					} else if (htmlEnv.writtenClassId.contains(HTMLEnv
+							.getClassID(this))) {
+						htmlEnv.code.append("\" ");
+					}
+					htmlEnv.code.append(">");
 				}
-				htmlEnv.code.append(">");
 			}
 			if (GlobalEnv.isOpt()) {
 				htmlEnv2.code.append("<tfe type=\"connect\" dimension=\"2\"");
@@ -215,23 +241,30 @@ public class HTMLC2 extends Connector implements Serializable {
 				htmlEnv.xmlDepth++;
 				ITFE tfe = tfes.get(i);
 
-				htmlEnv.code.append("<TR><TD class=\""
-						+ HTMLEnv.getClassID(tfe) + " nest\">\n");
+				if (htmlEnv.decorationStartFlag.size() > 0) {
+					HTMLDecoration.ends.get(0).append("<TR><TD class=\"" + classname + " nest\">\n");
+				} else {
+					htmlEnv.code.append("<TR><TD class=\""
+							+ HTMLEnv.getClassID(tfe) + " nest\">\n");
+				}
 				String classid = HTMLEnv.getClassID(tfe);
+				
 				// Log.out("<TR><TD class=\"nest "
 				// + HTMLEnv.getClassID(tfe) + " nest\"> decos:" + decos);
-
 				this.worknextItem();
 
-				if (htmlEnv.notWrittenClassId.contains(classid)) {
-					htmlEnv.code.delete(htmlEnv.code.indexOf(classid),
-							htmlEnv.code.indexOf(classid) + classid.length()
-									+ 1);
+//				if (htmlEnv.notWrittenClassId.contains(classid)) {
+//					htmlEnv.code.delete(htmlEnv.code.indexOf(classid),
+//							htmlEnv.code.indexOf(classid) + classid.length()
+//									+ 1);
+//				}
+
+				if (htmlEnv.decorationStartFlag.size() > 0) {
+					HTMLDecoration.ends.get(0).append("</TD></TR>\n");
+				} else {
+					htmlEnv.code.append("</TD></TR>\n");
+					// Log.out("</TD></TR>");
 				}
-
-				htmlEnv.code.append("</TD></TR>\n");
-				// Log.out("</TD></TR>");
-
 				i++;
 				htmlEnv.cNum--;
 				htmlEnv.xmlDepth--;
@@ -250,12 +283,22 @@ public class HTMLC2 extends Connector implements Serializable {
 					HTMLEnv.setSearch(false);
 			}
 
-			htmlEnv.code.append("</TABLE>\n");
+			if (htmlEnv.decorationStartFlag.size() > 0) {
+				if (htmlEnv.decorationStartFlag.get(0)) {
+					HTMLDecoration.ends.get(0).append("</TABLE>\n");
+					htmlEnv.decorationStartFlag.set(0, false);
+				} else {
+					HTMLDecoration.ends.get(0).append("</TABLE>\n");
+				}
+			} else {
+				htmlEnv.code.append("</TABLE>\n");
+			}
 
 			Log.out("TFEId = " + HTMLEnv.getClassID(this));
 			// html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
 			// System.out.println("</Connector" + htmlEnv.cNum + ">");
 			// htmlEnv.xmlCode.append("</Connector" + htmlEnv.cNum + ">\n");
+			Log.out("+++++++ C2 +++++++");
 			return null;
 		}
 	}
