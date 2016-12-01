@@ -62,7 +62,8 @@ public class WebG2 extends Grouper {
 				webEnv.code.append("<li>\n");
 			} else if (webEnv.decorationStartFlag.size() > 0) {
 				if (webEnv.decorationStartFlag.get(0)) {
-					WebDecoration.divFront.get(0).append("<div class=\"");
+					WebDecoration.divFront.get(0).append("<div");
+					WebDecoration.divclass.get(0).append(" class=\"");
 					WebDecoration.divEnd.get(0).append(classname);
 					if (WebEnv.style != null) {
 						WebDecoration.divEnd.get(0).append(" style-col");
@@ -154,7 +155,12 @@ public class WebG2 extends Grouper {
 			webEnv.code.append("</li>\n");
 //		} else if (webEnv.decorationFlag) {
 		} else if (webEnv.decorationStartFlag.size() > 0) {
-			WebDecoration.divEnd.get(0).append("</div>\n");
+			if (webEnv.decorationStartFlag.get(0)) {
+				WebDecoration.divEnd.get(0).append("</div>\n");
+				webEnv.decorationStartFlag.set(0, false);
+			} else {
+				WebDecoration.divEnd.get(0).append("</div>\n");
+			}
 		} else {
 			webEnv.code.append("</div>\n");
 		}
