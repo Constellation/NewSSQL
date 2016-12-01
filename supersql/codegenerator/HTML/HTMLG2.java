@@ -134,7 +134,7 @@ public class HTMLG2 extends Grouper implements Serializable {
 				html_env.code.append("<TR><TD class=\""
 						+ HTMLEnv.getClassID(tfe) + " nest\">\n");
 			}
-
+			
 			if (decos.containsKey("row") && decos.containsKey("column")) {
 				retFlag = false;
 				pageFlag = true;
@@ -248,7 +248,7 @@ public class HTMLG2 extends Grouper implements Serializable {
 					}
 					html_env2.code.append(">");
 				}
-
+				
 				this.worknextItem();
 
 				// if (html_env.notWrittenClassId.contains(classid)

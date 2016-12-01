@@ -11,9 +11,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
+
 //added by goto 20131016 start
 public class Suggest {
-    
+
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /****************  Did you mean?  ****************/
 	private final HashMap<String, Integer> nWords = new HashMap<String, Integer>();
@@ -57,15 +58,32 @@ public class Suggest {
 	}
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
+	//1024 yhac ////////////////////////////////////////////////////////////////////////////////////////////////
 
-    
+		public static String getAns(String tName, ArrayList<String> tNames) throws IOException {
+			if(tName.length() > 0){
+				String ans = (new Suggest(tNames)).correct(tName);
+				if(!ans.equals(tName)){
+					//Log.err("\nもしかして.. "+ans+" ?");
+//					Log.err("\nDid you mean... '"+ans+"' ?");
+					// 20140624_masato
+//					GlobalEnv.errorText += "\nDid you mean... '"+ans+"' ?";
+					return ans;
+				}
+			}
+			return "？？";
+		}
+	    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
     //get 'Error message', 'Error table name or column name', 'Error table alias' from exception message
     /* return: [0]=Error message, [1]=Error table name or column name, [2]=Error table alias */
     public static String[] getErrorContents(Exception e){
     	String error = e.toString().toLowerCase();
     	String error_tableName_or_columnName = "";
     	String error_tableAlias = "";
-    	
+
     	try{
     		String driver = GlobalEnv.getDriver().toLowerCase();
 	    	if(driver.contains("postgresql")){
@@ -92,18 +110,18 @@ public class Suggest {
 	    		//no such table: sa
 		    	error_tableName_or_columnName = error.substring(error.lastIndexOf(":")+1).trim();
 	    	}
-	    	
+
 	    	if(error_tableName_or_columnName.contains(".")){
 	    		error_tableAlias = error_tableName_or_columnName.substring(0,error_tableName_or_columnName.indexOf("."));
 	    	  	error_tableName_or_columnName = error_tableName_or_columnName.substring(error_tableName_or_columnName.indexOf(".")+1);
 	    	}
     	}catch(Exception e0){}
-    	
+
     	//Log.e("error_tableName_or_columnName: "+error_tableName_or_columnName);
     	//Log.e("error_tableAlias: "+error_tableAlias);
     	return new String[]{error, error_tableName_or_columnName, error_tableAlias};
     }
-    
+
 //    //get table names from query
 //    /* return: (0)=Table name, (1)=Table alias, (2)=From phrase */
 //    @SuppressWarnings({ "rawtypes", "serial" })
@@ -128,10 +146,10 @@ public class Suggest {
 ////	  	  	}else if(q.contains("order by")){
 ////	  	  		tableNames = q.substring(0, q.lastIndexOf("order by"));
 ////	  	  	}
-//	    	  
+//
 //	    	  //if(!tableNames.equals("")) Log.e("\n## From phrase ##\n"+tableNames.trim());
 //	    	  fromPhrase.add(0,tableNames);
-//	    	  
+//
 //	    	  int i=0;
 //	    	  tableNames += ",";
 //	    	  while(tableNames.contains(",")){
@@ -177,11 +195,11 @@ public class Suggest {
 //						break;
 //					}
 //				}
-				
+
 				int c = 0;
 				ArrayList<String> columnNames = new ArrayList<String>();
 				boolean suggested = false;
-				
+
 				for(int i=0;i<tableName.size();i++){
 					tn = tableName.get(i);
 					ta = tableAlias.get(i);
@@ -198,7 +216,7 @@ public class Suggest {
 								columnNameIsWrong = false;
 							}
 							list += rs.getString("COLUMN_NAME") + ", ";
-							
+
 							if((!errorTableNameAlias.isEmpty() && (ta.equals(errorTableNameAlias) || tn.equals(errorTableNameAlias)))){
 								columnNames.add(c++, rs.getString("COLUMN_NAME"));
 							}
@@ -211,6 +229,10 @@ public class Suggest {
 					if((!errorTableNameAlias.isEmpty() && (ta.equals(errorTableNameAlias) || tn.equals(errorTableNameAlias)))){
 						//System.err.print("\n## "+list.replace("(", " has ##\n("));
 						tableHas = "\n## "+list.replace("(", " has ##\n(");
+
+						//161110 yhac
+						Ssedit.getSuggestlist(list);
+
 						list = listBuf+list;
 						aliasIsWrong = false;
 					}
@@ -219,12 +241,15 @@ public class Suggest {
 					if(!errorColumnName.isEmpty()){
 						Log.err("\n## Wrong alias: >>>> "+errorTableNameAlias+" <<<< ."+errorColumnName+"  ##");
 //						GlobalEnv.errorText += "\n## Wrong alias: >>>> "+errorTableNameAlias+" <<<< ."+errorColumnName+"  ##";
+
+						//161110 yhac
+						Ssedit.AutocorrectAlgorirhm_SQL(errorTableNameAlias, errorColumnName, tableAlias, null, "alias");
 					}
 					else {
 						Log.err("\n## Wrong alias: >>>> "+errorTableNameAlias+" <<<<  ##");
 //						GlobalEnv.errorText += "\n## Wrong alias: >>>> "+errorTableNameAlias+" <<<<  ##";
 					}
-						
+
 			  	  	try{
 			  	  		suggested = checkAndSuggest(errorTableNameAlias, tableAlias);
 			  	  	}catch(Exception e){}
@@ -234,7 +259,12 @@ public class Suggest {
 //					GlobalEnv.errorText += "\n## Wrong column name: "+errorTableNameAlias+". >>>> "+errorColumnName+" <<<< ##";
 			  	  	try{
 			  	  		suggested = checkAndSuggest(errorColumnName, columnNames);
-			  	  	}catch(Exception e){}					
+
+			  	  		//161110 yhac
+						Ssedit.AutocorrectAlgorirhm_SQL(errorTableNameAlias, errorColumnName, tableAlias, columnNames, "column");
+
+
+			  	  	}catch(Exception e){}
 				}
 				if(!tableHas.isEmpty() && columnNameIsWrong){
 					Log.err(tableHas);
@@ -243,7 +273,7 @@ public class Suggest {
 					Log.err("\n## From phrase is ##\n"+fromPhrase.get(0).trim());
 //					GlobalEnv.errorText += "\n## From phrase is ##\n"+fromPhrase.get(0).trim();
 				}
-				
+
 				if(suggested){
 					list = "";
 					Log.err("");
@@ -251,7 +281,7 @@ public class Suggest {
   	  	}catch(Exception e){}
   	  	return list;
     }
-    
+
     //get ambiguous table and column name list
     //- ambiguous column name: そのカラム名を持っているtable&column一覧を表示
     public static String getgetAmbiguousTableAndColumnNameList(Connection conn, ArrayList<String> tableName, String ambiguousColumnName){
@@ -307,15 +337,24 @@ public class Suggest {
 				}
   	  	}catch(Exception e){}
   	  	//if(!list.equals(""))  list = list.substring(0, list.length()-2);
-  	  	
+
   	  	boolean suggested = false;
   	  	try{
   	  		suggested = checkAndSuggest(tName, tNames);
   	  	}catch(Exception e){}
-  	  	
+
   	  	if(suggested)	list = LevenshteinDistance.checkLevenshteinDistance(tName, tNames);	//提案あり: 類似度判定
   	  	else	  		list = ascendingSort(tNames);					//提案なし: 昇順ソート
-  	  	
+
+  	  	//161201 yhac
+  	  	Ssedit.getfromSuggestlist(list);
+  	  	try {
+			Ssedit.AutocorrectAlgorirhm_SQL(tName, null, tNames, null, "from");
+		} catch (IOException e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+		}
+
   	  	return list;
     }
     //return Ascending sorted String
@@ -323,7 +362,7 @@ public class Suggest {
 		//アルファベット順にソート
 		String s = "";
 		Collections.sort(al);
-		for(String val : al){ 
+		for(String val : al){
 			s += val + ", ";
 		}
 		if(!s.equals(""))  s = s.substring(0, s.length()-2);

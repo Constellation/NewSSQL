@@ -142,7 +142,7 @@ public class Jscss implements Serializable {
 		else if(media.equals("mobile_html5") || PHP.isPHP)
 			css = Mobile_HTML5Env.commonCSS() + Mobile_HTML5Env.css;
 		else if (media.equals("web"))
-			css = WebEnv.commonCSS() + WebEnv.css;
+			css = WebEnv.commonCSS() + WebEnv.css + WebEnv.cssTableInput(WebEnv.cssClass);
 		else if (media.equals("bhtml") || media.equals("html_bootstrap")) // 20160603 bootstrap
 			css = Mobile_HTML5Env.commonCSS() + Mobile_HTML5Env.css + Sass.compile();
 		String outputCssFileName = outdirPath+fs+fs+getGenerateCssFileName(1);

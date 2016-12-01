@@ -36,9 +36,12 @@ public class WebEnv extends LocalEnv {
 	public static StringBuffer css;
 	public static ArrayList<String> cssClass = new ArrayList<String>();
 //	public String decorateAttribute = null;
-	public boolean decorationFlag = false;
-	public boolean decorationStartFlag = false;
-	public boolean decorationEndFlag = false;
+//	public boolean decorationFlag = false;
+	public ArrayList<ArrayList<String>> decorationProperty = new ArrayList<ArrayList<String>>();
+//	public boolean decorationStartFlag = false;
+	public ArrayList<Boolean> decorationStartFlag = new ArrayList<Boolean>();
+//	public boolean decorationEndFlag = false;
+	public ArrayList<Boolean> decorationEndFlag = new ArrayList<Boolean>();
 	public String fileName;
 	public StringBuffer footer;
 	public static boolean footerFlag = false;
@@ -63,9 +66,34 @@ public class WebEnv extends LocalEnv {
 		new Document("");
 	}
 	
-	public void append_css_def_att(String classid, DecorateList decos) {
+	public void append_css_def_att(String classid, DecorateList decolist) {
+		DecorateList decos = new DecorateList();
+		for (String key : decolist.keySet()) {
+			decos.put(key, decolist.get(key));
+		}
+		
 		Log.out("[Web append_css_def_att] classid = " + classid);
 		Log.out("decos = " + decos);
+		
+		if (decorationStartFlag.size() > 0) {
+//			if (decorationStartFlag && !decorationEndFlag) {
+			if (decorationStartFlag.get(0) && !decorationEndFlag.get(0)) {
+//				decorationProperty = new ArrayList<String>();
+				for (String key : decos.keySet()) {
+					Log.out("decos-[" + key + "] -> " + decos.get(key).toString());
+					if (!(decos.get(key).toString().startsWith("\"") && decos.get(key).toString().endsWith("\""))
+							&& !(decos.get(key).toString().startsWith("\'") && decos.get(key).toString().endsWith("\'"))) {
+//						decorationProperty.add(0, key);
+						decorationProperty.get(0).add(0, key);
+					}
+				}
+//				for (int i = 0; i < decorationProperty.size(); i++) {
+				for (int i = 0; i < decorationProperty.get(0).size(); i++) {
+					Log.out("decos property [" + i + "] -> " + decorationProperty.get(0).get(i));
+					decos.remove(decorationProperty.get(0).get(i));
+				}
+			}
+		}
 		
 		haveClass = 0;
 		if (writtenClassId.contains(classid)) {
@@ -84,53 +112,69 @@ public class WebEnv extends LocalEnv {
 		// background-attachment
 		if (decos.containsKey("background-attachment")) { // TODO
 			String str = stringsub(decos.getStr("background-attachment"));
-			cssbuf.append("\tbackground-attachment: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tbackground-attachment: " + str + ";\n");
+			}
 		}
 		
 		// background-clip (CSS3)
 		if (decos.containsKey("background-clip")) { // TODO
 			String str = stringsub(decos.getStr("background-clip"));
-			cssbuf.append("\tbackground-clip: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tbackground-clip: " + str + ";\n");
+			}
 		}
 		
 		// background-color & bgcolor
 		if (decos.containsKey("background-color")) { // TODO
 			String str = stringsub(decos.getStr("background-color"));
-			cssbuf.append("\tbackground-color: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tbackground-color: " + str + ";\n");
+			}
 		} else if (decos.containsKey("bgcolor")) {
 			String str = stringsub(decos.getStr("bgcolor"));
-			cssbuf.append("\tbackground-color: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tbackground-color: " + str + ";\n");
+			}
 		}
 		
 		// background-image
 		if (decos.containsKey("background-image")) { // TODO
 			String str = stringsub(decos.getStr("background-image"));
-			if ((str.indexOf("url") != -1) || str.equals("none") || str.equals("inherit")) {
-				cssbuf.append("\tbackground-image: " + str + ";\n");
-			} else {
-				cssbuf.append("\tbackground-image: url(\"" + str + "\");\n");
+			if (str != null) {
+				if ((str.indexOf("url") != -1) || str.equals("none") || str.equals("inherit")) {
+					cssbuf.append("\tbackground-image: " + str + ";\n");
+				} else {
+					cssbuf.append("\tbackground-image: url(\"" + str + "\");\n");
+				}
 			}
 		}
 		
 		// background-origin (CSS3)
 		if (decos.containsKey("background-origin")) { // TODO
 			String str = stringsub(decos.getStr("background-origin"));
-			cssbuf.append("\tbackground-origin: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tbackground-origin: " + str + ";\n");
+			}
 		}
 		
 		// background-repeat
 		if (decos.containsKey("background-repeat")) { // TODO
 			String str = stringsub(decos.getStr("background-repeat"));
-			cssbuf.append("\tbackground-repeat: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tbackground-repeat: " + str + ";\n");
+			}
 		}
 		
 		// background-size (CSS3)
 		if (decos.containsKey("background-size")) { // TODO
 			String str = stringsub(decos.getStr("background-size"));
-			if (GlobalEnv.isNumber(str)) {
-				cssbuf.append("\tbackground-size: " + str + "px;\n");
-			} else {
-				cssbuf.append("\tbackground-size: " + str + ";\n");
+			if (str != null) {
+				if (GlobalEnv.isNumber(str)) {
+					cssbuf.append("\tbackground-size: " + str + "px;\n");
+				} else {
+					cssbuf.append("\tbackground-size: " + str + ";\n");
+				}
 			}
 		}
 		
@@ -140,16 +184,52 @@ public class WebEnv extends LocalEnv {
 			borderFlag = true;
 		}
 		
+		// border-top
+		if (decos.containsKey("border-top")) {
+			String str = stringsub(decos.getStr("border-top"));
+			if (str != null) {
+				cssbuf.append("\tborder-top: " + str + ";\n");
+			}
+		}
+		
+		// border-right
+		if (decos.containsKey("border-right")) {
+			String str = stringsub(decos.getStr("border-right"));
+			if (str != null) {
+				cssbuf.append("\tborder-right: " + str + ";\n");
+			}
+		}
+		
+		// border-bottom
+		if (decos.containsKey("border-bottom")) {
+			String str = stringsub(decos.getStr("border-bottom"));
+			if (str != null) {
+				cssbuf.append("\tborder-bottom: " + str + ";\n");
+			}
+		}
+		
+		// border-left
+		if (decos.containsKey("border-left")) { // TODO
+			String str = stringsub(decos.getStr("border-left"));
+			if (str != null) {
+				cssbuf.append("\tborder-left: " + str + ";\n");
+			}
+		}
+		
 		// border-collapse (only table element)
 		if (decos.containsKey("border-collapse")) { // TODO
 			String str = stringsub(decos.getStr("border-collapse"));
-			cssbuf.append("\tborder-collapse: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tborder-collapse: " + str + ";\n");
+			}
 		}
 		
 		// border-color
 		if (decos.containsKey("border-color")) { // TODO
 			String str = stringsub(decos.getStr("border-color"));
-			cssbuf.append("\tborder-color: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tborder-color: " + str + ";\n");
+			}
 		} else if (borderFlag) {
 			cssbuf.append("\tborder-color: #F0F0F0;\n");
 		}
@@ -157,60 +237,82 @@ public class WebEnv extends LocalEnv {
 		// border-bottom-color & border-color-bottom
 		if (decos.containsKey("border-bottom-color")) { // TODO
 			String str = stringsub(decos.getStr("border-bottom-color"));
-			cssbuf.append("\tborder-bottom-color: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tborder-bottom-color: " + str + ";\n");
+			}
 		} else if (decos.containsKey("border-color-bottom")) {
 			String str = stringsub(decos.getStr("border-color-bottom"));
-			cssbuf.append("\tborder-bottom-color: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tborder-bottom-color: " + str + ";\n");
+			}
 		}
 		// border-left-color & border-color-left
 		if (decos.containsKey("border-left-color")) { // TODO
 			String str = stringsub(decos.getStr("border-left-color"));
-			cssbuf.append("\tborder-left-color: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tborder-left-color: " + str + ";\n");
+			}
 		} else if (decos.containsKey("border-color-left")) {
 			String str = stringsub(decos.getStr("border-color-left"));
-			cssbuf.append("\tborder-left-color: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tborder-left-color: " + str + ";\n");
+			}
 		}
 		// border-right-color & border-color-right
 		if (decos.containsKey("border-right-color")) { // TODO
 			String str = stringsub(decos.getStr("border-right-color"));
-			cssbuf.append("\tborder-right-color: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tborder-right-color: " + str + ";\n");
+			}
 		} else if (decos.containsKey("border-color-right")) {
 			String str = stringsub(decos.getStr("border-color-right"));
-			cssbuf.append("\tborder-right-color: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tborder-right-color: " + str + ";\n");
+			}
 		}
 		// border-top-color & border-color-top
 		if (decos.containsKey("border-top-color")) { // TODO
 			String str = stringsub(decos.getStr("border-top-color"));
-			cssbuf.append("\tborder-top-color: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tborder-top-color: " + str + ";\n");
+			}
 		} else if (decos.containsKey("border-color-top")) {
 			String str = stringsub(decos.getStr("border-color-top"));
-			cssbuf.append("\tborder-top-color: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tborder-top-color: " + str + ";\n");
+			}
 		}
 		
 		// border-radius (CSS3)
 		if (decos.containsKey("border-radius")) { // TODO
 			String str = stringsub(decos.getStr("border-radius"));
-			if (GlobalEnv.isNumber(str)) {
-				cssbuf.append("\tborder-radius: " + str + "px;\n");
-			} else {
-				cssbuf.append("\tborder-radius: " + str + ";\n");
+			if (str != null) {
+				if (GlobalEnv.isNumber(str)) {
+					cssbuf.append("\tborder-radius: " + str + "px;\n");
+				} else {
+					cssbuf.append("\tborder-radius: " + str + ";\n");
+				}
 			}
 		}
 		
 		// border-spacing (only table element)
 		if (decos.containsKey("border-spacing")) { // TODO
 			String str = stringsub(decos.getStr("border-spacing"));
-			if (GlobalEnv.isNumber(str)) {
-				cssbuf.append("\tborder-spacing: " + str + "px;\n");
-			} else {
-				cssbuf.append("\tborder-spacing: " + str + ";\n");
+			if (str != null) {
+				if (GlobalEnv.isNumber(str)) {
+					cssbuf.append("\tborder-spacing: " + str + "px;\n");
+				} else {
+					cssbuf.append("\tborder-spacing: " + str + ";\n");
+				}
 			}
 		}
 		
 		// border-style
 		if (decos.containsKey("border-style")) { // TODO
 			String str = stringsub(decos.getStr("border-style"));
-			cssbuf.append("\tborder-style: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tborder-style: " + str + ";\n");
+			}
 		} else if (borderFlag) {
 			cssbuf.append("\tborder-style: solid;\n");
 		}
@@ -218,43 +320,61 @@ public class WebEnv extends LocalEnv {
 		// border-bottom-style & border-style-bottom
 		if (decos.containsKey("border-bottom-style")) { // TODO
 			String str = stringsub(decos.getStr("border-bottom-style"));
-			cssbuf.append("\tborder-bottom-style: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tborder-bottom-style: " + str + ";\n");
+			}
 		} else if (decos.containsKey("border-style-bottom")) {
 			String str = stringsub(decos.getStr("border-style-bottom"));
-			cssbuf.append("\tborder-bottom-style: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tborder-bottom-style: " + str + ";\n");
+			}
 		}
 		// border-left-style & border-style-left
 		if (decos.containsKey("border-left-style")) { // TODO
 			String str = stringsub(decos.getStr("border-left-style"));
-			cssbuf.append("\tborder-left-style: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tborder-left-style: " + str + ";\n");
+			}
 		} else if (decos.containsKey("border-style-left")) {
 			String str = stringsub(decos.getStr("border-style-left"));
-			cssbuf.append("\tborder-left-style: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tborder-left-style: " + str + ";\n");
+			}
 		}
 		// border-right-style & border-style-right
 		if (decos.containsKey("border-right-style")) { // TODO
 			String str = stringsub(decos.getStr("border-right-style"));
-			cssbuf.append("\tborder-right-style: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tborder-right-style: " + str + ";\n");
+			}
 		} else if (decos.containsKey("border-style-right")) {
 			String str = stringsub(decos.getStr("border-style-right"));
-			cssbuf.append("\tborder-right-style: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tborder-right-style: " + str + ";\n");
+			}
 		}
 		// border-top-style & border-style-top
 		if (decos.containsKey("border-top-style")) { // TODO
 			String str = stringsub(decos.getStr("border-top-style"));
-			cssbuf.append("\tborder-top-style: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tborder-top-style: " + str + ";\n");
+			}
 		} else if (decos.containsKey("border-style-top")) {
 			String str = stringsub(decos.getStr("border-style-top"));
-			cssbuf.append("\tborder-top-style: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tborder-top-style: " + str + ";\n");
+			}
 		}
 		
 		// border-width
 		if (decos.containsKey("border-width")) { // TODO
 			String str = stringsub(decos.getStr("border-width"));
-			if (GlobalEnv.isNumber(str)) {
-				cssbuf.append("\tborder-width: " + str + "px;\n");
-			} else {
-				cssbuf.append("\tborder-width: " + str + ";\n");
+			if (str != null) {
+				if (GlobalEnv.isNumber(str)) {
+					cssbuf.append("\tborder-width: " + str + "px;\n");
+				} else {
+					cssbuf.append("\tborder-width: " + str + ";\n");
+				}
 			}
 		} else if (borderFlag) {
 			cssbuf.append("\tborder-width: 1px;\n");
@@ -263,311 +383,396 @@ public class WebEnv extends LocalEnv {
 		// border-bottom-width & border-width-bottom
 		if (decos.containsKey("border-bottom-width")) { // TODO
 			String str = stringsub(decos.getStr("border-bottom-width"));
-			if (GlobalEnv.isNumber(str)) {
-				cssbuf.append("\tborder-bottom-width: " + str + "px;\n");
-			} else {
-				cssbuf.append("\tborder-bottom-width: " + str + ";\n");
+			if (str != null) {
+				if (GlobalEnv.isNumber(str)) {
+					cssbuf.append("\tborder-bottom-width: " + str + "px;\n");
+				} else {
+					cssbuf.append("\tborder-bottom-width: " + str + ";\n");
+				}
 			}
 		} else if (decos.containsKey("border-width-bottom")) {
 			String str = stringsub(decos.getStr("border-width-bottom"));
-			if (GlobalEnv.isNumber(str)) {
-				cssbuf.append("\tborder-bottom-width: " + str + "px;\n");
-			} else {
-				cssbuf.append("\tborder-bottom-width: " + str + ";\n");
+			if (str != null) {
+				if (GlobalEnv.isNumber(str)) {
+					cssbuf.append("\tborder-bottom-width: " + str + "px;\n");
+				} else {
+					cssbuf.append("\tborder-bottom-width: " + str + ";\n");
+				}
 			}
 		}
 		// border-left-width & border-width-left
 		if (decos.containsKey("border-left-width")) { // TODO
 			String str = stringsub(decos.getStr("border-left-width"));
-			if (GlobalEnv.isNumber(str)) {
-				cssbuf.append("\tborder-left-width: " + str + "px;\n");
-			} else {
-				cssbuf.append("\tborder-left-width: " + str + ";\n");
+			if (str != null) {
+				if (GlobalEnv.isNumber(str)) {
+					cssbuf.append("\tborder-left-width: " + str + "px;\n");
+				} else {
+					cssbuf.append("\tborder-left-width: " + str + ";\n");
+				}
 			}
 		} else if (decos.containsKey("border-width-left")) {
 			String str = stringsub(decos.getStr("border-width-left"));
-			if (GlobalEnv.isNumber(str)) {
-				cssbuf.append("\tborder-left-width: " + str + "px;\n");
-			} else {
-				cssbuf.append("\tborder-left-width: " + str + ";\n");
+			if (str != null) {
+				if (GlobalEnv.isNumber(str)) {
+					cssbuf.append("\tborder-left-width: " + str + "px;\n");
+				} else {
+					cssbuf.append("\tborder-left-width: " + str + ";\n");
+				}
 			}
 		}
 		// border-right-width & border-width-right
 		if (decos.containsKey("border-right-width")) { // TODO
 			String str = stringsub(decos.getStr("border-right-width"));
-			if (GlobalEnv.isNumber(str)) {
-				cssbuf.append("\tborder-right-width: " + str + "px;\n");
-			} else {
-				cssbuf.append("\tborder-right-width: " + str + ";\n");
+			if (str != null) {
+				if (GlobalEnv.isNumber(str)) {
+					cssbuf.append("\tborder-right-width: " + str + "px;\n");
+				} else {
+					cssbuf.append("\tborder-right-width: " + str + ";\n");
+				}
 			}
 		} else if (decos.containsKey("border-width-right")) { 
 			String str = stringsub(decos.getStr("border-width-right"));
-			if (GlobalEnv.isNumber(str)) {
-				cssbuf.append("\tborder-right-width: " + str + "px;\n");
-			} else {
-				cssbuf.append("\tborder-right-width: " + str + ";\n");
+			if (str != null) {
+				if (GlobalEnv.isNumber(str)) {
+					cssbuf.append("\tborder-right-width: " + str + "px;\n");
+				} else {
+					cssbuf.append("\tborder-right-width: " + str + ";\n");
+				}
 			}
 		}
 		// border-top-width & border-width-top
 		if (decos.containsKey("border-top-width")) { // TODO
 			String str = stringsub(decos.getStr("border-top-width"));
-			if (GlobalEnv.isNumber(decos.getStr("border-top-width"))) {
-				cssbuf.append("\tborder-top-width: " + str + "px;\n");
-			} else {
-				cssbuf.append("\tborder-top-width: " + str + ";\n");
+			if (str != null) {
+				if (GlobalEnv.isNumber(decos.getStr("border-top-width"))) {
+					cssbuf.append("\tborder-top-width: " + str + "px;\n");
+				} else {
+					cssbuf.append("\tborder-top-width: " + str + ";\n");
+				}
 			}
 		} else if (decos.containsKey("border-width-top")) { 
 			String str = stringsub(decos.getStr("border-width-top"));
-			if (GlobalEnv.isNumber(str)) {
-				cssbuf.append("\tborder-top-width: " + str + "px;\n");
-			} else {
-				cssbuf.append("\tborder-top-width: " + str + ";\n");
+			if (str != null) {
+				if (GlobalEnv.isNumber(str)) {
+					cssbuf.append("\tborder-top-width: " + str + "px;\n");
+				} else {
+					cssbuf.append("\tborder-top-width: " + str + ";\n");
+				}
 			}
 		}
 		
 		// box-decoration-break (CSS3)
 		if (decos.containsKey("box-decoration-break")) { // TODO
 			String str = stringsub(decos.getStr("box-decoration-break"));
-			cssbuf.append("\tbox-decoration-break: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tbox-decoration-break: " + str + ";\n");
+			}
+
 		}
 		
 		// box-sizing (CSS3)
 		if (decos.containsKey("box-sizing")) { // TODO
 			String str = stringsub(decos.getStr("box-sizing"));
-			cssbuf.append("\tbox-sizing: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tbox-sizing: " + str + ";\n");
+			}
+
 		}
 		
 		// caption-side & caption (only caption element)
 		if (decos.containsKey("caption-side")) { // TODO
 			String str = stringsub(decos.getStr("caption-side"));
-			cssbuf.append("\tcaption-side: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tcaption-side: " + str + ";\n");
+			}
 		} else if (decos.containsKey("caption")) {
 			String str = stringsub(decos.getStr("caption"));
-			cssbuf.append("\tcaption-side: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tcaption-side: " + str + ";\n");
+			}
 		}
 		
 		// color & font-color
 		if (decos.containsKey("color")) { // TODO
 			String str = stringsub(decos.getStr("color"));
-			cssbuf.append("\tcolor: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tcolor: " + str + ";\n");
+			}
 		} else if (decos.containsKey("font-color")) {
 			String str = stringsub(decos.getStr("font-color"));
-			cssbuf.append("\tcolor: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tcolor: " + str + ";\n");
+			}
 		}
 		
 		// column-count (CSS3)
 		if (decos.containsKey("column-count")) { // TODO
 			String str = stringsub(decos.getStr("column-count"));
-			cssbuf.append("\t-moz-column-count: " + str + ";\n");
-			cssbuf.append("\t-webkit-column-count: " + str + ";\n");
-			cssbuf.append("\tcolumn-count: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\t-moz-column-count: " + str + ";\n");
+				cssbuf.append("\t-webkit-column-count: " + str + ";\n");
+				cssbuf.append("\tcolumn-count: " + str + ";\n");
+			}
 		}
 		
 		// column-fill (CSS3)
 		if (decos.containsKey("column-fill")) { // TODO
 			String str = stringsub(decos.getStr("column-fill"));
-			cssbuf.append("\t-moz-column-fill: " + str + ";\n");
-			cssbuf.append("\t-webkit-column-fill: " + str + ";\n");
-			cssbuf.append("\tcolumn-fill: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\t-moz-column-fill: " + str + ";\n");
+				cssbuf.append("\t-webkit-column-fill: " + str + ";\n");
+				cssbuf.append("\tcolumn-fill: " + str + ";\n");
+			}
+
 		}
 		
 		// column-gap (CSS3)
 		if (decos.containsKey("column-gap")) { // TODO
 			String str = stringsub(decos.getStr("column-gap"));
-			if (GlobalEnv.isNumber(str)) {
-				cssbuf.append("\t-moz-column-gap: " + str + "px;\n");
-				cssbuf.append("\t-webkit-column-gap: " + str + "px;\n");
-				cssbuf.append("\tcolumn-gap: " + str + "px;\n");
-			} else {
-				cssbuf.append("\t-moz-column-gap: " + str + ";\n");
-				cssbuf.append("\t-webkit-column-gap: " + str + ";\n");
-				cssbuf.append("\tcolumn-gap: " + str + ";\n");
+			if (str != null) {
+				if (GlobalEnv.isNumber(str)) {
+					cssbuf.append("\t-moz-column-gap: " + str + "px;\n");
+					cssbuf.append("\t-webkit-column-gap: " + str + "px;\n");
+					cssbuf.append("\tcolumn-gap: " + str + "px;\n");
+				} else {
+					cssbuf.append("\t-moz-column-gap: " + str + ";\n");
+					cssbuf.append("\t-webkit-column-gap: " + str + ";\n");
+					cssbuf.append("\tcolumn-gap: " + str + ";\n");
+				}
 			}
 		}
 		
 		// column-rule-color (CSS3)
 		if (decos.containsKey("column-rule-color")) { // TODO
 			String str = stringsub(decos.getStr("column-rule-color"));
-			cssbuf.append("\t-moz-column-rule-color: " + str + ";\n");
-			cssbuf.append("\t-webkit-column-rule-color: " + str + ";\n");
-			cssbuf.append("\tcolumn-rule-color: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\t-moz-column-rule-color: " + str + ";\n");
+				cssbuf.append("\t-webkit-column-rule-color: " + str + ";\n");
+				cssbuf.append("\tcolumn-rule-color: " + str + ";\n");
+			}
 		}
 		
 		// column-rule-style (CSS3)
 		if (decos.containsKey("column-rule-style")) { // TODO
 			String str = stringsub(decos.getStr("column-rule-style"));
-			cssbuf.append("\t-moz-column-rule-style: " + str + ";\n");
-			cssbuf.append("\t-webkit-column-rule-style: " + str + ";\n");
-			cssbuf.append("\tcolumn-rule-style: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\t-moz-column-rule-style: " + str + ";\n");
+				cssbuf.append("\t-webkit-column-rule-style: " + str + ";\n");
+				cssbuf.append("\tcolumn-rule-style: " + str + ";\n");
+			}
 		}
 		
 		// column-rule-width (CSS3)
 		if (decos.containsKey("column-rule-width")) { // TODO
 			String str = stringsub(decos.getStr("column-rule-width"));
-			if (GlobalEnv.isNumber(str)) {
-				cssbuf.append("\t-moz-column-rule-width: " + str + "px;\n");
-				cssbuf.append("\t-webkit-column-rule-width: " + str + "px;\n");
-				cssbuf.append("\tcolumn-rule-width: " + str + "px;\n");
-			} else {
-				cssbuf.append("\t-moz-column-rule-width: " + str + ";\n");
-				cssbuf.append("\t-webkit-column-rule-width: " + str + ";\n");
-				cssbuf.append("\tcolumn-rule-width: " + str + ";\n");
+			if (str != null) {
+				if (GlobalEnv.isNumber(str)) {
+					cssbuf.append("\t-moz-column-rule-width: " + str + "px;\n");
+					cssbuf.append("\t-webkit-column-rule-width: " + str + "px;\n");
+					cssbuf.append("\tcolumn-rule-width: " + str + "px;\n");
+				} else {
+					cssbuf.append("\t-moz-column-rule-width: " + str + ";\n");
+					cssbuf.append("\t-webkit-column-rule-width: " + str + ";\n");
+					cssbuf.append("\tcolumn-rule-width: " + str + ";\n");
+				}
 			}
 		}
 		
 		// column-span (CSS3)
 		if (decos.containsKey("column-span")) { // TODO
 			String str = stringsub(decos.getStr("column-span"));
-			cssbuf.append("\t-webkit-column-rule-width: " + str + ";\n");
-			cssbuf.append("\tcolumn-rule-width: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\t-webkit-column-rule-width: " + str + ";\n");
+				cssbuf.append("\tcolumn-rule-width: " + str + ";\n");
+			}
 		}
 		
 		// column-width (CSS3)
 		if (decos.containsKey("column-width")) { // TODO
 			String str = stringsub(decos.getStr("column-width"));
-			if (GlobalEnv.isNumber(str)) {
-				cssbuf.append("\t-moz-column-width: " + str + "px;\n");
-				cssbuf.append("\t-webkit-column-width: " + str + "px;\n");
-				cssbuf.append("\tcolumn-width: " + str + "px;\n");
-			} else {
-				cssbuf.append("\t-moz-column-width: " + str + ";\n");
-				cssbuf.append("\t-webkit-column-width: " + str + ";\n");
-				cssbuf.append("\tcolumn-width: " + str + ";\n");
+			if (str != null) {
+				if (GlobalEnv.isNumber(str)) {
+					cssbuf.append("\t-moz-column-width: " + str + "px;\n");
+					cssbuf.append("\t-webkit-column-width: " + str + "px;\n");
+					cssbuf.append("\tcolumn-width: " + str + "px;\n");
+				} else {
+					cssbuf.append("\t-moz-column-width: " + str + ";\n");
+					cssbuf.append("\t-webkit-column-width: " + str + ";\n");
+					cssbuf.append("\tcolumn-width: " + str + ";\n");
+				}
 			}
 		}
 		
 		// counter-increment
 		if (decos.containsKey("counter-increment")) { // TODO
 			String str = stringsub(decos.getStr("counter-increment"));
-			cssbuf.append("\tcounter-increment: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tcounter-increment: " + str + ";\n");
+			}
 		}
 		
 		// counter-reset
 		if (decos.containsKey("counter-reset")) { // TODO
 			String str = stringsub(decos.getStr("counter-reset"));
-			cssbuf.append("\tcounter-reset: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tcounter-reset: " + str + ";\n");
+			}
 		}
 		
 		// cursor
 		if (decos.containsKey("cursor")) { // TODO
 			String str = stringsub(decos.getStr("cursor"));
-			cssbuf.append("\tcursor: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tcursor: " + str + ";\n");
+			}
 		}
 		
 		// direction
 		if (decos.containsKey("direction")) { // TODO
 			String str = stringsub(decos.getStr("direction"));
-			cssbuf.append("\tdirection: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tdirection: " + str + ";\n");
+			}
 		}
 		
 		// display
 		if (decos.containsKey("display")) { // TODO
 			String str = stringsub(decos.getStr("display"));
-			cssbuf.append("\tdisplay: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tdisplay: " + str + ";\n");
+			}
 		}
 		
 		// empty-cells (only cell elements)
 		if (decos.containsKey("empty-cells")) { // TODO
 			String str = stringsub(decos.getStr("empty-cells"));
-			cssbuf.append("\tempty-cells: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tempty-cells: " + str + ";\n");
+			}
 		}
 		
 		// font
 		if (decos.containsKey("font")) { // TODO
 			String str = stringsub(decos.getStr("font"));
-			cssbuf.append("\tfont: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tfont: " + str + ";\n");
+			}
 		}
 		
 		// font-family
 		if (decos.containsKey("font-family")) { // TODO
 			String str = stringsub(decos.getStr("font-family"));
-			cssbuf.append("\tfont-family: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tfont-family: " + str + ";\n");
+			}
 		}
 		
 		// font-size & size
 		if (decos.containsKey("font-size")) { // TODO
 			String str = stringsub(decos.getStr("font-size"));
-			if (GlobalEnv.isNumber(str)) {
-				cssbuf.append("\tfont-size: " + str + "px;\n");
-			} else {
-				cssbuf.append("\tfont-size: " + str + ";\n");
+			if (str != null) {
+				if (GlobalEnv.isNumber(str)) {
+					cssbuf.append("\tfont-size: " + str + "px;\n");
+				} else {
+					cssbuf.append("\tfont-size: " + str + ";\n");
+				}
 			}
 		} else if (decos.containsKey("size")) {
 			String str = stringsub(decos.getStr("size"));
-			if (GlobalEnv.isNumber(str)) {
-				cssbuf.append("\tfont-size: " + str + "px;\n");
-			} else {
-				cssbuf.append("\tfont-size: " + str + ";\n");
+			if (str != null) {
+				if (GlobalEnv.isNumber(str)) {
+					cssbuf.append("\tfont-size: " + str + "px;\n");
+				} else {
+					cssbuf.append("\tfont-size: " + str + ";\n");
+				}
 			}
 		}
 		
 		// font-size-adjust
 		if (decos.containsKey("font-size-adjust")) { // TODO
 			String str = stringsub(decos.getStr("font-size-adjust"));
-			cssbuf.append("\tfont-size-adjust: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tfont-size-adjust: " + str + ";\n");
+			}
 		}
 		
 		// font-stretch (CSS3)
 		if (decos.containsKey("font-stretch")) { // TODO
 			String str = stringsub(decos.getStr("font-stretch"));
-			cssbuf.append("\tfont-stretch: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tfont-stretch: " + str + ";\n");
+			}
 		}
 		
 		// font-style
 		if (decos.containsKey("font-style")) { // TODO
 			String str = stringsub(decos.getStr("font-style"));
-			cssbuf.append("\tfont-style: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tfont-style: " + str + ";\n");
+			}
 		}
 		
 		// font-variant
 		if (decos.containsKey("font-variant")) { // TODO
 			String str = stringsub(decos.getStr("font-variant"));
-			cssbuf.append("\tfont-variant: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tfont-variant: " + str + ";\n");
+			}
 		}
 		
 		// font-weight
 		if (decos.containsKey("font-weight")) { // TODO
 			String str = stringsub(decos.getStr("font-weight"));
-			cssbuf.append("\tfont-weight:" + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tfont-weight:" + str + ";\n");
+			}
 		}
 		
 		// height
 		if (decos.containsKey("height")) { // TODO
 			String str = stringsub(decos.getStr("height"));
-			if (GlobalEnv.isNumber(str)) {
-				cssbuf.append("\theight: " + str + "px;\n");
-			} else {
-				cssbuf.append("\theight: " + str + ";\n");
+			if (str != null) {
+				if (GlobalEnv.isNumber(str)) {
+					cssbuf.append("\theight: " + str + "px;\n");
+				} else {
+					cssbuf.append("\theight: " + str + ";\n");
+				}
 			}
 		}
 		
 		// letter-spacing
 		if (decos.containsKey("letter-spacing")) { // TODO
 			String str = stringsub(decos.getStr("letter-spacing"));
-			if (GlobalEnv.isNumber(str)) {
-				cssbuf.append("\tletter-spacing: " + str + "px;\n");
-			} else {
-				cssbuf.append("\tletter-spacing: " + str + ";\n");
+			if (str != null) {
+				if (GlobalEnv.isNumber(str)) {
+					cssbuf.append("\tletter-spacing: " + str + "px;\n");
+				} else {
+					cssbuf.append("\tletter-spacing: " + str + ";\n");
+				}
 			}
 		}
 		
 		// line-break (CSS3)
 		if (decos.containsKey("line-break")) { // TODO
 			String str = stringsub(decos.getStr("line-break"));
-			cssbuf.append("\tline-break: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tline-break: " + str + ";\n");
+			}
 		}
 		
 		// line-height
 		if (decos.containsKey("line-height")) { // TODO
 			String str = stringsub(decos.getStr("line-height"));
-			if (GlobalEnv.isNumber(str)) {
-				cssbuf.append("\tline-height: " + str + "px;\n");
-			} else {
-				cssbuf.append("\tline-height: " + str + ";\n");
+			if (str != null) {
+				if (GlobalEnv.isNumber(str)) {
+					cssbuf.append("\tline-height: " + str + "px;\n");
+				} else {
+					cssbuf.append("\tline-height: " + str + ";\n");
+				}
 			}
 		}
 		
-		// list
+		// list ""でバグる可能性あり
 		if (decos.containsKey("list") || decos.containsKey("list-style-type") || decos.containsKey("list-style-image") || decos.containsKey("list-style-position")) { // TODO
 			Log.out("********list start********");
 			if (decos.containsKey("list")) {
@@ -621,10 +826,13 @@ public class WebEnv extends LocalEnv {
 				if (!listUlFlag && !listOlFlag) {
 					listUlFlag = true;
 				}
-				if ((decos.getStr("list-style-image").indexOf("url") != -1) || decos.getStr("list-style-image").equals("none") || decos.getStr("list-style-image").equals("inherit")) {
-					cssbuf.append("\tlist-style-image: " + decos.getStr("list-style-image") + ";\n");
-				} else {
-					cssbuf.append("\tlist-style-image: url(\"" + decos.getStr("list-style-image") + "\");\n");
+				String str = stringsub(decos.getStr("list-style-image"));
+				if (str != null) {
+					if ((str.indexOf("url") != -1) || str.equals("none") || str.equals("inherit")) {
+						cssbuf.append("\tlist-style-image: " + str + ";\n");
+					} else {
+						cssbuf.append("\tlist-style-image: url(\"" + str + "\");\n");
+					}
 				}
 			}		
 			// list-style-position
@@ -632,35 +840,46 @@ public class WebEnv extends LocalEnv {
 				if (!listUlFlag && !listOlFlag) {
 					listUlFlag = true;
 				}
-				cssbuf.append("\tlist-style-position: " + decos.getStr("list-style-position") + ";\n");
+				String str = stringsub(decos.getStr("list-style-position"));
+				if (str != null) {
+					cssbuf.append("\tlist-style-position: " + decos.getStr("list-style-position") + ";\n");
+				}
 			}
 		}
 		
 		// margin
 		if (decos.containsKey("margin")) { // TODO
 			String str = stringsub(decos.getStr("margin"));
-			if (GlobalEnv.isNumber(str)) {
-				cssbuf.append("\tmargin: " + str + "px;\n");
-			} else {
-				cssbuf.append("\tmargin: " + str + ";\n");
+			if (str != null) {
+				if (GlobalEnv.isNumber(str)) {
+					cssbuf.append("\tmargin: " + str + "px;\n");
+				} else {
+					cssbuf.append("\tmargin: " + str + ";\n");
+				}
 			}
 		}
 		// margin-bottom
 		if (decos.containsKey("margin-bottom")) { // TODO
 			String str = stringsub(decos.getStr("margin-bottom"));
-			if (GlobalEnv.isNumber(str)) {
-				cssbuf.append("\tmargin-bottom: " + str + "px;\n");
-			} else {
-				cssbuf.append("\tmargin-bottom: " + str + ";\n");
+			if (str != null) {
+				if (GlobalEnv.isNumber(str)) {
+					cssbuf.append("\tmargin-bottom: " + str + "px;\n");
+				} else {
+					cssbuf.append("\tmargin-bottom: " + str + ";\n");
+				}
 			}
 		}
 		// margin-left
 		if (decos.containsKey("margin-left")) { // TODO
 			String str = stringsub(decos.getStr("margin-left"));
-			if (GlobalEnv.isNumber(str)) {
-				cssbuf.append("\tmargin-left: " + str + "px;\n");
-			} else {
-				cssbuf.append("\tmargin-left: " + str + ";\n");
+			if (str != null) {
+				if (GlobalEnv.isNumber(str)) {
+					cssbuf.append("\tmargin-left: " + str + "px;\n");
+				} else {
+					cssbuf.append("\tmargin-left: " + str + ";\n");
+				}
+			} else if (!topLevelDiv) {
+				cssbuf.append("\tmargin-left: auto;\n"); // topLevelDiv default
 			}
 		} else if (!topLevelDiv) {
 			cssbuf.append("\tmargin-left: auto;\n"); // topLevelDiv default
@@ -669,10 +888,14 @@ public class WebEnv extends LocalEnv {
 		// margin-right
 		if (decos.containsKey("margin-right")) { // TODO
 			String str = stringsub(decos.getStr("margin-right"));
-			if (GlobalEnv.isNumber(str)) {
-				cssbuf.append("\tmargin-right: " + str + "px;\n");
-			} else {
-				cssbuf.append("\tmargin-right: " + str + ";\n");
+			if (str != null) {
+				if (GlobalEnv.isNumber(str)) {
+					cssbuf.append("\tmargin-right: " + str + "px;\n");
+				} else {
+					cssbuf.append("\tmargin-right: " + str + ";\n");
+				}
+			} else if (!topLevelDiv) {
+				cssbuf.append("\tmargin-right: auto;\n"); // topLevelDiv default
 			}
 		} else if (!topLevelDiv) {
 			cssbuf.append("\tmargin-right: auto;\n"); // topLevelDiv default
@@ -681,333 +904,425 @@ public class WebEnv extends LocalEnv {
 		// margin-top
 		if (decos.containsKey("margin-top")) { // TODO
 			String str = stringsub(decos.getStr("margin-top"));
-			if (GlobalEnv.isNumber(str)) {
-				cssbuf.append("\tmargin-top: " + str + "px;\n");
-			} else {
-				cssbuf.append("\tmargin-top: " + str + ";\n");
+			if (str != null) {
+				if (GlobalEnv.isNumber(str)) {
+					cssbuf.append("\tmargin-top: " + str + "px;\n");
+				} else {
+					cssbuf.append("\tmargin-top: " + str + ";\n");
+				}
 			}
 		}
 		
 		// max-height
 		if (decos.containsKey("max-height")) { // TODO
 			String str = stringsub(decos.getStr("max-height"));
-			if (GlobalEnv.isNumber(str)) {
-				cssbuf.append("\tmax-height: " + str + "px;\n");
-			} else {
-				cssbuf.append("\tmax-height: " + str + ";\n");
+			if (str != null) {
+				if (GlobalEnv.isNumber(str)) {
+					cssbuf.append("\tmax-height: " + str + "px;\n");
+				} else {
+					cssbuf.append("\tmax-height: " + str + ";\n");
+				}
 			}
 		}
 		// max-width
 		if (decos.containsKey("max-width")) { // TODO
 			String str = stringsub(decos.getStr("max-width"));
-			if (GlobalEnv.isNumber(str)) {
-				cssbuf.append("\tmax-width: " + str + "px;\n");
-			} else {
-				cssbuf.append("\tmax-width: " + str + ";\n");
+			if (str != null) {
+				if (GlobalEnv.isNumber(str)) {
+					cssbuf.append("\tmax-width: " + str + "px;\n");
+				} else {
+					cssbuf.append("\tmax-width: " + str + ";\n");
+				}
 			}
 		}
 		
 		// min-height
 		if (decos.containsKey("min-height")) { // TODO
 			String str = stringsub(decos.getStr("min-height"));
-			if (GlobalEnv.isNumber(str)) {
-				cssbuf.append("\tmin-height: " + str + "px;\n");
-			} else {
-				cssbuf.append("\tmin-height: " + str + ";\n");
+			if (str != null) {
+				if (GlobalEnv.isNumber(str)) {
+					cssbuf.append("\tmin-height: " + str + "px;\n");
+				} else {
+					cssbuf.append("\tmin-height: " + str + ";\n");
+				}
 			}
 		}
 		// min-width
 		if (decos.containsKey("min-width")) { // TODO
 			String str = stringsub(decos.getStr("min-width"));
-			if (GlobalEnv.isNumber(str)) {
-				cssbuf.append("\tmin-width: " + str + "px;\n");
-			} else {
-				cssbuf.append("\tmin-width: " + str + ";\n");
+			if (str != null) {
+				if (GlobalEnv.isNumber(str)) {
+					cssbuf.append("\tmin-width: " + str + "px;\n");
+				} else {
+					cssbuf.append("\tmin-width: " + str + ";\n");
+				}
 			}
 		}
 		
 		// opacity (CSS3)
 		if (decos.containsKey("opacity")) { // TODO
 			String str = stringsub(decos.getStr("opacity"));
-			cssbuf.append("\topacity: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\topacity: " + str + ";\n");
+			}
 		}
 		
 		// outline-color
 		if (decos.containsKey("outline-color")) { // TODO
 			String str = stringsub(decos.getStr("outline-color"));
-			cssbuf.append("\toutline-color: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\toutline-color: " + str + ";\n");
+			}
 		}
 		
 		// outline-style
 		if (decos.containsKey("outline-style")) { // TODO\
 			String str = stringsub(decos.getStr("outline-style"));
-			cssbuf.append("\toutline-style: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\toutline-style: " + str + ";\n");
+			}
 		}
 		
 		// outline-width
 		if (decos.containsKey("outline-width")) { // TODO
 			String str = stringsub(decos.getStr("outline-width"));
-			if (GlobalEnv.isNumber(str)) {
-				cssbuf.append("\toutline-width: " + str + "px;\n");
-			} else {
-				cssbuf.append("\toutline-width: " + str + ";\n");
+			if (str != null) {
+				if (GlobalEnv.isNumber(str)) {
+					cssbuf.append("\toutline-width: " + str + "px;\n");
+				} else {
+					cssbuf.append("\toutline-width: " + str + ";\n");
+				}
 			}
 		}
 		
 		// overflow
 		if (decos.containsKey("overflow")) { // TODO
 			String str = stringsub(decos.getStr("overflow"));
-			cssbuf.append("\toverflow: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\toverflow: " + str + ";\n");
+			}
 		}
 		
 		// padding
 		if (decos.containsKey("padding")) { // TODO
 			String str = stringsub(decos.getStr("padding"));
-			if (GlobalEnv.isNumber(str)) {
-				cssbuf.append("\tpadding: " + str + "px;\n");
-			} else {
-				cssbuf.append("\tpadding: " + str + ";\n");
+			if (str != null) {
+				if (GlobalEnv.isNumber(str)) {
+					cssbuf.append("\tpadding: " + str + "px;\n");
+				} else {
+					cssbuf.append("\tpadding: " + str + ";\n");
+				}
 			}
 		}
 		// padding-bottom
 		if (decos.containsKey("padding-bottom")) { // TODO
 			String str = stringsub(decos.getStr("padding-bottom"));
-			if (GlobalEnv.isNumber(str)) {
-				cssbuf.append("\tpadding-bottom: " + str + "px;\n");
-			} else {
-				cssbuf.append("\tpadding-bottom: " + str + ";\n");
+			if (str != null) {
+				if (GlobalEnv.isNumber(str)) {
+					cssbuf.append("\tpadding-bottom: " + str + "px;\n");
+				} else {
+					cssbuf.append("\tpadding-bottom: " + str + ";\n");
+				}
 			}
 		}
 		// padding-left
 		if (decos.containsKey("padding-left")) { // TODO
 			String str = stringsub(decos.getStr("padding-left"));
-			if (GlobalEnv.isNumber(str)) {
-				cssbuf.append("\tpadding-left: " + str + "px;\n");
-			} else {
-				cssbuf.append("\tpadding-left: " + str + ";\n");
+			if (str != null) {
+				if (GlobalEnv.isNumber(str)) {
+					cssbuf.append("\tpadding-left: " + str + "px;\n");
+				} else {
+					cssbuf.append("\tpadding-left: " + str + ";\n");
+				}
 			}
 		}
 		// padding-right
 		if (decos.containsKey("padding-right")) { // TODO
 			String str = stringsub(decos.getStr("padding-right"));
-			if (GlobalEnv.isNumber(str)) {
-				cssbuf.append("\tpadding-right: " + str + "px;\n");
-			} else {
-				cssbuf.append("\tpadding-right: " + str + ";\n");
+			if (str != null) {
+				if (GlobalEnv.isNumber(str)) {
+					cssbuf.append("\tpadding-right: " + str + "px;\n");
+				} else {
+					cssbuf.append("\tpadding-right: " + str + ";\n");
+				}
 			}
 		}
 		// padding-top
 		if (decos.containsKey("padding-top")) { // TODO
 			String str = stringsub(decos.getStr("padding-top"));
-			if (GlobalEnv.isNumber(str)) {
-				cssbuf.append("\tpadding-top: " + str + "px;\n");
-			} else {
-				cssbuf.append("\tpadding-top: " + str + ";\n");
+			if (str != null) {
+				if (GlobalEnv.isNumber(str)) {
+					cssbuf.append("\tpadding-top: " + str + "px;\n");
+				} else {
+					cssbuf.append("\tpadding-top: " + str + ";\n");
+				}
 			}
 		}
 		
 		// position
 		if (decos.containsKey("position")) { // TODO
 			String str = stringsub(decos.getStr("position"));
-			cssbuf.append("\tposition: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tposition: " + str + ";\n");
+			}
 		}
 		// top (set position)
 		if (decos.containsKey("position") && decos.containsKey("top")) { // TODO
 			String str = stringsub(decos.getStr("top"));
-			if (GlobalEnv.isNumber(str)) {
-				cssbuf.append("\ttop: " + str + "px;\n");
-			} else {
-				cssbuf.append("\ttop: " + str + ";\n");
+			if (str != null) {
+				if (GlobalEnv.isNumber(str)) {
+					cssbuf.append("\ttop: " + str + "px;\n");
+				} else {
+					cssbuf.append("\ttop: " + str + ";\n");
+				}
 			}
 		}
 		// right (set position)
 		if (decos.containsKey("position") && decos.containsKey("right")) { // TODO
 			String str = stringsub(decos.getStr("right"));
-			if (GlobalEnv.isNumber(str)) {
-				cssbuf.append("\tright: " + str + "px;\n");
-			} else {
-				cssbuf.append("\tright: " + str + ";\n");
+			if (str != null) {
+				if (GlobalEnv.isNumber(str)) {
+					cssbuf.append("\tright: " + str + "px;\n");
+				} else {
+					cssbuf.append("\tright: " + str + ";\n");
+				}
 			}
 		}
 		// bottom (set position)
 		if (decos.containsKey("position") && decos.containsKey("bottom")) { // TODO
 			String str = stringsub(decos.getStr("bottom"));
-			if (GlobalEnv.isNumber(str)) {
-				cssbuf.append("\tbottom: " + str + "px;\n");
-			} else {
-				cssbuf.append("\tbottom: " + str + ";\n");
+			if (str != null) {
+				if (GlobalEnv.isNumber(str)) {
+					cssbuf.append("\tbottom: " + str + "px;\n");
+				} else {
+					cssbuf.append("\tbottom: " + str + ";\n");
+				}
 			}
 		}
 		// left (set position)
 		if (decos.containsKey("position") && decos.containsKey("left")) { // TODO
 			String str = stringsub(decos.getStr("left"));
-			if (GlobalEnv.isNumber(str)) {
-				cssbuf.append("\tleft: " + str + "px;\n");
-			} else {
-				cssbuf.append("\tleft: " + str + ";\n");
+			if (str != null) {
+				if (GlobalEnv.isNumber(str)) {
+					cssbuf.append("\tleft: " + str + "px;\n");
+				} else {
+					cssbuf.append("\tleft: " + str + ";\n");
+				}
 			}
 		}
 		// z-index (set position)
 		if (decos.containsKey("position") && decos.containsKey("z-index")) { // TODO
 			String str = stringsub(decos.getStr("z-index"));
-			cssbuf.append("\tz-index: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tz-index: " + str + ";\n");
+			}
 		}
 		
 		// table-layout (only table element)
 		if (decos.containsKey("table-layout")) { // TODO
 			String str = stringsub(decos.getStr("table-layout"));
-			cssbuf.append("\ttable-layout: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\ttable-layout: " + str + ";\n");
+			}
 		}
 		
 		// tab-size (CSS3)
 		if (decos.containsKey("tab-size")) { // TODO
 			String str = stringsub(decos.getStr("tab-size"));
-			cssbuf.append("\ttab-size: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\ttab-size: " + str + ";\n");
+			}
 		}
 		
 		// text-align & align
 		if (decos.containsKey("text-align")) { // TODO
 			String str = stringsub(decos.getStr("text-align"));
-			cssbuf.append("\ttext-align: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\ttext-align: " + str + ";\n");
+			}
 		} else if (decos.containsKey("align")) {
 			String str = stringsub(decos.getStr("align"));
-			cssbuf.append("\ttext-align: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\ttext-align: " + str + ";\n");
+			}
 		}
 		
 		// text-align-last (CSS3)
 		if (decos.containsKey("text-align-last")) { // TODO
 			String str = stringsub(decos.getStr("text-align-last"));
-			cssbuf.append("\ttext-align-last: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\ttext-align-last: " + str + ";\n");
+			}
 		}
 		
 		// text-decoration & text-decoration-line (CSS3)
 		if (decos.containsKey("text-decoration")) { // TODO
 			String str = stringsub(decos.getStr("text-decoration"));
-			cssbuf.append("\ttext-decoration: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\ttext-decoration: " + str + ";\n");
+			}
 		} else if (decos.containsKey("text-decoration-line")) {
 			String str = stringsub(decos.getStr("text-decoration-line"));
-			cssbuf.append("\t-moz-text-decoration-line: " + str + ";\n");
-			cssbuf.append("\ttext-decoration-line: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\t-moz-text-decoration-line: " + str + ";\n");
+				cssbuf.append("\ttext-decoration-line: " + str + ";\n");
+			}
 		}
 		
 		// text-decoration-color (CSS3)
 		if (decos.containsKey("text-decoration-color")) { // TODO
 			String str = stringsub(decos.getStr("text-decoration-color"));
-			cssbuf.append("\t-moz-text-decoration-color: " + str + ";\n");
-			cssbuf.append("\ttext-decoration-color: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\t-moz-text-decoration-color: " + str + ";\n");
+				cssbuf.append("\ttext-decoration-color: " + str + ";\n");
+			}
 		}
 		
 		// text-decoration-skip (CSS3)
 		if (decos.containsKey("text-decoration-skip")) { // TODO
 			String str = stringsub(decos.getStr("text-decoration-skip"));
-			cssbuf.append("\t-moz-text-decoration-skip: " + str + ";\n");
-			cssbuf.append("\ttext-decoration-skip: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\t-moz-text-decoration-skip: " + str + ";\n");
+				cssbuf.append("\ttext-decoration-skip: " + str + ";\n");
+			}
 		}
 		
 		// text-decoration-style (CSS3)
 		if (decos.containsKey("text-decoration-style")) { // TODO
 			String str = stringsub(decos.getStr("text-decoration-style"));
-			cssbuf.append("\t-moz-text-decoration-style: " + str + ";\n");
-			cssbuf.append("\ttext-decoration-style: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\t-moz-text-decoration-style: " + str + ";\n");
+				cssbuf.append("\ttext-decoration-style: " + str + ";\n");
+			}
 		}
 		
 		// text-indent & indent
 		if (decos.containsKey("text-indent")) { // TODO
 			String str = stringsub(decos.getStr("text-indent"));
-			if (GlobalEnv.isNumber(str)) {
-				cssbuf.append("\ttext-indent: " + str + "px;\n");
-			} else {
-				cssbuf.append("\ttext-indent: " + str + ";\n");
+			if (str != null) {
+				if (GlobalEnv.isNumber(str)) {
+					cssbuf.append("\ttext-indent: " + str + "px;\n");
+				} else {
+					cssbuf.append("\ttext-indent: " + str + ";\n");
+				}
 			}
 		} else if (decos.containsKey("indent")) {
 			String str = stringsub(decos.getStr("indent"));
-			if (GlobalEnv.isNumber(str)) {
-				cssbuf.append("\ttext-indent: " + str + "px;\n");
-			} else {
-				cssbuf.append("\ttext-indent: " + str + ";\n");
+			if (str != null) {
+				if (GlobalEnv.isNumber(str)) {
+					cssbuf.append("\ttext-indent: " + str + "px;\n");
+				} else {
+					cssbuf.append("\ttext-indent: " + str + ";\n");
+				}
 			}
 		}
 		
 		// text-justify (CSS3)
 		if (decos.containsKey("text-justify")) {
 			String str = stringsub(decos.getStr("text-justify"));
-			cssbuf.append("\ttext-justify: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\ttext-justify: " + str + ";\n");
+			}
 		}
 		
 		// text-transform
 		if (decos.containsKey("text-transform")) { // TODO
 			String str = stringsub(decos.getStr("text-transform"));
-			cssbuf.append("\ttext-transform: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\ttext-transform: " + str + ";\n");
+			}
 		}
 		
 		// text-underline-position (CSS3)
 		if (decos.containsKey("text-underline-position")) { // TODO
 			String str = stringsub(decos.getStr("text-underline-position"));
-			cssbuf.append("\t-moz-text-underline-position: " + str + ";\n");
-			cssbuf.append("\ttext-underline-position: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\t-moz-text-underline-position: " + str + ";\n");
+				cssbuf.append("\ttext-underline-position: " + str + ";\n");
+			}
 		}
 		
 		// text-wrap (CSS3)
 		if (decos.containsKey("text-wrap")) { // TODO
 			String str = stringsub(decos.getStr("text-wrap"));
-			cssbuf.append("\ttext-wrap: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\ttext-wrap: " + str + ";\n");
+			}
 		}
 		
 		// unicode-bidi
 		if (decos.containsKey("unicode-bidi")) { // TODO
 			String str = stringsub(decos.getStr("unicode-bidi"));
-			cssbuf.append("\tunicode-bidi: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tunicode-bidi: " + str + ";\n");
+			}
 		}
 		
 		// virtical-align & valign
 		// tableと分ける必要性あり
 		if (decos.containsKey("virtical-align")) {  // TODO
 			String str = stringsub(decos.getStr("virtical-align"));
-			//cssbuf.append("\tvirtical-align: " + decos.getStr("virtical-align") + ";\n");
-			if (str.equals("top")) {
-				cssbuf.append("\t-webkit-align-self: flex-start;\n");
-				cssbuf.append("\talign-self: flex-start;\n");
-			} else if (str.equals("middle")) {
-				cssbuf.append("\t-webkit-align-self: center;\n");
-				cssbuf.append("\talign-self: center;\n");
-			} else if (str.equals("bottom")) {
-				cssbuf.append("\t-webkit-align-self: flex-end;\n");
-				cssbuf.append("\talign-self: flex-end;\n");
+			if (str != null) {
+				if (str.equals("top")) {
+					cssbuf.append("\t-webkit-align-self: flex-start;\n");
+					cssbuf.append("\talign-self: flex-start;\n");
+				} else if (str.equals("middle")) {
+					cssbuf.append("\t-webkit-align-self: center;\n");
+					cssbuf.append("\talign-self: center;\n");
+				} else if (str.equals("bottom")) {
+					cssbuf.append("\t-webkit-align-self: flex-end;\n");
+					cssbuf.append("\talign-self: flex-end;\n");
+				}
 			}
 		} else if (decos.containsKey("valign")) {
 			String str = stringsub(decos.getStr("valign"));
-			//cssbuf.append("\tvirtical-align: " + decos.getStr("valign") + ";\n");
-			if (str.equals("top")) {
-				cssbuf.append("\t-webkit-align-self: flex-start;\n");
-				cssbuf.append("\talign-self: flex-start;\n");
-			} else if (str.equals("middle")) {
-				cssbuf.append("\t-webkit-align-self: center;\n");
-				cssbuf.append("\talign-self: center;\n");
-			} else if (str.equals("bottom")) {
-				cssbuf.append("\t-webkit-align-self: flex-end;\n");
-				cssbuf.append("\talign-self: flex-end;\n");
-			}
+			if (str != null) {
+				if (str.equals("top")) {
+					cssbuf.append("\t-webkit-align-self: flex-start;\n");
+					cssbuf.append("\talign-self: flex-start;\n");
+				} else if (str.equals("middle")) {
+					cssbuf.append("\t-webkit-align-self: center;\n");
+					cssbuf.append("\talign-self: center;\n");
+				} else if (str.equals("bottom")) {
+					cssbuf.append("\t-webkit-align-self: flex-end;\n");
+					cssbuf.append("\talign-self: flex-end;\n");
+				}
+			}	
 		}
 		
 		// visibility
 		if (decos.containsKey("visibility")) { // TODO
 			String str = stringsub(decos.getStr("visibility"));
-			cssbuf.append("\tvisibility: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tvisibility: " + str + ";\n");
+			}
 		}
 		
 		// white-space
 		if (decos.containsKey("white-space")) { // TODO
 			String str = stringsub(decos.getStr("white-space"));
-			cssbuf.append("\twhite-space: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\twhite-space: " + str + ";\n");
+			}
 		}
 		
 		// width
 		if (decos.containsKey("width")) { // TODO
 			String str = stringsub(decos.getStr("width"));
-			if (GlobalEnv.isNumber(str)) {
-				cssbuf.append("\twidth: " + str + "px;\n");
+			if (str != null) {
+				if (GlobalEnv.isNumber(str)) {
+					cssbuf.append("\twidth: " + str + "px;\n");
+				} else {
+					cssbuf.append("\twidth: " + str + ";\n");
+				}
 			} else {
-				cssbuf.append("\twidth: " + str + ";\n");
+				if (tableFlag) {
+					cssbuf.append("\twidth: auto;\n"); // table default
+				} else if (!topLevelDiv) {
+					cssbuf.append("\tmax-width: 1280px;\n"); // topLevelDiv default
+				} else {
+					cssbuf.append("\twidth: 100%;\n"); // default
+				}
 			}
 		} else {
 			if (tableFlag) {
@@ -1022,23 +1337,29 @@ public class WebEnv extends LocalEnv {
 		// word-break (CSS3)
 		if (decos.containsKey("word-break")) { // TODO
 			String str = stringsub(decos.getStr("word-break"));
-			cssbuf.append("\tword-break: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tword-break: " + str + ";\n");
+			}
 		}
 		
 		// word-spacing
 		if (decos.containsKey("word-spacing")) { // TODO
 			String str = stringsub(decos.getStr("word-spacing"));
-			if (GlobalEnv.isNumber(str)) {
-				cssbuf.append("\tword-spacing: " + str + "px;\n");
-			} else {
-				cssbuf.append("\tword-spacing: " + str + ";\n");
+			if (str != null) {
+				if (GlobalEnv.isNumber(str)) {
+					cssbuf.append("\tword-spacing: " + str + "px;\n");
+				} else {
+					cssbuf.append("\tword-spacing: " + str + ";\n");
+				}
 			}
 		}
 		
 		// word-wrap (CSS3)
 		if (decos.containsKey("word-wrap")) { // TODO
 			String str = stringsub(decos.getStr("word-wrap"));
-			cssbuf.append("\tword-wrap: " + str + ";\n");
+			if (str != null) {
+				cssbuf.append("\tword-wrap: " + str + ";\n");
+			}
 		}
 		
 		// これ以降CSSでないルール
@@ -1079,7 +1400,6 @@ public class WebEnv extends LocalEnv {
 			Log.out("==> css style is null.");
 			notWrittenClassId.addElement(classid);
 		}
-		Log.out("");
 		
 		if (!topLevelDiv) {
 			topLevelDiv = true; // 一番親だけ特別なクラスをもたせるため
@@ -1131,7 +1451,11 @@ public class WebEnv extends LocalEnv {
 		header.append("<head>\n");
 		header_creation(); // ヘッダー情報の追加 cssなど
 		header.append("</head>\n");
-		header.append("<body>\n");
+		if (style != null) {
+			header.append("<body class=\"style-body\">");
+		} else {
+			header.append("<body>\n");
+		}
 	}
 	
 	public void getFooter() { // フッダーの作成

@@ -18,9 +18,9 @@ import supersql.codegenerator.Ehtml;
 import supersql.codegenerator.Incremental;
 
 public class GlobalEnv {
-	
+
 	public static final char COMMENT_OUT_LETTER = '-';	//コメントアウト等による利用(ex: -- )
-	
+
     /* [����] getProperty�᥽�åɤˤ�äơ������ƥ�ץ�ѥƥ�����(OS���ե�������ڤ�ʸ��ۡ��ࡢ����ʤ�)����� */
     /* �����ƥ�ץ�ѥƥ��Ͱ����μ���: System.getProperties().list(System.out); */
     public final static String USER_HOME = System.getProperty("user.home");				//�桼���Υۡ���ǥ��쥯�ȥ�
@@ -35,11 +35,11 @@ public class GlobalEnv {
     public final static String MEDIA_XML = System.getProperty("user.dir")+OS_FS+"XML"+OS_FS+"ssql_medias.xml";
 
 	public static final String DEFAULT_CHARACTER_CODE = "UTF-8";
-    
+
     public static String query = "";
-    
+
 	private static Hashtable<String, String> envs;
-	
+
 	// 20140624_masato
 	public static String errorText = "";
 	public static String errorText_main = "";
@@ -49,7 +49,7 @@ public class GlobalEnv {
 
 	//����ե�����ξ���
 	private static String layout = "";
-	
+
 	private static String host;
 
 	private static String db;
@@ -63,7 +63,7 @@ public class GlobalEnv {
 	private static String password;
 
 	private static String encode;
-	
+
 	private static String apiServerUrl;
 
 	//chie start
@@ -85,7 +85,7 @@ public class GlobalEnv {
 
 	//foreachなど
 	public static boolean foreach_flag = false;
-	
+
 	//sessionなど
 	public static boolean session_flag = false;
 
@@ -156,7 +156,7 @@ public class GlobalEnv {
 		if (key != null) {
 			envs.put(key, "");
 		}
-		
+
 		//added by goto 20120707 start
 		//optimize level　"-O0,-O1,-O2,-O3"
 		//optimize level が設定されていればオプションを書き直す
@@ -169,11 +169,11 @@ public class GlobalEnv {
 		//added by goto 20120707 end
 
 		setQuietLog();
-		
+
 		// added by masato 20150915 start
 		setIncremental();
 		// added by masato 20150915 end
-		
+
 		// added by masato 20151118 start
 		setEhtml();
 		// added by masato 20151118 end
@@ -230,7 +230,7 @@ public class GlobalEnv {
 			else
 				config = home.concat("/config.ssql");
 			//changed by goto 20120624 end
-			
+
 			Log.out("offline config");
 			c_value = getConfigValue(config);
 		}
@@ -320,7 +320,7 @@ public class GlobalEnv {
 	public static String getfilename() {
 		return seek("-f");
 	}
-	
+
 	//added by goto 20141130
 	public static String getfileparent() {
 		return new File(seek("-f")).getParent();
@@ -422,7 +422,7 @@ public class GlobalEnv {
 			}else if (driver.equals("mysql")) {
 				ret = "jdbc:mysql://" + host + "/" + db + "?useUnicode=true&characterEncoding=SJIS";
 			}else if (driver.equals("db2")) {
-				ret = "jdbc:db2:" + db;	
+				ret = "jdbc:db2:" + db;
 			//added by goto 20120518 start
 			}else if (driver.equals("sqlite") || driver.equals("sqlite3")) {
 //				ret = "jdbc:sqlite:" + db;
@@ -487,7 +487,7 @@ public class GlobalEnv {
 			Log.setLog(0);
 		}
 	}
-	
+
 	// added by masato 20150915 for incremental update data
 	private static void setIncremental(){
 		if(seek("-incremental") != null){
@@ -496,7 +496,7 @@ public class GlobalEnv {
 			return;
 		}
 	}
-	
+
 	// added by masato 20151118 for embedding
 	private static void setEhtml(){
 		if(seek("-ehtml") != null){
@@ -505,7 +505,7 @@ public class GlobalEnv {
 			return;
 		}
 	}
-	
+
 	/*
 	 * -queryによるクエリの入力(-f以外のパターン)
 	 */
@@ -776,10 +776,10 @@ public class GlobalEnv {
 	public static String getDriverName(){
 		return seek("-driver");
 	}
-		
+
 	public static String getDriver(){
 		String ret = seek("-driver");
-		
+
 		if (ret == null) {
 			if (driver != null) {
 				ret = driver;
@@ -860,7 +860,7 @@ public class GlobalEnv {
 	public static String getframeworklist() {
 		return seek("-fwlist");
 	}
-	
+
 	//added by goto 20141130
 	//halken TFEmatcher
     public static boolean isTFEmatcher() {
@@ -868,7 +868,7 @@ public class GlobalEnv {
     		return true;
 		return false;
 	}
-    
+
     //added by goto 20141201
     public static boolean isLogger() {
     	//Default: off
@@ -876,15 +876,15 @@ public class GlobalEnv {
     		return true;
     	return false;
     }
-    
+
     //added by goto 20150112
     public static boolean isCheckquery() {
     	if(seek("-checkquery") != null || seek("-getparseresult") != null)
     		return true;
     	return false;
     }
-    
-    
+
+
     //added by goto 20141201
 	private static String getCurrentPath(){
 		String cp = System.getProperty("java.class.path");
@@ -918,12 +918,19 @@ public class GlobalEnv {
 	public static String getLinkValue(){
 		return seek("-ehtmlarg");
 	}
-	
+
 	// added by masato 20151128 for execute multiple query in ehtml or incremental
 	public static Integer getQueryNum(){
 		return Integer.parseInt(seek("-querynum"));
 	}
-	
+
+	// added by yusuke 20161109 for autocorrect
+	public static boolean isSsedit_autocorrect() {
+		if(seek("-ssedit_autocorrect") != null)
+			return true;
+		return false;
+	}
+
 	//isNumber
 	public static boolean isNumber(String val) {
 		String regex = "^\\-?[0-9]*\\.?[0-9]+$";
@@ -931,4 +938,19 @@ public class GlobalEnv {
 	    Matcher m = p.matcher(val);
 	    return m.find();
 	}
+
+	private static boolean c_tab_flag = false;
+
+	// tbt embed
+	public static void setCtabflag(){
+		c_tab_flag = true;
+	}
+	public static void unsetCtabflag(){
+		c_tab_flag = false;
+	}
+
+	public static boolean getCtabflag(){
+		return c_tab_flag;
+	}
+
 }

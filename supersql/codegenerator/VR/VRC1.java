@@ -2,9 +2,6 @@ package supersql.codegenerator.VR;
 
 import org.stringtemplate.v4.compiler.STParser.ifstat_return;
 
-import com.sun.javafx.scene.CssFlags;
-import com.sun.xml.internal.bind.v2.runtime.output.StAXExStreamWriterOutput;
-
 import supersql.codegenerator.Connector;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.Manager;
@@ -39,9 +36,9 @@ public class VRC1 extends Connector {
 //			VRAttribute.cjoinarray.add("C1");
 //			Log.info("C1");
 //		}
-		
-		
-		
+
+
+
 		Log.out("------- C1 -------");
 		Log.out("tfes.contain_itemnum=" + tfes.contain_itemnum());
 		Log.out("tfes.size=" + tfes.size());
@@ -68,12 +65,12 @@ public class VRC1 extends Connector {
 		// tk
 		// start///////////////////////////////////////////////////////////////////////
 		htmlEnv.append_css_def_td(VREnv.getClassID(this), this.decos);
-		
+
 //		if (!GlobalEnv.isOpt()) {
 ////			htmlEnv.code
 ////					.append("<TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
 ////		htmlEnv.code.append(htmlEnv.tableBorder + "\"");
-////			htmlEnv.code.append(htmlEnv.getOutlineMode());	
+////			htmlEnv.code.append(htmlEnv.getOutlineMode());
 //			/*
 //			 * if(decos.containsKey("outborder")){
 //			 * html_env.code.append(" noborder ");
@@ -175,12 +172,11 @@ public class VRC1 extends Connector {
 			htmlEnv.code.append(VRFunction.createForm(decos));
 			VREnv.setFormItemFlg(true, null);
 		}
-		//System.out.println("<C1front>");
 		
 		while (this.hasMoreItems()) {
 			//System.out.println("html_env.gLevel2="+htmlEnv.gLevel2);
 			if(htmlEnv.gLevel == 1){//////// kotani 16/10/04
-				
+
 			}
 			ITFE tfe = tfes.get(i);
 			if(VRAttribute.genre.equals("")){//////////////////////////////////////////////////////////// kotani 16/10/04
@@ -222,7 +218,7 @@ public class VRC1 extends Connector {
 
 			i++;
 		}
-		
+
 		if(VRAttribute.gjudge == 0){
 			if(VRAttribute.billnum >= 2){
 				for(int k=0;k<VRAttribute.billnum-1;k++){
@@ -233,8 +229,9 @@ public class VRC1 extends Connector {
 				//VRAttribute.cjoinarray.add("C1");
 			}
 		}
+
 		
-		//System.out.println("</C1back>");
+
 
 		htmlEnv2.code.append("</tfe>");
 		if (decos.containsKey("form")) {
@@ -249,24 +246,24 @@ public class VRC1 extends Connector {
 		}
 
 		if(htmlEnv.gLevel==0){
-			
+
 		}else{
 			htmlEnv.code.append("</category>\n"); //htmlEnv.code.append("</TABLE>\n")から変更
 			htmlEnv.code.append("</category>\n");//20160919 kotani add
 		}
-		
-		
-		
+
+
+
 ////		System.out.println("gjudge="+VRAttribute.gjudge);
-////		if(!VRAttribute.gjudge){	
+////		if(!VRAttribute.gjudge){
 //		//System.out.println("c1_level="+htmlEnv.gLevel2);
 //		if(htmlEnv.gLevel2 == 0){
 //			//VRAttribute.cjoinflag = 1;
 //			VRAttribute.cjoinarray.add("C1");
 //		//}
 //		}
-		
-		
+
+
 		// Log.out("TFEId = " + HTMLEnv.getClassID(this));
 		// html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
 		return null;
