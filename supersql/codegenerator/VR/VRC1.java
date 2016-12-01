@@ -175,7 +175,7 @@ public class VRC1 extends Connector {
 			htmlEnv.code.append(VRFunction.createForm(decos));
 			VREnv.setFormItemFlg(true, null);
 		}
-		System.out.println("<C1front>");
+		//System.out.println("<C1front>");
 		
 		while (this.hasMoreItems()) {
 			//System.out.println("html_env.gLevel2="+htmlEnv.gLevel2);
@@ -187,7 +187,7 @@ public class VRC1 extends Connector {
 				if(htmlEnv.gLevel == 0){
 					//htmlEnv.code.append(VREnv.getClassID(tfe));
 					if(VRAttribute.groupcount >= 1){
-						htmlEnv.code.append("<group>\n");
+						//htmlEnv.code.append("<group1>\n");
 					}
 					VRAttribute.groupcount++;
 					//System.out.println(VRAttribute.groupcount);
@@ -226,15 +226,15 @@ public class VRC1 extends Connector {
 		if(VRAttribute.gjudge == 0){
 			if(VRAttribute.billnum >= 2){
 				for(int k=0;k<VRAttribute.billnum-1;k++){
-					VRAttribute.cjoinarray.add("C1");
+					//VRAttribute.cjoinarray.add("C1");
 				}
 				VRAttribute.billnum = 0;
 			}else{
-				VRAttribute.cjoinarray.add("C1");
+				//VRAttribute.cjoinarray.add("C1");
 			}
 		}
 		
-		System.out.println("</C1back>");
+		//System.out.println("</C1back>");
 
 		htmlEnv2.code.append("</tfe>");
 		if (decos.containsKey("form")) {

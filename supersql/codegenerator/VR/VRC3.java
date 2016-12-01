@@ -131,7 +131,7 @@ public class VRC3 extends Connector {
 			VREnv.setFormItemFlg(true, null);
 		}
 		
-		System.out.println("<C3front>");
+		//System.out.println("<C3front>");
 
 		while (this.hasMoreItems()) {
 			if(VREnv.gLevel == 1){//////// kotani 16/10/04
@@ -142,7 +142,7 @@ public class VRC3 extends Connector {
 				if(VREnv.gLevel == 0){
 					//VREnv.code.append(VREnv.getClassID(tfe));
 					if(VRAttribute.groupcount >= 1){
-						VREnv.code.append("<group>\n");
+						//VREnv.code.append("<group3>\n");
 					}
 					VRAttribute.groupcount++;
 					//System.out.println("groupcount3");
@@ -168,14 +168,14 @@ public class VRC3 extends Connector {
 		if(VRAttribute.gjudge == 0){
 			if(VRAttribute.billnum >= 2){
 				for(int k=0;k<VRAttribute.billnum-1;k++){
-					VRAttribute.cjoinarray.add("C3");
+					//VRAttribute.cjoinarray.add("C3");
 				}
 				VRAttribute.billnum = 0;
 			}else{
-				VRAttribute.cjoinarray.add("C3");
+				//VRAttribute.cjoinarray.add("C3");
 			}
 		}
-		System.out.println("</C3back>");
+		//System.out.println("</C3back>");
 		
 //		if(!VRAttribute.gjudge){
 ////		System.out.println("c3_level="+VREnv.gLevel2);

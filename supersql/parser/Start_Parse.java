@@ -26,6 +26,7 @@ import supersql.codegenerator.AttributeItem;
 import supersql.codegenerator.CodeGenerator;
 import supersql.codegenerator.TFE;
 import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5Function;
+import supersql.codegenerator.VR.VRcjoinarray;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
@@ -434,6 +435,7 @@ public class Start_Parse {
 				String b = query.substring(query.toLowerCase().indexOf("generate"));
 				Log.info(a);
 				Log.info(b);
+				VRcjoinarray.query = b;
 
 				if(a.equals(" ") || a.equals("") || a.equals("\r")){
 				}else{

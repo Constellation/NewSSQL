@@ -35,17 +35,20 @@ public class VRfilecreate {
 		String b = "";
 		String s = "";/////ジャンル出す
 		
-
-		for(int n=0; n<VRAttribute.cjoinarray.size();n++){
-			System.out.println("hey="+VRAttribute.cjoinarray.get(n));
-		}
-		//System.out.println(VRAttribute.groupcount);
+		//VRcjoinarray test = new VRcjoinarray("generate VR\r[shape,[name],]! ! [color,[name],], \nfrom basic;");
+		VRcjoinarray.getJoin();
 		
-		if(VRAttribute.groupcount == 0){//////ビルが一個だけだった時
-			VRAttribute.groupcount = 1;
+//		for(int n=0; n<VRAttribute.genrearray22.size() ;n++){
+//			System.out.println("hey="+VRAttribute.genrearray22.get(n));
+//		}
+		
+//		System.out.println(VRAttribute.groupcount);
+		VRAttribute.groupcount1 = VRAttribute.cjoinarray.size()+1;
+		
+		if(VRAttribute.groupcount == 1){//////ビルが一個だけだった時
 			b = getCS1();
-			for(int i=1; i<=VRAttribute.groupcount; i++){
-				b += "				if(groupflag ==" + i + "){\n";
+			for(int i=1; i<=VRAttribute.groupcount1; i++){
+				b += "				if(groupflag == " + i + "){\n";
 					
 				for(int k=0; k<VRAttribute.genrearray2.size(); k++){/////ジャンル出すはじめ
 					s += VRAttribute.genrearray2.get(k)+",";
@@ -70,39 +73,46 @@ public class VRfilecreate {
 			}
 		}else{
 			b = getCS1();
-			for(int i=1; i<=VRAttribute.groupcount; i++){
+			for(int i=1; i<=VRAttribute.groupcount1; i++){
 				if(i == 1){
-					b += "				if(groupflag ==" + i + "){\n";
+					b += "				if(groupflag == " + i + "){\n";
 				}else{
-					b += "				}else if(groupflag ==" + i + "){\n";
+					b += "				}else if(groupflag == " + i + "){\n";
 				}
 				
 				if(i != 1){
-					if("C1".equals(VRAttribute.cjoinarray.get(i-2))){
+					int a = VRAttribute.genrearray22.get(i-1) - VRAttribute.genrearray22.get(i-2);
+					if(",".equals(VRAttribute.cjoinarray.get(i-2))){
 						if(VRAttribute.floorarray.get(i-2) == 1){
-							int a = VRAttribute.genrearray22.get(i-1) - VRAttribute.genrearray22.get(i-2);
 							b +="					billmovex += " + -50*a + ";\n";
+						}else if(VRAttribute.floorarray.get(i-2) == 2){
+							b +="					billmovex += -50;\n";
 						}else{
 							b +="					billmovex += -50;\n";
+							b +="					billmovez += " + -30*(a-1) + ";\n";
 						}
-					}else if("C2".equals(VRAttribute.cjoinarray.get(i-2))){
-						if(VRAttribute.floorarray.get(i-2) == 2){
-							int a = VRAttribute.genrearray22.get(i-1) - VRAttribute.genrearray22.get(i-2);
+					}else if("!".equals(VRAttribute.cjoinarray.get(i-2))){
+						if(VRAttribute.floorarray.get(i-2) == 1){
+							b +="					billmovex += " + -50*(a-1) + ";\n";
+							b +="					billmovey += 20;\n";
+						}else if(VRAttribute.floorarray.get(i-2) == 2){
 							b +="					billmovey += " + 20*a + ";\n";
 						}else{
 							b +="					billmovey += 20;\n";
+							b +="					billmovez += " + -30*(a-1) + ";\n";
 						}
-					}else if("C3".equals(VRAttribute.cjoinarray.get(i-2))){
-						if(VRAttribute.floorarray.get(i-2) == 3){
-							int a = VRAttribute.genrearray22.get(i-1) - VRAttribute.genrearray22.get(i-2);
-							b +="					billmovez += " + -30*a + ";\n";
-						}else{
+					}else if("%".equals(VRAttribute.cjoinarray.get(i-2))){
+						if(VRAttribute.floorarray.get(i-2) == 1){
+							b +="					billmovex += " + -50*(a-1) + ";\n";
 							b +="					billmovez += -30;\n";
+						}else if(VRAttribute.floorarray.get(i-2) == 2){
+							b +="					billmovez += -30;\n";
+						}else{
+							b +="					billmovez += " + -30*a + ";\n";
 						}
 					}
 				}
-				
-				try{
+
 				for(int k=VRAttribute.genrearray22.get(i-1); k<VRAttribute.genrearray22.get(i); k++){/////ジャンル出すはじめ
 					s += VRAttribute.genrearray2.get(k)+",";
 				}
@@ -120,11 +130,11 @@ public class VRfilecreate {
 					b += "\n";
 				}
 				b += getCS3();
-				b += getCS4(VRAttribute.exharray.get(i-1), VRAttribute.floorarray.get(i-1));
+				b += getCS4(VRAttribute.exharray.get(VRAttribute.genrearray22.get(i)-1), VRAttribute.floorarray.get(i-1));
 				b += getCS5();
 				b += getCS6(VRAttribute.floorarray.get(i-1));
 				b += getCS7(VRAttribute.floorarray.get(i-1));
-				}catch(Exception e){}
+
 			}
 		}
 		b += getCS8();
@@ -240,7 +250,8 @@ public class VRfilecreate {
 "					              	XmlNode dataNode= childNode.ChildNodes[i]; //dataNode.NameはShapeというか二種類目のcategory\n"+
 "						            for (int j=0; j < dataNode.ChildNodes.Count; j++) {     /////element\n"+
 "					                	XmlNode xmlAttr = dataNode.ChildNodes[j]; //xmlAttrはkindCubekind  \n"+        
-"					                	array[j] = GameObject.Find(xmlAttr.InnerText);//オブジェクト一個一個の場所移動\n"+
+"					                	//array[j] = GameObject.Find(xmlAttr.InnerText);//オブジェクト一個一個の場所移動\n"+
+"										array[j] = Instantiate(Resources.Load(xmlAttr.InnerText)) as GameObject;///////bill change\n"+
 "										sarray[j] = xmlAttr.InnerText;//オブジェクトのテキスト生成のため\n";
 	}
 	
@@ -360,7 +371,7 @@ public class VRfilecreate {
 "										messageText.GetComponent<TextMesh>().text = sarray[j].ToString(); \n"+ 	
 "										messageText.transform.Rotate(0,180,0); \n"+ 	
 "										messageText.transform.position= new Vector3(xarray[r]+1.0f, standhigh+0.9f, zarray[j]);  \n"+ 	
-"										messageText.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f); \n:"+	
+"										messageText.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f); \n"+	
 "										messageText.transform.position  += new Vector3 (billmovex, billmovey, billmovez); \n";			
 			}else if(floorflag == 3){
 				return
