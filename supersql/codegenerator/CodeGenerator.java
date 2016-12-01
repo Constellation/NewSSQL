@@ -20,6 +20,7 @@ import supersql.common.GlobalEnv;
 import supersql.common.LevenshteinDistance;
 import supersql.common.Log;
 import supersql.common.ParseXML;
+import supersql.common.Ssedit;
 import supersql.ctab.Ctab3;
 import supersql.extendclass.ExtList;
 import supersql.parser.Preprocessor;
@@ -37,7 +38,7 @@ public class CodeGenerator {
 	private static String media;
 
 	private static Factory factory;
-	
+
 //	private static boolean decocheck = false;
 
 	public static TFE schemaTop;
@@ -56,7 +57,7 @@ public class CodeGenerator {
 		TFE out_sch = null;
 		int dim;
 		out_sch = makeschematop(tfe);
-		
+
 		return out_sch;
 	}
 
@@ -110,6 +111,12 @@ public class CodeGenerator {
 				// 20140624_masato
 				//				GlobalEnv.errorText += "\n## Media list ##\n" + media_list;
 			}
+
+			//161114 yhac
+			if (GlobalEnv.isSsedit_autocorrect()) {
+				Ssedit.sseditInfo();
+			}
+
 			System.exit(1);
 		}
 	}
@@ -273,8 +280,8 @@ public class CodeGenerator {
 		boolean add_deco = false;
 
 		Asc_Desc ascDesc = new Asc_Desc();
-		
-		
+
+
 		if(tfe_tree.get(0).toString().equals("operand")){
 			if( ((ExtList)tfe_tree.get(1)).get(((ExtList)tfe_tree.get(1)).size()-1) instanceof String  && !tfe_tree.contains("true")
 					&& (decos = ((ExtList)tfe_tree.get(1)).get(((ExtList)tfe_tree.get(1)).size()-1).toString().trim()).startsWith("@")
@@ -345,7 +352,7 @@ public class CodeGenerator {
 					out_sch = Att;
 				}else if( ((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("grouper") ){
 					out_sch = grouper((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1));
-					
+
 					//Added by goto 20161113  for Compiler:[ ] -> [ ]@{dynamic}
 					Compiler.addDynamicModifier(tfe_tree);
 				}else if( ((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("composite_iterator") ){
@@ -365,10 +372,10 @@ public class CodeGenerator {
 						env.setCtabflag();
 						Ctab3 ctab = new Ctab3();
 						out_sch = read_attribute(ctab.read_tfe(fn));
-						
+
 ////						out_sch = func_read((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).tfe;
 ////						System.err.println(tfe_tree);
-//						
+//
 					}else{
 						out_sch = func_read((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1));
 //						out_sch = func_read((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).fnc;
@@ -402,7 +409,7 @@ public class CodeGenerator {
 					if(deco.contains("dynamic")){
 						ascDesc.add_asc_desc_Array();
 						ascDesc.dynamicCount++;	//TODO d
-						//TODO (asc)@{static}! (asc)@{dynamic}! 
+						//TODO (asc)@{static}! (asc)@{dynamic}!
 					}
 					if(add_deco){
 						deco = deco.substring(0, deco.lastIndexOf("}")) + "," + decos + "}";
@@ -524,10 +531,10 @@ public class CodeGenerator {
 		}
 		return deco;
 	}
-	
+
 	private static Connector connector_main(ExtList operand, int dim){
 		ExtList atts = new ExtList();
-		
+
 		for(int i = 0; i <= operand.size(); i++){
 			TFE att = read_attribute((ExtList)operand.get(i));
 			atts.add(att);
@@ -535,7 +542,7 @@ public class CodeGenerator {
 		}
 //		decocheck =false;
 		Connector con = createconnector(dim);
-		
+
 		for (int i = 0; i < atts.size(); i++) {
 			con.setTFE((ITFE) (atts.get(i)));
 		}
@@ -547,7 +554,7 @@ public class CodeGenerator {
 		String iterator = new String();
 		int dim = 0;
 		TFE operand1 = read_attribute((ExtList)operand.get(1));
-		
+
 		if(operand.get(operand.size() - 1).toString().equals("%")){
 			dim = 3;
 		}else if(operand.get(operand.size() - 1).toString().equals("!")){
@@ -622,7 +629,7 @@ public class CodeGenerator {
 		decorator.setId(TFEid++);
 		return decorator;
 	}
-	
+
 	private static Connector createconnector(int dim){
 		Connector connector = new Connector();
 		if(dim == 3){
@@ -736,9 +743,9 @@ public class CodeGenerator {
 		Log.out("[makeAttribute] name : " + name);
 
 		Attribute att = createAttribute();
-		
+
 		attno = att.setItem(attno, name, line, key, attp);
-		
+
 		return att;
 
 	}
@@ -765,8 +772,8 @@ public class CodeGenerator {
 			}
 		}
 
-		
-		
+
+
 		func_atts.add("h_exp");
 		func_atts.add(atts);
 		fnc.setFname( func_name );
@@ -1079,7 +1086,7 @@ public class CodeGenerator {
 		}
 		return builder.toString();
 	}
-	
+
 	public static boolean isNumber(String val) {
 		try {
 			Integer.parseInt(val);
