@@ -52,6 +52,10 @@ public class Asc_Desc {
 	
 	//add
 	public void add_asc_desc_Array() {
+		//Log.i(asc_desc.get(0)+" / "+asc_desc_attributes);
+		//Log.e("asc_desc_Array1.add("+dynamicCount+", "+asc_desc+")");
+		//Log.e("asc_desc_Array2.add("+dynamicCount+", "+asc_desc_attributes+")");
+		
 		asc_desc_Array1.add(dynamicCount, asc_desc);
 		asc_desc_Array2.add(dynamicCount, asc_desc_attributes);	//added by goto 20161113  for @dynamic: distinct order by
 		asc_desc = new ArrayList<AscDesc>();

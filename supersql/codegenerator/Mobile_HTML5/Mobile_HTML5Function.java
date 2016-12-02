@@ -118,216 +118,225 @@ public class Mobile_HTML5Function extends Function {
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
 			}
-		} else if (FuncName.equalsIgnoreCase("sinvoke") || FuncName.equalsIgnoreCase("link")) {
-			Func_sinvoke(data_info, 1);
-		} else if (FuncName.equalsIgnoreCase("glink")) {	//added by goto 20161109 for plink/glink
-			Func_sinvoke(data_info, 2);
-		} else if (FuncName.equalsIgnoreCase("plink")) {	//added by goto 20161109 for plink/glink
-			Func_sinvoke(data_info, 3);
-		} else if (FuncName.equalsIgnoreCase("null")) {
-			Func_null();
-		}
-		//added by goto 20121217
-		else if(FuncName.equalsIgnoreCase("button")){
-			ret = Func_button("");
-		}
-		//added by goto 20130508  "Login&Logout"
-		else if(FuncName.equalsIgnoreCase("logout")){
-			ret = Func_button("logout");
-		}
-		//added by goto 20130308  "urlリンク"
-		else if(FuncName.equalsIgnoreCase("url") || FuncName.equalsIgnoreCase("anchor") || FuncName.equalsIgnoreCase("a")){
-			ret = Func_url(false);
-		}
-		//added by goto 20130417  "mail"
-		else if(FuncName.equalsIgnoreCase("mail")){
-			ret = Func_url(true);
-		}
-		//added by goto 20130312  "line"
-		else if(FuncName.equalsIgnoreCase("line")){
-			ret = Func_line();
-		}
-		//added by goto 20130325  "dline"
-		else if(FuncName.equalsIgnoreCase("dline")){
-			ret = Func_dline();
-		}
-		//added by goto 20130502  "vline"
-		else if(FuncName.equalsIgnoreCase("vline")){
-			ret = Func_vline();
-		}
-		//added by goto 20130313  "header"
-		else if(FuncName.equalsIgnoreCase("header")){
-			Func_header();
-		}
-		//added by ryosuke 20161010  "navbar"
-		else if(FuncName.equalsIgnoreCase("navbar")){
-			Func_navbar();
-		}
-		//added by ryosuke 20161010  "dropdown"
-		else if(FuncName.equalsIgnoreCase("dropdown")){
-			ret = Func_dropdown();
-		}
-		//added by goto 20130313  "footer"
-		else if(FuncName.equalsIgnoreCase("footer")){
-			Func_footer();
-		}
-		//added by goto 20130313  "popup"
-		else if(FuncName.equalsIgnoreCase("pop")
-				|| FuncName.equalsIgnoreCase("pop_anchor")
-				|| FuncName.equalsIgnoreCase("pop_a")
-				|| FuncName.equalsIgnoreCase("popup")
-				|| FuncName.equalsIgnoreCase("popup_anchor")
-				|| FuncName.equalsIgnoreCase("popup_a")){
-			ret = Func_pop(1);
-		}
-		//added by goto 20140120  "popup_button"
-		else if(FuncName.equalsIgnoreCase("pop_button")
-				|| FuncName.equalsIgnoreCase("pop_bt")
-				|| FuncName.equalsIgnoreCase("popup_button")
-				|| FuncName.equalsIgnoreCase("popup_bt")){
-			ret = Func_pop(2);
-		}
-		//added by goto 20140120  "popup_image"
-		else if(FuncName.equalsIgnoreCase("pop_image")
-				|| FuncName.equalsIgnoreCase("pop_img")
-				|| FuncName.equalsIgnoreCase("popup_image")
-				|| FuncName.equalsIgnoreCase("popup_img")){
-			ret = Func_pop(3);
-		}
-		//added by goto 20130515  "search"
-		else if(FuncName.equalsIgnoreCase("search")){
-			ret = Func_search();
-		}
-		//added by goto 20130529  "select"
-		else if(FuncName.equalsIgnoreCase("select")){
-			ret = Func_select();
-		}
-		//added by goto 20130529  "insert"
-		else if(FuncName.equalsIgnoreCase("insert")){
-			ret = Func_insert(false,false);
-		}
-		//added by goto 20130605  "update"
-		else if(FuncName.equalsIgnoreCase("update")){
-			ret = Func_insert(true,false);
-		}
-		//added by goto 20130721  "insert_update", "form"
-		else if(FuncName.equalsIgnoreCase("insert_update") || FuncName.equalsIgnoreCase("form")){
-			ret = Func_insert(false,true);
-		}
-		//20131127 form
-		else if(FuncName.equalsIgnoreCase("result") || FuncName.equalsIgnoreCase("form_result")){
-			ret = Func_result();
-		}
-		//added by goto 20130531  "check"
-		else if(FuncName.equalsIgnoreCase("check")){
-			ret = Func_check();
-		}
-		//added by goto 20130519  "moveto"
-		else if(FuncName.equalsIgnoreCase("moveto")){
-			ret = Func_moveto();
-		}
-		//added by goto 20130603  "$session"
-		else if (FuncName.equalsIgnoreCase("$session")||FuncName.equalsIgnoreCase("$s")||FuncName.equalsIgnoreCase("$_session")||FuncName.equalsIgnoreCase("$_s")) {
-			ret = Func_$session();
-		}
-		//added by goto 20130607  "time,date"
-		else if (FuncName.equalsIgnoreCase("time") || FuncName.equalsIgnoreCase("date")) {
-			ret = Func_time();
-		}
-		//added by goto 20130717  "map"
-		else if (FuncName.equalsIgnoreCase("map")) {
-			ret = Func_map(false);
-		}
-		//added by goto 20130721  "search_map"
-		else if (FuncName.equalsIgnoreCase("search_map")) {
-			ret = Func_map(true);
-		}
-		//added by goto 20130717  "gps,gps_map"
-		else if (FuncName.equalsIgnoreCase("gps") || FuncName.equalsIgnoreCase("gps_map")) {
-			ret = Func_gps();
-		}
-		//added by goto 20130717  "gps_info"
-		else if (FuncName.equalsIgnoreCase("gps_info")) {
-			ret = Func_gps_info();
-		}
-		//added by goto 20130914  "audio"
-		else if (FuncName.equalsIgnoreCase("music") || FuncName.equalsIgnoreCase("audio")) {
-			ret = Func_audio();
-		}
-		//added by goto 20130914  "movie"
-		else if (FuncName.equalsIgnoreCase("movie") || FuncName.equalsIgnoreCase("video")) {
-			ret = Func_movie();
-		}
-		//added by goto 20130914  "object"
-		else if (FuncName.equalsIgnoreCase("object")) {
-			ret = Func_object("");
-		}
-		//added by goto 20130914  "SEQ_NUM"
-		else if (FuncName.equalsIgnoreCase("seq_num") || FuncName.equalsIgnoreCase("row_number")) {
-			ret = Func_seq_num();
-		}
-		//added by goto 20130915  "text"
-		else if (FuncName.equalsIgnoreCase("text")) {
-			ret = Func_text();
-		}
+        } else if (FuncName.equalsIgnoreCase("sinvoke") || FuncName.equalsIgnoreCase("link")) {
+            Func_sinvoke(data_info, 1);
+        } else if (FuncName.equalsIgnoreCase("glink")) {	//added by goto 20161109 for plink/glink
+        	Func_sinvoke(data_info, 2);
+        } else if (FuncName.equalsIgnoreCase("plink")) {	//added by goto 20161109 for plink/glink
+        	Func_sinvoke(data_info, 3);
+        } else if (FuncName.equalsIgnoreCase("null")) {
+            Func_null();
+        }
+        //added by goto 20121217
+        else if(FuncName.equalsIgnoreCase("button")){
+        	ret = Func_button("");
+        }
+    	//added by goto 20130508  "Login&Logout"
+        else if(FuncName.equalsIgnoreCase("logout")){
+        	ret = Func_button("logout");
+        }
+        //added by goto 20130308  "urlリンク"
+        else if(FuncName.equalsIgnoreCase("url") || FuncName.equalsIgnoreCase("anchor") || FuncName.equalsIgnoreCase("a")){
+        	ret = Func_url(false);
+        }
+        //added by goto 20130417  "mail"
+        else if(FuncName.equalsIgnoreCase("mail")){
+        	ret = Func_url(true);
+        }
+        //added by goto 20130312  "line"
+        else if(FuncName.equalsIgnoreCase("line")){
+        	ret = Func_line();
+        }
+        //added by goto 20130325  "dline"
+        else if(FuncName.equalsIgnoreCase("dline")){
+        	ret = Func_dline();
+        }
+        //added by goto 20130502  "vline"
+        else if(FuncName.equalsIgnoreCase("vline")){
+        	ret = Func_vline();
+        }
+        //added by goto 20130313  "header"
+        else if(FuncName.equalsIgnoreCase("header")){
+        	Func_header();
+        }
+    	//added by ryosuke 20161010  "navbar"
+        else if(FuncName.equalsIgnoreCase("navbar")){
+        	Func_navbar();
+        }
+    	//added by ryosuke 20161010  "dropdown"
+        else if(FuncName.equalsIgnoreCase("dropdown")){
+        	ret = Func_dropdown();
+        }
+        //added by goto 20130313  "footer"
+        else if(FuncName.equalsIgnoreCase("footer")){
+        	Func_footer();
+        }
+    	
+        //added by goto 20130313  "popup"
+        else if(FuncName.equalsIgnoreCase("pop")
+        		|| FuncName.equalsIgnoreCase("pop_anchor")
+        		|| FuncName.equalsIgnoreCase("pop_a")
+        		|| FuncName.equalsIgnoreCase("popup")
+        		|| FuncName.equalsIgnoreCase("popup_anchor")
+        		|| FuncName.equalsIgnoreCase("popup_a")){
+        	if(!Sass.isBootstrapFlg())
+        		ret = Func_pop(1);
+        	else
+        		ret = Func_pop_bs(1);
+        }
+    	//added by goto 20140120  "popup_button"
+        else if(FuncName.equalsIgnoreCase("pop_button")
+        		|| FuncName.equalsIgnoreCase("pop_bt")
+        		|| FuncName.equalsIgnoreCase("popup_button")
+        		|| FuncName.equalsIgnoreCase("popup_bt")){
+        	if(!Sass.isBootstrapFlg())
+        		ret = Func_pop(2);
+        	else
+        		ret = Func_pop_bs(2);
+        }
+    	//added by goto 20140120  "popup_image"
+        else if(FuncName.equalsIgnoreCase("pop_image")
+        		|| FuncName.equalsIgnoreCase("pop_img")
+        		|| FuncName.equalsIgnoreCase("popup_image")
+        		|| FuncName.equalsIgnoreCase("popup_img")){
+        	if(!Sass.isBootstrapFlg())
+        		ret = Func_pop(3);
+        	else
+        		ret = Func_pop_bs(3);
+        }
+        //added by goto 20130515  "search"
+        else if(FuncName.equalsIgnoreCase("search")){
+        	ret = Func_search();
+        }
+        //added by goto 20130529  "select"
+        else if(FuncName.equalsIgnoreCase("select")){
+        	ret = Func_select();
+        }
+        //added by goto 20130529  "insert"
+        else if(FuncName.equalsIgnoreCase("insert")){
+        	ret = Func_insert(false,false);
+        }
+    	//added by goto 20130605  "update"
+        else if(FuncName.equalsIgnoreCase("update")){
+        	ret = Func_insert(true,false);
+        }
+        //added by goto 20130721  "insert_update", "form"
+        else if(FuncName.equalsIgnoreCase("insert_update") || FuncName.equalsIgnoreCase("form")){
+        	ret = Func_insert(false,true);
+        }
+    	//20131127 form
+        else if(FuncName.equalsIgnoreCase("result") || FuncName.equalsIgnoreCase("form_result")){
+        	ret = Func_result();
+        }
+        //added by goto 20130531  "check"
+        else if(FuncName.equalsIgnoreCase("check")){
+        	ret = Func_check();
+        }
+        //added by goto 20130519  "moveto"
+        else if(FuncName.equalsIgnoreCase("moveto")){
+        	ret = Func_moveto();
+        }
+        //added by goto 20130603  "$session"
+        else if (FuncName.equalsIgnoreCase("$session")||FuncName.equalsIgnoreCase("$s")||FuncName.equalsIgnoreCase("$_session")||FuncName.equalsIgnoreCase("$_s")) {
+        	ret = Func_$session();
+        }
+        //added by goto 20130607  "time,date"
+        else if (FuncName.equalsIgnoreCase("time") || FuncName.equalsIgnoreCase("date")) {
+        	ret = Func_time();
+        }
+    	//added by goto 20130717  "map"
+        else if (FuncName.equalsIgnoreCase("map")) {
+        	ret = Func_map(false);
+        }
+    	//added by goto 20130721  "search_map"
+        else if (FuncName.equalsIgnoreCase("search_map")) {
+        	ret = Func_map(true);
+        }
+        //added by goto 20130717  "gps,gps_map"
+        else if (FuncName.equalsIgnoreCase("gps") || FuncName.equalsIgnoreCase("gps_map")) {
+        	ret = Func_gps();
+        }
+    	//added by goto 20130717  "gps_info"
+        else if (FuncName.equalsIgnoreCase("gps_info")) {
+        	ret = Func_gps_info();
+        }
+    	//added by goto 20130914  "audio"
+        else if (FuncName.equalsIgnoreCase("music") || FuncName.equalsIgnoreCase("audio")) {
+        	ret = Func_audio();
+        }
+    	//added by goto 20130914  "movie"
+        else if (FuncName.equalsIgnoreCase("movie") || FuncName.equalsIgnoreCase("video")) {
+        	ret = Func_movie();
+        }
+    	//added by goto 20130914  "object"
+        else if (FuncName.equalsIgnoreCase("object")) {
+        	ret = Func_object("");
+        }
+    	//added by goto 20130914  "SEQ_NUM"
+        else if (FuncName.equalsIgnoreCase("seq_num") || FuncName.equalsIgnoreCase("row_number")) {
+        	ret = Func_seq_num();
+        }
+    	//added by goto 20130915  "text"
+        else if (FuncName.equalsIgnoreCase("text")) {
+        	ret = Func_text();
+        }
+        
+        //chie
+        else if (FuncName.equalsIgnoreCase("submit")) {
+            Func_submit();
+        }
+//        else if (FuncName.equalsIgnoreCase("select")) {
+//            Func_select();
+//        }
+        else if (FuncName.equalsIgnoreCase("checkbox")) {
+            Func_checkbox();
+        }
+        else if (FuncName.equalsIgnoreCase("radio")) {
+            Func_radio();
+        }
+        else if (FuncName.equalsIgnoreCase("inputtext")) {
+            Func_inputtext();
+        }
+        else if (FuncName.equalsIgnoreCase("textarea")) {
+            Func_textarea();
+        }
+        else if (FuncName.equalsIgnoreCase("hidden")) {
+        	Func_hidden();
+        }
+        else if (FuncName.equalsIgnoreCase("session")) {
+            //Func_session(); not use
+        }
+        //tk start//////////////////////////////////
+        else if (FuncName.equalsIgnoreCase("embed")) {
+        	Log.out("[enter embed]");
+        	Func_embed(data_info);
+        	//ret = Func_embed(data_info);	//TODO
+        }
+        //tk end////////////////////////////////////
+        else if (FuncName.equalsIgnoreCase("addition") || FuncName.equalsIgnoreCase("add")) {
+        	ret = Func_addition();
+        }
+        else if (FuncName.equalsIgnoreCase("subtract") || FuncName.equalsIgnoreCase("sub")) {
+        	ret = Func_subtract();
+        }
+        else if (FuncName.equalsIgnoreCase("multiply") || FuncName.equalsIgnoreCase("mul")) {
+        	ret = Func_multiply();
+        }
+        else if (FuncName.equalsIgnoreCase("divide") || FuncName.equalsIgnoreCase("div")) {
+        	ret = Func_divide();
+        }
+        else{
+        	Log.err("[Warning] no such function name: "+FuncName+"()");
+        }
+    	
+//    	checkFuncReturnValue(ret);
+//    	Log.e(""+Args+" "+ArgHash+" "+data_info+" "+html_env+" "+aggregateFlag+" "+manager);
+    	html_env.code.append( Function.checkNestingLevel(ret) );//20131201 nesting function
 
-		//chie
-		else if (FuncName.equalsIgnoreCase("submit")) {
-			Func_submit();
-		}
-		//        else if (FuncName.equalsIgnoreCase("select")) {
-		//            Func_select();
-		//        }
-		else if (FuncName.equalsIgnoreCase("checkbox")) {
-			Func_checkbox();
-		}
-		else if (FuncName.equalsIgnoreCase("radio")) {
-			Func_radio();
-		}
-		else if (FuncName.equalsIgnoreCase("inputtext")) {
-			Func_inputtext();
-		}
-		else if (FuncName.equalsIgnoreCase("textarea")) {
-			Func_textarea();
-		}
-		else if (FuncName.equalsIgnoreCase("hidden")) {
-			Func_hidden();
-		}
-		else if (FuncName.equalsIgnoreCase("session")) {
-			//Func_session(); not use
-		}
-		//tk start//////////////////////////////////
-		else if (FuncName.equalsIgnoreCase("embed")) {
-			Log.out("[enter embed]");
-			Func_embed(data_info);
-			//ret = Func_embed(data_info);	//TODO
-		}
-		//tk end////////////////////////////////////
-		else if (FuncName.equalsIgnoreCase("addition") || FuncName.equalsIgnoreCase("add")) {
-			ret = Func_addition();
-		}
-		else if (FuncName.equalsIgnoreCase("subtract") || FuncName.equalsIgnoreCase("sub")) {
-			ret = Func_subtract();
-		}
-		else if (FuncName.equalsIgnoreCase("multiply") || FuncName.equalsIgnoreCase("mul")) {
-			ret = Func_multiply();
-		}
-		else if (FuncName.equalsIgnoreCase("divide") || FuncName.equalsIgnoreCase("div")) {
-			ret = Func_divide();
-		}
-		else{
-			Log.err("[Warning] no such function name: "+FuncName+"()");
-		}
-
-		//    	checkFuncReturnValue(ret);
-		//    	Log.e(""+Args+" "+ArgHash+" "+data_info+" "+html_env+" "+aggregateFlag+" "+manager);
-		html_env.code.append( Function.checkNestingLevel(ret) );//20131201 nesting function
-
-		Log.out("TFEId = " + Mobile_HTML5Env.getClassID(this));
-		html_env.append_css_def_td(Mobile_HTML5Env.getClassID(this), this.decos);
-		return ret;	//20131201 nesting function
-	}
-
+        Log.out("TFEId = " + Mobile_HTML5Env.getClassID(this));
+        html_env.append_css_def_td(Mobile_HTML5Env.getClassID(this), this.decos);
+        return ret;	//20131201 nesting function
+    }
 
 	static int ArithmeticOperationCount = 1;
 	private String Func_addition() {
@@ -1428,10 +1437,70 @@ public class Mobile_HTML5Function extends Function {
 			//if(!title.equals(""))	statement += "		<p style=\"margin:0px;\">"+title+"</p>\n";
 			statement += "	</div>\n";
 		}
+    	popCount++;
+    	return statement;
+    }
+    
+    private String Func_pop_bs(int popupType) {	//popupType: 1=anchor, 2=button, 3=image    	
+    	String statement = "";
+    	String title = getValue(1);
+    	String header = getValue(2);
+		String detailORurl = getValue(3);
+		if(header.equals("")){
+			if(title.isEmpty()){
+				Log.info("<Warning> popup関数の引数が不足しています。 ex. popup(title, header, Detail/URL)");
+				return "";
+			}else{
+				header = title;
+			}
+		}
+		
+		if(Sass.outofloopFlg.peekFirst()){
+			Sass.makeClass(Mobile_HTML5Env.getClassID(this));
+			Sass.defineGridBasic(Mobile_HTML5Env.getClassID(this), decos);
+			Sass.closeBracket();
+  		}
+		statement += "<div class=\"" + Mobile_HTML5Env.getClassID(this) + "\">";
 
-		popCount++;
-		return statement;
-	}
+		if(popupType==1){
+			statement += "<a data-toggle=\"modal\" data-target=\"#myModal"+getCount(popCount)+"\">" + title + "</a>\n";
+		}else if(popupType==2){
+			statement += "<button type=\"button\" class=\"btn btn-info btn-lg\"  data-toggle=\"modal\" data-target=\"#myModal"+getCount(popCount)+"\">" + title + "</button>\n";
+		}else if(popupType==3){
+			statement += "<a data-toggle=\"modal\" data-target=\"#myModal" + getCount(popCount)+"\">" + 
+							"<img src=\"" + title + "\" class=\"img-responsive\">" + 
+						"</a>\n";
+		}
+		
+		statement += "<div class=\"modal fade\" id=\"myModal"+ getCount(popCount) +"\" role=\"dialog\">\n"
+					+ "<div class=\"modal-dialog\">\n"
+						+ "<div class=\"modal-content\">\n"
+							+ "<div class=\"modal-header\">\n"
+								+ "<button type=\"button\" class=\"close\" data-dismiss=\"modal\">&times;</button>\n"
+								+ "<h4 class=\"modal-title\">" + header + "</h4>\n"
+							+ "</div>";
+		
+		if(!isImage(detailORurl)){
+			//string
+			statement += "<div class=\"modal-body\">\n"
+						+ "<p>" + detailORurl + "<p>\n"
+						+ "</div>\n";
+		}else{
+			//imageFile
+			statement += "<div class=\"modal-body\">\n"
+					+ "<img src=\"" + detailORurl + "\" class=\"img-responsive\">\n"
+					+ "</div>\n";
+		}
+		
+		statement += "</div>\n" +
+				"</div>\n" + 
+				"</div>\n" +
+				"</div>\n";
+
+    	popCount++;
+    	return statement;
+    }
+
 	private String getPopupTitle(String title, String defaultTitle, int popupType) {
 		title = (!title.equals(""))? title : defaultTitle ;
 		if(popupType==3){	//popup image

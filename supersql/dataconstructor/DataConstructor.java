@@ -334,7 +334,7 @@ public class DataConstructor {
 		TreeGenerator tg = new TreeGenerator();
 
 		sep_data_info = tg.makeTree(sep_sch, sep_data_info);
-
+		
 		end = System.nanoTime();
 
 		exectime[MKETREE] = end - start;
