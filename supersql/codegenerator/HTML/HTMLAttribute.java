@@ -1,6 +1,7 @@
 package supersql.codegenerator.HTML;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import supersql.codegenerator.Attribute;
 import supersql.codegenerator.Ehtml;
@@ -626,7 +627,10 @@ public class HTMLAttribute extends Attribute {
 					if (htmlEnv.decorationEndFlag.size() > 0) {
 						if (htmlEnv.decorationEndFlag.get(0)) {
 							String property = htmlEnv.decorationProperty.get(0).get(0);
-							String value = Modifier.replaceModifierValues(property, (this).getStr(data_info));
+							ArrayList<String> declaration = new ArrayList<String>();
+							declaration = Modifier.replaceModifierValues(property, (this).getStr(data_info));
+							property = declaration.get(0);
+							String value = declaration.get(1);
 							if (property.equals("class")) {
 //								HTMLEnv.cssClass.add((this).getStr(data_info));
 								HTMLDecoration.classes.get(0).append(value + " ");

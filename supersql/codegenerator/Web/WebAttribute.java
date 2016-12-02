@@ -1,6 +1,7 @@
 package supersql.codegenerator.Web;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import supersql.codegenerator.Attribute;
 import supersql.codegenerator.Manager;
@@ -103,7 +104,10 @@ public class WebAttribute extends Attribute {
 		if (webEnv.decorationEndFlag.size() > 0) {
 			if (webEnv.decorationEndFlag.get(0)) {
 				String property = webEnv.decorationProperty.get(0).get(0);
-				String value = Modifier.replaceModifierValues(property, data);
+				ArrayList<String> declaration = new ArrayList<String>();
+				declaration = Modifier.replaceModifierValues(property, data);
+				property = declaration.get(0);
+				String value = declaration.get(1);
 				if (property.equals("class")) {
 					WebEnv.cssClass.add(value);
 					WebDecoration.divclass.get(0).append(value + " ");
