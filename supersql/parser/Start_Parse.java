@@ -26,8 +26,10 @@ import supersql.codegenerator.AttributeItem;
 import supersql.codegenerator.CodeGenerator;
 import supersql.codegenerator.TFE;
 import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5Function;
+import supersql.codegenerator.VR.VRcjoinarray;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
+import supersql.common.Ssedit;
 import supersql.extendclass.ExtList;
 import supersql.parser.org.antlr.v4.runtime.MyErrorStrategy;
 
@@ -124,7 +126,7 @@ public class Start_Parse {
 
 	public TFE get_TFEschema(){
 		TFE sch = codegenerator.schemaTop;
-		return sch;    	
+		return sch;
 	}
 
 	public Hashtable get_att_info(){
@@ -229,6 +231,33 @@ public class Start_Parse {
 		BufferedReader in;
 		StringBuffer tmp = new StringBuffer();
 		try{
+//			in = new BufferedReader(new InputStreamReader(new FileInputStream(filename), "UTF-8"));		//changed by goto 20130519 (This is an important change.)
+//			String line = null;
+//			line = in.readLine();
+//			if(line.startsWith("/*")){
+//				while (line.contains("/*")){
+//					String line1 = line.substring(0, line.indexOf("/*"));
+//					while (!line.contains("*/"))
+//						line = in.readLine();
+//					line = line1 + line.substring(line.indexOf("*/") + 2);
+//				}
+//				tmp.append(" " + line);
+//			}
+//			
+//			if(line.startsWith("--")){
+//				while (line.contains("--")){
+//					String line1 = line.substring(0, line.indexOf("--"));
+//					line = in.readLine();
+//				}
+//				tmp.append(" " + line);
+//			}
+//			tmp.append(" " + line);
+//			int c;
+//			while ((c = in.read()) != -1) {
+//				tmp.append((char) c);
+//			}
+//			query = tmp.toString().trim();
+//			Log.info(query);
 			in = new BufferedReader(new InputStreamReader(new FileInputStream(filename), "UTF-8"));		//changed by goto 20130519 (This is an important change.)
 			int c;
 			while ((c = in.read()) != -1) {
@@ -241,8 +270,13 @@ public class Start_Parse {
 		} catch (IOException e) {
 			GlobalEnv.addErr("Error[SQLparser]:" + e);
 		}
-		return query;
 
+		//161109 yhac
+		if (GlobalEnv.isSsedit_autocorrect()) {
+			return Ssedit.getMedia_and_From(query);
+		}else{
+			return query;
+		}
 
 		//parse query
 
@@ -423,17 +457,24 @@ public class Start_Parse {
 	}
 
 	private void parseSSQL(String query, int id){
+		query = query.trim();
 		String after_from = "";
 
+		
 		if(!query.toLowerCase().contains("generate")){
 			GlobalEnv.addErr("didn't find 'GENERATE'. please start with 'GENERATE'.");
 			System.err.println("didn't find 'GENERATE'. please start with 'GENERATE'.");
+		}
+		else if(!query.toLowerCase().contains("from")) {
+			GlobalEnv.addErr("didn't find 'FROM'. please describe 'FROM'.");
+			System.err.println("didn't find 'FROM'. please describe 'FROM'.");
 		}else{
 			try{
 				String a = query.substring(0, query.toLowerCase().indexOf("generate"));
 				String b = query.substring(query.toLowerCase().indexOf("generate"));
 				Log.info(a);
 				Log.info(b);
+				VRcjoinarray.query = b;
 
 				if(a.equals(" ") || a.equals("") || a.equals("\r")){
 				}else{
@@ -452,7 +493,7 @@ public class Start_Parse {
 						if(pre.equals("foreach1"))	foreach1Flag = true;	//added by goto 20161025 for link1/foreach1
 						foreachinfo = TreeConst.getforeach(List_tree_a);
 					}
-					else if( ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)List_tree_a.get(1)).get(0)).get(1)).get(0)).get(1)).get(0)).get(1)).get(0).toString().toUpperCase().matches("SESSION.*") 
+					else if( ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)List_tree_a.get(1)).get(0)).get(1)).get(0)).get(1)).get(0)).get(1)).get(0).toString().toUpperCase().matches("SESSION.*")
 							|| ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)List_tree_a.get(1)).get(0)).get(1)).get(0)).get(1)).get(0)).get(1)).get(0).toString().toUpperCase().matches("LOGIN.*")){
 						sessionString = a;
 						sessionFlag = true;

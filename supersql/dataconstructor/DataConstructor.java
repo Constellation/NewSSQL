@@ -284,9 +284,7 @@ public class DataConstructor {
 		// MakeSQL
 		long start, end;
 		start = System.nanoTime();
-
 		SQL_string = msql.makeSQL(sep_sch);
-
 		end = System.nanoTime();
 		exectime[MAKESQL] = end - start;
 		Log.out("## SQL Query ##");

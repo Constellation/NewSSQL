@@ -24,7 +24,7 @@ public class VRAttribute extends Attribute {
 	
 	public static String genre = "";///////////kotani
 	//public static boolean exhflag = false;//////展示物について、G1通ったらtrueになる////exhflagとfloorflagはC#ファイルを添付するためのフラグ
-	public static ArrayList<Integer> exharray = new ArrayList<Integer>();
+	public static ArrayList<Integer> exharray = new ArrayList<Integer>();///1ビルにつき、categoryの数だけ同じ数字が入る
 	//public static int floorflag = 0;////////////フロアについて
 	public static ArrayList<Integer> floorarray = new ArrayList<Integer>();
 	public static String sgenre = "";//////////フロアのタイトル出すため
@@ -34,6 +34,8 @@ public class VRAttribute extends Attribute {
 	public static int gjoinflag = 0;///////////今使ってない
 	public static int cjoinflag = 0;/////今使ってない
 	public static int groupcount = 0;
+	public static int groupcount1 = 0;
+	public static int grouptag = 0;
 	public static ArrayList<String> cjoinarray = new ArrayList<String>();////博物館同士を結合させる時分岐に使う
 	public static int gjudge = 0;
 	public static int billnum = 0;

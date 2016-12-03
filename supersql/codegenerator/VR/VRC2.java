@@ -173,7 +173,7 @@ public class VRC2 extends Connector {
 			VREnv.setFormItemFlg(true, null);
 		}
 
-		System.out.println("<C2front>");
+		//System.out.println("<C2front>");
 		while (this.hasMoreItems()) {
 			
 			if(htmlEnv.gLevel == 1){//////// kotani 16/10/04
@@ -184,7 +184,7 @@ public class VRC2 extends Connector {
 				if(htmlEnv.gLevel == 0){
 					//htmlEnv.code.append(VREnv.getClassID(tfe));
 					if(VRAttribute.groupcount >= 1){
-						htmlEnv.code.append("<group>\n");
+						//htmlEnv.code.append("<group2>\n");
 					}
 					VRAttribute.groupcount++;
 					//System.out.println("groupcount2");
@@ -223,14 +223,14 @@ public class VRC2 extends Connector {
 		if(VRAttribute.gjudge == 0){
 			if(VRAttribute.billnum >= 2){
 				for(int k=0;k<VRAttribute.billnum-1;k++){
-					VRAttribute.cjoinarray.add("C2");
+					//VRAttribute.cjoinarray.add("C2");
 				}
 				VRAttribute.billnum = 0;
 			}else{
-				VRAttribute.cjoinarray.add("C2");
+				//VRAttribute.cjoinarray.add("C2");
 			}
 		}
-		System.out.println("</C2back>");
+		//System.out.println("</C2back>");
 		
 		htmlEnv2.code.append("</tfe>");
 		// Log.out("</TABLE>");
