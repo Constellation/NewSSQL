@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.antlr.v4.parse.ANTLRParser.finallyClause_return;
+
 import supersql.codegenerator.Asc_Desc;
 import supersql.codegenerator.Asc_Desc.AscDesc;
 import supersql.codegenerator.DecorateList;
@@ -221,11 +223,9 @@ public class Mobile_HTML5_dynamic {
 	}
 	
 	public static boolean dynamicPreProcess0(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
-		
-		//TODO
-		if(Compiler.isCompiler)
-			decos.put("dynamic", "");
-		
+//		if(Compiler.isCompiler){
+//			decos.put("dynamic", "");
+//		}
 		
 		if(decos.containsKey("dynamic")){
 			dynamicHTMLbuf0 = html_env.code.toString();
@@ -268,10 +268,10 @@ public class Mobile_HTML5_dynamic {
 	public static boolean dynamicProcess(String symbol, String tfeID, DecorateList decos, Mobile_HTML5Env html_env){
 		if(decos.containsKey("dynamic")){
 
-//			Log.i("Mobile_HTML5.gLevel = "+Mobile_HTML5.gLevel);
-			if(Compiler.isCompiler && Mobile_HTML5.gLevel>0){
-				return false;
-			}
+//			//Log.i("Mobile_HTML5.gLevel = "+Mobile_HTML5.gLevel);
+//			if(Compiler.isCompiler && Mobile_HTML5.gLevel>0){
+//				return false;
+//			}
 			
 			if(symbol.contains("G1") || symbol.contains("G2")){
 				html_env.code = new StringBuffer(dynamicHTMLbuf0);
@@ -357,7 +357,7 @@ public class Mobile_HTML5_dynamic {
 			dynamicString = dynamicString.replaceAll("\"", "\\\\\"");										//　" -> \"
 			//Log.e(dynamicString);
 			
-			
+
 			//String after_from_string = Mobile_HTML5Function.after_from_string;	//TODO
 			
 			
@@ -500,7 +500,9 @@ public class Mobile_HTML5_dynamic {
 	    		orderby = query.substring(query.lastIndexOf(" order by ")+" order by ".length());
 	    		query = query.substring(0,query.lastIndexOf(" order by "));
 	    	}
-	    	String asc_desc = getOrderByString(dynamicCount);
+    		//final int ASC_DESC_ARRAY_COUNT = (!Compiler.isCompiler)? ((dynamicCount-1)*2) : (dynamicCount-1);	//TODO d
+    		final int ASC_DESC_ARRAY_COUNT = dynamicCount-1;	//TODO d
+	    	String asc_desc = getOrderByString(ASC_DESC_ARRAY_COUNT);
 	    	if(!asc_desc.isEmpty()){
 	    		if (!orderby.isEmpty())	orderby += ", ";
 	    		orderby += asc_desc;
@@ -565,7 +567,7 @@ public class Mobile_HTML5_dynamic {
 						"    $groupby = \""+groupby+"\";\n" +
 						"    $having = \""+having+"\";\n" +
 						"    $orderby = \""+((!orderby.isEmpty())?(" ORDER BY "+orderby+" "):("")) +"\";\n" +
-						"    $orderby_atts = \""+Asc_Desc.asc_desc_Array2.get((dynamicCount-1)*2)+"\";\n" +	//added by goto 20161113  for @dynamic: distinct order by
+						"    $orderby_atts = \""+Asc_Desc.asc_desc_Array2.get(ASC_DESC_ARRAY_COUNT)+"\";\n" +	//added by goto 20161113  for @dynamic: distinct order by
 						"    $limit = \""+((limit!="")?(" LIMIT "+limit+" "):("")) +"\";\n" +
 						((limit!="")?("    $limitNum = "+limit+";\n"):("")) +	//TODO dynamicPaging時にLIMITが指定されていた場合
 						"\n";
@@ -759,7 +761,7 @@ public class Mobile_HTML5_dynamic {
 	    	
 	    	// 各引数毎に処理した結果をHTMLに書きこむ
 	    	html_env.code.append(statement);
-	    	
+
 	    	if(!dynamicRowFlg){
 	    		Mobile_HTML5.createFile(html_env, dynamicPHPfileName, php);//PHPファイルの作成
 	    		dynamicCount++;		//TODO d
@@ -815,12 +817,14 @@ public class Mobile_HTML5_dynamic {
 	}
 	
 	//getOrderByString
-	private static String getOrderByString(int DynamicCount) {
+	private static String getOrderByString(int ASC_DESC_ARRAY_COUNT) {
 		String s = "";
 		try {
 			Asc_Desc ad = new Asc_Desc();
 			//System.out.println(dynamicCount-1);
-			ad.asc_desc = ad.asc_desc_Array1.get((dynamicCount-1)*2);
+//			ad.asc_desc = ad.asc_desc_Array1.get((dynamicCount-1)*2);
+//			ad.asc_desc = ad.asc_desc_Array1.get((!Compiler.isCompiler)? ((dynamicCount-1)*2) : (dynamicCount-1));
+			ad.asc_desc = ad.asc_desc_Array1.get(ASC_DESC_ARRAY_COUNT);
 			ad.sorting();
 			
 			Iterator<AscDesc> it = ad.asc_desc.iterator();

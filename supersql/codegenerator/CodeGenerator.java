@@ -86,9 +86,9 @@ public class CodeGenerator {
 		}else if(media.toLowerCase().equals("pdf")){
 			factory = new PDFFactory();
 		}else if(media.toLowerCase().equals("php")){	//added by goto 20161104
-			factory = new Mobile_HTML5Factory();
 			PHP.isPHP = true;
 			supersql.codegenerator.Compiler.Compiler.isCompiler = true;
+			factory = new Mobile_HTML5Factory();
 			//factory = new PHPFactory();
 		}else if(media.toLowerCase().equals("rails")){	//added by goto 20161104
 			factory = new RailsFactory();
@@ -353,7 +353,7 @@ public class CodeGenerator {
 				}else if( ((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("grouper") ){
 					out_sch = grouper((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1));
 
-					//Added by goto 20161113  for Compiler:[ ] -> [ ]@{dynamic}
+					//added by goto 20161113  for Compiler:[ ] -> [ ]@{dynamic}
 					Compiler.addDynamicModifier(tfe_tree);
 				}else if( ((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("composite_iterator") ){
 					ExtList group = composite( (ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1) );
@@ -411,11 +411,9 @@ public class CodeGenerator {
 			if( !(((ExtList)tfe_tree.get(1)).get( ((ExtList)tfe_tree.get(1)).size() - 1 ) instanceof ExtList) ){
 				String deco = ((ExtList)tfe_tree.get(1)).get( ((ExtList)tfe_tree.get(1)).size() - 1 ).toString();
 				if(deco.contains("@{")){
-					if(deco.contains("dynamic")){
-						ascDesc.add_asc_desc_Array();
-						ascDesc.dynamicCount++;	//TODO d
-						//TODO (asc)@{static}! (asc)@{dynamic}!
-					}
+					//changed by goto 20161205
+					ascDesc.add_asc_desc_Array(deco);
+
 					if(add_deco){
 						deco = deco.substring(0, deco.lastIndexOf("}")) + "," + decos + "}";
 						setDecoration(out_sch, deco);

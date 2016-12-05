@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import supersql.common.Log;
+
 public class Asc_Desc {
 
 	public static ArrayList<ArrayList<AscDesc>> asc_desc_Array1 = new ArrayList<>();	//order by strings
@@ -51,15 +53,19 @@ public class Asc_Desc {
 	}
 	
 	//add
-	public void add_asc_desc_Array() {
-		//Log.i(asc_desc.get(0)+" / "+asc_desc_attributes);
-		//Log.e("asc_desc_Array1.add("+dynamicCount+", "+asc_desc+")");
-		//Log.e("asc_desc_Array2.add("+dynamicCount+", "+asc_desc_attributes+")");
-		
-		asc_desc_Array1.add(dynamicCount, asc_desc);
-		asc_desc_Array2.add(dynamicCount, asc_desc_attributes);	//added by goto 20161113  for @dynamic: distinct order by
-		asc_desc = new ArrayList<AscDesc>();
-		asc_desc_attributes = "";
+	public void add_asc_desc_Array(String deco) {
+		if(deco.contains("dynamic") && !asc_desc_attributes.isEmpty()){
+			//TODO (asc)@{static}! ?
+			//Log.i(asc_desc.get(0)+" / "+asc_desc_attributes);
+			//Log.e("asc_desc_Array1.add("+dynamicCount+", "+asc_desc+")");
+			//Log.e("asc_desc_Array2.add("+dynamicCount+", "+asc_desc_attributes+")");
+			
+			asc_desc_Array1.add(dynamicCount, asc_desc);
+			asc_desc_Array2.add(dynamicCount, asc_desc_attributes);	//added by goto 20161113  for @dynamic: distinct order by
+			asc_desc = new ArrayList<AscDesc>();
+			asc_desc_attributes = "";
+			dynamicCount++;
+		}
 	}
 	//add
 	private void add_asc_desc(int no, String AscDesc) {
