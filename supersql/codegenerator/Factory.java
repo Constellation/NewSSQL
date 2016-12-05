@@ -109,7 +109,6 @@ public class Factory {
 	}
 
 	public Connector createC1(Manager manager) {
-		Log.info("test");
 		try {
 			Constructor connectorConstructor = getConstructor("C1");
 			return (Connector) connectorConstructor.newInstance(manager, getEnv(), getEnv2());
