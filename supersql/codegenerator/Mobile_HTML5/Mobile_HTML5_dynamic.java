@@ -272,6 +272,9 @@ public class Mobile_HTML5_dynamic {
 //			if(Compiler.isCompiler && Mobile_HTML5.gLevel>0){
 //				return false;
 //			}
+//			if(Mobile_HTML5.gLevel>1){	//TODO
+//				return false;
+//			}
 			
 			if(symbol.contains("G1") || symbol.contains("G2")){
 				html_env.code = new StringBuffer(dynamicHTMLbuf0);
@@ -567,7 +570,7 @@ public class Mobile_HTML5_dynamic {
 						"    $groupby = \""+groupby+"\";\n" +
 						"    $having = \""+having+"\";\n" +
 						"    $orderby = \""+((!orderby.isEmpty())?(" ORDER BY "+orderby+" "):("")) +"\";\n" +
-						"    $orderby_atts = \""+Asc_Desc.asc_desc_Array2.get(ASC_DESC_ARRAY_COUNT)+"\";\n" +	//added by goto 20161113  for @dynamic: distinct order by
+						"    $orderby_atts = \""+new Asc_Desc().get_asc_desc_Array2(ASC_DESC_ARRAY_COUNT)+"\";\n" +	//added by goto 20161113  for @dynamic: distinct order by
 						"    $limit = \""+((limit!="")?(" LIMIT "+limit+" "):("")) +"\";\n" +
 						((limit!="")?("    $limitNum = "+limit+";\n"):("")) +	//TODO dynamicPaging時にLIMITが指定されていた場合
 						"\n";
@@ -824,7 +827,7 @@ public class Mobile_HTML5_dynamic {
 			//System.out.println(dynamicCount-1);
 //			ad.asc_desc = ad.asc_desc_Array1.get((dynamicCount-1)*2);
 //			ad.asc_desc = ad.asc_desc_Array1.get((!Compiler.isCompiler)? ((dynamicCount-1)*2) : (dynamicCount-1));
-			ad.asc_desc = ad.asc_desc_Array1.get(ASC_DESC_ARRAY_COUNT);
+			ad.asc_desc = ad.get_asc_desc_Array1(ASC_DESC_ARRAY_COUNT);
 			ad.sorting();
 			
 			Iterator<AscDesc> it = ad.asc_desc.iterator();

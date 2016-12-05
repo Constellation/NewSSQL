@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-import supersql.common.Log;
-
 public class Asc_Desc {
 
 	public static ArrayList<ArrayList<AscDesc>> asc_desc_Array1 = new ArrayList<>();	//order by strings
@@ -71,6 +69,22 @@ public class Asc_Desc {
 	private void add_asc_desc(int no, String AscDesc) {
 		//System.out.println(no+" "+AscDesc);
 		asc_desc.add(new AscDesc(no, AscDesc));
+	}
+	
+	//get
+	public ArrayList<AscDesc> get_asc_desc_Array1(int ASC_DESC_ARRAY_COUNT) {
+		try {
+			return asc_desc_Array1.get(ASC_DESC_ARRAY_COUNT);
+		} catch (Exception e) {
+			return new ArrayList<AscDesc>();
+		}
+	}
+	public String get_asc_desc_Array2(int ASC_DESC_ARRAY_COUNT) {
+		try {
+			return asc_desc_Array2.get(ASC_DESC_ARRAY_COUNT);
+		} catch (Exception e) {
+			return "";
+		}
 	}
 
 	//sorting for (asc1)/(desc1)
