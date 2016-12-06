@@ -399,6 +399,7 @@ public class MyErrorStrategy extends DefaultErrorStrategy{
 
 		GlobalEnv.addErr(msg);
 		recognizer.notifyErrorListeners(e.getOffendingToken(), msg, e);
+		GlobalEnv.errorText += msg;
 	}
 
 	protected void reportInputMismatch(Parser recognizer, InputMismatchException e){
@@ -553,6 +554,8 @@ public class MyErrorStrategy extends DefaultErrorStrategy{
 
 		GlobalEnv.addErr(msg);
 		recognizer.notifyErrorListeners(e.getOffendingToken(), msg, e);
+		GlobalEnv.errorText += msg;
+
 	}
 
 //	protected void reportFailedPredicate(Parser recognizer, FailedPredicateException e){
@@ -599,6 +602,8 @@ public class MyErrorStrategy extends DefaultErrorStrategy{
 
 		GlobalEnv.addErr(msg);
 		recognizer.notifyErrorListeners(t, msg, null);
+		GlobalEnv.errorText += msg;
+
 	}
 
 	protected String escapeWSAndQuote(String s) {

@@ -953,4 +953,16 @@ public class GlobalEnv {
 		return c_tab_flag;
 	}
 
+	// added by yusuke 20161206 for autocorrect
+	public static String getworkingDir() {
+
+		String workingDir = new File(GlobalEnv.EXE_FILE_PATH).getAbsolutePath(); // 実行jarファイルの絶対パスを取得
+
+		if (workingDir.contains(":")) {
+			workingDir = workingDir.substring(0, workingDir.indexOf(":"));
+		}
+
+		return workingDir;
+	}
+
 }
