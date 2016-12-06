@@ -469,6 +469,7 @@ public class Mobile_HTML5_dynamic {
 	    	//TODO 余計なコードの削除
 	    	dynamic_col = dynamicString;
 	    	dynamic_col_array = dynamicString;
+	    	Log.info(dynamicString);
 	    	
 	    	//Log.i("	1:"+title+"	2:"+columns+"	col_num:"+col_num);
 	    	//Log.i("	dynamic_col:"+dynamic_col+"	dynamic_col_array:"+dynamic_col_array);
