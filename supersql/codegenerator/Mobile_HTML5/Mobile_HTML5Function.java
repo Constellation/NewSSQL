@@ -689,11 +689,11 @@ public class Mobile_HTML5Function extends Function {
 					if(!Sass.isBootstrapFlg()){
 						html_env.code.append("<img class=\"" + Mobile_HTML5Env.getClassID(this) +" ");
 					}else if(Sass.isBootstrapFlg()){
-						if(Sass.outofloopFlg.peekFirst()){
-							Sass.makeClass(Mobile_HTML5Env.getClassID(this));
-							Sass.defineGridBasic(Mobile_HTML5Env.getClassID(this), decos);
-							Sass.closeBracket();
-						}
+//						if(Sass.outofloopFlg.peekFirst()){
+//							Sass.makeClass(Mobile_HTML5Env.getClassID(this));
+//							Sass.defineGridBasic(Mobile_HTML5Env.getClassID(this), decos);
+//							Sass.closeBracket();
+//						}
 						if(this.decos.containsKey("slide")){	
 							if(this.decos.get("slide").equals("true")){
 								html_env.code.append("<div class=\"item active\">");
@@ -702,7 +702,7 @@ public class Mobile_HTML5Function extends Function {
 							}
 							html_env.code.append("<img ");
 						}else{
-							html_env.code.append("<div class=\"" + Mobile_HTML5Env.getClassID(this) + "\">");
+//							html_env.code.append("<div class=\"" + Mobile_HTML5Env.getClassID(this) + "\">");
 							html_env.code.append("<img class=\"img-responsive\"");
 						}
 					}
@@ -733,7 +733,7 @@ public class Mobile_HTML5Function extends Function {
 					html_env.code.append(" \" src=\"" + url + "\"/>");
 				}else{
 					html_env.code.append(" \" src=\"" + path + "/" + url + "\"/>");
-					html_env.code.append("</div>");
+//					html_env.code.append("</div>");
 					if(Sass.isBootstrapFlg()){
 //						html_env.code.append("\n</DIV>\n");
 					}
@@ -1455,12 +1455,12 @@ public class Mobile_HTML5Function extends Function {
 			}
 		}
 		
-		if(Sass.outofloopFlg.peekFirst()){
-			Sass.makeClass(Mobile_HTML5Env.getClassID(this));
-			Sass.defineGridBasic(Mobile_HTML5Env.getClassID(this), decos);
-			Sass.closeBracket();
-  		}
-		statement += "<div class=\"" + Mobile_HTML5Env.getClassID(this) + "\">";
+//		if(Sass.outofloopFlg.peekFirst()){
+//			Sass.makeClass(Mobile_HTML5Env.getClassID(this));
+//			Sass.defineGridBasic(Mobile_HTML5Env.getClassID(this), decos);
+//			Sass.closeBracket();
+//  		}
+//		statement += "<div class=\"" + Mobile_HTML5Env.getClassID(this) + "\">";
 
 		if(popupType==1){
 			statement += "<a data-toggle=\"modal\" data-target=\"#myModal"+getCount(popCount)+"\">" + title + "</a>\n";
@@ -1494,7 +1494,6 @@ public class Mobile_HTML5Function extends Function {
 		
 		statement += "</div>\n" +
 				"</div>\n" + 
-				"</div>\n" +
 				"</div>\n";
 
     	popCount++;

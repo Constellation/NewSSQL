@@ -35,6 +35,7 @@ import supersql.codegenerator.Fraction;
 
 public class Sass {
 	private static boolean bootstrapFlg = false;
+	private static boolean firstElementFlg = true;
 
 	public static StringBuffer sass = new StringBuffer();;
 
@@ -51,6 +52,19 @@ public class Sass {
 	public static void bootstrapFlg(boolean b){
 		bootstrapFlg = b;
 	}
+	
+	public static boolean isBootstrapFlg(){
+		return bootstrapFlg;
+	}
+	
+	public static void firstElementFlg(boolean b){
+		firstElementFlg = b;
+	}
+	
+	public static boolean isFirstElementFlg(){
+		return firstElementFlg;
+	}
+	
 
 	public static void beforeLoop(){
 		outofloopFlg.offerFirst(true);
@@ -63,10 +77,6 @@ public class Sass {
 
 	public static void afterLoop(){
 		outofloopFlg.pollFirst();
-	}
-
-	public static boolean isBootstrapFlg(){
-		return bootstrapFlg;
 	}
 
 	public static void makeRowClass(){
