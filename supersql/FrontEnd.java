@@ -78,12 +78,12 @@ public class FrontEnd {
 			Log.info("// completed normally //");
 
 			//1203 yhac commentout
-//			LogInfo.logInfo(true);
+			LogInfo.logInfo(true);
 
 //			TFEmatcher.output();	//halken TFEmatcher
 		} else {
 			//1203 yhac commentout
-//			LogError.logErr();
+			LogError.logErr();
 
 			//161109 yhac
 			if (GlobalEnv.isSsedit_autocorrect()) {

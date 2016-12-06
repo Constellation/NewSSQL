@@ -243,7 +243,7 @@ public class Start_Parse {
 //				}
 //				tmp.append(" " + line);
 //			}
-//			
+//
 //			if(line.startsWith("--")){
 //				while (line.contains("--")){
 //					String line1 = line.substring(0, line.indexOf("--"));
@@ -264,6 +264,9 @@ public class Start_Parse {
 				tmp.append((char) c);
 			}
 			query = tmp.toString();
+
+			GlobalEnv.queryLog += query;
+
 		} catch (FileNotFoundException e) {
 			Log.err("Error[SQLparser]: File(" + filename	+ ") Is Not Found.");
 			GlobalEnv.addErr("Error[SQLparser]: File(" + filename + ") Is Not Found." + e);
@@ -368,6 +371,7 @@ public class Start_Parse {
 		}
 
 		Log.info("[Parser:Parser] ssql statement = " + query);
+		GlobalEnv.queryLog += "[Parser:Parser] ssql statement = " + query;
 		return query;
 	}
 
@@ -460,14 +464,14 @@ public class Start_Parse {
 		query = query.trim();
 		String after_from = "";
 
-		
+
 		if(!query.toLowerCase().contains("generate")){
 			GlobalEnv.addErr("didn't find 'GENERATE'. please start with 'GENERATE'.");
-			System.err.println("didn't find 'GENERATE'. please start with 'GENERATE'.");
+			Log.err("didn't find 'GENERATE'. please start with 'GENERATE'.");
 		}
 		else if(!query.toLowerCase().contains("from")) {
 			GlobalEnv.addErr("didn't find 'FROM'. please describe 'FROM'.");
-			System.err.println("didn't find 'FROM'. please describe 'FROM'.");
+			Log.err("didn't find 'FROM'. please describe 'FROM'.");
 		}else{
 			try{
 				String a = query.substring(0, query.toLowerCase().indexOf("generate"));
