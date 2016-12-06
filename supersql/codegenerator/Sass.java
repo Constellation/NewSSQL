@@ -346,7 +346,7 @@ public class Sass {
 
 			sb.append(sass);
 
-			Log.info(sb);
+//			Log.info(sb);
 
 			URI inputFile = new File(outdirPath+fs+"jscss"+fs+"forBootstrap"+fs+"_bootstrap.scss").toURI();
 			URI outputFile = new File(outdirPath+fs+"stylesheet.css").toURI();
