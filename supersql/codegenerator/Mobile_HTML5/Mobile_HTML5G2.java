@@ -7,9 +7,11 @@ import java.io.FileWriter;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
+import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.Grouper;
 import supersql.codegenerator.Manager;
 import supersql.codegenerator.Sass;
+import supersql.codegenerator.TFE;
 import supersql.codegenerator.Compiler.Compiler;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
@@ -26,6 +28,8 @@ public class Mobile_HTML5G2 extends Grouper {
     static boolean tableFlg = false;		//20130314  table
     static boolean table0Flg = false;		//20130325  table0
     static boolean divFlg = false;			//20130326  div
+    
+    boolean firstFlg = false;	//20161203 bootstrap
     
     //added by goto 20130413  "row Prev/Next"
     int j = 1;
@@ -120,6 +124,12 @@ public class Mobile_HTML5G2 extends Grouper {
         	Mobile_HTML5Function.textFlg2 = true;
         }
         
+        //20161203 bootstrap
+        if(Sass.isFirstElementFlg()){
+        	firstFlg = true;
+        	Sass.firstElementFlg(false);
+        }
+        
         if(!GlobalEnv.isOpt()){
         	if(!Sass.isBootstrapFlg()){
 	        	//20130503  Panel
@@ -183,18 +193,28 @@ public class Mobile_HTML5G2 extends Grouper {
 	            	else					html_env.code.append(Mobile_HTML5C1.getTableStartTag(html_env, decos, this)+"\n");
 	        	}
         	}else if(Sass.isBootstrapFlg()){
-        		if(!decos.containsKey("C1") && !decos.containsKey("G1")){
-            		html_env.code.append("<DIV Class=\"row\">");
-            		if(Sass.outofloopFlg.peekFirst()){
-            			Sass.makeRowClass();
-            		}
-            	}
-        		html_env.code.append("<DIV Class=\""+classid+"\">");
-//        		html_env.code.append("<DIV Class=\"row\">");
-        		if(Sass.outofloopFlg.peekFirst()){
-        			Sass.makeClass(classid);
-        			Sass.defineGridBasic(classid, decos);
-	      		}
+//        		if(!decos.containsKey("C1") && !decos.containsKey("G1")){
+//            		html_env.code.append("<DIV Class=\"row\">");
+//            		if(Sass.outofloopFlg.peekFirst()){
+//            			Sass.makeRowClass();
+//            		}
+//            	}
+//        		html_env.code.append("<DIV Class=\""+classid+"\">");
+//        		if(Sass.outofloopFlg.peekFirst()){
+//        			Sass.makeClass(classid);
+//        			Sass.defineGridBasic(classid, decos);
+//	      		}
+//        		Sass.beforeLoop();
+        		if(firstFlg){
+        			html_env.code.append("<DIV Class=\"row\">");
+        			html_env.code.append("<DIV Class=\""+classid+"\">");
+        			
+        			if(Sass.outofloopFlg.peekFirst()){
+        				Sass.makeRowClass();
+        				Sass.makeClass(classid);
+        				Sass.defineGridBasic(classid, decos);
+        			}
+        		}
         		Sass.beforeLoop();
         	}
         }
@@ -207,6 +227,7 @@ public class Mobile_HTML5G2 extends Grouper {
 
         	
         	String classid2 = Mobile_HTML5Env.getClassID(tfe);
+        	DecorateList decos2 = ((TFE)tfe).decos;
 
         	Mobile_HTML5Function.glvl = html_env.glevel;	//added by goto 20130914  "SEQ_NUM"
         	
@@ -255,10 +276,17 @@ public class Mobile_HTML5G2 extends Grouper {
 			            Log.out("<TR><TD class=\"" + classid + " nest\">");
 	            	}
             	}else if(Sass.isBootstrapFlg()){
+//            		html_env.code.append("<DIV Class=\"row\">");
+//    	      		if(Sass.outofloopFlg.peekFirst()){
+//    	      			Sass.makeRowClass();
+//    	      		}
             		html_env.code.append("<DIV Class=\"row\">");
-    	      		if(Sass.outofloopFlg.peekFirst()){
-    	      			Sass.makeRowClass();
-    	      		}
+            		html_env.code.append("<div class=\"" + classid2 +"\">");
+            		if(Sass.outofloopFlg.peekFirst()){
+            			Sass.makeRowClass();
+            			Sass.makeClass(classid2);
+            			Sass.defineGridBasic(classid2, decos2);
+            		}
             	}
             }
             
@@ -275,9 +303,7 @@ public class Mobile_HTML5G2 extends Grouper {
 //	      	}
 
 	        Mobile_HTML5.whileProcess1(getSymbol(), decos, html_env, data, data_info, tfe, null, -1);
-	      	
             this.worknextItem();
-            
 	        Mobile_HTML5.whileProcess2(getSymbol(), decos, html_env, data, data_info, tfe, null, -1);
             
             if(decos.containsKey("table0") || Mobile_HTML5C1.table0Flg || Mobile_HTML5C2.table0Flg || Mobile_HTML5G1.table0Flg)	table0Flg = true;
@@ -321,10 +347,12 @@ public class Mobile_HTML5G2 extends Grouper {
 	                	Log.out("</TD></TR>");
 	                }
                 }else if(Sass.isBootstrapFlg()){
-                	html_env.code.append("\n</div>");
-    	      		if(Sass.outofloopFlg.peekFirst()){
-    	      			Sass.closeBracket();
-    	      		}
+                	html_env.code.append("\n</div>");//classid2
+                	html_env.code.append("\n</div>");//row
+                	if(Sass.outofloopFlg.peekFirst()){
+                		Sass.closeBracket();//classid2
+                		Sass.closeBracket();//row
+                	}
                 }
 
                 html_env.code = Embed.postProcess(html_env.code);	//goto 20130915-2  "<$  $>"
@@ -360,16 +388,25 @@ public class Mobile_HTML5G2 extends Grouper {
         Mobile_HTML5.afterWhileProcess(getSymbol(), classid, decos, html_env);
         if (Sass.isBootstrapFlg()){
         	Sass.afterLoop();
-
-        	html_env.code.append("\n</DIV>\n");//.TFE
-      		if(Sass.outofloopFlg.peekFirst()){
-      			Sass.closeBracket();
-      		}
-      		if(!decos.containsKey("C1") && !decos.containsKey("G1")){
-        		html_env.code.append("\n</DIV>\n");
+//        	html_env.code.append("\n</DIV>\n");//.TFE
+//      		if(Sass.outofloopFlg.peekFirst()){
+//      			Sass.closeBracket();
+//      		}
+//      		if(!decos.containsKey("C1") && !decos.containsKey("G1")){
+//        		html_env.code.append("\n</DIV>\n");
+//        		if(Sass.outofloopFlg.peekFirst()){
+//        			Sass.closeBracket();
+//        		}
+//        	}
+        	if(firstFlg){
+        		html_env.code.append("\n</DIV>\n");//.classid
+        		html_env.code.append("\n</DIV>\n");//.row
+        		
         		if(Sass.outofloopFlg.peekFirst()){
-        			Sass.closeBracket();
+        			Sass.closeBracket();//classid
+        			Sass.closeBracket();//row
         		}
+        		firstFlg = false;
         	}
         }
         
@@ -450,7 +487,7 @@ public class Mobile_HTML5G2 extends Grouper {
 //        }
 
         Mobile_HTML5.postProcess(getSymbol(), classid, decos, html_env);	//Post-process (後処理)
-
+        
         //added by goto 20130914  "SEQ_NUM"
         Mobile_HTML5Function.Func_seq_num_initialization(html_env.glevel);
         

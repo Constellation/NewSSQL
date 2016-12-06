@@ -29,6 +29,8 @@ public class Mobile_HTML5G1 extends Grouper {
     static boolean tableFlg = false;		//20130314  table
     static boolean table0Flg = false;		//20130325  table0
     static boolean divFlg = false;			//20130326  div
+    
+    boolean firstFlg = false;	//20161203 bootstrap
 
     //added by goto 20130413  "row Prev/Next"
     int j = 1;
@@ -135,6 +137,12 @@ public class Mobile_HTML5G1 extends Grouper {
         	Mobile_HTML5Function.textFlg2 = true;
         }
         
+        //20161203 bootstrap
+        if(Sass.isFirstElementFlg()){
+        	firstFlg = true;
+        	Sass.firstElementFlg(false);
+        }
+        
         if(!GlobalEnv.isOpt()){
 	        	if(!Sass.isBootstrapFlg()){
 	        	//20130503  Panel
@@ -209,20 +217,38 @@ public class Mobile_HTML5G1 extends Grouper {
 	            	else					html_env.code.append(Mobile_HTML5C1.getTableStartTag(html_env, decos, this)+"<TR>");
 	            }
         	}else if(Sass.isBootstrapFlg()){
-        		if(!decos.containsKey("C1") && !decos.containsKey("G1")){
-            		html_env.code.append("<DIV Class=\"row\">");
-            		if(Sass.outofloopFlg.peekFirst()){
-            			Sass.makeRowClass();
-            		}
-            	}
+//        		if(!decos.containsKey("C1") && !decos.containsKey("G1")){
+//            		html_env.code.append("<DIV Class=\"row\">");
+//            		if(Sass.outofloopFlg.peekFirst()){
+//            			Sass.makeRowClass();
+//            		}
+//            	}
+//        		
+//        		html_env.code.append("<DIV Class=\""+classid+"\">");
+//        		html_env.code.append("<DIV Class=\"row\">");
+//        		if(Sass.outofloopFlg.peekFirst()){
+//        			Sass.makeClass(classid);
+//        			Sass.defineGridBasic(classid, decos);
+//        			Sass.makeRowClass();
+//	      		}
+//        		Sass.beforeLoop();
         		
-        		html_env.code.append("<DIV Class=\""+classid+"\">");
+        		if(firstFlg){
+        			html_env.code.append("<DIV Class=\"row\">");
+        			html_env.code.append("<DIV Class=\""+classid+"\">");
+        			
+        			if(Sass.outofloopFlg.peekFirst()){
+        				Sass.makeRowClass();
+        				Sass.makeClass(classid);
+        				Sass.defineGridBasic(classid, decos);
+        			}
+        		}
+
         		html_env.code.append("<DIV Class=\"row\">");
         		if(Sass.outofloopFlg.peekFirst()){
-        			Sass.makeClass(classid);
-        			Sass.defineGridBasic(classid, decos);
         			Sass.makeRowClass();
-	      		}
+        		}
+
         		Sass.beforeLoop();
         		
         		//added 161125 taji for @slide
@@ -324,6 +350,11 @@ public class Mobile_HTML5G1 extends Grouper {
 	//	      	}
             }else if(Sass.isBootstrapFlg()){
             	(tfe).decos.put("G1",""+(numberOfColumns - Mobile_HTML5Function.func_null_count));
+            	html_env.code.append("<div class=\"" + classid2 +"\">");
+            	if(Sass.outofloopFlg.peekFirst()){
+            		Sass.makeClass(classid2);
+            		Sass.defineGridBasic(classid2, (tfe).decos);
+            	}
             }
             
 	        Mobile_HTML5.whileProcess1(getSymbol(), decos, html_env, data, data_info, tfe, null, -1);
@@ -335,7 +366,9 @@ public class Mobile_HTML5G1 extends Grouper {
 //            if(this.dindex == 0 && decos.containsKey("slide")){
 //	        	html_env.code.append("</div\">");
 //	        }
-            tfe.decos.put("slide", "false");
+            if(decos.containsKey("slide")){
+            	tfe.decos.put("slide", "false");
+	        }
             
 	        Mobile_HTML5.whileProcess2(getSymbol(), decos, html_env, data, data_info, tfe, null, -1);
 	        
@@ -355,11 +388,10 @@ public class Mobile_HTML5G1 extends Grouper {
             	if(!tableFlg)	html_env.code.append("</div>");	//20130309
         		else if(tableFlg)	        html_env.code.append("</TD>\n");    //20130314 table
             }else if(Sass.isBootstrapFlg()){
-//        		html_env.code.append("</div>");
-//        		if(Sass.outofloopFlg.peekFirst()){
-//        			Sass.closeBracket();
-//        		}
-//        		Sass.outofloopFlg.peekFirst() = false;
+            	html_env.code.append("\n</div>");//classid2
+            	if(Sass.outofloopFlg.peekFirst()){
+            		Sass.closeBracket();//classid2
+            	}
             	Sass.afterFirstLoop();
         	}
 
@@ -433,8 +465,8 @@ public class Mobile_HTML5G1 extends Grouper {
 	        }
         }else if(Sass.isBootstrapFlg()){
         	if(decos.containsKey("slide")){
-        	html_env.code.append("</div>");
-        	html_env.code.append("<!-- Controls -->"
+        		html_env.code.append("</div>");
+        		html_env.code.append("<!-- Controls -->"
         			+ "<a class=\"left carousel-control\" href=\"#carousel-example-generic\" role=\"button\" data-slide=\"prev\">"
         			+ "<span class=\"glyphicon glyphicon-chevron-left\" aria-hidden=\"true\"></span>"
         			+ "<span class=\"sr-only\">Previous</span>"
@@ -445,17 +477,32 @@ public class Mobile_HTML5G1 extends Grouper {
         			+ "</a>"
         			+ "</div>");
         	}
+//        	html_env.code.append("\n</DIV>\n");//.row
+//        	html_env.code.append("\n</DIV>\n");//.TFE
+//      		if(Sass.outofloopFlg.peekFirst()){
+//      			Sass.closeBracket();
+//      			Sass.closeBracket();
+//      		}
+//      		if(!decos.containsKey("C1") && !decos.containsKey("G1")){
+//        		html_env.code.append("\n</DIV>\n");
+//        		if(Sass.outofloopFlg.peekFirst()){
+//        			Sass.closeBracket();
+//        		}
+//        	}
+
         	html_env.code.append("\n</DIV>\n");//.row
-        	html_env.code.append("\n</DIV>\n");//.TFE
-      		if(Sass.outofloopFlg.peekFirst()){
-      			Sass.closeBracket();
-      			Sass.closeBracket();
-      		}
-      		if(!decos.containsKey("C1") && !decos.containsKey("G1")){
-        		html_env.code.append("\n</DIV>\n");
+        	if(Sass.outofloopFlg.peekFirst()){
+        		Sass.closeBracket();//row
+        	}
+
+        	if(firstFlg){
+        		html_env.code.append("\n</DIV>\n");//.classid
+        		html_env.code.append("\n</DIV>\n");//.row
         		if(Sass.outofloopFlg.peekFirst()){
-        			Sass.closeBracket();
+        			Sass.closeBracket();//classid
+        			Sass.closeBracket();//row
         		}
+        		firstFlg = false;
         	}
         }
         if(divFlg)	divFlg = false;		//20130326  div

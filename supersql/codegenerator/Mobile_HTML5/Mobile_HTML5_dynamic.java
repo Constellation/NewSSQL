@@ -257,8 +257,12 @@ public class Mobile_HTML5_dynamic {
 	}
 	public static boolean dynamicStringGetProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
 		if(decos.containsKey("dynamic")){
+//			Log.info(symbol+"\n");
 			String currentHTML = html_env.code.toString();
+//			Log.info("currentHTML\n"+currentHTML+"\n");
 			dynamicString = currentHTML.substring(dynamicHTMLbuf.length(), currentHTML.length());
+//			Log.info("dynamicString\n"+dynamicString+"\n");
+//			Log.info("dynamicHTMLbuf\n"+dynamicHTMLbuf+"\n");
 			html_env.code = new StringBuffer(dynamicHTMLbuf);
 			//dynamicDisplay = false;
 			return true;
@@ -300,6 +304,7 @@ public class Mobile_HTML5_dynamic {
 			int numberOfColumns = 1;
 			String php_str1 = "", php_str2 = "", php_str3 = "", php_str4 = "";
 			//Log.i("!! "+symbol);
+//			Log.info(dynamicString);
 			if(!symbol.contains("G1") && !symbol.contains("G2")){
 				
 				if(decos.containsKey("table")){
