@@ -75,6 +75,7 @@ public class Ssedit {
 	public static String getMedia_and_From(String query) {
 		/////////////////////////////////////////////////////////////////////////////////////////////
 		//generate MEDIA までの文字列
+		//TODO mobile_html5など
 		if (query.toLowerCase().contains("html")) {
 			generateclause = query.substring(0, query.toLowerCase().indexOf("html") + 4);
 			escapeFlag = false;
@@ -450,6 +451,12 @@ public class Ssedit {
 		for (int i=0; i<infoarray.size(); i++) {
 			Log.err(infoarray.get(i));
 		}
+	}
+
+	//161206
+	public static String getautocorrectValue() {
+
+		return "autocorrect=" + ((GlobalEnv.isSsedit_autocorrect())? "on" : "off");
 	}
 }
 
