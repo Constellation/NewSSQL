@@ -206,13 +206,17 @@ public class Mobile_HTML5G2 extends Grouper {
 //	      		}
 //        		Sass.beforeLoop();
         		if(firstFlg){
-        			html_env.code.append("<DIV Class=\"row\">");
-        			html_env.code.append("<DIV Class=\""+classid+"\">");
+        			html_env.code.append("<DIV Class=\"row\">\n");
+        			html_env.code.append("<DIV Class=\""+classid+"\">\n");
         			
         			if(Sass.outofloopFlg.peekFirst()){
-        				Sass.makeRowClass();
+//        				Sass.makeRowClass();
+//        				Sass.makeClass(classid);
+//        				Sass.defineGridBasic(classid, decos);
+        				
         				Sass.makeClass(classid);
         				Sass.defineGridBasic(classid, decos);
+        				Sass.closeBracket();
         			}
         		}
         		Sass.beforeLoop();
@@ -280,12 +284,16 @@ public class Mobile_HTML5G2 extends Grouper {
 //    	      		if(Sass.outofloopFlg.peekFirst()){
 //    	      			Sass.makeRowClass();
 //    	      		}
-            		html_env.code.append("<DIV Class=\"row\">");
-            		html_env.code.append("<div class=\"" + classid2 +"\">");
+            		html_env.code.append("<DIV Class=\"row\">\n");
+            		html_env.code.append("<div class=\"" + classid2 +"\">\n");
             		if(Sass.outofloopFlg.peekFirst()){
-            			Sass.makeRowClass();
+//            			Sass.makeRowClass();
+//            			Sass.makeClass(classid2);
+//            			Sass.defineGridBasic(classid2, decos2);
+            			
             			Sass.makeClass(classid2);
             			Sass.defineGridBasic(classid2, decos2);
+            			Sass.closeBracket();
             		}
             	}
             }
@@ -347,11 +355,11 @@ public class Mobile_HTML5G2 extends Grouper {
 	                	Log.out("</TD></TR>");
 	                }
                 }else if(Sass.isBootstrapFlg()){
-                	html_env.code.append("\n</div>");//classid2
-                	html_env.code.append("\n</div>");//row
+                	html_env.code.append("</div>\n");//classid2
+                	html_env.code.append("</div>\n");//row
                 	if(Sass.outofloopFlg.peekFirst()){
-                		Sass.closeBracket();//classid2
-                		Sass.closeBracket();//row
+//                		Sass.closeBracket();//classid2
+//                		Sass.closeBracket();//row
                 	}
                 }
 
@@ -399,12 +407,12 @@ public class Mobile_HTML5G2 extends Grouper {
 //        		}
 //        	}
         	if(firstFlg){
-        		html_env.code.append("\n</DIV>\n");//.classid
-        		html_env.code.append("\n</DIV>\n");//.row
+        		html_env.code.append("</DIV>\n");//.classid
+        		html_env.code.append("</DIV>\n");//.row
         		
         		if(Sass.outofloopFlg.peekFirst()){
-        			Sass.closeBracket();//classid
-        			Sass.closeBracket();//row
+//        			Sass.closeBracket();//classid
+//        			Sass.closeBracket();//row
         		}
         		firstFlg = false;
         	}

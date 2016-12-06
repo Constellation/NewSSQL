@@ -171,33 +171,25 @@ public class Mobile_HTML5C1 extends Connector {
         	//20160527 bootstrap
             else if(Sass.isBootstrapFlg()){
             	if(!tableFlg){
-//	            	if(!decos.containsKey("C1") && !decos.containsKey("G1")){
-//	            		html_env.code.append("<DIV Class=\"row\">");
-//	            		if(Sass.outofloopFlg.peekFirst()){
-//	            			Sass.makeRowClass();
-//	            		}
-//	            	}
-//	        		html_env.code.append("<DIV Class=\""+classid+"\">");
-//	        		html_env.code.append("<DIV Class=\"row\">");
-//	        		if(Sass.outofloopFlg.peekFirst()){
-//	        			Sass.makeClass(classid);
-//	        			Sass.defineGridBasic(classid, decos);
-//	        			Sass.makeRowClass();
-//		      		}
             		if(firstFlg){
-            			html_env.code.append("<DIV Class=\"row\">");
-            			html_env.code.append("<DIV Class=\""+classid+"\">");
+            			html_env.code.append("<DIV Class=\"row\">\n");
+            			html_env.code.append("<DIV Class=\""+classid+"\">\n");
             			
             			if(Sass.outofloopFlg.peekFirst()){
-            				Sass.makeRowClass();
+//            				Sass.makeRowClass();
+//            				Sass.makeClass(classid);
+//            				Sass.defineGridBasic(classid, decos);
+            				
             				Sass.makeClass(classid);
             				Sass.defineGridBasic(classid, decos);
+            				Sass.closeBracket();
+            				
             			}
             		}
 
-            		html_env.code.append("<DIV Class=\"row\">");
+            		html_env.code.append("<DIV Class=\"row\">\n");
             		if(Sass.outofloopFlg.peekFirst()){
-            			Sass.makeRowClass();
+//            			Sass.makeRowClass();
             		}
             	}
 
@@ -278,10 +270,14 @@ public class Mobile_HTML5C1 extends Connector {
         				decos2.put("lg", ""+gridMap.get(classid2).get("lg"));
         			}
         		}
-        		html_env.code.append("<div class=\"" + classid2 +"\">");
+        		html_env.code.append("<div class=\"" + classid2 +"\">\n");
         		if(Sass.outofloopFlg.peekFirst()){
+//        			Sass.makeClass(classid2);
+//        			Sass.defineGridBasic(classid2, decos2);
+        			
         			Sass.makeClass(classid2);
         			Sass.defineGridBasic(classid2, decos2);
+        			Sass.closeBracket();
         		}
         	
 
@@ -324,7 +320,7 @@ public class Mobile_HTML5C1 extends Connector {
 	            else if(Sass.isBootstrapFlg()){
 	            	html_env.code.append("\n</DIV>\n");//.classid2
 	            	if(Sass.outofloopFlg.peekFirst()){
-	            		Sass.closeBracket();//classid2
+//	            		Sass.closeBracket();//classid2
 	            	}
 	        	}
         	}
@@ -383,25 +379,25 @@ public class Mobile_HTML5C1 extends Connector {
 //        			Sass.closeBracket();
 //        		}
 //        	}
-        	html_env.code.append("\n</DIV>\n");//.row
+        	html_env.code.append("</DIV>\n");//.row
         	if(Sass.outofloopFlg.peekFirst()){
-        		Sass.closeBracket();//row
+//        		Sass.closeBracket();//row
         	}
 
         	if(firstFlg){
-        		html_env.code.append("\n</DIV>\n");//.classid
-        		html_env.code.append("\n</DIV>\n");//.row
+        		html_env.code.append("</DIV>\n");//.classid
+        		html_env.code.append("</DIV>\n");//.row
         		
         		if(Sass.outofloopFlg.peekFirst()){
-        			Sass.closeBracket();//classid
-        			Sass.closeBracket();//row
+//        			Sass.closeBracket();//classid
+//        			Sass.closeBracket();//row
         		}
         		firstFlg = false;
         	}
         }
 
         Mobile_HTML5.postProcess(getSymbol(), classid, decos, html_env);	//Post-process (後処理)
-
+        
         //20131001 tableDivHeader
     	if(decos.containsKey("header"))
         	html_env.code = Mobile_HTML5G2.createAndCutTableDivHeader(html_env);

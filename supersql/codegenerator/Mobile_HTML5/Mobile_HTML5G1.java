@@ -234,38 +234,42 @@ public class Mobile_HTML5G1 extends Grouper {
 //        		Sass.beforeLoop();
         		
         		if(firstFlg){
-        			html_env.code.append("<DIV Class=\"row\">");
-        			html_env.code.append("<DIV Class=\""+classid+"\">");
-        			
+        			html_env.code.append("<DIV Class=\"row\">\n");
+        			html_env.code.append("<DIV Class=\""+classid+"\">\n");
+        			Log.info(classid);
         			if(Sass.outofloopFlg.peekFirst()){
-        				Sass.makeRowClass();
+//        				Sass.makeRowClass();
+//        				Sass.makeClass(classid);
+//        				Sass.defineGridBasic(classid, decos);
+        				
         				Sass.makeClass(classid);
         				Sass.defineGridBasic(classid, decos);
+        				Sass.closeBracket();
         			}
         		}
 
-        		html_env.code.append("<DIV Class=\"row\">");
+        		html_env.code.append("<DIV Class=\"row\">\n");
         		if(Sass.outofloopFlg.peekFirst()){
-        			Sass.makeRowClass();
+//        			Sass.makeRowClass();
         		}
 
         		Sass.beforeLoop();
         		
         		//added 161125 taji for @slide
         		if(decos.containsKey("slide")){
-        			html_env.code.append("<div id=\"carousel-example-generic\" class=\"carousel slide\" data-ride=\"carousel\">"
-        					+ "<!-- Indicators -->"
-        					+ "<ol class=\"carousel-indicators\">");
+        			html_env.code.append("<div id=\"carousel-example-generic\" class=\"carousel slide\" data-ride=\"carousel\">\n"
+        					+ "<!-- Indicators -->\n"
+        					+ "<ol class=\"carousel-indicators\">\n");
         			for(int i = 0; i < this.numberOfColumns; i++){
         				if(i == 0){
-        					html_env.code.append("<li data-target=\"#carousel-example-generic\" data-slide-to=\""+ i +"\" class=\"active\"></li>");
+        					html_env.code.append("<li data-target=\"#carousel-example-generic\" data-slide-to=\""+ i +"\" class=\"active\"></li>\n");
         				}else{
-        					html_env.code.append("<li data-target=\"#carousel-example-generic\" data-slide-to=\""+ i +"\"></li>");
+        					html_env.code.append("<li data-target=\"#carousel-example-generic\" data-slide-to=\""+ i +"\"></li>\n");
         				}
         			}
-        			html_env.code.append("</ol>"
-        					+ "<!-- Wrapper for slides -->"
-        					+ "<div class=\"carousel-inner\" role=\"listbox\">");
+        			html_env.code.append("</ol>\n"
+        					+ "<!-- Wrapper for slides -->\n"
+        					+ "<div class=\"carousel-inner\" role=\"listbox\">\n");
         		}
         		//added 161125 taji for @slide	
         	}
@@ -350,10 +354,14 @@ public class Mobile_HTML5G1 extends Grouper {
 	//	      	}
             }else if(Sass.isBootstrapFlg()){
             	(tfe).decos.put("G1",""+(numberOfColumns - Mobile_HTML5Function.func_null_count));
-            	html_env.code.append("<div class=\"" + classid2 +"\">");
+            	html_env.code.append("<div class=\"" + classid2 +"\">\n");
             	if(Sass.outofloopFlg.peekFirst()){
+//            		Sass.makeClass(classid2);
+//            		Sass.defineGridBasic(classid2, (tfe).decos);
+            		
             		Sass.makeClass(classid2);
             		Sass.defineGridBasic(classid2, (tfe).decos);
+            		Sass.closeBracket();
             	}
             }
             
@@ -388,9 +396,9 @@ public class Mobile_HTML5G1 extends Grouper {
             	if(!tableFlg)	html_env.code.append("</div>");	//20130309
         		else if(tableFlg)	        html_env.code.append("</TD>\n");    //20130314 table
             }else if(Sass.isBootstrapFlg()){
-            	html_env.code.append("\n</div>");//classid2
+            	html_env.code.append("</div>\n");//classid2
             	if(Sass.outofloopFlg.peekFirst()){
-            		Sass.closeBracket();//classid2
+//            		Sass.closeBracket();//classid2
             	}
             	Sass.afterFirstLoop();
         	}
@@ -465,17 +473,17 @@ public class Mobile_HTML5G1 extends Grouper {
 	        }
         }else if(Sass.isBootstrapFlg()){
         	if(decos.containsKey("slide")){
-        		html_env.code.append("</div>");
-        		html_env.code.append("<!-- Controls -->"
-        			+ "<a class=\"left carousel-control\" href=\"#carousel-example-generic\" role=\"button\" data-slide=\"prev\">"
-        			+ "<span class=\"glyphicon glyphicon-chevron-left\" aria-hidden=\"true\"></span>"
-        			+ "<span class=\"sr-only\">Previous</span>"
-        			+ "</a>"
-        			+ "<a class=\"right carousel-control\" href=\"#carousel-example-generic\" role=\"button\" data-slide=\"next\">"
-        			+ "<span class=\"glyphicon glyphicon-chevron-right\" aria-hidden=\"true\"></span>"
-        			+ "<span class=\"sr-only\">Next</span>"
-        			+ "</a>"
-        			+ "</div>");
+        		html_env.code.append("</div>\n");
+        		html_env.code.append("<!-- Controls -->\n"
+        			+ "<a class=\"left carousel-control\" href=\"#carousel-example-generic\" role=\"button\" data-slide=\"prev\">\n"
+        			+ "<span class=\"glyphicon glyphicon-chevron-left\" aria-hidden=\"true\"></span>\n"
+        			+ "<span class=\"sr-only\">Previous</span>\n"
+        			+ "</a>\n"
+        			+ "<a class=\"right carousel-control\" href=\"#carousel-example-generic\" role=\"button\" data-slide=\"next\">\n"
+        			+ "<span class=\"glyphicon glyphicon-chevron-right\" aria-hidden=\"true\"></span>\n"
+        			+ "<span class=\"sr-only\">Next</span>\n"
+        			+ "</a>\n"
+        			+ "</div>\n");
         	}
 //        	html_env.code.append("\n</DIV>\n");//.row
 //        	html_env.code.append("\n</DIV>\n");//.TFE
@@ -490,17 +498,17 @@ public class Mobile_HTML5G1 extends Grouper {
 //        		}
 //        	}
 
-        	html_env.code.append("\n</DIV>\n");//.row
+        	html_env.code.append("</DIV>\n");//.row
         	if(Sass.outofloopFlg.peekFirst()){
-        		Sass.closeBracket();//row
+//        		Sass.closeBracket();//row
         	}
 
         	if(firstFlg){
-        		html_env.code.append("\n</DIV>\n");//.classid
-        		html_env.code.append("\n</DIV>\n");//.row
+        		html_env.code.append("</DIV>\n");//.classid
+        		html_env.code.append("</DIV>\n");//.row
         		if(Sass.outofloopFlg.peekFirst()){
-        			Sass.closeBracket();//classid
-        			Sass.closeBracket();//row
+//        			Sass.closeBracket();//classid
+//        			Sass.closeBracket();//row
         		}
         		firstFlg = false;
         	}

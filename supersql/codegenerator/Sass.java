@@ -248,42 +248,42 @@ public class Sass {
 
 		if(!decos.containsKey("xs") && !decos.containsKey("sm") && !decos.containsKey("md") && !decos.containsKey("lg")){//none specified
 			if(decos.containsKey("G1")){
-				sass.append("$grid-columns:" + decos.getStr("G1") + " !global;\n");
-				sass.append("@include make-xs-column(1);\n");
+				sass.append("	$grid-columns:" + decos.getStr("G1") + " !global;\n");
+				sass.append("	@include make-xs-column(1);\n");
 			}else{
 				xs_grid = 1;
 				xs_col=1;
-				sass.append("$grid-columns:" + xs_grid + " !global;\n");
-				sass.append("@include make-xs-column("+ xs_col + ");\n");
+				sass.append("	$grid-columns:" + xs_grid + " !global;\n");
+				sass.append("	@include make-xs-column("+ xs_col + ");\n");
 			}
 		}else{//some or all specified
 			if(decos.containsKey("xs")){
 				Fraction xs = new Fraction(decos.getStr("xs"));
 				xs_grid = xs.getDenominator();
 				xs_col = xs.getNumerator();
-				sass.append("$grid-columns:" + xs_grid + " !global;\n");
-				sass.append("@include make-xs-column("+ xs_col + ");\n");
+				sass.append("	$grid-columns:" + xs_grid + " !global;\n");
+				sass.append("	@include make-xs-column("+ xs_col + ");\n");
 			}
 			if(decos.containsKey("sm")){
 				Fraction sm = new Fraction(decos.getStr("sm"));
 				sm_grid = sm.getDenominator();
 				sm_col = sm.getNumerator();
-				sass.append("$grid-columns:" + sm_grid + " !global;\n");
-				sass.append("@include make-sm-column("+ sm_col + ");\n");
+				sass.append("	$grid-columns:" + sm_grid + " !global;\n");
+				sass.append("	@include make-sm-column("+ sm_col + ");\n");
 			}
 			if(decos.containsKey("md")){
 				Fraction md = new Fraction(decos.getStr("md"));
 				md_grid = md.getDenominator();
 				md_col = md.getNumerator();
-				sass.append("$grid-columns:" + md_grid + " !global;\n");
-				sass.append("@include make-md-column("+ md_col + ");\n");
+				sass.append("	$grid-columns:" + md_grid + " !global;\n");
+				sass.append("	@include make-md-column("+ md_col + ");\n");
 			}
 			if(decos.containsKey("lg")){
 				Fraction lg = new Fraction(decos.getStr("lg"));
 				lg_grid = lg.getDenominator();
 				lg_col = lg.getNumerator();
-				sass.append("$grid-columns:" + lg_grid + " !global;\n");
-				sass.append("@include make-lg-column("+ lg_col + ");\n");
+				sass.append("	$grid-columns:" + lg_grid + " !global;\n");
+				sass.append("	@include make-lg-column("+ lg_col + ");\n");
 			}
 		}
 	}
@@ -346,7 +346,7 @@ public class Sass {
 
 			sb.append(sass);
 
-//			Log.info(sb);
+			Log.info(sb);
 
 			URI inputFile = new File(outdirPath+fs+"jscss"+fs+"forBootstrap"+fs+"_bootstrap.scss").toURI();
 			URI outputFile = new File(outdirPath+fs+"stylesheet.css").toURI();

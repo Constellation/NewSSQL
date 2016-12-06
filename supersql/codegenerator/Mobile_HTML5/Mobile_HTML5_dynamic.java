@@ -249,6 +249,8 @@ public class Mobile_HTML5_dynamic {
 	public static boolean dynamicPreProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
 		if(decos.containsKey("dynamic")){
 			dynamicHTMLbuf = html_env.code.toString();
+			Log.info("dynamicPreProcess" +symbol+"\n");
+			Log.info("dynamicHTMLbuf\n"+dynamicHTMLbuf.toString()+"\n");
 			dynamicDisplay = true;
 			if(Mobile_HTML5G3.G3)	Mobile_HTML5G3.dynamic_G3 = true;	//added by goto 20161112 for dynamic foreach
 			return true;
@@ -257,11 +259,12 @@ public class Mobile_HTML5_dynamic {
 	}
 	public static boolean dynamicStringGetProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
 		if(decos.containsKey("dynamic")){
-//			Log.info(symbol+"\n");
+			Log.info("dynamicStringGetProcess" + symbol+"\n");
 			String currentHTML = html_env.code.toString();
-//			Log.info("currentHTML\n"+currentHTML+"\n");
+			Log.info("currentHTML\n"+currentHTML+"\n");
+			Log.info("dynamicHTMLbuf\n"+dynamicHTMLbuf.toString()+"\n");
 			dynamicString = currentHTML.substring(dynamicHTMLbuf.length(), currentHTML.length());
-//			Log.info("dynamicString\n"+dynamicString+"\n");
+			Log.info("dynamicString\n"+dynamicString+"\n");
 //			Log.info("dynamicHTMLbuf\n"+dynamicHTMLbuf+"\n");
 			html_env.code = new StringBuffer(dynamicHTMLbuf);
 			//dynamicDisplay = false;
@@ -282,6 +285,7 @@ public class Mobile_HTML5_dynamic {
 			
 			if(symbol.contains("G1") || symbol.contains("G2")){
 				html_env.code = new StringBuffer(dynamicHTMLbuf0);
+				Log.info("After C1 postProcess\n"+html_env.code.toString()+"\n");
 			}
 			
 			//ajax load interval
