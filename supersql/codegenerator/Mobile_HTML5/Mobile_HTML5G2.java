@@ -67,7 +67,7 @@ public class Mobile_HTML5G2 extends Grouper {
 
     	Mobile_HTML5G1.G1_count = 0;
     	
-    	Mobile_HTML5_dynamic.Gdepth = 0;
+//    	Mobile_HTML5_dynamic.Gdepth = 0;
     	Mobile_HTML5_dynamic.Gnum++;
     	
         //G2Flg = true;
@@ -223,12 +223,14 @@ public class Mobile_HTML5G2 extends Grouper {
         Mobile_HTML5.beforeWhileProcess(getSymbol(), decos, html_env);
         while (this.hasMoreItems()) {
         	Mobile_HTML5.gLevel++;
+        	Mobile_HTML5.whileProcess1_1(getSymbol(), decos, html_env, data, data_info, tfe, null, -1);
+
         	
         	String classid2 = Mobile_HTML5Env.getClassID(tfe);
         	DecorateList decos2 = ((TFE)tfe).decos;
 
         	Mobile_HTML5Function.glvl = html_env.glevel;	//added by goto 20130914  "SEQ_NUM"
-        	Mobile_HTML5_dynamic.Gdepth++;
+        	
         	
         	
         	//[重要] For [ [], ]!        	
@@ -378,8 +380,8 @@ public class Mobile_HTML5G2 extends Grouper {
                 rowNum++;
             }
 
-	        Mobile_HTML5.whileProcess2_2(getSymbol(), decos, html_env, data, data_info, tfe, null, -1);
-	        
+            
+	        if(!Mobile_HTML5.whileProcess2_2(getSymbol(), decos, html_env, data, data_info, tfe, null, -1))	break;
 	        Mobile_HTML5.gLevel--;
         }	// /while
         //20160527 bootstrap

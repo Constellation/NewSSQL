@@ -95,7 +95,6 @@ public class Grouper extends Operator implements Serializable{
     }
 
     public void worknextItem() {
-    	Log.info(data.get(dindex));
         ExtList subdata = (ExtList) (data.get(dindex));
         if (tfe instanceof Connector || tfe instanceof Attribute
                 || tfe instanceof Function || tfe instanceof IfCondition || tfe instanceof Decorator) {

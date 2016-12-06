@@ -103,7 +103,7 @@ public class VRG1 extends Grouper {
 			//System.out.println("yeahhhhhhh1");
 		}
 		
-		System.out.println("<G1front>");
+		//System.out.println("<G1front>");
 		VRAttribute.gjudge++;
 		
 		while (this.hasMoreItems()) {
@@ -229,7 +229,7 @@ public class VRG1 extends Grouper {
 			html_env.gLevel--;
 		}
 
-		System.out.println("</G1back>");
+		//System.out.println("</G1back>");
 		if(VRAttribute.gjudge==1){
 			VRAttribute.billnum++;
 		}
@@ -253,6 +253,10 @@ public class VRG1 extends Grouper {
 //			}else{
 			//VRAttribute.gjoinflag = 1;
 			html_env.code.append("</group>\n");
+			VRAttribute.grouptag++;
+//			if(VRAttribute.grouptag < VRAttribute.cjoinarray.size()+1){
+				html_env.code.append("<group>\n");
+//			}
 			VRAttribute.genrearray22.add(VRAttribute.genrecount);
 			
 //			new VRManager(html_env, html_env2).xmlcreate();

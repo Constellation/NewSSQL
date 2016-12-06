@@ -24,12 +24,11 @@ import org.apache.commons.codec.digest.DigestUtils;
 import supersql.FrontEnd;
 import supersql.codegenerator.Ehtml;
 import supersql.codegenerator.Incremental;
-
 import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5;
 import supersql.common.DB;
-
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
+import supersql.common.Ssedit;
 import supersql.common.Suggest;
 import supersql.extendclass.ExtList;
 import supersql.parser.FromParse;
@@ -83,7 +82,7 @@ public class SQLManager {
     public void ExecSQL(String query) {
 		ExecSQL(query, null, null);
 	}
-    
+
     @SuppressWarnings({ "rawtypes", "unchecked" })
 	public void ExecSQL(String query, String create, String update) {
     	if(isMulti)
@@ -102,7 +101,7 @@ public class SQLManager {
     	if(query.toLowerCase().contains("$session (\"") && query.toLowerCase().contains("\" )")){
     		if(query.contains(")OR"))	query = query.replace(")OR", ") OR");
     		if(query.contains(")or"))	query = query.replace(")or", ") OR");
-    		
+
     		String[] b = query.split(" ");
     		boolean sq = false, s = false, w = false;
     		for(int i=0; i<b.length; i++){
@@ -195,7 +194,7 @@ public class SQLManager {
                 }
                 tuples.add(tmplist);
             }
-            
+
             // added by masato 20151221
             if (Ehtml.flag) { // SQLの結果を保存
             	String outDir = GlobalEnv.getoutdirectory();
@@ -246,7 +245,7 @@ public class SQLManager {
                 if(hexString.equals(sqlResultBuffer.toString())){
                 	// 同じだった場合
                 	Log.ehtmlInfo("test");
-                	
+
                 	// 評価用出力
 //                	long end = System.currentTimeMillis();
 //            		Log.ehtmlInfo("Parsing Time : " + (FrontEnd.afterparser - FrontEnd.start) + "msec<br>");
@@ -272,8 +271,8 @@ public class SQLManager {
         			pw.close();
                 }
             }
-            
-            
+
+
 //            if(true){
             	FrontEnd.aftersql = System.currentTimeMillis();
 //        		Log.info("SQL Time : " + (FrontEnd.aftersql - FrontEnd.afterparser) + "msec");
@@ -303,12 +302,12 @@ public class SQLManager {
 //			      GlobalEnv.errorText += e;
 			      GlobalEnv.addErr("Error[SQLManager.ExecSQL]: Can't Exec Query : query = "
 			              + query);
-			      
+
 			      //added by goto 20131016 start
 			      String list = "";
 			      String errorContents[] = Suggest.getErrorContents(e);  //return: [0]=Error message, [1]=Error table name or column name, [2]=Error table alias
 		    	  ArrayList<ArrayList> tableNameAndAlias = DB.getTableNamesFromQuery(query);	//return: (0)=Table name, (1)=Table alias, (2)=From phrase
-		    	  
+
 			      String driver = GlobalEnv.getDriver().toLowerCase();
 		    	  if( (driver.contains("postgresql") && (errorContents[0].contains("column") || errorContents[0].contains("table")) ||
 		    		  //(driver.contains("mysql") ) ||	//TODO
@@ -324,7 +323,18 @@ public class SQLManager {
 			    		  Log.err("\n## Column list ##\n" + list);
 //			    		  GlobalEnv.errorText += "\n## Column list ##\n" + list;
 			    	  }
-			    	  
+
+			    	  //161110 yhac
+		    		  Ssedit.getSuggestlist(list, 1000);
+		    		  //AutocorrectAlgorirhm_SQLへ(2回目)
+		    		  try {
+		    			  Ssedit.AutocorrectAlgorirhm_SQL(null, null, null, null, "column2");
+		    		  } catch (IOException e1) {
+						// TODO 自動生成された catch ブロック
+						e1.printStackTrace();
+		    		  }
+
+
 			      }
 		    	  else if( (driver.contains("postgresql") && (errorContents[0].contains("relation"))) ||
 		    			   //(driver.contains("mysql") ) ||	//TODO

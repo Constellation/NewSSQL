@@ -284,9 +284,7 @@ public class DataConstructor {
 		// MakeSQL
 		long start, end;
 		start = System.nanoTime();
-
 		SQL_string = msql.makeSQL(sep_sch);
-
 		end = System.nanoTime();
 		exectime[MAKESQL] = end - start;
 		Log.out("## SQL Query ##");
@@ -336,7 +334,7 @@ public class DataConstructor {
 		TreeGenerator tg = new TreeGenerator();
 
 		sep_data_info = tg.makeTree(sep_sch, sep_data_info);
-
+		
 		end = System.nanoTime();
 
 		exectime[MKETREE] = end - start;

@@ -1,9 +1,11 @@
 package supersql.codegenerator.Web;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import supersql.codegenerator.Attribute;
 import supersql.codegenerator.Manager;
+import supersql.codegenerator.Modifier;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
@@ -37,30 +39,43 @@ public class WebAttribute extends Attribute {
 		// HTMLコード書き込み
 		if (webEnv.tableFlag) {
 			webEnv.code.append("<td class=\"");
-//			webEnv.code.append(WebEnv.getClassID(this));
 			webEnv.code.append(classname);
+			if (WebEnv.style != null) {
+				webEnv.code.append(" style-table-att");
+			}
 			webEnv.code.append(" att\">");
 		} else if (webEnv.listUlFlag || webEnv.listOlFlag) {
 			webEnv.code.append("<li class=\"");
-//			webEnv.code.append(WebEnv.getClassID(this));
 			webEnv.code.append(classname);
+			if (WebEnv.style != null) {
+				webEnv.code.append(" style-list-att");
+			}
 			webEnv.code.append(" att\">");
-		} else if (webEnv.decorationEndFlag) {
-			// nothing
-		} else if (webEnv.decorationStartFlag) {
-			WebDecoration.divFront.append("<div class=\"");
-//			WebDecoration.divEnd.append(WebEnv.getClassID(this));
-			WebDecoration.divEnd.append(classname);
-			WebDecoration.divEnd.append(" att\">");
-		} else if (webEnv.decorationFlag) {
-			WebDecoration.divEnd.append("<div class=\"");
-//			WebDecoration.divEnd.append(WebEnv.getClassID(this));
-			WebDecoration.divEnd.append(classname);
-			WebDecoration.divEnd.append(" att\">");
+		} else if (webEnv.decorationStartFlag.size() > 0) {
+			if (webEnv.decorationEndFlag.get(0)) {
+				// nothing
+			} else if (webEnv.decorationStartFlag.get(0)) {
+				WebDecoration.divFront.get(0).append("<div");
+				WebDecoration.divclass.get(0).append(" class=\"");
+				WebDecoration.divEnd.get(0).append(classname);
+				if (WebEnv.style != null) {
+					WebDecoration.divEnd.get(0).append(" style-att");
+				}
+				WebDecoration.divEnd.get(0).append(" att\">");
+			} else {
+				WebDecoration.divEnd.get(0).append("<div class=\"");
+				WebDecoration.divEnd.get(0).append(classname);
+				if (WebEnv.style != null) {
+					WebDecoration.divEnd.get(0).append(" style-att");
+				}
+				WebDecoration.divEnd.get(0).append(" att\">");
+			}
 		} else {
 			webEnv.code.append("<div class=\"");
-//			webEnv.code.append(WebEnv.getClassID(this));
 			webEnv.code.append(classname);
+			if (WebEnv.style != null) {
+				webEnv.code.append(" style-att");
+			}
 			webEnv.code.append(" att\">");
 		}
 		
@@ -86,11 +101,23 @@ public class WebAttribute extends Attribute {
 		Log.out("replace data = " + data);
 		// webEnv.code.append(this.getStr(data_info));
 
-		if (webEnv.decorationEndFlag) {
-			WebEnv.cssClass.add(data);
-			WebDecoration.divclass.append(data + " ");
-		} else if (webEnv.decorationFlag) {
-			WebDecoration.divEnd.append(data);
+		if (webEnv.decorationEndFlag.size() > 0) {
+			if (webEnv.decorationEndFlag.get(0)) {
+				String property = webEnv.decorationProperty.get(0).get(0);
+				ArrayList<String> declaration = new ArrayList<String>();
+				declaration = Modifier.replaceModifierValues(property, data);
+				property = declaration.get(0);
+				String value = declaration.get(1);
+				if (property.equals("class")) {
+					WebEnv.cssClass.add(value);
+					WebDecoration.divclass.get(0).append(value + " ");
+				} else {
+					WebDecoration.divStyle.get(0).append(property + ":" + value + ";");
+				}
+				webEnv.decorationProperty.get(0).remove(0);
+			} else {
+				WebDecoration.divEnd.get(0).append(data);
+			}
 		} else {
 			webEnv.code.append(data);
 		}
@@ -106,13 +133,15 @@ public class WebAttribute extends Attribute {
 			webEnv.code.append("</td>\n");
 		} else if (webEnv.listUlFlag || webEnv.listOlFlag) {
 			webEnv.code.append("</li>\n");
-		} else if (webEnv.decorationEndFlag) {
-			// nothing
-		} else if (webEnv.decorationStartFlag) {
-			WebDecoration.divEnd.append("</div>\n");
-			webEnv.decorationStartFlag = false;
-		} else if (webEnv.decorationFlag) {
-			WebDecoration.divEnd.append("</div>\n");
+		} else if (webEnv.decorationEndFlag.size() > 0) {
+			if (webEnv.decorationEndFlag.get(0)) {
+				// nothing
+			} else if (webEnv.decorationStartFlag.get(0)) {
+				WebDecoration.divEnd.get(0).append("</div>\n");
+				webEnv.decorationStartFlag.set(0, false);
+			} else {
+				WebDecoration.divEnd.get(0).append("</div>\n");
+			}
 		} else {
 			webEnv.code.append("</div>\n");
 		}
