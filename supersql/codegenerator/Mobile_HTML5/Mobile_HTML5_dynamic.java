@@ -4,14 +4,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.antlr.v4.parse.ANTLRParser.finallyClause_return;
-
 import supersql.codegenerator.Asc_Desc;
 import supersql.codegenerator.Asc_Desc.AscDesc;
 import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.LinkForeach;
-import supersql.codegenerator.Compiler.Compiler;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 
@@ -36,7 +33,7 @@ public class Mobile_HTML5_dynamic {
 	public static int sindex = 0;
 //	static int Gdepth_old = 0;
 //	static int Gnum_old = 0;
-	private static boolean dynamicAttributeFlg = true;
+	private static boolean dynamicAttributeFlg = false;
 	public static String dyamicWhileString = "";
 	private static ArrayList<String> dyamicWhileStrings = new ArrayList<>();
 	private static int dyamicWhileCount = 0;
@@ -230,6 +227,7 @@ public class Mobile_HTML5_dynamic {
 		if(decos.containsKey("dynamic")){
 			dynamicHTMLbuf0 = html_env.code.toString();
 			dynamicDisplay = true;
+			dynamicAttributeFlg = true;
 			dynamicPHPfileName = html_env.getFileName2()+"_SSQLdynamic_"+dynamicCount+".php";
 			
 	        if(decos.containsKey("row")){
@@ -802,7 +800,7 @@ public class Mobile_HTML5_dynamic {
 		
 //		Gdepth_old = 0;
 //		Gnum_old = 0;
-		dynamicAttributeFlg = true;
+		dynamicAttributeFlg = false;
 		dyamicWhileString = "";
 		dyamicWhileStrings.clear();
 		dyamicWhileCount = 0;
