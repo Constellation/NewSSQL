@@ -74,7 +74,7 @@ public class CodeGenerator {
 			factory = new HTMLFactory();
 		}else if(media.toLowerCase().equals("mobile_html5")){
 			factory = new Mobile_HTML5Factory();
-		} else if (media.toLowerCase().equals("bhtml") || media.toLowerCase().equals("html_bootstrap")) {
+		} else if (media.toLowerCase().equals("bhtml") || media.toLowerCase().equals("html_bootstrap") || media.toLowerCase().equals("responsivehtml")|| media.toLowerCase().equals("responsive_html")) {
 			factory = new Mobile_HTML5Factory();
 			Sass.bootstrapFlg(true);
 		}else if(media.toLowerCase().equals("web")) {
