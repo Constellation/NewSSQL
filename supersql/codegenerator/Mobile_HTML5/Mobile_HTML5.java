@@ -9,7 +9,6 @@ import java.io.PrintWriter;
 import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.TFE;
-import supersql.common.Log;
 import supersql.extendclass.ExtList;
 import supersql.parser.Start_Parse;
 
@@ -125,7 +124,7 @@ public class Mobile_HTML5 {
 		
 		if(!symbol.contains("G1") && !symbol.contains("G2")){
 			Mobile_HTML5_dynamic.dynamicStringGetProcess(symbol, decos, html_env);//最終的には不要
-			Mobile_HTML5_dynamic.dynamicProcess(tfeID, symbol, decos, html_env);//最終的には不要
+			Mobile_HTML5_dynamic.dynamicProcess(tfeID, symbol, decos, html_env);//最終的には不要	//TODO ?
 		}
 		
 		Mobile_HTML5Function.func_null_count = 0;	//null()

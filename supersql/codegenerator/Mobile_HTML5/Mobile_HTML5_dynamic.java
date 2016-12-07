@@ -268,13 +268,14 @@ public class Mobile_HTML5_dynamic {
 	public static boolean dynamicProcess(String symbol, String tfeID, DecorateList decos, Mobile_HTML5Env html_env){
 		if(decos.containsKey("dynamic")){
 
-//			//Log.i("Mobile_HTML5.gLevel = "+Mobile_HTML5.gLevel);
-//			if(Compiler.isCompiler && Mobile_HTML5.gLevel>0){
-//				return false;
-//			}
-//			if(Mobile_HTML5.gLevel>1){	//TODO
-//				return false;
-//			}
+////			//Log.i("Mobile_HTML5.gLevel = "+Mobile_HTML5.gLevel);
+////			if(Compiler.isCompiler && Mobile_HTML5.gLevel>0){
+////				return false;
+////			}
+//			Log.e(Mobile_HTML5.gLevel);
+////			if(Mobile_HTML5.gLevel>0){	//TODO
+////				return false;
+////			}
 			
 			if(symbol.contains("G1") || symbol.contains("G2")){
 				html_env.code = new StringBuffer(dynamicHTMLbuf0);
