@@ -301,6 +301,7 @@ public class Mobile_HTML5_dynamic {
 			int numberOfColumns = 1;
 			String php_str1 = "", php_str2 = "", php_str3 = "", php_str4 = "";
 			//Log.i("!! "+symbol);
+//			Log.info(dynamicString);
 			if(!symbol.contains("G1") && !symbol.contains("G2")){
 				
 				if(decos.containsKey("table")){
@@ -469,6 +470,7 @@ public class Mobile_HTML5_dynamic {
 	    	//TODO 余計なコードの削除
 	    	dynamic_col = dynamicString;
 	    	dynamic_col_array = dynamicString;
+	    	Log.info(dynamicString);
 	    	
 	    	//Log.i("	1:"+title+"	2:"+columns+"	col_num:"+col_num);
 	    	//Log.i("	dynamic_col:"+dynamic_col+"	dynamic_col_array:"+dynamic_col_array);
@@ -761,7 +763,6 @@ public class Mobile_HTML5_dynamic {
 						"}\n" +
 						"?>\n";
 	    	//End of php
-
 	    	
 	    	// 各引数毎に処理した結果をHTMLに書きこむ
 	    	html_env.code.append(statement);

@@ -72,7 +72,7 @@ public class Jscss implements Serializable {
 		// add 20141204 masato for ehtml
 		if (media.equalsIgnoreCase("html") || media.equalsIgnoreCase("ehtml") || media.equalsIgnoreCase("web"))
 			from = new File(ep+fs+"jscss"+fs+"forHTML"+fs+"jscss");
-		else if (media.equalsIgnoreCase("mobile_html5") || media.equalsIgnoreCase("bhtml") || media.equalsIgnoreCase("html_bootstrap") || Compiler.isCompiler)
+		else if (media.equalsIgnoreCase("mobile_html5") || media.equalsIgnoreCase("bhtml") || media.equalsIgnoreCase("html_bootstrap") || Sass.isBootstrapFlg() || Compiler.isCompiler)
 			from = new File(ep+fs+"jscss");
 		
 		if (!directoryCopy(from, new File(outdirPath)))
@@ -144,7 +144,7 @@ public class Jscss implements Serializable {
 			css = Mobile_HTML5Env.commonCSS() + Mobile_HTML5Env.css;
 		else if (media.equals("web"))
 			css = WebEnv.commonCSS() + WebEnv.css + WebEnv.cssTableInput(WebEnv.cssClass);
-		else if (media.equals("bhtml") || media.equals("html_bootstrap")) // 20160603 bootstrap
+		else if (media.equals("bhtml") || media.equals("html_bootstrap") || Sass.isBootstrapFlg()) // 20160603 bootstrap
 			css = Mobile_HTML5Env.commonCSS() + Mobile_HTML5Env.css + Sass.compile();
 		String outputCssFileName = outdirPath+fs+fs+getGenerateCssFileName(1);
 		
