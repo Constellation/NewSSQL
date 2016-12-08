@@ -42,16 +42,9 @@ public class VRfilecreate {
 //		for(int n=0; n<VRAttribute.genrearray22.size() ;n++){
 //			System.out.println("hey="+VRAttribute.genrearray22.get(n));
 //		}
-		
-//		System.out.println(VRAttribute.groupcount);
+
 		VRAttribute.groupcount1 = VRAttribute.cjoinarray.size()+1;
 		
-
-		for(int n=0; n<VRAttribute.cjoinarray.size();n++){
-			System.out.println("hey="+VRAttribute.cjoinarray.get(n));
-		}
-		//System.out.println(VRAttribute.groupcount);
-
 		if(VRAttribute.groupcount == 0){//////ビルが一個だけだった時
 			VRAttribute.groupcount = 1;
 			b = getCS1();
@@ -257,88 +250,91 @@ public class VRfilecreate {
 
 "				          	if (childNode.HasChildNodes == true) {\n"+
 "					            for (int i=0; i < childNode.ChildNodes.Count; i++) {\n"+
-"					              	XmlNode dataNode= childNode.ChildNodes[i]; //dataNode.NameはShapeというか二種類目のcategory\n"+
-"						            for (int j=0; j < dataNode.ChildNodes.Count; j++) {     /////element\n"+
+"					              	XmlNode dataNode2= childNode.ChildNodes[i]; //dataNode.NameはShapeというか二種類目のcategory\n"+
+"\n"+
+"									if (dataNode2.HasChildNodes == true) {//////////n2 change\n"+
+"									    for (int k=0; k < dataNode2.ChildNodes.Count; k++) {\n"+
+"									      	XmlNode dataNode= dataNode2.ChildNodes[k]; \n"+
+"\n"+
+"						     		       for (int j=0; j < dataNode.ChildNodes.Count; j++) {     /////element\n"+
 
-"					                	XmlNode xmlAttr = dataNode.ChildNodes[j]; //xmlAttrはkindCubekind  \n"+        
-"					                	//array[j] = GameObject.Find(xmlAttr.InnerText);//オブジェクト一個一個の場所移動\n"+
-"										array[j] = Instantiate(Resources.Load(xmlAttr.InnerText)) as GameObject;///////bill change\n"+
-
-"					                	XmlNode xmlAttr = dataNode.ChildNodes[j]; //xmlAttrはkindCubekind  \n"+
-"					                	array[j] = GameObject.Find(xmlAttr.InnerText);//オブジェクト一個一個の場所移動\n"+
-
-"										sarray[j] = xmlAttr.InnerText;//オブジェクトのテキスト生成のため\n";
+"					                			XmlNode xmlAttr = dataNode.ChildNodes[j]; //xmlAttrはkindCubekind  \n"+        
+"												array[j] = Instantiate(Resources.Load(xmlAttr.InnerText)) as GameObject;///////bill change\n"+
+"												sarray[j] = xmlAttr.InnerText;//オブジェクトのテキスト生成のため\n";
 	}
 
 	private static String getCS4(int exhflag, int floorflag){
 		if(exhflag == 1){
 			if(floorflag == 1){
 		return
-"										r = j/9;//////////////G1 change \n"+
-"										if(j == 0){ //xmAttr.Nameはkind, xml.InnerTextはCubeとか \n"+
-"											r = 0; \n"+
-"										} \n"+
+"												r = j/9;//////////////G1 change \n"+
+"												if(j == 0){ //xmAttr.Nameはkind, xml.InnerTextはCubeとか \n"+
+"													r = 0; \n"+
+"												} \n"+
 "						\n"+
-"										array[j].transform.position  = new Vector3 (xarray[j]+objx, objhigh, zarray[r]);////////////G1 change \n"+
-"										array[j].transform.position  += new Vector3 (billmovex, billmovey, billmovez); \n"+
+"												array[j].transform.position  = new Vector3 (xarray[j]+objx-k*1.3f, objhigh, zarray[r]);////////////G1 change \n"+
+"												array[j].transform.position  += new Vector3 (billmovex, billmovey, billmovez); \n"+
 "\n"+
-"										//stand生成 \n"+
-"										GameObject stand = Instantiate(Resources.Load(\"Prefab/Stand\")) as GameObject; \n"+
-"										stand.transform.position= new Vector3(xarray[j]+objx, standhigh, zarray[r]); /////////////G1 change \n"+
-"										stand.transform.position  += new Vector3 (billmovex, billmovey, billmovez); \n"+
-"										\n"+
-"										//オブジェクトのテキスト生成 \n"+
-"										GameObject  messageText = Instantiate(Resources.Load(\"Prefab/TextPrefab\")) as GameObject; \n"+
-"										messageText.GetComponent<TextMesh>().text = sarray[j].ToString(); \n"+
-"										messageText.transform.Rotate(0,180,0); \n"+
-"										messageText.transform.position= new Vector3(xarray[j]+1.0f+objx, standhigh+0.9f, zarray[r]);  \n"+
-"										messageText.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);\n "+
-"										messageText.transform.position  += new Vector3 (billmovex, billmovey, billmovez); \n";
+"												//stand生成 \n"+
+"												GameObject stand = Instantiate(Resources.Load(\"Prefab/Stand\")) as GameObject; \n"+
+"												stand.transform.position= new Vector3(xarray[j]+objx-k*1.3f, standhigh, zarray[r]); /////////////G1 change \n"+
+"												stand.transform.position  += new Vector3 (billmovex, billmovey, billmovez); \n"+
+"												\n"+
+"												//オブジェクトのテキスト生成 \n"+
+"												GameObject  messageText = Instantiate(Resources.Load(\"Prefab/TextPrefab\")) as GameObject; \n"+
+"												messageText.GetComponent<Renderer>().material.shader = Shader.Find( \"shaderZOn\" ); //title modify \n"+
+"												messageText.GetComponent<TextMesh>().text = sarray[j].ToString(); \n"+
+"												messageText.transform.Rotate(0,180,0); \n"+
+"												messageText.transform.position= new Vector3(xarray[j]+0.5f+objx-k*1.3f, standhigh+0.9f, zarray[r]+1);  \n"+
+"												messageText.transform.localScale = new Vector3(0.22f, 0.22f, 0.22f);\n "+
+"												messageText.transform.position  += new Vector3 (billmovex, billmovey, billmovez); \n";
 			}else if(floorflag ==2){
 				return
-"										r = j/9;//////////////G1 change \n"+
-"										if(j == 0){ //xmAttr.Nameはkind, xml.InnerTextはCubeとか \n"+
-"											r = 0; \n"+
-"										} \n"+
+"												r = j/9;//////////////G1 change \n"+
+"												if(j == 0){ //xmAttr.Nameはkind, xml.InnerTextはCubeとか \n"+
+"													r = 0; \n"+
+"												} \n"+
 "						\n"+
-"										array[j].transform.position  = new Vector3 (xarray[j], objhigh, zarray[r]);////////////G1 change \n"+
-"										array[j].transform.position  += new Vector3 (billmovex, billmovey, billmovez); \n"+
+"												array[j].transform.position  = new Vector3 (xarray[j]-k*1.3f, objhigh, zarray[r]);////////////G1 change \n"+
+"												array[j].transform.position  += new Vector3 (billmovex, billmovey, billmovez); \n"+
 "\n"+
-"										//stand生成 \n"+
-"										GameObject stand = Instantiate(Resources.Load(\"Prefab/Stand\")) as GameObject; \n"+
-"										stand.transform.position= new Vector3(xarray[j], standhigh, zarray[r]); /////////////G1 change \n"+
-"										stand.transform.position  += new Vector3 (billmovex, billmovey, billmovez); \n"+
-"										\n"+
-"										//オブジェクトのテキスト生成 \n"+
-"										GameObject  messageText = Instantiate(Resources.Load(\"Prefab/TextPrefab\")) as GameObject; \n"+
-"										messageText.GetComponent<TextMesh>().text = sarray[j].ToString(); \n"+
-"										messageText.transform.Rotate(0,180,0); \n"+
-"										messageText.transform.position= new Vector3(xarray[j]+1.0f, standhigh+0.9f, zarray[r]);  \n"+
-"										messageText.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);\n "+
-"										messageText.transform.position  += new Vector3 (billmovex, billmovey, billmovez); \n";
+"												//stand生成 \n"+
+"												GameObject stand = Instantiate(Resources.Load(\"Prefab/Stand\")) as GameObject; \n"+
+"												stand.transform.position= new Vector3(xarray[j]-k*1.3f, standhigh, zarray[r]); /////////////G1 change \n"+
+"												stand.transform.position  += new Vector3 (billmovex, billmovey, billmovez); \n"+
+"												\n"+
+"												//オブジェクトのテキスト生成 \n"+
+"												GameObject  messageText = Instantiate(Resources.Load(\"Prefab/TextPrefab\")) as GameObject; \n"+
+"												messageText.GetComponent<Renderer>().material.shader = Shader.Find( \"shaderZOn\" ); //title modify \n"+
+"												messageText.GetComponent<TextMesh>().text = sarray[j].ToString(); \n"+
+"												messageText.transform.Rotate(0,180,0); \n"+
+"												messageText.transform.position= new Vector3(xarray[j]+0.5f-k*1.3f, standhigh+0.9f, zarray[r]+1);  \n"+
+"												messageText.transform.localScale = new Vector3(0.22f, 0.22f, 0.22f);\n "+
+"												messageText.transform.position  += new Vector3 (billmovex, billmovey, billmovez); \n";
 
 			}else if(floorflag == 3){
 				return
-"										r = j/9;//////////////G1 change \n"+
-"										if(j == 0){ //xmAttr.Nameはkind, xml.InnerTextはCubeとか \n"+
-"											r = 0; \n"+
-"										} \n"+
+"												r = j/9;//////////////G1 change \n"+
+"												if(j == 0){ //xmAttr.Nameはkind, xml.InnerTextはCubeとか \n"+
+"													r = 0; \n"+
+"												} \n"+
 "						\n"+
-"										array[j].transform.position  = new Vector3 (xarray[j], objhigh, zarray[r]+objz);////////////G1 change \n"+
-"										array[j].transform.position  += new Vector3 (billmovex, billmovey, billmovez); \n"+
-"\n"+
-"										//stand生成 \n"+
-"										GameObject stand = Instantiate(Resources.Load(\"Prefab/Stand\")) as GameObject; \n"+
-"										stand.transform.position= new Vector3(xarray[j], standhigh, zarray[r]+objz); /////////////G1 change \n"+
-"										stand.transform.position  += new Vector3 (billmovex, billmovey, billmovez); \n"+
-"										\n"+
-"										//オブジェクトのテキスト生成 \n"+
-"										GameObject  messageText = Instantiate(Resources.Load(\"Prefab/TextPrefab\")) as GameObject; \n"+
-"										messageText.GetComponent<TextMesh>().text = sarray[j].ToString(); \n"+
-"										messageText.transform.Rotate(0,180,0); \n"+
-"										messageText.transform.position= new Vector3(xarray[j]+1.0f, standhigh+0.9f, zarray[r]+objz);  \n"+
-"										messageText.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);\n "+
-"										messageText.transform.position  += new Vector3 (billmovex, billmovey, billmovez); \n";
+"												array[j].transform.position  = new Vector3 (xarray[j]-k*1.3f, objhigh, zarray[r]+objz);////////////G1 change \n"+
+"												array[j].transform.position  += new Vector3 (billmovex, billmovey, billmovez); \n"+
+"\n"+	
+"												//stand生成 \n"+
+"												GameObject stand = Instantiate(Resources.Load(\"Prefab/Stand\")) as GameObject; \n"+
+"												stand.transform.position= new Vector3(xarray[j]-k*1.3f, standhigh, zarray[r]+objz); /////////////G1 change \n"+
+"												stand.transform.position  += new Vector3 (billmovex, billmovey, billmovez); \n"+
+"												\n"+
+"												//オブジェクトのテキスト生成 \n"+
+"												GameObject  messageText = Instantiate(Resources.Load(\"Prefab/TextPrefab\")) as GameObject; \n"+
+"												messageText.GetComponent<Renderer>().material.shader = Shader.Find( \"shaderZOn\" ); //title modify \n"+
+"												messageText.GetComponent<TextMesh>().text = sarray[j].ToString(); \n"+
+"												messageText.transform.Rotate(0,180,0); \n"+
+"												messageText.transform.position= new Vector3(xarray[j]+0.5f-k*1.3f, standhigh+0.9f, zarray[r]+objz+1);  \n"+
+"												messageText.transform.localScale = new Vector3(0.22f, 0.22f, 0.22f);\n "+
+"												messageText.transform.position  += new Vector3 (billmovex, billmovey, billmovez); \n";
 			}else{
 				return"";
 			}
@@ -346,72 +342,75 @@ public class VRfilecreate {
 		}else if(exhflag == 3){
 			if(floorflag == 1){
 				return
-"										r = j/5; \n"+
-"										if(j == 0){ //xmAttr.Nameはkind, xml.InnerTextはCubeとか \n"+
-"											r = 0; \n"+
-"										} \n"+
+"												r = j/5; \n"+
+"												if(j == 0){ //xmAttr.Nameはkind, xml.InnerTextはCubeとか \n"+
+"													r = 0; \n"+
+"												} \n"+
 "					\n"+
-"										array[j].transform.position  = new Vector3 (xarray[r]+objx, objhigh, zarray[j]); \n"+
-"										array[j].transform.position  += new Vector3 (billmovex, billmovey, billmovez); \n"+
+"												array[j].transform.position  = new Vector3 (xarray[r]+objx-k*1.3f, objhigh, zarray[j]); \n"+
+"												array[j].transform.position  += new Vector3 (billmovex, billmovey, billmovez); \n"+
 "\n"+
-"										//stand生成 \n"+
-"										GameObject stand = Instantiate(Resources.Load(\"Prefab/Stand\")) as GameObject; \n"+
-"										stand.transform.position= new Vector3(xarray[r]+objx, standhigh, zarray[j]);  \n"+
-"										stand.transform.position  += new Vector3 (billmovex, billmovey, billmovez); \n"+
+"												//stand生成 \n"+
+"												GameObject stand = Instantiate(Resources.Load(\"Prefab/Stand\")) as GameObject; \n"+
+"												stand.transform.position= new Vector3(xarray[r]+objx-k*1.3f, standhigh, zarray[j]);  \n"+
+"												stand.transform.position  += new Vector3 (billmovex, billmovey, billmovez); \n"+
 "			\n"+
-"										//オブジェクトのテキスト生成 \n"+
-"										GameObject  messageText = Instantiate(Resources.Load(\"Prefab/TextPrefab\")) as GameObject; \n"+
-"										messageText.GetComponent<TextMesh>().text = sarray[j].ToString(); \n"+
-"										messageText.transform.Rotate(0,180,0); \n"+
-"										messageText.transform.position= new Vector3(xarray[r]+1.0f+objx, standhigh+0.9f, zarray[j]);  \n"+
-"										messageText.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f); \n"+
-"										messageText.transform.position  += new Vector3 (billmovex, billmovey, billmovez); \n";
+"												//オブジェクトのテキスト生成 \n"+
+"												GameObject  messageText = Instantiate(Resources.Load(\"Prefab/TextPrefab\")) as GameObject; \n"+
+"												messageText.GetComponent<Renderer>().material.shader = Shader.Find( \"shaderZOn\" ); //title modify \n"+
+"												messageText.GetComponent<TextMesh>().text = sarray[j].ToString(); \n"+
+"												messageText.transform.Rotate(0,180,0); \n"+
+"												messageText.transform.position= new Vector3(xarray[r]+0.5f+objx-k*1.3f, standhigh+0.9f, zarray[j]+1);  \n"+
+"												messageText.transform.localScale = new Vector3(0.22f, 0.22f, 0.22f); \n"+
+"												messageText.transform.position  += new Vector3 (billmovex, billmovey, billmovez); \n";
 			}else if(floorflag == 2){
 			return
-"										r = j/5; \n"+
-"										if(j == 0){ //xmAttr.Nameはkind, xml.InnerTextはCubeとか \n"+
-"											r = 0; \n"+
-"										} \n"+
+"												r = j/5; \n"+
+"												if(j == 0){ //xmAttr.Nameはkind, xml.InnerTextはCubeとか \n"+
+"													r = 0; \n"+
+"												} \n"+
 "					\n"+
-"										array[j].transform.position  = new Vector3 (xarray[r], objhigh, zarray[j]); \n"+
-"										array[j].transform.position  += new Vector3 (billmovex, billmovey, billmovez); \n"+
+"												array[j].transform.position  = new Vector3 (xarray[r]-k*1.3f, objhigh, zarray[j]); \n"+
+"												array[j].transform.position  += new Vector3 (billmovex, billmovey, billmovez); \n"+
 "\n"+
-"										//stand生成 \n"+
-"										GameObject stand = Instantiate(Resources.Load(\"Prefab/Stand\")) as GameObject; \n"+
-"										stand.transform.position= new Vector3(xarray[r], standhigh, zarray[j]);  \n"+
-"										stand.transform.position  += new Vector3 (billmovex, billmovey, billmovez); \n"+
+"												//stand生成 \n"+
+"												GameObject stand = Instantiate(Resources.Load(\"Prefab/Stand\")) as GameObject; \n"+
+"												stand.transform.position= new Vector3(xarray[r]-k*1.3f, standhigh, zarray[j]);  \n"+
+"												stand.transform.position  += new Vector3 (billmovex, billmovey, billmovez); \n"+
 
 "			\n"+	
-"										//オブジェクトのテキスト生成 \n"+
-"										GameObject  messageText = Instantiate(Resources.Load(\"Prefab/TextPrefab\")) as GameObject; \n"+
-"										messageText.GetComponent<TextMesh>().text = sarray[j].ToString(); \n"+
-"										messageText.transform.Rotate(0,180,0); \n"+
-"										messageText.transform.position= new Vector3(xarray[r]+1.0f, standhigh+0.9f, zarray[j]);  \n"+
-"										messageText.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f); \n:"+
-"										messageText.transform.position  += new Vector3 (billmovex, billmovey, billmovez); \n";
+"												//オブジェクトのテキスト生成 \n"+
+"												GameObject  messageText = Instantiate(Resources.Load(\"Prefab/TextPrefab\")) as GameObject; \n"+
+"												messageText.GetComponent<Renderer>().material.shader = Shader.Find( \"shaderZOn\" ); //title modify \n"+
+"												messageText.GetComponent<TextMesh>().text = sarray[j].ToString(); \n"+
+"												messageText.transform.Rotate(0,180,0); \n"+
+"												messageText.transform.position= new Vector3(xarray[r]+0.5f-k*1.3f, standhigh+0.9f, zarray[j]+1);  \n"+
+"												messageText.transform.localScale = new Vector3(0.22f, 0.22f, 0.22f); \n:"+
+"												messageText.transform.position  += new Vector3 (billmovex, billmovey, billmovez); \n";
 
 			}else if(floorflag == 3){
 				return
-"										r = j/5; \n"+
-"										if(j == 0){ //xmAttr.Nameはkind, xml.InnerTextはCubeとか \n"+
-"											r = 0; \n"+
-"										} \n"+
+"												r = j/5; \n"+
+"												if(j == 0){ //xmAttr.Nameはkind, xml.InnerTextはCubeとか \n"+
+"													r = 0; \n"+
+"												} \n"+
 "					\n"+
-"										array[j].transform.position  = new Vector3 (xarray[r], objhigh, zarray[j]+objz); \n"+
-"										array[j].transform.position  += new Vector3 (billmovex, billmovey, billmovez); \n"+
+"												array[j].transform.position  = new Vector3 (xarray[r]-k*1.3f, objhigh, zarray[j]+objz); \n"+
+"												array[j].transform.position  += new Vector3 (billmovex, billmovey, billmovez); \n"+
 "\n"+
-"										//stand生成 \n"+
-"										GameObject stand = Instantiate(Resources.Load(\"Prefab/Stand\")) as GameObject; \n"+
-"										stand.transform.position= new Vector3(xarray[r], standhigh, zarray[j]+objz);  \n"+
-"										stand.transform.position  += new Vector3 (billmovex, billmovey, billmovez); \n"+
+"												//stand生成 \n"+
+"												GameObject stand = Instantiate(Resources.Load(\"Prefab/Stand\")) as GameObject; \n"+
+"												stand.transform.position= new Vector3(xarray[r]-k*1.3f, standhigh, zarray[j]+objz);  \n"+
+"												stand.transform.position  += new Vector3 (billmovex, billmovey, billmovez); \n"+
 "			\n"+
-"										//オブジェクトのテキスト生成 \n"+
-"										GameObject  messageText = Instantiate(Resources.Load(\"Prefab/TextPrefab\")) as GameObject; \n"+
-"										messageText.GetComponent<TextMesh>().text = sarray[j].ToString(); \n"+
-"										messageText.transform.Rotate(0,180,0); \n"+
-"										messageText.transform.position= new Vector3(xarray[r]+1.0f, standhigh+0.9f, zarray[j]+objz);  \n"+
-"										messageText.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f); \n"+
-"										messageText.transform.position  += new Vector3 (billmovex, billmovey, billmovez); \n";
+"												//オブジェクトのテキスト生成 \n"+
+"												GameObject  messageText = Instantiate(Resources.Load(\"Prefab/TextPrefab\")) as GameObject; \n"+
+"												messageText.GetComponent<Renderer>().material.shader = Shader.Find( \"shaderZOn\" ); //title modify \n"+
+"												messageText.GetComponent<TextMesh>().text = sarray[j].ToString(); \n"+
+"												messageText.transform.Rotate(0,180,0); \n"+
+"												messageText.transform.position= new Vector3(xarray[r]+0.5f-k*1.3f, standhigh+0.9f, zarray[j]+objz+1);  \n"+
+"												messageText.transform.localScale = new Vector3(0.22f, 0.22f, 0.22f); \n"+
+"												messageText.transform.position  += new Vector3 (billmovex, billmovey, billmovez); \n";
 			}else{
 				return "";
 			}
@@ -422,20 +421,8 @@ public class VRfilecreate {
 
 	private static String getCS5(){
 		return
-"										//オブジェクトを縮小or拡大、展示用\n"+
-"										float nx = array[j].transform.lossyScale.x; \n"+
-"										float ny = array[j].transform.lossyScale.y; \n"+
-"										float nz = array[j].transform.lossyScale.z; \n"+
-		"\n"+
-"										float max = nx; \n"+
-"										if(max < ny){ \n"+
-"											max = ny; \n"+
+"											} \n"+
 "										} \n"+
-"										if(max < nz){ \n"+
-"											max = nz; \n"+
-"										} \n"+
-"										max = max*1.5f; \n"+
-"										array[j].transform.localScale = new Vector3(nx/max, ny/max, nz/max); \n"+
 "									} \n"+
 "								} \n"+
 "							} \n"+
@@ -497,10 +484,11 @@ public class VRfilecreate {
 	"					//タイトル生成\n"+
 	"					for(int i=0; i<museumcount; i++){\n"+
 	"						GameObject  messageText1 = Instantiate(Resources.Load(\"Prefab/TextPrefab\")) as GameObject; \n"+
+	"						messageText1.GetComponent<Renderer>().material.shader = Shader.Find( \"shaderZOn\" ); //title modify \n"+
 	"						messageText1.GetComponent<TextMesh>().text = genrearray[i].ToString(); \n"+
 	"						messageText1.transform.Rotate(0,180,0); \n"+
-	"						messageText1.transform.position= new Vector3(-15-50*i, 15, -13);\n"+
-	"						messageText1.transform.localScale = new Vector3(3.5f, 3.5f, 3.5f); \n"+
+	"						messageText1.transform.position= new Vector3(-12-50*i, 15, -13);\n"+
+	"						messageText1.transform.localScale = new Vector3(2f, 2f, 2f); \n"+
 	"						messageText1.transform.position  += new Vector3 (billmovex, billmovey, billmovez); \n"+
 	"					}	\n"+
 	"					childNode2 = childNode2.NextSibling;\n";
@@ -530,10 +518,11 @@ public class VRfilecreate {
 	"\n"+
 	"					//タイトル生成\n"+
 	"						GameObject  messageText1 = Instantiate(Resources.Load(\"Prefab/TextPrefab\")) as GameObject; \n"+
+	"						messageText1.GetComponent<Renderer>().material.shader = Shader.Find( \"shaderZOn\" ); //title modify \n"+
 	"						messageText1.GetComponent<TextMesh>().text = genrearray[i].ToString(); \n"+
 	"						messageText1.transform.Rotate(0,180,0); \n"+
-	"						messageText1.transform.position= new Vector3(-15, 15+20*i, -13);\n"+
-	"						messageText1.transform.localScale = new Vector3(3.5f, 3.5f, 3.5f); 		\n"+
+	"						messageText1.transform.position= new Vector3(-12, 15+20*i, -13);\n"+
+	"						messageText1.transform.localScale = new Vector3(2f, 2f, 2f); 		\n"+
 	"						messageText1.transform.position  += new Vector3 (billmovex, billmovey, billmovez); \n"+
 	"					}\n"+
 	"					childNode2 = childNode2.NextSibling;\n";
@@ -569,10 +558,11 @@ public class VRfilecreate {
 	"					//タイトル生成\n"+
 	"					for(int i=0; i<museumcount; i++){\n"+
 	"						GameObject  messageText1 = Instantiate(Resources.Load(\"Prefab/TextPrefab\")) as GameObject; \n"+
+	"						messageText1.GetComponent<Renderer>().material.shader = Shader.Find( \"shaderZOn\" ); //title modify \n"+
 	"						messageText1.GetComponent<TextMesh>().text = genrearray[i].ToString(); \n"+
 	"						messageText1.transform.Rotate(0,180,0); \n"+
-	"						messageText1.transform.position= new Vector3(-15, 15, -13-30*i);\n"+
-	"						messageText1.transform.localScale = new Vector3(3.5f, 3.5f, 3.5f); \n"+
+	"						messageText1.transform.position= new Vector3(-12, 15, -13-30*i);\n"+
+	"						messageText1.transform.localScale = new Vector3(2f, 2f, 2f); \n"+
 	"						messageText1.transform.position  += new Vector3 (billmovex, billmovey, billmovez); \n"+
 	"					}					 \n"+
 	"					childNode2 = childNode2.NextSibling;\n";
