@@ -34,10 +34,10 @@ public class Mobile_HTML5_dynamic {
 //	static int Gdepth_old = 0;
 //	static int Gnum_old = 0;
 	private static boolean dynamicAttributeFlg = false;
-	public static String dyamicWhileString = "";
-	private static ArrayList<String> dyamicWhileStrings = new ArrayList<>();
-	private static int dyamicWhileCount = 0;
-	public static int dyamicWhileCount0 = 0;
+//	public static String dynamicWhileString = "";
+	private static ArrayList<String> dynamicWhileStrings = new ArrayList<>();
+	private static int dynamicWhileCount = 0;
+	public static int dynamicWhileCount0 = 0;
 	
 	//For dyamicPostStringProcess() substring
 	public static int html_env_code_length = 0;
@@ -72,7 +72,7 @@ public class Mobile_HTML5_dynamic {
 		}else{
 			//attribute
 			
-			if(dyamicWhileCount0>1)	dynamicAttributeFlg = false;
+			if(dynamicWhileCount0>1)	dynamicAttributeFlg = false;
 			if(dynamicAttributeFlg){
 				//TODO d
 //				int i = Gnum-1;
@@ -146,19 +146,21 @@ public class Mobile_HTML5_dynamic {
 					"  			$b .= '";
 			//dyamicWhileString += b;
 			html_env.code.append(b);
-			dyamicWhileCount++;
+			dynamicWhileCount++;
 
 //			Log.i("---");
 		}
 	}
 	public static void dyamicWhileStringProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
 		//TODO d
-		if(dyamicWhileCount0<=1){
+		if(dynamicWhileCount0<=1){
 			if(symbol.contains("G1") || symbol.contains("G2")){
-				//dyamicWhileString = "";
+				//dyamicWhileString = ""
 				if(dynamicAttributeFlg){
-					//Log.i("!!!! "+Gnum+" "+dyamicWhileString);
-					dyamicWhileStrings.add(dyamicWhileString);
+//					Log.i("!!!! "+Gnum+" "+dynamicWhileString);
+//					Log.i("!!!! "+Gnum+" "+dynamicString);
+//					dynamicWhileStrings.add(dynamicWhileString);
+					dynamicWhileStrings.add(dynamicString);
 				}
 			}
 //			//else{
@@ -183,31 +185,33 @@ public class Mobile_HTML5_dynamic {
 //			dyamicWhileString = "$b = '"+s.replaceAll("\r\n|\r|\n", "")+"';\n";
 //			Log.i("---- ");
 //			dyamicWhileString += " $$$$$$$$ \n";
-//			html_env.code.append(" XXXXXXXXXXX ");
 		//}
 
 	}
-	public static void dyamicPostStringProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
-//		if(Gdepth<=1 && (symbol.contains("G1") || symbol.contains("G2"))){
-//		if(dynamicAttributeFlg && (symbol.contains("G1") || symbol.contains("G2"))){
-		if(dynamicAttributeFlg){
-//			String s = html_env.code.toString();
-//			dyamicWhileString = "$b = '"+s.replaceAll("\r\n|\r|\n", "")+"';\n";
-			//html_env.code.append(" XXXXXXXXXXX ");
-//			if((symbol.contains("G1") || symbol.contains("G2"))){
-//			if(dyamicWhileCount>0){
-//				html_env.code.append(" XXXXXXXXXXX ");
-//				dyamicWhileCount--;
-//			}
-//			}
-			
-			//Log.e(dynamicCount+"  html_env.code.toString().substring("+html_env_code_length+")");
-			String s = html_env.code.toString().substring(html_env_code_length);
-			//dyamicWhileString = "		$b .= '"+s.replaceAll("\r\n|\r|\n", "")+"';\n";
-			dyamicWhileString = "		$b .= '\n"+s+"';\n";
-			//Log.i("---- ");
-		}
-	}
+//	//未使用
+//	public static void dyamicPostStringProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
+////		if(Gdepth<=1 && (symbol.contains("G1") || symbol.contains("G2"))){
+////		if(dynamicAttributeFlg && (symbol.contains("G1") || symbol.contains("G2"))){
+//		if(dynamicAttributeFlg){
+////			String s = html_env.code.toString();
+////			dyamicWhileString = "$b = '"+s.replaceAll("\r\n|\r|\n", "")+"';\n";
+//			//html_env.code.append(" XXXXXXXXXXX ");
+////			if((symbol.contains("G1") || symbol.contains("G2"))){
+////			if(dyamicWhileCount>0){
+////				html_env.code.append(" XXXXXXXXXXX ");
+////				dyamicWhileCount--;
+////			}
+////			}
+//			
+//			Log.e(dynamicCount+"  html_env.code.toString().substring("+html_env_code_length+")");
+//			String s = html_env.code.toString().substring(html_env_code_length);
+//			Log.e(s);
+//			//dyamicWhileString = "		$b .= '"+s.replaceAll("\r\n|\r|\n", "")+"';\n";
+//			dynamicWhileString = "		$b .= '\n"+s+"';\n";
+//			
+//			//Log.i("---- ");
+//		}
+//	}
 	
 	public static String getDynamicLabel(){	//+Mobile_HTML5.getDinamicLabel()
 		//For function's count
@@ -468,7 +472,7 @@ public class Mobile_HTML5_dynamic {
 	    	//TODO 余計なコードの削除
 	    	dynamic_col = dynamicString;
 	    	dynamic_col_array = dynamicString;
-	    	Log.info(dynamicString);
+//	    	Log.info(dynamicString);
 	    	
 	    	//Log.i("	1:"+title+"	2:"+columns+"	col_num:"+col_num);
 	    	//Log.i("	dynamic_col:"+dynamic_col+"	dynamic_col_array:"+dynamic_col_array);
@@ -664,10 +668,10 @@ public class Mobile_HTML5_dynamic {
 							
 							/* nest dynamic string  start */
 							//TODO d
-				    		for(int i=0; i<dyamicWhileStrings.size(); i++){
-					    		php +=	dyamicWhileStrings.get(i);
+				    		for(int i=0; i<dynamicWhileStrings.size(); i++){
+					    		php +=	"          $b .= '\n"+dynamicWhileStrings.get(i)+"';\n";
 				    		}
-				    		for(int i=dyamicWhileCount; i>1; i--){		//TODO d 処理の位置
+				    		for(int i=dynamicWhileCount; i>1; i--){		//TODO d 処理の位置
 				    			php += " }\n";
 				    		}
 //				    		if(!decos.containsKey("table"))
@@ -801,10 +805,10 @@ public class Mobile_HTML5_dynamic {
 //		Gdepth_old = 0;
 //		Gnum_old = 0;
 		dynamicAttributeFlg = false;
-		dyamicWhileString = "";
-		dyamicWhileStrings.clear();
-		dyamicWhileCount = 0;
-		dyamicWhileCount0 = 0;
+//		dynamicWhileString = "";
+		dynamicWhileStrings.clear();
+		dynamicWhileCount = 0;
+		dynamicWhileCount0 = 0;
 
 		
 		//For dyamicPostStringProcess() substring
