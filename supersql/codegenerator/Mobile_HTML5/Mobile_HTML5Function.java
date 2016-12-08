@@ -3030,8 +3030,9 @@ public class Mobile_HTML5Function extends Function {
 							selectbox_array[i] = name;
 							//							statement += "		<select name=\""+name+"\" data-native-menu=\"false\">\n";
 							//							update_statement += "		<select name=\""+name+"\" data-native-menu=\"false\">\n";	//TODO?
-							statement += "		<select name=\""+name+"\">\n";
-							update_statement += "		<select name=\""+name+"\">\n";	//TODO?
+							//20161207 bootstrap
+							statement += "		<select class=\"form-control\" name=\""+name+"\">\n";
+							update_statement += "		<select class=\"form-control\" name=\""+name+"\">\n";	//TODO?
 						}
 						for(int k=1; k<=pipeCount; k++){
 							String val = ss.substring(0,ss.indexOf("|")).trim();
