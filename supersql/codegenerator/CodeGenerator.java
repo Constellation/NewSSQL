@@ -491,10 +491,13 @@ public class CodeGenerator {
 			operand = ((ExtList)((ExtList)extList.get(0)).get(1)).get(0).toString();
 		}
 		else if( ((ExtList)extList.get(0)).get(0).toString().equals("sqlfunc") ){
-			Log.info(extList);
+//			Log.info(extList);
 			operand = getText( (ExtList)extList.get(0), Start_Parse.ruleNames );
 			builder = new String();
 			operand = operand.replaceAll("\"", "'");
+		}
+		else if( ((ExtList)extList.get(0)).get(0).toString().equals("arithmetics") ){
+			operand = getText( (ExtList)((ExtList)extList.get(0)).get(1), Start_Parse.ruleNames);
 		}
 
 		if(idx > -1){
