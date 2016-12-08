@@ -174,6 +174,16 @@ public interface queryListener extends ParseTreeListener {
 	 */
 	void exitIf_then_else(queryParser.If_then_elseContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link queryParser#arithmetics}.
+	 * @param ctx the parse tree
+	 */
+	void enterArithmetics(queryParser.ArithmeticsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link queryParser#arithmetics}.
+	 * @param ctx the parse tree
+	 */
+	void exitArithmetics(queryParser.ArithmeticsContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link queryParser#from_where}.
 	 * @param ctx the parse tree
 	 */

@@ -75,6 +75,7 @@ public class Ssedit {
 	public static String getMedia_and_From(String query) {
 		/////////////////////////////////////////////////////////////////////////////////////////////
 		//generate MEDIA までの文字列
+		//TODO mobile_html5など
 		if (query.toLowerCase().contains("html")) {
 			generateclause = query.substring(0, query.toLowerCase().indexOf("html") + 4);
 			escapeFlag = false;
@@ -140,6 +141,10 @@ public class Ssedit {
 
 		//TFE
 		getTFE(query);
+
+//		System.out.println(generateclause);
+//		System.out.println("tfe is:" + tfe.trim());
+//		System.out.println(fromclause);
 //		System.out.println("tfe is: " +tfe);
 		/////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -158,7 +163,8 @@ public class Ssedit {
 //			System.out.println("aaa: " + tfe.trim().substring(0,1));
 //			System.out.println("bbb: " + tfe.trim().substring(tfe.length()-4, tfe.length()-3));
 
-			if (!tfe.trim().substring(0,1).equals("{") && !tfe.trim().substring(tfe.length()-4, tfe.length()-3).equals("}")) {
+//			if (!tfe.trim().substring(0,1).equals("{") && !tfe.trim().substring(tfe.length()-4, tfe.length()-3).equals("}")) {
+			if (!tfe.trim().substring(0,1).equals("{")) {
 				tfe = "\n" + "{" + "\n" + tfe.trim() + "\n" + "}" + "\n";
 			}
 		}
@@ -450,6 +456,12 @@ public class Ssedit {
 		for (int i=0; i<infoarray.size(); i++) {
 			Log.err(infoarray.get(i));
 		}
+	}
+
+	//161206
+	public static String getautocorrectValue() {
+
+		return "autocorrect=" + ((GlobalEnv.isSsedit_autocorrect())? "on" : "off");
 	}
 }
 

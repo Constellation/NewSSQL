@@ -76,9 +76,13 @@ public class FrontEnd {
 			Ssedit.sseditInfo();
 
 			Log.info("// completed normally //");
+
+			//1203 yhac commentout
 			LogInfo.logInfo(true);
+
 //			TFEmatcher.output();	//halken TFEmatcher
 		} else {
+			//1203 yhac commentout
 			LogError.logErr();
 
 			//161109 yhac

@@ -41,6 +41,7 @@ operand    :
 				| sl
 				| NUMERIC_LITERAL
         | aggregate
+        | arithmetics
 				)
         ('||' operand)*
 			)
@@ -203,6 +204,14 @@ if_then_else	:
 			)
 		)
 		;
+
+arithmetics :
+  OPEN_PARENTHESE arithmetics CLOSE_PARENTHESE
+  | (table_alias '.')? column_name
+  | NUMERIC_LITERAL
+  | arithmetics ( '*' | '/' | '%' ) arithmetics
+  | arithmetics ( '+' | '-' ) arithmetics 
+  ;
 
 //////////////////////////////////////for from ////////////////////////////////////////////
 from_where

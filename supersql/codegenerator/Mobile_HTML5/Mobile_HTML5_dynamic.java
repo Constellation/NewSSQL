@@ -9,7 +9,6 @@ import supersql.codegenerator.Asc_Desc.AscDesc;
 import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.LinkForeach;
-import supersql.codegenerator.Compiler.Compiler;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 
@@ -34,7 +33,7 @@ public class Mobile_HTML5_dynamic {
 	public static int sindex = 0;
 //	static int Gdepth_old = 0;
 //	static int Gnum_old = 0;
-	private static boolean dynamicAttributeFlg = true;
+	private static boolean dynamicAttributeFlg = false;
 	public static String dyamicWhileString = "";
 	private static ArrayList<String> dyamicWhileStrings = new ArrayList<>();
 	private static int dyamicWhileCount = 0;
@@ -221,15 +220,14 @@ public class Mobile_HTML5_dynamic {
 	}
 	
 	public static boolean dynamicPreProcess0(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
-		
-		//TODO
-		if(Compiler.isCompiler)
-			decos.put("dynamic", "");
-		
+//		if(Compiler.isCompiler){
+//			decos.put("dynamic", "");
+//		}
 		
 		if(decos.containsKey("dynamic")){
 			dynamicHTMLbuf0 = html_env.code.toString();
 			dynamicDisplay = true;
+			dynamicAttributeFlg = true;
 			dynamicPHPfileName = html_env.getFileName2()+"_SSQLdynamic_"+dynamicCount+".php";
 			
 	        if(decos.containsKey("row")){
@@ -268,10 +266,14 @@ public class Mobile_HTML5_dynamic {
 	public static boolean dynamicProcess(String symbol, String tfeID, DecorateList decos, Mobile_HTML5Env html_env){
 		if(decos.containsKey("dynamic")){
 
-//			Log.i("Mobile_HTML5.gLevel = "+Mobile_HTML5.gLevel);
-			if(Compiler.isCompiler && Mobile_HTML5.gLevel>0){
-				return false;
-			}
+////			//Log.i("Mobile_HTML5.gLevel = "+Mobile_HTML5.gLevel);
+////			if(Compiler.isCompiler && Mobile_HTML5.gLevel>0){
+////				return false;
+////			}
+//			Log.e(Mobile_HTML5.gLevel);
+////			if(Mobile_HTML5.gLevel>0){	//TODO
+////				return false;
+////			}
 			
 			if(symbol.contains("G1") || symbol.contains("G2")){
 				html_env.code = new StringBuffer(dynamicHTMLbuf0);
@@ -297,6 +299,7 @@ public class Mobile_HTML5_dynamic {
 			int numberOfColumns = 1;
 			String php_str1 = "", php_str2 = "", php_str3 = "", php_str4 = "";
 			//Log.i("!! "+symbol);
+//			Log.info(dynamicString);
 			if(!symbol.contains("G1") && !symbol.contains("G2")){
 				
 				if(decos.containsKey("table")){
@@ -357,7 +360,7 @@ public class Mobile_HTML5_dynamic {
 			dynamicString = dynamicString.replaceAll("\"", "\\\\\"");										//　" -> \"
 			//Log.e(dynamicString);
 			
-			
+
 			//String after_from_string = Mobile_HTML5Function.after_from_string;	//TODO
 			
 			
@@ -465,6 +468,7 @@ public class Mobile_HTML5_dynamic {
 	    	//TODO 余計なコードの削除
 	    	dynamic_col = dynamicString;
 	    	dynamic_col_array = dynamicString;
+	    	Log.info(dynamicString);
 	    	
 	    	//Log.i("	1:"+title+"	2:"+columns+"	col_num:"+col_num);
 	    	//Log.i("	dynamic_col:"+dynamic_col+"	dynamic_col_array:"+dynamic_col_array);
@@ -500,7 +504,9 @@ public class Mobile_HTML5_dynamic {
 	    		orderby = query.substring(query.lastIndexOf(" order by ")+" order by ".length());
 	    		query = query.substring(0,query.lastIndexOf(" order by "));
 	    	}
-	    	String asc_desc = getOrderByString(dynamicCount);
+    		//final int ASC_DESC_ARRAY_COUNT = (!Compiler.isCompiler)? ((dynamicCount-1)*2) : (dynamicCount-1);	//TODO d
+    		final int ASC_DESC_ARRAY_COUNT = dynamicCount-1;	//TODO d
+	    	String asc_desc = getOrderByString(ASC_DESC_ARRAY_COUNT);
 	    	if(!asc_desc.isEmpty()){
 	    		if (!orderby.isEmpty())	orderby += ", ";
 	    		orderby += asc_desc;
@@ -565,7 +571,7 @@ public class Mobile_HTML5_dynamic {
 						"    $groupby = \""+groupby+"\";\n" +
 						"    $having = \""+having+"\";\n" +
 						"    $orderby = \""+((!orderby.isEmpty())?(" ORDER BY "+orderby+" "):("")) +"\";\n" +
-						"    $orderby_atts = \""+Asc_Desc.asc_desc_Array2.get((dynamicCount-1)*2)+"\";\n" +	//added by goto 20161113  for @dynamic: distinct order by
+						"    $orderby_atts = \""+new Asc_Desc().get_asc_desc_Array2(ASC_DESC_ARRAY_COUNT)+"\";\n" +	//added by goto 20161113  for @dynamic: distinct order by
 						"    $limit = \""+((limit!="")?(" LIMIT "+limit+" "):("")) +"\";\n" +
 						((limit!="")?("    $limitNum = "+limit+";\n"):("")) +	//TODO dynamicPaging時にLIMITが指定されていた場合
 						"\n";
@@ -755,11 +761,10 @@ public class Mobile_HTML5_dynamic {
 						"}\n" +
 						"?>\n";
 	    	//End of php
-
 	    	
 	    	// 各引数毎に処理した結果をHTMLに書きこむ
 	    	html_env.code.append(statement);
-	    	
+
 	    	if(!dynamicRowFlg){
 	    		Mobile_HTML5.createFile(html_env, dynamicPHPfileName, php);//PHPファイルの作成
 	    		dynamicCount++;		//TODO d
@@ -795,7 +800,7 @@ public class Mobile_HTML5_dynamic {
 		
 //		Gdepth_old = 0;
 //		Gnum_old = 0;
-		dynamicAttributeFlg = true;
+		dynamicAttributeFlg = false;
 		dyamicWhileString = "";
 		dyamicWhileStrings.clear();
 		dyamicWhileCount = 0;
@@ -815,12 +820,14 @@ public class Mobile_HTML5_dynamic {
 	}
 	
 	//getOrderByString
-	private static String getOrderByString(int DynamicCount) {
+	private static String getOrderByString(int ASC_DESC_ARRAY_COUNT) {
 		String s = "";
 		try {
 			Asc_Desc ad = new Asc_Desc();
 			//System.out.println(dynamicCount-1);
-			ad.asc_desc = ad.asc_desc_Array1.get((dynamicCount-1)*2);
+//			ad.asc_desc = ad.asc_desc_Array1.get((dynamicCount-1)*2);
+//			ad.asc_desc = ad.asc_desc_Array1.get((!Compiler.isCompiler)? ((dynamicCount-1)*2) : (dynamicCount-1));
+			ad.asc_desc = ad.get_asc_desc_Array1(ASC_DESC_ARRAY_COUNT);
 			ad.sorting();
 			
 			Iterator<AscDesc> it = ad.asc_desc.iterator();

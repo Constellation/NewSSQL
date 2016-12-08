@@ -1321,7 +1321,7 @@ public class WebEnv extends LocalEnv {
 				} else if (!topLevelDiv) {
 					cssbuf.append("\tmax-width: 1280px;\n"); // topLevelDiv default
 				} else {
-					cssbuf.append("\twidth: 100%;\n"); // default
+//					cssbuf.append("\twidth: 100%;\n"); // default
 				}
 			}
 		} else {
@@ -1330,7 +1330,7 @@ public class WebEnv extends LocalEnv {
 			} else if (!topLevelDiv) {
 				cssbuf.append("\tmax-width: 1280px;\n"); // topLevelDiv default
 			} else {
-				cssbuf.append("\twidth: 100%;\n"); // default
+//				cssbuf.append("\twidth: 100%;\n"); // default
 			}
 		}
 		
@@ -1502,12 +1502,30 @@ public class WebEnv extends LocalEnv {
 //			} else {
 //				return "";
 //			}
-			if (style != null && (css.size() != 0)) {
-				sql = sql + "SELECT c.name as selector, d.property, d.value "
+//			if (style != null && (css.size() != 0)) {
+			if (style != null) {
+//				sql = sql + "SELECT c.name as selector, d.property, d.value "
+				sql = sql + "SELECT c.name as selector, d.property, d.value, cd.action "
 						+ "FROM template t, component c, declaration d, tem_com tc, com_dec cd "
 						+ "WHERE t.id=tc.tem_id AND c.id=tc.com_id AND c.id=cd.com_id AND d.id=cd.dec_id ";
-				sql = sql + "AND t.name=\'" + style + "\' AND (";
+				sql = sql + "AND t.name=\'" + style + "\' AND ("
+						+ "c.name='style-body' OR "
+						+ "c.name='style-row' OR "
+						+ "c.name='style-col' OR "
+						+ "c.name='style-att' OR "
+						+ "c.name='style-table-row' OR "
+						+ "c.name='style-list-row' OR "
+						+ "c.name='style-table-col' OR "
+						+ "c.name='style-list-col' OR "
+						+ "c.name='style-table-att' OR "
+						+ "c.name='style-list-att' OR "
+						+ "c.name='style-img' OR "
+						+ "c.name='style-line' OR "
+						+ "c.name='style-anchor'";
 				for (int i = 0; i < css.size(); i++) {
+					if (i == 0) {
+						sql = sql + " OR ";
+					}
 					sql = sql + "c.name=\'" + css.get(i) + "\'";
 					if (i != (css.size()-1)) {
 						sql = sql + " OR ";
@@ -1522,6 +1540,9 @@ public class WebEnv extends LocalEnv {
 			// テーブル照会結果を出力
 			while(rs.next()) {
 				String selector = "." + rs.getString("selector");
+				if (!rs.getString("action").equals("")) {
+					selector = selector + ":" + rs.getString("action");
+				};
 				String property = rs.getString("property");
 				String value = rs.getString("value");
 				CSSList getcss = new CSSList(selector, property, value);

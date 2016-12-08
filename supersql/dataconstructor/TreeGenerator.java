@@ -60,9 +60,9 @@ public class TreeGenerator {
 
 			Log.out("= order by started =");
 			Log.out(" * schema : " + sch + " *");
-Log.info("BEFORE"+Preprocessor.getOrderByTable());
+//Log.info("BEFORE"+Preprocessor.getOrderByTable());
 			info = OrderBy.tableToList(Preprocessor.getOrderByTable(), sch.contain_itemnum());
-Log.info("AFTER "+info);
+//Log.info("AFTER "+info);
 			result = new ExtList(sn.GetResultWithOrderBy(info, sch));
 
 			Log.out("= orderBy completed =");
