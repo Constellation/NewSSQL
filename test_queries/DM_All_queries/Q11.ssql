@@ -1,4 +1,3 @@
 GENERATE HTML
-[d.name, {d.manager, e.name}@{tabletype=nest}]!
-FROM dept d,employee e
-WHERE d.manager = e.manager;
+[e.name, e.salary],3!5%
+FROM employee e

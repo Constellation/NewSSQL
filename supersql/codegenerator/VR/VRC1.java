@@ -190,7 +190,9 @@ public class VRC1 extends Connector {
 					//System.out.println("groupcount1");
 				}else{
 	//				htmlEnv.code.append("<TD class=\"" + VREnv.getClassID(tfe) + " nest\">\n");
-					htmlEnv.code.append("<category" + VREnv.getClassID(tfe) + " > \n");
+					if(htmlEnv.gLevel < 2){
+						htmlEnv.code.append("<category" + VREnv.getClassID(tfe) + " > \n");
+					}
 				}
 			}else{
 				//htmlEnv.code.append("<TD class=\"" + VREnv.getClassID(tfe) + " nest\" name = \"" +VRAttribute.genre+ "\"> \n");
@@ -245,9 +247,7 @@ public class VRC1 extends Connector {
 				VREnv.setSearch(false);
 		}
 
-		if(htmlEnv.gLevel==0){
-
-		}else{
+		if(htmlEnv.gLevel == 1){
 			htmlEnv.code.append("</category>\n"); //htmlEnv.code.append("</TABLE>\n")から変更
 			htmlEnv.code.append("</category>\n");//20160919 kotani add
 		}

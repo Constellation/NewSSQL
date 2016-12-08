@@ -1,4 +1,4 @@
 GENERATE HTML
-[ (asc1)d.name, [ (desc2)e.name ]! ]!
-FROM dept d, employee e
-WHERE d.manager=e.manager
+[link(e.name@{target='_new'},'Q6.ssql',e.id)]!
+FROM employee e
+

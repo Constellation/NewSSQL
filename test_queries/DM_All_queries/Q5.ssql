@@ -1,3 +1,5 @@
+FOREACH e.id
 GENERATE HTML
-[(asc1)e.name, (desc2)e.salary]!
+[e.salary, e.syear]!
 FROM employee e
+

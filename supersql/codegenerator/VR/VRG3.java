@@ -111,6 +111,7 @@ public class VRG3 extends Grouper {
 			VRAttribute.genre = "";
 
 			count++;
+			VRAttribute.seq = 0;//n2 kotani
 			
 			html_env.gLevel++;
 			Log.out("selectFlg" + VREnv.getSelectFlg());
@@ -183,6 +184,16 @@ public class VRG3 extends Grouper {
 
 		
 		}
+		
+		for(int l=0; l<VRAttribute.elearray.size();l++){///n2 kotani
+			//System.out.println("keio= "+" " +l+" " + VRAttribute.elearray.get(l));
+			html_env.code.append("<n2 seq=\""+l+"\">\n" );
+			//System.out.println("yoo="+VRAttribute.elearray.get(l));
+			html_env.code.append(VRAttribute.elearray.get(l));
+			html_env.code.append("</n2>\n" );			
+		}
+		VRAttribute.elearray.clear();//初期化
+		VRAttribute.seq = 0;//初期化
 		
 		//System.out.println("</G3back>");
 		if(VRAttribute.gjudge==1){

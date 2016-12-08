@@ -189,10 +189,12 @@ public class VRManager extends Manager {
 			tfe_info.work(data_info);
 		VREnv.cs_code.append("9 "+tfe_info+"\n");
 		
+		htmlEnv.header.append("<?xml version=\"1.0\" ?>");
 		//htmlEnv.getHeader();
+		htmlEnv.code = new StringBuffer(htmlEnv.code.substring(0,htmlEnv.code.lastIndexOf("<group>")));
 		htmlEnv.getFooter();
 		//htmlEnv2.header.append("<?xml version=\"1.0\" encoding=\""+ Utils.getEncode() + "\"?><SSQL>");
-		htmlEnv2.header.append("<?xml version=\"1.0\" ?>");//上の行をこれに変更
+		//htmlEnv2.header.append("<?xml version=\"1.0\" ?>");//上の行をこれに変更
 		//htmlEnv2.footer.append("</SSQL>");
 		try {
 
