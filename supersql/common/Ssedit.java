@@ -141,6 +141,10 @@ public class Ssedit {
 
 		//TFE
 		getTFE(query);
+
+//		System.out.println(generateclause);
+//		System.out.println("tfe is:" + tfe.trim());
+//		System.out.println(fromclause);
 //		System.out.println("tfe is: " +tfe);
 		/////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -159,7 +163,8 @@ public class Ssedit {
 //			System.out.println("aaa: " + tfe.trim().substring(0,1));
 //			System.out.println("bbb: " + tfe.trim().substring(tfe.length()-4, tfe.length()-3));
 
-			if (!tfe.trim().substring(0,1).equals("{") && !tfe.trim().substring(tfe.length()-4, tfe.length()-3).equals("}")) {
+//			if (!tfe.trim().substring(0,1).equals("{") && !tfe.trim().substring(tfe.length()-4, tfe.length()-3).equals("}")) {
+			if (!tfe.trim().substring(0,1).equals("{")) {
 				tfe = "\n" + "{" + "\n" + tfe.trim() + "\n" + "}" + "\n";
 			}
 		}

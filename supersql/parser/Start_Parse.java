@@ -469,10 +469,10 @@ public class Start_Parse {
 			GlobalEnv.addErr("didn't find 'GENERATE'. please start with 'GENERATE'.");
 			Log.err("didn't find 'GENERATE'. please start with 'GENERATE'.");
 		}
-		else if(!query.toLowerCase().contains("from")) {
-			GlobalEnv.addErr("didn't find 'FROM'. please describe 'FROM'.");
-			Log.err("didn't find 'FROM'. please describe 'FROM'.");
-		}else{
+//		else if(!query.toLowerCase().contains("from")) {
+//			GlobalEnv.addErr("didn't find 'FROM'. please describe 'FROM'.");
+//			Log.err("didn't find 'FROM'. please describe 'FROM'.");
+		else{
 			try{
 				String a = query.substring(0, query.toLowerCase().indexOf("generate"));
 				String b = query.substring(query.toLowerCase().indexOf("generate"));
