@@ -141,7 +141,7 @@ public class Mobile_HTML5Manager extends Manager{
 					html += html_env.header;
 				html += html_env.code;
 				html += html_env.footer;
-				html = FileFormatter.process(html);
+//				html = FileFormatter.process(html);
 				pw.println(html);
 	            
 	            pw.close();

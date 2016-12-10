@@ -547,7 +547,9 @@ public class Mobile_HTML5G2 extends Grouper {
 		}
 		//added by goto 20130417 end
         HTMLfilename = HTMLfilename+"_row"+rowFileNum+"_";
-        html_env.code.append(
+        
+        if(!Sass.isBootstrapFlg()){
+        	html_env.code.append(
         		"	<script type=\"text/javascript\">\n" +
         		"		$(document).ready(function(){\n" +
         		"			rowIframePrevNext("+first+", "+last+", '"+divID+"', '"+iframeName+"', '"+HTMLfilename+"', '"+row+"', '"+rowNum+"', '"+column+"');\n" +
@@ -564,6 +566,20 @@ public class Mobile_HTML5G2 extends Grouper {
         		"	<hr>\n" +
         		"	<div id=\""+divID+"2\"></div>\n" +
         		"	<hr>\n");
+        }else if(Sass.isBootstrapFlg()){
+        	String paginationClass = "sync-pagination"+rowFileNum;
+        	String paginationContentClass = "paginationContent"+rowFileNum;
+        	
+        	html_env.code.append(
+        		"	<ul class=\""+paginationClass+"\"></ul>\n" +
+        		"	<div class=\""+paginationContentClass+"\">Dynamic page content</div>\n" +
+        		"	<ul class=\""+paginationClass+"\"></ul>\n" +
+        		"	<script type=\"text/javascript\">\n" +
+        		"		$(document).ready(function(){\n" +
+        		"			paginationForBootstrap("+first+", "+last+", '"+paginationClass+"', '"+paginationContentClass+"', '"+HTMLfilename+"');\n" +
+        		"		});\n" +
+        		"	</script>\n");
+        }
     }
     
     //20131001 tableDivHeader

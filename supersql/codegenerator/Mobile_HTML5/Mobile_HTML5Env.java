@@ -265,6 +265,11 @@ public class Mobile_HTML5Env extends LocalEnv {
 //	        header.append("\n-->\n</STYLE>\n");
 
 	        header.append("<!-- SuperSQL JavaScript & CSS -->\n");
+    		if(Sass.isBootstrapFlg()){
+    			header.append("<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js\"></script>\n");
+    			header.append("<script src=\"jscss/bootstrap.js\"></script>\n");
+    			header.append("<script src=\"jscss/forBootstrap/jquery.twbsPagination.js\"></script>\n");
+    		}
 	        //20160603 bootstrap
 	        if(!Sass.isBootstrapFlg()){
 	        	header.append("<link rel=\"stylesheet\" href=\"jscss/jquery-ui.css\"/>\n");
@@ -291,11 +296,6 @@ public class Mobile_HTML5Env extends LocalEnv {
     		header.append("<script src=\"jscss/jquery.iframe-auto-height_re.plugin.js\"></script>\n");
     		header.append("<script src=\"jscss/jquery.validate.min.js\"></script>\n");
     		header.append("<script src=\"jscss/supersql.prev-next.js\"></script>\n");
-
-    		if(Sass.isBootstrapFlg()){
-    			header.append("<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js\"></script>\n");
-    			header.append("<script src=\"jscss/bootstrap.js\"></script>\n");
-    		}
     		//added by goto 20130512  "max-width"
 			header.append(
 					"<script type=\"text/javascript\">\n" +

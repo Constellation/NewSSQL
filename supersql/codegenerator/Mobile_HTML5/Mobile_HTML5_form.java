@@ -461,10 +461,10 @@ public class Mobile_HTML5_form {
 							statement += 
 									"	<div class=\"ui-grid-a\">\n" +
 									"		<div class=\"ui-block-a\">\n" +
-									"    		<input type=\"submit\" name=\"form"+formCount+"_words"+(insertWordCount)+"\" value=\""+bt1+"\" data-theme=\"a\">\n" +
+									"    		<input type=\"submit\" class=\"btn btn-default\" name=\"form"+formCount+"_words"+(insertWordCount)+"\" value=\""+bt1+"\" data-theme=\"a\">\n" +
 									"		</div>\n" +
 									"		<div class=\"ui-block-b\">\n" +
-									"    		<input type=\"submit\" name=\"form"+formCount+"_words"+(insertWordCount)+"\" value=\""+bt2+"\" data-theme=\"a\">\n" +
+									"    		<input type=\"submit\" class=\"btn btn-default\" name=\"form"+formCount+"_words"+(insertWordCount)+"\" value=\""+bt2+"\" data-theme=\"a\">\n" +
 									"		</div>\n" +
 									"	</div>\n";
 							buttonSubmit += " || $_POST['form"+formCount+"_words"+(insertWordCount)+"']";
@@ -549,7 +549,7 @@ public class Mobile_HTML5_form {
     		
     		if(buttonSubmit.equals(""))
     			statement += 
-	    			"    <input type=\"submit\" value=\"OK&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\" name=\"form"+formCount+"\" id=\"form"+formCount+"\" data-mini=\"false\" data-inline=\"false\">\n";
+	    			"    <input type=\"submit\" class=\"btn btn-default\" value=\"OK&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\" name=\"form"+formCount+"\" id=\"form"+formCount+"\" data-mini=\"false\" data-inline=\"false\">\n";
 			
     		statement += 
     				"</form>\n" +
@@ -913,6 +913,7 @@ public class Mobile_HTML5_form {
 		if(type.equals("password")){
 			//add confirm password form
 			ret += 	"></span>\n" +
+					"</div>\n <div class=\"form-group\">"+
 					"    <span><input type=\""+type+"\" id=\""+name+"_confirm\" name=\""+name+"_confirm\"" + getFormClass(notnull, customType) +
 					" placeholder=\""+((!placeholder.isEmpty())? placeholder : defaultPlaceholder)+" (re-input)\" equalTo=\"#"+name+"\"";
 		}
@@ -935,6 +936,9 @@ public class Mobile_HTML5_form {
 			}
 		}
 		String s = " class=\"";
+		if(Sass.isBootstrapFlg()){
+			s += "form-control ";
+		}
 		if(notnull) s += "required ";
 		if(!customType.isEmpty()){
 			switch (customType){
