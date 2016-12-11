@@ -365,7 +365,7 @@ public class Mobile_HTML5G1 extends Grouper {
             	}
             }
             
-	        Mobile_HTML5.whileProcess1(getSymbol(), decos, html_env, data, data_info, tfe, null, -1);
+	        Mobile_HTML5.whileProcess1_2(getSymbol(), decos, html_env, data, data_info, tfe, null, -1);
     	    
 	        if(this.dindex == 0 && decos.containsKey("slide")){
 	        	tfe.decos.put("slide","true");
@@ -378,7 +378,7 @@ public class Mobile_HTML5G1 extends Grouper {
             	tfe.decos.put("slide", "false");
 	        }
             
-	        Mobile_HTML5.whileProcess2(getSymbol(), decos, html_env, data, data_info, tfe, null, -1);
+	        Mobile_HTML5.whileProcess2_1(getSymbol(), decos, html_env, data, data_info, tfe, null, -1);
 	        
             if(decos.containsKey("table0") || Mobile_HTML5C1.table0Flg || Mobile_HTML5C2.table0Flg || Mobile_HTML5G2.table0Flg)	table0Flg = true;
             if(decos.containsKey("table") || Mobile_HTML5C1.tableFlg || Mobile_HTML5C2.tableFlg || Mobile_HTML5G2.tableFlg || table0Flg)	tableFlg=true;

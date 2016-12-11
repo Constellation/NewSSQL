@@ -234,11 +234,11 @@ public class Mobile_HTML5C2 extends Connector {
             	}
 	      	}
 
-	        Mobile_HTML5.whileProcess1(getSymbol(), decos, html_env, data, data_info, tfe, tfes, tfeItems);
+	        Mobile_HTML5.whileProcess1_2(getSymbol(), decos, html_env, data, data_info, tfe, tfes, tfeItems);
 
             this.worknextItem();
            
-	        Mobile_HTML5.whileProcess2(getSymbol(), decos, html_env, data, data_info, tfe, tfes, tfeItems);
+	        Mobile_HTML5.whileProcess2_1(getSymbol(), decos, html_env, data, data_info, tfe, tfes, tfeItems);
 
 	        if(!Sass.isBootstrapFlg()){
 	            if(decos.containsKey("table0") || Mobile_HTML5C1.table0Flg || Mobile_HTML5G1.table0Flg || Mobile_HTML5G2.table0Flg)	table0Flg = true;

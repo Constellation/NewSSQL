@@ -178,16 +178,17 @@ public class Mobile_HTML5_dynamic {
 //			//Log.e(html_env_code_length);
 //		}
 	}
-	public static void dyamicAfterWhileStringProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
-		//dyamicWhileString += "\n";
-		//if(Gdepth<=1 && (symbol.contains("G1") || symbol.contains("G2"))){
-//			String s = html_env.code.toString();
-//			dyamicWhileString = "$b = '"+s.replaceAll("\r\n|\r|\n", "")+"';\n";
-//			Log.i("---- ");
-//			dyamicWhileString += " $$$$$$$$ \n";
-		//}
-
-	}
+//	//未使用
+//	public static void dyamicAfterWhileStringProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
+//		//dyamicWhileString += "\n";
+//		//if(Gdepth<=1 && (symbol.contains("G1") || symbol.contains("G2"))){
+////			String s = html_env.code.toString();
+////			dyamicWhileString = "$b = '"+s.replaceAll("\r\n|\r|\n", "")+"';\n";
+////			Log.i("---- ");
+////			dyamicWhileString += " $$$$$$$$ \n";
+//		//}
+//
+//	}
 //	//未使用
 //	public static void dyamicPostStringProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
 ////		if(Gdepth<=1 && (symbol.contains("G1") || symbol.contains("G2"))){
@@ -317,16 +318,16 @@ public class Mobile_HTML5_dynamic {
 				//G1, G2
 				dynamicString = "'"+dynamicString+"'";
 				
-				//table
-				if(decos.containsKey("table") || decos.containsKey("table0")){
-					int border = 1;
-					if(decos.containsKey("table0"))	border = 0;
-					//table
-					php_str1 = "	$b .= '<table border=\""+border+"\">';\n";
-					php_str2 = "		$b .= '<tr><td>';\n";
-					php_str3 = "		$b .= '</td></tr>';\n";
-					php_str4 = "	$b .= '</table>';\n";
-				}
+//				//table
+//				if(decos.containsKey("table") || decos.containsKey("table0")){
+//					int border = 1;
+//					if(decos.containsKey("table0"))	border = 0;
+//					//table
+//					php_str1 = "	$b .= '<table border=\""+border+"\">';\n";
+//					php_str2 = "		$b .= '<tr><td>';\n";
+//					php_str3 = "		$b .= '</td></tr>';\n";
+//					php_str4 = "	$b .= '</table>';\n";
+//				}
 
 				//decos contains Key("column")
 				if(decos.containsKey("column")){
