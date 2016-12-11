@@ -571,9 +571,13 @@ public class Mobile_HTML5G2 extends Grouper {
         	String paginationContentClass = "paginationContent"+rowFileNum;
         	
         	html_env.code.append(
+        		"	<div class=\"row\">\n" +
         		"	<ul class=\""+paginationClass+"\"></ul>\n" +
+        		"	</div>\n" +
         		"	<div class=\""+paginationContentClass+"\">Dynamic page content</div>\n" +
+        		"	<div class=\"row\">\n" +
         		"	<ul class=\""+paginationClass+"\"></ul>\n" +
+        		"	</div>\n" +
         		"	<script type=\"text/javascript\">\n" +
         		"		$(document).ready(function(){\n" +
         		"			paginationForBootstrap("+first+", "+last+", '"+paginationClass+"', '"+paginationContentClass+"', '"+HTMLfilename+"');\n" +
