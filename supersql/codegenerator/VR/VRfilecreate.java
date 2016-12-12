@@ -164,7 +164,6 @@ public class VRfilecreate {
 "	static int billmovez = 0;\n"+
 "	void Start () {\n"+
 "	GameObject[] array = new GameObject[100];\n"+
-"	GameObject obj1 = new GameObject();///二つ目からのビルの移動のため\n"+
 "	String[] sarray = new String[100];///////////////////テキスト生成\n"+
 "	int groupflag = 1;\n"+
 "\n"+
@@ -193,8 +192,7 @@ public class VRfilecreate {
 "					float standhigh = 1.25f;\n"+
 "					int museumcount = 0;\n"+
 "				\n"+
-
-"					for(int n=10,k=0; n >= -10; n = n-5,k++){///////////////ここら辺G1 change\n"+
+"					for(int n=11, k=0, o=0; o<5 ; n = n-4,k++, o++){///////////////ここら辺G1 change n >= -9\n"+
 "						zarray[k] = n;\n"+
 "					}\n"+
 
@@ -225,7 +223,7 @@ public class VRfilecreate {
 "						xarray[k] = n;\n"+
 "					}\n"+
 
-"					for(int m=10, l=0; m >= -10; m = m-5,l++){	\n"+
+"					for(int m=11, l=0, o=0; o<5; m = m-4,l++, o++){	//m >= -9\n"+
 "						zzarray[l] = m;\n"+
 "					}\n"+
 "					for(int p=0, q=0; p<50; p++,q++){    	\n"+
