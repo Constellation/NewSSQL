@@ -48,7 +48,7 @@ public class Grouper extends Operator implements Serializable{
     public ExtList makesch() {
         ExtList outsch = new ExtList();
         outsch.add(tfe.makesch());
-        //  Log.out("Grp outsch:"+outsch);
+//        Log.info("Grp outsch:"+outsch);
 
         return outsch;
     }

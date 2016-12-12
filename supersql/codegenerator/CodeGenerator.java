@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
 
+import com.sun.javafx.stage.WindowEventDispatcher;
+
 import supersql.codegenerator.Compiler.Compiler;
 import supersql.codegenerator.Compiler.JSP.JSPFactory;
 import supersql.codegenerator.Compiler.PHP.PHP;
@@ -265,7 +267,7 @@ public class CodeGenerator {
 
 	}
 
-	private static TFE read_attribute(ExtList tfe_tree){
+	public static TFE read_attribute(ExtList tfe_tree){
 		String att = new String();
 		TFE out_sch = null;
 		String decos = new String();
@@ -280,7 +282,7 @@ public class CodeGenerator {
 					&& (decos = ((ExtList)tfe_tree.get(1)).get(((ExtList)tfe_tree.get(1)).size()-1).toString().trim()).startsWith("@")
 					){
 					ExtList new_out = checkDecoration(tfe_tree, decos);
-//					Log.info(new_out);
+//					Log.info(" "+new_out);
 					out_sch = read_attribute(new_out);
 			}
 			else if( ((ExtList)tfe_tree.get(1)).get(0) instanceof String ){
@@ -363,8 +365,14 @@ public class CodeGenerator {
 					if(func_name.equals("cross_tab")){
 						GlobalEnv env = new GlobalEnv();
 						env.setCtabflag();
+						String ltwidth = new String();
 						Ctab3 ctab = new Ctab3();
-						out_sch = read_attribute(ctab.read_tfe(fn));
+						if(((ExtList)tfe_tree.get(1)).size() == 2){
+							ltwidth = ((ExtList)(ExtList)tfe_tree.get(1)).get(1).toString();
+						}else{
+							ltwidth = "@{lt-width='10'}";
+						}
+						out_sch = read_attribute(ctab.read_tfe(fn, ltwidth));
 						
 ////						out_sch = func_read((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).tfe;
 ////						System.err.println(tfe_tree);
@@ -455,6 +463,7 @@ public class CodeGenerator {
 		else{
 			out_sch = makeschematop((ExtList)((ExtList)tfe_tree.get(1)).get(0));
 		}
+//		Log.info(out_sch);
 		return out_sch;
 	}
 
@@ -714,7 +723,7 @@ public class CodeGenerator {
 			key = key.trim();
 			// tk///////////////////
 
-			Log.out("[makeAttiribute] === Attribute Key : " + key + " ===");
+			Log.info("[makeAttiribute] === Attribute Key : " + key + " ===");
 		} else {
 		}
 
@@ -732,13 +741,12 @@ public class CodeGenerator {
 		name = name.trim();
 		att_tmp = name;
 		// tk//////////////////////////////////
-		Log.out("[makeAttribute] line : " + line);
-		Log.out("[makeAttribute] name : " + name);
+//		Log.info("[makeAttribute] line : " + line);
+//		Log.info("[makeAttribute] name : " + name);
 
 		Attribute att = createAttribute();
 		
 		attno = att.setItem(attno, name, line, key, attp);
-		
 		return att;
 
 	}
