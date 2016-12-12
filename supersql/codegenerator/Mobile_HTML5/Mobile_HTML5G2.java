@@ -310,9 +310,9 @@ public class Mobile_HTML5G2 extends Grouper {
 //	            //☆★            Log.info("G2 tfeItems : " + this.tfeItems);
 //	      	}
 
-	        Mobile_HTML5.whileProcess1(getSymbol(), decos, html_env, data, data_info, tfe, null, -1);
+	        Mobile_HTML5.whileProcess1_2(getSymbol(), decos, html_env, data, data_info, tfe, null, -1);
             this.worknextItem();
-	        Mobile_HTML5.whileProcess2(getSymbol(), decos, html_env, data, data_info, tfe, null, -1);
+	        Mobile_HTML5.whileProcess2_1(getSymbol(), decos, html_env, data, data_info, tfe, null, -1);
             
             if(decos.containsKey("table0") || Mobile_HTML5C1.table0Flg || Mobile_HTML5C2.table0Flg || Mobile_HTML5G1.table0Flg)	table0Flg = true;
             if(decos.containsKey("table") || Mobile_HTML5C1.tableFlg || Mobile_HTML5C2.tableFlg || Mobile_HTML5G1.tableFlg || table0Flg)	tableFlg=true;
@@ -547,7 +547,9 @@ public class Mobile_HTML5G2 extends Grouper {
 		}
 		//added by goto 20130417 end
         HTMLfilename = HTMLfilename+"_row"+rowFileNum+"_";
-        html_env.code.append(
+        
+        if(!Sass.isBootstrapFlg()){
+        	html_env.code.append(
         		"	<script type=\"text/javascript\">\n" +
         		"		$(document).ready(function(){\n" +
         		"			rowIframePrevNext("+first+", "+last+", '"+divID+"', '"+iframeName+"', '"+HTMLfilename+"', '"+row+"', '"+rowNum+"', '"+column+"');\n" +
@@ -564,6 +566,24 @@ public class Mobile_HTML5G2 extends Grouper {
         		"	<hr>\n" +
         		"	<div id=\""+divID+"2\"></div>\n" +
         		"	<hr>\n");
+        }else if(Sass.isBootstrapFlg()){
+        	String paginationClass = "sync-pagination"+rowFileNum;
+        	String paginationContentClass = "paginationContent"+rowFileNum;
+        	
+        	html_env.code.append(
+        		"	<div class=\"row\">\n" +
+        		"	<ul class=\""+paginationClass+"\"></ul>\n" +
+        		"	</div>\n" +
+        		"	<div class=\""+paginationContentClass+"\">Dynamic page content</div>\n" +
+        		"	<div class=\"row\">\n" +
+        		"	<ul class=\""+paginationClass+"\"></ul>\n" +
+        		"	</div>\n" +
+        		"	<script type=\"text/javascript\">\n" +
+        		"		$(document).ready(function(){\n" +
+        		"			paginationForBootstrap("+first+", "+last+", '"+paginationClass+"', '"+paginationContentClass+"', '"+HTMLfilename+"');\n" +
+        		"		});\n" +
+        		"	</script>\n");
+        }
     }
     
     //20131001 tableDivHeader

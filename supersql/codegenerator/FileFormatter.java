@@ -20,7 +20,9 @@ public class FileFormatter {
 			doc.outputSettings().outline(true);
 			r = doc.html();
 			
-			r = r.replace("<!--?php", "<?php").replace("?--> ", "?>");
+			r = r.replace("<!--?php", "<?php")
+				 .replace("?--><!DOCTYPE html>", "?>\n<!DOCTYPE html>")
+				 .replace("?-->", "?>");
 			
 		} catch (Exception e) {
 			e.printStackTrace();

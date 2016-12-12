@@ -214,7 +214,7 @@ public class Mobile_HTML5Attribute extends Attribute {
 			//Log.out("data_info: "+this.getStr(data_info));
 
 			Mobile_HTML5.beforeWhileProcess("Mobile_HTML5Attribute", decos, html_env);
-			Mobile_HTML5.whileProcess1("Mobile_HTML5Attribute", decos, html_env, null, data_info, null, null, -1);	//TODO ここでOK?
+			Mobile_HTML5.whileProcess1_2("Mobile_HTML5Attribute", decos, html_env, null, data_info, null, null, -1);	//TODO ここでOK?
 
 			createForm(data_info);
 			
@@ -249,7 +249,7 @@ public class Mobile_HTML5Attribute extends Attribute {
 				}
 			}
 			
-			Mobile_HTML5.whileProcess2("Mobile_HTML5Attribute", decos, html_env, null, data_info, null, null, -1);	//TODO ここでOK?
+			Mobile_HTML5.whileProcess2_1("Mobile_HTML5Attribute", decos, html_env, null, data_info, null, null, -1);	//TODO ここでOK?
 			Mobile_HTML5.afterWhileProcess("Mobile_HTML5Attribute", classid, decos, html_env);
 			
 			

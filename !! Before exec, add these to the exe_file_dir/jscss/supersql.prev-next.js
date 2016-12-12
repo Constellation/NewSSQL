@@ -118,3 +118,24 @@ function isSmartphone(){
 		return true;
 	return false;
 }
+
+function paginationForBootstrap(num, max, paginationClass, paginationContentClass, HTMLfileName){
+var jq1124 = jQuery.noConflict(true);
+   $(function () {
+        window.pagObj = $('.'+paginationClass).twbsPagination({
+            totalPages: max,
+            visiblePages: 5,
+            first: '←',
+            last: '→',
+            prev: '«',
+            next: '»',
+            onPageClick: function (event, page) {
+                $('.'+paginationContentClass).load("./"+HTMLfileName+page+".html");
+            }
+        }).on('page', function (event, page) {
+        	$('.'+paginationContentClass).text('Page ' + page);
+            console.info(page + ' (from event listening)');
+        });
+    });
+
+}

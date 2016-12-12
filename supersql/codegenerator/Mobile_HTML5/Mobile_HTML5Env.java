@@ -265,6 +265,11 @@ public class Mobile_HTML5Env extends LocalEnv {
 //	        header.append("\n-->\n</STYLE>\n");
 
 	        header.append("<!-- SuperSQL JavaScript & CSS -->\n");
+    		if(Sass.isBootstrapFlg()){
+    			header.append("<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js\"></script>\n");
+    			header.append("<script src=\"jscss/bootstrap.js\"></script>\n");
+    			header.append("<script src=\"jscss/forBootstrap/jquery.twbsPagination.js\"></script>\n");
+    		}
 	        //20160603 bootstrap
 	        if(!Sass.isBootstrapFlg()){
 	        	header.append("<link rel=\"stylesheet\" href=\"jscss/jquery-ui.css\"/>\n");
@@ -275,9 +280,10 @@ public class Mobile_HTML5Env extends LocalEnv {
             header.append("<link rel=\"stylesheet\" href=\"jscss/jquery.simplePagination.css\"/>\n");
             //20130206
             //※※　要注意　※※　 jquery.jsより先にjquerymobile.jsをインポートすると、ボタン等の表示がうまくいかなくなる!!
-            header.append("<script src=\"jscss/jquery-1.7.1.min.js\"></script>\n");
+//            header.append("<script src=\"jscss/jquery-1.7.1.min.js\"></script>\n");
             header.append(Mobile_HTML5Function.updateFormJS);
             if(!Sass.isBootstrapFlg()){
+            	header.append("<script src=\"jscss/jquery-1.7.1.min.js\"></script>\n");
             	header.append("<script src=\"jscss/jquery-ui.min.js\"></script>\n");
             	header.append("<script src=\"jscss/supersql.showmore.js\"></script>\n");
             	header.append("<script src=\"jscss/jquery.mobile-1.3.1.min.js\"></script>\n");
@@ -291,11 +297,6 @@ public class Mobile_HTML5Env extends LocalEnv {
     		header.append("<script src=\"jscss/jquery.iframe-auto-height_re.plugin.js\"></script>\n");
     		header.append("<script src=\"jscss/jquery.validate.min.js\"></script>\n");
     		header.append("<script src=\"jscss/supersql.prev-next.js\"></script>\n");
-
-    		if(Sass.isBootstrapFlg()){
-    			header.append("<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js\"></script>\n");
-    			header.append("<script src=\"jscss/bootstrap.js\"></script>\n");
-    		}
     		//added by goto 20130512  "max-width"
 			header.append(
 					"<script type=\"text/javascript\">\n" +
@@ -502,46 +503,84 @@ public class Mobile_HTML5Env extends LocalEnv {
 	        				"?>\n" +
 	        				"\n" +
 	        				"<!-- Login & Registration start -->\n" +
-	        				"<!-- Login Panel start -->\n" +
-	        				"<br>\n" +
-	        				//"<div id=\"LOGINpanel1\" style=\"background-color:black; width:100%;\" data-role=\"none\">\n" +
-	        				//"<div id=\"LOGINpanel1\" style=\"background-color:whitesmoke; border-radius:20px; border:5px gray solid;\" data-role=\"none\">\n" +
-	        				"<div id=\"LOGINpanel1\" style=\"background-color:whitesmoke; border-radius:10px; border:3px gray solid;\" data-role=\"none\">\n" +
-	        				//"<div style=\"color:lightgray; font-size:30; background-color:black; border-radius:15px 15px 0px 0px;\" id=\"loginTitle1\">Log in</div>\n" +
-	        				"<div style=\"color:lightgray; font-size:30; background-color:black; border-radius:5px 5px 0px 0px;\" id=\"loginTitle1\">Log in</div>\n" +
-	        				"<br>\n" +
-	        				"<form method=\"post\" action=\"\" target=\"login_ifr1\">\n" +
-	        				"<div>\n" +
-	        				"	<div style=\"font-size:20;\">"+c1str+"&nbsp;&nbsp;</div>\n" +
-	        				"	<input type=\"text\" name=\"id\" data-mini=\"true\">\n");
-	        		
-    				if(!s_val.equals("1"))
+	        				"<!-- Login Panel start -->\n");
+	        		if(!Sass.isBootstrapFlg()){
+		        		header.append(
+		        				"<br>\n" +
+		        				//"<div id=\"LOGINpanel1\" style=\"background-color:black; width:100%;\" data-role=\"none\">\n" +
+		        				//"<div id=\"LOGINpanel1\" style=\"background-color:whitesmoke; border-radius:20px; border:5px gray solid;\" data-role=\"none\">\n" +
+		        				"<div id=\"LOGINpanel1\" style=\"background-color:whitesmoke; border-radius:10px; border:3px gray solid;\" data-role=\"none\">\n" +
+		        				//"<div style=\"color:lightgray; font-size:30; background-color:black; border-radius:15px 15px 0px 0px;\" id=\"loginTitle1\">Log in</div>\n" +
+		        				"<div style=\"color:lightgray; font-size:30; background-color:black; border-radius:5px 5px 0px 0px;\" id=\"loginTitle1\">Log in</div>\n" +
+		        				"<br>\n" +
+		        				"<form method=\"post\" action=\"\" target=\"login_ifr1\">\n" +
+		        				"<div>\n" +
+		        				"	<div style=\"font-size:20;\">"+c1str+"&nbsp;&nbsp;</div>\n" +
+		        				"	<input type=\"text\" name=\"id\" data-mini=\"true\">\n");
+	        		}else if (Sass.isBootstrapFlg()){
 	        			header.append(
-	        				"	<fieldset data-role=\"controlgroup\" data-type=\"horizontal\" data-mini=\"true\">\n" +
-	        				"		<input type=\"radio\" name=\"choose\" id=\"login1\" value=\"login1\" checked=\"checked\">\n" +
-	        				"	    <label for=\"login1\">I have an account</label>\n" +
-	        				"		<input type=\"radio\" name=\"choose\" id=\"signup1\">\n" +
-	        				"		<label for=\"signup1\"> I am new!</label>\n" +
-	        				"	</fieldset>\n");
+		        				"<div id=\"LOGINpanel1\">\n" +
+		        				"<div id=\"loginTitle1\"><h2 class=\"form-signin-heading\">Log In</h2></div>" +
+		        				//"<div style=\"color:lightgray; font-size:30; background-color:black; border-radius:15px 15px 0px 0px;\" id=\"loginTitle1\">Log in</div>\n" +
+		        				"<form method=\"post\" action=\"\" target=\"login_ifr1\" class=\"form-signin\">\n" +
+		        				"<input type=\"text\" id=\"id\" name=\"id\" class=\"form-control\" placeholder=\""+c1str+"\" required autofocus>\n");
+	        		}
+    				if(!s_val.equals("1")){
+    					if(!Sass.isBootstrapFlg()){
+    						header.append(
+    		        			"	<fieldset data-role=\"controlgroup\" data-type=\"horizontal\" data-mini=\"true\">\n" +
+    		        			"		<input type=\"radio\" name=\"choose\" id=\"login1\" value=\"login1\" checked=\"checked\">\n" +
+    		        			"	    <label for=\"login1\">I have an account</label>\n" +
+    		        			"		<input type=\"radio\" name=\"choose\" id=\"signup1\">\n" +
+    		        			"		<label for=\"signup1\"> I am new!</label>\n" +
+    		        			"	</fieldset>\n");
+    					}else if(Sass.isBootstrapFlg()){
+		        			header.append(
+		        				"	<div class=\"radio-inline\">\n" +
+		        				"		<input type=\"radio\" name=\"choose\" id=\"login1\" value=\"login1\" checked=\"checked\">\n" +
+		        				"	    <label for=\"login1\">I have an account</label>\n" +
+		        				"	</div>\n" +
+		        				"	<div class=\"radio-inline\">\n" +
+		        				"		<input type=\"radio\" name=\"choose\" id=\"signup1\">\n" +
+		        				"		<label for=\"signup1\"> I am new!</label>\n" +
+		        				"	</div>\n");
+    					}
+    				}
     				
-    				header.append(
-	        				"</div>\n" +
-	        				"<div id=\"login_block\">\n" +
-	        				"	<div style=\"font-size:20;\">"+c2str+":&nbsp;&nbsp;&nbsp;</div>\n" +
-	        				"	<input type=\"password\" name=\"password\" id=\"password\" data-mini=\"true\">\n" +
-	        				"	<input type=\"submit\" value=\" Login \" name=\"ssql_login1\" id=\"ssql_login1\" data-mini=\"false\" data-inline=\"false\">\n" +
-	        				"</div>\n");
-	        				
-	        		if(!s_val.equals("1"))
-	        			header.append(
-	        				"<div id=\"signup_block\" style=\"display:none\" data-role=\"none\">\n" +
-	        				"	<div style=\"font-size:20;\">Choose "+c2str+":&nbsp;&nbsp;</div>\n" +
-	        				"	<input type=\"password\" name=\"newpassword\" id=\"newpassword\" data-mini=\"true\">\n" +
-	        				"	<div style=\"font-size:20;\">Reinput "+c2str+":&nbsp;&nbsp;</div>\n" +
-	        				"	<input type=\"password\" name=\"re_newpassword\" id=\"re_newpassword\" data-mini=\"true\">\n" +
-	        				"	<input type=\"submit\" value=\" Signup \" name=\"ssql_login1\" id=\"ssql_login1\" data-mini=\"false\" data-inline=\"false\">\n" +
-	        				"</div>\n");
-	        		
+    				if(!Sass.isBootstrapFlg()){
+	    				header.append(
+		        				"</div>\n" +
+		        				"<div id=\"login_block\">\n" +
+		        				"	<div style=\"font-size:20;\">"+c2str+":&nbsp;&nbsp;&nbsp;</div>\n" +
+		        				"	<input type=\"password\" name=\"password\" id=\"password\" data-mini=\"true\">\n" +
+		        				"	<input type=\"submit\" value=\" Login \" name=\"ssql_login1\" id=\"ssql_login1\" data-mini=\"false\" data-inline=\"false\">\n" +
+		        				"</div>\n");
+    				}else if(Sass.isBootstrapFlg()){
+    					header.append(
+		        				"<div id=\"login_block\">\n" +
+		        				"	<input type=\"password\" name=\"password\" id=\"password\" class=\"form-control\" placeholder=\""+c2str+"\">\n" +
+		        				"	<button class=\"btn btn-lg btn-primary btn-block\" type=\"submit\" value=\" Login \" name=\"ssql_login1\" id=\"ssql_login1\">Sign in</button>\n" +
+		        				"</div>\n");
+    				}
+	        		if(!s_val.equals("1")){
+	        			if(!Sass.isBootstrapFlg()){
+		        			header.append(
+		        				"<div id=\"signup_block\" style=\"display:none\" data-role=\"none\">\n" +
+		        				"	<div style=\"font-size:20;\">Choose "+c2str+":&nbsp;&nbsp;</div>\n" +
+		        				"	<input type=\"password\" name=\"newpassword\" id=\"newpassword\" data-mini=\"true\">\n" +
+		        				"	<div style=\"font-size:20;\">Reinput "+c2str+":&nbsp;&nbsp;</div>\n" +
+		        				"	<input type=\"password\" name=\"re_newpassword\" id=\"re_newpassword\" data-mini=\"true\">\n" +
+		        				"	<input type=\"submit\" value=\" Signup \" name=\"ssql_login1\" id=\"ssql_login1\" data-mini=\"false\" data-inline=\"false\">\n" +
+		        				"</div>\n");
+	        			}else if(Sass.isBootstrapFlg()){
+	        				header.append(
+		        				"<div id=\"signup_block\" style=\"display:none\">\n" +
+		        				"	<input type=\"password\" name=\"newpassword\" id=\"newpassword\" class=\"form-control\" placeholder=\"Choose "+c2str+"\">\n" +
+		        				"	<input type=\"password\" name=\"re_newpassword\" id=\"re_newpassword\" class=\"form-control\" placeholder=\"Reinput "+ c2str +"\">\n" +
+		        				"	<button class=\"btn btn-lg btn-primary btn-block\" type=\"submit\" value=\" Signup \" name=\"ssql_login1\" id=\"ssql_login1\">Sign Up</button>\n" +
+		        				"</div>\n");
+	        			}
+	        		}
 	        		header.append(
 	        				"</form>\n" +
 	        				"\n" +
@@ -672,26 +711,49 @@ public class Mobile_HTML5Env extends LocalEnv {
 	        				"<script type=\"text/javascript\">\n");
 	        		
     				if(!s_val.equals("1"))
-	        			header.append(
-	        				"$(document).ready(function(){\n" +
-	        				"	//アカウントあり or 新規登録 クリック時の処理\n" +
-	        				"	$('#signup1').click(function(){\n" +
-	        				"		$('#loginTitle1').text('Sign up');\n" +
-	        				"		$('#password').val('');\n" +
-	        				"		$('#login_block').hide();\n" +
-	        				"		$('#signup_block').show();\n" +
-	        				"		Login_echo1(\"\");\n" +
-	        				"	});\n" +
-	        				"	$('#login1').click(function(){\n" +
-	        				"		$('#loginTitle1').text('Log in');\n" +
-	        				"		$('#newpassword').val('');\n" +
-	        				"		$('#re_newpassword').val('');\n" +
-	        				"		$('#signup_block').hide();\n" +
-	        				"		$('#login_block').show();\n" +
-	        				"		Login_echo1(\"\");\n" +
-	        				"	});\n" +
-	        				"});\n" +
-	        				"\n");
+    					if(!Sass.isBootstrapFlg()){
+		        			header.append(
+		        				"$(document).ready(function(){\n" +
+		        				"	//アカウントあり or 新規登録 クリック時の処理\n" +
+		        				"	$('#signup1').click(function(){\n" +
+		        				"		$('#loginTitle1').text('Sign up');\n" +
+		        				"		$('#password').val('');\n" +
+		        				"		$('#login_block').hide();\n" +
+		        				"		$('#signup_block').show();\n" +
+		        				"		Login_echo1(\"\");\n" +
+		        				"	});\n" +
+		        				"	$('#login1').click(function(){\n" +
+		        				"		$('#loginTitle1').text('Log in');\n" +
+		        				"		$('#newpassword').val('');\n" +
+		        				"		$('#re_newpassword').val('');\n" +
+		        				"		$('#signup_block').hide();\n" +
+		        				"		$('#login_block').show();\n" +
+		        				"		Login_echo1(\"\");\n" +
+		        				"	});\n" +
+		        				"});\n" +
+		        				"\n");
+    					}else if(Sass.isBootstrapFlg()){
+    						header.append(
+		        				"$(document).ready(function(){\n" +
+		        				"	//アカウントあり or 新規登録 クリック時の処理\n" +
+		        				"	$('#signup1').click(function(){\n" +
+		        				"		$('#loginTitle1').html('<h2>Sign Up</h2>');\n" +
+		        				"		$('#password').val('');\n" +
+		        				"		$('#login_block').hide();\n" +
+		        				"		$('#signup_block').show();\n" +
+		        				"		Login_echo1(\"\");\n" +
+		        				"	});\n" +
+		        				"	$('#login1').click(function(){\n" +
+		        				"		$('#loginTitle1').html('<h2>Log In</h2>');\n" +
+		        				"		$('#newpassword').val('');\n" +
+		        				"		$('#re_newpassword').val('');\n" +
+		        				"		$('#signup_block').hide();\n" +
+		        				"		$('#login_block').show();\n" +
+		        				"		Login_echo1(\"\");\n" +
+		        				"	});\n" +
+		        				"});\n" +
+		        				"\n");
+    					}
     				
     				header.append(
 	        				"//テキストエリアへ書き込み\n" +
@@ -1191,15 +1253,27 @@ public class Mobile_HTML5Env extends LocalEnv {
 				//ログアウトボタンの付加
 				
 				//通常時のみ（Prev/Nextでは行わない）
-				if(headerFlag==1)
-				header.append(
-        				"<!-- Logout start -->\n" +
-        				"<form method=\"post\" action=\"\" target=\"logout_ifr1\" id=\"LOGOUTpanel1\" name=\"LOGOUTpanel1\">\n" +
-        				"<input type=\"submit\" value=\" Logout \" name=\"ssql_logout1\" data-mini=\"false\" data-inline=\"false\">\n" +
-        				"<input type=\"hidden\" value=\" Logout \" name=\"ssql_logout1\">\n" +
-        				"</form>\n" +
-        				"<iframe name=\"logout_ifr1\" style=\"display:none;\"></iframe>\n" +
-        				"\n");
+				if(headerFlag==1){
+					if(!Sass.isBootstrapFlg()){
+						header.append(
+		        				"<!-- Logout start -->\n" +
+		        				"<form method=\"post\" action=\"\" target=\"logout_ifr1\" id=\"LOGOUTpanel1\" name=\"LOGOUTpanel1\">\n" +
+		        				"<input type=\"submit\" value=\" Logout \" name=\"ssql_logout1\" data-mini=\"false\" data-inline=\"false\">\n" +
+		        				"<input type=\"hidden\" value=\" Logout \" name=\"ssql_logout1\">\n" +
+		        				"</form>\n" +
+		        				"<iframe name=\"logout_ifr1\" style=\"display:none;\"></iframe>\n" +
+		        				"\n");
+					}else if(Sass.isBootstrapFlg()){
+						header.append(
+		        				"<!-- Logout start -->\n" +
+		        				"<form method=\"post\" action=\"\" target=\"logout_ifr1\" id=\"LOGOUTpanel1\" name=\"LOGOUTpanel1\">\n" +
+		        				"<button class=\"btn btn-lg btn-primary btn-block\" type=\"submit\" value=\" Logout \" name=\"ssql_logout1\">Logout</button>\n" +
+		        				"<input type=\"hidden\" value=\" Logout \" name=\"ssql_logout1\">\n" +
+		        				"</form>\n" +
+		        				"<iframe name=\"logout_ifr1\" style=\"display:none;\"></iframe>\n" +
+		        				"\n");
+					}
+				}
 				//通常時のみ（Prev/Nextでは行わない）&& ( header()があるとき || button("logout")があるとき )
 				if(headerFlag==1 && ( !Mobile_HTML5Function.headerString.equals("") || Mobile_HTML5Function.logoutButtonFlg ))
 				header.append(
