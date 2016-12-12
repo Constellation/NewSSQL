@@ -2,6 +2,7 @@ package supersql.codegenerator.VR;
 
 import org.stringtemplate.v4.compiler.STParser.ifstat_return;
 
+import sun.security.krb5.internal.SeqNumber;
 import supersql.codegenerator.Grouper;
 import supersql.codegenerator.Manager;
 import supersql.common.GlobalEnv;
@@ -103,14 +104,16 @@ public class VRG1 extends Grouper {
 			//System.out.println("yeahhhhhhh1");
 		}
 		
-		System.out.println("<G1front>");
+		//System.out.println("<G1front>");
 		VRAttribute.gjudge++;
-		
+//		if(html_env.gLevel == 1){
+//			html_env.code.append(html_env.gLevel+"keeeeee\n");
+//		}
 		while (this.hasMoreItems()) {
 			VRAttribute.genre = "";
-
 			html_env.gLevel++;
 			count++;
+			VRAttribute.seq = 0;///n2 kotani
 			
 			
 			if (GlobalEnv.isOpt()) {
@@ -227,9 +230,24 @@ public class VRG1 extends Grouper {
 //				}
 //			}
 			html_env.gLevel--;
+		
 		}
+		for(int l=0; l<VRAttribute.elearray.size();l++){
+			//System.out.println("keio= "+" " +l+" " + VRAttribute.elearray.get(l));
+			html_env.code.append("<n2 seq=\""+l+"\">\n" );
+			//System.out.println("yoo="+VRAttribute.elearray.get(l));
+			html_env.code.append(VRAttribute.elearray.get(l));
+			html_env.code.append("</n2>\n" );			
+		}
+		VRAttribute.elearray.clear();//初期化
+		VRAttribute.seq = 0;//初期化
+		
+		
+//		if(html_env.gLevel == 1){
+//			html_env.code.append(html_env.gLevel+"ioooooo\n");
+//		}
 
-		System.out.println("</G1back>");
+		//System.out.println("</G1back>");
 		if(VRAttribute.gjudge==1){
 			VRAttribute.billnum++;
 		}
@@ -253,6 +271,10 @@ public class VRG1 extends Grouper {
 //			}else{
 			//VRAttribute.gjoinflag = 1;
 			html_env.code.append("</group>\n");
+			VRAttribute.grouptag++;
+//			if(VRAttribute.grouptag < VRAttribute.cjoinarray.size()+1){
+				html_env.code.append("<group>\n");
+//			}
 			VRAttribute.genrearray22.add(VRAttribute.genrecount);
 			
 //			new VRManager(html_env, html_env2).xmlcreate();

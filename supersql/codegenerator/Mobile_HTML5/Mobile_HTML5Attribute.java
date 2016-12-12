@@ -214,7 +214,7 @@ public class Mobile_HTML5Attribute extends Attribute {
 			//Log.out("data_info: "+this.getStr(data_info));
 
 			Mobile_HTML5.beforeWhileProcess("Mobile_HTML5Attribute", decos, html_env);
-			Mobile_HTML5.whileProcess1("Mobile_HTML5Attribute", decos, html_env, null, data_info, null, null, -1);	//TODO ここでOK?
+			Mobile_HTML5.whileProcess1_2("Mobile_HTML5Attribute", decos, html_env, null, data_info, null, null, -1);	//TODO ここでOK?
 
 			createForm(data_info);
 			
@@ -222,7 +222,7 @@ public class Mobile_HTML5Attribute extends Attribute {
 			if(whichForm == 0){ //normal process (not form)
 				//***APPEND DATABASE VALUE***//
 				Log.out(data_info);
-				Log.info(data_info);
+
 				if(Mobile_HTML5_dynamic.dynamicDisplay || Mobile_HTML5_form.form){
 					//20131118 dynamic
 					if(Mobile_HTML5_dynamic.dynamicDisplay){
@@ -234,22 +234,22 @@ public class Mobile_HTML5Attribute extends Attribute {
 					}
 					
 				}else{
-					if(!Sass.isBootstrapFlg()){
+//					if(!Sass.isBootstrapFlg()){
 						html_env.code.append(this.getStr(data_info));
-					}else if(Sass.isBootstrapFlg()){
-						html_env.code.append("<div class=\"" + classid +"\">");
-						html_env.code.append(this.getStr(data_info));
-						html_env.code.append("</div>");
-						if(Sass.outofloopFlg.peekFirst()){
-		        			Sass.makeClass(classid);
-		        			Sass.defineGridBasic(classid, decos);
-		        			Sass.closeBracket();
-			      		}
-					}
+//					}else if(Sass.isBootstrapFlg()){
+//						html_env.code.append("<div class=\"" + classid +"\">");
+//						html_env.code.append(this.getStr(data_info));
+//						html_env.code.append("</div>");
+//						if(Sass.outofloopFlg.peekFirst()){
+//		        			Sass.makeClass(classid);
+//		        			Sass.defineGridBasic(classid, decos);
+//		        			Sass.closeBracket();
+//			      		}
+//					}
 				}
 			}
 			
-			Mobile_HTML5.whileProcess2("Mobile_HTML5Attribute", decos, html_env, null, data_info, null, null, -1);	//TODO ここでOK?
+			Mobile_HTML5.whileProcess2_1("Mobile_HTML5Attribute", decos, html_env, null, data_info, null, null, -1);	//TODO ここでOK?
 			Mobile_HTML5.afterWhileProcess("Mobile_HTML5Attribute", classid, decos, html_env);
 			
 			

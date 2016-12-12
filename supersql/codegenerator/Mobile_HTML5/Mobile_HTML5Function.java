@@ -161,7 +161,7 @@ public class Mobile_HTML5Function extends Function {
         }
     	//added by ryosuke 20161010  "navbar"
         else if(FuncName.equalsIgnoreCase("navbar")){
-        	Func_navbar();
+        	ret = Func_navbar();
         }
     	//added by ryosuke 20161010  "dropdown"
         else if(FuncName.equalsIgnoreCase("dropdown")){
@@ -689,11 +689,11 @@ public class Mobile_HTML5Function extends Function {
 					if(!Sass.isBootstrapFlg()){
 						html_env.code.append("<img class=\"" + Mobile_HTML5Env.getClassID(this) +" ");
 					}else if(Sass.isBootstrapFlg()){
-						if(Sass.outofloopFlg.peekFirst()){
-							Sass.makeClass(Mobile_HTML5Env.getClassID(this));
-							Sass.defineGridBasic(Mobile_HTML5Env.getClassID(this), decos);
-							Sass.closeBracket();
-						}
+//						if(Sass.outofloopFlg.peekFirst()){
+//							Sass.makeClass(Mobile_HTML5Env.getClassID(this));
+//							Sass.defineGridBasic(Mobile_HTML5Env.getClassID(this), decos);
+//							Sass.closeBracket();
+//						}
 						if(this.decos.containsKey("slide")){	
 							if(this.decos.get("slide").equals("true")){
 								html_env.code.append("<div class=\"item active\">");
@@ -702,8 +702,8 @@ public class Mobile_HTML5Function extends Function {
 							}
 							html_env.code.append("<img ");
 						}else{
-							html_env.code.append("<div class=\"" + Mobile_HTML5Env.getClassID(this) + "\">");
-							html_env.code.append("<img class=\"img-responsive\"");
+//							html_env.code.append("<div class=\"" + Mobile_HTML5Env.getClassID(this) + "\">");
+							html_env.code.append("<img class=\"img-responsive ");
 						}
 					}
 				}
@@ -733,7 +733,7 @@ public class Mobile_HTML5Function extends Function {
 					html_env.code.append(" \" src=\"" + url + "\"/>");
 				}else{
 					html_env.code.append(" \" src=\"" + path + "/" + url + "\"/>");
-					html_env.code.append("</div>");
+//					html_env.code.append("</div>");
 					if(Sass.isBootstrapFlg()){
 //						html_env.code.append("\n</DIV>\n");
 					}
@@ -1191,11 +1191,12 @@ public class Mobile_HTML5Function extends Function {
 	//added by goto 20130313 end
 
 	//added by ryosuke 20161010
-	private void Func_navbar() {
+	private String Func_navbar() {
+		String statement = "";
 		try{
 			String title = getValue(1).trim();
-
-			headerString += "<nav class=\"navbar navbar-default\" role=\"navigation\">\n" +
+			
+			statement += "<nav class=\"navbar navbar-default\" role=\"navigation\">\n" +
 					"	<div class=\"container-fluid\">\n" +
 					"		<div class=\"navbar-header\">\n" +
 					"			<button type=\"button\" class=\"navbar-toggle\" data-toggle=\"collapse\" data-target=\"#nav-menu-1\">\n" +
@@ -1206,14 +1207,14 @@ public class Mobile_HTML5Function extends Function {
 					"			</button>\n";
 			if(!title.isEmpty()){
 				if(title.contains(":")){
-					headerString +=
+					statement +=
 							"		<a class=\"navbar-brand\" href=\""+title.substring(title.indexOf(":")+1).replaceAll("'", "")+"\">"+title.substring(0, title.indexOf(":"))+"</a>\n";
 				}else{
-					headerString +=
+					statement +=
 							"		<div class=\"navbar-brand\">"+title+"</div>\n";
 				}
 			}
-			headerString +=
+			statement +=
 					"	</div>"+
 							"		<div class=\"collapse navbar-collapse\" id=\"nav-menu-1\">\n" +
 							"			<ul class=\"nav navbar-nav\">\n";
@@ -1224,19 +1225,19 @@ public class Mobile_HTML5Function extends Function {
 				String menuTitle = "";
 				String url = "";
 				if(menu.startsWith("<li class=\"dropdown\">")){
-					headerString += menu;
+					statement += menu;
 				}
 				else if(menu.contains(":") && !menu.startsWith("'")){
 					menuTitle = menu.substring(0, menu.indexOf(":"));
 					url = menu.substring(menu.indexOf(":")+1).replaceAll("'", "");
-					headerString += "				<li><a href=\""+url+"\">"+menuTitle+"</a></li>\n";
+					statement += "				<li><a href=\""+url+"\">"+menuTitle+"</a></li>\n";
 				}else{
 					url = menu.substring(menu.indexOf(":")+1).replaceAll("'", "");
-					headerString += "				<li><a href=\""+url+"\">Menu"+i+"</a></li>\n";
+					statement += "				<li><a href=\""+url+"\">Menu"+i+"</a></li>\n";
 				}
 			}
 
-			headerString +=
+			statement +=
 					"			</ul>\n" +
 							"		</div>\n" +
 							"	</div>\n" +
@@ -1244,7 +1245,7 @@ public class Mobile_HTML5Function extends Function {
 		}catch(Exception e){
 			Log.info("<Warning> navbar関数の引数が不足しています。 ex. navbar(title:'URL', menu:'URL',...)");
 		}
-		return;
+		return statement;
 	}
 	//added by ryosuke 20161010
 
@@ -1455,12 +1456,12 @@ public class Mobile_HTML5Function extends Function {
 			}
 		}
 		
-		if(Sass.outofloopFlg.peekFirst()){
-			Sass.makeClass(Mobile_HTML5Env.getClassID(this));
-			Sass.defineGridBasic(Mobile_HTML5Env.getClassID(this), decos);
-			Sass.closeBracket();
-  		}
-		statement += "<div class=\"" + Mobile_HTML5Env.getClassID(this) + "\">";
+//		if(Sass.outofloopFlg.peekFirst()){
+//			Sass.makeClass(Mobile_HTML5Env.getClassID(this));
+//			Sass.defineGridBasic(Mobile_HTML5Env.getClassID(this), decos);
+//			Sass.closeBracket();
+//  		}
+//		statement += "<div class=\"" + Mobile_HTML5Env.getClassID(this) + "\">";
 
 		if(popupType==1){
 			statement += "<a data-toggle=\"modal\" data-target=\"#myModal"+getCount(popCount)+"\">" + title + "</a>\n";
@@ -1494,7 +1495,6 @@ public class Mobile_HTML5Function extends Function {
 		
 		statement += "</div>\n" +
 				"</div>\n" + 
-				"</div>\n" +
 				"</div>\n";
 
     	popCount++;
@@ -3031,8 +3031,9 @@ public class Mobile_HTML5Function extends Function {
 							selectbox_array[i] = name;
 							//							statement += "		<select name=\""+name+"\" data-native-menu=\"false\">\n";
 							//							update_statement += "		<select name=\""+name+"\" data-native-menu=\"false\">\n";	//TODO?
-							statement += "		<select name=\""+name+"\">\n";
-							update_statement += "		<select name=\""+name+"\">\n";	//TODO?
+							//20161207 bootstrap
+							statement += "		<select class=\"form-control\" name=\""+name+"\">\n";
+							update_statement += "		<select class=\"form-control\" name=\""+name+"\">\n";	//TODO?
 						}
 						for(int k=1; k<=pipeCount; k++){
 							String val = ss.substring(0,ss.indexOf("|")).trim();
@@ -3158,6 +3159,7 @@ public class Mobile_HTML5Function extends Function {
 					if(validationType[i].isEmpty()){
 						statement += 
 								outTitle +
+								"<div class=\"form-group\">" +	//20161207 bootstrap
 								"	"+( (!textareaFlg[i])? "" : "<span>" )+"<span>" +
 								"<"+((!textareaFlg[i])?("input"):("textarea"))+"" +
 								" type=\""+((!hiddenFlg[i])?("text"):("hidden"))+"\"" +
@@ -3165,9 +3167,11 @@ public class Mobile_HTML5Function extends Function {
 								" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\"" +
 								" placeholder=\""+s_name_array[i]+"\""+Mobile_HTML5_form.getFormClass(notnullFlg[i], "")+">" +
 								""+((!textareaFlg[i])?(""):("</textarea>")) +
-								"</span>"+( (!textareaFlg[i])? "" : "</span>" )+"\n";
+								"</span>"+( (!textareaFlg[i])? "" : "</span>" )+"\n"+
+								"</div>";	//20161207 bootstrap
 						update_statement += 
 								outTitle +
+								"<div class=\"form-group\">" +	//20161207 bootstrap
 								"	"+( (!textareaFlg[i])? "" : "<span>" )+"<span>" +
 								"<"+((!textareaFlg[i])?("input"):("textarea"))+"" +
 								" type=\""+((!hiddenFlg[i])?("text"):("hidden"))+"\"" +
@@ -3176,7 +3180,8 @@ public class Mobile_HTML5Function extends Function {
 								" "+((!textareaFlg[i])?("value=\""+updateFromValue+"\""):(""))+
 								" placeholder=\""+s_name_array[i]+"\""+Mobile_HTML5_form.getFormClass(notnullFlg[i], "")+">" +
 								""+((!textareaFlg[i])?(""):(updateFromValue+"</textarea>")) +
-								"</span>"+( (!textareaFlg[i])? "" : "</span>" )+"\n";
+								"</span>"+( (!textareaFlg[i])? "" : "</span>" )+"\n"+
+								"</div>";	//20161207 bootstrap
 						//statement += "    <input type=\"text\" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\" placeholder=\""+s_name_array[i]+"\">\n";
 					}else{
 						statement += Mobile_HTML5_form.getFormValidationString(validationType[i], notnullFlg[i], "SSQL_insert"+insertCount+"_words"+(++insertWordCount), s_name_array[i], updateFromValue, outTitle);
@@ -3249,10 +3254,10 @@ public class Mobile_HTML5Function extends Function {
 		if(buttonSubmit.equals("")){
 			if(buttonName.isEmpty()){
 				statement += 
-						"    <input type=\"submit\" value=\""+( (!update)? ("登録"):("更新") )+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\" name=\"SSQL_insert"+insertCount+"\" id=\"SSQL_insert"+insertCount+"\" data-icon=\"insert\" data-mini=\"false\" data-inline=\"false\">\n";
+						"    <input type=\"submit\" class=\"btn btn-default\" value=\""+( (!update)? ("登録"):("更新") )+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\" name=\"SSQL_insert"+insertCount+"\" id=\"SSQL_insert"+insertCount+"\" data-icon=\"insert\" data-mini=\"false\" data-inline=\"false\">\n";
 			}else{
 				statement += 
-						"    <input type=\"submit\" value=\""+buttonName+"\" name=\"SSQL_insert"+insertCount+"\" id=\"SSQL_insert"+insertCount+"\" data-mini=\"false\" data-inline=\"false\">\n";
+						"    <input type=\"submit\" class=\"btn btn-default\"  value=\""+buttonName+"\" name=\"SSQL_insert"+insertCount+"\" id=\"SSQL_insert"+insertCount+"\" data-mini=\"false\" data-inline=\"false\">\n";
 			}
 		}
 		statement += 
@@ -3264,8 +3269,8 @@ public class Mobile_HTML5Function extends Function {
 							"\n" +
 							//added by goto 20141128 form confirm  start
 							"<div id=\"SSQL_Insert"+insertCount+"_confirmButton\">\n" +
-							"	<input type=\"button\" value=\"戻る&emsp;\" data-icon=\"arrow-l\" data-inline=\"true\" onClick=\"javascript:SSQL_Insert"+insertCount+"_showButton(0);\" >\n" +
-							"	<input type=\"button\" value=\"&emsp;登録&emsp;&emsp;&emsp;&emsp;\" data-icon=\"insert\" data-inline=\"true\" data-theme=\"a\" onClick=\"javascript:SSQL_Insert"+insertCount+"();\" >\n" +
+							"	<input type=\"button\" class=\"btn btn-default\" value=\"戻る\" data-icon=\"arrow-l\" data-inline=\"true\" onClick=\"javascript:SSQL_Insert"+insertCount+"_showButton(0);\" >\n" +
+							"	<input type=\"button\" class=\"btn btn-default\" value=\"登録\" data-icon=\"insert\" data-inline=\"true\" data-theme=\"a\" onClick=\"javascript:SSQL_Insert"+insertCount+"();\" >\n" +
 							"</div>\n" +
 							"\n" +
 							//added by goto 20141128 form confirm  end
@@ -3343,7 +3348,8 @@ public class Mobile_HTML5Function extends Function {
 						"function SSQL_Insert"+insertCount+"_confirm(){\n" +
 						"	//confirm form\n" +
 						//"	var SSQL_Insert"+insertCount+"_formVal = $(\"#SSQL_INSERT"+insertCount+"panel form\").serializeArray();\n" +
-						"	var s = \"<div style='background:#FEF9F9;'>\";\n" +
+//						"	var s = \"<div style='background:#FEF9F9;'>\";\n" +
+						"	var s = \"<div>\";\n" +
 						"	s += \"<span style='line-height:40px; font-weight:800;'>下記の内容で登録します。</span><br>\";\n" +
 						"	s += \"<table style='width:100%; font-weight:500; line-height:30px;'>\";\n";
 		for(int i=0; i<col_num; i++){
@@ -3755,7 +3761,7 @@ public class Mobile_HTML5Function extends Function {
 						"			\n" +
 						"			$b .= '"+update_statement+"';\n" +
 						"			\n" +
-						"			$b .= '<input type=\"submit\" value=\""+((buttonName.isEmpty())? "更新":buttonName )+"\" name=\"SSQL_insert"+num+"_'.$j.'\" id=\"SSQL_insert"+num+"_'.$j.'\" onclick=\"SSQL_Update"+num+"_vali(\\'SSQL_insert"+num+"_'.$j.'\\');\" data-mini=\"false\" data-inline=\"false\">';\n" +
+						"			$b .= '<input type=\"submit\" class=\"btn btn-default\"  value=\""+((buttonName.isEmpty())? "更新":buttonName )+"\" name=\"SSQL_insert"+num+"_'.$j.'\" id=\"SSQL_insert"+num+"_'.$j.'\" onclick=\"SSQL_Update"+num+"_vali(\\'SSQL_insert"+num+"_'.$j.'\\');\" data-mini=\"false\" data-inline=\"false\">';\n" +
 						"			\n" +
 						"			$b .= '</form>';\n" +
 						"			$b .= '</div>';\n" +
@@ -3921,7 +3927,7 @@ public class Mobile_HTML5Function extends Function {
 							"<form method=\"post\" action=\"\" target=\"dummy_ifr\">\n" +
 							//"<form method=\"post\" action=\"\" target=\"check"+checkCount+"_ifr\">\n" +
 							"    <input type=\"text\" name=\"check_word"+checkCount+"\" placeholder=\"Check words\">\n" +
-							"    <input type=\"submit\" value=\"Check&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\" name=\"check"+checkCount+"\" id=\"check"+checkCount+"\" data-icon=\"question\" data-mini=\"false\" data-inline=\"false\">\n" +
+							"    <input type=\"submit\" class=\"btn btn-default\"  value=\"Check&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\" name=\"check"+checkCount+"\" id=\"check"+checkCount+"\" data-icon=\"question\" data-mini=\"false\" data-inline=\"false\">\n" +
 							"</form>\n" +
 							//				"<iframe name=\"check"+checkCount+"_ifr\" style=\"display:none;\"></iframe>\n" +
 							"\n" +
@@ -3984,10 +3990,10 @@ public class Mobile_HTML5Function extends Function {
 							"<form method=\"post\" action=\"\" target=\"dummy_ifr\">\n" +
 							"	<div class=\"ui-grid-a\">\n" +
 							"		<div class=\"ui-block-a\">\n" +
-							"    		<input type=\"submit\" name=\"check"+checkCount+"_yes\" value=\"YES\" data-theme=\"a\">\n" +
+							"    		<input type=\"submit\" class=\"btn btn-default\"  name=\"check"+checkCount+"_yes\" value=\"YES\" data-theme=\"a\">\n" +
 							"		</div>\n" +
 							"		<div class=\"ui-block-b\">\n" +
-							"    		<input type=\"submit\" name=\"check"+checkCount+"_no\" value=\"NO\" data-theme=\"a\">\n" +
+							"    		<input type=\"submit\"  class=\"btn btn-default\" name=\"check"+checkCount+"_no\" value=\"NO\" data-theme=\"a\">\n" +
 							"		</div>\n" +
 							"	</div>\n" +
 							"</form>\n" +
@@ -4052,7 +4058,7 @@ public class Mobile_HTML5Function extends Function {
 			statement += 
 					//"		</fieldset>\n" +
 					"	</div>\n" +
-					"   <input type=\"submit\" value=\"Check&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\" name=\"check"+checkCount+"\" id=\"check"+checkCount+"\" data-icon=\"question\" data-mini=\"false\" data-inline=\"false\">\n" +
+					"   <input type=\"submit\" class=\"btn btn-default\"  value=\"Check&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\" name=\"check"+checkCount+"\" id=\"check"+checkCount+"\" data-icon=\"question\" data-mini=\"false\" data-inline=\"false\">\n" +
 					"</form>\n" +
 					"\n" +
 					//"<div id=\"Check"+checkCount+"_text0\" data-role=\"none\"><!-- 結果 --></div>\n" +
@@ -4215,7 +4221,7 @@ public class Mobile_HTML5Function extends Function {
 			statement += 
 					"		<form method=\"post\" action=\"\" target=\"dummy_ifr\">\n" +
 							"    		<input type=\"search\" id=\"search_map_words"+getCount(mapFuncCount)+"\" placeholder=\"住所など\">\n" +
-							"    		<input type=\"submit\" value=\"地図を表示&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\" id=\"search_map"+getCount(mapFuncCount)+"\" data-icon=\"search\" data-mini=\"false\" data-inline=\"false\">\n" +
+							"    		<input type=\"submit\" class=\"btn btn-default\"  value=\"地図を表示&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\" id=\"search_map"+getCount(mapFuncCount)+"\" data-icon=\"search\" data-mini=\"false\" data-inline=\"false\">\n" +
 							"		</form>\n";
 		}
 		statement += 
@@ -4655,7 +4661,7 @@ public class Mobile_HTML5Function extends Function {
 			option += "value=\"" + this.getAtt("default") + "\"";
 		}
 
-		form += "<input type=\"submit\" " + option + " />";
+		form += "<input type=\"submit\" class=\"btn btn-default\" " + option + " />";
 
 		if(openFormInThis == true){
 			form += "</form>";

@@ -1133,25 +1133,61 @@ public class HTMLFunction extends Function {
 			String fileDir = new File(htmlEnv.linkUrl).getAbsoluteFile()
 					.getParent();
 
-			if (fileDir.length() < htmlEnv.linkUrl.length()
-					&& fileDir.equals(htmlEnv.linkUrl.substring(0,
-							fileDir.length()))) {
-				String relative_path = htmlEnv.linkUrl.substring(fileDir
-						.length() + 1);
-				htmlEnv.code.append("<A href=\"" + relative_path + "\" ");
-			} else
-				htmlEnv.code.append("<A href=\"" + htmlEnv.linkUrl + "\" ");
-
-			// html_env.code.append("<A href=\"" + html_env.linkurl + "\" ");
-			// added by goto 20121222 end
-
-			if (decos.containsKey("target"))
-				htmlEnv.code.append(" target=\"" + decos.getStr("target")
-						+ "\" ");
-			if (decos.containsKey("class"))
-				htmlEnv.code
-						.append(" class=\"" + decos.getStr("class") + "\" ");
-			htmlEnv.code.append(">\n");
+			if (htmlEnv.decorationStartFlag.size() > 0) {
+				if (htmlEnv.decorationStartFlag.get(0)) {
+					if (fileDir.length() < htmlEnv.linkUrl.length()
+							&& fileDir.equals(htmlEnv.linkUrl.substring(0,
+									fileDir.length()))) {
+						String relative_path = htmlEnv.linkUrl.substring(fileDir.length() + 1);
+						HTMLDecoration.fronts.get(0).append("<A href=\"" + relative_path + "\" ");
+					} else {
+						HTMLDecoration.fronts.get(0).append("<A href=\"" + htmlEnv.linkUrl + "\" ");
+					}
+					if (decos.containsKey("target")) {
+						HTMLDecoration.fronts.get(0).append(" target=\"" + decos.getStr("target") + "\" ");
+					}
+					if (decos.containsKey("class")) {
+						HTMLDecoration.fronts.get(0).append(" class=\"" + decos.getStr("class") + "\" ");
+					}
+					HTMLDecoration.fronts.get(0).append(">\n");
+				} else {
+					if (fileDir.length() < htmlEnv.linkUrl.length()
+							&& fileDir.equals(htmlEnv.linkUrl.substring(0,
+									fileDir.length()))) {
+						String relative_path = htmlEnv.linkUrl.substring(fileDir.length() + 1);
+						HTMLDecoration.ends.get(0).append("<A href=\"" + relative_path + "\" ");
+					} else {
+						HTMLDecoration.ends.get(0).append("<A href=\"" + htmlEnv.linkUrl + "\" ");
+					}
+					if (decos.containsKey("target")) {
+						HTMLDecoration.ends.get(0).append(" target=\"" + decos.getStr("target") + "\" ");
+					}
+					if (decos.containsKey("class")) {
+						HTMLDecoration.ends.get(0).append(" class=\"" + decos.getStr("class") + "\" ");
+					}
+					HTMLDecoration.ends.get(0).append(">\n");
+				}
+			} else {
+				if (fileDir.length() < htmlEnv.linkUrl.length()
+						&& fileDir.equals(htmlEnv.linkUrl.substring(0,
+								fileDir.length()))) {
+					String relative_path = htmlEnv.linkUrl.substring(fileDir
+							.length() + 1);
+					htmlEnv.code.append("<A href=\"" + relative_path + "\" ");
+				} else
+					htmlEnv.code.append("<A href=\"" + htmlEnv.linkUrl + "\" ");
+	
+				// html_env.code.append("<A href=\"" + html_env.linkurl + "\" ");
+				// added by goto 20121222 end
+	
+				if (decos.containsKey("target"))
+					htmlEnv.code.append(" target=\"" + decos.getStr("target")
+							+ "\" ");
+				if (decos.containsKey("class"))
+					htmlEnv.code
+							.append(" class=\"" + decos.getStr("class") + "\" ");
+				htmlEnv.code.append(">\n");
+			}
 
 			Log.out("<A href=\"" + htmlEnv.linkUrl + "\">");
 		}
@@ -1172,24 +1208,40 @@ public class HTMLFunction extends Function {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyymmddHHmmss");
 			String today = sdf.format(d1);
 
-			htmlEnv.code.append("<a href=\"" + path + "/"
-					+ this.Args.get(0).getStr() + "\" rel=\"lightbox[lb"
-					+ today + "]\">");
-
-			if (decos.getStr("lightbox").compareTo("root") == 0
-					|| decos.getStr("lightbox").compareTo("thumb") == 0) {
-				htmlEnv.code.append("<img class=\"" + HTMLEnv.getClassID(this)
-						+ " ");
-
-				if (decos.containsKey("class"))
-					htmlEnv.code.append(decos.getStr("class"));
-
-				htmlEnv.code.append(" \" src=\"" + path + "/"
-						+ this.Args.get(0).getStr()
-						+ "\" onLoad=\"initLightbox()\"/>");
-
+			if (htmlEnv.decorationStartFlag.size() > 0) {
+				HTMLDecoration.ends.get(0).append("<a href=\"" + path + "/"
+						+ this.Args.get(0).getStr() + "\" rel=\"lightbox[lb"
+						+ today + "]\">");
+				if (decos.getStr("lightbox").compareTo("root") == 0
+						|| decos.getStr("lightbox").compareTo("thumb") == 0) {
+					HTMLDecoration.ends.get(0).append("<img class=\"" + HTMLEnv.getClassID(this) + " ");
+					if (decos.containsKey("class")) {
+						HTMLDecoration.ends.get(0).append(decos.getStr("class"));
+					}
+					HTMLDecoration.ends.get(0).append(" \" src=\"" + path + "/"
+							+ this.Args.get(0).getStr()
+							+ "\" onLoad=\"initLightbox()\"/>");
+				}
+				HTMLDecoration.ends.get(0).append("</a>");
+			} else {
+				htmlEnv.code.append("<a href=\"" + path + "/"
+						+ this.Args.get(0).getStr() + "\" rel=\"lightbox[lb"
+						+ today + "]\">");
+	
+				if (decos.getStr("lightbox").compareTo("root") == 0
+						|| decos.getStr("lightbox").compareTo("thumb") == 0) {
+					htmlEnv.code.append("<img class=\"" + HTMLEnv.getClassID(this)
+							+ " ");
+	
+					if (decos.containsKey("class"))
+						htmlEnv.code.append(decos.getStr("class"));
+	
+					htmlEnv.code.append(" \" src=\"" + path + "/"
+							+ this.Args.get(0).getStr()
+							+ "\" onLoad=\"initLightbox()\"/>");
+				}
+				htmlEnv.code.append("</a>");
 			}
-			htmlEnv.code.append("</a>");
 		} else {
 			// added by masato 20151124 image function for xml
 			if (Ehtml.flag || Incremental.flag) {
@@ -1198,32 +1250,57 @@ public class HTMLFunction extends Function {
 						+ this.Args.get(0).getStr() + "'></Img>\n");
 
 			} else {
-				htmlEnv.code.append("<img class=\"" + HTMLEnv.getClassID(this)
-						+ " ");
-				htmlEnv2.code.append("<VALUE type=\"img\" class=\""
-						+ HTMLEnv.getClassID(this) + " ");
-				if (decos.containsKey("class"))
-					htmlEnv.code.append(decos.getStr("class"));
-
-				htmlEnv.code.append(" \" src=\"" + path + "/"
-						+ this.Args.get(0).getStr() + "\"/>");
-				htmlEnv2.code.append(" \" src=\"" + path + "/"
-						+ this.Args.get(0).getStr() + "\" ");
-				if (decos.containsKey("width")) {
-					htmlEnv2.code.append("width=\""
-							+ decos.getStr("width").replace("\"", "") + "\" ");
+				if (htmlEnv.decorationStartFlag.size() > 0) {
+					if (htmlEnv.decorationStartFlag.get(0)) {
+						HTMLDecoration.fronts.get(0).append("<img");
+						HTMLDecoration.classes.get(0).append(" class=\"");
+						HTMLDecoration.ends.get(0).append(HTMLEnv.getClassID(this));
+						if (decos.containsKey("class")) {
+							HTMLDecoration.ends.get(0).append(" " + decos.getStr("class"));
+						}
+						HTMLDecoration.ends.get(0).append("\" src=\"" + path + "/" + this.Args.get(0).getStr() + "\"/>");
+						htmlEnv.decorationStartFlag.set(0, false);
+					} else {
+						HTMLDecoration.ends.get(0).append("<img");
+						HTMLDecoration.ends.get(0).append(" class=\"");
+						HTMLDecoration.ends.get(0).append(HTMLEnv.getClassID(this));
+						if (decos.containsKey("class")) {
+							HTMLDecoration.ends.get(0).append(" " + decos.getStr("class"));
+						}
+						HTMLDecoration.ends.get(0).append("\" src=\"" + path + "/" + this.Args.get(0).getStr() + "\"/>");
+					}
+				} else {
+					htmlEnv.code.append("<img class=\"" + HTMLEnv.getClassID(this)
+							+ " ");
+					htmlEnv2.code.append("<VALUE type=\"img\" class=\""
+							+ HTMLEnv.getClassID(this) + " ");
+					if (decos.containsKey("class"))
+						htmlEnv.code.append(decos.getStr("class"));
+	
+					htmlEnv.code.append(" \" src=\"" + path + "/"
+							+ this.Args.get(0).getStr() + "\"/>");
+					htmlEnv2.code.append(" \" src=\"" + path + "/"
+							+ this.Args.get(0).getStr() + "\" ");
+					if (decos.containsKey("width")) {
+						htmlEnv2.code.append("width=\""
+								+ decos.getStr("width").replace("\"", "") + "\" ");
+					}
+					if (decos.containsKey("height")) {
+						htmlEnv2.code.append("height=\""
+								+ decos.getStr("height").replace("\"", "") + "\" ");
+					}
+					htmlEnv2.code.append(" ></VALUE>");
 				}
-				if (decos.containsKey("height")) {
-					htmlEnv2.code.append("height=\""
-							+ decos.getStr("height").replace("\"", "") + "\" ");
-				}
-				htmlEnv2.code.append(" ></VALUE>");
 			}
 		}
 		// tk to make hyper link to
 		// image///////////////////////////////////////////////////////////////////////////////////
 		if (htmlEnv.linkFlag > 0 || htmlEnv.sinvokeFlag) {
-			htmlEnv.code.append("</a>");
+			if (htmlEnv.decorationStartFlag.size() > 0) {
+				HTMLDecoration.ends.get(0).append("</a>");
+			} else {
+				htmlEnv.code.append("</a>");
+			}
 		}
 		// added by masato 20151124 for plink
 		if (htmlEnv.plinkFlag) {
@@ -1305,59 +1382,190 @@ public class HTMLFunction extends Function {
 
 				// type=1 -> 文字
 				if (type.equals("1") || type.equals("text") || type.equals("")) {
-					statement = getTextAnchor(url, name);
-					// statement =
-					// "<a href=\""+url+"\""+transition()+prefetch()+target(url)+">"+name+"</a>";
-
+					if (htmlEnv.decorationStartFlag.size() > 0) {
+						if (htmlEnv.decorationStartFlag.get(0)) {
+							String A = "", notA1 = "", notA2 = "";
+							int a1 = 0, a2 = name.length() - 1;
+							try {
+								for (int i = 0; i < name.length(); i++) {
+									if (i > 0 && name.charAt(i) == '['
+											&& name.charAt(i - 1) != '\\')
+										a1 = i;
+									else if (i > 0 && name.charAt(i) == ']'
+											&& name.charAt(i - 1) != '\\')
+										a2 = i;
+								}
+								if (a1 == 0 && a2 == name.length() - 1)
+									A = name.substring(a1, a2 + 1);
+								else
+									A = name.substring(a1 + 1, a2);
+								A = A.replaceAll("\\\\\\[", "[").replaceAll("\\\\\\]", "]");
+								notA1 = name.substring(0, a1).replaceAll("\\\\\\[", "[")
+										.replaceAll("\\\\\\]", "]");
+								notA2 = name.substring(a2 + 1).replaceAll("\\\\\\[", "[")
+										.replaceAll("\\\\\\]", "]");
+							} catch (Exception e) {
+							}
+							HTMLDecoration.fronts.get(0).append(notA1);
+							HTMLDecoration.fronts.get(0).append("<a href=\"" + url + "\"");
+							HTMLDecoration.classes.get(0).append(" class=\"");
+							HTMLDecoration.ends.get(0).append(htmlEnv.getClassID(this));
+							if (decos.containsKey("class")) {
+								HTMLDecoration.ends.get(0).append(" " + decos.getStr("class"));
+							}
+							HTMLDecoration.ends.get(0).append("\" " + transition() + prefetch() + target(url) + ">" + A + "</a>" + notA2);
+							htmlEnv.decorationStartFlag.set(0, false);
+						} else {
+							String A = "", notA1 = "", notA2 = "";
+							int a1 = 0, a2 = name.length() - 1;
+							try {
+								for (int i = 0; i < name.length(); i++) {
+									if (i > 0 && name.charAt(i) == '['
+											&& name.charAt(i - 1) != '\\')
+										a1 = i;
+									else if (i > 0 && name.charAt(i) == ']'
+											&& name.charAt(i - 1) != '\\')
+										a2 = i;
+								}
+								if (a1 == 0 && a2 == name.length() - 1)
+									A = name.substring(a1, a2 + 1);
+								else
+									A = name.substring(a1 + 1, a2);
+								A = A.replaceAll("\\\\\\[", "[").replaceAll("\\\\\\]", "]");
+								notA1 = name.substring(0, a1).replaceAll("\\\\\\[", "[")
+										.replaceAll("\\\\\\]", "]");
+								notA2 = name.substring(a2 + 1).replaceAll("\\\\\\[", "[")
+										.replaceAll("\\\\\\]", "]");
+							} catch (Exception e) {
+							}
+							HTMLDecoration.ends.get(0).append(notA1);
+							HTMLDecoration.ends.get(0).append("<a href=\"" + url + "\"");
+							HTMLDecoration.ends.get(0).append(" class=\"");
+							HTMLDecoration.ends.get(0).append(htmlEnv.getClassID(this));
+							if (decos.containsKey("class")) {
+								HTMLDecoration.ends.get(0).append(" " + decos.getStr("class"));
+							}
+							HTMLDecoration.ends.get(0).append("\" " + transition() + prefetch() + target(url) + ">" + A + "</a>" + notA2);
+						}
+					} else {
+						statement = getTextAnchor(url, name);
+						// statement =
+						// "<a href=\""+url+"\""+transition()+prefetch()+target(url)+">"+name+"</a>";
+					}
 					// type=2 -> urlモバイルボタン
 				} else if (type.equals("3") || type.equals("button")
 						|| type.equals("bt")) {
-					statement = "<a href=\"" + url + "\" data-role=\"button\""
-							+ className() + transition() + prefetch()
-							+ target(url) + ">" + name + "</a>";
+					if (htmlEnv.decorationStartFlag.size() > 0) {
+						if (htmlEnv.decorationStartFlag.get(0)) {
+							HTMLDecoration.fronts.get(0).append("<a href=\"" + url + "\" data-role=\"button\"");
+							HTMLDecoration.classes.get(0).append(" class=\"");
+							HTMLDecoration.ends.get(0).append(htmlEnv.getClassID(this));
+							if (decos.containsKey("class")) {
+								HTMLDecoration.ends.get(0).append(" " + decos.getStr("class"));
+							}
+							HTMLDecoration.ends.get(0).append("\" " + transition() + prefetch() + target(url) + ">" + name + "</a>");
+							htmlEnv.decorationStartFlag.set(0, false);
+						} else {
+							HTMLDecoration.ends.get(0).append("<a href=\"" + url + "\" data-role=\"button\"");
+							HTMLDecoration.ends.get(0).append(" class=\"");
+							HTMLDecoration.ends.get(0).append(htmlEnv.getClassID(this));
+							if (decos.containsKey("class")) {
+								HTMLDecoration.ends.get(0).append(" " + decos.getStr("class"));
+							}
+							HTMLDecoration.ends.get(0).append("\" " + transition() + prefetch() + target(url) + ">" + name + "</a>");
+						}
+					} else {
+						statement = "<a href=\"" + url + "\" data-role=\"button\""
+								+ className() + transition() + prefetch()
+								+ target(url) + ">" + name + "</a>";
+					}
 
 					// urlボタン(デスクトップ・モバイル共通)
 				} else if (type.equals("dbutton") || type.equals("dbt")) {
-					statement = "<input type=\"button\" value=\"" + name
-							+ "\" onClick=\"location.href='" + url + "'\""
-							+ className();
-
-					// urlボタン width,height指定時の処理
-					if (decos.containsKey("width")
-							|| decos.containsKey("height")) {
-						statement += " style=\"";
-						if (decos.containsKey("width"))
-							statement += "WIDTH:"
-									+ decos.getStr("width").replace("\"", "")
-									+ "; ";
-						if (decos.containsKey("height"))
-							statement += "HEIGHT:"
-									+ decos.getStr("height").replace("\"", "")
-									+ "; "; // 100; ";
-						statement += "\"";
+					if (htmlEnv.decorationStartFlag.size() > 0) {
+						if (htmlEnv.decorationStartFlag.get(0)) {
+							HTMLDecoration.fronts.get(0).append("<input type=\"button\" value=\"" + name
+									+ "\" onClick=\"location.href='" + url + "'\"");
+							HTMLDecoration.classes.get(0).append(" class=\"");
+							HTMLDecoration.ends.get(0).append(htmlEnv.getClassID(this));
+							if (decos.containsKey("class")) {
+								HTMLDecoration.ends.get(0).append(" " + decos.getStr("class"));
+							}
+							HTMLDecoration.ends.get(0).append("\">");
+							htmlEnv.decorationStartFlag.set(0, false);
+						} else {
+							HTMLDecoration.ends.get(0).append("<input type=\"button\" value=\"" + name
+									+ "\" onClick=\"location.href='" + url + "'\"");
+							HTMLDecoration.ends.get(0).append(" class=\"");
+							HTMLDecoration.ends.get(0).append(htmlEnv.getClassID(this));
+							if (decos.containsKey("class")) {
+								HTMLDecoration.ends.get(0).append(" " + decos.getStr("class"));
+							}
+							HTMLDecoration.ends.get(0).append("\">");
+						}
+					} else {
+						statement = "<input type=\"button\" value=\"" + name
+								+ "\" onClick=\"location.href='" + url + "'\""
+								+ className();
+	
+						// urlボタン width,height指定時の処理
+						if (decos.containsKey("width")
+								|| decos.containsKey("height")) {
+							statement += " style=\"";
+							if (decos.containsKey("width"))
+								statement += "WIDTH:"
+										+ decos.getStr("width").replace("\"", "")
+										+ "; ";
+							if (decos.containsKey("height"))
+								statement += "HEIGHT:"
+										+ decos.getStr("height").replace("\"", "")
+										+ "; "; // 100; ";
+							statement += "\"";
+						}
+						statement += ">";
 					}
-					statement += ">";
 
 					// type=3 -> url画像
 				} else if (type.equals("2") || type.equals("image")
 						|| type.equals("img")) {
-					statement = "<a href=\"" + url + "\"" + className()
-							+ transition() + prefetch() + target(url)
-							+ "><img src=\"" + name + "\"";
-
-					// url画像 width,height指定時の処理
-					if (decos.containsKey("width"))
-						statement += " width="
-								+ decos.getStr("width").replace("\"", "");
-					// else{
-					// //added by goto 20130312 "Default width: 100%"
-					// statement += " width=\"100%\"";
-					// }
-					if (decos.containsKey("height"))
-						statement += " height="
-								+ decos.getStr("height").replace("\"", ""); // 100;
-																			// ";
-					statement += "></a>";
+					if (htmlEnv.decorationStartFlag.size() > 0) {
+						if (htmlEnv.decorationStartFlag.get(0)) {
+							HTMLDecoration.fronts.get(0).append("<a href=\"" + url + "\"");
+							HTMLDecoration.classes.get(0).append(" class=\"");
+							HTMLDecoration.ends.get(0).append(htmlEnv.getClassID(this));
+							if (decos.containsKey("class")) {
+								HTMLDecoration.ends.get(0).append(" " + decos.getStr("class"));
+							}
+							HTMLDecoration.ends.get(0).append("\" " + transition() + prefetch() + target(url) + "><img src=\"" + name + "\"></a>");
+							htmlEnv.decorationStartFlag.set(0, false);
+						} else {
+							HTMLDecoration.ends.get(0).append("<a href=\"" + url + "\"");
+							HTMLDecoration.ends.get(0).append(" class=\"");
+							HTMLDecoration.ends.get(0).append(htmlEnv.getClassID(this));
+							if (decos.containsKey("class")) {
+								HTMLDecoration.ends.get(0).append(" " + decos.getStr("class"));
+							}
+							HTMLDecoration.ends.get(0).append("\" " + transition() + prefetch() + target(url) + "><img src=\"" + name + "\"></a>");
+						}
+					} else {
+						statement = "<a href=\"" + url + "\"" + className()
+								+ transition() + prefetch() + target(url)
+								+ "><img src=\"" + name + "\"";
+	
+						// url画像 width,height指定時の処理
+						if (decos.containsKey("width"))
+							statement += " width="
+									+ decos.getStr("width").replace("\"", "");
+						// else{
+						// //added by goto 20130312 "Default width: 100%"
+						// statement += " width=\"100%\"";
+						// }
+						if (decos.containsKey("height"))
+							statement += " height="
+									+ decos.getStr("height").replace("\"", ""); // 100;
+																				// ";
+						statement += "></a>";
+					}
 				}
 
 			} catch (Exception e) { // 引数2つの場合
@@ -1368,16 +1576,105 @@ public class HTMLFunction extends Function {
 					statement = "<Anchor url='" + url + "'>" + "<" + fa1 + ">"
 							+ name + "</" + fa1 + "></Anchor>\n";
 				} else
-					statement = getTextAnchor(url, name);
-				// statement =
-				// "<a href=\""+url+"\""+transition()+prefetch()+target(url)+">"+name+"</a>";
+					if (htmlEnv.decorationStartFlag.size() > 0) {
+						if (htmlEnv.decorationStartFlag.get(0)) {
+							String A = "", notA1 = "", notA2 = "";
+							int a1 = 0, a2 = name.length() - 1;
+							try {
+								for (int i = 0; i < name.length(); i++) {
+									if (i > 0 && name.charAt(i) == '['
+											&& name.charAt(i - 1) != '\\')
+										a1 = i;
+									else if (i > 0 && name.charAt(i) == ']'
+											&& name.charAt(i - 1) != '\\')
+										a2 = i;
+								}
+								if (a1 == 0 && a2 == name.length() - 1)
+									A = name.substring(a1, a2 + 1);
+								else
+									A = name.substring(a1 + 1, a2);
+								A = A.replaceAll("\\\\\\[", "[").replaceAll("\\\\\\]", "]");
+								notA1 = name.substring(0, a1).replaceAll("\\\\\\[", "[")
+										.replaceAll("\\\\\\]", "]");
+								notA2 = name.substring(a2 + 1).replaceAll("\\\\\\[", "[")
+										.replaceAll("\\\\\\]", "]");
+							} catch (Exception err) {
+							}
+							HTMLDecoration.fronts.get(0).append(notA1);
+							HTMLDecoration.fronts.get(0).append("<a href=\"" + url + "\"");
+							HTMLDecoration.classes.get(0).append(" class=\"");
+							HTMLDecoration.ends.get(0).append(htmlEnv.getClassID(this));
+							if (decos.containsKey("class")) {
+								HTMLDecoration.ends.get(0).append(" " + decos.getStr("class"));
+							}
+							HTMLDecoration.ends.get(0).append("\" " + transition() + prefetch() + target(url) + ">" + A + "</a>" + notA2);
+							htmlEnv.decorationStartFlag.set(0, false);
+						} else {
+							String A = "", notA1 = "", notA2 = "";
+							int a1 = 0, a2 = name.length() - 1;
+							try {
+								for (int i = 0; i < name.length(); i++) {
+									if (i > 0 && name.charAt(i) == '['
+											&& name.charAt(i - 1) != '\\')
+										a1 = i;
+									else if (i > 0 && name.charAt(i) == ']'
+											&& name.charAt(i - 1) != '\\')
+										a2 = i;
+								}
+								if (a1 == 0 && a2 == name.length() - 1)
+									A = name.substring(a1, a2 + 1);
+								else
+									A = name.substring(a1 + 1, a2);
+								A = A.replaceAll("\\\\\\[", "[").replaceAll("\\\\\\]", "]");
+								notA1 = name.substring(0, a1).replaceAll("\\\\\\[", "[")
+										.replaceAll("\\\\\\]", "]");
+								notA2 = name.substring(a2 + 1).replaceAll("\\\\\\[", "[")
+										.replaceAll("\\\\\\]", "]");
+							} catch (Exception err) {
+							}
+							HTMLDecoration.ends.get(0).append(notA1);
+							HTMLDecoration.ends.get(0).append("<a href=\"" + url + "\"");
+							HTMLDecoration.ends.get(0).append(" class=\"");
+							HTMLDecoration.ends.get(0).append(htmlEnv.getClassID(this));
+							if (decos.containsKey("class")) {
+								HTMLDecoration.ends.get(0).append(" " + decos.getStr("class"));
+							}
+							HTMLDecoration.ends.get(0).append("\" " + transition() + prefetch() + target(url) + ">" + A + "</a>" + notA2);
+							htmlEnv.decorationStartFlag.set(0, false);
+						}
+					} else {
+						statement = getTextAnchor(url, name);
+					// statement =
+					// "<a href=\""+url+"\""+transition()+prefetch()+target(url)+">"+name+"</a>";
+					}
 			}
 
 		} catch (Exception e) { // 引数1つの場合
 			url = fa1.getStr();
-			statement = "<a href=\"" + ((mailFncFlg) ? ("mailto:") : (""))
-					+ url + "\"" + transition() + prefetch() + target(url)
-					+ ">" + url + "</a>";
+			if (htmlEnv.decorationStartFlag.size() > 0) {
+				if (htmlEnv.decorationStartFlag.get(0)) {
+					HTMLDecoration.fronts.get(0).append("<a href=\"" + ((mailFncFlg) ? ("mailto:") : ("")) + url + "\"");
+					HTMLDecoration.classes.get(0).append(" class=\"");
+					HTMLDecoration.ends.get(0).append(htmlEnv.getClassID(this));
+					if (decos.containsKey("class")) {
+						HTMLDecoration.ends.get(0).append(" " + decos.getStr("class"));
+					}
+					HTMLDecoration.ends.get(0).append("\" " + transition() + prefetch() + target(url) + ">" + url + "</a>");
+					htmlEnv.decorationStartFlag.set(0, false);
+				} else {
+					HTMLDecoration.ends.get(0).append("<a href=\"" + ((mailFncFlg) ? ("mailto:") : ("")) + url + "\"");
+					HTMLDecoration.ends.get(0).append(" class=\"");
+					HTMLDecoration.ends.get(0).append(htmlEnv.getClassID(this));
+					if (decos.containsKey("class")) {
+						HTMLDecoration.ends.get(0).append(" " + decos.getStr("class"));
+					}
+					HTMLDecoration.ends.get(0).append("\" " + transition() + prefetch() + target(url) + ">" + url + "</a>");
+				}
+			} else {
+				statement = "<a href=\"" + ((mailFncFlg) ? ("mailto:") : (""))
+						+ url + "\"" + transition() + prefetch() + target(url)
+						+ ">" + url + "</a>";
+			}
 		}
 
 		// // 各引数毎に処理した結果をHTMLに書きこむ
@@ -1385,7 +1682,11 @@ public class HTMLFunction extends Function {
 		if (Ehtml.flag || Incremental.flag) {
 			Incremental.outXMLData(htmlEnv.xmlDepth, statement);
 		} else {
-			htmlEnv.code.append(statement);
+			if (htmlEnv.decorationStartFlag.size() > 0) {
+				// do nothing
+			} else {
+				htmlEnv.code.append(statement);
+			}
 		}
 		// return statement;
 	}
@@ -1465,7 +1766,7 @@ public class HTMLFunction extends Function {
 		// Log.out("FuncName= " + this.getFuncName());
 		// Log.out("filename= " + this.getAtt("filename"));
 		// Log.out("condition= " + this.getAtt("condition"));
-
+		
 		String FuncName = this.getFuncName();
 
 		if (FuncName.equalsIgnoreCase("imagefile")

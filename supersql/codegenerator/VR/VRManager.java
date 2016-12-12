@@ -189,10 +189,12 @@ public class VRManager extends Manager {
 			tfe_info.work(data_info);
 		VREnv.cs_code.append("9 "+tfe_info+"\n");
 		
+		htmlEnv.header.append("<?xml version=\"1.0\" ?>");
 		//htmlEnv.getHeader();
+		htmlEnv.code = new StringBuffer(htmlEnv.code.substring(0,htmlEnv.code.lastIndexOf("<group>")));
 		htmlEnv.getFooter();
 		//htmlEnv2.header.append("<?xml version=\"1.0\" encoding=\""+ Utils.getEncode() + "\"?><SSQL>");
-		htmlEnv2.header.append("<?xml version=\"1.0\" ?>");//上の行をこれに変更
+		//htmlEnv2.header.append("<?xml version=\"1.0\" ?>");//上の行をこれに変更
 		//htmlEnv2.footer.append("</SSQL>");
 		try {
 
@@ -222,23 +224,23 @@ public class VRManager extends Manager {
 					pw.println(htmlEnv.footer);
 					pw.close();
 					
-					/////////////////////////////
-					htmlEnv.cs_code.append("heeeeeeweeee");
-					if (htmlEnv.charset != null) {
-						pw = new PrintWriter(new BufferedWriter(
-								new OutputStreamWriter(new FileOutputStream(
-										htmlEnv.fileName+".cs"), htmlEnv.charset)));
-						Log.info("File encoding: " + htmlEnv.charset);
-					} else
-						pw = new PrintWriter(new BufferedWriter(new FileWriter(
-								htmlEnv.fileName+".cs")));
-					// Log.info("File encoding: "+((html_env.charset!=null)?
-					// html_env.charset : "UTF-8"));
-					// changed by goto 20120715 end
-
-					if (GlobalEnv.cssout() == null)
-					pw.println(htmlEnv.cs_code);
-					pw.close();////////////////////////////
+//					/////////////////////////////
+//					htmlEnv.cs_code.append("heeeeeeweeee");
+//					if (htmlEnv.charset != null) {
+//						pw = new PrintWriter(new BufferedWriter(
+//								new OutputStreamWriter(new FileOutputStream(
+//										htmlEnv.fileName+".cs"), htmlEnv.charset)));
+//						Log.info("File encoding: " + htmlEnv.charset);
+//					} else
+//						pw = new PrintWriter(new BufferedWriter(new FileWriter(
+//								htmlEnv.fileName+".cs")));
+//					// Log.info("File encoding: "+((html_env.charset!=null)?
+//					// html_env.charset : "UTF-8"));
+//					// changed by goto 20120715 end
+//
+//					if (GlobalEnv.cssout() == null)
+//					pw.println(htmlEnv.cs_code);
+//					pw.close();////////////////////////////
 					
 				}
 				/////////////////////////////xmlcreateに使った

@@ -103,7 +103,7 @@ public class VRG3 extends Grouper {
 			//System.out.println("yeahhhhhhh3");
 		}
 		
-		System.out.println("<G3front>");
+		//System.out.println("<G3front>");
 		VRAttribute.gjudge++;
 		
 		while (this.hasMoreItems()==true) {/////////////////////////////////////////////////////////////////////////while here
@@ -111,6 +111,7 @@ public class VRG3 extends Grouper {
 			VRAttribute.genre = "";
 
 			count++;
+			VRAttribute.seq = 0;//n2 kotani
 			
 			html_env.gLevel++;
 			Log.out("selectFlg" + VREnv.getSelectFlg());
@@ -184,7 +185,17 @@ public class VRG3 extends Grouper {
 		
 		}
 		
-		System.out.println("</G3back>");
+		for(int l=0; l<VRAttribute.elearray.size();l++){///n2 kotani
+			//System.out.println("keio= "+" " +l+" " + VRAttribute.elearray.get(l));
+			html_env.code.append("<n2 seq=\""+l+"\">\n" );
+			//System.out.println("yoo="+VRAttribute.elearray.get(l));
+			html_env.code.append(VRAttribute.elearray.get(l));
+			html_env.code.append("</n2>\n" );			
+		}
+		VRAttribute.elearray.clear();//初期化
+		VRAttribute.seq = 0;//初期化
+		
+		//System.out.println("</G3back>");
 		if(VRAttribute.gjudge==1){
 			VRAttribute.billnum++;
 		}
@@ -506,6 +517,10 @@ public class VRG3 extends Grouper {
 			
 			//VRAttribute.gjoinflag = 3;
 			html_env.code.append("</group>\n");
+			VRAttribute.grouptag++;
+//			if(VRAttribute.grouptag < VRAttribute.cjoinarray.size()+1){
+				html_env.code.append("<group>\n");
+//			}
 			VRAttribute.genrearray22.add(VRAttribute.genrecount);
 //			new VRManager(html_env, html_env2).xmlcreate();
 //			VRManager.i++;

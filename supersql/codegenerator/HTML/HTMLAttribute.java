@@ -1,11 +1,13 @@
 package supersql.codegenerator.HTML;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import supersql.codegenerator.Attribute;
 import supersql.codegenerator.Ehtml;
 import supersql.codegenerator.Incremental;
 import supersql.codegenerator.Manager;
+import supersql.codegenerator.Modifier;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
@@ -404,6 +406,14 @@ public class HTMLAttribute extends Attribute {
 		/*
 		 * if(GlobalEnv.getSelectFlg()) data_info = (ExtList) data_info.get(0);
 		 */
+		
+		String classname;
+		if (this.decos.containsKey("class")) {
+			classname = this.decos.getStr("class");
+		} else {
+			classname = HTMLEnv.getClassID(this);
+		}
+		
 		htmlEnv.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
 
 		if (GlobalEnv.isOpt()) {
@@ -413,32 +423,61 @@ public class HTMLAttribute extends Attribute {
 					&& HTMLEnv.getFormItemName().equals(formHtml[2])) {
 
 			} else {
-				htmlEnv.code.append("<table" + htmlEnv.getOutlineModeAtt()
-						+ " ");
-				htmlEnv.code.append("class=\"att");
-				// tk
-				// start/////////////////////////////////////////////////////////
-				if (htmlEnv.writtenClassId.contains(HTMLEnv.getClassID(this))) {
-					// class鐃緒申鐃獣てわ申鐃緒申箸鐃x.TFE10000)�Τ߻���
-					htmlEnv.code.append(" " + HTMLEnv.getClassID(this));
+				if (htmlEnv.decorationStartFlag.size() > 0) {
+					if (htmlEnv.decorationEndFlag.get(0)) {
+						// do nothing
+					} else if (htmlEnv.decorationStartFlag.get(0)) {
+						HTMLDecoration.fronts.get(0).append("<table" + htmlEnv.getOutlineModeAtt());
+						HTMLDecoration.classes.get(0).append(" class=\"");
+						HTMLDecoration.ends.get(0).append(classname);
+						if (decos.getConditions().size() > 0) {
+							HTMLDecoration.ends.get(0).append(" " + computeStringForDecoration(data_info));
+						}
+						HTMLDecoration.ends.get(0).append(" att\">");
+					} else {
+						HTMLDecoration.ends.get(0).append("<table" + htmlEnv.getOutlineModeAtt());
+						HTMLDecoration.ends.get(0).append(" class=\"");
+						HTMLDecoration.ends.get(0).append(classname);
+						if (decos.getConditions().size() > 0) {
+							HTMLDecoration.ends.get(0).append(" " + computeStringForDecoration(data_info));
+						}
+						HTMLDecoration.ends.get(0).append(" att\">");
+					}
+				} else {
+					htmlEnv.code.append("<table" + htmlEnv.getOutlineModeAtt()
+							+ " ");
+					htmlEnv.code.append("class=\"att");
+					// tk
+					// start/////////////////////////////////////////////////////////
+					if (htmlEnv.writtenClassId.contains(HTMLEnv.getClassID(this))) {
+						// class鐃緒申鐃獣てわ申鐃緒申箸鐃x.TFE10000)�Τ߻���
+						htmlEnv.code.append(" " + HTMLEnv.getClassID(this));
+					}
+					if (decos.containsKey("class")) {
+						// class����(ex.class=menu)������Ȥ�
+						htmlEnv.code.append(" " + decos.getStr("class"));// added by masato 20140711　属性が一つのときにclassを指定しても機能しなかった問題を解決
+					}
+					if (decos.getConditions().size() > 0) {
+						htmlEnv.code.append(" "
+								+ computeStringForDecoration(data_info));
+					}
+					htmlEnv.code.append("\"");
+					htmlEnv.code.append(">");
 				}
-				if (decos.containsKey("class")) {
-					// class����(ex.class=menu)������Ȥ�
-					htmlEnv.code.append(" " + decos.getStr("class"));// added by masato 20140711　属性が一つのときにclassを指定しても機能しなかった問題を解決
-				}
-				if (decos.getConditions().size() > 0) {
-					htmlEnv.code.append(" "
-							+ computeStringForDecoration(data_info));
-				}
-				htmlEnv.code.append("\"");
-				htmlEnv.code.append(">");
 			}
 
 			if (HTMLEnv.getFormItemFlg()) {
 
 			} else {
-				htmlEnv.code.append("<tr><td>\n");
-				Log.out("<table class=\"att\"><tr><td>");
+				if (htmlEnv.decorationEndFlag.size() > 0) {
+					if (htmlEnv.decorationEndFlag.get(0)) {
+						// do nothing
+					} else {
+						HTMLDecoration.ends.get(0).append("<tr><td>\n");
+					}
+				} else {
+					htmlEnv.code.append("<tr><td>\n");
+				}
 			}
 
 			if (htmlEnv.linkFlag > 0 || htmlEnv.sinvokeFlag) {
@@ -585,7 +624,26 @@ public class HTMLAttribute extends Attribute {
 									+ "'>" + data + "</Value>\n");
 
 				} else {
-					htmlEnv.code.append(this.getStr(data_info));
+					if (htmlEnv.decorationEndFlag.size() > 0) {
+						if (htmlEnv.decorationEndFlag.get(0)) {
+							String property = htmlEnv.decorationProperty.get(0).get(0);
+							ArrayList<String> declaration = new ArrayList<String>();
+							declaration = Modifier.replaceModifierValues(property, (this).getStr(data_info));
+							property = declaration.get(0);
+							String value = declaration.get(1);
+							if (property.equals("class")) {
+//								HTMLEnv.cssClass.add((this).getStr(data_info));
+								HTMLDecoration.classes.get(0).append(value + " ");
+							} else {
+								HTMLDecoration.styles.get(0).append(property + ":" + value + ";");
+							}
+							htmlEnv.decorationProperty.get(0).remove(0);
+						} else {
+							HTMLDecoration.ends.get(0).append((this).getStr(data_info));
+						}
+					} else {
+						htmlEnv.code.append(this.getStr(data_info));
+					}
 				}
 				Log.out(this.getStr(data_info));
 			}
@@ -619,8 +677,19 @@ public class HTMLAttribute extends Attribute {
 					&& HTMLEnv.getFormItemName().equals(formHtml[2])) {
 
 			} else {
-				htmlEnv.code.append("</td></tr></table>\n");
-				Log.out("</td></tr></table>");
+				if (htmlEnv.decorationEndFlag.size() > 0) {
+					if (htmlEnv.decorationEndFlag.get(0)) {
+						// do nothing
+					} else if (htmlEnv.decorationStartFlag.get(0)) {
+						HTMLDecoration.ends.get(0).append("</td></tr></table>\n");
+						htmlEnv.decorationStartFlag.set(0, false);
+					} else {
+						HTMLDecoration.ends.get(0).append("</td></tr></table>\n");
+					}
+				} else {
+					htmlEnv.code.append("</td></tr></table>\n");
+					Log.out("</td></tr></table>");
+				}
 			}
 
 			Log.out("TFEId = " + HTMLEnv.getClassID(this));

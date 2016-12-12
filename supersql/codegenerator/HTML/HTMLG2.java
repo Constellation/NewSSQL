@@ -102,6 +102,13 @@ public class HTMLG2 extends Grouper implements Serializable {
 			if (HTMLEnv.getSelectFlg())
 				data_info = (ExtList) data_info.get(0);
 
+			String classname;
+			if (this.decos.containsKey("class")) {
+				classname = this.decos.getStr("class");
+			} else {
+				classname = HTMLEnv.getClassID(this);
+			}
+			
 			// tk start////////////////////////////////////////////////////
 			html_env.append_css_def_td(HTMLEnv.getClassID(this), this.decos);
 
@@ -112,6 +119,23 @@ public class HTMLG2 extends Grouper implements Serializable {
 			int j = 0; // 20140611_masato
 
 			if (decos.containsKey("row") && decos.containsKey("column")) {
+				if (html_env.decorationStartFlag.size() > 0) {
+					if (html_env.decorationStartFlag.get(0)) {
+						HTMLDecoration.fronts.get(0)
+						.append("<div id=\"res\"></div>\n"
+								+ "<div id=\"Pagination\" class=\"pagination\"></div>\n"
+								+ "<!-- Container element for all the Elements that are to be paginated -->\n"
+								+ "<div id=\"hiddenresult\" style=\"display:none;\">\n"
+								+ "<div class=\"result\">\n");
+					} else {
+						HTMLDecoration.ends.get(0)
+						.append("<div id=\"res\"></div>\n"
+								+ "<div id=\"Pagination\" class=\"pagination\"></div>\n"
+								+ "<!-- Container element for all the Elements that are to be paginated -->\n"
+								+ "<div id=\"hiddenresult\" style=\"display:none;\">\n"
+								+ "<div class=\"result\">\n");
+					}
+				}
 				html_env.code
 						.append("<div id=\"res\"></div>\n"
 								+ "<div id=\"Pagination\" class=\"pagination\"></div>\n"
@@ -124,15 +148,35 @@ public class HTMLG2 extends Grouper implements Serializable {
 			if (decos.containsKey("row")) {
 				retFlag = true;
 				i = Integer.parseInt(decos.getStr("row"));
-				html_env.code
-						.append("<TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
-				html_env.code.append(html_env.tableBorder + "\" ");
-				html_env.code.append("class=\"");
-				html_env.code.append("nest\"");
-				html_env.code.append(html_env.getOutlineMode());
-				html_env.code.append(">");
-				html_env.code.append("<TR><TD class=\""
-						+ HTMLEnv.getClassID(tfe) + " nest\">\n");
+				if (html_env.decorationStartFlag.size() > 0) {
+					if (html_env.decorationStartFlag.get(0)) {
+						HTMLDecoration.fronts.get(0).append("TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
+						HTMLDecoration.fronts.get(0).append(html_env.tableBorder + "\"");
+						HTMLDecoration.fronts.get(0).append(" class=\"");
+						HTMLDecoration.fronts.get(0).append("nest\"");
+						HTMLDecoration.fronts.get(0).append(html_env.getOutlineMode());
+						HTMLDecoration.fronts.get(0).append(">");
+						HTMLDecoration.fronts.get(0).append("<TR><TD class=\"" + HTMLEnv.getClassID(tfe) + " nest\">\n");
+					} else {
+						HTMLDecoration.ends.get(0).append("TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
+						HTMLDecoration.ends.get(0).append(html_env.tableBorder + "\"");
+						HTMLDecoration.ends.get(0).append(" class=\"");
+						HTMLDecoration.ends.get(0).append("nest\"");
+						HTMLDecoration.ends.get(0).append(html_env.getOutlineMode());
+						HTMLDecoration.ends.get(0).append(">");
+						HTMLDecoration.ends.get(0).append("<TR><TD class=\"" + HTMLEnv.getClassID(tfe) + " nest\">\n");
+					}
+				} else {
+					html_env.code
+							.append("<TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
+					html_env.code.append(html_env.tableBorder + "\" ");
+					html_env.code.append("class=\"");
+					html_env.code.append("nest\"");
+					html_env.code.append(html_env.getOutlineMode());
+					html_env.code.append(">");
+					html_env.code.append("<TR><TD class=\""
+							+ HTMLEnv.getClassID(tfe) + " nest\">\n");
+				}
 			}
 			
 			if (decos.containsKey("row") && decos.containsKey("column")) {
@@ -144,31 +188,64 @@ public class HTMLG2 extends Grouper implements Serializable {
 
 			// 20140613_masato && j != 1を追加　→　[tfe]!3%とかのとき
 			if (!GlobalEnv.isOpt()) {
-				html_env.code
-						.append("<TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
-				html_env.code.append(html_env.tableBorder + "\" ");
-				Log.out("embed flag :" + html_env.embedFlag);
-				html_env.code.append("class=\"");
-				if (html_env.embedFlag)
-					html_env.code.append(" embed ");
-
-				if (decos.containsKey("outborder"))
-					html_env.code.append(" noborder ");
-
-				if (decos.containsKey("class")) {
-					// class=menu�Ȃǂ̎w�肪��������t��
-					html_env.code.append(decos.getStr("class") + " ");
+				if (html_env.decorationStartFlag.size() > 0) {
+					if (html_env.decorationStartFlag.get(0)) {
+						HTMLDecoration.fronts.get(0).append("<TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
+						HTMLDecoration.fronts.get(0).append(html_env.tableBorder + "\"");
+						HTMLDecoration.classes.get(0).append(" class=\"");
+						HTMLDecoration.ends.get(0).append(classname);
+						if (html_env.embedFlag) {
+							HTMLDecoration.ends.get(0).append(" embed");
+						}
+						if (decos.containsKey("outborder")) {
+							HTMLDecoration.ends.get(0).append(" noborder");
+						}
+						HTMLDecoration.ends.get(0).append(" nest\"");
+						HTMLDecoration.ends.get(0).append(html_env.getOutlineMode());
+						HTMLDecoration.ends.get(0).append(">");
+						html_env.decorationStartFlag.set(0, false);
+					} else {
+						HTMLDecoration.ends.get(0).append("<TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
+						HTMLDecoration.ends.get(0).append(html_env.tableBorder + "\"");
+						HTMLDecoration.ends.get(0).append(" class=\"");
+						HTMLDecoration.ends.get(0).append(classname);
+						if (html_env.embedFlag) {
+							HTMLDecoration.ends.get(0).append(" embed");
+						}
+						if (decos.containsKey("outborder")) {
+							HTMLDecoration.ends.get(0).append(" noborder");
+						}
+						HTMLDecoration.ends.get(0).append(" nest\"");
+						HTMLDecoration.ends.get(0).append(html_env.getOutlineMode());
+						HTMLDecoration.ends.get(0).append(">");
+					}
+				} else {
+					html_env.code
+							.append("<TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
+					html_env.code.append(html_env.tableBorder + "\" ");
+					Log.out("embed flag :" + html_env.embedFlag);
+					html_env.code.append("class=\"");
+					if (html_env.embedFlag)
+						html_env.code.append(" embed ");
+	
+					if (decos.containsKey("outborder"))
+						html_env.code.append(" noborder ");
+	
+					if (decos.containsKey("class")) {
+						// class=menu�Ȃǂ̎w�肪��������t��
+						html_env.code.append(decos.getStr("class") + " ");
+					}
+					if (html_env.writtenClassId.contains(HTMLEnv.getClassID(this))) {
+						// TFE10000�Ȃǂ̎w�肪��������t��
+						// TODO 20140619_masato bgcolorとか
+						html_env.code.append(HTMLEnv.getClassID(this) + " ");
+					}
+					html_env.code.append("nest\"");
+	
+					html_env.code.append(html_env.getOutlineMode());
+	
+					html_env.code.append(">");
 				}
-				if (html_env.writtenClassId.contains(HTMLEnv.getClassID(this))) {
-					// TFE10000�Ȃǂ̎w�肪��������t��
-					// TODO 20140619_masato bgcolorとか
-					html_env.code.append(HTMLEnv.getClassID(this) + " ");
-				}
-				html_env.code.append("nest\"");
-
-				html_env.code.append(html_env.getOutlineMode());
-
-				html_env.code.append(">");
 			}
 			// tk end/////////////////////////////////////////////////////
 
@@ -192,8 +269,12 @@ public class HTMLG2 extends Grouper implements Serializable {
 					// if(i != 0 && counter % i != 0 && j != 1){
 					//
 					// } else {
+					if (html_env.decorationStartFlag.size() > 0) {
+						HTMLDecoration.ends.get(0).append("<TR><TD class=\"" + HTMLEnv.getClassID(tfe) + " nest\">\n");
+					} else {
 					html_env.code.append("<TR><TD class=\""
 							+ HTMLEnv.getClassID(tfe) + " nest\">\n");
+					}
 					Log.out("<TR><TD class=\"" + HTMLEnv.getClassID(tfe)
 							+ " nest\">");
 					// }
@@ -266,7 +347,11 @@ public class HTMLG2 extends Grouper implements Serializable {
 					// if(i != 0 && counter % i != 0 && j != 1){
 					//
 					// } else {
-					html_env.code.append("</TD></TR>\n");
+					if (html_env.decorationStartFlag.size() > 0) {
+						HTMLDecoration.ends.get(0).append("</TD></TR>\n");
+					} else {
+						html_env.code.append("</TD></TR>\n");
+					}
 					Log.out("</TD></TR>");
 					// }
 				}
@@ -275,20 +360,36 @@ public class HTMLG2 extends Grouper implements Serializable {
 				if (retFlag) {
 					if (i != 0) {
 						if (count % i == 0) {
-							html_env.code.append("</TABLE></TD>");
-							if (!this.hasMoreItems()) {
-								flag = true;
-								html_env.code.append("</TR>");
+							if (html_env.decorationStartFlag.size() > 0) {
+								HTMLDecoration.ends.get(0).append("</TABLE></TD>");
+								if (!this.hasMoreItems()) {
+									flag = true;
+									HTMLDecoration.ends.get(0).append("</TR>");
+								} else {
+									HTMLDecoration.ends.get(0).append("<TD>\n");
+									HTMLDecoration.ends.get(0).append("<TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
+									HTMLDecoration.ends.get(0).append(html_env.tableBorder + "\"");
+									HTMLDecoration.ends.get(0).append(" class=\"");
+									HTMLDecoration.ends.get(0).append("nest\"");
+									HTMLDecoration.ends.get(0).append(html_env.getOutlineMode());
+									HTMLDecoration.ends.get(0).append(">");
+								}
 							} else {
-								html_env.code.append("<TD>\n");
-								html_env.code
-										.append("<TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
-								html_env.code.append(html_env.tableBorder
-										+ "\" ");
-								html_env.code.append("class=\"");
-								html_env.code.append("nest\"");
-								html_env.code.append(html_env.getOutlineMode());
-								html_env.code.append(">");
+								html_env.code.append("</TABLE></TD>");
+								if (!this.hasMoreItems()) {
+									flag = true;
+									html_env.code.append("</TR>");
+								} else {
+									html_env.code.append("<TD>\n");
+									html_env.code
+											.append("<TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
+									html_env.code.append(html_env.tableBorder
+											+ "\" ");
+									html_env.code.append("class=\"");
+									html_env.code.append("nest\"");
+									html_env.code.append(html_env.getOutlineMode());
+									html_env.code.append(">");
+								}
 							}
 						}
 					}
@@ -300,48 +401,82 @@ public class HTMLG2 extends Grouper implements Serializable {
 						// if(counter % i != 0 && j != 1){
 						//
 						// } else {
-						html_env.code.append("</TABLE></TD>");
-						// }
-						if (!this.hasMoreItems()) {
-							flag = true;
-							html_env.code.append("</TR>");
-						}
-						if (count2 % j == 0 && this.hasMoreItems()) {
-
-							html_env.code.append("</TR></TABLE>");
-							html_env.code.append("</div>\n");
-							html_env.code.append("<div class=\"result\">\n");
-							html_env.code
-									.append("<TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
-							html_env.code.append(html_env.tableBorder + "\" ");
-							html_env.code.append("class=\"");
-							html_env.code.append("nest\"");
-							html_env.code.append(">");
-							html_env.code.append("<TR><TD class=\""
-									+ HTMLEnv.getClassID(tfe) + " nest\">\n");
-							// 20140613_masato
-							// if(counter % i != 0 && j != 1){
-							//
-							// } else {
-							html_env.code
-									.append("<TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
-							html_env.code.append(html_env.tableBorder + "\" ");
-							html_env.code.append("class=\"");
-							html_env.code.append("nest\"");
-							html_env.code.append(html_env.getOutlineMode());
-
-							html_env.code.append(">");
-							// }
+						if (html_env.decorationStartFlag.size() > 0) {
+							HTMLDecoration.ends.get(0).append("</TABLE></TD>");
+							if (!this.hasMoreItems()) {
+								flag = true;
+								HTMLDecoration.ends.get(0).append("</TR>");
+							}
 						} else {
-							html_env.code.append("<TD>\n");
-							html_env.code
-									.append("<TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
-							html_env.code.append(html_env.tableBorder + "\" ");
-							html_env.code.append("class=\"");
-							html_env.code.append("nest\"");
-							html_env.code.append(html_env.getOutlineMode());
-							html_env.code.append(">");
-
+							html_env.code.append("</TABLE></TD>");
+							if (!this.hasMoreItems()) {
+								flag = true;
+								html_env.code.append("</TR>");
+							}
+						}
+						// }
+						if (count2 % j == 0 && this.hasMoreItems()) {
+							if (html_env.decorationStartFlag.size() > 0) {
+								HTMLDecoration.ends.get(0).append("</TR></TABLE>");
+								HTMLDecoration.ends.get(0).append("</div>\n");
+								HTMLDecoration.ends.get(0).append("<div class=\"result\">\n");
+								HTMLDecoration.ends.get(0).append("<TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
+								HTMLDecoration.ends.get(0).append(html_env.tableBorder + "\"");
+								HTMLDecoration.ends.get(0).append(" class=\"");
+								HTMLDecoration.ends.get(0).append("nest\"");
+								HTMLDecoration.ends.get(0).append(">");
+								HTMLDecoration.ends.get(0).append("<TR><TD class=\"" + HTMLEnv.getClassID(tfe) + "nest\">\n");
+								HTMLDecoration.ends.get(0).append("<TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
+								HTMLDecoration.ends.get(0).append(html_env.tableBorder + "\"");
+								HTMLDecoration.ends.get(0).append(" class=\"");
+								HTMLDecoration.ends.get(0).append("nest\"");
+								HTMLDecoration.ends.get(0).append(html_env.getOutlineMode());
+								HTMLDecoration.ends.get(0).append(">");
+							} else {
+								html_env.code.append("</TR></TABLE>");
+								html_env.code.append("</div>\n");
+								html_env.code.append("<div class=\"result\">\n");
+								html_env.code
+										.append("<TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
+								html_env.code.append(html_env.tableBorder + "\" ");
+								html_env.code.append("class=\"");
+								html_env.code.append("nest\"");
+								html_env.code.append(">");
+								html_env.code.append("<TR><TD class=\""
+										+ HTMLEnv.getClassID(tfe) + " nest\">\n");
+								// 20140613_masato
+								// if(counter % i != 0 && j != 1){
+								//
+								// } else {
+								html_env.code
+										.append("<TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
+								html_env.code.append(html_env.tableBorder + "\" ");
+								html_env.code.append("class=\"");
+								html_env.code.append("nest\"");
+								html_env.code.append(html_env.getOutlineMode());
+	
+								html_env.code.append(">");
+								// }
+							}
+						} else {
+							if (html_env.decorationStartFlag.size() > 0) {
+								HTMLDecoration.ends.get(0).append("<TD>\n");
+								HTMLDecoration.ends.get(0).append("<TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
+								HTMLDecoration.ends.get(0).append(html_env.tableBorder + "\"");
+								HTMLDecoration.ends.get(0).append(" class=\"");
+								HTMLDecoration.ends.get(0).append("nest\"");
+								HTMLDecoration.ends.get(0).append(html_env.getOutlineMode());
+								HTMLDecoration.ends.get(0).append(">");
+							} else {
+								html_env.code.append("<TD>\n");
+								html_env.code
+										.append("<TABLE cellSpacing=\"0\" cellPadding=\"0\" border=\"");
+								html_env.code.append(html_env.tableBorder + "\" ");
+								html_env.code.append("class=\"");
+								html_env.code.append("nest\"");
+								html_env.code.append(html_env.getOutlineMode());
+								html_env.code.append(">");
+							}
 						}
 					}
 				}
@@ -354,7 +489,11 @@ public class HTMLG2 extends Grouper implements Serializable {
 				if (HTMLEnv.getSelectRepeat()) {
 					// chie
 					html_env2.code.append("</select></VALUE></tfe>");
-					html_env.code.append("</select></TD></TR>\n");
+					if (html_env.decorationStartFlag.size() > 0) {
+						HTMLDecoration.ends.get(0).append("</select></TD></TR>\n");
+					} else {
+						html_env.code.append("</select></TD></TR>\n");
+					}
 					Log.out("</TD></TR>");
 					HTMLEnv.setSelectRepeat(false);
 					HTMLEnv.incrementFormPartsNumber();
@@ -365,10 +504,25 @@ public class HTMLG2 extends Grouper implements Serializable {
 
 			// html_env2.code.append("</tfe>");
 			// 20140528_masato
+			if (html_env.decorationStartFlag.size() > 0) {
+				if (html_env.decorationStartFlag.get(0)) {
+					if (flag) {
+						HTMLDecoration.ends.get(0).append("</TABLE>\n");
+					}
+					HTMLDecoration.ends.get(0).append("</TR></TABLE>\n");
+					html_env.decorationStartFlag.set(0, false);
+				} else {
+					if (flag) {
+						HTMLDecoration.ends.get(0).append("</TABLE>\n");
+					}
+					HTMLDecoration.ends.get(0).append("</TR></TABLE>\n");
+				}
+			} else {
 			if (flag) {
-				html_env.code.append("</TABLE>\n");
+					html_env.code.append("</TABLE>\n");
+				}
+				html_env.code.append("</TR></TABLE>\n");
 			}
-			html_env.code.append("</TR></TABLE>\n");
 			Log.out("</TABLE>");
 
 			Log.out("TFEId = " + HTMLEnv.getClassID(this));

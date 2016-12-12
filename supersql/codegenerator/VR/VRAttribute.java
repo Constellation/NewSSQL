@@ -24,7 +24,7 @@ public class VRAttribute extends Attribute {
 	
 	public static String genre = "";///////////kotani
 	//public static boolean exhflag = false;//////展示物について、G1通ったらtrueになる////exhflagとfloorflagはC#ファイルを添付するためのフラグ
-	public static ArrayList<Integer> exharray = new ArrayList<Integer>();
+	public static ArrayList<Integer> exharray = new ArrayList<Integer>();///1ビルにつき、categoryの数だけ同じ数字が入る
 	//public static int floorflag = 0;////////////フロアについて
 	public static ArrayList<Integer> floorarray = new ArrayList<Integer>();
 	public static String sgenre = "";//////////フロアのタイトル出すため
@@ -34,9 +34,13 @@ public class VRAttribute extends Attribute {
 	public static int gjoinflag = 0;///////////今使ってない
 	public static int cjoinflag = 0;/////今使ってない
 	public static int groupcount = 0;
+	public static int groupcount1 = 0;
+	public static int grouptag = 0;
 	public static ArrayList<String> cjoinarray = new ArrayList<String>();////博物館同士を結合させる時分岐に使う
 	public static int gjudge = 0;
 	public static int billnum = 0;
+	public static int seq = 0;
+	public static ArrayList<String> elearray = new ArrayList<String>();
 
 	// 鐃緒申鐃藷ストラク鐃緒申
 	public VRAttribute(Manager manager, VREnv henv, VREnv henv2) {
@@ -420,9 +424,7 @@ public class VRAttribute extends Attribute {
 		 * if(GlobalEnv.getSelectFlg()) data_info = (ExtList) data_info.get(0);
 		 */
 		htmlEnv.append_css_def_td(VREnv.getClassID(this), this.decos);
-//		if(htmlEnv.gLevel == 0){//////////kotani20161011
-//		
-//		}else
+
 		if (GlobalEnv.isOpt()) {
 			work_opt(data_info);
 		} else {
@@ -434,9 +436,20 @@ public class VRAttribute extends Attribute {
 					genre = this.getStr(data_info);////////////////////////////////////////////// kotani 16/10/04
 					
 				}else{
-								htmlEnv.code.append(" "+"<element" + htmlEnv.getOutlineModeAtt()+ "");
+								//htmlEnv.code.append((seq)+" "+"<element" + htmlEnv.getOutlineModeAtt()+ "");
+								//htmlEnv.code.append(this.getStr(data_info));
+								try{//n2 kotani
+									String s = elearray.get(seq);
+									//elearray.set(seq, s+" "+seq+this.getStr(data_info)+"\n");////ここでelemenntたす、上のelementは消す
+									elearray.set(seq, s+" "+"<element>"+this.getStr(data_info)+"</element>\n");
+								}catch(Exception e){
+									//elearray.add(seq, seq+this.getStr(data_info)+"\n");		
+									elearray.add(seq, " <element>"+this.getStr(data_info)+"</element>\n");		
+								}
+								seq++;
+								
 					//htmlEnv.code.append("class=\"att"); elementタグにするため消した
-				
+								
 				// tk
 				// start/////////////////////////////////////////////////////////
 				if (htmlEnv.writtenClassId.contains(VREnv.getClassID(this))) {
@@ -453,7 +466,7 @@ public class VRAttribute extends Attribute {
 				}
 				
 				//htmlEnv.code.append("\"");elementタグにするため消した
-				htmlEnv.code.append(">");
+				//htmlEnv.code.append(">");\\\\\element change
 				}
 			
 			}
@@ -558,7 +571,7 @@ public class VRAttribute extends Attribute {
 				if(htmlEnv.gLevel == 1){//////// kotani 16/10/04
 					
 				}else{
-				htmlEnv.code.append(">\n");
+				//htmlEnv.code.append(">\n");
 				}
 				// tk
 				// end////////////////////////////////////////////////////////////
@@ -578,9 +591,7 @@ public class VRAttribute extends Attribute {
 			if (whichForm == 0) { // normal process (not form)
 				// ***APPEND DATABASE VALUE***//
 				Log.out(data_info);
-				htmlEnv.code.append(this.getStr(data_info));
 				
-
 				Log.out(this.getStr(data_info));
 			}
 		}
@@ -611,7 +622,7 @@ public class VRAttribute extends Attribute {
 				if(htmlEnv.gLevel == 1){//////////////////////////////////////////////////////////// kotani 16/10/04
 					
 				}else{
-				htmlEnv.code.append("</element>\n");//</td></tr></table>消した。</table>だけ残した→elementにした
+				//htmlEnv.code.append("</element>\n");//</td></tr></table>消した。</table>だけ残した→elementにした element change
 //				Log.out("</td></tr></table>");
 				}
 			}

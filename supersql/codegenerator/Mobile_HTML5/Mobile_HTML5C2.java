@@ -1,9 +1,11 @@
 package supersql.codegenerator.Mobile_HTML5;
 
 import supersql.codegenerator.Connector;
+import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.Manager;
 import supersql.codegenerator.Sass;
+import supersql.codegenerator.TFE;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
@@ -20,6 +22,9 @@ public class Mobile_HTML5C2 extends Connector {
     static boolean tableFlg = false;		//20130314  table
     static boolean table0Flg = false;		//20130325  table0
     static boolean divFlg = false;			//20130326  div
+    
+    boolean firstFlg = false;	//20161203 bootstrap
+    
     //���󥹥ȥ饯��
     public Mobile_HTML5C2(Manager manager, Mobile_HTML5Env henv, Mobile_HTML5Env henv2) {
         this.manager = manager;
@@ -73,6 +78,12 @@ public class Mobile_HTML5C2 extends Connector {
     		divFlg = true;
     		tableFlg = false;
     	}//else divFlg = false;
+        
+        //20161203 bootstrap
+        if(Sass.isFirstElementFlg()){
+        	firstFlg = true;
+        	Sass.firstElementFlg(false);
+        }
         
         if(!GlobalEnv.isOpt()){
         	if(!Sass.isBootstrapFlg()){
@@ -137,18 +148,32 @@ public class Mobile_HTML5C2 extends Connector {
 	        		html_env.code.append(Mobile_HTML5C1.getTableStartTag(html_env, decos, this));
 	        	}
         	}else if(Sass.isBootstrapFlg()){
-        		if(!decos.containsKey("C1") && !decos.containsKey("G1")){
-            		html_env.code.append("<DIV Class=\"row\">");
-            		if(Sass.outofloopFlg.peekFirst()){
-            			Sass.makeRowClass();
-            		}
-            	}
-        		html_env.code.append("<DIV Class=\""+classid+"\">");
-//        		html_env.code.append("<DIV Class=\"row\">");
-        		if(Sass.outofloopFlg.peekFirst()){
-        			Sass.makeClass(classid);
-        			Sass.defineGridBasic(classid, decos);
-	      		}
+//        		if(!decos.containsKey("C1") && !decos.containsKey("G1")){
+//            		html_env.code.append("<DIV Class=\"row\">");
+//            		if(Sass.outofloopFlg.peekFirst()){
+//            			Sass.makeRowClass();
+//            		}
+//            	}
+//        		html_env.code.append("<DIV Class=\""+classid+"\">");
+////        		html_env.code.append("<DIV Class=\"row\">");
+//        		if(Sass.outofloopFlg.peekFirst()){
+//        			Sass.makeClass(classid);
+//        			Sass.defineGridBasic(classid, decos);
+//	      		}
+        		if(firstFlg){
+        			html_env.code.append("<DIV Class=\"row\">\n");
+        			html_env.code.append("<DIV Class=\""+classid+"\">\n");
+        			
+        			if(Sass.outofloopFlg.peekFirst()){
+//        				Sass.makeRowClass();
+//        				Sass.makeClass(classid);
+//        				Sass.defineGridBasic(classid, decos);
+        				
+        				Sass.makeClass(classid);
+        				Sass.defineGridBasic(classid, decos);
+        				Sass.closeBracket();
+        			}
+        		}
         	}
         }
 
@@ -157,6 +182,7 @@ public class Mobile_HTML5C2 extends Connector {
     	Mobile_HTML5.beforeWhileProcess(getSymbol(), decos, html_env);
         while (this.hasMoreItems()) {
             ITFE tfe = (ITFE) tfes.get(i);
+            DecorateList decos2 = ((TFE)tfe).decos;
             String classid2 = Mobile_HTML5Env.getClassID(tfe);
 
             if(!Sass.isBootstrapFlg()){
@@ -191,17 +217,28 @@ public class Mobile_HTML5C2 extends Connector {
 	//            	//☆★            Log.info("C2 tfeItems : " + this.tfeItems);
 	//	      	}
             }else if(Sass.isBootstrapFlg()){
-            	html_env.code.append("<DIV Class=\"row\">");
-	      		if(Sass.outofloopFlg.peekFirst()){
-	      			Sass.makeRowClass();
-	      		}
+//            	html_env.code.append("<DIV Class=\"row\">\n");
+//	      		if(Sass.outofloopFlg.peekFirst()){
+//	      			Sass.makeRowClass();
+//	      		}
+            	html_env.code.append("<DIV Class=\"row\">\n");
+            	html_env.code.append("<div class=\"" + classid2 +"\">\n");
+            	if(Sass.outofloopFlg.peekFirst()){
+//            		Sass.makeRowClass();
+//            		Sass.makeClass(classid2);
+//            		Sass.defineGridBasic(classid2, decos2);
+            		
+            		Sass.makeClass(classid2);
+            		Sass.defineGridBasic(classid2, decos2);
+            		Sass.closeBracket();
+            	}
 	      	}
 
-	        Mobile_HTML5.whileProcess1(getSymbol(), decos, html_env, data, data_info, tfe, tfes, tfeItems);
+	        Mobile_HTML5.whileProcess1_2(getSymbol(), decos, html_env, data, data_info, tfe, tfes, tfeItems);
 
             this.worknextItem();
            
-	        Mobile_HTML5.whileProcess2(getSymbol(), decos, html_env, data, data_info, tfe, tfes, tfeItems);
+	        Mobile_HTML5.whileProcess2_1(getSymbol(), decos, html_env, data, data_info, tfe, tfes, tfeItems);
 
 	        if(!Sass.isBootstrapFlg()){
 	            if(decos.containsKey("table0") || Mobile_HTML5C1.table0Flg || Mobile_HTML5G1.table0Flg || Mobile_HTML5G2.table0Flg)	table0Flg = true;
@@ -226,10 +263,16 @@ public class Mobile_HTML5C2 extends Connector {
 		      		Mobile_HTML5Function.textFlg = false;
 		      	}
 	        }else if(Sass.isBootstrapFlg()){
-	        	html_env.code.append("\n</div>");
-	      		if(Sass.outofloopFlg.peekFirst()){
-	      			Sass.closeBracket();
-	      		}
+//	        	html_env.code.append("\n</div>");
+//	      		if(Sass.outofloopFlg.peekFirst()){
+//	      			Sass.closeBracket();
+//	      		}
+	        	html_env.code.append("</div>\n");//classid2
+	        	html_env.code.append("</div>\n");//row
+	        	if(Sass.outofloopFlg.peekFirst()){
+//	        		Sass.closeBracket();//classid2
+//	        		Sass.closeBracket();//row
+	        	}
 	        }
 
             html_env.code.append("\n");		//20130309
@@ -273,15 +316,25 @@ public class Mobile_HTML5C2 extends Connector {
 
 	      	if(divFlg)	divFlg = false;		//20130326  div
         }else if(Sass.isBootstrapFlg()){
-        	html_env.code.append("\n</DIV>\n");//.TFE
-      		if(Sass.outofloopFlg.peekFirst()){
-      			Sass.closeBracket();
-      		}
-      		if(!decos.containsKey("C1") && !decos.containsKey("G1")){
-        		html_env.code.append("\n</DIV>\n");
+//        	html_env.code.append("\n</DIV>\n");//.TFE
+//      		if(Sass.outofloopFlg.peekFirst()){
+//      			Sass.closeBracket();
+//      		}
+//      		if(!decos.containsKey("C1") && !decos.containsKey("G1")){
+//        		html_env.code.append("\n</DIV>\n");
+//        		if(Sass.outofloopFlg.peekFirst()){
+//        			Sass.closeBracket();
+//        		}
+//        	}
+        	if(firstFlg){
+        		html_env.code.append("</DIV>\n");//.classid
+        		html_env.code.append("</DIV>\n");//.row
+        		
         		if(Sass.outofloopFlg.peekFirst()){
-        			Sass.closeBracket();
+//        			Sass.closeBracket();//classid
+//        			Sass.closeBracket();//row
         		}
+        		firstFlg = false;
         	}
         }
         Mobile_HTML5.postProcess(getSymbol(), classid, decos, html_env);	//Post-process (後処理)

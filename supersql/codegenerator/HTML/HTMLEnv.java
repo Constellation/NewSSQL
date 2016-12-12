@@ -46,6 +46,9 @@ public class HTMLEnv extends LocalEnv implements Serializable{
 	protected static int IDOld = 0; // add oka
 	public static String cond = "";
 	public static String bg = "";
+	public ArrayList<ArrayList<String>> decorationProperty = new ArrayList<ArrayList<String>>();
+	public ArrayList<Boolean> decorationStartFlag = new ArrayList<Boolean>();
+	public ArrayList<Boolean> decorationEndFlag = new ArrayList<Boolean>();
 	// added by masato 20151202 
 	public static boolean defaultCssFlag = true;
 	// added by masato 20151214 for paging
@@ -617,11 +620,30 @@ public class HTMLEnv extends LocalEnv implements Serializable{
 		return s;
 	}
 
-	public void append_css_def_td(String classid, DecorateList decos) {
-		haveClass = 0;
+	public void append_css_def_td(String classid, DecorateList decolist) {
+		DecorateList decos = new DecorateList();
+		for (String key : decolist.keySet()) {
+			decos.put(key, decolist.get(key));
+		}
+		
 		Log.out("[HTML append_css_def_att] classid=" + classid);
 		Log.out("decos = " + decos);
-
+		
+		if (decorationStartFlag.size() > 0) {
+			if (decorationStartFlag.get(0) && !decorationEndFlag.get(0)) {
+				for (String key : decos.keySet()) {
+					if (!(decos.get(key).toString().startsWith("\"") && decos.get(key).toString().endsWith("\""))
+							&& !(decos.get(key).toString().startsWith("\'") && decos.get(key).toString().endsWith("\'"))) {
+						decorationProperty.get(0).add(0, key);
+					}
+				}
+				for (int i = 0; i < decorationProperty.get(0).size(); i++) {
+					decos.remove(decorationProperty.get(0).get(i));
+				}
+			}
+		}
+		
+		haveClass = 0;
 		// ������classid��������������������?����������������������������������������������������������������������?������
 		if (writtenClassId.contains(classid)) {
 			// �������������������������������������?������������������

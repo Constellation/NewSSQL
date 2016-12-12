@@ -22,6 +22,7 @@ import supersql.common.GlobalEnv;
 import supersql.common.LevenshteinDistance;
 import supersql.common.Log;
 import supersql.common.ParseXML;
+import supersql.common.Ssedit;
 import supersql.ctab.Ctab3;
 import supersql.extendclass.ExtList;
 import supersql.parser.Preprocessor;
@@ -39,7 +40,7 @@ public class CodeGenerator {
 	private static String media;
 
 	private static Factory factory;
-	
+
 //	private static boolean decocheck = false;
 
 	public static TFE schemaTop;
@@ -58,7 +59,7 @@ public class CodeGenerator {
 		TFE out_sch = null;
 		int dim;
 		out_sch = makeschematop(tfe);
-		
+
 		return out_sch;
 	}
 
@@ -75,7 +76,7 @@ public class CodeGenerator {
 			factory = new HTMLFactory();
 		}else if(media.toLowerCase().equals("mobile_html5")){
 			factory = new Mobile_HTML5Factory();
-		} else if (media.toLowerCase().equals("bhtml") || media.toLowerCase().equals("html_bootstrap")) {
+		} else if (media.toLowerCase().equals("bhtml") || media.toLowerCase().equals("html_bootstrap") || media.toLowerCase().equals("responsivehtml")|| media.toLowerCase().equals("responsive_html")) {
 			factory = new Mobile_HTML5Factory();
 			Sass.bootstrapFlg(true);
 		}else if(media.toLowerCase().equals("web")) {
@@ -87,9 +88,9 @@ public class CodeGenerator {
 		}else if(media.toLowerCase().equals("pdf")){
 			factory = new PDFFactory();
 		}else if(media.toLowerCase().equals("php")){	//added by goto 20161104
-			factory = new Mobile_HTML5Factory();
 			PHP.isPHP = true;
 			supersql.codegenerator.Compiler.Compiler.isCompiler = true;
+			factory = new Mobile_HTML5Factory();
 			//factory = new PHPFactory();
 		}else if(media.toLowerCase().equals("rails")){	//added by goto 20161104
 			factory = new RailsFactory();
@@ -112,6 +113,12 @@ public class CodeGenerator {
 				// 20140624_masato
 				//				GlobalEnv.errorText += "\n## Media list ##\n" + media_list;
 			}
+
+			//161114 yhac
+			if (GlobalEnv.isSsedit_autocorrect()) {
+				Ssedit.sseditInfo();
+			}
+
 			System.exit(1);
 		}
 	}
@@ -275,8 +282,8 @@ public class CodeGenerator {
 		boolean add_deco = false;
 
 		Asc_Desc ascDesc = new Asc_Desc();
-		
-		
+
+
 		if(tfe_tree.get(0).toString().equals("operand")){
 			if( ((ExtList)tfe_tree.get(1)).get(((ExtList)tfe_tree.get(1)).size()-1) instanceof String  && !tfe_tree.contains("true")
 					&& (decos = ((ExtList)tfe_tree.get(1)).get(((ExtList)tfe_tree.get(1)).size()-1).toString().trim()).startsWith("@")
@@ -347,8 +354,8 @@ public class CodeGenerator {
 					out_sch = Att;
 				}else if( ((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("grouper") ){
 					out_sch = grouper((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1));
-					
-					//Added by goto 20161113  for Compiler:[ ] -> [ ]@{dynamic}
+
+					//added by goto 20161113  for Compiler:[ ] -> [ ]@{dynamic}
 					Compiler.addDynamicModifier(tfe_tree);
 				}else if( ((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("composite_iterator") ){
 					ExtList group = composite( (ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1) );
@@ -373,10 +380,9 @@ public class CodeGenerator {
 							ltwidth = "@{lt-width='10'}";
 						}
 						out_sch = read_attribute(ctab.read_tfe(fn, ltwidth));
-						
 ////						out_sch = func_read((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).tfe;
 ////						System.err.println(tfe_tree);
-//						
+//
 					}else{
 						out_sch = func_read((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1));
 //						out_sch = func_read((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).fnc;
@@ -400,6 +406,11 @@ public class CodeGenerator {
 					Attribute SL = makeAttribute(att);
 					out_sch = SL;
 				}
+				else if(((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("arithmetics")){
+					att = getText( (ExtList)((ExtList)tfe_tree.get(1)).get(0), Start_Parse.ruleNames);
+					Attribute arithmetics = makeAttribute(att);
+					out_sch = arithmetics;
+				}
 				else{
 
 				}
@@ -407,11 +418,9 @@ public class CodeGenerator {
 			if( !(((ExtList)tfe_tree.get(1)).get( ((ExtList)tfe_tree.get(1)).size() - 1 ) instanceof ExtList) ){
 				String deco = ((ExtList)tfe_tree.get(1)).get( ((ExtList)tfe_tree.get(1)).size() - 1 ).toString();
 				if(deco.contains("@{")){
-					if(deco.contains("dynamic")){
-						ascDesc.add_asc_desc_Array();
-						ascDesc.dynamicCount++;	//TODO d
-						//TODO (asc)@{static}! (asc)@{dynamic}! 
-					}
+					//changed by goto 20161205
+					ascDesc.add_asc_desc_Array(deco);
+
 					if(add_deco){
 						deco = deco.substring(0, deco.lastIndexOf("}")) + "," + decos + "}";
 						setDecoration(out_sch, deco);
@@ -490,10 +499,13 @@ public class CodeGenerator {
 			operand = ((ExtList)((ExtList)extList.get(0)).get(1)).get(0).toString();
 		}
 		else if( ((ExtList)extList.get(0)).get(0).toString().equals("sqlfunc") ){
-			Log.info(extList);
+//			Log.info(extList);
 			operand = getText( (ExtList)extList.get(0), Start_Parse.ruleNames );
 			builder = new String();
 			operand = operand.replaceAll("\"", "'");
+		}
+		else if( ((ExtList)extList.get(0)).get(0).toString().equals("arithmetics") ){
+			operand = getText( (ExtList)((ExtList)extList.get(0)).get(1), Start_Parse.ruleNames);
 		}
 
 		if(idx > -1){
@@ -533,10 +545,10 @@ public class CodeGenerator {
 		}
 		return deco;
 	}
-	
+
 	private static Connector connector_main(ExtList operand, int dim){
 		ExtList atts = new ExtList();
-		
+
 		for(int i = 0; i <= operand.size(); i++){
 			TFE att = read_attribute((ExtList)operand.get(i));
 			atts.add(att);
@@ -544,7 +556,7 @@ public class CodeGenerator {
 		}
 //		decocheck =false;
 		Connector con = createconnector(dim);
-		
+
 		for (int i = 0; i < atts.size(); i++) {
 			con.setTFE((ITFE) (atts.get(i)));
 		}
@@ -556,7 +568,7 @@ public class CodeGenerator {
 		String iterator = new String();
 		int dim = 0;
 		TFE operand1 = read_attribute((ExtList)operand.get(1));
-		
+
 		if(operand.get(operand.size() - 1).toString().equals("%")){
 			dim = 3;
 		}else if(operand.get(operand.size() - 1).toString().equals("!")){
@@ -631,7 +643,7 @@ public class CodeGenerator {
 		decorator.setId(TFEid++);
 		return decorator;
 	}
-	
+
 	private static Connector createconnector(int dim){
 		Connector connector = new Connector();
 		if(dim == 3){
@@ -745,7 +757,7 @@ public class CodeGenerator {
 //		Log.info("[makeAttribute] name : " + name);
 
 		Attribute att = createAttribute();
-		
+
 		attno = att.setItem(attno, name, line, key, attp);
 		return att;
 
@@ -773,8 +785,8 @@ public class CodeGenerator {
 			}
 		}
 
-		
-		
+
+
 		func_atts.add("h_exp");
 		func_atts.add(atts);
 		fnc.setFname( func_name );
@@ -1087,7 +1099,7 @@ public class CodeGenerator {
 		}
 		return builder.toString();
 	}
-	
+
 	public static boolean isNumber(String val) {
 		try {
 			Integer.parseInt(val);

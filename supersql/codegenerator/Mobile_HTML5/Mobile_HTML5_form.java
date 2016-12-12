@@ -6,6 +6,7 @@ import java.util.Map;
 
 import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.ITFE;
+import supersql.codegenerator.Sass;
 import supersql.common.DB;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
@@ -442,9 +443,12 @@ public class Mobile_HTML5_form {
 							//statement +=
 							//		"    <input type="text" disabled="disabled" value="お名前: 五嶋">";
 							statement += 
+									//20161207 bootstrap
+									"<div class=\"form-group\">" +
 									"    <"+((!textareaFlg[i])?("input"):("textarea"))+" type=\""+((!hiddenFlg[i])?("text"):("hidden"))+"\" disabled=\"disabled\" value=\""+( (!s_name_array[i].equals(""))? (s_name_array[i]+": "):("") )+"" +
 									""+( (!textareaFlg[i])? ("\n") : ((!s_name_array[i].equals(""))? ("\">"+s_name_array[i]+": "):("")) )+button_array[i]+"" +
-									""+((!textareaFlg[i])?("\">"):("</textarea>"))+"\n";
+									""+((!textareaFlg[i])?("\">"):("</textarea>"))+"\n"+
+									"</div>";
 							if(!noinsertFlg[i])
 								statement += 
 										"    <input type=\"hidden\" name=\"form"+formCount+"_words"+(++insertWordCount)+"\" value=\""+button_array[i]+"\">\n";
@@ -457,10 +461,10 @@ public class Mobile_HTML5_form {
 							statement += 
 									"	<div class=\"ui-grid-a\">\n" +
 									"		<div class=\"ui-block-a\">\n" +
-									"    		<input type=\"submit\" name=\"form"+formCount+"_words"+(insertWordCount)+"\" value=\""+bt1+"\" data-theme=\"a\">\n" +
+									"    		<input type=\"submit\" class=\"btn btn-default\" name=\"form"+formCount+"_words"+(insertWordCount)+"\" value=\""+bt1+"\" data-theme=\"a\">\n" +
 									"		</div>\n" +
 									"		<div class=\"ui-block-b\">\n" +
-									"    		<input type=\"submit\" name=\"form"+formCount+"_words"+(insertWordCount)+"\" value=\""+bt2+"\" data-theme=\"a\">\n" +
+									"    		<input type=\"submit\" class=\"btn btn-default\" name=\"form"+formCount+"_words"+(insertWordCount)+"\" value=\""+bt2+"\" data-theme=\"a\">\n" +
 									"		</div>\n" +
 									"	</div>\n";
 							buttonSubmit += " || $_POST['form"+formCount+"_words"+(insertWordCount)+"']";
@@ -479,8 +483,11 @@ public class Mobile_HTML5_form {
 					}else{
 						if(validationType[i].isEmpty()){
 							statement += 
+									//20161207 bootstrap
+									"<div class=\"form-group\">" +
 									"    <"+((!textareaFlg[i])?("input"):("textarea"))+" type=\""+((!hiddenFlg[i])?("text"):("hidden"))+"\" name=\"form"+formCount+"_words"+(++insertWordCount)+"\" placeholder=\""+s_name_array[i]+"\">" +
-									""+((!textareaFlg[i])?(""):("</textarea>"))+"\n";
+									""+((!textareaFlg[i])?(""):("</textarea>"))+"\n"+
+									"</div>";
 						}else{
 							//TODO 2nd引数
 							statement += 
@@ -542,7 +549,7 @@ public class Mobile_HTML5_form {
     		
     		if(buttonSubmit.equals(""))
     			statement += 
-	    			"    <input type=\"submit\" value=\"OK&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\" name=\"form"+formCount+"\" id=\"form"+formCount+"\" data-mini=\"false\" data-inline=\"false\">\n";
+	    			"    <input type=\"submit\" class=\"btn btn-default\" value=\"OK&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\" name=\"form"+formCount+"\" id=\"form"+formCount+"\" data-mini=\"false\" data-inline=\"false\">\n";
 			
     		statement += 
     				"</form>\n" +
@@ -890,7 +897,7 @@ public class Mobile_HTML5_form {
 			s += " value=\""+updateFromValue+"\"";
 		}
 		//Log.e("formValidation = "+s+"></span>");
-		return s+"></span>\n";
+		return s+"></div></span>\n";
 	}
 	private static String getFormTag(String type, String name, String placeholder, String defaultPlaceholder, Boolean notnull, String customType) {
 		String add = "";
@@ -898,12 +905,16 @@ public class Mobile_HTML5_form {
 			add = " accept=\""+type+"/*\"";
 			type = "file";
 		}
-		String ret = "    <span><input type=\""+type+"\""+add+" id=\""+name+"\" name=\""+name+"\"" +
+		String ret = 
+				//20161207 bootstrap
+				"<div class=\"form-group\">"+
+				"    <span><input type=\""+type+"\""+add+" id=\""+name+"\" name=\""+name+"\"" +
 				" placeholder=\""+((!placeholder.isEmpty())? placeholder : defaultPlaceholder)+"\" " + getFormClass(notnull, customType);
 		if(type.equals("password")){
 			//add confirm password form
 			ret += 	"></span>\n" +
-					"    <span><input type=\""+type+"\" id=\""+name+"_confirm\" name=\""+name+"_confirm\"" +
+					"</div>\n <div class=\"form-group\">"+
+					"    <span><input type=\""+type+"\" id=\""+name+"_confirm\" name=\""+name+"_confirm\"" + getFormClass(notnull, customType) +
 					" placeholder=\""+((!placeholder.isEmpty())? placeholder : defaultPlaceholder)+" (re-input)\" equalTo=\"#"+name+"\"";
 		}
 		return ret;
@@ -916,8 +927,18 @@ public class Mobile_HTML5_form {
 ////		}
 	}
 	static String getFormClass(Boolean notnull, String customType) {
-		if(!notnull && customType.isEmpty())	return "";
+		if(!notnull && customType.isEmpty()){
+			//20161207 bootstrap
+			if(Sass.isBootstrapFlg()){
+				return "class=\"form-control\"";
+			}else{
+				return "";
+			}
+		}
 		String s = " class=\"";
+		if(Sass.isBootstrapFlg()){
+			s += "form-control ";
+		}
 		if(notnull) s += "required ";
 		if(!customType.isEmpty()){
 			switch (customType){

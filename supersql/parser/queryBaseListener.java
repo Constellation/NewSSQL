@@ -214,6 +214,18 @@ public class queryBaseListener implements queryListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterArithmetics(queryParser.ArithmeticsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitArithmetics(queryParser.ArithmeticsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterFrom_where(queryParser.From_whereContext ctx) { }
 	/**
 	 * {@inheritDoc}

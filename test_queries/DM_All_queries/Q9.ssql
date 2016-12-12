@@ -1,3 +1,4 @@
 GENERATE HTML
-[null((desc1)e.salary), e.name]!
+[ e.name ]!, avg[e.salary]
 FROM employee e
+

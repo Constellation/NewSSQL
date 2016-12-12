@@ -118,7 +118,7 @@ public class VRG2 extends Grouper {
 			//System.out.println("yeahhhhhh2");
 		}
 		
-		System.out.println("<G2front>");
+		//System.out.println("<G2front>");
 		VRAttribute.gjudge++;
 		
 		while (this.hasMoreItems()) {
@@ -127,6 +127,7 @@ public class VRG2 extends Grouper {
 			
 			// 20140528_masato
 			count++;
+			VRAttribute.seq = 0;///n2 kotani
 			
 			html_env.gLevel++;
 			Log.out("selectFlg" + VREnv.getSelectFlg());
@@ -289,12 +290,22 @@ public class VRG2 extends Grouper {
 			html_env.gLevel--;
 
 		}
+		
+		for(int l=0; l<VRAttribute.elearray.size();l++){///n2 kotani
+			//System.out.println("keio= "+" " +l+" " + VRAttribute.elearray.get(l));
+			html_env.code.append("<n2 seq=\""+l+"\">\n" );
+			//System.out.println("yoo="+VRAttribute.elearray.get(l));
+			html_env.code.append(VRAttribute.elearray.get(l));
+			html_env.code.append("</n2>\n" );			
+		}
+		VRAttribute.elearray.clear();//初期化
+		VRAttribute.seq = 0;//初期化
 
 		if(VRAttribute.gjudge==1){
 			VRAttribute.billnum++;
 		}
 		VRAttribute.gjudge--;
-		System.out.println("</G2back>");
+		//System.out.println("</G2back>");
 
 		if (VREnv.getSelectRepeat()) {
 			if (VREnv.getSelectRepeat()) {
@@ -320,6 +331,8 @@ public class VRG2 extends Grouper {
 		if(html_env.gLevel == 0){
 			//VRAttribute.gjoinflag = 2;
 			html_env.code.append("</group>\n");
+			VRAttribute.grouptag++;
+				html_env.code.append("<group>\n");
 			VRAttribute.genrearray22.add(VRAttribute.genrecount);
 //			new VRManager(html_env, html_env2).xmlcreate();
 //			VRManager.i++;

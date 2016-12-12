@@ -5,7 +5,7 @@
 
   <appender name="syslog" class="org.apache.log4j.net.SyslogAppender">
     <!-- ログを転送するサーバ:ポート番号 -->
-    <param name="SyslogHost" value="itc.db.ics.keio.ac.jp:514" />
+    <param name="SyslogHost" value="131.113.101.124:514" />
     <!-- ファシリティの設定 -->
     <param name="Facility" value="local1" />
     <!-- ファシリティをログに出力? -->
@@ -14,7 +14,7 @@
     <param name="Header" value="true" />
     <layout class="org.apache.log4j.PatternLayout">
       <param name="ConversionPattern"
-        value="%d %-5p %m%n"/>
+        value="%-5p %m%n"/>
     </layout>
   </appender>
 
