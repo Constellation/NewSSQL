@@ -1,3 +1,4 @@
 GENERATE HTML
-[null((desc1)e.salary), e.name]!
-FROM employee e
+[ (asc)d.id, [ (desc)e.id ,e.name]! ]!
+FROM dept d, employee e
+WHERE d.manager=e.manager

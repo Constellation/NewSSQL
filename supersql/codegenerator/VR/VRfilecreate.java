@@ -383,7 +383,7 @@ public class VRfilecreate {
 "												messageText.GetComponent<TextMesh>().text = sarray[j].ToString(); \n"+
 "												messageText.transform.Rotate(0,180,0); \n"+
 "												messageText.transform.position= new Vector3(xarray[r]+0.5f-k*1.3f, standhigh+0.9f, zarray[j]+1);  \n"+
-"												messageText.transform.localScale = new Vector3(0.22f, 0.22f, 0.22f); \n:"+
+"												messageText.transform.localScale = new Vector3(0.22f, 0.22f, 0.22f); \n"+
 "												messageText.transform.position  += new Vector3 (billmovex, billmovey, billmovez); \n";
 
 			}else if(floorflag == 3){
