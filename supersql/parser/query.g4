@@ -122,16 +122,16 @@ sorting	:
 		CLOSE_PARENTHESE
 		;
 
-//func(~) or func[~]
+//func(~)
 function	:
-	('$'? function_name
+	'$'? function_name
 		OPEN_PARENTHESE
 		(
 			(
 			operand
 			| exp
 			| expr 
-			) 
+			)
 			(',' 
 				(
 				operand
@@ -141,7 +141,6 @@ function	:
 			)* 
 		)*
 		CLOSE_PARENTHESE
-	)
 	;
 
 //for sql function

@@ -782,13 +782,13 @@ public class CodeGenerator {
 
 		func_atts.add("h_exp");
 		func_atts.add(atts);
-		fnc.setFname( func_name );
 		FunctionData fnd = new FunctionData(func_name);
 
 		String name, value;
 
 		Log.out("[func*read start funcname]=" + fn);
 		/* func_read */
+		Log.info(func_atts);
 		TFE read_tfe = read_attribute(func_atts);
 
 		Log.out("[func*TFE]=" + read_tfe.makele0());
@@ -803,7 +803,6 @@ public class CodeGenerator {
 		if (func_name.toLowerCase().equals("select")) {
 			fnc.addDeco("select", att_tmp);
 		}
-
 		return fnc;
 
 	}

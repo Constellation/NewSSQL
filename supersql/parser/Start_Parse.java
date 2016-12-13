@@ -571,17 +571,23 @@ public class Start_Parse {
 					}
 					list_table = set_fromInfo();
 
-//					after_from = b.substring(b.toLowerCase().indexOf("from") + 4).trim();
-					String from1 = getText( list_from_where, ruleNames );
-					after_from = from1.substring(from1.toLowerCase().indexOf("from") + 4);
-//					Log.info( getText( list_from_where, ruleNames ) );
+//					Log.info(list_from_where);
+//					String from1 = getText( list_from_where, ruleNames );
+//					after_from = from1.substring(from1.toLowerCase().indexOf("from") + 4);
+					String from1 = getText( list_from, ruleNames );
+					builder = "";
+					String from2 = getText( list_where, ruleNames );
+
+					after_from = from1 + "where " + from2;
+					after_from = after_from.substring(from1.toLowerCase().indexOf("from") + 4);
+					
 					String from = new String();
 					while(after_from.contains("/*")){
 						from = after_from.substring(0, after_from.indexOf("/*"));
 						from += after_from.substring(after_from.indexOf("*/") +2);
 						after_from = from;
 					}
-					Log.info(after_from);
+					Log.out(after_from);
 					processKeywords(after_from);
 
 				}
