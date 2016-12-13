@@ -3597,7 +3597,7 @@ public class Mobile_HTML5Function extends Function {
 		php +=
 				"	}\n" +
 						"	$ret['result'] = $b;\n" +
-						"	header(\"Content-Type: application/json; charset=utf-8\");\n" +
+						"	//header(\"Content-Type: application/json; charset=utf-8\");\n" +
 						"	echo json_encode($ret);\n" +
 						"\n" +
 						getFormFileUploadPHP2() +
@@ -3776,7 +3776,7 @@ public class Mobile_HTML5Function extends Function {
 						((DBMS.equals("postgresql") || DBMS.equals("postgres"))? ("    pg_close($insert_db"+num+");\n"):"") +
 						"	\n" +
 						"	$ret['result'] = $b;\n" +
-						"	header(\"Content-Type: application/json; charset=utf-8\");\n" +
+						"	//header(\"Content-Type: application/json; charset=utf-8\");\n" +
 						"	echo json_encode($ret);\n" +
 						"?>\n";
 		return s;

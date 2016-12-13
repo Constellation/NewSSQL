@@ -535,6 +535,8 @@ public class Mobile_HTML5_dynamic {
 	    			where = where.replace("[\"\"","[\"").replace("\"\"]","\"]").replace("[\" \"","[\"").replace("\" \"]","\"]");
 	    		}
 	    		query = query.substring(0,query.lastIndexOf(" where "));
+	    		if(query.endsWith(" where"))
+	    			query = query.substring(0,query.lastIndexOf(" where"));
 	    	}
 	    	from = query.trim();
 	    	
@@ -712,7 +714,7 @@ public class Mobile_HTML5_dynamic {
     		}
     		php += 
 						"\n" +
-						"    header(\"Content-Type: application/json; charset=utf-8\");\n" +
+						"    //header(\"Content-Type: application/json; charset=utf-8\");\n" +
 						"    echo json_encode($ret);\n" +
 						"\n" +
 						"\n" +
