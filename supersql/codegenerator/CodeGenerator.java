@@ -782,6 +782,7 @@ public class CodeGenerator {
 
 		func_atts.add("h_exp");
 		func_atts.add(atts);
+		fnc.setFname( func_name );
 		FunctionData fnd = new FunctionData(func_name);
 
 		String name, value;
