@@ -1,4 +1,5 @@
+FOREACH e.id
 GENERATE HTML
-[ e.name ]!, avg[e.salary]
+[e.salary, e.syear]!
 FROM employee e
 

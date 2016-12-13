@@ -1,3 +1,5 @@
 GENERATE HTML
-[link(e.name, 'Q3.ssql', e.id)]!
-FROM employee e
+[d.name![i.name, i.price]!]!
+FROM item i, dept d
+WHERE i.dept = d.id
+

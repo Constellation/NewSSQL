@@ -1,3 +1,4 @@
 GENERATE HTML
-[e.name],3!
+[link(e.name@{target='_new'},'Q9.ssql',e.id)]!
 FROM employee e
+
