@@ -1,3 +1,0 @@
-GENERATE HTML
-    [link(e1.name, file="Q31.ssql", att=e1.id)]!
-FROM employee e1
