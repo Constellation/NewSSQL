@@ -269,6 +269,7 @@ public class Mobile_HTML5Env extends LocalEnv {
     			header.append("<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js\"></script>\n");
     			header.append("<script src=\"jscss/bootstrap.js\"></script>\n");
     			header.append("<script src=\"jscss/forBootstrap/jquery.twbsPagination.js\"></script>\n");
+    			header.append("<script src=\"jscss/forBootstrap/jquery.matchHeight.js\"></script>\n");
     		}
 	        //20160603 bootstrap
 	        if(!Sass.isBootstrapFlg()){
@@ -280,7 +281,7 @@ public class Mobile_HTML5Env extends LocalEnv {
             header.append("<link rel=\"stylesheet\" href=\"jscss/jquery.simplePagination.css\"/>\n");
             //20130206
             //※※　要注意　※※　 jquery.jsより先にjquerymobile.jsをインポートすると、ボタン等の表示がうまくいかなくなる!!
-//            header.append("<script src=\"jscss/jquery-1.7.1.min.js\"></script>\n");
+            header.append("<script src=\"jscss/jquery-1.7.1.min.js\"></script>\n");
             header.append(Mobile_HTML5Function.updateFormJS);
             if(!Sass.isBootstrapFlg()){
             	header.append("<script src=\"jscss/jquery-1.7.1.min.js\"></script>\n");
