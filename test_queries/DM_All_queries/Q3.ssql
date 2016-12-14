@@ -1,3 +1,5 @@
 GENERATE HTML
-[e.name % {e.salary, e.syear}]!
-FROM employee e
+[d.name![i.name, i.price]!]!
+FROM item i, dept d
+WHERE i.dept = d.id
+

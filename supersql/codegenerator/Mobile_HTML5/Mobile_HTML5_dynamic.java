@@ -62,6 +62,7 @@ public class Mobile_HTML5_dynamic {
 		return createDynamicAttribute(tfe, html_env);
 	}
 	private static String createDynamicAttribute(ITFE tfe, Mobile_HTML5Env html_env){
+		
 		String s = ""+tfe;
 		s = s.trim();
 		if(s.startsWith("\"") && s.endsWith("\"")){
@@ -71,9 +72,9 @@ public class Mobile_HTML5_dynamic {
 			//number
 		}else{
 			//attribute
-			
 			if(dynamicWhileCount0>1)	dynamicAttributeFlg = false;
 			if(dynamicAttributeFlg){
+				//Log.e("createDynamicAttribute2: "+s);
 				//TODO d
 //				int i = Gnum-1;
 				int i = 0;//dynamicCount-1;
@@ -81,8 +82,9 @@ public class Mobile_HTML5_dynamic {
 				int j = sindex++;
 				//Log.e(j);
 				//String a = "'COALESCE(CAST("+s+" AS varchar), \\'\\')'";	//for displaying rows which include NULL values (common to postgresql, sqlie, mysql)
-				String a = "'"+s+"'";	//for displaying rows which include NULL values (common to postgresql, sqlie, mysql)
-				String b = "'.$row"+Gnum+"["+j+"].'";
+				String a = "'"+s.replace("'", "\\'")+"'";	//for displaying rows which include NULL values (common to postgresql, sqlie, mysql)
+				//String b = "'.$row"+Gnum+"["+j+"].'";
+				String b = "'.$row1["+j+"].'";
 				s = b;
 				//b = "$b .= '<div>"+b+"</div>';\n";
 				
@@ -130,6 +132,8 @@ public class Mobile_HTML5_dynamic {
 		}
 		return s;
 	}
+	
+	//未使用？
 	public static void dyamicPreStringProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
 		int i = Gnum-1;
 //		int j = new Connector().getSindex();
@@ -250,7 +254,7 @@ public class Mobile_HTML5_dynamic {
 		return false;
 	}
 	public static boolean dynamicPreProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
-		if(decos.containsKey("dynamic")){
+		if(dynamicDisplay){
 			dynamicHTMLbuf = html_env.code.toString();
 			dynamicDisplay = true;
 			if(Mobile_HTML5G3.G3)	Mobile_HTML5G3.dynamic_G3 = true;	//added by goto 20161112 for dynamic foreach
@@ -259,7 +263,7 @@ public class Mobile_HTML5_dynamic {
 		return false;
 	}
 	public static boolean dynamicStringGetProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
-		if(decos.containsKey("dynamic")){
+		if(dynamicDisplay){
 			String currentHTML = html_env.code.toString();
 			dynamicString = currentHTML.substring(dynamicHTMLbuf.length(), currentHTML.length());
 			html_env.code = new StringBuffer(dynamicHTMLbuf);
@@ -269,8 +273,7 @@ public class Mobile_HTML5_dynamic {
 		return false;
 	}
 	public static boolean dynamicProcess(String symbol, String tfeID, DecorateList decos, Mobile_HTML5Env html_env){
-		if(decos.containsKey("dynamic")){
-
+		if(dynamicDisplay){
 ////			//Log.i("Mobile_HTML5.gLevel = "+Mobile_HTML5.gLevel);
 ////			if(Compiler.isCompiler && Mobile_HTML5.gLevel>0){
 ////				return false;
@@ -535,6 +538,8 @@ public class Mobile_HTML5_dynamic {
 	    			where = where.replace("[\"\"","[\"").replace("\"\"]","\"]").replace("[\" \"","[\"").replace("\" \"]","\"]");
 	    		}
 	    		query = query.substring(0,query.lastIndexOf(" where "));
+	    		if(query.endsWith(" where"))
+	    			query = query.substring(0,query.lastIndexOf(" where"));
 	    	}
 	    	from = query.trim();
 	    	
@@ -670,7 +675,7 @@ public class Mobile_HTML5_dynamic {
 							/* nest dynamic string  start */
 							//TODO d
 				    		for(int i=0; i<dynamicWhileStrings.size(); i++){
-					    		php +=	"          $b .= '\n"+dynamicWhileStrings.get(i)+"';\n";
+					    		php +=	"          $b .= '"+dynamicWhileStrings.get(i)+"';\n";
 				    		}
 				    		for(int i=dynamicWhileCount; i>1; i--){		//TODO d 処理の位置
 				    			php += " }\n";
@@ -712,7 +717,7 @@ public class Mobile_HTML5_dynamic {
     		}
     		php += 
 						"\n" +
-						"    header(\"Content-Type: application/json; charset=utf-8\");\n" +
+						"    //header(\"Content-Type: application/json; charset=utf-8\");\n" +
 						"    echo json_encode($ret);\n" +
 						"\n" +
 						"\n" +
@@ -782,7 +787,6 @@ public class Mobile_HTML5_dynamic {
 	    	
 	    	
 	    	initVariables();
-	    	
 	    	
 			//Log.e(" - End dynamic process -");
         	return true;

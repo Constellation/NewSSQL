@@ -1,10 +1,3 @@
 GENERATE HTML
-{
-{
-[e.name@{class='name'},e.salary@{class='salary'},
-e.byear@{class='birth'}]!
-}@{title='MEMBER',tablealign='center'}
-}@{cssfile='demo.css',charset='euc-jp'}
+[e.name],
 FROM employee e
-
-
