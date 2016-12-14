@@ -2581,6 +2581,7 @@ public class Mobile_HTML5Function extends Function {
 			//columns（第二引数）
 			FuncArg fa2 = (FuncArg) this.Args.get(1);
 			columns += fa2.getStr();
+			Log.info(fa2);
 			//after_from（第三引数）
 			FuncArg fa3 = (FuncArg) this.Args.get(2);
 			after_from += fa3.getStr().trim();

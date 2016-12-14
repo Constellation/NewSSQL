@@ -198,7 +198,7 @@ public class Mobile_HTML5_form {
 	    	for(int i=0; i<col_num-1; i++){
 	    		s_array[i] = columns0.substring(0,columns0.indexOf(","));
 	    		columns0 = columns0.substring(columns0.indexOf(",")+1);
-	    		//Log.i( "s_array["+i+"] = "+s_array[i]+"	"+columns0);
+//	    		Log.i( "s_array["+i+"] = "+s_array[i]+"	"+columns0);
 	    	}
 	    	s_array[col_num-1] = columns0;
 			//Log.i( "s_array["+(col_num-1)+"] = "+s_array[col_num-1]);

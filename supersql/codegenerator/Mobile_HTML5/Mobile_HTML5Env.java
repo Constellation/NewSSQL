@@ -283,7 +283,7 @@ public class Mobile_HTML5Env extends LocalEnv {
             header.append("<link rel=\"stylesheet\" href=\"jscss/jquery.simplePagination.css\"/>\n");
             //20130206
             //※※　要注意　※※　 jquery.jsより先にjquerymobile.jsをインポートすると、ボタン等の表示がうまくいかなくなる!!
-            header.append("<script src=\"jscss/jquery-1.7.1.min.js\"></script>\n");
+//            header.append("<script src=\"jscss/jquery-1.7.1.min.js\"></script>\n");
             header.append(Mobile_HTML5Function.updateFormJS);
             if(!Sass.isBootstrapFlg()){
             	header.append("<script src=\"jscss/jquery-1.7.1.min.js\"></script>\n");
@@ -325,12 +325,16 @@ public class Mobile_HTML5Env extends LocalEnv {
 		        	css.append(".ui-page{ background: transparent url(../"+bg+") }\n");
 		        }
 	            //20130309  "div"
-	            css.append("div{ text-align:center; float:center; vertical-align:middle; }\n");
-	            //20130315	"長い文字が...と省略されるのを防ぐ (*:全てのタイプに適用) "
-	            css.append("* { white-space: normal; }\n");
-	            css.append(".error{ color:red; text-align:left; display:block; } -->\n");
-	            css.append(".ui-grid { overflow: hidden; }\n");
-	            css.append(".ui-block { margin: 0; padding: 0; float: left; min-height: 1px; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -ms-box-sizing: border-box; box-sizing: border-box; }\n");
+		        if(!Sass.isBootstrapFlg()){
+		            css.append("div{ text-align:center; float:center; vertical-align:middle; }\n");
+		            //20130315	"長い文字が...と省略されるのを防ぐ (*:全てのタイプに適用) "
+		            css.append("* { white-space: normal; }\n");
+		            css.append(".error{ color:red; text-align:left; display:block; } -->\n");
+		            css.append(".ui-grid { overflow: hidden; }\n");
+		            css.append(".ui-block { margin: 0; padding: 0; float: left; min-height: 1px; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -ms-box-sizing: border-box; box-sizing: border-box; }\n");
+		        }else if(Sass.isBootstrapFlg()){
+		        	css.append("body{ text-align:center; float:center; vertical-align:middle; }\n");
+		        }
 			}
             
 			header.append("<!-- Generated CSS -->\n");
