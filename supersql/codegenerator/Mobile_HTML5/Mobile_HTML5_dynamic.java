@@ -81,7 +81,7 @@ public class Mobile_HTML5_dynamic {
 				int j = sindex++;
 				//Log.e(j);
 				//String a = "'COALESCE(CAST("+s+" AS varchar), \\'\\')'";	//for displaying rows which include NULL values (common to postgresql, sqlie, mysql)
-				String a = "'"+s+"'";	//for displaying rows which include NULL values (common to postgresql, sqlie, mysql)
+				String a = "'"+s.replace("'", "\\'")+"'";	//for displaying rows which include NULL values (common to postgresql, sqlie, mysql)
 				String b = "'.$row"+Gnum+"["+j+"].'";
 				s = b;
 				//b = "$b .= '<div>"+b+"</div>';\n";
