@@ -2711,6 +2711,7 @@ public class Mobile_HTML5Function extends Function {
 		boolean[] noinsertFlg = new boolean[col_num];
 		String[] validationType = new String[col_num];
 		boolean[] notnullFlg = new boolean[col_num];
+		String[] value = new String[col_num];
 		String[] uploadFile = new String[col_num];
 		String[] at_array = new String[col_num];
 		String[] radioButton_array = new String[col_num];
@@ -2738,9 +2739,11 @@ public class Mobile_HTML5Function extends Function {
 			noinsertFlg[i] = false;
 			validationType[i] = "";
 			notnullFlg[i] = false;
+			value[i] = "";
 			uploadFile[i] = "";
 			at_array[i] = "";
 			String str = "";
+			
 			if(s_array[i].replaceAll(" ","").contains("@{")){
 				str = s_array[i].substring(s_array[i].lastIndexOf("@")+1);	//@以下の文字列
 				at_array[i] = str;
@@ -2834,6 +2837,12 @@ public class Mobile_HTML5Function extends Function {
 			//Log.i(s_array[i]+"	"+$session_array[i]);
 			//Log.i(button_array[i]+"	"+button_array[i]);
 
+			s_array[i] = s_array[i].trim();
+			if(s_array[i].contains("=")){
+				value[i] = s_array[i].substring(s_array[i].indexOf("=")+1);
+				s_array[i] = s_array[i].substring(0, s_array[i].indexOf("="));
+			}
+			
 			if(a.startsWith("max(") || a.startsWith("min(") || a.startsWith("avg(") ||  a.startsWith("count(") )	groupbyFlg = true;
 			if(a.startsWith("a(") || a.startsWith("anchor(")){
 				insert_aFlg += "true\""+((i<col_num-1)?(",\""):(""));
@@ -3165,6 +3174,7 @@ public class Mobile_HTML5Function extends Function {
 								" type=\""+((!hiddenFlg[i])?("text"):("hidden"))+"\"" +
 								" id=\"SSQL_insert"+insertCount+"_words"+(++insertWordCount)+"\"" +
 								" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\"" +
+								""+((!value[i].equals(""))? " value=\""+value[i]+"\"" : "")+
 								" placeholder=\""+s_name_array[i]+"\""+Mobile_HTML5_form.getFormClass(notnullFlg[i], "")+">" +
 								""+((!textareaFlg[i])?(""):("</textarea>")) +
 								"</span>"+( (!textareaFlg[i])? "" : "</span>" )+"\n"+
@@ -3177,6 +3187,7 @@ public class Mobile_HTML5Function extends Function {
 								" type=\""+((!hiddenFlg[i])?("text"):("hidden"))+"\"" +
 								" id=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\"" +
 								" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\"" +
+								""+((!value[i].equals(""))? " value=\""+value[i]+"\"" : "")+
 								" "+((!textareaFlg[i])?("value=\""+updateFromValue+"\""):(""))+
 								" placeholder=\""+s_name_array[i]+"\""+Mobile_HTML5_form.getFormClass(notnullFlg[i], "")+">" +
 								""+((!textareaFlg[i])?(""):(updateFromValue+"</textarea>")) +
@@ -3354,6 +3365,7 @@ public class Mobile_HTML5Function extends Function {
 						"	s += \"<table style='width:100%; font-weight:500; line-height:30px;'>\";\n";
 		for(int i=0; i<col_num; i++){
 			String s = "";
+			if(hiddenFlg[i]) continue;
 			if(!checkbox_array[i].equals("")){
 				s = checkbox_array[i];
 				statement += 
