@@ -23,9 +23,9 @@ public class Mobile_HTML5 {
 	//Process
 	public static boolean preProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
 		//Pre-process (前処理)
-		if(!symbol.contains("G1") && !symbol.contains("G2")){	//TODO disuse?
-			Mobile_HTML5_dynamic.dyamicPreStringProcess(symbol, decos, html_env);
-		}
+//		if(!symbol.contains("G1") && !symbol.contains("G2")){	//TODO disuse?
+//			Mobile_HTML5_dynamic.dyamicPreStringProcess(symbol, decos, html_env);
+//		}
 		
 		Mobile_HTML5_show.showProcess(decos, html_env);	//TODO この位置でOKか確認
 		
@@ -55,7 +55,7 @@ public class Mobile_HTML5 {
 		//C1, C2:    decos, html_env, data, data_info, tfe, tfes, tfeItems
 		//G1, G2:    decos, html_env, data, data_info, tfe
 		if(symbol.contains("G1") || symbol.contains("G2")){
-        	if(Mobile_HTML5.gLevel<=1){
+        	if(Mobile_HTML5.gLevel<1){
         		Mobile_HTML5_dynamic.dynamicWhileCount0++;
         	}
 		}
@@ -80,7 +80,7 @@ public class Mobile_HTML5 {
 		//C1, C2:    decos, html_env, data, data_info, tfe, tfes, tfeItems
 		//G1, G2:    decos, html_env, data, data_info, tfe
 		if(symbol.contains("G1") || symbol.contains("G2")){
-	        if(Mobile_HTML5_dynamic.dynamicDisplay && Mobile_HTML5.gLevel<=1){
+	        if(Mobile_HTML5_dynamic.dynamicDisplay && Mobile_HTML5.gLevel<1){
 	    		Mobile_HTML5_dynamic.dynamicWhileCount0--;
 	        }
 	        if(Mobile_HTML5_dynamic.dynamicDisplay && Mobile_HTML5_dynamic.dynamicWhileCount0<1){
