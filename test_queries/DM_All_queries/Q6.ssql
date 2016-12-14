@@ -1,4 +1,4 @@
 GENERATE HTML
-[link(e.name@{target='_new'},'Q6.ssql',e.id)]!
+[link(e.name@{target='_new'},'Q5.ssql',e.id)]!
 FROM employee e
 

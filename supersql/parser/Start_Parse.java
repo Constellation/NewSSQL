@@ -508,14 +508,28 @@ public class Start_Parse {
 				if(prefix && foreachFlag){
 					StringTokenizer str = new StringTokenizer(b);
 					String generate = null;
-					while(str.hasMoreTokens()){
-						String st = str.nextToken();
-						if(st.toLowerCase().equals("generate")){
-							generate = st + " " + str.nextToken();
-							b = b.substring(b.indexOf(str.nextToken()));
-							break;
-						}
+					
+					ANTLRInputStream input_b = new ANTLRInputStream(b);
+					queryLexer lexer_b = new queryLexer(input_b);
+					CommonTokenStream tokens_b = new CommonTokenStream(lexer_b);
+
+					queryParser parser_b = new queryParser(tokens_b);
+					parser_b.setErrorHandler(new MyErrorStrategy());
+					ParseTree tree_b = parser_b.query(); // begin parsing at rule query
+					ExtList List_tree_b = TreeConst.createSSQLParseTree(tree_b, parser_b);
+					List_tree_b = (ExtList) List_tree_b.get(1);
+					String[] ruleNames = parser_b.getRuleNames();
+					
+					generate = getText((ExtList)List_tree_b.get(0), ruleNames);
+					builder = "";
+					String tfe = getText((ExtList)List_tree_b.get(1), ruleNames);
+					builder = "";
+					String from = "";
+					if(List_tree_b.size() > 2){
+						from = getText((ExtList)List_tree_b.get(2), ruleNames);
+						builder = "";
 					}
+					
 					generate = generate + "[foreach(";
 					for(int i = 0; i < foreachinfo.size(); i++){
 						if(i == 0)
@@ -524,11 +538,9 @@ public class Start_Parse {
 							generate = generate + "," + foreachinfo.get(i);
 					}
 					generate = generate + ")?";
-					String b1 = b.substring(0, b.toLowerCase().indexOf("from"));
-					String b2 = b.substring(b.toLowerCase().indexOf("from"));
+					
 
-
-					b = generate + b1 + "]%" + b2;
+					b = generate + tfe + "]%" + from;
 				}
 				GlobalEnv.foreach_flag = foreachFlag;
 				Preprocessor preprocessor = new Preprocessor(b);
