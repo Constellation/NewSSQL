@@ -19,6 +19,7 @@ import supersql.codegenerator.Grouper;
 import supersql.codegenerator.Jscss;
 import supersql.codegenerator.LinkForeach;
 import supersql.codegenerator.Manager;
+import supersql.codegenerator.Sass;
 import supersql.codegenerator.Compiler.Compiler;
 import supersql.codegenerator.Compiler.PHP.PHP;
 import supersql.common.GlobalEnv;
@@ -84,12 +85,16 @@ public class Mobile_HTML5G3 extends Grouper {
 //        html_env2.css = new StringBuffer();
 //        html_env2.header = new StringBuffer();
 //        html_env2.footer = new StringBuffer();
+        
+        if(Sass.isBootstrapFlg()){
+        	Sass.beforeLoop();
+        }
+        
         this.setDataList(data_info);
         while (this.hasMoreItems()) {
         	//Log.e(G3_and_dynamic);
         	//added by goto 20161112 for dynamic foreach
         	if(dynamic_G3)	break;
-        	
             html_env.glevel++;
 
 //            boolean b = tfe instanceof Attribute;
@@ -196,8 +201,15 @@ public class Mobile_HTML5G3 extends Grouper {
 	                GlobalEnv.addErr("Error[HTMLG3]: File IO Error in HTMLG3");
 	            }
 			}
+			if(Sass.isBootstrapFlg()){
+            	Sass.afterFirstLoop();
+            }
         }
 
+        if (Sass.isBootstrapFlg()){
+        	Sass.afterLoop();
+        }
+        
 		if(!Start_Parse.foreach1Flag){
 			//added by goto 20161019 for new foreach
 			html_env.getHeader(1);

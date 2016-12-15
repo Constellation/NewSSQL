@@ -183,7 +183,6 @@ public class Mobile_HTML5C1 extends Connector {
             				Sass.makeClass(classid);
             				Sass.defineGridBasic(classid, decos);
             				Sass.closeBracket();
-            				
             			}
             		}
 
