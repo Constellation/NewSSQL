@@ -22,9 +22,11 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.Deque;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Vector;
 
 import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5Env;
 import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5Function;
@@ -37,7 +39,8 @@ public class Sass {
 	private static boolean bootstrapFlg = false;
 	private static boolean firstElementFlg = true;
 
-	public static StringBuffer sass = new StringBuffer();;
+	public static StringBuffer sass = new StringBuffer();
+	public static ArrayList<String> writtenSassClassid = new ArrayList<String>();
 
 	private static final String fs = GlobalEnv.OS_FS;
 	private static final String outdirPath = GlobalEnv.getOutputDirPath();
@@ -91,12 +94,17 @@ public class Sass {
 		sass.append("." + classid + "{\n\t@include make-row();\n");
 	}
 
-	public static void makeColumn(String classid){
-		sass.append("." + classid + "{\n\t@include make-sm-column(1);\n");
-	}
-
 	public static void closeBracket(){
 		sass.append("}\n");
+	}
+	
+	public static void makeColumn(String classid, DecorateList decos){
+		if(!writtenSassClassid.contains(classid)){
+			makeClass(classid);
+			defineGridBasic(classid, decos);
+			closeBracket();
+			writtenSassClassid.add(classid);
+		}	
 	}
 
 	public static LinkedHashMap beforeC1WhileProcess(ExtList tfes){
@@ -346,7 +354,7 @@ public class Sass {
 
 			sb.append(sass);
 
-//			Log.info(sb);
+			Log.info(sb);
 
 			URI inputFile = new File(outdirPath+fs+"jscss"+fs+"forBootstrap"+fs+"_bootstrap.scss").toURI();
 			URI outputFile = new File(outdirPath+fs+"stylesheet.css").toURI();

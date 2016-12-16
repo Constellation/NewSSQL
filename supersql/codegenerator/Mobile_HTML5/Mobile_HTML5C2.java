@@ -169,9 +169,10 @@ public class Mobile_HTML5C2 extends Connector {
 //        				Sass.makeClass(classid);
 //        				Sass.defineGridBasic(classid, decos);
         				
-        				Sass.makeClass(classid);
-        				Sass.defineGridBasic(classid, decos);
-        				Sass.closeBracket();
+//        				Sass.makeClass(classid);
+//        				Sass.defineGridBasic(classid, decos);
+//        				Sass.closeBracket();
+        				Sass.makeColumn(classid, decos);
         			}
         		}
         	}
@@ -228,9 +229,10 @@ public class Mobile_HTML5C2 extends Connector {
 //            		Sass.makeClass(classid2);
 //            		Sass.defineGridBasic(classid2, decos2);
             		
-            		Sass.makeClass(classid2);
-            		Sass.defineGridBasic(classid2, decos2);
-            		Sass.closeBracket();
+//            		Sass.makeClass(classid2);
+//            		Sass.defineGridBasic(classid2, decos2);
+//            		Sass.closeBracket();
+            		Sass.makeColumn(classid2, decos2);
             	}
 	      	}
 
