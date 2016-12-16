@@ -396,6 +396,7 @@ public class Start_Parse {
 		StringTokenizer st = new StringTokenizer(where);
 		while (st.hasMoreTokens()) {
 			String nt = st.nextToken().toString();
+			Log.info(nt);
 			if (nt.equalsIgnoreCase("WHERE")) {
 				buffer = where_c;
 			}
@@ -560,6 +561,9 @@ public class Start_Parse {
 //				Log.info(getText(list_tfe, ruleNames));
 				if(List_tree_b.size() > 2){
 					list_from_where = (ExtList) List_tree_b.get(2);
+					Log.info(list_from_where);
+					after_from = getText(list_from_where, ruleNames);
+					builder = "";
 					list_from = new ExtList();
 					list_where = new ExtList();
 
@@ -586,20 +590,19 @@ public class Start_Parse {
 //					Log.info(list_from_where);
 //					String from1 = getText( list_from_where, ruleNames );
 //					after_from = from1.substring(from1.toLowerCase().indexOf("from") + 4);
-					String from1 = getText( list_from, ruleNames );
-					builder = "";
-					String from2 = getText( list_where, ruleNames );
+//					String from1 = getText( list_from, ruleNames );
+//					builder = "";
+//					String from2 = getText( list_where, ruleNames );
 
-					after_from = from1 + "where " + from2;
-					after_from = after_from.substring(from1.toLowerCase().indexOf("from") + 4);
-					
+//					after_from = from1 + "where " + from2;
+					after_from = after_from.substring(after_from.toLowerCase().indexOf("from") + 4);					
 					String from = new String();
 					while(after_from.contains("/*")){
 						from = after_from.substring(0, after_from.indexOf("/*"));
 						from += after_from.substring(after_from.indexOf("*/") +2);
 						after_from = from;
 					}
-					Log.out(after_from);
+					Log.info(after_from);
 					processKeywords(after_from);
 
 				}

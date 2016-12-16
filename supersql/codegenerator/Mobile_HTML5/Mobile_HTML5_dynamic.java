@@ -549,6 +549,8 @@ public class Mobile_HTML5_dynamic {
 	    			     +"<?php\n";
 	    	//php
     		if(!dynamicRowFlg){
+    			Log.info(getDynamicHTML(tfeID, dynamicCount, dynamicPHPfileName));
+    			Log.info(tfeID +" "+ dynamicCount +" "+ dynamicPHPfileName);
 	    		statement += getDynamicHTML(tfeID, dynamicCount, dynamicPHPfileName);
     		}else{
     			statement += getDynamicPagingHTML(tfeID, dynamicRow, dynamicPagingCount, dynamicPHPfileName);
@@ -864,7 +866,6 @@ public class Mobile_HTML5_dynamic {
 		final String DD_COMMENT_NAME2 = "SSQL Dynamic Display Data"+num;
 		phpFileName = new File(phpFileName).getName();
 		String s = "";
-		
 		if(Mobile_HTML5G3.dynamic_G3)	s +=	LinkForeach.getJS("G3", DD_FUNC_NAME);	//added by goto 20161112 for dynamic foreach
 		s +=		
 				"\n" +

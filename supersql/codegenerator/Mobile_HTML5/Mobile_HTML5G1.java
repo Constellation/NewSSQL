@@ -236,15 +236,11 @@ public class Mobile_HTML5G1 extends Grouper {
         		if(firstFlg){
         			html_env.code.append("<DIV Class=\"row\">\n");
         			html_env.code.append("<DIV Class=\""+classid+"\">\n");
-        			Log.info(classid);
-        			if(Sass.outofloopFlg.peekFirst()){
-//        				Sass.makeRowClass();
+        			if(Sass.outofloopFlg.peekFirst()){        				
 //        				Sass.makeClass(classid);
 //        				Sass.defineGridBasic(classid, decos);
-        				
-        				Sass.makeClass(classid);
-        				Sass.defineGridBasic(classid, decos);
-        				Sass.closeBracket();
+//        				Sass.closeBracket();
+        				Sass.makeColumn(classid, decos);
         			}
         		}
 
@@ -359,9 +355,10 @@ public class Mobile_HTML5G1 extends Grouper {
 //            		Sass.makeClass(classid2);
 //            		Sass.defineGridBasic(classid2, (tfe).decos);
             		
-            		Sass.makeClass(classid2);
-            		Sass.defineGridBasic(classid2, (tfe).decos);
-            		Sass.closeBracket();
+//            		Sass.makeClass(classid2);
+//            		Sass.defineGridBasic(classid2, (tfe).decos);
+//            		Sass.closeBracket();
+            		Sass.makeColumn(classid2, (tfe).decos);
             	}
             }
             
