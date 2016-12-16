@@ -20,6 +20,7 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.Augmenter;
 
@@ -30,11 +31,17 @@ import supersql.common.GlobalEnv;
 public class Test1 {
 
 	public static void main(String[] args) {
-		//Initialization of WebDriver
+		//Initialization of WebDriver (Firefox)
 		String driverPath = GlobalEnv.getworkingDir()+"/webdriver/geckodriver";
 		System.setProperty("webdriver.gecko.driver", driverPath);
 		WebDriver driver = new FirefoxDriver();
 		JavascriptExecutor js = (JavascriptExecutor) driver;
+		
+		//Initialization of WebDriver (Chrome)
+//		String driverPath = GlobalEnv.getworkingDir()+"/webdriver/chromedriver";
+//		System.setProperty("webdriver.chrome.driver", exePath);
+//		WebDriver driver = new ChromeDriver();
+//		JavascriptExecutor js = (JavascriptExecutor) driver;
         
 		//LinkedHashMap for final fixes
 		LinkedHashMap<String,LinkedHashMap> fixMap = new LinkedHashMap<String,LinkedHashMap>();
@@ -98,69 +105,14 @@ public class Test1 {
 	            System.out.println(fixMap);
         	}
         }
-        	
-        
-        
-        
-//        WebElement element2 = driver.findElement(By.className("TFE10020"));
-//        
-//        driver.manage().window().setSize(new Dimension(1200,900));
-//        System.out.println(element2.getSize().width);
-//        driver.manage().window().setSize(new Dimension(992,900));
-//        System.out.println(element2.getSize().width);
-//        driver.manage().window().setSize(new Dimension(768,900));
-//        System.out.println(element2.getSize().width);
-//        driver.manage().window().setSize(new Dimension(400,900));
-//        System.out.println(element2.getSize().width);
-        
-//        List<WebElement> allspan = element.findElements(By.tagName("span"));
-//        
-//        int max=0;
-//        for(WebElement span : allspan){
-//        	int spanwidth = (span.getSize().width);
-//        	if (spanwidth > max) {
-//                max = spanwidth;
-//            }
-//        }
-//        System.out.println(max);
-        
-//        driver.manage().window().setSize(new Dimension(400,900));
-//        element = driver.findElement(By.className("TFE10039"));
-//        allspan = element.findElements(By.tagName("span"));
-        
-//        driver.execute_script("");
+
+        //Apply CSS
         for(WebElement each : elements){
         	((JavascriptExecutor)driver).executeScript("arguments[0].setAttribute('style', 'width:100%')",each);
-//        	System.out.println(element.getSize().width);
         }
         
 //        CaptureScreenshot(driver, js);
         
-//        File scrFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-//        try {
-//			FileUtils.copyFile(scrFile, new File("/Users/ryosuke/Desktop/screenshot1.png"));
-//		} catch (IOException e) {
-//			// TODO 自動生成された catch ブロック
-//			e.printStackTrace();
-//		}
-//        ((JavascriptExecutor)driver).executeScript("document.getElementsByName('myField')[0].style.left='40%'");
-        
-//        max=0;
-//        for(WebElement span : allspan){
-//        	int spanwidth = (span.getSize().width);
-//        	if (spanwidth > max) {
-//                max = spanwidth;
-//            }
-//        }
-//        System.out.println(max);
-        
-//        System.out.println(element.getSize().height);
-//        System.out.println(element.getSize().width);
-//        System.out.println(element.getText());
-        driver.manage().window().setSize(new Dimension(430,900));
-        
-//        System.out.println(element.getSize().height);
-//        System.out.println(element.getSize().width);
         
         // Enter something to search for
 //        element.sendKeys("Cheese!");
@@ -169,7 +121,7 @@ public class Test1 {
 //        element.submit();
 
         // Check the title of the page
-        System.out.println("Page title is: " + driver.getTitle());
+//        System.out.println("Page title is: " + driver.getTitle());
         
         // Google's search is rendered dynamically with JavaScript.
         // Wait for the page to load, timeout after 10 seconds
@@ -180,7 +132,7 @@ public class Test1 {
 //        });
 
         // Should see: "cheese! - Google Search"
-        System.out.println("Page title is: " + driver.getTitle());
+//        System.out.println("Page title is: " + driver.getTitle());
         
         //Close the browser
         driver.quit();
