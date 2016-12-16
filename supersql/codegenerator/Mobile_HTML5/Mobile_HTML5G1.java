@@ -57,7 +57,7 @@ public class Mobile_HTML5G1 extends Grouper {
     	G1_count++;
     	Mobile_HTML5Attribute.attributeHasWidth = false;
     	
-    	Mobile_HTML5.preProcess(getSymbol(), decos, html_env);	//Pre-process (前処理)
+    	if(!Mobile_HTML5.preProcess(getSymbol(), decos, html_env))	return null;	//Pre-process (前処理)
     	
     	//20131001 tableDivHeader
     	Mobile_HTML5G2.tableDivHeader = "";	
@@ -277,7 +277,7 @@ public class Mobile_HTML5G1 extends Grouper {
         
         Mobile_HTML5.beforeWhileProcess(getSymbol(), decos, html_env);
         while (this.hasMoreItems()) {
-        	Mobile_HTML5.gLevel++;
+        	Mobile_HTML5.gLevel1++;
         	Mobile_HTML5.whileProcess1_1(getSymbol(), decos, html_env, data, data_info, tfe, null, -1);
 
         	
@@ -420,7 +420,7 @@ public class Mobile_HTML5G1 extends Grouper {
 
             
 	        if(!Mobile_HTML5.whileProcess2_2(getSymbol(), decos, html_env, data, data_info, tfe, null, -1))	break;
-        	Mobile_HTML5.gLevel--;
+        	Mobile_HTML5.gLevel1--;
         }	// /while
 
         //20160527 bootstrap

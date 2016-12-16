@@ -57,7 +57,7 @@ public class Mobile_HTML5G2 extends Grouper {
     @Override
 	public String work(ExtList data_info) {
     	//if(Mobile_HTML5G3.G3 && Mobile_HTML5G3.G3_while_i>0)  	return null;	//TODO
-    	Mobile_HTML5.preProcess(getSymbol(), decos, html_env);	//Pre-process (前処理)
+    	if(!Mobile_HTML5.preProcess(getSymbol(), decos, html_env)) return null;	//Pre-process (前処理)
     	
     	//20131001 tableDivHeader
     	Mobile_HTML5G2.tableDivHeader = "";	
@@ -226,7 +226,7 @@ public class Mobile_HTML5G2 extends Grouper {
 //        Mobile_HTML5_form.G2_dataQuantity = this.data.size();
         Mobile_HTML5.beforeWhileProcess(getSymbol(), decos, html_env);
         while (this.hasMoreItems()) {
-        	Mobile_HTML5.gLevel++;
+        	Mobile_HTML5.gLevel1++;
         	Mobile_HTML5.whileProcess1_1(getSymbol(), decos, html_env, data, data_info, tfe, null, -1);
 
         	
@@ -390,7 +390,7 @@ public class Mobile_HTML5G2 extends Grouper {
 
             
 	        if(!Mobile_HTML5.whileProcess2_2(getSymbol(), decos, html_env, data, data_info, tfe, null, -1))	break;
-	        Mobile_HTML5.gLevel--;
+	        Mobile_HTML5.gLevel1--;
         }	// /while
         //20160527 bootstrap
         Mobile_HTML5.afterWhileProcess(getSymbol(), classid, decos, html_env);

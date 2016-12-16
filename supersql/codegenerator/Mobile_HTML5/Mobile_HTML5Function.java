@@ -4976,12 +4976,13 @@ public class Mobile_HTML5Function extends Function {
 
 	private void Func_foreach(ExtList data_info) throws UnsupportedEncodingException {
 		String att = new String();
+		Mobile_HTML5G3.dynamic_G3_atts.clear();
 		for (int i = 0; i < this.countconnectitem(); i++) {
 			att = att + "_" + this.getAtt(Integer.toString(i));
-
+			
 			//added by goto 20161112 for dynamic foreach
-			if(PHP.isPHP)
-				Mobile_HTML5G3.dynamic_G3_atts.add(""+this.Args.get(i)); //add attribute name
+			//if(Compiler.isCompiler || decos.containsKey("dynamic"))
+			Mobile_HTML5G3.dynamic_G3_atts.add(""+this.Args.get(i)); //add attribute name
 		}
 
 		if(!Start_Parse.foreach1Flag){

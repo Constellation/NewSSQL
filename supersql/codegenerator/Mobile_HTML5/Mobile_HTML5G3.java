@@ -20,7 +20,6 @@ import supersql.codegenerator.Jscss;
 import supersql.codegenerator.LinkForeach;
 import supersql.codegenerator.Manager;
 import supersql.codegenerator.Compiler.Compiler;
-import supersql.codegenerator.Compiler.PHP.PHP;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
@@ -62,7 +61,7 @@ public class Mobile_HTML5G3 extends Grouper {
     	
 		//added by goto 20161019 for new foreach
 		final String ID = LinkForeach.ID1;
-		StringBuffer foreachContents = new StringBuffer((!PHP.isPHP)? LinkForeach.getJS("G3", "") : "");	//added by goto 20161112 for dynamic foreach
+		StringBuffer foreachContents = new StringBuffer((!Compiler.isCompiler && !Mobile_HTML5_dynamic.dynamicDisplay)? LinkForeach.getJS("G3", "") : "");	//added by goto 20161112 for dynamic foreach
 		
         String parentfile = html_env.filename;
         String parentnextbackfile = html_env.nextbackfile;
@@ -88,12 +87,12 @@ public class Mobile_HTML5G3 extends Grouper {
         while (this.hasMoreItems()) {
         	//Log.e(G3_and_dynamic);
         	//added by goto 20161112 for dynamic foreach
-        	if(dynamic_G3)	break;
+        	//if(dynamic_G3)	break;
         	
             html_env.glevel++;
 
 //            boolean b = tfe instanceof Attribute;
-            html_env.code = new StringBuffer();
+        	html_env.code = new StringBuffer();
 //            html_env2.code = new StringBuffer();
 
             /*
@@ -114,10 +113,15 @@ public class Mobile_HTML5G3 extends Grouper {
             
 			if(!Start_Parse.foreach1Flag){
 				//added by goto 20161019 for new foreach
-				if(!dynamic_G3){	//added by goto 20161112 for dynamic foreach
-					html_env.code.insert(0, "<DIV G3 id=\""+ID+foreachID+"\" style=\"display:none\">\n");
-					html_env.code.append("</DIV>\n\n");
-				}
+//				if(!dynamic_G3){	//added by goto 20161112 for dynamic foreach
+//					html_env.code.insert(0, "<DIV G3 id=\""+ID+foreachID+"\" style=\"display:none\">\n");
+//					html_env.code.append("</DIV>\n\n");
+//				}else{
+//					foreachContents = new StringBuffer();	//for Mobile_HTML5/Bootstrap dynamic_G3
+//				}
+				//added by goto 20161112 for dynamic foreach
+				html_env.code.insert(0, "<DIV G3 id=\""+ID+foreachID+"\" style=\"display:none\">\n");
+				html_env.code.append("</DIV>\n\n");
 				foreachContents.append(html_env.code);
 			}
 

@@ -23,8 +23,8 @@ public class Mobile_HTML5_dynamic {
 	public static boolean dynamicDisplay = false;
 	
 	public static String dynamicString = "";
-	private static String dynamicHTMLbuf0 = "";
 	private static String dynamicHTMLbuf = "";
+//	private static String dynamicHTMLbuf1 = "";
 	public static int dynamicCount = 1;
 	private static String dynamicFuncCountLabel = "___SSQL_DynamicFunc_CountLabel___";
 	private static ArrayList<String> dynamicAttributes = new ArrayList<>();
@@ -39,8 +39,8 @@ public class Mobile_HTML5_dynamic {
 	private static int dynamicWhileCount = 0;
 	public static int dynamicWhileCount0 = 0;
 	
-	//For dyamicPostStringProcess() substring
-	public static int html_env_code_length = 0;
+//	//For dyamicPostStringProcess() substring
+//	public static int html_env_code_length = 0;
 	
 	
 	//For Dynamic paging
@@ -228,16 +228,18 @@ public class Mobile_HTML5_dynamic {
 		return "";
 	}
 	
-	public static boolean dynamicPreProcess0(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
+	public static boolean dynamicPreProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
 //		if(Compiler.isCompiler){
 //			decos.put("dynamic", "");
 //		}
 		
 		if(decos.containsKey("dynamic")){
-			dynamicHTMLbuf0 = html_env.code.toString();
+			if(Mobile_HTML5G3.G3)	Mobile_HTML5G3.dynamic_G3 = true;	//added by goto 20161112 for dynamic foreach
+			dynamicHTMLbuf = html_env.code.toString();
 			dynamicDisplay = true;
 			dynamicAttributeFlg = true;
 			dynamicPHPfileName = html_env.getFileName2()+"_SSQLdynamic_"+dynamicCount+".php";
+//			dynamicHTMLbuf1 = html_env.code.toString();	//重複 dynamicHTMLbuf0
 			
 	        if(decos.containsKey("row")){
 	        	dynamicRow = Integer.parseInt(decos.getStr("row").replace("\"", ""));
@@ -253,21 +255,19 @@ public class Mobile_HTML5_dynamic {
 		}
 		return false;
 	}
-	public static boolean dynamicPreProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
-		if(dynamicDisplay){
-			dynamicHTMLbuf = html_env.code.toString();
-			dynamicDisplay = true;
-			if(Mobile_HTML5G3.G3)	Mobile_HTML5G3.dynamic_G3 = true;	//added by goto 20161112 for dynamic foreach
-			return true;
-		}
-		return false;
-	}
+//	public static boolean dynamicPreProcess1(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
+//		if(dynamicDisplay){
+//			Log.e("dynamicPreProcess");
+//			dynamicHTMLbuf1 = html_env.code.toString();	//重複 dynamicHTMLbuf0
+//			return true;
+//		}
+//		return false;
+//	}
 	public static boolean dynamicStringGetProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
 		if(dynamicDisplay){
 			String currentHTML = html_env.code.toString();
 			dynamicString = currentHTML.substring(dynamicHTMLbuf.length(), currentHTML.length());
-			html_env.code = new StringBuffer(dynamicHTMLbuf);
-			//dynamicDisplay = false;
+//			html_env.code = new StringBuffer(dynamicHTMLbuf);	//未使用？	//重複
 			return true;
 		}
 		return false;
@@ -284,7 +284,7 @@ public class Mobile_HTML5_dynamic {
 ////			}
 			
 			if(symbol.contains("G1") || symbol.contains("G2")){
-				html_env.code = new StringBuffer(dynamicHTMLbuf0);
+				html_env.code = new StringBuffer(dynamicHTMLbuf);
 			}
 			
 			//ajax load interval
@@ -600,13 +600,14 @@ public class Mobile_HTML5_dynamic {
     				att += "getA('"+x+"').\"||'_'||\".";
     			}
     			if(!att.isEmpty())	att = att.substring(0, att.length()-"||'_'||\".".length());
-    			Mobile_HTML5G3.dynamic_G3_atts.clear();
+    			//Mobile_HTML5G3.dynamic_G3_atts.clear();
     			
     			php += 	"    //for dynamic foreach\n" +
     					"    if(!empty($where))	$where = '('.$where.') and ';\n" +		//added by goto 20161114  'where () and ...' for dynamic foreach
     					"    $where .= "+att+"='\".$_POST['att'].\"'\";\n" +
     					"\n";
     		}
+    		//Mobile_HTML5G3.dynamic_G3_atts.clear();
     		
     		if(DBMS.equals("sqlite") || DBMS.equals("sqlite3")){
     			php +=	"    $dynamic_db"+dynamicCount+" = new SQLite3($sqlite3_DB);\n";
@@ -796,10 +797,12 @@ public class Mobile_HTML5_dynamic {
 	//initVariables
 	private static void initVariables() {
 		dynamicDisplay = false;
+		//Mobile_HTML5G3.dynamic_G3 = false;
 		
 		dynamicString = "";
-		dynamicHTMLbuf0 = "";
 		dynamicHTMLbuf = "";
+//		dynamicHTMLbuf1 = "";
+		
 		//dynamicCount = 1;
 		dynamicAttributes.clear();
 		
@@ -816,8 +819,8 @@ public class Mobile_HTML5_dynamic {
 		dynamicWhileCount0 = 0;
 
 		
-		//For dyamicPostStringProcess() substring
-		html_env_code_length = 0;
+//		//For dyamicPostStringProcess() substring
+//		html_env_code_length = 0;
 
 		//For Dynamic paging
 		dynamicRow = 1;
@@ -874,8 +877,9 @@ public class Mobile_HTML5_dynamic {
 				"\n" +
 				"<!-- "+DD_COMMENT_NAME1+" JS start -->\n" +
 				"<script type=\"text/javascript\">\n" +
-				"<!--\n" +
-				DD_FUNC_NAME+"();	//ロード時に実行\n";
+				"<!--\n";
+		if(!Mobile_HTML5G3.dynamic_G3)
+			s += DD_FUNC_NAME+"();	//ロード時に実行\n";
 		if(ajax_loadInterval>0){
 			s += "setInterval(function(){\n" +
 				 "	"+DD_FUNC_NAME+"();\n" +

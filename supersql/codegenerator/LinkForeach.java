@@ -2,6 +2,7 @@
 package supersql.codegenerator;
 
 import supersql.codegenerator.Compiler.PHP.PHP;
+import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5_dynamic;
 
 
 public class LinkForeach {
@@ -43,10 +44,11 @@ public class LinkForeach {
 					"		"+ID3+"_currentID = id;\n";
 
 		}else if(tfe.equals("G3")){
-			r += 	"window.onload = function(){\n" +
+			//r += 	"window.onload = function(){\n" +
+			r += 	"$(document).ready(function(){\n" +
 					"	if(location.search.length<1){\n";
 			//added by goto 20161112 for dynamic foreach
-			if(PHP.isPHP)
+			if(PHP.isPHP || Mobile_HTML5_dynamic.dynamicDisplay)
 				r += "		var atts = \"<?php echo $_POST['att']; ?>\";\n" +
 					 "		if(atts.length>0)\n" +
 					 "			SSQL_DynamicDisplay1(atts);\n" +
@@ -60,7 +62,7 @@ public class LinkForeach {
 					"		id = id.substring(\""+ID2+"\".length+1);\n" +
 					"		id = decodeURI(id);\n";
 			//added by goto 20161112 for dynamic foreach
-			if(PHP.isPHP)
+			if(PHP.isPHP || Mobile_HTML5_dynamic.dynamicDisplay)
 				r +=
 						"		id = id.replace(/\\+/g, \" \");\n" +
 						"		"+G3_dynamic_funcname+"(id);\n";
@@ -79,7 +81,8 @@ public class LinkForeach {
 						"		}\n";
 		}
 		r += 	"	}\n" +
-				"}\n" +
+				//"}\n" +
+				"});\n" +
 				"//-->" +
 				"</script>\n";
 		return r;

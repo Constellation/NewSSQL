@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 
 import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.ITFE;
@@ -14,7 +15,9 @@ import supersql.parser.Start_Parse;
 
 public class Mobile_HTML5 {
 	
-	public static int gLevel = 0;
+	public static int gLevel1 = 0;
+	public static int gLevel0 = -1;
+	public static ArrayList<Integer> whileCount = new ArrayList<>();
 	
 	public Mobile_HTML5() {
 
@@ -26,14 +29,28 @@ public class Mobile_HTML5 {
 //		if(!symbol.contains("G1") && !symbol.contains("G2")){	//TODO disuse?
 //			Mobile_HTML5_dynamic.dyamicPreStringProcess(symbol, decos, html_env);
 //		}
+		if(symbol.contains("G1") || symbol.contains("G2")){
+			gLevel0++;
+			try {
+				//Log.e(gLevel0+" "+whileCount.get(gLevel0));
+				//if(Mobile_HTML5_dynamic.dynamicDisplay && (Mobile_HTML5_dynamic.dynamicWhileCount0<1 || whileCount.get(gLevel0)==1)){
+	        	//if(Mobile_HTML5_dynamic.dynamicDisplay && (whileCount.get(gLevel0-1)==1 || whileCount.get(gLevel0)==1)){
+				if(decos.containsKey("dynamic") && whileCount.get(gLevel0)>0){
+					//Log.e(gLevel0+" "+whileCount.get(gLevel0)+" return false 1");
+					gLevel0--;
+		        	return false;
+		        }
+			} catch (Exception e) {
+				//Log.e(gLevel0+" 1 ?");
+			}
+		}
 		
 		Mobile_HTML5_show.showProcess(decos, html_env);	//TODO この位置でOKか確認
 		
 		if(symbol.contains("G1") || symbol.contains("G2")){
-			Mobile_HTML5_dynamic.dynamicPreProcess0(symbol, decos, html_env);
-
-	    	Mobile_HTML5_dynamic.html_env_code_length = html_env.code.toString().length();
 			Mobile_HTML5_dynamic.dynamicPreProcess(symbol, decos, html_env);
+//	    	Mobile_HTML5_dynamic.html_env_code_length = html_env.code.toString().length();	//未使用？
+//			Mobile_HTML5_dynamic.dynamicPreProcess1(symbol, decos, html_env);
 		}
 		if(!symbol.contains("G1") && !symbol.contains("G2")){
 			Mobile_HTML5_form.formPreProcess(symbol, decos, html_env);
@@ -55,7 +72,13 @@ public class Mobile_HTML5 {
 		//C1, C2:    decos, html_env, data, data_info, tfe, tfes, tfeItems
 		//G1, G2:    decos, html_env, data, data_info, tfe
 		if(symbol.contains("G1") || symbol.contains("G2")){
-        	if(Mobile_HTML5.gLevel<1){
+			try {
+				whileCount.set(gLevel0, whileCount.get(gLevel0)+1);	//whileCoun[gLevel0]++
+			} catch (Exception e) {
+				whileCount.add(gLevel0, 1);							//whileCoun[gLevel0]=1
+			}
+			
+        	if(Mobile_HTML5.gLevel1<1){
         		Mobile_HTML5_dynamic.dynamicWhileCount0++;
         	}
 		}
@@ -80,17 +103,27 @@ public class Mobile_HTML5 {
 		//C1, C2:    decos, html_env, data, data_info, tfe, tfes, tfeItems
 		//G1, G2:    decos, html_env, data, data_info, tfe
 		if(symbol.contains("G1") || symbol.contains("G2")){
-	        if(Mobile_HTML5_dynamic.dynamicDisplay && Mobile_HTML5.gLevel<1){
+	        if(Mobile_HTML5_dynamic.dynamicDisplay && Mobile_HTML5.gLevel1<1){
 	    		Mobile_HTML5_dynamic.dynamicWhileCount0--;
 	        }
-	        if(Mobile_HTML5_dynamic.dynamicDisplay && Mobile_HTML5_dynamic.dynamicWhileCount0<1){
+        	//if(Mobile_HTML5_dynamic.dynamicDisplay && Mobile_HTML5_dynamic.dynamicWhileCount0<1){
+	        //if(Mobile_HTML5_dynamic.dynamicDisplay && (Mobile_HTML5_dynamic.dynamicWhileCount0<1 || whileCount.get(gLevel0)==1)){
+        	//if(Mobile_HTML5_dynamic.dynamicDisplay && (whileCount.get(gLevel0-1)==1 || whileCount.get(gLevel0)==1)){
+	        if(Mobile_HTML5_dynamic.dynamicDisplay && whileCount.get(gLevel0)>0){
+	        	//Log.e(gLevel0+" "+whileCount.get(gLevel0)+" return false 2");
 	        	return false;
 	        }
+        	
+        	//whileCount.set(gLevel0, whileCount.get(gLevel0)-1);	//whileCoun[gLevel0]--
 		}
 		return true;
 	}
 	public static boolean afterWhileProcess(String symbol, String tfeID, DecorateList decos, Mobile_HTML5Env html_env){
 //		Mobile_HTML5_dynamic.dyamicAfterWhileStringProcess(symbol, decos, html_env);
+		
+		if(symbol.contains("G1") || symbol.contains("G2")){
+			whileCount.set(gLevel0, 0);		//whileCoun[gLevel0]=0
+		}
 		
 		Mobile_HTML5Function.func_null_count = 0;	//null()
 		if(symbol.contains("G2")){
@@ -111,15 +144,18 @@ public class Mobile_HTML5 {
 			Mobile_HTML5_form.formStringGetProcess(symbol, decos, html_env);
 			Mobile_HTML5_form.formProcess(symbol, decos, html_env);
 		}
-		
 //		if(symbol.contains("G1") || symbol.contains("G2")){
 //			Log.i(Mobile_HTML5_dynamic.dynamicCount);
 //			Mobile_HTML5_dynamic.dynamicCount--;
 //		}
-		
 		Mobile_HTML5_show.showCloseProcess(decos, html_env);
+		
 		Mobile_HTML5_dynamic.dynamicString = "";
 		Mobile_HTML5_form.formString = "";
+		if(symbol.contains("G1") || symbol.contains("G2")){
+			//whileCount.set(gLevel0, 0);
+			gLevel0--;
+		}
 		return true;
 	}
 
