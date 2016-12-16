@@ -44,36 +44,31 @@ public class Test1 {
         driver.get("http://localhost/dvdrental/php_movie_foreach.html?att=27");
 
         //lg 1200, md 992, sm 768, xs 400
+        //Variables for G1 Fix Test
         int x=8;
         String G1TFE = "TFE10020";
+        
+        //Get G1 Element
         WebElement element = driver.findElement(By.className("TFE10020"));
         List<WebElement> elements = driver.findElements(By.className("TFE10020"));
         
         
         
         HashMap<String,Integer> G1widthMap = new HashMap<String,Integer>();
+        //Get width of each display size
         driver.manage().window().setSize(new Dimension(1200,3000));
         G1widthMap.put("lg", element.getSize().width);
-        int lg_width = element.getSize().width;
-//        widths.add(lg_width);
-        System.out.println(element.getSize().width);
         
         driver.manage().window().setSize(new Dimension(992,3000));
         G1widthMap.put("md", element.getSize().width);
-        int md_width = element.getSize().width;
-        System.out.println(element.getSize().width);
         
         driver.manage().window().setSize(new Dimension(768,3000));
         G1widthMap.put("sm", element.getSize().width);
-        int sm_width = element.getSize().width;
-        System.out.println(element.getSize().width);
-        
-        
+                
         driver.manage().window().setSize(new Dimension(400,3000));
         G1widthMap.put("xs", element.getSize().width);
-        int xs_width = element.getSize().width;
-        System.out.println(element.getSize().width+"\n");
         
+        //Calculate Best
         for(Map.Entry<String, Integer> e : G1widthMap.entrySet()) {
         	double minDiff=5000;
             int best = 0;
@@ -87,7 +82,7 @@ public class Test1 {
 	        	for(int i=0; i<x; i++){
 	                double width = Math.floor( (eachwidth * x ) / ( x-i ) );
 	                if (Math.abs(width-G1widthMap.get("lg")) < minDiff){
-	                	minDiff = Math.abs(width-lg_width);
+	                	minDiff = Math.abs(width-G1widthMap.get("lg"));
 	                	best = x-i;
 	                }
 	            }
