@@ -22,6 +22,7 @@ import supersql.codegenerator.LocalEnv;
 import supersql.codegenerator.Sass;
 import supersql.codegenerator.Compiler.PHP.PHP;
 import supersql.codegenerator.HTML.HTMLEnv;
+import supersql.codegenerator.Responsive.Responsive;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.parser.Start_Parse;
@@ -1754,6 +1755,9 @@ public class Mobile_HTML5Env extends LocalEnv {
         }catch(Exception e){ /*数値以外*/ }
         if(supersql.codegenerator.Compiler.PHP.PHP.isPHP && pcWidth<0)
         	pcWidth = 1000;
+        
+        //added by goto 20161217  for responsive
+        Responsive.check(decos);
         
         if (decos.containsKey("description"))
             metabuf.append("\n<meta name=\"Description\" content=\"" + decos.getStr("description") + "\">");

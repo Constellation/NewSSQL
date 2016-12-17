@@ -1,6 +1,7 @@
 package supersql;
 
 import supersql.codegenerator.CodeGenerator;
+import supersql.codegenerator.Responsive.Responsive;
 import supersql.common.*;
 import supersql.dataconstructor.DataConstructor;
 import supersql.parser.Start_Parse;
@@ -53,6 +54,7 @@ public class FrontEnd {
 
 				if (GlobalEnv.getErrFlag() == 0) {
 					codegenerator.generateCode(parser, dc.getData());
+			        Responsive.process(codegenerator, parser, dc.getData());	//added by goto 20161217  for responsive
 					aftercg = System.currentTimeMillis();
 				}
 			}

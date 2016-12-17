@@ -21,6 +21,7 @@ import supersql.codegenerator.LinkForeach;
 import supersql.codegenerator.Manager;
 import supersql.codegenerator.Sass;
 import supersql.codegenerator.Compiler.Compiler;
+import supersql.codegenerator.Responsive.Responsive;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
