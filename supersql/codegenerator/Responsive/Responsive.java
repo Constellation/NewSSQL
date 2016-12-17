@@ -78,5 +78,21 @@ public class Responsive {
 	public static boolean isReExec() {
 		return reExec;
 	}
+	
+	// checkBootstrapModifiers()
+	public static DecorateList checkBootstrapModifiers(String classid, DecorateList decos) {
+		if(isReExec()){
+			try {
+				LinkedHashMap<String, String> fMap = fixMap.get(classid);
+				for (String key : fMap.keySet()) {
+					String value = fMap.get(key);
+					decos.put(key, value);
+				}
+			} catch (Exception e) {
+				//e.printStackTrace();
+			}
+		}
+		return decos;
+	}
 
 }
