@@ -13,6 +13,7 @@ import supersql.codegenerator.Manager;
 import supersql.codegenerator.Sass;
 import supersql.codegenerator.TFE;
 import supersql.codegenerator.Compiler.Compiler;
+import supersql.codegenerator.Responsive.Responsive;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
@@ -510,28 +511,30 @@ public class Mobile_HTML5G2 extends Grouper {
     	html_env.getHeader(2);
         html_env.getFooter(2);
     	
-        try {
-    		PrintWriter pw;
-            if (html_env.charset != null)
-	        	pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
-	        			new FileOutputStream(html_env.filename),html_env.charset)));
-            else
-            	pw = new PrintWriter(new BufferedWriter(new FileWriter(
-        	                    html_env.filename)));
-        	pw.println(html_env.header);
-        	pw.println(Mobile_HTML5G2.tableDivHeader);	//20131001 tableDivHeader
-        	if(!tableStartTag.equals("")){
-        		pw.println(tableStartTag+"\n"+codeBuf);
-        		if(tableStartTag.endsWith("<TR>"))	pw.println("</TR>");
-        		pw.println("</TABLE>\n");
-        	}else{
-        		pw.println(codeBuf);
-        	}
-            pw.println(html_env.footer);
-            pw.close();
-            html_env.header = new StringBuffer();
-            html_env.footer = new StringBuffer();
-        } catch (Exception e) { }
+        if(!Responsive.isReExec()){	//added by goto 20161217  for responsive
+	        try {
+	    		PrintWriter pw;
+	            if (html_env.charset != null)
+		        	pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
+		        			new FileOutputStream(html_env.filename),html_env.charset)));
+	            else
+	            	pw = new PrintWriter(new BufferedWriter(new FileWriter(
+	        	                    html_env.filename)));
+	        	pw.println(html_env.header);
+	        	pw.println(Mobile_HTML5G2.tableDivHeader);	//20131001 tableDivHeader
+	        	if(!tableStartTag.equals("")){
+	        		pw.println(tableStartTag+"\n"+codeBuf);
+	        		if(tableStartTag.endsWith("<TR>"))	pw.println("</TR>");
+	        		pw.println("</TABLE>\n");
+	        	}else{
+	        		pw.println(codeBuf);
+	        	}
+	            pw.println(html_env.footer);
+	            pw.close();
+	            html_env.header = new StringBuffer();
+	            html_env.footer = new StringBuffer();
+	        } catch (Exception e) { }
+        }
     }
     
     //added by goto 20130413  "row Prev/Next"

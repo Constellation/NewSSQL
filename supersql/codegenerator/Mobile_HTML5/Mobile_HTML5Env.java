@@ -1867,45 +1867,47 @@ public class Mobile_HTML5Env extends LocalEnv {
 					"<ol>\n" +
 					"<span id=\"t1\">"+fff.substring(fff.lastIndexOf("/")+1)+".ssql</span>";
 			//create HTML file
-			try {
-				//Log.i("create HTML file エンコードcharset:"+charset);
-	    		PrintWriter pw;
-	            if (charset != null)
-		        	pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
-		        			new FileOutputStream(fff+"_sql.html"),charset)));
-	            else
-	            	pw = new PrintWriter(new BufferedWriter(new FileWriter(
-	        	                    fff+"_sql.html")));
-	        	pw.println(code);
-	        	
-	            BufferedReader br = null;
-	            try{
-	            	  //TODO: file-encodingを取得して第二引数へ反映させる処理
-	            	  br = new BufferedReader(new InputStreamReader(new FileInputStream(fff+".ssql"), "UTF-8"));		//fileを開く
-//		              br = new BufferedReader(new InputStreamReader(new FileInputStream(fff+".ssql"), charset));		//fileを開く
-		              String queryString = new String();
-		              int c;
-		              while ((c = br.read()) != -1)	queryString += ((char) c);
-		              
-		              //***へ置換
-		  			  //Log.i("replaceStrings: "+replaceStrings);
-					  replaceStrings = replaceStrings.trim();
-					  if(!replaceStrings.equals("")){
-						  if(!replaceStrings.endsWith(";"))		replaceStrings += ";";
-						  while(replaceStrings.contains(";")){
-							  queryString = queryString.replaceAll(replaceStrings.substring(0,replaceStrings.indexOf(";")).trim(),"***");
-							  replaceStrings = replaceStrings.substring(replaceStrings.indexOf(";")+1);
+			if(!Responsive.isReExec()){	//added by goto 20161217  for responsive
+				try {
+					//Log.i("create HTML file エンコードcharset:"+charset);
+		    		PrintWriter pw;
+		            if (charset != null)
+			        	pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
+			        			new FileOutputStream(fff+"_sql.html"),charset)));
+		            else
+		            	pw = new PrintWriter(new BufferedWriter(new FileWriter(
+		        	                    fff+"_sql.html")));
+		        	pw.println(code);
+		        	
+		            BufferedReader br = null;
+		            try{
+		            	  //TODO: file-encodingを取得して第二引数へ反映させる処理
+		            	  br = new BufferedReader(new InputStreamReader(new FileInputStream(fff+".ssql"), "UTF-8"));		//fileを開く
+	//		              br = new BufferedReader(new InputStreamReader(new FileInputStream(fff+".ssql"), charset));		//fileを開く
+			              String queryString = new String();
+			              int c;
+			              while ((c = br.read()) != -1)	queryString += ((char) c);
+			              
+			              //***へ置換
+			  			  //Log.i("replaceStrings: "+replaceStrings);
+						  replaceStrings = replaceStrings.trim();
+						  if(!replaceStrings.equals("")){
+							  if(!replaceStrings.endsWith(";"))		replaceStrings += ";";
+							  while(replaceStrings.contains(";")){
+								  queryString = queryString.replaceAll(replaceStrings.substring(0,replaceStrings.indexOf(";")).trim(),"***");
+								  replaceStrings = replaceStrings.substring(replaceStrings.indexOf(";")+1);
+							  }
 						  }
-					  }
-					  //書き込み
-					  pw.println( queryString.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("^", "<li>").replaceAll("\n", "\n<li>") );
-	            }finally{
-		              br.close();
-	            }
-	        	
-	            pw.println("</ol>\n\n</code>\n</pre>\n</body>\n</html>");
-	            pw.close();
-	        } catch (Exception e) { /*Log.i("Create HTML failed: "+e);*/ }
+						  //書き込み
+						  pw.println( queryString.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("^", "<li>").replaceAll("\n", "\n<li>") );
+		            }finally{
+			              br.close();
+		            }
+		        	
+		            pw.println("</ol>\n\n</code>\n</pre>\n</body>\n</html>");
+		            pw.close();
+		        } catch (Exception e) { /*Log.i("Create HTML failed: "+e);*/ }
+			}
 			
         	//HTMLfilenameを絶対パスから「相対パス形式」へ変更
 			String fileDir = new File(filename).getAbsoluteFile().getParent();

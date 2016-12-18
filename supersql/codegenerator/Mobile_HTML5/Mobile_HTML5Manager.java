@@ -16,6 +16,7 @@ import supersql.codegenerator.Jscss;
 import supersql.codegenerator.Manager;
 import supersql.codegenerator.Compiler.Compiler;
 import supersql.codegenerator.Compiler.PHP.PHP;
+import supersql.codegenerator.Responsive.Responsive;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.dataconstructor.DataConstructor;
@@ -122,92 +123,95 @@ public class Mobile_HTML5Manager extends Manager{
         html_env.getFooter(1);
 //        html_env2.header.append("<?xml version=\"1.0\" encoding=\""+html_env.getEncode()+"\"?><SSQL>");
 //        html_env2.footer.append("</SSQL>");
-        try {
-        	if(!GlobalEnv.isOpt()){
-        		//changed by goto 20120715 start
-        		PrintWriter pw;
-	            if (html_env.charset != null){
-		        	pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
-		        			new FileOutputStream(html_env.filename),html_env.charset)));
-		        	Log.info("\nFile encoding: "+html_env.charset);
-	            }else
-	            	pw = new PrintWriter(new BufferedWriter(new FileWriter(
-	        	                    html_env.filename)));
-        		//changed by goto 20120715 end
-	            
-				//changed by goto 20161019 for HTML Formatter
-				String html = "";
-				if (GlobalEnv.cssout() == null)
-					html += html_env.header;
-				html += html_env.code;
-				html += html_env.footer;
-				if(!Mobile_HTML5Env.sessionFlg)
-					html = FileFormatter.process(html);
-				pw.println(html);
-	            
+        
+        if(!Responsive.isReExec()){	//added by goto 20161217  for responsive
+	        try {
+	        	if(!GlobalEnv.isOpt()){
+	        		//changed by goto 20120715 start
+	        		PrintWriter pw;
+		            if (html_env.charset != null){
+			        	pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
+			        			new FileOutputStream(html_env.filename),html_env.charset)));
+			        	Log.info("\nFile encoding: "+html_env.charset);
+		            }else
+		            	pw = new PrintWriter(new BufferedWriter(new FileWriter(
+		        	                    html_env.filename)));
+	        		//changed by goto 20120715 end
+		            
+					//changed by goto 20161019 for HTML Formatter
+					String html = "";
+					if (GlobalEnv.cssout() == null)
+						html += html_env.header;
+					html += html_env.code;
+					html += html_env.footer;
+					if(!Mobile_HTML5Env.sessionFlg)
+						html = FileFormatter.process(html);
+					pw.println(html);
+		            
+		            pw.close();
+	        	}
+	//            //xml
+	//	        if(GlobalEnv.isOpt()){
+	//
+	//            	/*
+	//            	int i=0;
+	//	            while(html_env2.code.indexOf("&",i) != -1){
+	//	            	i = html_env2.code.indexOf("&",i);
+	//	            	html_env2.code = html_env2.code.replace(i,i+1, "&amp;");
+	//	            	i++;
+	//	            }
+	//	            */
+	//
+	//	            html_env2.filename = html_env.outfile + ".xml";
+	//	            PrintWriter pw2 = new PrintWriter(new BufferedWriter(new FileWriter(
+	//	                    html_env2.filename)));
+	//	            if(GlobalEnv.cssout()==null)
+	//	            	pw2.println(html_env2.header);
+	//	            pw2.println(html_env2.code);
+	//	            pw2.println(html_env2.footer);
+	//	            pw2.close();
+	//	            Mobile_HTML5optimizer xml = new Mobile_HTML5optimizer();
+	//	            String xml_str =  xml.generateHtml(html_env2.filename);
+	//	        	PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(
+	//	                    html_env.filename)));
+	//				pw.println(html_env.header);
+	//				pw.println(xml_str);
+	//				//StringBuffer footer = new StringBuffer("</div></body></html>");
+	//				pw.println(html_env.footer);
+	//				pw.close();
+	//            }
+	
+		        if(GlobalEnv.cssout()!=null){
+		        	PrintWriter pw3 = new PrintWriter(new BufferedWriter(new FileWriter(
+		        			GlobalEnv.cssout())));
+		            pw3.println(html_env.header);
+		            pw3.close();
+		        }
+		        
+	            //create '.htaccess'
+		        String fn = html_env.getFileParent()+GlobalEnv.OS_FS+".htaccess";
+	    		PrintWriter pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
+		        			new FileOutputStream(fn), GlobalEnv.DEFAULT_CHARACTER_CODE)));
+	            pw.println("AddType application/x-httpd-php .html");
 	            pw.close();
-        	}
-//            //xml
-//	        if(GlobalEnv.isOpt()){
-//
-//            	/*
-//            	int i=0;
-//	            while(html_env2.code.indexOf("&",i) != -1){
-//	            	i = html_env2.code.indexOf("&",i);
-//	            	html_env2.code = html_env2.code.replace(i,i+1, "&amp;");
-//	            	i++;
-//	            }
-//	            */
-//
-//	            html_env2.filename = html_env.outfile + ".xml";
-//	            PrintWriter pw2 = new PrintWriter(new BufferedWriter(new FileWriter(
-//	                    html_env2.filename)));
-//	            if(GlobalEnv.cssout()==null)
-//	            	pw2.println(html_env2.header);
-//	            pw2.println(html_env2.code);
-//	            pw2.println(html_env2.footer);
-//	            pw2.close();
-//	            Mobile_HTML5optimizer xml = new Mobile_HTML5optimizer();
-//	            String xml_str =  xml.generateHtml(html_env2.filename);
-//	        	PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(
-//	                    html_env.filename)));
-//				pw.println(html_env.header);
-//				pw.println(xml_str);
-//				//StringBuffer footer = new StringBuffer("</div></body></html>");
-//				pw.println(html_env.footer);
-//				pw.close();
-//            }
-
-	        if(GlobalEnv.cssout()!=null){
-	        	PrintWriter pw3 = new PrintWriter(new BufferedWriter(new FileWriter(
-	        			GlobalEnv.cssout())));
-	            pw3.println(html_env.header);
-	            pw3.close();
+	
+	            Mobile_HTML5Env.initAllFormFlg();
+				Jscss.process();	//goto 20141209
+	        } catch (FileNotFoundException fe) {
+	        	fe.printStackTrace();
+	        	System.err.println("Error: specified outdirectory \""
+	                    + html_env.outdir + "\" is not found to write " + html_env.filename );
+	        	GlobalEnv.addErr("Error: specified outdirectory \""
+	                    + html_env.outdir + "\" is not found to write " + html_env.filename );
+	        	//comment out by chie
+	        	//System.exit(-1);
+	        } catch (IOException e) {
+	            System.err.println("Error[HTMLManager]: File IO Error in HTMLManager");
+	            e.printStackTrace();
+	           	GlobalEnv.addErr("Error[HTMLManager]: File IO Error in HTMLManager");
+	            //comment out by chie
+	        	//System.exit(-1);
 	        }
-	        
-            //create '.htaccess'
-	        String fn = html_env.getFileParent()+GlobalEnv.OS_FS+".htaccess";
-    		PrintWriter pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
-	        			new FileOutputStream(fn), GlobalEnv.DEFAULT_CHARACTER_CODE)));
-            pw.println("AddType application/x-httpd-php .html");
-            pw.close();
-
-            Mobile_HTML5Env.initAllFormFlg();
-			Jscss.process();	//goto 20141209
-        } catch (FileNotFoundException fe) {
-        	fe.printStackTrace();
-        	System.err.println("Error: specified outdirectory \""
-                    + html_env.outdir + "\" is not found to write " + html_env.filename );
-        	GlobalEnv.addErr("Error: specified outdirectory \""
-                    + html_env.outdir + "\" is not found to write " + html_env.filename );
-        	//comment out by chie
-        	//System.exit(-1);
-        } catch (IOException e) {
-            System.err.println("Error[HTMLManager]: File IO Error in HTMLManager");
-            e.printStackTrace();
-           	GlobalEnv.addErr("Error[HTMLManager]: File IO Error in HTMLManager");
-            //comment out by chie
-        	//System.exit(-1);
         }
 
     }

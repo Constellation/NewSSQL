@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.TFE;
+import supersql.codegenerator.Responsive.Responsive;
 import supersql.extendclass.ExtList;
 import supersql.parser.Start_Parse;
 
@@ -216,17 +217,19 @@ public class Mobile_HTML5 {
 	
 	//create file
 	public static boolean createFile(Mobile_HTML5Env html_env, String fileName, String code){
-        try {
-    		PrintWriter pw;
-            if (html_env.charset != null)
-	        	pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
-	        			new FileOutputStream(fileName),html_env.charset)));
-            else
-            	pw = new PrintWriter(new BufferedWriter(new FileWriter(fileName)));
-    		pw.println(code);
-            pw.close();
-            return true;
-        } catch (Exception e) { }
+		if(!Responsive.isReExec()){	//added by goto 20161217  for responsive
+	        try {
+	    		PrintWriter pw;
+	            if (html_env.charset != null)
+		        	pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
+		        			new FileOutputStream(fileName),html_env.charset)));
+	            else
+	            	pw = new PrintWriter(new BufferedWriter(new FileWriter(fileName)));
+	    		pw.println(code);
+	            pw.close();
+	            return true;
+	        } catch (Exception e) { }
+		}
         return false;
     }
 	
