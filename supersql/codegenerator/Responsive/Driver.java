@@ -50,7 +50,7 @@ public class Driver {
 
 		//Get page of URL
 		String fn = new Mobile_HTML5Env().getFileName4()+".html";
-		fn = "http://localhost/dvdrental/"+fn+"?att=27";
+		fn = "http://localhost/dvdrental/"+fn;
 		driver_lg.get(fn);
 		driver_md.get(fn);
 		driver_sm.get(fn);

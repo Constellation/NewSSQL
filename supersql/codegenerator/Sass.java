@@ -401,7 +401,7 @@ public class Sass {
 			sb.append(sass);
 			writtenSassClassid.clear();
 
-			Log.info(sb);
+//			Log.info(sb);
 			
 //			Log.info(HTMLCheckMap);
 
