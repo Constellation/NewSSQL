@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Vector;
 
 import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5Env;
@@ -265,11 +266,13 @@ public class Sass {
 		int sm_col;
 		int md_col;
 		int lg_col;
-
+		
 		if(Responsive.fixMap.containsKey(classid)){
-			LinkedHashMap <String, LinkedHashMap> fixSizeMap = Responsive.fixMap.get(classid);
-			 for(Map.Entry<String, LinkedHashMap> e : fixSizeMap.entrySet()) {
-				 decos.put(e.getKey(), e.getValue().toString());
+			LinkedHashMap<String, Fraction> fixSizeMap = Responsive.fixMap.get(classid);
+			 for(Entry<String, Fraction> e : fixSizeMap.entrySet()) {
+				 String decos_key = e.getKey();
+				 String decos_value = e.getValue().toString();
+				 decos.put(decos_key, decos_value);
 			 }
 		}
 		
@@ -349,6 +352,8 @@ public class Sass {
 			}
 
 			sb.append(sass);
+			
+			writtenSassClassid.clear();
 
 //			Log.info(sb);
 
@@ -394,8 +399,10 @@ public class Sass {
 			}
 
 			sb.append(sass);
+			writtenSassClassid.clear();
 
 //			Log.info(sb);
+			
 //			Log.info(HTMLCheckMap);
 
 			URI inputFile = new File(outdirPath+fs+"jscss"+fs+"forBootstrap"+fs+"_bootstrap.scss").toURI();

@@ -61,10 +61,10 @@ public class Driver {
 		driver_xs.manage().window().setSize(new Dimension(400,3000));
 
 		//Get page of URL
-		driver_lg.get("http://localhost/dvdrental/php_movie_foreach.html?att=27");
-		driver_md.get("http://localhost/dvdrental/php_movie_foreach.html?att=27");
-		driver_sm.get("http://localhost/dvdrental/php_movie_foreach.html?att=27");
-		driver_xs.get("http://localhost/dvdrental/php_movie_foreach.html?att=27");
+		driver_lg.get("http://localhost/dvdrental/dvdrental_movie_foreach.html");
+		driver_md.get("http://localhost/dvdrental/dvdrental_movie_foreach.html");
+		driver_sm.get("http://localhost/dvdrental/dvdrental_movie_foreach.html");
+		driver_xs.get("http://localhost/dvdrental/dvdrental_movie_foreach.html");
 		
 	}
 	

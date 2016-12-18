@@ -6,6 +6,9 @@ import java.util.Map.Entry;
 import supersql.codegenerator.CodeGenerator;
 import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.Sass;
+import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5Env;
+import supersql.common.GlobalEnv;
+import supersql.common.Log;
 import supersql.extendclass.ExtList;
 import supersql.parser.Start_Parse;
 
@@ -50,7 +53,7 @@ public class Responsive {
 	// process1() : TFE全体に@{responsive}がついていた場合に、HTMLなどが生成された後Responsiveの処理に投げる
 	private static LinkedHashMap<String, LinkedHashMap> process1(LinkedHashMap SassHTMLCheckMap) {
 		//TODO HTMLなどをチェックするメソッドの呼び出し
-		LinkedHashMap<Integer, LinkedHashMap>HTMLCheckMap = SassHTMLCheckMap;
+		LinkedHashMap<Integer, LinkedHashMap>HTMLCheckMap = SassHTMLCheckMap;	
 		
 		Driver.setupDriver();
 		
