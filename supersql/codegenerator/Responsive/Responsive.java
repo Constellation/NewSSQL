@@ -90,6 +90,7 @@ public class Responsive {
 	public static DecorateList checkBootstrapModifiers(String classid, DecorateList decos) {
 		if(isReExec()){
 			try {
+				//rewrite bootstrap modifiers
 				LinkedHashMap<String, String> fMap = fixMap.get(classid);
 				for (String key : fMap.keySet()) {
 					String value = fMap.get(key);
