@@ -67,6 +67,9 @@ public class Mobile_HTML5G1 extends Grouper {
     	
         int panelFlg = 0;	//20130503  Panel
         
+        Sass.incrementId();
+        int responsiveId = Sass.responsiveCandidateId;	//20161217 bootstrap
+        
         //1行ごとのカラム数 (range: 2〜)
         boolean columnFlg = false;
     	if(tableFlg)	numberOfColumns = -1;	//@{table}時のDefault	//20130917  [ ],10@{table}
@@ -240,7 +243,7 @@ public class Mobile_HTML5G1 extends Grouper {
 //        				Sass.makeClass(classid);
 //        				Sass.defineGridBasic(classid, decos);
 //        				Sass.closeBracket();
-        				Sass.makeColumn(classid, decos);
+        				Sass.makeColumn(classid, decos, "", -1);
         			}
         		}
 
@@ -358,7 +361,7 @@ public class Mobile_HTML5G1 extends Grouper {
 //            		Sass.makeClass(classid2);
 //            		Sass.defineGridBasic(classid2, (tfe).decos);
 //            		Sass.closeBracket();
-            		Sass.makeColumn(classid2, (tfe).decos);
+            		Sass.makeColumn(classid2, (tfe).decos, getSymbol(), responsiveId);
             	}
             }
             

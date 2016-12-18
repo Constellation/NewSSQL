@@ -217,7 +217,7 @@ public class Mobile_HTML5G2 extends Grouper {
 //        				Sass.makeClass(classid);
 //        				Sass.defineGridBasic(classid, decos);
 //        				Sass.closeBracket();
-        				Sass.makeColumn(classid, decos);
+        				Sass.makeColumn(classid, decos, "", -1);
         			}
         		}
         		Sass.beforeLoop();
@@ -295,7 +295,7 @@ public class Mobile_HTML5G2 extends Grouper {
 //            			Sass.makeClass(classid2);
 //            			Sass.defineGridBasic(classid2, decos2);
 //            			Sass.closeBracket();
-            			Sass.makeColumn(classid2, decos2);
+            			Sass.makeColumn(classid2, decos2, "", -1);
             		}
             	}
             }

@@ -5,10 +5,13 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Scanner;
 
 import javax.imageio.ImageIO;
 
@@ -31,156 +34,86 @@ import supersql.common.GlobalEnv;
 public class Test1 {
 
 	public static void main(String[] args) {
-		//Initialization of WebDriver (Firefox)
-		String driverPath = GlobalEnv.getworkingDir()+"/webdriver/geckodriver";
-		System.setProperty("webdriver.gecko.driver", driverPath);
-		WebDriver driver = new FirefoxDriver();
-		JavascriptExecutor js = (JavascriptExecutor) driver;
 		
-		//Initialization of WebDriver (Chrome)
-//		String driverPath = GlobalEnv.getworkingDir()+"/webdriver/chromedriver";
-//		System.setProperty("webdriver.chrome.driver", exePath);
-//		WebDriver driver = new ChromeDriver();
-//		JavascriptExecutor js = (JavascriptExecutor) driver;
-        
-		//LinkedHashMap for final fixes
-		LinkedHashMap<String,LinkedHashMap> fixMap = new LinkedHashMap<String,LinkedHashMap>();
+		Driver.setupDriver();
+		
+		LinkedHashMap<Integer, LinkedHashMap> HTMLCheckMap = new LinkedHashMap<Integer, LinkedHashMap>();
+		LinkedHashMap<String, LinkedHashMap> C1G1Map = new LinkedHashMap<String, LinkedHashMap>();
+		LinkedHashMap<String, LinkedHashMap> ClassMap = new LinkedHashMap<String, LinkedHashMap>();
+		LinkedHashMap<String, Fraction> SizeMap = new LinkedHashMap<String, Fraction>();
+		
+//		for()
 		
 		
-		//Get page of URL
-        driver.get("http://localhost/dvdrental/php_movie_foreach.html?att=27");
+//		G1_Fix.G1Fix("TFE10020", new Fraction("1/6"));
+//		System.out.println(Driver.fixMap);
+		
+//	//C1
+//		//{ 1={C1={TFE10008={xs=2/7}, TFE10023={xs=5/7}}}, 
+//		//2={C1={TFE10010={xs=7/8}, TFE10011={xs=1/8}}}, 
+//		//3={G1={TFE10020={xs=1/8}}}, 
+//		//4={C1={TFE10035={xs=2/7}, TFE10048={xs=5/7}}}, 
+//		//5={G1={TFE10039={xs=1/2}}} }
+//		
+////		LinkedHashMap<String, Fraction> SizeMap1 = putsize("xs", new Fraction("1/5"));
+////		LinkedHashMap<String, LinkedHashMap> ClassMap1 = putinmap("TFE10035", SizeMap1);
+////		LinkedHashMap<String, Fraction> SizeMap2 = putsize("xs", new Fraction("1/3"));
+////		LinkedHashMap<String, Fraction> SizeMap3 = putsize("xs", new Fraction("7/15"));
+////		ClassMap1.put("TFE10041", SizeMap2);
+////		ClassMap1.put("TFE10049", SizeMap3);
+//		
+		LinkedHashMap<String, Fraction> SizeMap1 = putsize("xs", new Fraction("2/7"));
+		LinkedHashMap<String, LinkedHashMap> ClassMap1 = putinmap("TFE10008", SizeMap1);
+		LinkedHashMap<String, Fraction> SizeMap2 = putsize("xs", new Fraction("5/7"));
+		ClassMap1.put("TFE10023", SizeMap2);
+		
+		C1G1Map.put("C1", ClassMap1);
+		HTMLCheckMap.put(1, C1G1Map);
+		
+		LinkedHashMap<String, Fraction> SizeMap3 = putsize("xs", new Fraction("1/8"));
+		LinkedHashMap<String, LinkedHashMap> ClassMap2 = putinmap("TFE10020", SizeMap3);
+		
+		LinkedHashMap<String, LinkedHashMap> C1G1Map2 = new LinkedHashMap<String, LinkedHashMap>();
+		
+		C1G1Map2.put("G1", ClassMap2);
+		HTMLCheckMap.put(2, C1G1Map2);
+		
+		System.out.println(HTMLCheckMap);
+		
+		for(Entry<Integer, LinkedHashMap> e : HTMLCheckMap.entrySet()) {
+			LinkedHashMap<String, LinkedHashMap> C1G1Map_B = e.getValue();
+			if(C1G1Map_B.containsKey("C1")){
+				C1G1Map_B.get("C1");
+				System.out.println(C1G1Map_B.get("C1"));
+				Fix_C1.C1Fix(C1G1Map_B.get("C1"));
+			}else if(C1G1Map_B.containsKey("G1")){
+				C1G1Map_B.get("G1");
+				System.out.println(C1G1Map_B.get("G1"));
+				Fix_G1.G1Fix(C1G1Map_B.get("G1"));
+			}
+		}
+		
+		
+//		Fix_C1.C1Fix(ClassMap1);
+		System.out.println(Driver.fixMap);
+		
+		Screenshot.CaptureScreenshot(Driver.driver_lg, (JavascriptExecutor)Driver.driver_lg);
+		Screenshot.CaptureScreenshot(Driver.driver_md, (JavascriptExecutor)Driver.driver_md);
+		Screenshot.CaptureScreenshot(Driver.driver_sm, (JavascriptExecutor)Driver.driver_sm);
+		Screenshot.CaptureScreenshot(Driver.driver_xs, (JavascriptExecutor)Driver.driver_xs);
 
-        //lg 1200, md 992, sm 768, xs 400
-        //Variables for G1 Fix Test
-        int x=8;
-        String G1TFE = "TFE10020";
-        
-        //Get G1 Element
-        WebElement element = driver.findElement(By.className("TFE10020"));
-        List<WebElement> elements = driver.findElements(By.className("TFE10020"));
-        
-        
-        
-        HashMap<String,Integer> G1widthMap = new HashMap<String,Integer>();
-        //Get width of each display size
-        driver.manage().window().setSize(new Dimension(1200,3000));
-        G1widthMap.put("lg", element.getSize().width);
-        
-        driver.manage().window().setSize(new Dimension(992,3000));
-        G1widthMap.put("md", element.getSize().width);
-        
-        driver.manage().window().setSize(new Dimension(768,3000));
-        G1widthMap.put("sm", element.getSize().width);
-                
-        driver.manage().window().setSize(new Dimension(400,3000));
-        G1widthMap.put("xs", element.getSize().width);
-        
-        //Calculate Best
-        for(Map.Entry<String, Integer> e : G1widthMap.entrySet()) {
-        	double minDiff=5000;
-            int best = 0;
-            
-            LinkedHashMap<String,Fraction> G1fixMap = new LinkedHashMap<String,Fraction>();
-            
-        	String size = e.getKey();
-        	int eachwidth = e.getValue();
-        	
-        	if(e.getKey()!="lg"){
-	        	for(int i=0; i<x; i++){
-	                double width = Math.floor( (eachwidth * x ) / ( x-i ) );
-	                if (Math.abs(width-G1widthMap.get("lg")) < minDiff){
-	                	minDiff = Math.abs(width-G1widthMap.get("lg"));
-	                	best = x-i;
-	                }
-	            }
-	        	System.out.println(best+"\n");
-	        	
-	            double fixWidth = 100.0/best;
-	            BigDecimal bd =new BigDecimal(fixWidth);
-	            BigDecimal bd4 = bd.setScale(3, BigDecimal.ROUND_DOWN);
-
-	            
-	        	G1fixMap.put("TFE10020", new Fraction("1/"+best));
-	        	fixMap.put(size, G1fixMap);
-	            System.out.println(fixMap);
-        	}
-        }
-
-        //Apply CSS
-        for(WebElement each : elements){
-        	((JavascriptExecutor)driver).executeScript("arguments[0].setAttribute('style', 'width:100%')",each);
-        }
-        
-//        CaptureScreenshot(driver, js);
-        
-        
-        // Enter something to search for
-//        element.sendKeys("Cheese!");
-
-        // Now submit the form. WebDriver will find the form for us from the element
-//        element.submit();
-
-        // Check the title of the page
-//        System.out.println("Page title is: " + driver.getTitle());
-        
-        // Google's search is rendered dynamically with JavaScript.
-        // Wait for the page to load, timeout after 10 seconds
-//        (new WebDriverWait(driver, 10)).until(new ExpectedCondition<Boolean>() {
-//            public Boolean apply(WebDriver d) {
-//                return d.getTitle().toLowerCase().startsWith("cheese!");
-//            }
-//        });
-
-        // Should see: "cheese! - Google Search"
-//        System.out.println("Page title is: " + driver.getTitle());
-        
-        //Close the browser
-        driver.quit();
+		Driver.quitDriver();
     }
 	
-	public static void CaptureScreenshot(WebDriver driver, JavascriptExecutor js){
-		TakesScreenshot ts = (TakesScreenshot) new Augmenter().augment(driver);
-        
-	      //画面サイズで必要なものを取得
-	        int innerH = Integer.parseInt(String.valueOf(js.executeScript("return window.innerHeight")));
-	        int innerW =Integer.parseInt(String.valueOf(js.executeScript("return window.innerWidth")));
-	        int scrollH = Integer.parseInt(String.valueOf(js.executeScript("return document.documentElement.scrollHeight")));
-	        
-	      //イメージを扱うための準備
-	        BufferedImage img = new BufferedImage(innerW, scrollH, BufferedImage.TYPE_INT_ARGB);
-	        Graphics g = img.getGraphics();
-	        
-	        try {
-		      //スクロールを行うかの判定
-		        if(innerH>scrollH){
-		            BufferedImage imageParts = ImageIO.read(ts.getScreenshotAs(OutputType.FILE));
-		            g.drawImage(imageParts, 0, 0, null);
-		        } else {
-		            int scrollableH = scrollH;
-		            int i = 0;
-		
-		            //スクロールしながらなんどもイメージを結合していく
-		            while(scrollableH>innerH){
-		                BufferedImage imageParts = ImageIO.read(ts.getScreenshotAs(OutputType.FILE));
-		                g.drawImage(imageParts, 0, innerH*i, null);
-		                scrollableH=scrollableH - innerH;
-		                i++;
-		                js.executeScript("window.scrollTo(0,"+innerH*i+")");
-		            }
-		
-		            //一番下まで行ったときは、下から埋めるように貼り付け
-		            BufferedImage imageParts = ImageIO.read(ts.getScreenshotAs(OutputType.FILE));
-		            g.drawImage(imageParts, 0, scrollH - innerH, null);
-		        }
-		
-		        ImageIO.write(img, "png", new File("/Users/ryosuke/Desktop/screenshot"+ System.currentTimeMillis() +".png"));
-	        } catch (WebDriverException e) {
-				// TODO 自動生成された catch ブロック
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO 自動生成された catch ブロック
-				e.printStackTrace();
-			}
+	public static LinkedHashMap putinmap(String key, LinkedHashMap map){
+		LinkedHashMap<String, LinkedHashMap> returnMap = new LinkedHashMap<String, LinkedHashMap>();
+		returnMap.put(key, map);
+		return returnMap;
 	}
-
+	
+	public static LinkedHashMap putsize(String key, Fraction size){
+		LinkedHashMap<String, Fraction> returnMap = new LinkedHashMap<String, Fraction>();
+		returnMap.put(key, size);
+		return returnMap;
+	}
 }

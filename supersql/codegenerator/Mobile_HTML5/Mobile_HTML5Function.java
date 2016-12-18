@@ -480,17 +480,7 @@ public class Mobile_HTML5Function extends Function {
 					html_env.code.append("<div id=\"bounce\" class=\"ui-widget-content ui-corner-all\">" +
 							"<img class=\"" + Mobile_HTML5Env.getClassID(this) +" ");
 				}else{
-					if(!Sass.isBootstrapFlg()){
-						html_env.code.append("<img class=\"" + Mobile_HTML5Env.getClassID(this) +" ");
-					}else if(Sass.isBootstrapFlg()){
-						if(Sass.outofloopFlg.peekFirst()){
-							Sass.makeClass(Mobile_HTML5Env.getClassID(this));
-							Sass.defineGridBasic(Mobile_HTML5Env.getClassID(this), decos);
-							Sass.closeBracket();
-						}
-						html_env.code.append("<div class=\"" + Mobile_HTML5Env.getClassID(this) + "\">");
-						html_env.code.append("<img class=\"img-responsive\"");
-					}
+					html_env.code.append("<img class=\"" + Mobile_HTML5Env.getClassID(this) +" ");
 				}
 
 				//added by goto 20130312  "Default width: 100%"
