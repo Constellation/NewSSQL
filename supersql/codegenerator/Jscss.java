@@ -176,6 +176,11 @@ public class Jscss implements Serializable {
 		}
 	}
 	
+	//initValiables
+	public static void initValiables() {
+		flag = false;
+	}
+	
 
 	
 	

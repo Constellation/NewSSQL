@@ -206,6 +206,8 @@ public class Mobile_HTML5G3 extends Grouper {
 		                e.printStackTrace();
 		                GlobalEnv.addErr("Error[HTMLG3]: File IO Error in HTMLG3");
 		            }
+	            }else{
+	            	Jscss.process();
 	            }
 			}
 			if(Sass.isBootstrapFlg()){
@@ -251,6 +253,8 @@ public class Mobile_HTML5G3 extends Grouper {
 					e.printStackTrace();
 					GlobalEnv.addErr("Error[HTMLG3]: File IO Error in HTMLG3");
 				}
+			}else{
+				Jscss.process();
 			}
 		}
 

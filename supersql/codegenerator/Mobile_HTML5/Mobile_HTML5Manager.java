@@ -212,6 +212,8 @@ public class Mobile_HTML5Manager extends Manager{
 	            //comment out by chie
 	        	//System.exit(-1);
 	        }
+        }else{
+			Jscss.process();
         }
 
     }
@@ -510,4 +512,10 @@ public StringBuffer generateCssfile(ITFE tfe_info, ExtList data_info) {
 	public void finish() {
 
     }
+    
+    //initAllValiables of Mobile_HTML5
+	public static void initAllValiables() {
+		//TODO
+		Jscss.initValiables();
+	}
 }

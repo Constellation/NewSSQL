@@ -7,6 +7,7 @@ import supersql.codegenerator.CodeGenerator;
 import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.Sass;
 import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5Env;
+import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5Manager;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
@@ -78,6 +79,8 @@ public class Responsive {
 	
 	// process2() : 修正案がResponsive側から返ってきたときに、Code Generatorを再実行する
 	private static boolean process2(LinkedHashMap<String, LinkedHashMap> fixMap, CodeGenerator codegenerator, Start_Parse parser, ExtList extList) {
+		Mobile_HTML5Manager.initAllValiables();
+		
 		Responsive.fixMap = fixMap;
 		Responsive.reExec = true;
 		codegenerator.generateCode(parser, extList);	//再実行
