@@ -542,6 +542,7 @@ public class Mobile_HTML5G2 extends Grouper {
         //parent HTMLへ<iframe>等を埋め込む
         String divID="rowDiv"+rowFileNum+"-";
         String iframeName ="rowIframe"+rowFileNum;
+        Log.info("aaa"+html_env.filename);
         String HTMLfilename=html_env.filename.substring(0,html_env.filename.indexOf(Compiler.getExtension()));
 		//added by goto 20130417 start
 		//HTMLfilenameを絶対パスから「相対パス形式」へ変更

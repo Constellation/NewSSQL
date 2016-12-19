@@ -9,6 +9,7 @@ import supersql.codegenerator.Asc_Desc.AscDesc;
 import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.LinkForeach;
+import supersql.codegenerator.Sass;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 
@@ -867,18 +868,33 @@ public class Mobile_HTML5_dynamic {
 		phpFileName = new File(phpFileName).getName();
 		String s = "";
 		if(Mobile_HTML5G3.dynamic_G3)	s +=	LinkForeach.getJS("G3", DD_FUNC_NAME);	//added by goto 20161112 for dynamic foreach
-		s +=		
-				"\n" +
-				"<!-- "+DD_COMMENT_NAME1+" start -->\n" +
-				"<!-- "+DD_COMMENT_NAME1+" DIV start -->\n" +
-				"<div id=\""+DD_FUNC_NAME+"_Panel\" style=\"\" data-role=\"none\">\n" +
-				"<div id=\""+DD_FUNC_NAME+"\" class=\""+tfeID+"\" data-role=\"none\"><!-- "+DD_COMMENT_NAME2+" --></div>\n" +
-				"</div>\n" +
-				"<!-- "+DD_COMMENT_NAME1+" DIV end -->\n" +
-				"\n" +
-				"<!-- "+DD_COMMENT_NAME1+" JS start -->\n" +
-				"<script type=\"text/javascript\">\n" +
-				"<!--\n";
+		if(!Sass.isBootstrapFlg()){
+			s +=		
+					"\n" +
+					"<!-- "+DD_COMMENT_NAME1+" start -->\n" +
+					"<!-- "+DD_COMMENT_NAME1+" DIV start -->\n" +
+					"<div id=\""+DD_FUNC_NAME+"_Panel\" style=\"\" data-role=\"none\">\n" +
+					"<div id=\""+DD_FUNC_NAME+"\" class=\""+tfeID+"\" data-role=\"none\"><!-- "+DD_COMMENT_NAME2+" --></div>\n" +
+					"</div>\n" +
+					"<!-- "+DD_COMMENT_NAME1+" DIV end -->\n" +
+					"\n" +
+					"<!-- "+DD_COMMENT_NAME1+" JS start -->\n" +
+					"<script type=\"text/javascript\">\n" +
+					"<!--\n";
+		}else if(Sass.isBootstrapFlg()){
+			s +=		
+					"\n" +
+					"<!-- "+DD_COMMENT_NAME1+" start -->\n" +
+					"<!-- "+DD_COMMENT_NAME1+" DIV start -->\n" +
+					"<div id=\""+DD_FUNC_NAME+"_Panel\" style=\"\" data-role=\"none\">\n" +
+					"<div id=\""+DD_FUNC_NAME+"\""+ "data-role=\"none\"><!-- "+DD_COMMENT_NAME2+" --></div>\n" +
+					"</div>\n" +
+					"<!-- "+DD_COMMENT_NAME1+" DIV end -->\n" +
+					"\n" +
+					"<!-- "+DD_COMMENT_NAME1+" JS start -->\n" +
+					"<script type=\"text/javascript\">\n" +
+					"<!--\n";
+		}
 		if(!Mobile_HTML5G3.dynamic_G3)
 			s += DD_FUNC_NAME+"();	//ロード時に実行\n";
 		if(ajax_loadInterval>0){

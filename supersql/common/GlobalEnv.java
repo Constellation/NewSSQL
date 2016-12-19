@@ -292,13 +292,13 @@ public class GlobalEnv {
 			//added by goto 20161217  for responsive
 			if(c_value[13] != null){
 				Responsive.setOption(c_value[13]);
+				Log.info("aaa"+c_value[13]);
 			}
 		} catch (Exception ex) {
 		}
 
 		if(embedtmp == null) //TODO
 			embedtmp = "/tmp";
-		Log.info(getpassword());
 		Log.out("Config is {host=" + host + ", db=" + db + ", user=" + user
 				+ ", outdir=" + outdir + ", driver=" + driver + ", password=" + password + ", encode=" + encode + ", optimizer=" + optimizer +", embedtmp="+ embedtmp + "}");
 		return;
