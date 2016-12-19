@@ -867,15 +867,24 @@ public class Mobile_HTML5_dynamic {
 		final String DD_COMMENT_NAME1 = "SSQL Dynamic"+num;
 		final String DD_COMMENT_NAME2 = "SSQL Dynamic Display Data"+num;
 		phpFileName = new File(phpFileName).getName();
+		boolean isTable = ((Mobile_HTML5.tableFlg || Mobile_HTML5.table0Flg)? true : false);
+		
 		String s = "";
+		s += ((isTable)? "<tbody>\n" : "");
 		if(Mobile_HTML5G3.dynamic_G3)	s +=	LinkForeach.getJS("G3", DD_FUNC_NAME);	//added by goto 20161112 for dynamic foreach
 		s +=		
 				"\n" +
 				"<!-- "+DD_COMMENT_NAME1+" start -->\n" +
-				"<!-- "+DD_COMMENT_NAME1+" DIV start -->\n" +
-				"<div id=\""+DD_FUNC_NAME+"_Panel\" style=\"\" data-role=\"none\">\n" +
-				"<div id=\""+DD_FUNC_NAME+"\" class=\""+tfeID+"\" data-role=\"none\"><!-- "+DD_COMMENT_NAME2+" --></div>\n" +
-				"</div>\n" +
+				"<!-- "+DD_COMMENT_NAME1+" DIV start -->\n";
+		if(isTable){
+			s += "<tr><td id=\""+DD_FUNC_NAME+"\"><!-- "+DD_COMMENT_NAME2+" --></td></tr>\n";
+		}else{
+			s += //"<div id=\""+DD_FUNC_NAME+"_Panel\" style=\"\" data-role=\"none\">\n" +
+				 //"<div id=\""+DD_FUNC_NAME+"\" class=\""+tfeID+"\" data-role=\"none\"><!-- "+DD_COMMENT_NAME2+" --></div>\n" +
+				 "<div id=\""+DD_FUNC_NAME+"\" data-role=\"none\"><!-- "+DD_COMMENT_NAME2+" --></div>\n";
+				 //"</div>\n" +
+		}
+		s +=	
 				"<!-- "+DD_COMMENT_NAME1+" DIV end -->\n" +
 				"\n" +
 				"<!-- "+DD_COMMENT_NAME1+" JS start -->\n" +
@@ -891,7 +900,8 @@ public class Mobile_HTML5_dynamic {
 		s +=	"function "+DD_FUNC_NAME+"_echo(str){\n" +
 				//"  var textArea = document.getElementById(\""+DD_FUNC_NAME+"\");\n" +
 				//"  textArea.innerHTML = str;\n" +
-				"  $(\"#"+DD_FUNC_NAME+"\").html(str).trigger(\"create\");\n" +
+				//"  $(\"#"+DD_FUNC_NAME+"\").html(str).trigger(\"create\");\n" +
+				"  document.getElementById(\""+DD_FUNC_NAME+"\").innerHTML = str;\n" +
 				"}\n";
 		//added by goto 20161112 for dynamic foreach
 		if(!Mobile_HTML5G3.dynamic_G3)
@@ -923,7 +933,8 @@ public class Mobile_HTML5_dynamic {
 				"//-->" +
 				"</script>\n" +
 				"<!-- "+DD_COMMENT_NAME1+" JS end -->\n" +
-				"<!-- "+DD_COMMENT_NAME1+" end -->\n\n";
+				"<!-- "+DD_COMMENT_NAME1+" end -->\n\n" +
+				((isTable)? "</tbody>\n" : "");
 		return s;
 	}
 	//getDynamicPagingHTML
@@ -932,12 +943,20 @@ public class Mobile_HTML5_dynamic {
 		final String DDP_COMMENT_NAME1 = "SSQL DynamicPaging"+num;
 		final String DDP_COMMENT_NAME2 = "SSQL Dynamic Display Data"+num;
 		phpFileName = new File(phpFileName).getName();
+		boolean isTable = ((Mobile_HTML5.tableFlg || Mobile_HTML5.table0Flg)? true : false);
 		
 		String s =
+				((isTable)? "<tbody>\n" : "") +
 				"\n" +
 				"<!-- "+DDP_COMMENT_NAME1+" start -->\n" +
-				"<!-- "+DDP_COMMENT_NAME1+" DIV start -->\n" +
-				"<div id=\""+DDP_FUNC_NAME+"\" class=\""+tfeID+"\" data-role=\"none\"><!-- "+DDP_COMMENT_NAME2+" --></div>\n" +
+				"<!-- "+DDP_COMMENT_NAME1+" DIV start -->\n";
+		if(isTable){
+			s += "<tr><td id=\""+DDP_FUNC_NAME+"\"><!-- "+DDP_COMMENT_NAME2+" --></td></tr>\n";
+		}else{
+			s += //"<div id=\""+DDP_FUNC_NAME+"\" class=\""+tfeID+"\" data-role=\"none\"><!-- "+DDP_COMMENT_NAME2+" --></div>\n" +
+				 "<div id=\""+DDP_FUNC_NAME+"\" data-role=\"none\"><!-- "+DDP_COMMENT_NAME2+" --></div>\n";
+		}
+		s +=
 				"<div id=\""+DDP_FUNC_NAME+"_Buttons\"></div>\n" +
 				"<!-- "+DDP_COMMENT_NAME1+" DIV end -->\n" +
 				"\n" +
@@ -949,7 +968,8 @@ public class Mobile_HTML5_dynamic {
 				"\n" +
 				"var "+DDP_FUNC_NAME+"_currentItems = 1;		//グローバル変数\n" +
 				"function "+DDP_FUNC_NAME+"_echo(str){\n" +
-				"  $(\"#"+DDP_FUNC_NAME+"\").html(str).trigger(\"create\");\n" +
+				//"  $(\"#"+DDP_FUNC_NAME+"\").html(str).trigger(\"create\");\n" +
+				"  document.getElementById(\""+DDP_FUNC_NAME+"\").innerHTML = str;\n" +
 				"}\n";
 		if(ajax_loadInterval>0){
 			s += "\n" +
@@ -1001,7 +1021,8 @@ public class Mobile_HTML5_dynamic {
 				"//-->" +
 				"</script>\n" +
 				"<!-- "+DDP_COMMENT_NAME1+" JS end -->\n" +
-				"<!-- "+DDP_COMMENT_NAME1+" end -->\n\n";
+				"<!-- "+DDP_COMMENT_NAME1+" end -->\n\n" +
+				((isTable)? "</tbody>\n" : "");
 		return s;
 	}
 

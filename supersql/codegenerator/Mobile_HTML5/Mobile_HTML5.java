@@ -15,11 +15,15 @@ import supersql.extendclass.ExtList;
 import supersql.parser.Start_Parse;
 
 public class Mobile_HTML5 {
+
+	public static boolean tableFlg = false;		//20130314  table
+	public static boolean table0Flg = false;	//20130325  table0
+	public static boolean divFlg = false;		//20130326  div
 	
 	public static int gLevel1 = 0;
 	public static int gLevel0 = -1;
 	public static ArrayList<Integer> whileCount = new ArrayList<>();
-	
+
 	public Mobile_HTML5() {
 
 	}

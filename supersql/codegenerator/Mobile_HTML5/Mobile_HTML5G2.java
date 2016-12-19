@@ -26,11 +26,7 @@ public class Mobile_HTML5G2 extends Grouper {
     Mobile_HTML5Env html_env;
     Mobile_HTML5Env html_env2;
     
-    static boolean tableFlg = false;		//20130314  table
-    static boolean table0Flg = false;		//20130325  table0
-    static boolean divFlg = false;			//20130326  div
-    
-    boolean firstFlg = false;	//20161203 bootstrap
+    private boolean firstFlg = false;	//20161203 bootstrap
     
     //added by goto 20130413  "row Prev/Next"
     int j = 1;
@@ -107,17 +103,17 @@ public class Mobile_HTML5G2 extends Grouper {
         html_env.append_css_def_td(classid, this.decos);
 
         //20130325  table0
-        if(decos.containsKey("table0"))	table0Flg = true;
-        else							table0Flg = false;
+        if(decos.containsKey("table0"))	Mobile_HTML5.table0Flg = true;
+        else							Mobile_HTML5.table0Flg = false;
     	//20130314  table
-        if(decos.containsKey("table") || table0Flg || Mobile_HTML5C1.tableFlg || Mobile_HTML5C2.tableFlg || Mobile_HTML5G1.tableFlg){
-    		tableFlg = true;
+        if(decos.containsKey("table") || Mobile_HTML5.table0Flg || Mobile_HTML5C1.tableFlg || Mobile_HTML5C2.tableFlg || Mobile_HTML5G1.tableFlg){
+    		Mobile_HTML5.tableFlg = true;
     	}//else	tableFlg = false;
         
         //20130326  div
         if(decos.containsKey("div")){
-    		divFlg = true;
-    		tableFlg = false;
+    		Mobile_HTML5.divFlg = true;
+    		Mobile_HTML5.tableFlg = false;
     	}//else divFlg = false;
         
         //20130914  "text"
@@ -189,8 +185,8 @@ public class Mobile_HTML5G2 extends Grouper {
 
 	        	//20130309
 	        	//20130314  table
-	        	if(tableFlg){
-	        		if(row>1 && tableFlg)	Mobile_HTML5G2.tableStartTag = Mobile_HTML5C1.getTableStartTag(html_env, decos, this);
+	        	if(Mobile_HTML5.tableFlg){
+	        		if(row>1 && Mobile_HTML5.tableFlg)	Mobile_HTML5G2.tableStartTag = Mobile_HTML5C1.getTableStartTag(html_env, decos, this);
 	            	else					html_env.code.append(Mobile_HTML5C1.getTableStartTag(html_env, decos, this)+"\n");
 	        	}
         	}else if(Sass.isBootstrapFlg()){
@@ -243,11 +239,11 @@ public class Mobile_HTML5G2 extends Grouper {
         	Mobile_HTML5G1.jj = 0;
         	Mobile_HTML5G1.gridInt = 0;
         	
-            if(decos.containsKey("table0") || Mobile_HTML5C1.table0Flg || Mobile_HTML5C2.table0Flg || Mobile_HTML5G1.table0Flg)	table0Flg = true;
-            if(decos.containsKey("table") || Mobile_HTML5C1.tableFlg || Mobile_HTML5C2.tableFlg || Mobile_HTML5G1.tableFlg || table0Flg)	tableFlg=true;
+            if(decos.containsKey("table0") || Mobile_HTML5C1.table0Flg || Mobile_HTML5C2.table0Flg || Mobile_HTML5G1.table0Flg)	Mobile_HTML5.table0Flg = true;
+            if(decos.containsKey("table") || Mobile_HTML5C1.tableFlg || Mobile_HTML5C2.tableFlg || Mobile_HTML5G1.tableFlg || Mobile_HTML5.table0Flg)	Mobile_HTML5.tableFlg=true;
         	if(decos.containsKey("div")){
-        		divFlg = true;
-        		tableFlg = false;
+        		Mobile_HTML5.divFlg = true;
+        		Mobile_HTML5.tableFlg = false;
         	}
         	
             html_env.glevel++;
@@ -274,9 +270,9 @@ public class Mobile_HTML5G2 extends Grouper {
 	    	          	html_env.code.append("<p>\n");
 
 	            	//20130309
-	            	if(!tableFlg)
+	            	if(!Mobile_HTML5.tableFlg)
 	            		html_env.code.append("\n<div class=\""+classid+" "+Mobile_HTML5_show.addShowCountClassName(decos)+"\">\n");	//20130309  div
-	            	else if(tableFlg){
+	            	else if(Mobile_HTML5.tableFlg){
 	            		//20130314  table
 			            html_env.code.append("<TR><TD class=\"" + classid + " "+Mobile_HTML5_show.addShowCountClassName(decos)+" nest\">\n");
 			            Log.out("<TR><TD class=\"" + classid + " nest\">");
@@ -317,11 +313,11 @@ public class Mobile_HTML5G2 extends Grouper {
             this.worknextItem();
 	        Mobile_HTML5.whileProcess2_1(getSymbol(), decos, html_env, data, data_info, tfe, null, -1);
             
-            if(decos.containsKey("table0") || Mobile_HTML5C1.table0Flg || Mobile_HTML5C2.table0Flg || Mobile_HTML5G1.table0Flg)	table0Flg = true;
-            if(decos.containsKey("table") || Mobile_HTML5C1.tableFlg || Mobile_HTML5C2.tableFlg || Mobile_HTML5G1.tableFlg || table0Flg)	tableFlg=true;
+            if(decos.containsKey("table0") || Mobile_HTML5C1.table0Flg || Mobile_HTML5C2.table0Flg || Mobile_HTML5G1.table0Flg)	Mobile_HTML5.table0Flg = true;
+            if(decos.containsKey("table") || Mobile_HTML5C1.tableFlg || Mobile_HTML5C2.tableFlg || Mobile_HTML5G1.tableFlg || Mobile_HTML5.table0Flg)	Mobile_HTML5.tableFlg=true;
         	if(decos.containsKey("div")){
-        		divFlg = true;
-        		tableFlg = false;
+        		Mobile_HTML5.divFlg = true;
+        		Mobile_HTML5.tableFlg = false;
         	}
         	
             //if(Mobile_HTML5Env.dynamicFlg){	//20130529 dynamic
@@ -349,11 +345,11 @@ public class Mobile_HTML5G2 extends Grouper {
 	                }
 	                //20160527 bootstrap
 	                //added by goto 20130110 end
-	                if(!tableFlg){
+	                if(!Mobile_HTML5.tableFlg){
 	                	if(!Mobile_HTML5Function.textFlg2){
 	                		html_env.code.append("</div>\n");		//20130309  div	//20130914  "text"
 	                	}
-	                }else if(tableFlg){
+	                }else if(Mobile_HTML5.tableFlg){
 	                	html_env.code.append("</TD></TR>\n");			//20130314  table
 	                	Log.out("</TD></TR>");
 	                }
@@ -453,10 +449,10 @@ public class Mobile_HTML5G2 extends Grouper {
 		}
 
         //20130314  table
-        if(tableFlg){
-        	if(!(row>1 && tableFlg))	html_env.code.append("</TABLE>\n");		//20130309
-        	tableFlg = false;
-        	table0Flg = false;		//20130325 table0
+        if(Mobile_HTML5.tableFlg){
+        	if(!(row>1 && Mobile_HTML5.tableFlg))	html_env.code.append("</TABLE>\n");		//20130309
+        	Mobile_HTML5.tableFlg = false;
+        	Mobile_HTML5.table0Flg = false;		//20130325 table0
         }
         Log.out("</TABLE>");
         
@@ -479,7 +475,7 @@ public class Mobile_HTML5G2 extends Grouper {
     	//20130503  Panel
     	Mobile_HTML5C1.panelProcess2(decos, html_env, panelFlg);
         
-        if(divFlg)	divFlg = false;		//20130326  div
+        if(Mobile_HTML5.divFlg)	Mobile_HTML5.divFlg = false;		//20130326  div
         
         //added by goto 20130413  "row Prev/Next"
         if(rowFlg){
