@@ -549,8 +549,8 @@ public class Mobile_HTML5_dynamic {
 	    			     +"<?php\n";
 	    	//php
     		if(!dynamicRowFlg){
-    			Log.info(getDynamicHTML(tfeID, dynamicCount, dynamicPHPfileName));
-    			Log.info(tfeID +" "+ dynamicCount +" "+ dynamicPHPfileName);
+    			//Log.info(getDynamicHTML(tfeID, dynamicCount, dynamicPHPfileName));
+    			//Log.info(tfeID +" "+ dynamicCount +" "+ dynamicPHPfileName);
 	    		statement += getDynamicHTML(tfeID, dynamicCount, dynamicPHPfileName);
     		}else{
     			statement += getDynamicPagingHTML(tfeID, dynamicRow, dynamicPagingCount, dynamicPHPfileName);
@@ -636,6 +636,7 @@ public class Mobile_HTML5_dynamic {
 							"    $result1 = $dynamic_db"+dynamicCount+"->query($sql1);\n" +
 							"\n" +
 							"    //$i = 0;\n" +
+							"    $j = 0;\n" +
 							"    $pop_num = 0;\n" +
 							"    $b = \"\";\n" +
 							php_str1 +
@@ -668,6 +669,7 @@ public class Mobile_HTML5_dynamic {
 							"    $result1 = pg_query($dynamic_db"+dynamicCount+", $sql1);\n" +
 							"\n" +
 							"    //$i = 0;\n" +
+							"    $j = 0;\n" +
 							"    $pop_num = 0;\n" +
 							"    $b = \"\";\n" +
 							php_str1 +

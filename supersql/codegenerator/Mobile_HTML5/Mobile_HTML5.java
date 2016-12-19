@@ -48,11 +48,6 @@ public class Mobile_HTML5 {
 		
 		Mobile_HTML5_show.showProcess(decos, html_env);	//TODO この位置でOKか確認
 		
-		if(symbol.contains("G1") || symbol.contains("G2")){
-			Mobile_HTML5_dynamic.dynamicPreProcess(symbol, decos, html_env);
-//	    	Mobile_HTML5_dynamic.html_env_code_length = html_env.code.toString().length();	//未使用？
-//			Mobile_HTML5_dynamic.dynamicPreProcess1(symbol, decos, html_env);
-		}
 		if(!symbol.contains("G1") && !symbol.contains("G2")){
 			Mobile_HTML5_form.formPreProcess(symbol, decos, html_env);
 		}
@@ -62,6 +57,13 @@ public class Mobile_HTML5 {
 		if(symbol.contains("G2")){
 			Mobile_HTML5_form.G2 = true;
 		}
+		
+		if(symbol.contains("G1") || symbol.contains("G2")){
+			Mobile_HTML5_dynamic.dynamicPreProcess(symbol, decos, html_env);
+//	    	Mobile_HTML5_dynamic.html_env_code_length = html_env.code.toString().length();	//未使用？
+//			Mobile_HTML5_dynamic.dynamicPreProcess1(symbol, decos, html_env);
+		}
+		
 		if(symbol.contains("G1") || symbol.contains("G2")){
 			Mobile_HTML5_dynamic.sindex = 0;
 //	    	Mobile_HTML5_dynamic.dynamicWhileString = "";
@@ -126,6 +128,14 @@ public class Mobile_HTML5 {
 			whileCount.set(gLevel0, 0);		//whileCoun[gLevel0]=0
 		}
 		
+		if(symbol.contains("G1") || symbol.contains("G2")){
+			Mobile_HTML5_dynamic.dynamicStringGetProcess(symbol, decos, html_env);
+			Mobile_HTML5_dynamic.dyamicWhileStringProcess(symbol, decos, html_env);
+			Mobile_HTML5_dynamic.dynamicProcess(symbol, tfeID, decos, html_env);
+		}
+		Mobile_HTML5_dynamic.dynamicString = "";
+		
+		
 		Mobile_HTML5Function.func_null_count = 0;	//null()
 		if(symbol.contains("G2")){
 			Mobile_HTML5_form.G2 = false;
@@ -136,11 +146,7 @@ public class Mobile_HTML5 {
 	}
 	public static boolean postProcess(String symbol, String tfeID, DecorateList decos, Mobile_HTML5Env html_env){
 		//Post-process (後処理)
-		if(symbol.contains("G1") || symbol.contains("G2")){
-			Mobile_HTML5_dynamic.dynamicStringGetProcess(symbol, decos, html_env);
-			Mobile_HTML5_dynamic.dyamicWhileStringProcess(symbol, decos, html_env);
-			Mobile_HTML5_dynamic.dynamicProcess(symbol, tfeID, decos, html_env);
-		}
+
 		if(!symbol.contains("G1") && !symbol.contains("G2")){
 			Mobile_HTML5_form.formStringGetProcess(symbol, decos, html_env);
 			Mobile_HTML5_form.formProcess(symbol, decos, html_env);
@@ -151,7 +157,6 @@ public class Mobile_HTML5 {
 //		}
 		Mobile_HTML5_show.showCloseProcess(decos, html_env);
 		
-		Mobile_HTML5_dynamic.dynamicString = "";
 		Mobile_HTML5_form.formString = "";
 		if(symbol.contains("G1") || symbol.contains("G2")){
 			//whileCount.set(gLevel0, 0);

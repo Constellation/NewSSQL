@@ -319,16 +319,15 @@ public class Mobile_HTML5G1 extends Grouper {
 	    	    	//TODO style=を.cssへ
 	    	    	String divWidth = Mobile_HTML5.getDivWidth("G1", decos, numberOfColumns - Mobile_HTML5Function.func_null_count);	//null()
 	    	    	if(!decos.containsKey("column")){
-	//    	    		if(Count!=0)	html_env.code.append("\n<div class=\"ui-block"+" "+classid2+" "+classid2+"-"+G1_count+"\" style=\"width:"+divWidth+"\">\n");
-	//    	    		else			html_env.code.append("\n<div class=\"ui-block"+" "+classid2+" "+classid2+"-"+G1_count+"\" style=\"width:"+divWidth+"; clear:left;\">\n");
-	//    	    		if(!decos.containsKey("width")){
-	    	    			if(Count!=0)	html_env.code.append("\n<div class=\"ui-block"+" "+classid2+" "+classid2+"-"+G1_count+"\">\n");
-	    	    			else			html_env.code.append("\n<div class=\"ui-block"+" "+classid2+" "+classid2+"-"+G1_count+"\" style=\"clear:left;\">\n");
-	    	    			if(gridInt<1)	Mobile_HTML5Attribute.attributeDivWidth2 += "."+classid2+"-"+G1_count+"{ width:"+divWidth+"; }\n";
-	//    	    		}else {
-	//    	    			if(Count!=0)	html_env.code.append("\n<div class=\"ui-block"+" "+classid2+"\">\n");
-	//    	    			else			html_env.code.append("\n<div class=\"ui-block"+" "+classid2+"\" style=\"clear:left;\">\n");
-	//					}
+    	    			if(Count!=0)	html_env.code.append("\n<div class=\"ui-block"+" "+classid2+" "+classid2+"-"+G1_count+"\">\n");
+    	    			else{
+    	    				if(!Mobile_HTML5_dynamic.dynamicDisplay){
+    	    					html_env.code.append("\n<div class=\"ui-block"+" "+classid2+" "+classid2+"-"+G1_count+"\" style=\"clear:left;\">\n");
+    	    				}else{
+    	    					html_env.code.append("\n<div class=\"ui-block"+" "+classid2+" "+classid2+"-"+G1_count+"\" '.(($j++>0)? '' : 'style=\"clear:left;\"').'>\n");
+							}
+    	    			}
+    	    			if(gridInt<1)	Mobile_HTML5Attribute.attributeDivWidth2 += "."+classid2+"-"+G1_count+"{ width:"+divWidth+"; }\n";
 	    	    	}else{
 	    	    		if(Count!=0)	html_env.code.append("\n<div class=\"ui-block"+" "+classid2+"\">\n");
 	    	    		else			html_env.code.append("\n<div class=\"ui-block"+" "+classid2+"\" style=\"clear:left;\">\n");
