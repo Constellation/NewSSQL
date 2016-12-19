@@ -22,7 +22,7 @@ public class Mobile_HTML5G1 extends Grouper {
     //20130309
     static int gridInt = 0;
     static int ii =0, jj = 0, Count = 0;
-    static boolean G1Flg=false;
+    static boolean G1Flg = false;
     int numberOfColumns = 0;		//1行ごとのカラム数 (range: 2〜)
     int table_column_num = 0;		//20130917  [ ],10@{table}
     
@@ -125,7 +125,7 @@ public class Mobile_HTML5G1 extends Grouper {
         if(decos.containsKey("table0"))	table0Flg = true;
         else							table0Flg = false;
     	//20130314  table
-        if(decos.containsKey("table") || table0Flg || Mobile_HTML5C1.tableFlg || Mobile_HTML5C2.tableFlg || Mobile_HTML5.tableFlg){
+        if(decos.containsKey("table") || table0Flg || Mobile_HTML5C1.tableFlg || Mobile_HTML5C2.tableFlg || Mobile_HTML5G2.tableFlg){
     		tableFlg = true;
     	}//else	tableFlg = false;
 
@@ -282,8 +282,8 @@ public class Mobile_HTML5G1 extends Grouper {
         	
         	Mobile_HTML5Function.glvl = html_env.glevel;	//added by goto 20130914  "SEQ_NUM"
         	
-            if(decos.containsKey("table0") || Mobile_HTML5C1.table0Flg || Mobile_HTML5C2.table0Flg || Mobile_HTML5.table0Flg)	table0Flg = true;
-            if(decos.containsKey("table") || Mobile_HTML5C1.tableFlg || Mobile_HTML5C2.tableFlg || Mobile_HTML5.tableFlg || table0Flg)	tableFlg=true;
+            if(decos.containsKey("table0") || Mobile_HTML5C1.table0Flg || Mobile_HTML5C2.table0Flg || Mobile_HTML5G2.table0Flg)	table0Flg = true;
+            if(decos.containsKey("table") || Mobile_HTML5C1.tableFlg || Mobile_HTML5C2.tableFlg || Mobile_HTML5G2.tableFlg || table0Flg)	tableFlg=true;
             if(decos.containsKey("div")){
         		divFlg = true;
         		tableFlg = false;
@@ -379,8 +379,8 @@ public class Mobile_HTML5G1 extends Grouper {
             
 	        Mobile_HTML5.whileProcess2_1(getSymbol(), decos, html_env, data, data_info, tfe, null, -1);
 	        
-            if(decos.containsKey("table0") || Mobile_HTML5C1.table0Flg || Mobile_HTML5C2.table0Flg || Mobile_HTML5.table0Flg)	table0Flg = true;
-            if(decos.containsKey("table") || Mobile_HTML5C1.tableFlg || Mobile_HTML5C2.tableFlg || Mobile_HTML5.tableFlg || table0Flg)	tableFlg=true;
+            if(decos.containsKey("table0") || Mobile_HTML5C1.table0Flg || Mobile_HTML5C2.table0Flg || Mobile_HTML5G2.table0Flg)	table0Flg = true;
+            if(decos.containsKey("table") || Mobile_HTML5C1.tableFlg || Mobile_HTML5C2.tableFlg || Mobile_HTML5G2.tableFlg || table0Flg)	tableFlg=true;
             if(decos.containsKey("div")){
         		divFlg = true;
         		tableFlg = false;

@@ -80,7 +80,7 @@ public class Mobile_HTML5C1 extends Connector {
         if(decos.containsKey("table0"))	table0Flg = true;
         else							table0Flg = false;
     	//20130314  table
-    	if(decos.containsKey("table") || table0Flg || Mobile_HTML5C2.tableFlg || Mobile_HTML5G1.tableFlg || Mobile_HTML5.tableFlg){
+    	if(decos.containsKey("table") || table0Flg || Mobile_HTML5C2.tableFlg || Mobile_HTML5G1.tableFlg || Mobile_HTML5G2.tableFlg){
     		tableFlg = true;
     	}//else	tableFlg = false;
     	
@@ -220,8 +220,8 @@ public class Mobile_HTML5C1 extends Connector {
             Count = ( (gridInt>=jj)? jj:gridInt );
 
             if(!Sass.isBootstrapFlg()){
-	            if(decos.containsKey("table0") || Mobile_HTML5C2.table0Flg || Mobile_HTML5G1.table0Flg || Mobile_HTML5.table0Flg)	table0Flg = true;
-	            if(decos.containsKey("table") || Mobile_HTML5C2.tableFlg || Mobile_HTML5G1.tableFlg || Mobile_HTML5.tableFlg || table0Flg)	tableFlg=true;
+	            if(decos.containsKey("table0") || Mobile_HTML5C2.table0Flg || Mobile_HTML5G1.table0Flg || Mobile_HTML5G2.table0Flg)	table0Flg = true;
+	            if(decos.containsKey("table") || Mobile_HTML5C2.tableFlg || Mobile_HTML5G1.tableFlg || Mobile_HTML5G2.tableFlg || table0Flg)	tableFlg=true;
 	            if(decos.containsKey("div")){
 	        		divFlg = true;
 	        		tableFlg = false;
@@ -294,8 +294,8 @@ public class Mobile_HTML5C1 extends Connector {
            
 	        Mobile_HTML5.whileProcess2_1(getSymbol(), decos, html_env, data, data_info, tfe, tfes, tfeItems);
             
-            if(decos.containsKey("table0") || Mobile_HTML5C2.table0Flg || Mobile_HTML5G1.table0Flg || Mobile_HTML5.table0Flg)	table0Flg = true;
-            if(decos.containsKey("table") || Mobile_HTML5C2.tableFlg || Mobile_HTML5G1.tableFlg || Mobile_HTML5.tableFlg || table0Flg)	tableFlg=true;
+            if(decos.containsKey("table0") || Mobile_HTML5C2.table0Flg || Mobile_HTML5G1.table0Flg || Mobile_HTML5G2.table0Flg)	table0Flg = true;
+            if(decos.containsKey("table") || Mobile_HTML5C2.tableFlg || Mobile_HTML5G1.tableFlg || Mobile_HTML5G2.tableFlg || table0Flg)	tableFlg=true;
             if(decos.containsKey("div")){
         		divFlg = true;
         		tableFlg = false;
@@ -467,7 +467,7 @@ public class Mobile_HTML5C1 extends Connector {
     public static String getTableStartTag(Mobile_HTML5Env html_env, DecorateList decos, ITFE tfe) {
     	String s = "";
     	s += "<TABLE width=\"100%\" cellSpacing=\"0\" cellPadding=\"0\" border=\"";
-    	if(Mobile_HTML5C1.table0Flg || Mobile_HTML5C2.table0Flg || Mobile_HTML5G1.table0Flg || Mobile_HTML5.table0Flg)
+    	if(Mobile_HTML5C1.table0Flg || Mobile_HTML5C2.table0Flg || Mobile_HTML5G1.table0Flg || Mobile_HTML5G2.table0Flg)
     		s += "0" + "\"";	//20130325 table0
     	else	s += html_env.tableborder + "\"";
     	s += html_env.getOutlineMode();

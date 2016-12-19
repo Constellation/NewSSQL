@@ -82,9 +82,9 @@ public class Mobile_HTML5Attribute extends Attribute {
 				//20130314 table
 				//20130409
 				if((Mobile_HTML5C1.tableFlg||Mobile_HTML5C1.table0Flg||Mobile_HTML5G1.tableFlg||Mobile_HTML5G1.table0Flg||
-						Mobile_HTML5C2.tableFlg||Mobile_HTML5C2.table0Flg||Mobile_HTML5.tableFlg||Mobile_HTML5.table0Flg||
+						Mobile_HTML5C2.tableFlg||Mobile_HTML5C2.table0Flg||Mobile_HTML5G2.tableFlg||Mobile_HTML5G2.table0Flg||
 						decos.containsKey("table") || decos.containsKey("table0"))
-						&& (!Mobile_HTML5C1.divFlg&&!Mobile_HTML5C2.divFlg&&!Mobile_HTML5G1.divFlg&&!Mobile_HTML5.divFlg)){
+						&& (!Mobile_HTML5C1.divFlg&&!Mobile_HTML5C2.divFlg&&!Mobile_HTML5G1.divFlg&&!Mobile_HTML5G2.divFlg)){
 					html_env.code.append("<table width=\"100%\"" + html_env.getOutlineModeAtt() + " ");
 					html_env.code.append("class=\"att");
 					if(html_env.written_classid.contains(classid)){
@@ -107,9 +107,9 @@ public class Mobile_HTML5Attribute extends Attribute {
 				//20130409
 				//if(decos.containsKey("table") || decos.containsKey("table0"))	html_env.code.append("<tr><td>\n");		//20130314 table
 				if((Mobile_HTML5C1.tableFlg||Mobile_HTML5C1.table0Flg||Mobile_HTML5G1.tableFlg||Mobile_HTML5G1.table0Flg||
-						Mobile_HTML5C2.tableFlg||Mobile_HTML5C2.table0Flg||Mobile_HTML5.tableFlg||Mobile_HTML5.table0Flg||
+						Mobile_HTML5C2.tableFlg||Mobile_HTML5C2.table0Flg||Mobile_HTML5G2.tableFlg||Mobile_HTML5G2.table0Flg||
 						decos.containsKey("table") || decos.containsKey("table0"))
-						&& (!Mobile_HTML5C1.divFlg&&!Mobile_HTML5C2.divFlg&&!Mobile_HTML5G1.divFlg&&!Mobile_HTML5.divFlg)){
+						&& (!Mobile_HTML5C1.divFlg&&!Mobile_HTML5C2.divFlg&&!Mobile_HTML5G1.divFlg&&!Mobile_HTML5G2.divFlg)){
 					html_env.code.append("<tr><td>\n");		//20130314 table
 				}
 				Log.out("<table class=\"att\"><tr><td>");
@@ -285,9 +285,9 @@ public class Mobile_HTML5Attribute extends Attribute {
 				//20130409
 				//if(decos.containsKey("table") || decos.containsKey("table0"))	html_env.code.append("</td></tr></table>\n");	//20130314 table
 				if((Mobile_HTML5C1.tableFlg||Mobile_HTML5C1.table0Flg||Mobile_HTML5G1.tableFlg||Mobile_HTML5G1.table0Flg||
-						Mobile_HTML5C2.tableFlg||Mobile_HTML5C2.table0Flg||Mobile_HTML5.tableFlg||Mobile_HTML5.table0Flg||
+						Mobile_HTML5C2.tableFlg||Mobile_HTML5C2.table0Flg||Mobile_HTML5G2.tableFlg||Mobile_HTML5G2.table0Flg||
 						decos.containsKey("table") || decos.containsKey("table0"))
-						&& (!Mobile_HTML5C1.divFlg&&!Mobile_HTML5C2.divFlg&&!Mobile_HTML5G1.divFlg&&!Mobile_HTML5.divFlg))
+						&& (!Mobile_HTML5C1.divFlg&&!Mobile_HTML5C2.divFlg&&!Mobile_HTML5G1.divFlg&&!Mobile_HTML5G2.divFlg))
 					html_env.code.append("</td></tr></table>\n");	//20130314 table
 				Log.out("</td></tr></table>");
 			}

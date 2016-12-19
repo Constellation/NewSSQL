@@ -9,7 +9,6 @@ import supersql.codegenerator.Asc_Desc.AscDesc;
 import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.LinkForeach;
-import supersql.codegenerator.Sass;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 
@@ -868,7 +867,7 @@ public class Mobile_HTML5_dynamic {
 		final String DD_COMMENT_NAME1 = "SSQL Dynamic"+num;
 		final String DD_COMMENT_NAME2 = "SSQL Dynamic Display Data"+num;
 		phpFileName = new File(phpFileName).getName();
-		boolean isTable = ((Mobile_HTML5.tableFlg || Mobile_HTML5.table0Flg)? true : false);
+		boolean isTable = ((Mobile_HTML5.isTable())? true : false);
 		
 		String s = "";
 		s += ((isTable)? "<tbody>\n" : "");
@@ -878,7 +877,11 @@ public class Mobile_HTML5_dynamic {
 				"<!-- "+DD_COMMENT_NAME1+" start -->\n" +
 				"<!-- "+DD_COMMENT_NAME1+" DIV start -->\n";
 		if(isTable){
-			s += "<tr><td id=\""+DD_FUNC_NAME+"\"><!-- "+DD_COMMENT_NAME2+" --></td></tr>\n";
+			if(Mobile_HTML5G1.G1Flg){
+				s += "<tr id=\""+DD_FUNC_NAME+"\"><!-- "+DD_COMMENT_NAME2+" --></tr>\n";
+			}else{
+				s += "<tr><td id=\""+DD_FUNC_NAME+"\"><!-- "+DD_COMMENT_NAME2+" --></td></tr>\n";
+			}
 		}else{
 			s += //"<div id=\""+DD_FUNC_NAME+"_Panel\" style=\"\" data-role=\"none\">\n" +
 				 //"<div id=\""+DD_FUNC_NAME+"\" class=\""+tfeID+"\" data-role=\"none\"><!-- "+DD_COMMENT_NAME2+" --></div>\n" +
@@ -944,7 +947,7 @@ public class Mobile_HTML5_dynamic {
 		final String DDP_COMMENT_NAME1 = "SSQL DynamicPaging"+num;
 		final String DDP_COMMENT_NAME2 = "SSQL Dynamic Display Data"+num;
 		phpFileName = new File(phpFileName).getName();
-		boolean isTable = ((Mobile_HTML5.tableFlg || Mobile_HTML5.table0Flg)? true : false);
+		boolean isTable = ((Mobile_HTML5.isTable())? true : false);
 		
 		String s =
 				((isTable)? "<tbody>\n" : "") +
@@ -952,7 +955,11 @@ public class Mobile_HTML5_dynamic {
 				"<!-- "+DDP_COMMENT_NAME1+" start -->\n" +
 				"<!-- "+DDP_COMMENT_NAME1+" DIV start -->\n";
 		if(isTable){
-			s += "<tr><td id=\""+DDP_FUNC_NAME+"\"><!-- "+DDP_COMMENT_NAME2+" --></td></tr>\n";
+			if(Mobile_HTML5G1.G1Flg){
+				s += "<tr id=\""+DDP_FUNC_NAME+"\"><!-- "+DDP_COMMENT_NAME2+" --></tr>\n";
+			}else{
+				s += "<tr><td id=\""+DDP_FUNC_NAME+"\"><!-- "+DDP_COMMENT_NAME2+" --></td></tr>\n";
+			}
 		}else{
 			s += //"<div id=\""+DDP_FUNC_NAME+"\" class=\""+tfeID+"\" data-role=\"none\"><!-- "+DDP_COMMENT_NAME2+" --></div>\n" +
 				 "<div id=\""+DDP_FUNC_NAME+"\" data-role=\"none\"><!-- "+DDP_COMMENT_NAME2+" --></div>\n";

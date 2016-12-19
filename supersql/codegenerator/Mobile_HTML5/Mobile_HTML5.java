@@ -16,10 +16,6 @@ import supersql.parser.Start_Parse;
 
 public class Mobile_HTML5 {
 
-	public static boolean tableFlg = false;		//20130314  table
-	public static boolean table0Flg = false;	//20130325  table0
-	public static boolean divFlg = false;		//20130326  div
-	
 	public static int gLevel1 = 0;
 	public static int gLevel0 = -1;
 	public static ArrayList<Integer> whileCount = new ArrayList<>();
@@ -127,7 +123,6 @@ public class Mobile_HTML5 {
 	}
 	public static boolean afterWhileProcess(String symbol, String tfeID, DecorateList decos, Mobile_HTML5Env html_env){
 //		Mobile_HTML5_dynamic.dyamicAfterWhileStringProcess(symbol, decos, html_env);
-		
 		if(symbol.contains("G1") || symbol.contains("G2")){
 			whileCount.set(gLevel0, 0);		//whileCoun[gLevel0]=0
 		}
@@ -137,8 +132,6 @@ public class Mobile_HTML5 {
 			Mobile_HTML5_dynamic.dyamicWhileStringProcess(symbol, decos, html_env);
 			Mobile_HTML5_dynamic.dynamicProcess(symbol, tfeID, decos, html_env);
 		}
-		Mobile_HTML5_dynamic.dynamicString = "";
-		
 		
 		Mobile_HTML5Function.func_null_count = 0;	//null()
 		if(symbol.contains("G2")){
@@ -150,18 +143,15 @@ public class Mobile_HTML5 {
 	}
 	public static boolean postProcess(String symbol, String tfeID, DecorateList decos, Mobile_HTML5Env html_env){
 		//Post-process (後処理)
-
 		if(!symbol.contains("G1") && !symbol.contains("G2")){
 			Mobile_HTML5_form.formStringGetProcess(symbol, decos, html_env);
 			Mobile_HTML5_form.formProcess(symbol, decos, html_env);
 		}
-//		if(symbol.contains("G1") || symbol.contains("G2")){
-//			Log.i(Mobile_HTML5_dynamic.dynamicCount);
-//			Mobile_HTML5_dynamic.dynamicCount--;
-//		}
+		
 		Mobile_HTML5_show.showCloseProcess(decos, html_env);
 		
 		Mobile_HTML5_form.formString = "";
+		Mobile_HTML5_dynamic.dynamicString = "";
 		if(symbol.contains("G1") || symbol.contains("G2")){
 			//whileCount.set(gLevel0, 0);
 			gLevel0--;
@@ -251,4 +241,12 @@ public class Mobile_HTML5 {
             return false;
         }
     }
+	
+	//isTable
+	public static boolean isTable() {
+		if(Mobile_HTML5G1.tableFlg || Mobile_HTML5G1.table0Flg || Mobile_HTML5G2.tableFlg || Mobile_HTML5G2.table0Flg){
+    		return true;
+    	}
+		return false;
+	}
 }

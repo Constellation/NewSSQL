@@ -69,7 +69,7 @@ public class Mobile_HTML5C2 extends Connector {
         if(decos.containsKey("table0"))	table0Flg = true;
         else							table0Flg = false;
         //20130314  table
-        if(decos.containsKey("table") || table0Flg || Mobile_HTML5C1.tableFlg || Mobile_HTML5G1.tableFlg || Mobile_HTML5.tableFlg){
+        if(decos.containsKey("table") || table0Flg || Mobile_HTML5C1.tableFlg || Mobile_HTML5G1.tableFlg || Mobile_HTML5G2.tableFlg){
     		tableFlg = true;
     	}//else	tableFlg = false;
         
@@ -187,8 +187,8 @@ public class Mobile_HTML5C2 extends Connector {
             String classid2 = Mobile_HTML5Env.getClassID(tfe);
 
             if(!Sass.isBootstrapFlg()){
-	            if(decos.containsKey("table0") || Mobile_HTML5C1.table0Flg || Mobile_HTML5G1.table0Flg || Mobile_HTML5.table0Flg)	table0Flg = true;
-	            if(decos.containsKey("table") || Mobile_HTML5C1.tableFlg || Mobile_HTML5G1.tableFlg || Mobile_HTML5.tableFlg || table0Flg)	tableFlg=true;
+	            if(decos.containsKey("table0") || Mobile_HTML5C1.table0Flg || Mobile_HTML5G1.table0Flg || Mobile_HTML5G2.table0Flg)	table0Flg = true;
+	            if(decos.containsKey("table") || Mobile_HTML5C1.tableFlg || Mobile_HTML5G1.tableFlg || Mobile_HTML5G2.tableFlg || table0Flg)	tableFlg=true;
 	            if(decos.containsKey("div")){
 	        		divFlg = true;
 	        		tableFlg = false;
@@ -243,8 +243,8 @@ public class Mobile_HTML5C2 extends Connector {
 	        Mobile_HTML5.whileProcess2_1(getSymbol(), decos, html_env, data, data_info, tfe, tfes, tfeItems);
 
 	        if(!Sass.isBootstrapFlg()){
-	            if(decos.containsKey("table0") || Mobile_HTML5C1.table0Flg || Mobile_HTML5G1.table0Flg || Mobile_HTML5.table0Flg)	table0Flg = true;
-	            if(decos.containsKey("table") || Mobile_HTML5C1.tableFlg || Mobile_HTML5G1.tableFlg || Mobile_HTML5.tableFlg || table0Flg)	tableFlg=true;
+	            if(decos.containsKey("table0") || Mobile_HTML5C1.table0Flg || Mobile_HTML5G1.table0Flg || Mobile_HTML5G2.table0Flg)	table0Flg = true;
+	            if(decos.containsKey("table") || Mobile_HTML5C1.tableFlg || Mobile_HTML5G1.tableFlg || Mobile_HTML5G2.tableFlg || table0Flg)	tableFlg=true;
 	            if(decos.containsKey("div")){
 	        		divFlg = true;
 	        		tableFlg = false;
