@@ -293,7 +293,7 @@ public class GlobalEnv {
 
 		if(embedtmp == null) //TODO
 			embedtmp = "/tmp";
-
+		Log.info(getpassword());
 		Log.out("Config is {host=" + host + ", db=" + db + ", user=" + user
 				+ ", outdir=" + outdir + ", driver=" + driver + ", password=" + password + ", encode=" + encode + ", optimizer=" + optimizer +", embedtmp="+ embedtmp + "}");
 		return;
