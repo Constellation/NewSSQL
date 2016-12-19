@@ -6,7 +6,6 @@ import java.util.Map.Entry;
 import supersql.codegenerator.CodeGenerator;
 import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.Sass;
-import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5Env;
 import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5Manager;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
@@ -15,6 +14,9 @@ import supersql.parser.Start_Parse;
 
 //added by goto 20161217
 public class Responsive {
+	
+	public final static String OPTION_NAME = "rurl";
+	private static String option = "";
 	
 	private final static String MODIFIER = "responsive";
 	private static boolean responsive = false;
@@ -26,6 +28,19 @@ public class Responsive {
 
 	}
 	
+	
+	// setOption()
+	public static void setOption(String val) {
+		option = val;
+	}
+	// getOption()
+	public static String getOption() {
+		return option;
+	}
+	// getResponsiveURL()
+	public static String getResponsiveURL() {
+		return GlobalEnv.getResponsiveURL();
+	}
 	
 	// check()
 	public static boolean check(DecorateList decos) {
@@ -45,6 +60,10 @@ public class Responsive {
 	// process() : process1, process2 の実行
 	public static boolean process(CodeGenerator codegenerator, Start_Parse parser, ExtList extList) {
 		if(!isResponsive())	return false;
+		if(getResponsiveURL().isEmpty()){
+			Log.err("No responsive option specified. (e.g. -"+OPTION_NAME+" URL)\n");
+			return false;
+		}
 		
 		LinkedHashMap<String, LinkedHashMap> fixMap = process1(Sass.HTMLCheckMap);
 		process2(fixMap, codegenerator, parser, extList);

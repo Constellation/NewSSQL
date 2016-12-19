@@ -50,15 +50,11 @@ public class Driver {
 
 		//Get page of URL
 		String fn = new Mobile_HTML5Env().getFileName4()+".html";
-		fn = "http://localhost/dvdrental/"+fn;
+		fn = Responsive.getResponsiveURL()+fn;
 		driver_lg.get(fn);
 		driver_md.get(fn);
 		driver_sm.get(fn);
 		driver_xs.get(fn);
-//		driver_lg.get("http://localhost/dvdrental/dvdrental_movie_foreach.html");
-//		driver_md.get("http://localhost/dvdrental/dvdrental_movie_foreach.html");
-//		driver_sm.get("http://localhost/dvdrental/dvdrental_movie_foreach.html");
-//		driver_xs.get("http://localhost/dvdrental/dvdrental_movie_foreach.html");
 		
 	}
 	

@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 
 import supersql.codegenerator.Ehtml;
 import supersql.codegenerator.Incremental;
+import supersql.codegenerator.Responsive.Responsive;
 
 public class GlobalEnv {
 
@@ -288,6 +289,10 @@ public class GlobalEnv {
 			if(c_value[12] != null){
 				setApiServerUrl(c_value[12]);
 			}
+			//added by goto 20161217  for responsive
+			if(c_value[13] != null){
+				Responsive.setOption(c_value[13]);
+			}
 		} catch (Exception ex) {
 		}
 
@@ -517,6 +522,20 @@ public class GlobalEnv {
 		return seek("-cssout");
 	}
 	/////////////
+	
+	//added by goto 20161217  for responsive
+	public static String getResponsiveURL() {
+		String ret = seek("-"+Responsive.OPTION_NAME);
+		if (ret == null) {
+			if (Responsive.getOption() != null) {
+				ret = Responsive.getOption();
+			} else {
+				ret = "";
+			}
+		}
+		return ret;
+	}
+	
 
 	// offline getConfigValue
 	protected static String[] getConfigValue(String config) {
@@ -530,7 +549,7 @@ public class GlobalEnv {
 		//tk added embedtmp
 		//chie added driver, optimizer
 		//(invokeServletPath and fileDirectory are not used in offline)
-		String[] con = { "host", "db", "user", "outdir", "embedtmp","driver", "password", "encode", "optimizer","invokeServletPath","fileDirectory", "layout", "api_server_url"};
+		String[] con = { "host", "db", "user", "outdir", "embedtmp","driver", "password", "encode", "optimizer","invokeServletPath","fileDirectory", "layout", "api_server_url", Responsive.OPTION_NAME};
 
 		try {
 			filein = new BufferedReader(new FileReader(config));
