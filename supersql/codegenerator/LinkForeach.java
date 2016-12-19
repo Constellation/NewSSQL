@@ -41,7 +41,9 @@ public class LinkForeach {
 					"		else\n" +
 					"			document.write(\"No Data Found : \"+id);\n" +
 					"		\n" +
-					"		"+ID3+"_currentID = id;\n";
+					"		"+ID3+"_currentID = id;\n" +
+					"	}\n" +
+					"}\n";
 
 		}else if(tfe.equals("G3")){
 			//r += 	"window.onload = function(){\n" +
@@ -79,11 +81,11 @@ public class LinkForeach {
 						"			else\n" +
 						"				document.write(\"No Data Found : \"+id);\n" +
 						"		}\n";
+			r += 	"	}\n" +
+					//"}\n" +
+					"});\n";
 		}
-		r += 	"	}\n" +
-				//"}\n" +
-				"});\n" +
-				"//-->" +
+		r += 	"//-->" +
 				"</script>\n";
 		return r;
 	}
