@@ -272,7 +272,6 @@ public class Mobile_HTML5Env extends LocalEnv {
     			header.append("<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js\"></script>\n");
     			header.append("<script src=\"jscss/bootstrap.js\"></script>\n");
     			header.append("<script src=\"jscss/forBootstrap/jquery.twbsPagination.js\"></script>\n");
-    			header.append("<script src=\"jscss/forBootstrap/jquery.matchHeight.js\"></script>\n");
     		}
 	        //20160603 bootstrap
 	        if(!Sass.isBootstrapFlg()){

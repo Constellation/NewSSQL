@@ -37,6 +37,11 @@ public class TFE implements ITFE,Serializable {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	public ExtList makele1() {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
 
 	@Override
 	public int countconnectitem() {

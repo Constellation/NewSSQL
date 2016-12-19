@@ -396,7 +396,6 @@ public class Start_Parse {
 		StringTokenizer st = new StringTokenizer(where);
 		while (st.hasMoreTokens()) {
 			String nt = st.nextToken().toString();
-			Log.info(nt);
 			if (nt.equalsIgnoreCase("WHERE")) {
 				buffer = where_c;
 			}
@@ -602,7 +601,7 @@ public class Start_Parse {
 						from += after_from.substring(after_from.indexOf("*/") +2);
 						after_from = from;
 					}
-					Log.info(after_from);
+					Log.out(after_from);
 					processKeywords(after_from);
 
 				}
