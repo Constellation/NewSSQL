@@ -125,7 +125,7 @@ public class Mobile_HTML5G1 extends Grouper {
         if(decos.containsKey("table0"))	table0Flg = true;
         else							table0Flg = false;
     	//20130314  table
-        if(decos.containsKey("table") || table0Flg || Mobile_HTML5C1.tableFlg || Mobile_HTML5C2.tableFlg || Mobile_HTML5G2.tableFlg){
+        if(decos.containsKey("table") || table0Flg || Mobile_HTML5C1.tableFlg || Mobile_HTML5C2.tableFlg || Mobile_HTML5.tableFlg){
     		tableFlg = true;
     	}//else	tableFlg = false;
 
@@ -282,8 +282,8 @@ public class Mobile_HTML5G1 extends Grouper {
         	
         	Mobile_HTML5Function.glvl = html_env.glevel;	//added by goto 20130914  "SEQ_NUM"
         	
-            if(decos.containsKey("table0") || Mobile_HTML5C1.table0Flg || Mobile_HTML5C2.table0Flg || Mobile_HTML5G2.table0Flg)	table0Flg = true;
-            if(decos.containsKey("table") || Mobile_HTML5C1.tableFlg || Mobile_HTML5C2.tableFlg || Mobile_HTML5G2.tableFlg || table0Flg)	tableFlg=true;
+            if(decos.containsKey("table0") || Mobile_HTML5C1.table0Flg || Mobile_HTML5C2.table0Flg || Mobile_HTML5.table0Flg)	table0Flg = true;
+            if(decos.containsKey("table") || Mobile_HTML5C1.tableFlg || Mobile_HTML5C2.tableFlg || Mobile_HTML5.tableFlg || table0Flg)	tableFlg=true;
             if(decos.containsKey("div")){
         		divFlg = true;
         		tableFlg = false;
@@ -319,16 +319,15 @@ public class Mobile_HTML5G1 extends Grouper {
 	    	    	//TODO style=を.cssへ
 	    	    	String divWidth = Mobile_HTML5.getDivWidth("G1", decos, numberOfColumns - Mobile_HTML5Function.func_null_count);	//null()
 	    	    	if(!decos.containsKey("column")){
-	//    	    		if(Count!=0)	html_env.code.append("\n<div class=\"ui-block"+" "+classid2+" "+classid2+"-"+G1_count+"\" style=\"width:"+divWidth+"\">\n");
-	//    	    		else			html_env.code.append("\n<div class=\"ui-block"+" "+classid2+" "+classid2+"-"+G1_count+"\" style=\"width:"+divWidth+"; clear:left;\">\n");
-	//    	    		if(!decos.containsKey("width")){
-	    	    			if(Count!=0)	html_env.code.append("\n<div class=\"ui-block"+" "+classid2+" "+classid2+"-"+G1_count+"\">\n");
-	    	    			else			html_env.code.append("\n<div class=\"ui-block"+" "+classid2+" "+classid2+"-"+G1_count+"\" style=\"clear:left;\">\n");
-	    	    			if(gridInt<1)	Mobile_HTML5Attribute.attributeDivWidth2 += "."+classid2+"-"+G1_count+"{ width:"+divWidth+"; }\n";
-	//    	    		}else {
-	//    	    			if(Count!=0)	html_env.code.append("\n<div class=\"ui-block"+" "+classid2+"\">\n");
-	//    	    			else			html_env.code.append("\n<div class=\"ui-block"+" "+classid2+"\" style=\"clear:left;\">\n");
-	//					}
+    	    			if(Count!=0)	html_env.code.append("\n<div class=\"ui-block"+" "+classid2+" "+classid2+"-"+G1_count+"\">\n");
+    	    			else{
+    	    				if(!Mobile_HTML5_dynamic.dynamicDisplay){
+    	    					html_env.code.append("\n<div class=\"ui-block"+" "+classid2+" "+classid2+"-"+G1_count+"\" style=\"clear:left;\">\n");
+    	    				}else{
+    	    					html_env.code.append("\n<div class=\"ui-block"+" "+classid2+" "+classid2+"-"+G1_count+"\" '.(($j++>0)? '' : 'style=\"clear:left;\"').'>\n");
+							}
+    	    			}
+    	    			if(gridInt<1)	Mobile_HTML5Attribute.attributeDivWidth2 += "."+classid2+"-"+G1_count+"{ width:"+divWidth+"; }\n";
 	    	    	}else{
 	    	    		if(Count!=0)	html_env.code.append("\n<div class=\"ui-block"+" "+classid2+"\">\n");
 	    	    		else			html_env.code.append("\n<div class=\"ui-block"+" "+classid2+"\" style=\"clear:left;\">\n");
@@ -380,8 +379,8 @@ public class Mobile_HTML5G1 extends Grouper {
             
 	        Mobile_HTML5.whileProcess2_1(getSymbol(), decos, html_env, data, data_info, tfe, null, -1);
 	        
-            if(decos.containsKey("table0") || Mobile_HTML5C1.table0Flg || Mobile_HTML5C2.table0Flg || Mobile_HTML5G2.table0Flg)	table0Flg = true;
-            if(decos.containsKey("table") || Mobile_HTML5C1.tableFlg || Mobile_HTML5C2.tableFlg || Mobile_HTML5G2.tableFlg || table0Flg)	tableFlg=true;
+            if(decos.containsKey("table0") || Mobile_HTML5C1.table0Flg || Mobile_HTML5C2.table0Flg || Mobile_HTML5.table0Flg)	table0Flg = true;
+            if(decos.containsKey("table") || Mobile_HTML5C1.tableFlg || Mobile_HTML5C2.tableFlg || Mobile_HTML5.tableFlg || table0Flg)	tableFlg=true;
             if(decos.containsKey("div")){
         		divFlg = true;
         		tableFlg = false;

@@ -4494,7 +4494,7 @@ public class Mobile_HTML5Function extends Function {
 		String classID = Mobile_HTML5Env.getClassID(this);
 
 		//not @{table}
-		if(!decos.containsKey("table") && !Mobile_HTML5C1.table0Flg && !Mobile_HTML5C2.tableFlg && !Mobile_HTML5G1.tableFlg && !Mobile_HTML5G2.tableFlg)
+		if(!decos.containsKey("table") && !Mobile_HTML5C1.table0Flg && !Mobile_HTML5C2.tableFlg && !Mobile_HTML5G1.tableFlg && !Mobile_HTML5.tableFlg)
 			Mobile_HTML5Manager.replaceCode(html_env, classID, "");		//直前の<div>に書き込まれているclassIDを削除
 
 		if(path.equals("")){
