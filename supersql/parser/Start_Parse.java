@@ -560,7 +560,7 @@ public class Start_Parse {
 //				Log.info(getText(list_tfe, ruleNames));
 				if(List_tree_b.size() > 2){
 					list_from_where = (ExtList) List_tree_b.get(2);
-					Log.info(list_from_where);
+//					Log.info(list_from_where);
 					after_from = getText(list_from_where, ruleNames);
 					builder = "";
 					list_from = new ExtList();
@@ -594,7 +594,8 @@ public class Start_Parse {
 //					String from2 = getText( list_where, ruleNames );
 
 //					after_from = from1 + "where " + from2;
-					after_from = after_from.substring(after_from.toLowerCase().indexOf("from") + 4);					
+					after_from = after_from.substring(after_from.toLowerCase().indexOf("from") + 4);
+					Log.info(after_from);
 					String from = new String();
 					while(after_from.contains("/*")){
 						from = after_from.substring(0, after_from.indexOf("/*"));

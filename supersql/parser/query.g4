@@ -253,10 +253,10 @@ select_core
   :
   (K_SELECT ( K_DISTINCT | K_ALL )? result_column ( ',' result_column )*)?
   ( K_FROM ( table_or_subquery ( ',' table_or_subquery )* | join_clause ) )
-  where ?
+  where_clause ?
   ;
   
-where	:
+where_clause	:
 (
   ( K_WHERE expr )
   ( K_GROUP K_BY expr ( ',' expr )* ( K_HAVING expr )? )?
@@ -373,7 +373,7 @@ select_stmt
 select_or_values
   : (K_SELECT ( K_DISTINCT | K_ALL )? result_column ( ',' result_column )*)?
   ( K_FROM ( table_or_subquery ( ',' table_or_subquery )* | join_clause ) )
-  where ?
+  where_clause ?
   ;
 
 compound_operator

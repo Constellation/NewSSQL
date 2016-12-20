@@ -47,7 +47,7 @@ public class queryParser extends Parser {
 		RULE_h_exp = 9, RULE_n_exp = 10, RULE_sorting = 11, RULE_function = 12, 
 		RULE_sqlfunc = 13, RULE_aggregate = 14, RULE_if_then_else = 15, RULE_arithmetics = 16, 
 		RULE_from_where = 17, RULE_error = 18, RULE_sql_stmt_list = 19, RULE_sql_stmt = 20, 
-		RULE_factored_select_stmt = 21, RULE_select_core = 22, RULE_where = 23, 
+		RULE_factored_select_stmt = 21, RULE_select_core = 22, RULE_where_clause = 23, 
 		RULE_result_column = 24, RULE_table_or_subquery = 25, RULE_keyword = 26, 
 		RULE_select_stmt = 27, RULE_select_or_values = 28, RULE_compound_operator = 29, 
 		RULE_join_clause = 30, RULE_join_operator = 31, RULE_join_constraint = 32, 
@@ -62,7 +62,7 @@ public class queryParser extends Parser {
 		"query", "root", "media", "operand", "grouper", "composite_iterator", 
 		"exp", "d_exp", "v_exp", "h_exp", "n_exp", "sorting", "function", "sqlfunc", 
 		"aggregate", "if_then_else", "arithmetics", "from_where", "error", "sql_stmt_list", 
-		"sql_stmt", "factored_select_stmt", "select_core", "where", "result_column", 
+		"sql_stmt", "factored_select_stmt", "select_core", "where_clause", "result_column", 
 		"table_or_subquery", "keyword", "select_stmt", "select_or_values", "compound_operator", 
 		"join_clause", "join_operator", "join_constraint", "common_table_expression", 
 		"ordering_term", "expr", "literal_value", "unary_operator", "name", "type_name", 
@@ -2249,8 +2249,8 @@ public class queryParser extends Parser {
 		public Result_columnContext result_column(int i) {
 			return getRuleContext(Result_columnContext.class,i);
 		}
-		public WhereContext where() {
-			return getRuleContext(WhereContext.class,0);
+		public Where_clauseContext where_clause() {
+			return getRuleContext(Where_clauseContext.class,0);
 		}
 		public List<Table_or_subqueryContext> table_or_subquery() {
 			return getRuleContexts(Table_or_subqueryContext.class);
@@ -2365,7 +2365,7 @@ public class queryParser extends Parser {
 			if (((((_la - 47)) & ~0x3f) == 0 && ((1L << (_la - 47)) & ((1L << (K_GROUP - 47)) | (1L << (K_VALUES - 47)) | (1L << (K_WHERE - 47)))) != 0)) {
 				{
 				setState(467);
-				where();
+				where_clause();
 				}
 			}
 
@@ -2382,7 +2382,7 @@ public class queryParser extends Parser {
 		return _localctx;
 	}
 
-	public static class WhereContext extends ParserRuleContext {
+	public static class Where_clauseContext extends ParserRuleContext {
 		public TerminalNode K_VALUES() { return getToken(queryParser.K_VALUES, 0); }
 		public List<ExprContext> expr() {
 			return getRuleContexts(ExprContext.class);
@@ -2394,23 +2394,23 @@ public class queryParser extends Parser {
 		public TerminalNode K_GROUP() { return getToken(queryParser.K_GROUP, 0); }
 		public TerminalNode K_BY() { return getToken(queryParser.K_BY, 0); }
 		public TerminalNode K_HAVING() { return getToken(queryParser.K_HAVING, 0); }
-		public WhereContext(ParserRuleContext parent, int invokingState) {
+		public Where_clauseContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_where; }
+		@Override public int getRuleIndex() { return RULE_where_clause; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof queryListener ) ((queryListener)listener).enterWhere(this);
+			if ( listener instanceof queryListener ) ((queryListener)listener).enterWhere_clause(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof queryListener ) ((queryListener)listener).exitWhere(this);
+			if ( listener instanceof queryListener ) ((queryListener)listener).exitWhere_clause(this);
 		}
 	}
 
-	public final WhereContext where() throws RecognitionException {
-		WhereContext _localctx = new WhereContext(_ctx, getState());
-		enterRule(_localctx, 46, RULE_where);
+	public final Where_clauseContext where_clause() throws RecognitionException {
+		Where_clauseContext _localctx = new Where_clauseContext(_ctx, getState());
+		enterRule(_localctx, 46, RULE_where_clause);
 		int _la;
 		try {
 			setState(567);
@@ -3297,8 +3297,8 @@ public class queryParser extends Parser {
 		public Result_columnContext result_column(int i) {
 			return getRuleContext(Result_columnContext.class,i);
 		}
-		public WhereContext where() {
-			return getRuleContext(WhereContext.class,0);
+		public Where_clauseContext where_clause() {
+			return getRuleContext(Where_clauseContext.class,0);
 		}
 		public List<Table_or_subqueryContext> table_or_subquery() {
 			return getRuleContexts(Table_or_subqueryContext.class);
@@ -3413,7 +3413,7 @@ public class queryParser extends Parser {
 			if (((((_la - 47)) & ~0x3f) == 0 && ((1L << (_la - 47)) & ((1L << (K_GROUP - 47)) | (1L << (K_VALUES - 47)) | (1L << (K_WHERE - 47)))) != 0)) {
 				{
 				setState(703);
-				where();
+				where_clause();
 				}
 			}
 

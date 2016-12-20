@@ -126,7 +126,7 @@ public class Responsive {
 		List<Integer> keylist = new ArrayList<Integer>(HTMLCheckMap.keySet());
 
 		//Comparator でキーを降順ソート
-		Collections.sort(keylist, Comparator.reverseOrder());
+//		Collections.sort(keylist, Comparator.reverseOrder());
 				
 		//forevaluation
 		long fix_start = System.nanoTime();

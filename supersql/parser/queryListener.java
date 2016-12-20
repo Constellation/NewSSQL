@@ -244,15 +244,15 @@ public interface queryListener extends ParseTreeListener {
 	 */
 	void exitSelect_core(queryParser.Select_coreContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link queryParser#where}.
+	 * Enter a parse tree produced by {@link queryParser#where_clause}.
 	 * @param ctx the parse tree
 	 */
-	void enterWhere(queryParser.WhereContext ctx);
+	void enterWhere_clause(queryParser.Where_clauseContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link queryParser#where}.
+	 * Exit a parse tree produced by {@link queryParser#where_clause}.
 	 * @param ctx the parse tree
 	 */
-	void exitWhere(queryParser.WhereContext ctx);
+	void exitWhere_clause(queryParser.Where_clauseContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link queryParser#result_column}.
 	 * @param ctx the parse tree
