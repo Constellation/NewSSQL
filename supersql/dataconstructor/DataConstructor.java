@@ -319,7 +319,7 @@ public class DataConstructor {
 		exectime[EXECSQL] = end - start;
 
 		Log.info("## DB result ##");
-		Log.info(sep_data_info);
+		Log.out(sep_data_info);
 		
 		return sep_data_info;
 
