@@ -3,19 +3,11 @@ grammar	prefix;
 @header{
 package supersql.parser;
 }
-prefix	:	( 
-				(K_FOREACH | K_FOREACH1)
-					(
-						operand (',' operand)* 
-					| 
-						OPEN_PARENTHESE operand (',' operand)*CLOSE_PARENTHESE 
-					) 
-				|
-				function
-				| 
-				exdef
-			)	
-		;
+prefix	:	
+test (',' test)*
+;
+test :
+foreach | function | expr ;
 
 operand : (table_alias '.')? column_name ;
 
@@ -23,6 +15,15 @@ exdef	:	'#' K_IMPORT IDENTIFIER
 			| '#' K_DEFINE	function_name any_name OPEN_BRACE DEF CLOSE_BRACE
 		;
 		
+foreach :
+( 
+  (K_FOREACH | K_FOREACH1)
+    (operand (',' operand)* 
+    | OPEN_PARENTHESE operand (',' operand)* CLOSE_PARENTHESE 
+    )
+)
+;
+
 function	:
 		function_name
 			OPEN_PARENTHESE
