@@ -21,6 +21,7 @@ import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.dataconstructor.DataConstructor;
 import supersql.extendclass.ExtList;
+import supersql.parser.Start_Parse;
 
 public class Mobile_HTML5Manager extends Manager{
 
@@ -144,7 +145,7 @@ public class Mobile_HTML5Manager extends Manager{
 						html += html_env.header;
 					html += html_env.code;
 					html += html_env.footer;
-					if(!Mobile_HTML5Env.sessionFlg)
+					if(!Start_Parse.sessionFlag)
 						html = FileFormatter.process(html);
 					pw.println(html);
 		            

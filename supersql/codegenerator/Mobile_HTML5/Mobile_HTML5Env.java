@@ -147,9 +147,6 @@ public class Mobile_HTML5Env extends LocalEnv {
 	
 	static boolean noAd = false;		//20131106
 	
-	public static boolean sessionFlg = false;
-    
-
     // ��?�Ѥ�CSS CLASS����?��?
     private String KeisenMode = "";
 
@@ -482,7 +479,6 @@ public class Mobile_HTML5Env extends LocalEnv {
 	        	
 	        	//php
         		if(s_val.equals("1") || s_val.equals("2")){
-        			sessionFlg = true;
 	        		header.append("\n" +
 	        				"<!-- \"Login & Logout\" start -->\n" +
 	        				"<?php\n" +

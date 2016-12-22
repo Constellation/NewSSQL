@@ -158,7 +158,8 @@ public class Mobile_HTML5G3 extends Grouper {
 						
 						//changed by goto 20161019 for HTML Formatter
 						String html = "" + html_env.header + html_env.code + html_env.footer;
-						html = FileFormatter.process(html);
+						if(!Start_Parse.sessionFlag)
+							html = FileFormatter.process(html);
 						pw.println(html);
 		                
 		                pw.close();
@@ -237,7 +238,8 @@ public class Mobile_HTML5G3 extends Grouper {
 					
 					//changed by goto 20161019 for HTML Formatter
 					String html = "" + html_env.header + foreachContents + html_env.footer;
-//					html = FileFormatter.process(html); //taji comment out 20161221
+					if(!Start_Parse.sessionFlag)
+						html = FileFormatter.process(html);
 					pw.println(html);
 	
 					pw.close();
