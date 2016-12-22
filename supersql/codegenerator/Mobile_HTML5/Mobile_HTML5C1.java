@@ -6,7 +6,6 @@ import supersql.codegenerator.Connector;
 import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.Manager;
-
 import supersql.codegenerator.Sass;
 import supersql.codegenerator.TFE;
 import supersql.common.GlobalEnv;
@@ -338,13 +337,13 @@ public class Mobile_HTML5C1 extends Connector {
 
         if(!Sass.isBootstrapFlg()){
 	        //20130309
-	        if(!tableFlg)	html_env.code.append("\n</DIV>\n");			//20130309
+	        if(!tableFlg)	html_env.code.append("\n</DIV c1>\n");			//20130309
 
 	        //20130314  table
 	      	if(tableFlg){
 	      		html_env.code.append("</TR></TABLE>\n");	//20130309
-	      		tableFlg = false;
-	      		table0Flg = false;			//20130325 table0
+//	      		tableFlg = false;
+//	      		table0Flg = false;			//20130325 table0
 	      	}
 
 	        //20130312 collapsible

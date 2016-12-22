@@ -71,7 +71,7 @@ public class Mobile_HTML5G2 extends Grouper {
     	Mobile_HTML5G1.G1_count = 0;
     	
 //    	Mobile_HTML5_dynamic.Gdepth = 0;
-    	Mobile_HTML5_dynamic.Gnum++;
+//    	Mobile_HTML5_dynamic.Gnum++;
     	
         //G2Flg = true;
         int panelFlg = 0;	//20130503  Panel
