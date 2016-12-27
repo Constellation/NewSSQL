@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 
 import supersql.codegenerator.Ehtml;
 import supersql.codegenerator.Incremental;
+import supersql.codegenerator.Responsive.Responsive;
 
 public class GlobalEnv {
 
@@ -183,7 +184,6 @@ public class GlobalEnv {
 		Log.out("GlobalEnv is " + envs);
 	}
 
-	//tk
 	public static void setGlobalEnvEmbed(String[] args) {
 
 		envs = new Hashtable<String, String>();
@@ -208,7 +208,6 @@ public class GlobalEnv {
 		setQuietLog();
 		Log.out("GlobalEnv is " + envs);
 	}
-	//end tk
 	public static void getConfig() {
 		host = null;
 		db = null;
@@ -222,7 +221,6 @@ public class GlobalEnv {
 		String config = getconfigfile(); // -cでconfigファイルを指定できる
 		String[] c_value;
 
-		//tk
 		if (config == null) {
 			//changed by goto 20120624 start
 			if(new File(home.concat("/.ssql")).exists())
@@ -238,7 +236,6 @@ public class GlobalEnv {
 			Log.out("[GlobalEnv:getConfig] config file =" + config);
 			c_value = getConfigValue(config);
 		}
-		//tk
 
 
 		if (c_value[0] == null && c_value[1] == null && c_value[2] == null
@@ -262,11 +259,9 @@ public class GlobalEnv {
 			if (c_value[4] != null){
 				embedtmp = c_value[4];
 			}
-			//chie
 			if (c_value[5] != null){
 				driver = c_value[5];
 			}
-			//chie
 			if (c_value[6] != null){
 				password = c_value[6];
 			}
@@ -282,20 +277,26 @@ public class GlobalEnv {
 			if (c_value[10] != null){
 				fileDirectory = c_value[10];
 			}
-			if(c_value[11] != null){
+			if (c_value[11] != null){
 				setLayout(c_value[11]);
 			}
-			if(c_value[12] != null){
+			if (c_value[12] != null){
 				setApiServerUrl(c_value[12]);
+			}
+			//added by goto 20161217  for responsive
+			if (c_value[13] != null){
+				Responsive.setOption(c_value[13]);
+				Log.info("aaa"+c_value[13]);
 			}
 		} catch (Exception ex) {
 		}
 
 		if(embedtmp == null) //TODO
 			embedtmp = "/tmp";
-
-		Log.out("Config is {host=" + host + ", db=" + db + ", user=" + user
-				+ ", outdir=" + outdir + ", driver=" + driver + ", password=" + password + ", encode=" + encode + ", optimizer=" + optimizer +", embedtmp="+ embedtmp + "}");
+		Log.out("Config is {host=" + host + ", db=" + db + ", user=" + user + 
+				 ", outdir=" + outdir + ", driver=" + driver + ", password=" + password + 
+				 ", encode=" + encode + ", optimizer=" + optimizer +", embedtmp="+ embedtmp + 
+				 ", "+Responsive.OPTION_NAME+"="+Responsive.getOption()+" }");
 		return;
 	}
 
@@ -517,21 +518,32 @@ public class GlobalEnv {
 		return seek("-cssout");
 	}
 	/////////////
+	
+	//added by goto 20161217  for responsive
+	public static String getResponsiveURL() {
+		String ret = seek("-"+Responsive.OPTION_NAME);
+		if (ret == null) {
+			if (Responsive.getOption() != null) {
+				ret = Responsive.getOption();
+			} else {
+				ret = "";
+			}
+		}
+		return ret;
+	}
+	
 
 	// offline getConfigValue
 	protected static String[] getConfigValue(String config) {
 
-		//tk 4 -> 5
-		//chie 5->9
-		String[] c_value = new String[12];
 		BufferedReader filein = null;
 		String line = new String();
 
-		//tk added embedtmp
-		//chie added driver, optimizer
 		//(invokeServletPath and fileDirectory are not used in offline)
-		String[] con = { "host", "db", "user", "outdir", "embedtmp","driver", "password", "encode", "optimizer","invokeServletPath","fileDirectory", "layout", "api_server_url"};
-
+		String con[] = { "host", "db", "user", "outdir", "embedtmp", "driver", "password", "encode", "optimizer", 
+				         "invokeServletPath","fileDirectory", "layout", "api_server_url", Responsive.OPTION_NAME };
+		String c_value[] = new String[con.length];
+		
 		try {
 			filein = new BufferedReader(new FileReader(config));
 			while (true) {
@@ -542,14 +554,11 @@ public class GlobalEnv {
 				if (line == null)
 					break;
 				line = line.trim();
-				//tk loop num 4 -> 5
-				//chie loop num 5 -> 9
-				for (int i = 0; i <= 11; i++) {
+				for (int i = 0; i < con.length; i++) {
 					if (line.startsWith(con[i])) {
 						c_value[i] = line.substring(line.indexOf("=") + 1)
 								.trim();
 					}
-					;
 				}
 			}
 			filein.close();
@@ -565,11 +574,11 @@ public class GlobalEnv {
 	//online getConfigValue
 	@SuppressWarnings("resource")
 	protected static String[] getConfigValue2(String config) {
-		//chie change 5->9
-		String[] c_value = new String[11];
+
 		String line = new String();
-		//chie added driver,optimizer,invokeServletPath,fileDirectory
-		String[] con = { "host", "db", "user", "outdir", "embedtmp","driver", "password", "encode", "optimizer","invokeServletPath","fileDirectory"};
+		String con[] = { "host", "db", "user", "outdir", "embedtmp", "driver", "password", "encode", "optimizer",
+				         "invokeServletPath","fileDirectory" };
+		String c_value[] = new String[con.length];
 		BufferedReader dis;
 
 		try{
@@ -590,8 +599,7 @@ public class GlobalEnv {
 
                 	if(line == null)
                 		break;
-            		//chie change count 5->9
-                	for (int i = 0; i < 9; i++) {
+                	for (int i = 0; i < con.length; i++) {
                 		if (line.startsWith(con[i])) {
 							c_value[i] = line.substring(line.indexOf("=") + 1)
 									.trim();

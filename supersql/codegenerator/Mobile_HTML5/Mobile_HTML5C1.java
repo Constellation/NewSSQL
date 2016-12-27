@@ -6,7 +6,6 @@ import supersql.codegenerator.Connector;
 import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.Manager;
-
 import supersql.codegenerator.Sass;
 import supersql.codegenerator.TFE;
 import supersql.common.GlobalEnv;
@@ -52,6 +51,10 @@ public class Mobile_HTML5C1 extends Connector {
     	}
     	
         int panelFlg = 0;	//20130503  Panel
+        
+        Sass.incrementId();
+        int responsiveId = Sass.responsiveCandidateId;	//20161217 bootstrap
+        
 
         Log.out("------- C1 -------");
         Log.out("tfes.contain_itemnum=" + tfes.contain_itemnum());
@@ -180,10 +183,10 @@ public class Mobile_HTML5C1 extends Connector {
 //            				Sass.makeClass(classid);
 //            				Sass.defineGridBasic(classid, decos);
             				
-            				Sass.makeClass(classid);
-            				Sass.defineGridBasic(classid, decos);
-            				Sass.closeBracket();
-            				
+//            				Sass.makeClass(classid);
+//            				Sass.defineGridBasic(classid, decos);
+//            				Sass.closeBracket();
+            				Sass.makeColumn(classid, decos, "", -1);
             			}
             		}
 
@@ -275,9 +278,10 @@ public class Mobile_HTML5C1 extends Connector {
 //        			Sass.makeClass(classid2);
 //        			Sass.defineGridBasic(classid2, decos2);
         			
-        			Sass.makeClass(classid2);
-        			Sass.defineGridBasic(classid2, decos2);
-        			Sass.closeBracket();
+//        			Sass.makeClass(classid2);
+//        			Sass.defineGridBasic(classid2, decos2);
+//        			Sass.closeBracket();
+        			Sass.makeColumn(classid2, decos2, getSymbol(), responsiveId);
         		}
         	
 
@@ -333,13 +337,13 @@ public class Mobile_HTML5C1 extends Connector {
 
         if(!Sass.isBootstrapFlg()){
 	        //20130309
-	        if(!tableFlg)	html_env.code.append("\n</DIV>\n");			//20130309
+	        if(!tableFlg)	html_env.code.append("\n</DIV c1>\n");			//20130309
 
 	        //20130314  table
 	      	if(tableFlg){
 	      		html_env.code.append("</TR></TABLE>\n");	//20130309
-	      		tableFlg = false;
-	      		table0Flg = false;			//20130325 table0
+//	      		tableFlg = false;
+//	      		table0Flg = false;			//20130325 table0
 	      	}
 
 	        //20130312 collapsible

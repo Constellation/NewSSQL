@@ -5,17 +5,22 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 
 import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.TFE;
+import supersql.codegenerator.Responsive.Responsive;
+import supersql.common.Log;
 import supersql.extendclass.ExtList;
 import supersql.parser.Start_Parse;
 
 public class Mobile_HTML5 {
-	
-	public static int gLevel = 0;
-	
+
+	public static int gLevel1 = 0;
+	public static int gLevel0 = -1;
+	public static ArrayList<Integer> whileCount = new ArrayList<>();
+
 	public Mobile_HTML5() {
 
 	}
@@ -23,18 +28,33 @@ public class Mobile_HTML5 {
 	//Process
 	public static boolean preProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
 		//Pre-process (前処理)
-		if(!symbol.contains("G1") && !symbol.contains("G2")){	//TODO disuse?
-			Mobile_HTML5_dynamic.dyamicPreStringProcess(symbol, decos, html_env);
+//		if(!symbol.contains("G1") && !symbol.contains("G2")){	//TODO disuse?
+//			Mobile_HTML5_dynamic.dyamicPreStringProcess(symbol, decos, html_env);
+//		}
+		if(symbol.contains("G1") || symbol.contains("G2")){
+			gLevel0++;
+			
+//			try {
+//				Log.e(gLevel0+" "+whileCount.get(gLevel0));
+//				//if(Mobile_HTML5_dynamic.dynamicDisplay && (Mobile_HTML5_dynamic.dynamicWhileCount0<1 || whileCount.get(gLevel0)==1)){
+//	        	//if(Mobile_HTML5_dynamic.dynamicDisplay && (whileCount.get(gLevel0-1)==1 || whileCount.get(gLevel0)==1)){
+//				if(Mobile_HTML5_dynamic.dynamicDisplay && gLevel0>0){
+//					Log.e(gLevel0+" "+whileCount.get(gLevel0)+" return false 1");
+//					//gLevel0--;
+//		        	return false;
+//		        }
+////				if(decos.containsKey("dynamic") && whileCount.get(gLevel0)>0){
+////					Log.e(gLevel0+" "+whileCount.get(gLevel0)+" return false 1");
+////					//gLevel0--;
+////		        	return false;
+////		        }
+//			} catch (Exception e) {
+//				Log.e(gLevel0+" 1 ?");
+//			}
 		}
 		
 		Mobile_HTML5_show.showProcess(decos, html_env);	//TODO この位置でOKか確認
 		
-		if(symbol.contains("G1") || symbol.contains("G2")){
-			Mobile_HTML5_dynamic.dynamicPreProcess0(symbol, decos, html_env);
-
-	    	Mobile_HTML5_dynamic.html_env_code_length = html_env.code.toString().length();
-			Mobile_HTML5_dynamic.dynamicPreProcess(symbol, decos, html_env);
-		}
 		if(!symbol.contains("G1") && !symbol.contains("G2")){
 			Mobile_HTML5_form.formPreProcess(symbol, decos, html_env);
 		}
@@ -44,8 +64,25 @@ public class Mobile_HTML5 {
 		if(symbol.contains("G2")){
 			Mobile_HTML5_form.G2 = true;
 		}
+		
 		if(symbol.contains("G1") || symbol.contains("G2")){
-			Mobile_HTML5_dynamic.sindex = 0;
+			
+			if(gLevel0==0){
+				Mobile_HTML5_dynamic.dynamicPreProcess(symbol, decos, html_env);
+			}else{
+				if(Mobile_HTML5_dynamic.dynamicDisplay && gLevel0 > 0){
+					Mobile_HTML5_dynamic.dyamicPreStringProcess(symbol, decos, html_env);
+				}
+			}
+//	    	Mobile_HTML5_dynamic.html_env_code_length = html_env.code.toString().length();	//未使用？
+//			Mobile_HTML5_dynamic.dynamicPreProcess1(symbol, decos, html_env);
+		}
+		
+		if(symbol.contains("G1") || symbol.contains("G2")){
+			try {
+				Mobile_HTML5_dynamic.sindex.set(gLevel0, 0);	//sindex=0
+			} catch (Exception e) {	}
+			//Mobile_HTML5_dynamic.sindex = 0;
 //	    	Mobile_HTML5_dynamic.dynamicWhileString = "";
 		}
 		return true;
@@ -55,7 +92,13 @@ public class Mobile_HTML5 {
 		//C1, C2:    decos, html_env, data, data_info, tfe, tfes, tfeItems
 		//G1, G2:    decos, html_env, data, data_info, tfe
 		if(symbol.contains("G1") || symbol.contains("G2")){
-        	if(Mobile_HTML5.gLevel<=1){
+			try {
+				whileCount.set(gLevel0, whileCount.get(gLevel0)+1);	//whileCount[gLevel0]++
+			} catch (Exception e) {
+				whileCount.add(gLevel0, 1);							//whileCount[gLevel0]=1
+			}
+			
+        	if(Mobile_HTML5.gLevel1<1){
         		Mobile_HTML5_dynamic.dynamicWhileCount0++;
         	}
 		}
@@ -65,13 +108,23 @@ public class Mobile_HTML5 {
 		//Attribute: decos, html_env, data_info
 		//C1, C2:    decos, html_env, data, data_info, tfe, tfes, tfeItems
 		//G1, G2:    decos, html_env, data, data_info, tfe
-
+		if(symbol.contains("G1") || symbol.contains("G2")){
+//			if(Mobile_HTML5_dynamic.dynamicDisplay && gLevel0 > 0){
+//				Mobile_HTML5_dynamic.dyamicPreStringProcess(symbol, decos, html_env);
+//			}
+		}
 		return true;
 	}
 	public static boolean whileProcess2_1(String symbol, DecorateList decos, Mobile_HTML5Env html_env, ExtList data, ExtList data_info, ITFE tfe, ExtList<TFE> tfes, int tfeItems){
 		//Attribute: decos, html_env, data_info
 		//C1, C2:    decos, html_env, data, data_info, tfe, tfes, tfeItems
 		//G1, G2:    decos, html_env, data, data_info, tfe
+
+		if(symbol.contains("G1") || symbol.contains("G2")){
+//			if(Mobile_HTML5_dynamic.dynamicDisplay && gLevel0 > 0){
+//				Mobile_HTML5_dynamic.dyamicPostStringProcess(symbol, decos, html_env);
+//			}
+		}
 
 		return true;
 	}
@@ -80,17 +133,39 @@ public class Mobile_HTML5 {
 		//C1, C2:    decos, html_env, data, data_info, tfe, tfes, tfeItems
 		//G1, G2:    decos, html_env, data, data_info, tfe
 		if(symbol.contains("G1") || symbol.contains("G2")){
-	        if(Mobile_HTML5_dynamic.dynamicDisplay && Mobile_HTML5.gLevel<=1){
+			
+	        if(Mobile_HTML5_dynamic.dynamicDisplay && Mobile_HTML5.gLevel1<1){
 	    		Mobile_HTML5_dynamic.dynamicWhileCount0--;
 	        }
-	        if(Mobile_HTML5_dynamic.dynamicDisplay && Mobile_HTML5_dynamic.dynamicWhileCount0<1){
+        	//if(Mobile_HTML5_dynamic.dynamicDisplay && Mobile_HTML5_dynamic.dynamicWhileCount0<1){
+	        //if(Mobile_HTML5_dynamic.dynamicDisplay && (Mobile_HTML5_dynamic.dynamicWhileCount0<1 || whileCount.get(gLevel0)==1)){
+        	//if(Mobile_HTML5_dynamic.dynamicDisplay && (whileCount.get(gLevel0-1)==1 || whileCount.get(gLevel0)==1)){
+	        if(Mobile_HTML5_dynamic.dynamicDisplay && whileCount.get(gLevel0)>0){
+	        	//Log.e(gLevel0+" "+whileCount.get(gLevel0)+" return false 2");
 	        	return false;
 	        }
+        	
+        	//whileCount.set(gLevel0, whileCount.get(gLevel0)-1);	//whileCoun[gLevel0]--
 		}
 		return true;
 	}
 	public static boolean afterWhileProcess(String symbol, String tfeID, DecorateList decos, Mobile_HTML5Env html_env){
 //		Mobile_HTML5_dynamic.dyamicAfterWhileStringProcess(symbol, decos, html_env);
+		if(symbol.contains("G1") || symbol.contains("G2")){
+			whileCount.set(gLevel0, 0);		//whileCount[gLevel0]=0
+		}
+		
+		if(symbol.contains("G1") || symbol.contains("G2")){
+			if(gLevel0==0){
+				Mobile_HTML5_dynamic.dynamicStringGetProcess(symbol, decos, html_env);
+				Mobile_HTML5_dynamic.dyamicWhileStringProcess(symbol, decos, html_env);
+				Mobile_HTML5_dynamic.dynamicProcess(symbol, tfeID, decos, html_env);
+			}else{
+				if(Mobile_HTML5_dynamic.dynamicDisplay && gLevel0 > 0){
+					Mobile_HTML5_dynamic.dyamicPostStringProcess(symbol, decos, html_env);
+				}
+			}
+		}
 		
 		Mobile_HTML5Function.func_null_count = 0;	//null()
 		if(symbol.contains("G2")){
@@ -102,24 +177,19 @@ public class Mobile_HTML5 {
 	}
 	public static boolean postProcess(String symbol, String tfeID, DecorateList decos, Mobile_HTML5Env html_env){
 		//Post-process (後処理)
-		if(symbol.contains("G1") || symbol.contains("G2")){
-			Mobile_HTML5_dynamic.dynamicStringGetProcess(symbol, decos, html_env);
-			Mobile_HTML5_dynamic.dyamicWhileStringProcess(symbol, decos, html_env);
-			Mobile_HTML5_dynamic.dynamicProcess(symbol, tfeID, decos, html_env);
-		}
 		if(!symbol.contains("G1") && !symbol.contains("G2")){
 			Mobile_HTML5_form.formStringGetProcess(symbol, decos, html_env);
 			Mobile_HTML5_form.formProcess(symbol, decos, html_env);
 		}
 		
-//		if(symbol.contains("G1") || symbol.contains("G2")){
-//			Log.i(Mobile_HTML5_dynamic.dynamicCount);
-//			Mobile_HTML5_dynamic.dynamicCount--;
-//		}
-		
 		Mobile_HTML5_show.showCloseProcess(decos, html_env);
-		Mobile_HTML5_dynamic.dynamicString = "";
+		
 		Mobile_HTML5_form.formString = "";
+		Mobile_HTML5_dynamic.dynamicString = "";
+		if(symbol.contains("G1") || symbol.contains("G2")){
+			//whileCount.set(gLevel0, 0);
+			gLevel0--;
+		}
 		return true;
 	}
 
@@ -180,17 +250,20 @@ public class Mobile_HTML5 {
 	
 	//create file
 	public static boolean createFile(Mobile_HTML5Env html_env, String fileName, String code){
-        try {
-    		PrintWriter pw;
-            if (html_env.charset != null)
-	        	pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
-	        			new FileOutputStream(fileName),html_env.charset)));
-            else
-            	pw = new PrintWriter(new BufferedWriter(new FileWriter(fileName)));
-    		pw.println(code);
-            pw.close();
-            return true;
-        } catch (Exception e) { }
+		if(!Responsive.isReExec()){	//added by goto 20161217  for responsive
+	        try {
+	    		PrintWriter pw;
+	            if (html_env.charset != null)
+		        	pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
+		        			new FileOutputStream(fileName),html_env.charset)));
+	            else
+	            	pw = new PrintWriter(new BufferedWriter(new FileWriter(fileName)));
+	    		pw.println(code);
+	            pw.close();
+	        	//Log.e(fileName+" created.");
+	            return true;
+	        } catch (Exception e) { }
+		}
         return false;
     }
 	
@@ -203,4 +276,12 @@ public class Mobile_HTML5 {
             return false;
         }
     }
+	
+	//isTable
+	public static boolean isTable() {
+		if(Mobile_HTML5G1.tableFlg || Mobile_HTML5G1.table0Flg || Mobile_HTML5G2.tableFlg || Mobile_HTML5G2.table0Flg){
+    		return true;
+    	}
+		return false;
+	}
 }

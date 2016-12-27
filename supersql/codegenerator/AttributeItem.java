@@ -23,6 +23,7 @@ public class AttributeItem implements Serializable{
 	public AttributeItem() {
 	}
 
+	
 	public AttributeItem(String str) {
 		IsStr = true;
 		Image = str;
@@ -85,11 +86,13 @@ public class AttributeItem implements Serializable{
 			attno.add(new Integer(AttNo));
 			Log.out("AttItem le0:" + attno);
 		} else {
-			attno.add("const");
+//			attno.add("const");
+			attno.add(Image); //とりあえず for ryosuke add by taji
 		}
 
 		return attno;
 	}
+	
 
 	@Override
 	public String toString() {

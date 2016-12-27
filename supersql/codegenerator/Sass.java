@@ -22,12 +22,16 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.Deque;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Vector;
 
 import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5Env;
 import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5Function;
+import supersql.codegenerator.Responsive.Responsive;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;
@@ -37,13 +41,21 @@ public class Sass {
 	private static boolean bootstrapFlg = false;
 	private static boolean firstElementFlg = true;
 
-	public static StringBuffer sass = new StringBuffer();;
+	public static StringBuffer sass = new StringBuffer();
+	public static ArrayList<String> writtenSassClassid = new ArrayList<String>();
 
 	private static final String fs = GlobalEnv.OS_FS;
 	private static final String outdirPath = GlobalEnv.getOutputDirPath();
 	private static final String generateCssFileDir = Jscss.generateCssFileDir;
 
 	public static boolean loopFlg = true;
+	
+	public static int responsiveCandidateId = 0;
+	public static LinkedHashMap<Integer, LinkedHashMap> HTMLCheckMap = new LinkedHashMap<Integer, LinkedHashMap>();
+	
+	public static void incrementId(){
+		responsiveCandidateId++;
+	}
 
 	public static Deque<Boolean> outofloopFlg = new ArrayDeque<Boolean>();
 	static{
@@ -91,12 +103,17 @@ public class Sass {
 		sass.append("." + classid + "{\n\t@include make-row();\n");
 	}
 
-	public static void makeColumn(String classid){
-		sass.append("." + classid + "{\n\t@include make-sm-column(1);\n");
-	}
-
 	public static void closeBracket(){
 		sass.append("}\n");
+	}
+	
+	public static void makeColumn(String classid, DecorateList decos, String C1G1, int responsiveId){
+		if(!writtenSassClassid.contains(classid)){
+			makeClass(classid);
+			defineGridBasic(classid, decos, C1G1, responsiveId);
+			closeBracket();
+			writtenSassClassid.add(classid);
+		}	
 	}
 
 	public static LinkedHashMap beforeC1WhileProcess(ExtList tfes){
@@ -235,7 +252,11 @@ public class Sass {
 		sass.append("$grid-columns:" + columnNum + " !global;\n");
 	}
 
-	public static void defineGridBasic(String classid, DecorateList decos){
+	public static void defineGridBasic(String classid, DecorateList decos, String C1G1, int responsiveId){
+		LinkedHashMap<String, LinkedHashMap> C1G1Map = new LinkedHashMap<String, LinkedHashMap>();
+		LinkedHashMap<String, LinkedHashMap> ClassMap = new LinkedHashMap<String, LinkedHashMap>();
+		LinkedHashMap<String, Fraction> SizeMap = new LinkedHashMap<String, Fraction>();
+		
 		int xs_grid;
 		int sm_grid;
 		int md_grid;
@@ -245,16 +266,28 @@ public class Sass {
 		int sm_col;
 		int md_col;
 		int lg_col;
-
+		
+		if(Responsive.fixMap.containsKey(classid)){
+			LinkedHashMap<String, Fraction> fixSizeMap = Responsive.fixMap.get(classid);
+			 for(Entry<String, Fraction> e : fixSizeMap.entrySet()) {
+				 String decos_key = e.getKey();
+				 String decos_value = e.getValue().toString();
+				 decos.put(decos_key, decos_value);
+			 }
+		}
+		
+		
 		if(!decos.containsKey("xs") && !decos.containsKey("sm") && !decos.containsKey("md") && !decos.containsKey("lg")){//none specified
 			if(decos.containsKey("G1")){
 				sass.append("	$grid-columns:" + decos.getStr("G1") + " !global;\n");
 				sass.append("	@include make-xs-column(1);\n");
+				SizeMap.put("xs", new Fraction("1/"+decos.getStr("G1")));
 			}else{
 				xs_grid = 1;
 				xs_col=1;
 				sass.append("	$grid-columns:" + xs_grid + " !global;\n");
 				sass.append("	@include make-xs-column("+ xs_col + ");\n");
+				SizeMap.put("xs", new Fraction("1/1"));
 			}
 		}else{//some or all specified
 			if(decos.containsKey("xs")){
@@ -263,6 +296,7 @@ public class Sass {
 				xs_col = xs.getNumerator();
 				sass.append("	$grid-columns:" + xs_grid + " !global;\n");
 				sass.append("	@include make-xs-column("+ xs_col + ");\n");
+				SizeMap.put("xs", xs);
 			}
 			if(decos.containsKey("sm")){
 				Fraction sm = new Fraction(decos.getStr("sm"));
@@ -270,6 +304,7 @@ public class Sass {
 				sm_col = sm.getNumerator();
 				sass.append("	$grid-columns:" + sm_grid + " !global;\n");
 				sass.append("	@include make-sm-column("+ sm_col + ");\n");
+				SizeMap.put("sm", sm);
 			}
 			if(decos.containsKey("md")){
 				Fraction md = new Fraction(decos.getStr("md"));
@@ -277,6 +312,7 @@ public class Sass {
 				md_col = md.getNumerator();
 				sass.append("	$grid-columns:" + md_grid + " !global;\n");
 				sass.append("	@include make-md-column("+ md_col + ");\n");
+				SizeMap.put("md", md);
 			}
 			if(decos.containsKey("lg")){
 				Fraction lg = new Fraction(decos.getStr("lg"));
@@ -284,8 +320,24 @@ public class Sass {
 				lg_col = lg.getNumerator();
 				sass.append("	$grid-columns:" + lg_grid + " !global;\n");
 				sass.append("	@include make-lg-column("+ lg_col + ");\n");
+				SizeMap.put("lg", lg);
 			}
 		}
+		
+		ClassMap.put(classid, SizeMap);
+		if(C1G1.equals("Mobile_HTML5G1")){
+			C1G1Map.put("G1", ClassMap);
+			HTMLCheckMap.put(responsiveId, C1G1Map);
+		}else if(C1G1.equals("Mobile_HTML5C1")){
+			if(HTMLCheckMap.containsKey(responsiveId)){
+				LinkedHashMap<String,LinkedHashMap> nowMap = (LinkedHashMap<String, LinkedHashMap>) HTMLCheckMap.get(responsiveId).get("C1");
+				nowMap.put(classid, SizeMap);
+			}else{
+				C1G1Map.put("C1", ClassMap);
+				HTMLCheckMap.put(responsiveId, C1G1Map);
+			}	
+		}
+		
 	}
 
 	public static void output(){
@@ -300,6 +352,8 @@ public class Sass {
 			}
 
 			sb.append(sass);
+			
+			writtenSassClassid.clear();
 
 //			Log.info(sb);
 
@@ -345,8 +399,11 @@ public class Sass {
 			}
 
 			sb.append(sass);
+			writtenSassClassid.clear();
 
 //			Log.info(sb);
+			
+//			Log.info(HTMLCheckMap);
 
 			URI inputFile = new File(outdirPath+fs+"jscss"+fs+"forBootstrap"+fs+"_bootstrap.scss").toURI();
 			URI outputFile = new File(outdirPath+fs+"stylesheet.css").toURI();

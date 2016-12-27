@@ -198,7 +198,7 @@ public class Mobile_HTML5_form {
 	    	for(int i=0; i<col_num-1; i++){
 	    		s_array[i] = columns0.substring(0,columns0.indexOf(","));
 	    		columns0 = columns0.substring(columns0.indexOf(",")+1);
-	    		//Log.i( "s_array["+i+"] = "+s_array[i]+"	"+columns0);
+//	    		Log.i( "s_array["+i+"] = "+s_array[i]+"	"+columns0);
 	    	}
 	    	s_array[col_num-1] = columns0;
 			//Log.i( "s_array["+(col_num-1)+"] = "+s_array[col_num-1]);
@@ -227,6 +227,7 @@ public class Mobile_HTML5_form {
 	    	boolean[] noinsertFlg = new boolean[col_num];
 	    	String[] validationType = new String[col_num];
 	    	String notnullFlg_array = "";
+			String[] value = new String[col_num];
 	    	String[] $session_array = new String[col_num];
 	    	String[] $time_array = new String[col_num];
 	    	String[] $gps_array = new String[col_num];
@@ -237,9 +238,14 @@ public class Mobile_HTML5_form {
 	    	int noinsert_count = 0;
 	    	int a_pop_count = 0;
 	    	for(int i=0; i<col_num; i++){
+				textareaFlg[i] = false;
+				hiddenFlg[i] = false;
+				noinsertFlg[i] = false;
+				validationType[i] = "";
+				value[i] = "";
+	    		
 	    		a = s_array[i].replaceAll(" ","");
 	    		//Log.i(a);
-	    		
 	    		//$session()あり
 	    		if(a.contains("=")){
 	    			String a_right = a.substring(a.indexOf("=")+1).trim();
@@ -292,6 +298,12 @@ public class Mobile_HTML5_form {
 	    		}
 	    		//Log.i(s_array[i]+"	"+$session_array[i]);
 	    		//Log.i(button_array[i]+"	"+button_array[i]);
+	    		
+				s_array[i] = s_array[i].trim();
+				if(s_array[i].contains("=")){
+					value[i] = s_array[i].substring(s_array[i].indexOf("=")+1);
+					s_array[i] = s_array[i].substring(0, s_array[i].indexOf("="));
+				}
 	    		
 	    		if(a.startsWith("max(") || a.startsWith("min(") || a.startsWith("avg(") ||  a.startsWith("count(") )	groupbyFlg = true;
 	    		if(a.startsWith("a(") || a.startsWith("anchor(")){
@@ -485,7 +497,9 @@ public class Mobile_HTML5_form {
 							statement += 
 									//20161207 bootstrap
 									"<div class=\"form-group\">" +
-									"    <"+((!textareaFlg[i])?("input"):("textarea"))+" type=\""+((!hiddenFlg[i])?("text"):("hidden"))+"\" name=\"form"+formCount+"_words"+(++insertWordCount)+"\" placeholder=\""+s_name_array[i]+"\">" +
+									"    <"+((!textareaFlg[i])?("input"):("textarea"))+" type=\""+((!hiddenFlg[i])?("text"):("hidden"))+"\" name=\"form"+formCount+"_words"+(++insertWordCount)+"\"" +
+									""+((!value[i].equals(""))? " value=\""+value[i]+"\"" : "") +
+									" placeholder=\""+s_name_array[i]+"\">" +
 									""+((!textareaFlg[i])?(""):("</textarea>"))+"\n"+
 									"</div>";
 						}else{

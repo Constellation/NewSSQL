@@ -39,7 +39,7 @@ public class CodeGenerator {
 
 	private static Factory factory;
 
-//	private static boolean decocheck = false;
+	//	private static boolean decocheck = false;
 
 	public static TFE schemaTop;
 	public static ExtList sch;
@@ -140,10 +140,87 @@ public class CodeGenerator {
 		Log.info("Schema is " + sch);
 		Log.info("le0 is " + schemaTop.makele0());
 
+		
+		// 2016/12/16 commentout by taji
+//		ExtList test = reverse(schemaTop.makele0());
+//		Log.info("test:" + test);
+//		Log.info( getText(test, Start_Parse.ruleNames) );
+
 		parser.schemaTop = schemaTop;
 		parser.sch = sch;
 		parser.schema = schema;
 	}
+
+	// 2016/12/16 commentout by taji
+//	private static ExtList reverse(ExtList extlist){
+//		ExtList tmp = new ExtList();
+//		if(extlist.get(0).toString().endsWith("G2")){
+//			tmp.add("grouper");
+//			ExtList G = new ExtList();
+//			G.add("[");
+//			G.add( reverse((ExtList)extlist.get(1)) );
+//			G.add("]");
+//			G.add("!");
+//			tmp.add(G);
+//		}else if(extlist.get(0).toString().endsWith("G1")){
+//			tmp.add("grouper");
+//			ExtList G = new ExtList();
+//			G.add("[");
+//			G.add( reverse((ExtList)extlist.get(1)) );
+//			G.add("]");
+//			G.add(",");
+//			tmp.add(G);
+//		}else if(extlist.get(0).toString().endsWith("C2")){
+//			ExtList C = new ExtList();
+//			tmp.add("v_exp");
+//			for(int i = 1; i < extlist.size(); i++){
+//				C.add(reverse((ExtList)extlist.get(i)));
+//				if(i != extlist.size() - 1){
+//					C.add("!");
+//				}
+//			}
+//			tmp.add(C);
+//		}else if(extlist.get(0).toString().endsWith("C1")){
+//			ExtList C = new ExtList();
+//			tmp.add("h_exp");
+//			for(int i = 1; i < extlist.size(); i++){
+//				C.add(reverse((ExtList)extlist.get(i)));
+//				if(i != extlist.size() - 1){
+//					C.add(",");
+//				}
+//			}
+//			tmp.add(C);
+//		}
+//		else if(extlist.size() > 1){//function?
+//			ExtList F = new ExtList();
+//			for(int i = 0; i < extlist.size(); i++){
+//				if(extlist.get(i) instanceof ExtList){
+//					F.add(reverse((ExtList)extlist.get(i)));
+//				}else{
+//					ExtList temp1 = new ExtList();
+//					temp1.add(extlist.get(i));
+//					F.add(reverse(temp1));
+//				}
+//				if(i != extlist.size() - 1){
+//					F.add(",");
+//				}
+//			}
+//			tmp.add(F);
+//		}
+//		else if( extlist.get(0) instanceof Integer ){
+//			ExtList A = new ExtList();
+//			A.add(attp.get(extlist.get(0)).toString());
+//			tmp.add("operand");
+//			tmp.add(A);
+//		}else if( extlist.get(0) instanceof String ){
+//			ExtList S = new ExtList();
+//			S.add( "\"" + extlist.get(0) + "\"" );
+//			tmp.add("operand");
+//			tmp.add(S);
+//		}
+//
+//		return tmp;
+//	}
 
 	public Hashtable get_attp() {
 		return this.attp;
@@ -286,9 +363,9 @@ public class CodeGenerator {
 			if( ((ExtList)tfe_tree.get(1)).get(((ExtList)tfe_tree.get(1)).size()-1) instanceof String  && !tfe_tree.contains("true")
 					&& (decos = ((ExtList)tfe_tree.get(1)).get(((ExtList)tfe_tree.get(1)).size()-1).toString().trim()).startsWith("@")
 					){
-					ExtList new_out = checkDecoration(tfe_tree, decos);
-//					Log.info(new_out);
-					out_sch = read_attribute(new_out);
+				ExtList new_out = checkDecoration(tfe_tree, decos);
+				//					Log.info(new_out);
+				out_sch = read_attribute(new_out);
 			}
 			else if( ((ExtList)tfe_tree.get(1)).get(0) instanceof String ){
 				if(((ExtList)tfe_tree.get(1)).get(0).toString().equals("{")){
@@ -303,12 +380,18 @@ public class CodeGenerator {
 			}
 			else{
 				if( ((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("sorting") ){
-					decos = ((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(1).toString();
+					if(decos.isEmpty()){
+						decos = ((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(1).toString();
+					}
 					add_deco = true;
 					((ExtList)tfe_tree.get(1)).remove(0);
 				}
-				else if( ((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("aggregate") ){
-					decos = ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(0)).get(1)).get(0)).get(1)).get(0).toString();
+				if( ((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("aggregate") ){
+					if(decos.isEmpty()){
+						decos = ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(0)).get(1)).get(0)).get(1)).get(0).toString();
+					}else{
+						decos = decos + "," + ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(0)).get(1)).get(0)).get(1)).get(0).toString();
+					}
 					add_deco = true;
 					ExtList att1 = new ExtList();
 					if( ((ExtList)((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).get(2)).get(0).toString().equals("table_alias") ){
@@ -320,7 +403,7 @@ public class CodeGenerator {
 					}
 					tfe_tree.remove(1);
 					tfe_tree.add(att1);
-//					Log.info(tfe_tree);
+					//					Log.info(tfe_tree);
 				}
 
 				if( ((ExtList)tfe_tree.get(1)).contains("||") ){
@@ -373,12 +456,12 @@ public class CodeGenerator {
 						Ctab3 ctab = new Ctab3();
 						out_sch = read_attribute(ctab.read_tfe(fn));
 
-////						out_sch = func_read((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).tfe;
-////						System.err.println(tfe_tree);
-//
+						////						out_sch = func_read((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).tfe;
+						////						System.err.println(tfe_tree);
+						//
 					}else{
 						out_sch = func_read((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1));
-//						out_sch = func_read((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).fnc;
+						//						out_sch = func_read((ExtList)((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(1)).fnc;
 					}
 				}
 				else if( ((ExtList)((ExtList)tfe_tree.get(1)).get(0)).get(0).toString().equals("sqlfunc") ){
@@ -491,7 +574,7 @@ public class CodeGenerator {
 			operand = ((ExtList)((ExtList)extList.get(0)).get(1)).get(0).toString();
 		}
 		else if( ((ExtList)extList.get(0)).get(0).toString().equals("sqlfunc") ){
-//			Log.info(extList);
+			//			Log.info(extList);
 			operand = getText( (ExtList)extList.get(0), Start_Parse.ruleNames );
 			builder = new String();
 			operand = operand.replaceAll("\"", "'");
@@ -525,7 +608,7 @@ public class CodeGenerator {
 	private static Decorator decoration(ExtList operand, int dim) {
 		ExtList atts = new ExtList();
 		for(int i = 0; i <= operand.size(); i++){
-//			Log.info(operand.get(i));
+			//			Log.info(operand.get(i));
 			TFE att = read_attribute((ExtList)operand.get(i));
 			atts.add(att);
 			i++;
@@ -546,7 +629,7 @@ public class CodeGenerator {
 			atts.add(att);
 			i++;
 		}
-//		decocheck =false;
+		//		decocheck =false;
 		Connector con = createconnector(dim);
 
 		for (int i = 0; i < atts.size(); i++) {
@@ -974,7 +1057,7 @@ public class CodeGenerator {
 			}
 		}
 		new_list.add(med);
-//		decocheck = true;
+		//		decocheck = true;
 		if(!new_list.contains("Decoration")){
 			return extList;
 		}else{

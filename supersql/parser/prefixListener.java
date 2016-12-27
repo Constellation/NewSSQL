@@ -21,6 +21,16 @@ public interface prefixListener extends ParseTreeListener {
 	 */
 	void exitPrefix(prefixParser.PrefixContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link prefixParser#test}.
+	 * @param ctx the parse tree
+	 */
+	void enterTest(prefixParser.TestContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link prefixParser#test}.
+	 * @param ctx the parse tree
+	 */
+	void exitTest(prefixParser.TestContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link prefixParser#operand}.
 	 * @param ctx the parse tree
 	 */
@@ -40,6 +50,16 @@ public interface prefixListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitExdef(prefixParser.ExdefContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link prefixParser#foreach}.
+	 * @param ctx the parse tree
+	 */
+	void enterForeach(prefixParser.ForeachContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link prefixParser#foreach}.
+	 * @param ctx the parse tree
+	 */
+	void exitForeach(prefixParser.ForeachContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link prefixParser#function}.
 	 * @param ctx the parse tree

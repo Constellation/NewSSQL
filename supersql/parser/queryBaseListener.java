@@ -298,13 +298,13 @@ public class queryBaseListener implements queryListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterWhere(queryParser.WhereContext ctx) { }
+	@Override public void enterWhere_clause(queryParser.Where_clauseContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitWhere(queryParser.WhereContext ctx) { }
+	@Override public void exitWhere_clause(queryParser.Where_clauseContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

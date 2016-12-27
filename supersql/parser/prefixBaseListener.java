@@ -31,6 +31,18 @@ public class prefixBaseListener implements prefixListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterTest(prefixParser.TestContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitTest(prefixParser.TestContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterOperand(prefixParser.OperandContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -50,6 +62,18 @@ public class prefixBaseListener implements prefixListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitExdef(prefixParser.ExdefContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterForeach(prefixParser.ForeachContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitForeach(prefixParser.ForeachContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

@@ -231,33 +231,33 @@ public class Start_Parse {
 		BufferedReader in;
 		StringBuffer tmp = new StringBuffer();
 		try{
-//			in = new BufferedReader(new InputStreamReader(new FileInputStream(filename), "UTF-8"));		//changed by goto 20130519 (This is an important change.)
-//			String line = null;
-//			line = in.readLine();
-//			if(line.startsWith("/*")){
-//				while (line.contains("/*")){
-//					String line1 = line.substring(0, line.indexOf("/*"));
-//					while (!line.contains("*/"))
-//						line = in.readLine();
-//					line = line1 + line.substring(line.indexOf("*/") + 2);
-//				}
-//				tmp.append(" " + line);
-//			}
-//
-//			if(line.startsWith("--")){
-//				while (line.contains("--")){
-//					String line1 = line.substring(0, line.indexOf("--"));
-//					line = in.readLine();
-//				}
-//				tmp.append(" " + line);
-//			}
-//			tmp.append(" " + line);
-//			int c;
-//			while ((c = in.read()) != -1) {
-//				tmp.append((char) c);
-//			}
-//			query = tmp.toString().trim();
-//			Log.info(query);
+			//			in = new BufferedReader(new InputStreamReader(new FileInputStream(filename), "UTF-8"));		//changed by goto 20130519 (This is an important change.)
+			//			String line = null;
+			//			line = in.readLine();
+			//			if(line.startsWith("/*")){
+			//				while (line.contains("/*")){
+			//					String line1 = line.substring(0, line.indexOf("/*"));
+			//					while (!line.contains("*/"))
+			//						line = in.readLine();
+			//					line = line1 + line.substring(line.indexOf("*/") + 2);
+			//				}
+			//				tmp.append(" " + line);
+			//			}
+			//
+			//			if(line.startsWith("--")){
+			//				while (line.contains("--")){
+			//					String line1 = line.substring(0, line.indexOf("--"));
+			//					line = in.readLine();
+			//				}
+			//				tmp.append(" " + line);
+			//			}
+			//			tmp.append(" " + line);
+			//			int c;
+			//			while ((c = in.read()) != -1) {
+			//				tmp.append((char) c);
+			//			}
+			//			query = tmp.toString().trim();
+			//			Log.info(query);
 			in = new BufferedReader(new InputStreamReader(new FileInputStream(filename), "UTF-8"));		//changed by goto 20130519 (This is an important change.)
 			int c;
 			while ((c = in.read()) != -1) {
@@ -469,9 +469,9 @@ public class Start_Parse {
 			GlobalEnv.addErr("didn't find 'GENERATE'. please start with 'GENERATE'.");
 			Log.err("didn't find 'GENERATE'. please start with 'GENERATE'.");
 		}
-//		else if(!query.toLowerCase().contains("from")) {
-//			GlobalEnv.addErr("didn't find 'FROM'. please describe 'FROM'.");
-//			Log.err("didn't find 'FROM'. please describe 'FROM'.");
+		//		else if(!query.toLowerCase().contains("from")) {
+		//			GlobalEnv.addErr("didn't find 'FROM'. please describe 'FROM'.");
+		//			Log.err("didn't find 'FROM'. please describe 'FROM'.");
 		else{
 			try{
 				String a = query.substring(0, query.toLowerCase().indexOf("generate"));
@@ -490,32 +490,54 @@ public class Start_Parse {
 					prefixParser parser_a = new prefixParser(tokens_a);
 					ParseTree tree_a = parser_a.prefix(); // begin parsing at rule query
 					List_tree_a = TreeConst.createSSQLParseTree(tree_a, parser_a);
+					String[] ruleNamesa = parser_a.getRuleNames();
 					Log.info(List_tree_a);
-					String pre = ((ExtList)List_tree_a.get(1)).get(0).toString().toLowerCase();
-					if(pre.equals("foreach") || pre.equals("foreach1")){
-						foreachFlag = true;
-						if(pre.equals("foreach1"))	foreach1Flag = true;	//added by goto 20161025 for link1/foreach1
-						foreachinfo = TreeConst.getforeach(List_tree_a);
-					}
-					else if( ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)List_tree_a.get(1)).get(0)).get(1)).get(0)).get(1)).get(0)).get(1)).get(0).toString().toUpperCase().matches("SESSION.*")
-							|| ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)List_tree_a.get(1)).get(0)).get(1)).get(0)).get(1)).get(0)).get(1)).get(0).toString().toUpperCase().matches("LOGIN.*")){
-						sessionString = a;
-						sessionFlag = true;
+					int list_size = ((ExtList)List_tree_a.get(1)).size();
+					for(int i = 0; i < list_size; i+=2){
+						ExtList list = (ExtList)((ExtList)((ExtList)((ExtList)List_tree_a.get(1)).get(i)).get(1)).get(0);
+						String pre = "";
+						if( ((ExtList)list.get(1)).get(0) instanceof String){
+							pre = ((ExtList)list.get(1)).get(0).toString().toLowerCase();
+							if(pre.equals("foreach") || pre.equals("foreach1")){
+								foreachFlag = true;
+								if(pre.equals("foreach1"))	foreach1Flag = true;	//added by goto 20161025 for link1/foreach1
+								foreachinfo = TreeConst.getforeach(list);
+							}
+						}
+						else if( ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)list.get(1)).get(0)).get(1)).get(0)).get(1)).get(0).toString().toUpperCase().matches("SESSION.*")
+								|| ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)list.get(1)).get(0)).get(1)).get(0)).get(1)).get(0).toString().toUpperCase().matches("LOGIN.*")){
+							sessionString = getText(list, ruleNamesa);
+							builder = "";
+							sessionFlag = true;
+						}
 					}
 					prefix = true;
-
 				}
 				if(prefix && foreachFlag){
 					StringTokenizer str = new StringTokenizer(b);
 					String generate = null;
-					while(str.hasMoreTokens()){
-						String st = str.nextToken();
-						if(st.toLowerCase().equals("generate")){
-							generate = st + " " + str.nextToken();
-							b = b.substring(b.indexOf(str.nextToken()));
-							break;
-						}
+
+					ANTLRInputStream input_b = new ANTLRInputStream(b);
+					queryLexer lexer_b = new queryLexer(input_b);
+					CommonTokenStream tokens_b = new CommonTokenStream(lexer_b);
+
+					queryParser parser_b = new queryParser(tokens_b);
+					parser_b.setErrorHandler(new MyErrorStrategy());
+					ParseTree tree_b = parser_b.query(); // begin parsing at rule query
+					ExtList List_tree_b = TreeConst.createSSQLParseTree(tree_b, parser_b);
+					List_tree_b = (ExtList) List_tree_b.get(1);
+					String[] ruleNames = parser_b.getRuleNames();
+
+					generate = getText((ExtList)List_tree_b.get(0), ruleNames);
+					builder = "";
+					String tfe = getText((ExtList)List_tree_b.get(1), ruleNames);
+					builder = "";
+					String from = "";
+					if(List_tree_b.size() > 2){
+						from = getText((ExtList)List_tree_b.get(2), ruleNames);
+						builder = "";
 					}
+
 					generate = generate + "[foreach(";
 					for(int i = 0; i < foreachinfo.size(); i++){
 						if(i == 0)
@@ -524,11 +546,9 @@ public class Start_Parse {
 							generate = generate + "," + foreachinfo.get(i);
 					}
 					generate = generate + ")?";
-					String b1 = b.substring(0, b.toLowerCase().indexOf("from"));
-					String b2 = b.substring(b.toLowerCase().indexOf("from"));
 
 
-					b = generate + b1 + "]%" + b2;
+					b = generate + tfe + "]%" + from;
 				}
 				GlobalEnv.foreach_flag = foreachFlag;
 				Preprocessor preprocessor = new Preprocessor(b);
@@ -545,9 +565,12 @@ public class Start_Parse {
 				list_media = (ExtList) List_tree_b.get(0);
 				list_tfe = (ExtList) List_tree_b.get(1);
 				ruleNames = parser_b.getRuleNames();
-//				Log.info(getText(list_tfe, ruleNames));
+				//				Log.info(getText(list_tfe, ruleNames));
 				if(List_tree_b.size() > 2){
 					list_from_where = (ExtList) List_tree_b.get(2);
+					//					Log.info(list_from_where);
+					after_from = getText(list_from_where, ruleNames);
+					builder = "";
 					list_from = new ExtList();
 					list_where = new ExtList();
 
@@ -571,16 +594,16 @@ public class Start_Parse {
 					}
 					list_table = set_fromInfo();
 
-//					Log.info(list_from_where);
-//					String from1 = getText( list_from_where, ruleNames );
-//					after_from = from1.substring(from1.toLowerCase().indexOf("from") + 4);
-					String from1 = getText( list_from, ruleNames );
-					builder = "";
-					String from2 = getText( list_where, ruleNames );
+					//					Log.info(list_from_where);
+					//					String from1 = getText( list_from_where, ruleNames );
+					//					after_from = from1.substring(from1.toLowerCase().indexOf("from") + 4);
+					//					String from1 = getText( list_from, ruleNames );
+					//					builder = "";
+					//					String from2 = getText( list_where, ruleNames );
 
-					after_from = from1 + "where " + from2;
-					after_from = after_from.substring(from1.toLowerCase().indexOf("from") + 4);
-					
+					//					after_from = from1 + "where " + from2;
+					after_from = after_from.substring(after_from.toLowerCase().indexOf("from") + 4);
+					Log.info(after_from);
 					String from = new String();
 					while(after_from.contains("/*")){
 						from = after_from.substring(0, after_from.indexOf("/*"));
@@ -593,7 +616,7 @@ public class Start_Parse {
 				}
 				//				Log.info(List_tree_b);
 				//				Log.info(list_media);
-								Log.info(list_tfe);
+				Log.info(list_tfe);
 				//				Log.info(list_from);
 				//				Log.info(list_where);
 				postProcess();

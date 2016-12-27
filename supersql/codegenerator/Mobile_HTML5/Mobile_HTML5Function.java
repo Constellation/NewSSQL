@@ -480,17 +480,7 @@ public class Mobile_HTML5Function extends Function {
 					html_env.code.append("<div id=\"bounce\" class=\"ui-widget-content ui-corner-all\">" +
 							"<img class=\"" + Mobile_HTML5Env.getClassID(this) +" ");
 				}else{
-					if(!Sass.isBootstrapFlg()){
-						html_env.code.append("<img class=\"" + Mobile_HTML5Env.getClassID(this) +" ");
-					}else if(Sass.isBootstrapFlg()){
-						if(Sass.outofloopFlg.peekFirst()){
-							Sass.makeClass(Mobile_HTML5Env.getClassID(this));
-							Sass.defineGridBasic(Mobile_HTML5Env.getClassID(this), decos);
-							Sass.closeBracket();
-						}
-						html_env.code.append("<div class=\"" + Mobile_HTML5Env.getClassID(this) + "\">");
-						html_env.code.append("<img class=\"img-responsive\"");
-					}
+					html_env.code.append("<img class=\"" + Mobile_HTML5Env.getClassID(this) +" ");
 				}
 
 				//added by goto 20130312  "Default width: 100%"
@@ -2711,6 +2701,7 @@ public class Mobile_HTML5Function extends Function {
 		boolean[] noinsertFlg = new boolean[col_num];
 		String[] validationType = new String[col_num];
 		boolean[] notnullFlg = new boolean[col_num];
+		String[] value = new String[col_num];
 		String[] uploadFile = new String[col_num];
 		String[] at_array = new String[col_num];
 		String[] radioButton_array = new String[col_num];
@@ -2738,9 +2729,11 @@ public class Mobile_HTML5Function extends Function {
 			noinsertFlg[i] = false;
 			validationType[i] = "";
 			notnullFlg[i] = false;
+			value[i] = "";
 			uploadFile[i] = "";
 			at_array[i] = "";
 			String str = "";
+			
 			if(s_array[i].replaceAll(" ","").contains("@{")){
 				str = s_array[i].substring(s_array[i].lastIndexOf("@")+1);	//@以下の文字列
 				at_array[i] = str;
@@ -2834,6 +2827,12 @@ public class Mobile_HTML5Function extends Function {
 			//Log.i(s_array[i]+"	"+$session_array[i]);
 			//Log.i(button_array[i]+"	"+button_array[i]);
 
+			s_array[i] = s_array[i].trim();
+			if(s_array[i].contains("=")){
+				value[i] = s_array[i].substring(s_array[i].indexOf("=")+1);
+				s_array[i] = s_array[i].substring(0, s_array[i].indexOf("="));
+			}
+			
 			if(a.startsWith("max(") || a.startsWith("min(") || a.startsWith("avg(") ||  a.startsWith("count(") )	groupbyFlg = true;
 			if(a.startsWith("a(") || a.startsWith("anchor(")){
 				insert_aFlg += "true\""+((i<col_num-1)?(",\""):(""));
@@ -3165,6 +3164,7 @@ public class Mobile_HTML5Function extends Function {
 								" type=\""+((!hiddenFlg[i])?("text"):("hidden"))+"\"" +
 								" id=\"SSQL_insert"+insertCount+"_words"+(++insertWordCount)+"\"" +
 								" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\"" +
+								""+((!value[i].equals(""))? " value=\""+value[i]+"\"" : "")+
 								" placeholder=\""+s_name_array[i]+"\""+Mobile_HTML5_form.getFormClass(notnullFlg[i], "")+">" +
 								""+((!textareaFlg[i])?(""):("</textarea>")) +
 								"</span>"+( (!textareaFlg[i])? "" : "</span>" )+"\n"+
@@ -3177,6 +3177,7 @@ public class Mobile_HTML5Function extends Function {
 								" type=\""+((!hiddenFlg[i])?("text"):("hidden"))+"\"" +
 								" id=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\"" +
 								" name=\"SSQL_insert"+insertCount+"_words"+(insertWordCount)+"\"" +
+								""+((!value[i].equals(""))? " value=\""+value[i]+"\"" : "")+
 								" "+((!textareaFlg[i])?("value=\""+updateFromValue+"\""):(""))+
 								" placeholder=\""+s_name_array[i]+"\""+Mobile_HTML5_form.getFormClass(notnullFlg[i], "")+">" +
 								""+((!textareaFlg[i])?(""):(updateFromValue+"</textarea>")) +
@@ -3312,7 +3313,7 @@ public class Mobile_HTML5Function extends Function {
 		if(!noreset){
 			statement += 
 					"	if(str.indexOf(\"completed\") !== -1) {\n" +
-							"		$(\"#SSQL_insert"+insertCount+"panel form\")[0].reset();\n" +
+							"		$(\"#SSQL_INSERT"+insertCount+"panel form\")[0].reset();\n" +
 							"	}\n";
 		}
 		if(reloadAfterInsert){
@@ -3354,6 +3355,7 @@ public class Mobile_HTML5Function extends Function {
 						"	s += \"<table style='width:100%; font-weight:500; line-height:30px;'>\";\n";
 		for(int i=0; i<col_num; i++){
 			String s = "";
+			if(hiddenFlg[i]) continue;
 			if(!checkbox_array[i].equals("")){
 				s = checkbox_array[i];
 				statement += 
@@ -3597,7 +3599,7 @@ public class Mobile_HTML5Function extends Function {
 		php +=
 				"	}\n" +
 						"	$ret['result'] = $b;\n" +
-						"	header(\"Content-Type: application/json; charset=utf-8\");\n" +
+						"	//header(\"Content-Type: application/json; charset=utf-8\");\n" +
 						"	echo json_encode($ret);\n" +
 						"\n" +
 						getFormFileUploadPHP2() +
@@ -3776,7 +3778,7 @@ public class Mobile_HTML5Function extends Function {
 						((DBMS.equals("postgresql") || DBMS.equals("postgres"))? ("    pg_close($insert_db"+num+");\n"):"") +
 						"	\n" +
 						"	$ret['result'] = $b;\n" +
-						"	header(\"Content-Type: application/json; charset=utf-8\");\n" +
+						"	//header(\"Content-Type: application/json; charset=utf-8\");\n" +
 						"	echo json_encode($ret);\n" +
 						"?>\n";
 		return s;
@@ -4964,12 +4966,13 @@ public class Mobile_HTML5Function extends Function {
 
 	private void Func_foreach(ExtList data_info) throws UnsupportedEncodingException {
 		String att = new String();
+		Mobile_HTML5G3.dynamic_G3_atts.clear();
 		for (int i = 0; i < this.countconnectitem(); i++) {
 			att = att + "_" + this.getAtt(Integer.toString(i));
-
+			
 			//added by goto 20161112 for dynamic foreach
-			if(PHP.isPHP)
-				Mobile_HTML5G3.dynamic_G3_atts.add(""+this.Args.get(i)); //add attribute name
+			//if(Compiler.isCompiler || decos.containsKey("dynamic"))
+			Mobile_HTML5G3.dynamic_G3_atts.add(""+this.Args.get(i)); //add attribute name
 		}
 
 		if(!Start_Parse.foreach1Flag){

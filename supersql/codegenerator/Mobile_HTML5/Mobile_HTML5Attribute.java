@@ -7,7 +7,6 @@ import supersql.codegenerator.Connector;
 import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.LinkForeach;
 import supersql.codegenerator.Manager;
-import supersql.codegenerator.Sass;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 import supersql.extendclass.ExtList;

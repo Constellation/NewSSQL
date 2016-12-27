@@ -2,6 +2,8 @@
 package supersql.codegenerator;
 
 import supersql.codegenerator.Compiler.PHP.PHP;
+import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5_dynamic;
+import supersql.parser.Start_Parse;
 
 
 public class LinkForeach {
@@ -38,29 +40,45 @@ public class LinkForeach {
 					"		if(elementID)\n" +
 					"			elementID.style.display=\"block\";\n" +
 					"		else\n" +
-					"			document.write(\"No Data Found : \"+id);\n" +
+					//"			document.write(\"No Data Found : \"+id);\n" +
+					"			document.body.innerHTML = \"No Data Found : \"+id;\n" +
 					"		\n" +
-					"		"+ID3+"_currentID = id;\n";
+					"		"+ID3+"_currentID = id;\n" +
+					"	}\n" +
+					"}\n";
 
 		}else if(tfe.equals("G3")){
-			r += 	"window.onload = function(){\n" +
+			//r += 	"window.onload = function(){\n" +
+			r += 	"$(document).ready(function(){\n" +
 					"	if(location.search.length<1){\n";
 			//added by goto 20161112 for dynamic foreach
-			if(PHP.isPHP)
-				r += "		var atts = \"<?php echo $_POST['att']; ?>\";\n" +
-					 "		if(atts.length>0)\n" +
+			if(PHP.isPHP || Mobile_HTML5_dynamic.dynamicDisplay){
+
+				if(!Start_Parse.sessionFlag){
+					r += "		var atts = \"<?php echo $_POST['att']; ?>\";\n";
+				}else{
+					r += "		var atts = \"\n" +
+						 "EOF;\n" +
+						 "		echo $_POST['att'];\n" +
+						 "		echo <<<EOF\n" +
+						 "\";\n";
+				}
+				r += "		if(atts.length>0)\n" +
 					 "			SSQL_DynamicDisplay1(atts);\n" +
 					 "		else\n" +
-					 "			document.write(\"SuperSQL Foreach Page\");\n";
-			else
-				r += "		document.write(\"SuperSQL Foreach Page\");\n";
+					 //"			document.write(\"SuperSQL Foreach Page\");\n";
+					 "			document.body.innerHTML = \"SuperSQL Foreach Page\";\n";
+			}else{
+				//r += "		document.write(\"SuperSQL Foreach Page\");\n";
+				r += "		document.body.innerHTML = \"SuperSQL Foreach Page\";\n";
+			}
 			r +=
 					"	}else{\n" +
 					"		var id = location.search.substring(1, location.search.length);\n" +
 					"		id = id.substring(\""+ID2+"\".length+1);\n" +
 					"		id = decodeURI(id);\n";
 			//added by goto 20161112 for dynamic foreach
-			if(PHP.isPHP)
+			if(PHP.isPHP || Mobile_HTML5_dynamic.dynamicDisplay)
 				r +=
 						"		id = id.replace(/\\+/g, \" \");\n" +
 						"		"+G3_dynamic_funcname+"(id);\n";
@@ -75,12 +93,14 @@ public class LinkForeach {
 						"			if(elementID)\n" +
 						"				elementID.style.display=\"block\";\n" +
 						"			else\n" +
-						"				document.write(\"No Data Found : \"+id);\n" +
+						//"				document.write(\"No Data Found : \"+id);\n" +
+						"				document.body.innerHTML = \"No Data Found : \"+id;\n" +
 						"		}\n";
+			r += 	"	}\n" +
+					//"}\n" +
+					"});\n";
 		}
-		r += 	"	}\n" +
-				"}\n" +
-				"//-->" +
+		r += 	"//-->" +
 				"</script>\n";
 		return r;
 	}

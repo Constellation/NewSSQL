@@ -9,6 +9,7 @@ import supersql.codegenerator.Asc_Desc.AscDesc;
 import supersql.codegenerator.DecorateList;
 import supersql.codegenerator.ITFE;
 import supersql.codegenerator.LinkForeach;
+import supersql.codegenerator.Compiler.Compiler_Dynamic;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
 
@@ -23,14 +24,14 @@ public class Mobile_HTML5_dynamic {
 	public static boolean dynamicDisplay = false;
 	
 	public static String dynamicString = "";
-	private static String dynamicHTMLbuf0 = "";
 	private static String dynamicHTMLbuf = "";
+//	private static String dynamicHTMLbuf1 = "";
 	public static int dynamicCount = 1;
-	private static String dynamicFuncCountLabel = "___SSQL_DynamicFunc_CountLabel___";
+	private final static String DYNAMIC_FUNC_COUNT_LABEL = "___SSQL_DynamicFunc_CountLabel___";
+	
 	private static ArrayList<String> dynamicAttributes = new ArrayList<>();
 //	public static int Gdepth = 0;
-	public static int Gnum = 0;
-	public static int sindex = 0;
+//	public static int Gnum = 0;
 //	static int Gdepth_old = 0;
 //	static int Gnum_old = 0;
 	private static boolean dynamicAttributeFlg = false;
@@ -39,8 +40,17 @@ public class Mobile_HTML5_dynamic {
 	private static int dynamicWhileCount = 0;
 	public static int dynamicWhileCount0 = 0;
 	
-	//For dyamicPostStringProcess() substring
-	public static int html_env_code_length = 0;
+	
+	//For [[]]@{dynamic}
+	public static ArrayList<Integer> sindex = new ArrayList<>();
+	public static ArrayList<Integer> $array_index = new ArrayList<>();
+	public static ArrayList<Integer> dynamicAttributes_NestLevels = new ArrayList<>();	//Nest levels of each attributes
+	private static ArrayList<String> dynamicAttributes_keys = new ArrayList<>();
+	private final static String DYNAMIC_ATTRIBUTES_KEYS_LABEL = "________SupserSQL-DYNAMIC_ATTRIBUTES_KEYS_LABEL________";
+	
+	
+//	//For dyamicPostStringProcess() substring
+//	public static int html_env_code_length = 0;
 	
 	
 	//For Dynamic paging
@@ -62,6 +72,7 @@ public class Mobile_HTML5_dynamic {
 		return createDynamicAttribute(tfe, html_env);
 	}
 	private static String createDynamicAttribute(ITFE tfe, Mobile_HTML5Env html_env){
+		
 		String s = ""+tfe;
 		s = s.trim();
 		if(s.startsWith("\"") && s.endsWith("\"")){
@@ -71,20 +82,69 @@ public class Mobile_HTML5_dynamic {
 			//number
 		}else{
 			//attribute
-			
 			if(dynamicWhileCount0>1)	dynamicAttributeFlg = false;
 			if(dynamicAttributeFlg){
+				//Log.e("createDynamicAttribute2: "+s);
 				//TODO d
 //				int i = Gnum-1;
 				int i = 0;//dynamicCount-1;
 //				int j = new Connector().getSindex();
-				int j = sindex++;
-				//Log.e(j);
+				
+				int index = Mobile_HTML5.gLevel0;
+				try {
+					int si = sindex.get(index);
+					sindex.set(index, si+1);	//sindex++
+				} catch (Exception e) {
+					sindex.add(1);				//sindex=1
+				}
+				int j = sindex.get(index)-1;	//TODO d2 j -> OK?
+				
 				//String a = "'COALESCE(CAST("+s+" AS varchar), \\'\\')'";	//for displaying rows which include NULL values (common to postgresql, sqlie, mysql)
-				String a = "'"+s+"'";	//for displaying rows which include NULL values (common to postgresql, sqlie, mysql)
-				String b = "'.$row"+Gnum+"["+j+"].'";
+				String a = "'"+s.replace("'", "\\'")+"'";	//for displaying rows which include NULL values (common to postgresql, sqlie, mysql)
+				//String b = "'.$row"+Gnum+"["+j+"].'";
+				//String b = "'.$row1["+j+"].'";
+				
+				int x = Mobile_HTML5.gLevel0+1;
+				
+				//$array_index
+				int y = 1;							//TODO d2 y -> OK?
+				try {
+					y = $array_index.get(Mobile_HTML5.gLevel0-1);
+				} catch (Exception e) {	}
+				
+				//String b = "'.$array"+x+"_"+y+"["+j+"].'";
+				String b = "";
+				if(x==1){
+					//'.$array1[$i][0].'
+					b = "'.$array"+x+"_"+y+"[$i"+x+"]["+j+"].'";
+				}else{
+					//'.$array2_1[$key2][$j][0].'
+					b = "'.$array"+x+"_"+y+"[$key"+x+"][$i"+x+"]["+j+"].'";
+				}
+				//Log.e("b = "+b);
+
+				//dynamicAttributes_keys += ((!dynamicAttributes_keys.isEmpty())? ".'_'." : "")+"$array"+x+"_"+y+"[$i"+x+"]["+j+"]";
+				String key = "";
+				if(x==1){
+					key = "$array"+x+"_"+y+"[$i"+x+"]["+j+"]";
+				}else{
+					key = "$key"+x+".'_'.";			//TODO d2 x ?
+					key += "$array"+x+"_"+y+"[$key"+x+"][$i"+x+"]["+j+"]";
+				}
+				try {
+					//Log.e("gL0 = "+(Mobile_HTML5.gLevel0));
+					String keys = dynamicAttributes_keys.get(Mobile_HTML5.gLevel0);
+					dynamicAttributes_keys.set(Mobile_HTML5.gLevel0, keys+".'_'."+key);
+					//Log.e(" keys = "+keys);
+				} catch (Exception e) {
+					dynamicAttributes_keys.add(key);
+				}
+				
+				
 				s = b;
 				//b = "$b .= '<div>"+b+"</div>';\n";
+				
+				dynamicAttributes_NestLevels.add(Mobile_HTML5.gLevel0);
 				
 				//add dyamicAttributes
 				try {
@@ -130,53 +190,62 @@ public class Mobile_HTML5_dynamic {
 		}
 		return s;
 	}
+	
 	public static void dyamicPreStringProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
-		int i = Gnum-1;
-//		int j = new Connector().getSindex();
-		int j = sindex;
-//		if(dynamicAttributeFlg)
-//			Log.i(dynamicAttributeFlg+"  "+i+"  "+j);
-//		if(dynamicAttributeFlg && i==1){	//TODO d jの値を可変に
-		if(dynamicAttributeFlg && i==1 && j==1){	//TODO d jの値を可変に
-			int x = i+1;
-			String b = 	"';\n"+
-					"  		$sql"+x+" = getSQL($sql_a"+x+", $table, $where, $sql_g, $limit, $sql_a1, $row1);\n" +		//TODO d 指定値
-					"  		$result"+x+" = pg_query($dynamic_db"+dynamicCount+", $sql"+x+");\n" +
-					"  		while($row"+x+" = pg_fetch_row($result"+x+")){\n" +
-					"  			$b .= '";
-			//dyamicWhileString += b;
-			html_env.code.append(b);
-			dynamicWhileCount++;
+		
+		int x = Mobile_HTML5.gLevel0+1;
+		
+//		Log.e(x);
+//		//Log.e(dynamicAttributes.get(x-2));
+//		String keys = dynamicAttributes_keys.get(x-2);
+//		Log.e(keys);
+		String key_label = DYNAMIC_ATTRIBUTES_KEYS_LABEL+(x-2);
+		
+		//$array_index
+		int y = 1;							//TODO d2 y -> OK?
+		int index = Mobile_HTML5.gLevel0-1;
+		try {
+			int ai = $array_index.get(index);
+			$array_index.set(index, ai+1);	//$array_index++
+			y = ai+1;
+		} catch (Exception e) {
+			$array_index.add(1);			//$array_index=1
+		}
 
-//			Log.i("---");
-		}
-	}
-	public static void dyamicWhileStringProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
-		//TODO d
-		if(dynamicWhileCount0<=1){
-			if(symbol.contains("G1") || symbol.contains("G2")){
-				//dyamicWhileString = ""
-				if(dynamicAttributeFlg){
-//					Log.i("!!!! "+Gnum+" "+dynamicWhileString);
-//					Log.i("!!!! "+Gnum+" "+dynamicString);
-//					dynamicWhileStrings.add(dynamicWhileString);
-					dynamicWhileStrings.add(dynamicString);
-				}
-			}
-//			//else{
-//			if(symbol.contains("C1") || symbol.contains("C2")){
-//				Log.i(html_env_code_length);
-////				String s = html_env.code.toString().substring(html_env_code_length, html_env.code.toString().length());
-////				String s = html_env.code.toString().substring(10, 15);
-//				String s = "xxx";
-//				dyamicWhileString = "$b .= '"+s.replaceAll("\r\n|\r|\n", "")+"';\n";
-//				//Log.i(s);
-//			}
-		}
-//		if(symbol.contains("C1") || symbol.contains("C2")){
-//			html_env_code_length = html_env.code.toString().length();
-//			//Log.e(html_env_code_length);
+		
+		html_env.code.append("';\n\n");
+		//$key2 = $array1[$i][0].'_'.$array1[$i][1];
+		//for($i2=0; $j<count($array2_1[$key2]); $i2++){
+		html_env.code.append("          $key"+x+" = "+key_label+";\n");
+		html_env.code.append("          for($i"+x+"=0; $i"+x+"<count($array"+x+"_"+y+"[$key"+x+"]); $i"+x+"++){\n");
+		html_env.code.append("          $b .= '\n");
+		
+		
+		
+//		int i = Gnum-1;
+////		int j = new Connector().getSindex();
+//		int j = sindex;
+////		if(dynamicAttributeFlg)
+////			Log.i(dynamicAttributeFlg+"  "+i+"  "+j);
+////		if(dynamicAttributeFlg && i==1){	//TODO d jの値を可変に
+//		if(dynamicAttributeFlg && i==1 && j==1){	//TODO d jの値を可変に
+//			int x = i+1;
+//			String b = 	"';\n"+
+//					"  		$sql"+x+" = getSQL($sql_a"+x+", $table, $where, $sql_g, $limit, $sql_a1, $row1);\n" +		//TODO d 指定値
+//					"  		$result"+x+" = pg_query($dynamic_db"+dynamicCount+", $sql"+x+");\n" +
+//					"  		while($row"+x+" = pg_fetch_row($result"+x+")){\n" +
+//					"  			$b .= '";
+//			//dyamicWhileString += b;
+//			html_env.code.append(b);
+//			dynamicWhileCount++;
+//
+////			Log.i("---");
 //		}
+	}
+	public static void dyamicPostStringProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
+		html_env.code.append("';\n");
+		html_env.code.append("          }\n\n");
+		html_env.code.append("          $b .= '\n");
 	}
 //	//未使用
 //	public static void dyamicAfterWhileStringProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
@@ -219,21 +288,23 @@ public class Mobile_HTML5_dynamic {
 		//※ Count付きのfunc()には、+Mobile_HTML5.getDinamicLabel()を付加する
 		//TODO dynamicFuncCountLabelがユニーク値かどうか判定
 		if(dynamicDisplay){
-			return dynamicFuncCountLabel;
+			return DYNAMIC_FUNC_COUNT_LABEL;
 		}
 		return "";
 	}
 	
-	public static boolean dynamicPreProcess0(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
+	public static boolean dynamicPreProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
 //		if(Compiler.isCompiler){
 //			decos.put("dynamic", "");
 //		}
 		
 		if(decos.containsKey("dynamic")){
-			dynamicHTMLbuf0 = html_env.code.toString();
+			if(Mobile_HTML5G3.G3)	Mobile_HTML5G3.dynamic_G3 = true;	//added by goto 20161112 for dynamic foreach
+			dynamicHTMLbuf = html_env.code.toString();
 			dynamicDisplay = true;
 			dynamicAttributeFlg = true;
 			dynamicPHPfileName = html_env.getFileName2()+"_SSQLdynamic_"+dynamicCount+".php";
+//			dynamicHTMLbuf1 = html_env.code.toString();	//重複 dynamicHTMLbuf0
 			
 	        if(decos.containsKey("row")){
 	        	dynamicRow = Integer.parseInt(decos.getStr("row").replace("\"", ""));
@@ -249,28 +320,56 @@ public class Mobile_HTML5_dynamic {
 		}
 		return false;
 	}
-	public static boolean dynamicPreProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
-		if(decos.containsKey("dynamic")){
-			dynamicHTMLbuf = html_env.code.toString();
-			dynamicDisplay = true;
-			if(Mobile_HTML5G3.G3)	Mobile_HTML5G3.dynamic_G3 = true;	//added by goto 20161112 for dynamic foreach
-			return true;
-		}
-		return false;
-	}
+//	public static boolean dynamicPreProcess1(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
+//		if(dynamicDisplay){
+//			Log.e("dynamicPreProcess");
+//			dynamicHTMLbuf1 = html_env.code.toString();	//重複 dynamicHTMLbuf0
+//			return true;
+//		}
+//		return false;
+//	}
 	public static boolean dynamicStringGetProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
-		if(decos.containsKey("dynamic")){
+		if(dynamicDisplay){
 			String currentHTML = html_env.code.toString();
 			dynamicString = currentHTML.substring(dynamicHTMLbuf.length(), currentHTML.length());
-			html_env.code = new StringBuffer(dynamicHTMLbuf);
-			//dynamicDisplay = false;
+			
+			//replace KEYS_LABELs
+			for(int i=0; i<dynamicAttributes_keys.size(); i++){
+				String key_label = DYNAMIC_ATTRIBUTES_KEYS_LABEL+(i);
+				String key = dynamicAttributes_keys.get(i);
+				//Log.e("replace("+key_label+", "+key+")");
+				dynamicString = dynamicString.replace(key_label, key);
+			}
+			
 			return true;
 		}
 		return false;
 	}
+	public static void dyamicWhileStringProcess(String symbol, DecorateList decos, Mobile_HTML5Env html_env){
+		//TODO d
+		if(dynamicWhileCount0<=1){
+			if(symbol.contains("G1") || symbol.contains("G2")){
+				if(dynamicAttributeFlg){
+					dynamicWhileStrings.add(dynamicString);
+				}
+			}
+//			//else{
+//			if(symbol.contains("C1") || symbol.contains("C2")){
+//				Log.i(html_env_code_length);
+////				String s = html_env.code.toString().substring(html_env_code_length, html_env.code.toString().length());
+////				String s = html_env.code.toString().substring(10, 15);
+//				String s = "xxx";
+//				dyamicWhileString = "$b .= '"+s.replaceAll("\r\n|\r|\n", "")+"';\n";
+//				//Log.i(s);
+//			}
+		}
+//		if(symbol.contains("C1") || symbol.contains("C2")){
+//			html_env_code_length = html_env.code.toString().length();
+//			//Log.e(html_env_code_length);
+//		}
+	}
 	public static boolean dynamicProcess(String symbol, String tfeID, DecorateList decos, Mobile_HTML5Env html_env){
-		if(decos.containsKey("dynamic")){
-
+		if(dynamicDisplay){
 ////			//Log.i("Mobile_HTML5.gLevel = "+Mobile_HTML5.gLevel);
 ////			if(Compiler.isCompiler && Mobile_HTML5.gLevel>0){
 ////				return false;
@@ -281,7 +380,7 @@ public class Mobile_HTML5_dynamic {
 ////			}
 			
 			if(symbol.contains("G1") || symbol.contains("G2")){
-				html_env.code = new StringBuffer(dynamicHTMLbuf0);
+				html_env.code = new StringBuffer(dynamicHTMLbuf);
 			}
 			
 			//ajax load interval
@@ -535,6 +634,8 @@ public class Mobile_HTML5_dynamic {
 	    			where = where.replace("[\"\"","[\"").replace("\"\"]","\"]").replace("[\" \"","[\"").replace("\" \"]","\"]");
 	    		}
 	    		query = query.substring(0,query.lastIndexOf(" where "));
+	    		if(query.endsWith(" where"))
+	    			query = query.substring(0,query.lastIndexOf(" where"));
 	    	}
 	    	from = query.trim();
 	    	
@@ -544,6 +645,8 @@ public class Mobile_HTML5_dynamic {
 	    			     +"<?php\n";
 	    	//php
     		if(!dynamicRowFlg){
+    			//Log.info(getDynamicHTML(tfeID, dynamicCount, dynamicPHPfileName));
+    			//Log.info(tfeID +" "+ dynamicCount +" "+ dynamicPHPfileName);
 	    		statement += getDynamicHTML(tfeID, dynamicCount, dynamicPHPfileName);
     		}else{
     			statement += getDynamicPagingHTML(tfeID, dynamicRow, dynamicPagingCount, dynamicPHPfileName);
@@ -595,13 +698,14 @@ public class Mobile_HTML5_dynamic {
     				att += "getA('"+x+"').\"||'_'||\".";
     			}
     			if(!att.isEmpty())	att = att.substring(0, att.length()-"||'_'||\".".length());
-    			Mobile_HTML5G3.dynamic_G3_atts.clear();
+    			//Mobile_HTML5G3.dynamic_G3_atts.clear();
     			
     			php += 	"    //for dynamic foreach\n" +
     					"    if(!empty($where))	$where = '('.$where.') and ';\n" +		//added by goto 20161114  'where () and ...' for dynamic foreach
     					"    $where .= "+att+"='\".$_POST['att'].\"'\";\n" +
     					"\n";
     		}
+    		//Mobile_HTML5G3.dynamic_G3_atts.clear();
     		
     		if(DBMS.equals("sqlite") || DBMS.equals("sqlite3")){
     			php +=	"    $dynamic_db"+dynamicCount+" = new SQLite3($sqlite3_DB);\n";
@@ -628,12 +732,16 @@ public class Mobile_HTML5_dynamic {
 							"    $result1 = $dynamic_db"+dynamicCount+"->query($sql1);\n" +
 							"\n" +
 							"    //$i = 0;\n" +
+							"    $j = 0;\n" +
 							"    $pop_num = 0;\n" +
 							"    $b = \"\";\n" +
 							php_str1 +
-							"    while($row1 = $result->fetchArray()){\n" +
+							"\n"+
+							Compiler_Dynamic.createNestWhile(dynamicAttributes_NestLevels)+
+							//"    while($row1 = $result->fetchArray()){\n" +
+							"    for($i1=0; $i1<count($array1_1); $i1++){\n" +
 							//"          //$i++;\n" +
-							"          //$b .= str_replace('"+dynamicFuncCountLabel+"', '_'.$i, $row[$j]);\n";	//For function's count
+							"          //$b .= str_replace('"+DYNAMIC_FUNC_COUNT_LABEL+"', '_'.$i, $row[$j]);\n";	//For function's count
 							
 							/* nest dynamic string  start */
 							//TODO d
@@ -660,17 +768,21 @@ public class Mobile_HTML5_dynamic {
 							"    $result1 = pg_query($dynamic_db"+dynamicCount+", $sql1);\n" +
 							"\n" +
 							"    //$i = 0;\n" +
+							"    $j = 0;\n" +
 							"    $pop_num = 0;\n" +
 							"    $b = \"\";\n" +
 							php_str1 +
-							"    while($row1 = pg_fetch_row($result1)){\n" +
+							"\n"+
+							Compiler_Dynamic.createNestWhile(dynamicAttributes_NestLevels)+
+							//"    while($row1 = pg_fetch_row($result1)){\n" +
+							"    for($i1=0; $i1<count($array1_1); $i1++){\n" +
 							//"          //$i++;\n" +
-							"          //$b .= str_replace('"+dynamicFuncCountLabel+"', '_'.$i, $row[$j]);\n";	//For function's count
+							"          //$b .= str_replace('"+DYNAMIC_FUNC_COUNT_LABEL+"', '_'.$i, $row[$j]);\n";	//For function's count
 							
 							/* nest dynamic string  start */
 							//TODO d
 				    		for(int i=0; i<dynamicWhileStrings.size(); i++){
-					    		php +=	"          $b .= '\n"+dynamicWhileStrings.get(i)+"';\n";
+					    		php +=	"          $b .= '"+dynamicWhileStrings.get(i)+"';\n";
 				    		}
 				    		for(int i=dynamicWhileCount; i>1; i--){		//TODO d 処理の位置
 				    			php += " }\n";
@@ -712,7 +824,7 @@ public class Mobile_HTML5_dynamic {
     		}
     		php += 
 						"\n" +
-						"    header(\"Content-Type: application/json; charset=utf-8\");\n" +
+						"    //header(\"Content-Type: application/json; charset=utf-8\");\n" +
 						"    echo json_encode($ret);\n" +
 						"\n" +
 						"\n" +
@@ -783,7 +895,6 @@ public class Mobile_HTML5_dynamic {
 	    	
 	    	initVariables();
 	    	
-	    	
 			//Log.e(" - End dynamic process -");
         	return true;
         }
@@ -792,16 +903,18 @@ public class Mobile_HTML5_dynamic {
 	//initVariables
 	private static void initVariables() {
 		dynamicDisplay = false;
+		//Mobile_HTML5G3.dynamic_G3 = false;
 		
 		dynamicString = "";
-		dynamicHTMLbuf0 = "";
 		dynamicHTMLbuf = "";
+//		dynamicHTMLbuf1 = "";
+		
 		//dynamicCount = 1;
 		dynamicAttributes.clear();
 		
 //		Gdepth = 0;
-		Gnum = 0;
-		sindex = 0;
+//		Gnum = 0;
+		sindex.clear();
 		
 //		Gdepth_old = 0;
 //		Gnum_old = 0;
@@ -810,10 +923,12 @@ public class Mobile_HTML5_dynamic {
 		dynamicWhileStrings.clear();
 		dynamicWhileCount = 0;
 		dynamicWhileCount0 = 0;
+		dynamicAttributes_NestLevels.clear();
+		dynamicAttributes_keys.clear();
 
 		
-		//For dyamicPostStringProcess() substring
-		html_env_code_length = 0;
+//		//For dyamicPostStringProcess() substring
+//		html_env_code_length = 0;
 
 		//For Dynamic paging
 		dynamicRow = 1;
@@ -856,22 +971,35 @@ public class Mobile_HTML5_dynamic {
 		final String DD_COMMENT_NAME1 = "SSQL Dynamic"+num;
 		final String DD_COMMENT_NAME2 = "SSQL Dynamic Display Data"+num;
 		phpFileName = new File(phpFileName).getName();
-		String s = "";
+		boolean isTable = ((Mobile_HTML5.isTable())? true : false);
 		
+		String s = "";
+		s += ((isTable)? "<tbody>\n" : "");
 		if(Mobile_HTML5G3.dynamic_G3)	s +=	LinkForeach.getJS("G3", DD_FUNC_NAME);	//added by goto 20161112 for dynamic foreach
 		s +=		
 				"\n" +
 				"<!-- "+DD_COMMENT_NAME1+" start -->\n" +
-				"<!-- "+DD_COMMENT_NAME1+" DIV start -->\n" +
-				"<div id=\""+DD_FUNC_NAME+"_Panel\" style=\"\" data-role=\"none\">\n" +
-				"<div id=\""+DD_FUNC_NAME+"\" class=\""+tfeID+"\" data-role=\"none\"><!-- "+DD_COMMENT_NAME2+" --></div>\n" +
-				"</div>\n" +
+				"<!-- "+DD_COMMENT_NAME1+" DIV start -->\n";
+		if(isTable){
+			if(Mobile_HTML5G1.G1Flg){
+				s += "<tr id=\""+DD_FUNC_NAME+"\"><!-- "+DD_COMMENT_NAME2+" --></tr>\n";
+			}else{
+				s += "<tr><td id=\""+DD_FUNC_NAME+"\"><!-- "+DD_COMMENT_NAME2+" --></td></tr>\n";
+			}
+		}else{
+			s += //"<div id=\""+DD_FUNC_NAME+"_Panel\" style=\"\" data-role=\"none\">\n" +
+				 //"<div id=\""+DD_FUNC_NAME+"\" class=\""+tfeID+"\" data-role=\"none\"><!-- "+DD_COMMENT_NAME2+" --></div>\n" +
+				 "<div id=\""+DD_FUNC_NAME+"\" data-role=\"none\"><!-- "+DD_COMMENT_NAME2+" --></div>\n";
+				 //"</div>\n" +
+		}
+		s +=	
 				"<!-- "+DD_COMMENT_NAME1+" DIV end -->\n" +
 				"\n" +
 				"<!-- "+DD_COMMENT_NAME1+" JS start -->\n" +
 				"<script type=\"text/javascript\">\n" +
-				"<!--\n" +
-				DD_FUNC_NAME+"();	//ロード時に実行\n";
+				"<!--\n";
+		if(!Mobile_HTML5G3.dynamic_G3)
+			s += DD_FUNC_NAME+"();	//ロード時に実行\n";
 		if(ajax_loadInterval>0){
 			s += "setInterval(function(){\n" +
 				 "	"+DD_FUNC_NAME+"();\n" +
@@ -880,7 +1008,8 @@ public class Mobile_HTML5_dynamic {
 		s +=	"function "+DD_FUNC_NAME+"_echo(str){\n" +
 				//"  var textArea = document.getElementById(\""+DD_FUNC_NAME+"\");\n" +
 				//"  textArea.innerHTML = str;\n" +
-				"  $(\"#"+DD_FUNC_NAME+"\").html(str).trigger(\"create\");\n" +
+				//"  $(\"#"+DD_FUNC_NAME+"\").html(str).trigger(\"create\");\n" +
+				"  document.getElementById(\""+DD_FUNC_NAME+"\").innerHTML = str;\n" +
 				"}\n";
 		//added by goto 20161112 for dynamic foreach
 		if(!Mobile_HTML5G3.dynamic_G3)
@@ -912,7 +1041,8 @@ public class Mobile_HTML5_dynamic {
 				"//-->" +
 				"</script>\n" +
 				"<!-- "+DD_COMMENT_NAME1+" JS end -->\n" +
-				"<!-- "+DD_COMMENT_NAME1+" end -->\n\n";
+				"<!-- "+DD_COMMENT_NAME1+" end -->\n\n" +
+				((isTable)? "</tbody>\n" : "");
 		return s;
 	}
 	//getDynamicPagingHTML
@@ -921,12 +1051,24 @@ public class Mobile_HTML5_dynamic {
 		final String DDP_COMMENT_NAME1 = "SSQL DynamicPaging"+num;
 		final String DDP_COMMENT_NAME2 = "SSQL Dynamic Display Data"+num;
 		phpFileName = new File(phpFileName).getName();
+		boolean isTable = ((Mobile_HTML5.isTable())? true : false);
 		
 		String s =
+				((isTable)? "<tbody>\n" : "") +
 				"\n" +
 				"<!-- "+DDP_COMMENT_NAME1+" start -->\n" +
-				"<!-- "+DDP_COMMENT_NAME1+" DIV start -->\n" +
-				"<div id=\""+DDP_FUNC_NAME+"\" class=\""+tfeID+"\" data-role=\"none\"><!-- "+DDP_COMMENT_NAME2+" --></div>\n" +
+				"<!-- "+DDP_COMMENT_NAME1+" DIV start -->\n";
+		if(isTable){
+			if(Mobile_HTML5G1.G1Flg){
+				s += "<tr id=\""+DDP_FUNC_NAME+"\"><!-- "+DDP_COMMENT_NAME2+" --></tr>\n";
+			}else{
+				s += "<tr><td id=\""+DDP_FUNC_NAME+"\"><!-- "+DDP_COMMENT_NAME2+" --></td></tr>\n";
+			}
+		}else{
+			s += //"<div id=\""+DDP_FUNC_NAME+"\" class=\""+tfeID+"\" data-role=\"none\"><!-- "+DDP_COMMENT_NAME2+" --></div>\n" +
+				 "<div id=\""+DDP_FUNC_NAME+"\" data-role=\"none\"><!-- "+DDP_COMMENT_NAME2+" --></div>\n";
+		}
+		s +=
 				"<div id=\""+DDP_FUNC_NAME+"_Buttons\"></div>\n" +
 				"<!-- "+DDP_COMMENT_NAME1+" DIV end -->\n" +
 				"\n" +
@@ -938,7 +1080,8 @@ public class Mobile_HTML5_dynamic {
 				"\n" +
 				"var "+DDP_FUNC_NAME+"_currentItems = 1;		//グローバル変数\n" +
 				"function "+DDP_FUNC_NAME+"_echo(str){\n" +
-				"  $(\"#"+DDP_FUNC_NAME+"\").html(str).trigger(\"create\");\n" +
+				//"  $(\"#"+DDP_FUNC_NAME+"\").html(str).trigger(\"create\");\n" +
+				"  document.getElementById(\""+DDP_FUNC_NAME+"\").innerHTML = str;\n" +
 				"}\n";
 		if(ajax_loadInterval>0){
 			s += "\n" +
@@ -990,7 +1133,8 @@ public class Mobile_HTML5_dynamic {
 				"//-->" +
 				"</script>\n" +
 				"<!-- "+DDP_COMMENT_NAME1+" JS end -->\n" +
-				"<!-- "+DDP_COMMENT_NAME1+" end -->\n\n";
+				"<!-- "+DDP_COMMENT_NAME1+" end -->\n\n" +
+				((isTable)? "</tbody>\n" : "");
 		return s;
 	}
 

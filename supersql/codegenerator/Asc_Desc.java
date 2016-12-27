@@ -53,6 +53,7 @@ public class Asc_Desc {
 	//add
 	public void add_asc_desc_Array(String deco) {
 		if(deco.contains("dynamic") && !asc_desc_attributes.isEmpty()){
+		//if(!asc_desc_attributes.isEmpty()){
 			//TODO (asc)@{static}! ?
 			//Log.i(asc_desc.get(0)+" / "+asc_desc_attributes);
 			//Log.e("asc_desc_Array1.add("+dynamicCount+", "+asc_desc+")");

@@ -120,7 +120,7 @@ function isSmartphone(){
 }
 
 function paginationForBootstrap(num, max, paginationClass, paginationContentClass, HTMLfileName){
-var jq1124 = jQuery.noConflict(true);
+/* var jq1124 = jQuery.noConflict(true); */
    $(function () {
         window.pagObj = $('.'+paginationClass).twbsPagination({
             totalPages: max,
@@ -130,7 +130,7 @@ var jq1124 = jQuery.noConflict(true);
             prev: '«',
             next: '»',
             onPageClick: function (event, page) {
-                $('.'+paginationContentClass).load("./"+HTMLfileName+page+".html");
+                $('.'+paginationContentClass).load("./"+HTMLfileName+page+".html #ssql_body_contents");
             }
         }).on('page', function (event, page) {
         	$('.'+paginationContentClass).text('Page ' + page);

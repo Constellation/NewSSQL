@@ -14,6 +14,7 @@ import supersql.codegenerator.Compiler.Compiler;
 import supersql.codegenerator.Compiler.PHP.PHP;
 import supersql.codegenerator.HTML.HTMLEnv;
 import supersql.codegenerator.Mobile_HTML5.Mobile_HTML5Env;
+import supersql.codegenerator.Responsive.Responsive;
 import supersql.codegenerator.Web.WebEnv;
 import supersql.common.GlobalEnv;
 import supersql.common.Log;
@@ -34,7 +35,8 @@ public class Jscss implements Serializable {
 	public static void process() {
 		if(!flag){
 			flag = true;
-			copyJSCSS_to_outputDir();	//goto 20141201
+			if(!Responsive.isReExec())	//added by goto 20161217  for responsive
+				copyJSCSS_to_outputDir();	//goto 20141201
 			generateCssFile();			//goto 20141209
 		}
 	}
@@ -172,6 +174,11 @@ public class Jscss implements Serializable {
 		} catch (Exception e) {
 			return false;
 		}
+	}
+	
+	//initValiables
+	public static void initValiables() {
+		flag = false;
 	}
 	
 
