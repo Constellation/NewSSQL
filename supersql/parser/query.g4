@@ -40,7 +40,7 @@ operand    :
 				| if_then_else
 				| sl
 				| NUMERIC_LITERAL
-        | aggregate
+        | (sorting)?aggregate
         | arithmetics
 				)
         ('||' operand)*
