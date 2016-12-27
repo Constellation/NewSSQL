@@ -36,6 +36,10 @@ public class VRG1 extends Grouper {
 		 //System.out.println("やっほい。");
 		Log.out("------- G1 -------");
 		this.setDataList(data_info);
+		
+		
+		
+		
 		// tk start///////////////////////////////////////////////////
 		html_env.append_css_def_td(VREnv.getClassID(this), this.decos);
 

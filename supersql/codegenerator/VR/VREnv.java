@@ -862,8 +862,13 @@ public class VREnv extends LocalEnv implements Serializable{
 			charsetFlg = true;
 		}
 		
-		 if (decos.containsKey("template"))
-	        	VRfilecopy.templete_filename = decos.getStr("template");
+		 if (decos.containsKey("museum")){
+	        	VRfilecreate.template_museum = decos.getStr("museum");
+		 }
+		 if (decos.containsKey("stand")){
+		 		VRfilecreate.template_stand = decos.getStr("stand");
+		 }
+			// if (decos.containsKey("charset")){
 		// if (decos.containsKey("charset")){
 		// metabuf.append("<meta http-equiv=\"Content-Type\" content=\"text/html; charset="
 		// + decos.getStr("charset") + "\">");

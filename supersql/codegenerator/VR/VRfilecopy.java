@@ -21,7 +21,6 @@ public class VRfilecopy {
 	private static final String outdirPath = GlobalEnv.getOutputDirPath();
 	//private static final String generateCssFileDir = "jscss";
 	//private static boolean flag = false; // masato 20150101
-	public static String templete_filename = "";
 	
 	public VRfilecopy() {
 
