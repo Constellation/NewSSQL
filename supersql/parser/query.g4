@@ -76,7 +76,7 @@ composite_iterator	:
 		C2 
 		(NUMERIC_LITERAL C3)?
 	| NUMERIC_LITERAL	C3
-	)
+	)//[],2! or [],2!3%
 	|	
 	OPEN_BRACKET 
 	exp
@@ -86,8 +86,41 @@ composite_iterator	:
 		C1 
 		(NUMERIC_LITERAL C3)? 
 	| NUMERIC_LITERAL C3
-	)
+	)//[]!2, or []!2,3!
 	;
+/*
+composite_iterator  :
+  OPEN_BRACKET 
+  exp
+  CLOSE_BRACKET
+  C1
+  (
+  NUMERIC_LITERAL C2 (NUMERIC_LITERAL C3)?
+  | 
+  NUMERIC_LITERAL C3 (NUMERIC_LITERAL C2)?
+  )//[],2! or [],2!3% or [],2% or [],2%3!
+  | 
+  OPEN_BRACKET 
+  exp
+  CLOSE_BRACKET 
+  C2
+  (
+  NUMERIC_LITERAL C1 (NUMERIC_LITERAL C3)? 
+  | 
+  NUMERIC_LITERAL C3 (NUMERIC_LITERAL C1)?
+  )//[]!2, or []!2,3! or []!2% or []!2%3,
+  | 
+  OPEN_BRACKET 
+  exp
+  CLOSE_BRACKET 
+  C3
+  (
+  NUMERIC_LITERAL C1 (NUMERIC_LITERAL C2)? 
+  | 
+  NUMERIC_LITERAL C2 (NUMERIC_LITERAL C1)?
+  )//[]%2, or []%2,3! or []%2! or []%2!3,
+  ;
+*/
 
 exp :	
 	d_exp

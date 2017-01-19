@@ -219,7 +219,18 @@ public class Start_Parse {
 	private String getSSQLQuery()
 	{
 		//read file & query
-		String query = null;
+//		String query = null;
+		
+		String query = GlobalEnv.getQuery();
+		if(GlobalEnv.getQuery() != null && GlobalEnv.getoutfilename() != null){
+			query = GlobalEnv.getQuery();
+//			query = replaceQuery_For_HTML_and_MobileHTML5(query);
+			return query;
+		}
+		
+		if (query != null) {
+			query = query.trim();
+		}
 		String filename = GlobalEnv.getfilename();
 		if (filename == null || filename.isEmpty()) {
 			Log.err("Error[SQLparser]: File Is Not Specified.");
