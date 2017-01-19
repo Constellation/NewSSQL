@@ -40,6 +40,8 @@ public class Start_Parse {
 	private static boolean dbpediaQuery = false;
 	private boolean foreachFlag = false;
 	private ExtList foreachinfo;
+	public static String[] parameters;
+	public static ExtList parameter_atts = new ExtList();
 	public static boolean sessionFlag = false;
 	public static String sessionString = "";
 	private CodeGenerator codegenerator;
@@ -448,6 +450,24 @@ public class Start_Parse {
 					+ ": Used in FOREACH clause and added to FROM clause ");
 		}
 
+		if(parameters != null){
+			String where_tmp = "";
+			for(int i = 0; i < parameters.length; i++){
+				if(i != 0){
+					where_tmp += "AND"; 
+				}
+				where_tmp += parameter_atts.get(i) + " = " + parameters[i];
+			}
+			
+			// where句の中身をチェック
+			if(where_c.toString().equals("")){
+				where_c.append(where_tmp);
+			} else {
+				where_tmp += "AND ";
+				where_c.insert(0, where_tmp);
+			}
+		}
+		
 		if (Start_Parse.isDbpediaQuery())
 			whereInfo.setSparqlWhereQuery(where_c.toString().trim());
 		else
@@ -513,6 +533,11 @@ public class Start_Parse {
 								foreachFlag = true;
 								if(pre.equals("foreach1"))	foreach1Flag = true;	//added by goto 20161025 for link1/foreach1
 								foreachinfo = TreeConst.getforeach(list);
+							}else if(pre.equals("parameter")){
+								// -eHTMLarg{...,...,...,...}の...,...,...,...部分
+								String values =  GlobalEnv.getLinkValue().substring(1, GlobalEnv.getLinkValue().length()-1);
+								parameters = values.split(",");
+								parameter_atts = TreeConst.getforeach(list);
 							}
 						}
 						else if( ((ExtList)((ExtList)((ExtList)((ExtList)((ExtList)list.get(1)).get(0)).get(1)).get(0)).get(1)).get(0).toString().toUpperCase().matches("SESSION.*")

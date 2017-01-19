@@ -107,7 +107,7 @@ public class TreeConst {
 
 		//changed by goto 20161025 for link1/foreach1
 		String x = ((ExtList)tree.get(1)).get(0).toString().toLowerCase();
-		if(x.equals("foreach") || x.equals("foreach1")){
+		if(x.equals("foreach") || x.equals("foreach1") || x.equals("parameter")){
 			if( ((ExtList)tree.get(1)).get(1) instanceof  String){
 				for(int i = 2; i < ((ExtList)tree.get(1)).size(); i+=2){
 					ExtList tfe_tree = (ExtList)((ExtList)tree.get(1)).get(i);

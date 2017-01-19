@@ -3,10 +3,11 @@ grammar	prefix;
 @header{
 package supersql.parser;
 }
+
 prefix	:	
-test (',' test)*
+fix (',' fix)*
 ;
-test :
+fix :
 foreach | function | expr ;
 
 operand : (table_alias '.')? column_name ;
@@ -18,6 +19,13 @@ exdef	:	'#' K_IMPORT IDENTIFIER
 foreach :
 ( 
   (K_FOREACH | K_FOREACH1)
+    (operand (',' operand)* 
+    | OPEN_PARENTHESE operand (',' operand)* CLOSE_PARENTHESE 
+    )
+)
+|
+(
+  K_PARAMETER
     (operand (',' operand)* 
     | OPEN_PARENTHESE operand (',' operand)* CLOSE_PARENTHESE 
     )
@@ -79,7 +87,8 @@ DEF	:	'{' .+? '}'
 	;
 
 K_FOREACH	:	F O R E A C H	;
-K_FOREACH1 : K_FOREACH [0-9]+; 
+K_FOREACH1 : K_FOREACH [0-9]+;
+K_PARAMETER : P A R A M E T E R ;
 K_IMPORT	:	I M P O R T	;
 K_DEFINE	:	D E F I N E	;
 

@@ -31,13 +31,13 @@ public class prefixBaseListener implements prefixListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterTest(prefixParser.TestContext ctx) { }
+	@Override public void enterFix(prefixParser.FixContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitTest(prefixParser.TestContext ctx) { }
+	@Override public void exitFix(prefixParser.FixContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
